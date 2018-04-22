@@ -1,12 +1,15 @@
 package com.duy.ccppcompiler;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +27,9 @@ import java.io.InputStream;
 public class InstallActivity extends AppCompatActivity {
     private static final String KEY_EXTRACTED = "KEY_EXTRACTED";
     private static final String KEY_APP_VERSION = "KEY_APP_VERSION";
+    private static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private ProgressBar mProgressBar;
     private TextView mTxtMessage;
@@ -45,6 +51,9 @@ public class InstallActivity extends AppCompatActivity {
         final String appVersion = ApkUtils.getAppVersion(this);
         boolean extracted = preferences.getBoolean(KEY_EXTRACTED, false)
                 && preferences.getString(KEY_APP_VERSION, "").equals(appVersion);
+
+        //in debug mode, always extract data
+        extracted |= !BuildConfig.DEBUG;
         if (!extracted) {
             mExtractDataTask = new ExtractDataTask(this, new ExtractCallback() {
                 @Override
@@ -74,17 +83,27 @@ public class InstallActivity extends AppCompatActivity {
 
     private void openEditor() {
         if (permissionGranted()) {
-            startMainActivity();
+            closeAndStartMainActivity();
         } else {
             requestPermission();
         }
     }
 
-    private void startMainActivity() {
+    private void closeAndStartMainActivity() {
+        overridePendingTransition(0, 0);
+        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private boolean permissionGranted() {
-        return false;
+        for (String permission : PERMISSIONS) {
+            if (!(ContextCompat.checkSelfPermission(this, permission)
+                    == PackageManager.PERMISSION_GRANTED)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void requestPermission() {
@@ -95,7 +114,7 @@ public class InstallActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startMainActivity();
+            closeAndStartMainActivity();
         }
     }
 
