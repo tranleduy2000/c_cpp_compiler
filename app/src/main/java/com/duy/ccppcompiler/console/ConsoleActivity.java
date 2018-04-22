@@ -1,7 +1,6 @@
 package com.duy.ccppcompiler.console;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -11,6 +10,8 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -19,7 +20,7 @@ import com.duy.ccppcompiler.R;
 import com.termux.terminal.TerminalSession;
 import com.termux.view.TerminalView;
 
-public class ConsoleActivity extends Activity implements ServiceConnection {
+public class ConsoleActivity extends AppCompatActivity implements ServiceConnection {
 
     private static final String TAG = "ConsoleActivity";
     private static final int MAX_FONTSIZE = 256;
@@ -33,6 +34,8 @@ public class ConsoleActivity extends Activity implements ServiceConnection {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_console);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
         computeFontSize();
         initView();
         startService();
