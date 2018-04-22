@@ -1,9 +1,8 @@
-package com.termux.app;
+package com.duy.ccppcompiler.console;
 
 import android.content.Context;
 import android.media.AudioManager;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -14,18 +13,17 @@ import com.termux.terminal.TerminalEmulator;
 import com.termux.terminal.TerminalSession;
 import com.termux.view.TerminalViewClient;
 
-import java.util.List;
-
 public final class TermuxViewClient implements TerminalViewClient {
 
-    final TermuxActivity mActivity;
-
+    private static final String TAG = "TermuxViewClient";
+    private final ConsoleActivity mActivity;
     /**
      * Keeping track of the special keys acting as Ctrl and Fn for the soft keyboard and other hardware keys.
      */
-    boolean mVirtualControlKeyDown, mVirtualFnKeyDown;
+    private boolean mVirtualControlKeyDown;
+    private boolean mVirtualFnKeyDown;
 
-    public TermuxViewClient(TermuxActivity activity) {
+    public TermuxViewClient(ConsoleActivity activity) {
         this.mActivity = activity;
     }
 
@@ -41,51 +39,44 @@ public final class TermuxViewClient implements TerminalViewClient {
 
     @Override
     public void onSingleTapUp(MotionEvent e) {
+        Log.d(TAG, "onSingleTapUp() called with: e = [" + e + "]");
         InputMethodManager mgr = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.showSoftInput(mActivity.mTerminalView, InputMethodManager.SHOW_IMPLICIT);
+        mgr.showSoftInput(mActivity.mEmulatorView, InputMethodManager.SHOW_IMPLICIT);
     }
 
     @Override
     public boolean shouldBackButtonBeMappedToEscape() {
-        return mActivity.mSettings.mBackIsEscape;
+        return true;
     }
 
     @Override
     public void copyModeChanged(boolean copyMode) {
         // Disable drawer while copying.
-        mActivity.getDrawer().setDrawerLockMode(copyMode ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    private void log(String log) {
+        System.out.println("TermuxViewClient:" + log);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent e, TerminalSession currentSession) {
-        if (handleVirtualKeys(keyCode, e, true)) return true;
+
+        if (handleVirtualKeys(keyCode, e, true))
+            return true;
 
         if (keyCode == KeyEvent.KEYCODE_ENTER && !currentSession.isRunning()) {
-            mActivity.removeFinishedSession(currentSession);
+            //程序结束
+            mActivity.finish();
             return true;
         } else if (e.isCtrlPressed() && e.isAltPressed()) {
             // Get the unmodified code point:
             int unicodeChar = e.getUnicodeChar(0);
 
-            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || unicodeChar == 'n'/* next */) {
-                mActivity.switchToSession(true);
-            } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || unicodeChar == 'p' /* previous */) {
-                mActivity.switchToSession(false);
-            } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                mActivity.getDrawer().openDrawer(Gravity.LEFT);
-            } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                mActivity.getDrawer().closeDrawers();
-            } else if (unicodeChar == 'k'/* keyboard */) {
+            if (unicodeChar == 'k'/* keyboard */) {
                 InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             } else if (unicodeChar == 'm'/* menu */) {
-                mActivity.mTerminalView.showContextMenu();
-            } else if (unicodeChar == 'r'/* rename */) {
-                mActivity.renameSession(currentSession);
-            } else if (unicodeChar == 'c'/* create */) {
-                mActivity.addNewSession(false, null);
-            } else if (unicodeChar == 'u' /* urls */) {
-                mActivity.showUrlSelection();
+                mActivity.mEmulatorView.showContextMenu();
             } else if (unicodeChar == 'v') {
                 mActivity.doPaste();
             } else if (unicodeChar == '+' || e.getUnicodeChar(KeyEvent.META_SHIFT_ON) == '+') {
@@ -97,8 +88,6 @@ public final class TermuxViewClient implements TerminalViewClient {
             } else if (unicodeChar >= '1' && unicodeChar <= '9') {
                 int num = unicodeChar - '1';
                 TermuxService service = mActivity.mTermService;
-                if (service.getSessions().size() > num)
-                    mActivity.switchToSession(service.getSessions().get(num));
             }
             return true;
         }
@@ -114,12 +103,12 @@ public final class TermuxViewClient implements TerminalViewClient {
 
     @Override
     public boolean readControlKey() {
-        return (mActivity.mExtraKeysView != null && mActivity.mExtraKeysView.readControlButton()) || mVirtualControlKeyDown;
+        return false;
     }
 
     @Override
     public boolean readAltKey() {
-        return (mActivity.mExtraKeysView != null && mActivity.mExtraKeysView.readAltButton());
+        return false;
     }
 
     @Override
@@ -209,48 +198,17 @@ public final class TermuxViewClient implements TerminalViewClient {
                     audio.adjustSuggestedStreamVolume(AudioManager.ADJUST_SAME, AudioManager.USE_DEFAULT_STREAM_TYPE, AudioManager.FLAG_SHOW_UI);
                     break;
 
-                // Writing mode:
-                case 'q':
-                    mActivity.toggleShowExtraKeys();
-                    break;
-            }
 
+            }
             if (resultingKeyCode != -1) {
                 TerminalEmulator term = session.getEmulator();
                 session.write(KeyHandler.getCode(resultingKeyCode, 0, term.isCursorKeysApplicationMode(), term.isKeypadApplicationMode()));
             } else if (resultingCodePoint != -1) {
                 session.writeCodePoint(altDown, resultingCodePoint);
+
+                System.out.println("---------------------->input:" + resultingCodePoint);
             }
             return true;
-        } else if (ctrlDown) {
-            if (codePoint == 106 /* Ctrl+j or \n */ && !session.isRunning()) {
-                mActivity.removeFinishedSession(session);
-                return true;
-            }
-
-            List<TermuxPreferences.KeyboardShortcut> shortcuts = mActivity.mSettings.shortcuts;
-            if (!shortcuts.isEmpty()) {
-                int codePointLowerCase = Character.toLowerCase(codePoint);
-                for (int i = shortcuts.size() - 1; i >= 0; i--) {
-                    TermuxPreferences.KeyboardShortcut shortcut = shortcuts.get(i);
-                    if (codePointLowerCase == shortcut.codePoint) {
-                        switch (shortcut.shortcutAction) {
-                            case TermuxPreferences.SHORTCUT_ACTION_CREATE_SESSION:
-                                mActivity.addNewSession(false, null);
-                                return true;
-                            case TermuxPreferences.SHORTCUT_ACTION_PREVIOUS_SESSION:
-                                mActivity.switchToSession(false);
-                                return true;
-                            case TermuxPreferences.SHORTCUT_ACTION_NEXT_SESSION:
-                                mActivity.switchToSession(true);
-                                return true;
-                            case TermuxPreferences.SHORTCUT_ACTION_RENAME_SESSION:
-                                mActivity.renameSession(mActivity.getCurrentTermSession());
-                                return true;
-                        }
-                    }
-                }
-            }
         }
 
         return false;
