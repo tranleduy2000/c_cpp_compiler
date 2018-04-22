@@ -13,15 +13,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.utils.ApkUtils;
+import com.duy.ccppcompiler.utils.ExtractCallback;
 import com.duy.ccppcompiler.utils.IOUtils;
 import com.duy.common.DLog;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * Created by Duy on 22-Apr-18.
@@ -36,6 +40,7 @@ public class InstallActivity extends AppCompatActivity {
     private static final String TAG = "InstallActivity";
     private ProgressBar mProgressBar;
     private TextView mTxtMessage;
+    private ScrollView mScrollView;
     @Nullable
     private ExtractDataTask mExtractDataTask;
 
@@ -45,6 +50,7 @@ public class InstallActivity extends AppCompatActivity {
         setContentView(R.layout.activity_install);
         mProgressBar = findViewById(R.id.progress_bar);
         mTxtMessage = findViewById(R.id.txt_message);
+        mScrollView = findViewById(R.id.scroll_view);
 
         extractData();
     }
@@ -71,7 +77,8 @@ public class InstallActivity extends AppCompatActivity {
                 @Override
                 public void onNewMessage(CharSequence message) {
                     mTxtMessage.append(message);
-                    mTxtMessage.scrollTo(0, mTxtMessage.getHeight());
+                    mTxtMessage.append("\n");
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
                 }
 
                 @Override
@@ -80,7 +87,7 @@ public class InstallActivity extends AppCompatActivity {
                     editor.putBoolean(KEY_EXTRACTED, true);
                     editor.putString(KEY_APP_VERSION, appVersion);
                     editor.apply();
-                    mTxtMessage.setText("Complete");
+                    mTxtMessage.append("Complete\n");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -147,15 +154,8 @@ public class InstallActivity extends AppCompatActivity {
         }
     }
 
-    interface ExtractCallback {
-        void onNewMessage(CharSequence message);
 
-        void onComplete();
-
-        void onFailed(@Nullable Exception e);
-    }
-
-    private static class ExtractDataTask extends AsyncTask<Void, String, Boolean> {
+    private static class ExtractDataTask extends AsyncTask<Void, CharSequence, Boolean> {
         private Context mContext;
         @Nullable
         private ExtractCallback mCallback;
@@ -176,18 +176,25 @@ public class InstallActivity extends AppCompatActivity {
                     publishProgress("Delete old file");
                     IOUtils.delete(gccDir);
                 }
+
+                publishProgress("Extracting GCC library");
                 final InputStream inputStream = mContext.getAssets().open(Constants.GCC_ASSET_FILE);
-                publishProgress("Extract GCC library");
-                if (IOUtils.unzip(inputStream, internalDir)) {
+                boolean success = IOUtils.unzip(inputStream, internalDir);
+
+                if (success) {
                     final String sep = File.separator;
 
                     final File binDir1 = new File(gccDir, "bin");
                     final File binDir2 = new File(gccDir, "arm-linux-androideabi" + sep + "bin");
                     final File binDir3 = new File(gccDir, "libexec" + sep + "gcc" + sep + "arm-linux-androideabi" + sep + Constants.GCC_VERSION);
 
-                    publishProgress("Make executable");
+                    publishProgress("Make executable for " + binDir1.getName());
                     changeToExecutable(binDir1);
+
+                    publishProgress("Make executable for " + binDir2.getName());
                     changeToExecutable(binDir2);
+
+                    publishProgress("Make executable for " + binDir3.getName());
                     changeToExecutable(binDir3);
                     return true;
                 }
@@ -199,8 +206,10 @@ public class InstallActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(String... values) {
+        protected void onProgressUpdate(CharSequence... values) {
             super.onProgressUpdate(values);
+            if (DLog.DEBUG)
+                DLog.d(TAG, "onProgressUpdate() called with: values = [" + Arrays.toString(values) + "]");
             if (!isCancelled()) {
                 if (mCallback != null) {
                     mCallback.onNewMessage(values[0]);
