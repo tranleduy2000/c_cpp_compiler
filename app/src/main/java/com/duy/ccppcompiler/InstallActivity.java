@@ -98,12 +98,14 @@ public class InstallActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailed(@Nullable final Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mTxtMessage.setError(e.getMessage());
-                        }
-                    });
+                    if (e != null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTxtMessage.append("Error: " + e.getMessage());
+                            }
+                        });
+                    }
                 }
             });
             mExtractDataTask.execute();
@@ -151,6 +153,9 @@ public class InstallActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             closeAndStartMainActivity();
+        } else {
+            mTxtMessage.setText("Can not run this app without read/write storage permission. " +
+                    "Please open setting and granted permission for this app.");
         }
     }
 
