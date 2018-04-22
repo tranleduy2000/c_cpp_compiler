@@ -60,7 +60,7 @@ public class TermService extends Service implements TermSession.FinishCallback {
 
     /* This should be @Override if building with API Level >=5 */
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return COMPAT_START_STICKY;
+        return Service.START_STICKY_COMPATIBILITY;
     }
 
     @Override
@@ -98,14 +98,17 @@ public class TermService extends Service implements TermSession.FinishCallback {
     }
 
     private Notification createNotification() {
-        Notification notification = new Notification(R.drawable.ic_stat_service_notification_icon,
-                getText(R.string.service_notify_text), System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
         Intent notifyIntent = new Intent(this, Term.class);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
-        notification.setLatestEventInfo(this, getText(R.string.application_terminal), getText(R.string.service_notify_text), pendingIntent);
-        return notification;
+
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setAutoCancel(false);
+        builder.setSmallIcon(R.drawable.ic_stat_service_notification_icon);
+        builder.setTicker(getString(R.string.service_notify_text));
+        builder.setOngoing(true);
+        builder.setContentIntent(pendingIntent);
+        return builder.build();
     }
 
     @Override
