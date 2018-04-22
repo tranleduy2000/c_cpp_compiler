@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import com.duy.ccppcompiler.utils.ApkUtils;
 import com.duy.ccppcompiler.utils.IOUtils;
+import com.duy.common.DLog;
 
 import java.io.File;
 import java.io.InputStream;
@@ -30,7 +33,7 @@ public class InstallActivity extends AppCompatActivity {
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
+    private static final String TAG = "InstallActivity";
     private ProgressBar mProgressBar;
     private TextView mTxtMessage;
     @Nullable
@@ -46,19 +49,29 @@ public class InstallActivity extends AppCompatActivity {
         extractData();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mExtractDataTask != null) {
+            mExtractDataTask.cancel(true);
+        }
+    }
+
     private void extractData() {
+        if (DLog.DEBUG) DLog.d(TAG, "extractData() called");
         final SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         final String appVersion = ApkUtils.getAppVersion(this);
         boolean extracted = preferences.getBoolean(KEY_EXTRACTED, false)
                 && preferences.getString(KEY_APP_VERSION, "").equals(appVersion);
-
+        if (DLog.DEBUG) DLog.d(TAG, "extracted = " + extracted);
         //in debug mode, always extract data
-        extracted |= !BuildConfig.DEBUG;
+        extracted &= !BuildConfig.DEBUG;
         if (!extracted) {
             mExtractDataTask = new ExtractDataTask(this, new ExtractCallback() {
                 @Override
                 public void onNewMessage(CharSequence message) {
-                    mTxtMessage.setText(message);
+                    mTxtMessage.append(message);
+                    mTxtMessage.scrollTo(0, mTxtMessage.getHeight());
                 }
 
                 @Override
@@ -68,20 +81,33 @@ public class InstallActivity extends AppCompatActivity {
                     editor.putString(KEY_APP_VERSION, appVersion);
                     editor.apply();
                     mTxtMessage.setText("Complete");
-                    openEditor();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            openEditor();
+                        }
+                    });
                 }
 
                 @Override
-                public void onFailed(@Nullable Exception e) {
-                    mTxtMessage.setError(e.getMessage());
+                public void onFailed(@Nullable final Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTxtMessage.setError(e.getMessage());
+                        }
+                    });
                 }
             });
+            mExtractDataTask.execute();
         } else {
             openEditor();
         }
     }
 
+    @MainThread
     private void openEditor() {
+        if (DLog.DEBUG) DLog.d(TAG, "openEditor() called");
         if (permissionGranted()) {
             closeAndStartMainActivity();
         } else {
@@ -90,16 +116,16 @@ public class InstallActivity extends AppCompatActivity {
     }
 
     private void closeAndStartMainActivity() {
-        overridePendingTransition(0, 0);
-        finish();
+        if (DLog.DEBUG) DLog.d(TAG, "closeAndStartMainActivity() called");
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        overridePendingTransition(0, 0);
+        finish();
     }
 
     private boolean permissionGranted() {
         for (String permission : PERMISSIONS) {
-            if (!(ContextCompat.checkSelfPermission(this, permission)
-                    == PackageManager.PERMISSION_GRANTED)) {
+            if (!(ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)) {
                 return false;
             }
         }
@@ -107,7 +133,10 @@ public class InstallActivity extends AppCompatActivity {
     }
 
     private void requestPermission() {
-
+        if (DLog.DEBUG) DLog.d(TAG, "requestPermission() called");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(PERMISSIONS, 0);
+        }
     }
 
     @Override
@@ -126,7 +155,7 @@ public class InstallActivity extends AppCompatActivity {
         void onFailed(@Nullable Exception e);
     }
 
-    private static class ExtractDataTask extends AsyncTask<File, Void, Boolean> {
+    private static class ExtractDataTask extends AsyncTask<Void, String, Boolean> {
         private Context mContext;
         @Nullable
         private ExtractCallback mCallback;
@@ -138,17 +167,17 @@ public class InstallActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(File... files) {
+        protected Boolean doInBackground(Void... voids) {
+            if (DLog.DEBUG) DLog.d(TAG, "doInBackground() called with: voids = [" + voids + "]");
             try {
                 final File internalDir = mContext.getFilesDir();
                 final File gccDir = new File(internalDir, Constants.GCC_DIR_NAME);
                 if (gccDir.exists()) {
+                    publishProgress("Delete old file");
                     IOUtils.delete(gccDir);
-                    if (isCancelled()) {
-                        return false;
-                    }
                 }
                 final InputStream inputStream = mContext.getAssets().open(Constants.GCC_ASSET_FILE);
+                publishProgress("Extract GCC library");
                 if (IOUtils.unzip(inputStream, internalDir)) {
                     final String sep = File.separator;
 
@@ -156,28 +185,27 @@ public class InstallActivity extends AppCompatActivity {
                     final File binDir2 = new File(gccDir, "arm-linux-androideabi" + sep + "bin");
                     final File binDir3 = new File(gccDir, "libexec" + sep + "gcc" + sep + "arm-linux-androideabi" + sep + Constants.GCC_VERSION);
 
-                    if (isCancelled()) {
-                        return false;
-                    }
+                    publishProgress("Make executable");
                     changeToExecutable(binDir1);
-                    if (isCancelled()) {
-                        return false;
-                    }
                     changeToExecutable(binDir2);
-                    if (isCancelled()) {
-                        return false;
-                    }
                     changeToExecutable(binDir3);
-
                     return true;
-                } else {
-                    return false;
                 }
             } catch (Exception e) {
                 exception = e;
                 e.printStackTrace();
             }
             return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            if (!isCancelled()) {
+                if (mCallback != null) {
+                    mCallback.onNewMessage(values[0]);
+                }
+            }
         }
 
         @Override

@@ -42,8 +42,10 @@
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/txt_message"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?android:textColorPrimary" />
+            android:layout_height="match_parent"
+            android:scrollbars="horizontal"
+            android:textColor="?android:textColorPrimary"
+            android:typeface="monospace" />
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
