@@ -56,11 +56,13 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -117,10 +119,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews.RemoteView;
 import android.widget.Scroller;
 
+import com.duy.text.editor.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Pref;
-import com.termux.view.R;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -1324,6 +1326,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      *
      * @return the default {@link Locale} of the text in this TextView.
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Locale getTextLocale() {
         return mTextPaint.getTextLocale();
     }
@@ -1336,6 +1339,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * @param locale the {@link Locale} for drawing text, must not be null.
      * @see Paint#setTextLocale
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setTextLocale(Locale locale) {
         mTextPaint.setTextLocale(locale);
     }
@@ -6440,11 +6444,13 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         if (!TextUtils.isEmpty(mText)) {
             info.addAction(AccessibilityNodeInfo.ACTION_NEXT_AT_MOVEMENT_GRANULARITY);
             info.addAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY);
-            info.setMovementGranularities(AccessibilityNodeInfo.MOVEMENT_GRANULARITY_CHARACTER
-                    | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD
-                    | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_LINE
-                    | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_PARAGRAPH
-                    | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_PAGE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                info.setMovementGranularities(AccessibilityNodeInfo.MOVEMENT_GRANULARITY_CHARACTER
+                        | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD
+                        | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_LINE
+                        | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_PARAGRAPH
+                        | AccessibilityNodeInfo.MOVEMENT_GRANULARITY_PAGE);
+            }
         }
 
         if (isFocused()) {
@@ -7007,7 +7013,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @hide
      */
-//    @Override
     public CharSequence getIterableTextForAccessibility() {
         if (!(mText instanceof Spannable)) {
             setText(mText, BufferType.SPANNABLE);
@@ -7016,7 +7021,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     private void init() {
-        // 横屏的时候关闭完成按钮和编辑状态不使用系统的全屏编辑框
         setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
         pref = layoutContext.pref = Pref.getInstance(getContext());
@@ -7039,14 +7043,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         Paint gutterBackgroundPaint = new Paint();
         gutterBackgroundPaint.setColor(Color.LTGRAY);
         layoutContext.gutterBackgroundPaint = gutterBackgroundPaint;
-        //默认有1行
         setLineNumber(1);
-
-        //===== White Space Start =======================================
         onTextSizeChanged();
-
-        //===== White Space End =======================================
-
         initTheme();
 
         onSharedPreferenceChanged(null, Pref.KEY_FONT_SIZE);
@@ -7103,9 +7101,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     private void updateTabChar() {
-        TextPaint tp = mTextPaint;
 
-        float spaceWidth = tp.measureText(" ");
+        float spaceWidth = mTextPaint.measureText(" ");
         float tabWidth = spaceWidth * (pref == null ? 4 : pref.getTabSize());
 
         Layout.TAB_INCREMENT = (int) tabWidth;
@@ -7115,13 +7112,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         layoutContext.lineNumber = lineNumber;
 
         if (!layoutContext.pref.isShowLineNumber()) {
-            //还原填充
             setPaddingRelative(getPaddingEnd(), getPaddingTop(), getPaddingEnd(), getPaddingBottom());
             return;
         }
 
         int gutterPadding = SysUtils.dpAsPixels(getContext(), 8);
-        //预留2位空间，避免过多设置padding导致卡
         layoutContext.gutterWidth = (int) layoutContext.lineNumberPaint.measureText(Integer.toString(lineNumber * 10));
         layoutContext.gutterWidth += gutterPadding;
         layoutContext.lineNumberX = layoutContext.gutterWidth - SysUtils.dpAsPixels(getContext(), 4);
@@ -7130,6 +7125,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         }
     }
 
+    // TODO: 24-Apr-18 improve calculate padding and recalculate when layout changed
     private void drawLineNumber(Canvas canvas) {
         if (!layoutContext.pref.isShowLineNumber())
             return;
@@ -7140,12 +7136,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         List<TextLineNumber.LineInfo> lines = layoutContext.textLineNumber.getLines();
         for (TextLineNumber.LineInfo line : lines) {
-//            canvas.restore();
-//            canvas.translate(layoutContext.scrollX, 0);
             canvas.drawText(line.text, layoutContext.lineNumberX + layoutContext.scrollX, line.y, layoutContext.lineNumberPaint);
-//            canvas.translate(-layoutContext.scrollX, 0);
-//            canvas.save();
-//            canvas.translate(layoutContext.translateX, layoutContext.translateY);
         }
     }
 
@@ -7299,8 +7290,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         private static final byte MARQUEE_RUNNING = 0x2;
 
         private final WeakReference<BaseEditorView> mView;
-        private final Choreographer mChoreographer;
         private final float mPixelsPerSecond;
+        private Choreographer mChoreographer;
         private byte mStatus = MARQUEE_STOPPED;
         private float mMaxScroll;
         private float mMaxFadeScroll;
@@ -7340,8 +7331,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         Marquee(BaseEditorView v) {
             final float density = v.getContext().getResources().getDisplayMetrics().density;
             mPixelsPerSecond = MARQUEE_DP_PER_SECOND * density;
-            mView = new WeakReference<BaseEditorView>(v);
-            mChoreographer = Choreographer.getInstance();
+            mView = new WeakReference<>(v);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                mChoreographer = Choreographer.getInstance();
+            }
         }
 
         void tick() {
@@ -7349,7 +7342,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 return;
             }
 
-            mChoreographer.removeFrameCallback(mTickCallback);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                mChoreographer.removeFrameCallback(mTickCallback);
+            }
 
 //            final TextView textView = mView.get();
 //            if (textView != null && (textView.isFocused() || textView.isSelected())) {
@@ -7370,9 +7365,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         void stop() {
             mStatus = MARQUEE_STOPPED;
-            mChoreographer.removeFrameCallback(mStartCallback);
-            mChoreographer.removeFrameCallback(mRestartCallback);
-            mChoreographer.removeFrameCallback(mTickCallback);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                mChoreographer.removeFrameCallback(mStartCallback);
+                mChoreographer.removeFrameCallback(mRestartCallback);
+                mChoreographer.removeFrameCallback(mTickCallback);
+            }
             resetScroll();
         }
 
@@ -7403,7 +7400,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 mMaxFadeScroll = mGhostStart + lineWidth + lineWidth;
 
                 textView.invalidate();
-                mChoreographer.postFrameCallback(mStartCallback);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mChoreographer.postFrameCallback(mStartCallback);
+                }
             }
         }
 
