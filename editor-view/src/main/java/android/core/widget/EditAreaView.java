@@ -40,7 +40,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.jecelyin.common.utils.LimitedQueue;
 import com.jecelyin.editor.v2.Pref;
-import com.jecelyin.editor.v2.ui.widget.editor.FastScroller;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>

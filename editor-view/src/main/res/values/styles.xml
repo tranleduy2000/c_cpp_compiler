@@ -1,0 +1,36 @@
+<resources>
+
+
+    <style name="Light.Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:layout_height">?attr/actionBarSize</item>
+    </style>
+
+    <style name="Light.Popup.Toolbar" parent="@style/ThemeOverlay.AppCompat.Light" />
+
+    <style name="Light.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">?colorPrimary</item>
+        <item name="height">?attr/actionBarSize</item>
+        <item name="titleTextStyle">@style/ActionModeTitle</item>
+        <item name="subtitleTextStyle">@style/ActionModeSubtitle</item>
+    </style>
+
+    <style name="ActionModeTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="ActionModeSubtitle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+
+    <style name="MaterialEditText">
+        <item name="met_primaryColor">?attr/colorAccent</item>
+        <item name="met_textColor">?android:attr/textColorPrimary</item>
+        <item name="met_textColorHint">?android:attr/textColorSecondary</item>
+        <item name="met_underlineColor">?attr/dividerColor</item>
+        <item name="android:textColorHint">?android:attr/textColorSecondary</item>
+    </style>
+
+</resources>
