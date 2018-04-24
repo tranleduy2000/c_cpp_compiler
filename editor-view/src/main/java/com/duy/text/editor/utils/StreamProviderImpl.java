@@ -1,13 +1,11 @@
 /*
- * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
- *
- * This file is part of 920 Text Editor.
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +16,8 @@
 
 package com.duy.text.editor.utils;
 
-import com.jecelyin.editor.v2.TextEditorApplication;
+
+import android.content.Context;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,6 +30,13 @@ import java.io.OutputStream;
  */
 
 class StreamProviderImpl implements IStreamProvider {
+    private Context context;
+
+    public StreamProviderImpl(Context context) {
+
+        this.context = context;
+    }
+
     @Override
     public InputStream getFileInputStream(String name) throws IOException {
         return new FileInputStream(name);
@@ -43,6 +49,10 @@ class StreamProviderImpl implements IStreamProvider {
 
     @Override
     public InputStream getAssetInputStream(String name) throws IOException {
-        return TextEditorApplication.getContext().getAssets().open(name);
+        return getContext().getAssets().open(name);
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

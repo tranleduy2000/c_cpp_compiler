@@ -348,7 +348,7 @@ public abstract class XModeHandler extends DefaultHandler {
         }
         for (Mode mode : reloadModes) {
             mode.setTokenMarker(null);
-            mode.loadIfNecessary();
+            mode.loadIfNecessary(context);
         }
     }
 

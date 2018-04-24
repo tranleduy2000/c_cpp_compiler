@@ -236,10 +236,10 @@ public class ModeProvider {
                 if (mode == null)
                     return null;
                 else
-                    return mode.getTokenMarker(context);
+                    return mode.getTokenMarker(getContext());
             }
         };
-        loadMode(mode, xmh, StreamProviderFactory.provider());
+        loadMode(mode, xmh, StreamProviderFactory.create(context));
     }
 
     protected void error(String file, Throwable e) {

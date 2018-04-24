@@ -109,10 +109,11 @@ public class Mode {
 
     /**
      * Returns the token marker for this mode.
+     *
      * @param context
      */
     public TokenMarker getTokenMarker(Context context) {
-        loadIfNecessary();
+        loadIfNecessary(context);
         return marker;
     }
 
@@ -130,11 +131,12 @@ public class Mode {
     /**
      * Loads the mode from disk if it hasn't been loaded already.
      *
+     * @param context
      * @since jEdit 2.5pre3
      */
-    public void loadIfNecessary() {
+    public void loadIfNecessary(Context context) {
         if (marker == null) {
-            ModeProvider.instance.loadMode(this);
+            ModeProvider.instance.loadMode(this, context);
             if (marker == null)
                 DLog.e("Mode not correctly loaded, token marker is still null");
         }
