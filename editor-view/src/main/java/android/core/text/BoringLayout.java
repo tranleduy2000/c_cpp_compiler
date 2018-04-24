@@ -1,17 +1,19 @@
 /*
- * Copyright (C) 2006 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright (C) 2006 The Android Open Source Project
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 
@@ -40,96 +42,15 @@ import android.text.style.ParagraphStyle;
 public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback {
     private static final char FIRST_RIGHT_TO_LEFT = '\u0590';
 
-    //    public static BoringLayout make(CharSequence source,
-//                        TextPaint paint, int outerwidth,
-//                        Alignment align,
-//                        float spacingmult, float spacingadd,
-//                        Metrics metrics, boolean includepad/*,
-//                        android.text.TextUtils.TruncateAt ellipsize, int ellipsizedWidth*/) {
-//        return new BoringLayout(source, paint, outerwidth, align,
-//                                spacingmult, spacingadd, metrics,
-//                                includepad, ellipsize, ellipsizedWidth);
-//    }
-    private static final TextPaint sTemp =
-            new TextPaint();
     int mBottom, mDesc;   // for Direct
 
-    //    public BoringLayout(CharSequence source,
-//                        TextPaint paint, int outerwidth,
-//                        Alignment align,
-//                        float spacingmult, float spacingadd,
-//                        Metrics metrics, boolean includepad,
-//                        android.text.TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
-//        /*
-//         * It is silly to have to call super() and then replaceWith(),
-//         * but we can't use "this" for the callback until the call to
-//         * super() finishes.
-//         */
-//        super(source, paint, outerwidth, align, spacingmult, spacingadd);
-//
-//        boolean trust;
-//
-//        if (ellipsize == null || ellipsize == android.text.TextUtils.TruncateAt.MARQUEE) {
-//            mEllipsizedWidth = outerwidth;
-//            mEllipsizedStart = 0;
-//            mEllipsizedCount = 0;
-//            trust = true;
-//        } else {
-//            replaceWith(android.text.TextUtils.ellipsize(source, paint, ellipsizedWidth,
-//                            ellipsize, true, this),
-//                        paint, outerwidth, align, spacingmult,
-//                        spacingadd);
-//
-//
-//            mEllipsizedWidth = ellipsizedWidth;
-//            trust = false;
-//        }
-//
-//        init(getText(), paint, outerwidth, align, spacingmult, spacingadd,
-//             metrics, includepad, trust);
-//    }
     private String mDirect;
     private Paint mPaint;
     private int mTopPadding, mBottomPadding;
     private float mMax;
     private int mEllipsizedWidth, mEllipsizedStart, mEllipsizedCount;
 
-    /**
-     * Returns a BoringLayout for the specified text, potentially reusing
-     * this one if it is already suitable.  The caller must make sure that
-     * no one is still using this Layout.
-     */
-//    public BoringLayout replaceOrMake(CharSequence source, TextPaint paint,
-//                                      int outerwidth, Alignment align,
-//                                      float spacingmult, float spacingadd,
-//                                      Metrics metrics,
-//                                      boolean includepad,
-//                                      android.text.TextUtils.TruncateAt ellipsize,
-//                                      int ellipsizedWidth) {
-//        boolean trust;
-//
-//        if (ellipsize == null || ellipsize == android.text.TextUtils.TruncateAt.MARQUEE) {
-//            replaceWith(source, paint, outerwidth, align, spacingmult,
-//                        spacingadd);
-//
-//            mEllipsizedWidth = outerwidth;
-//            mEllipsizedStart = 0;
-//            mEllipsizedCount = 0;
-//            trust = true;
-//        } else {
-//            replaceWith(android.text.TextUtils.ellipsize(source, paint, ellipsizedWidth,
-//                            ellipsize, true, this),
-//                        paint, outerwidth, align, spacingmult,
-//                        spacingadd);
-//
-//            mEllipsizedWidth = ellipsizedWidth;
-//            trust = false;
-//        }
-//
-//        init(getText(), paint, outerwidth, align, spacingmult, spacingadd,
-//             metrics, includepad, trust);
-//        return this;
-//    }
+
     public BoringLayout(LayoutContext layoutContext, CharSequence source,
                         TextPaint paint, int outerwidth,
                         Alignment align,

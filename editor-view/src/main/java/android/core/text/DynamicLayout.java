@@ -1,17 +1,19 @@
 /*
- * Copyright (C) 2006 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright (C) 2006 The Android Open Source Project
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 package android.core.text;
@@ -52,22 +54,7 @@ public class DynamicLayout extends Layout {
     private static final Object[] sLock = new Object[0];
     private static final int START = 0;
 
-    /**
-     * Make a layout for the transformed text (password transformation
-     * being the primary example of a transformation)
-     * that will be updated as the base text is changed.
-     * If ellipsize is non-null, the Layout will ellipsize the text
-     * down to ellipsizedWidth.
-     */
-//    public DynamicLayout(CharSequence base, CharSequence display,
-//                         TextPaint paint,
-//                         int width, Alignment align,
-//                         float spacingmult, float spacingadd,
-//                         boolean includepad,
-//                         TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
-//        this(base, display, paint, width, align, TextDirectionHeuristics.FIRSTSTRONG_LTR,
-//                spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth);
-//    }
+
     private static final int DIR = START;
     private static final int TAB = START;
     private static final int TOP = 1;

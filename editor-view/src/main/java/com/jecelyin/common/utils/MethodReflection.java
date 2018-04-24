@@ -58,8 +58,8 @@ public class MethodReflection {
 
     public static Object getField(Object obj, String name) throws IllegalAccessException, NoSuchFieldException {
         Field field = obj.getClass().getField(name);
-        Object o = field.get(obj);
-        return o;
+        field.setAccessible(true);
+        return field.get(obj);
     }
 
     public static Object getStaticMethod(Class<?> clazz, String methodName, Class[] type, Object[] objects) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
