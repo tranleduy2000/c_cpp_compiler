@@ -1214,11 +1214,12 @@ public class Editor {
                         }
                         if (extractTextInternal(req, ims.mChangedStart, ims.mChangedEnd,
                                 ims.mChangedDelta, ims.mExtractedText)) {
-                            if (BaseEditorView.DEBUG_EXTRACT) android.util.Log.v(BaseEditorView.LOG_TAG,
-                                    "Reporting extracted start=" +
-                                            ims.mExtractedText.partialStartOffset +
-                                            " end=" + ims.mExtractedText.partialEndOffset +
-                                            ": " + ims.mExtractedText.text);
+                            if (BaseEditorView.DEBUG_EXTRACT)
+                                android.util.Log.v(BaseEditorView.LOG_TAG,
+                                        "Reporting extracted start=" +
+                                                ims.mExtractedText.partialStartOffset +
+                                                " end=" + ims.mExtractedText.partialEndOffset +
+                                                ": " + ims.mExtractedText.text);
 
                             imm.updateExtractedText(mTextView, req.token, ims.mExtractedText);
                             ims.mChangedStart = EXTRACT_UNKNOWN;
@@ -1974,7 +1975,8 @@ public class Editor {
 
             final UndoManager um = editor.mUndoManager;
             if (um.isInUndo()) {
-                if (DEBUG_UNDO) android.util.Log.d(TAG, "*** skipping, currently performing undo/redo");
+                if (DEBUG_UNDO)
+                    android.util.Log.d(TAG, "*** skipping, currently performing undo/redo");
                 return null;
             }
 
@@ -1982,8 +1984,9 @@ public class Editor {
             TextModifyOperation op = um.getLastOperation(
                     TextModifyOperation.class, editor.mUndoOwner, UndoManager.MERGE_MODE_UNIQUE);
             if (op != null) {
-                if (DEBUG_UNDO) android.util.Log.d(TAG, "Last op: range=(" + op.mRangeStart + "-" + op.mRangeEnd
-                        + "), oldText=" + op.mOldText);
+                if (DEBUG_UNDO)
+                    android.util.Log.d(TAG, "Last op: range=(" + op.mRangeStart + "-" + op.mRangeEnd
+                            + "), oldText=" + op.mOldText);
                 // See if we can continue modifying this operation.
                 if (op.mOldText == null) {
                     // The current operation is an add...  are we adding more?  We are adding
@@ -1993,8 +1996,9 @@ public class Editor {
                             || (dstart == op.mRangeEnd && dend == op.mRangeEnd))) {
                         op.mRangeEnd = dstart + (end - start);
                         um.endUpdate();
-                        if (DEBUG_UNDO) android.util.Log.d(TAG, "*** merging with last op, mRangeEnd="
-                                + op.mRangeEnd);
+                        if (DEBUG_UNDO)
+                            android.util.Log.d(TAG, "*** merging with last op, mRangeEnd="
+                                    + op.mRangeEnd);
                         return null;
                     }
                 } else {

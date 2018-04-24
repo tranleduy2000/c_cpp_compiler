@@ -52,8 +52,8 @@ public abstract class Layout {
     public static final int DIR_LEFT_TO_RIGHT = 1;
     public static final int DIR_RIGHT_TO_LEFT = -1;
 
-//    /* package */ static final EmojiFactory EMOJI_FACTORY = EmojiFactory.newAvailableInstance();
-//    /* package */ static final int MIN_EMOJI, MAX_EMOJI;
+//     static final EmojiFactory EMOJI_FACTORY = EmojiFactory.newAvailableInstance();
+//     static final int MIN_EMOJI, MAX_EMOJI;
 
     //    static {
 //        if (EMOJI_FACTORY != null) {
@@ -64,11 +64,11 @@ public abstract class Layout {
 //            MAX_EMOJI = -1;
 //        }
 //    }
-    /* package */ static final int DIR_REQUEST_LTR = 1;
-    /* package */ static final int DIR_REQUEST_RTL = -1;
-    /* package */ static final int DIR_REQUEST_DEFAULT_LTR = 2;
-    /* package */ static final int DIR_REQUEST_DEFAULT_RTL = -2;
-    /* package */ static final int RUN_LENGTH_MASK = 0x03ffffff;
+    static final int DIR_REQUEST_LTR = 1;
+    static final int DIR_REQUEST_RTL = -1;
+    static final int DIR_REQUEST_DEFAULT_LTR = 2;
+    static final int DIR_REQUEST_DEFAULT_RTL = -2;
+    static final int RUN_LENGTH_MASK = 0x03ffffff;
 
     /**
      * Draw this Layout on the specified Canvas.
@@ -76,15 +76,15 @@ public abstract class Layout {
 //    public void draw(Canvas c) {
 //        draw(c, null, null, 0);
 //    }
-    /* package */ static final int RUN_LEVEL_SHIFT = 26;
-    /* package */ static final int RUN_LEVEL_MASK = 0x3f;
-    /* package */ static final int RUN_RTL_FLAG = 1 << RUN_LEVEL_SHIFT;
-    /* package */ static final Directions DIRS_ALL_LEFT_TO_RIGHT =
+    static final int RUN_LEVEL_SHIFT = 26;
+    static final int RUN_LEVEL_MASK = 0x3f;
+    static final int RUN_RTL_FLAG = 1 << RUN_LEVEL_SHIFT;
+    static final Directions DIRS_ALL_LEFT_TO_RIGHT =
             new Directions(new int[]{0, RUN_LENGTH_MASK});
-    /* package */ static final Directions DIRS_ALL_RIGHT_TO_LEFT =
+    static final Directions DIRS_ALL_RIGHT_TO_LEFT =
             new Directions(new int[]{0, RUN_LENGTH_MASK | RUN_RTL_FLAG});
-    /* package */ static final char[] ELLIPSIS_NORMAL = {'\u2026'}; // this is "..."
-    /* package */ static final char[] ELLIPSIS_TWO_DOTS = {'\u2025'}; // this is ".."
+    static final char[] ELLIPSIS_NORMAL = {'\u2026'}; // this is "..."
+    static final char[] ELLIPSIS_TWO_DOTS = {'\u2025'}; // this is ".."
     private static final ParagraphStyle[] NO_PARA_SPANS =
             ArrayUtils.emptyArray(ParagraphStyle.class);
     private static final Rect sTempRect = new Rect();
@@ -94,7 +94,7 @@ public abstract class Layout {
     private static final char LINE_FEED_SIGN = '\u00b6'; // \n or \u00AC
     public static int TAB_INCREMENT = 40;
     private final LayoutContext layoutContext;
-    /* package */ TextPaint mWorkPaint;
+    TextPaint mWorkPaint;
     private CharSequence mText;
     private TextPaint mPaint;
     private int mWidth;
@@ -206,7 +206,7 @@ public abstract class Layout {
         return need;
     }
 
-    /* package */
+
     static float measurePara(LayoutContext layoutContext, TextPaint paint, CharSequence text, int start, int end) {
 
         MeasuredText mt = MeasuredText.obtain();
@@ -273,7 +273,7 @@ public abstract class Layout {
      *              will be used to compute the tab stop.
      * @return the offset of the next tab stop.
      */
-    /* package */
+
     static float nextTab(CharSequence text, int start, int end,
                          float h, Object[] tabs) {
         float nh = Float.MAX_VALUE;
@@ -328,7 +328,7 @@ public abstract class Layout {
      * styles that are already applied to the buffer will apply to text that
      * is inserted into it.
      */
-    /* package */
+
     static <T> T[] getParagraphSpans(Spanned text, int start, int end, Class<T> type) {
         if (start == end && start > 0) {
             return ArrayUtils.emptyArray(type);
@@ -340,9 +340,9 @@ public abstract class Layout {
     /**
      * Replace constructor properties of this Layout with new ones.  Be careful.
      */
-    /* package */ void replaceWith(CharSequence text, TextPaint paint,
-                                   int width, Alignment align,
-                                   float spacingmult, float spacingadd) {
+    void replaceWith(CharSequence text, TextPaint paint,
+                     int width, Alignment align,
+                     float spacingmult, float spacingadd) {
         if (width < 0) {
             throw new IllegalArgumentException("Layout: " + width + " < 0");
         }
@@ -1853,7 +1853,7 @@ public abstract class Layout {
     /**
      * @hide
      */
-    /* package */public static class TabStops {
+    public static class TabStops {
         private int[] mStops;
         private int mNumStops;
         private int mIncrement;
@@ -1927,18 +1927,18 @@ public abstract class Layout {
         // To simply test for an RTL direction, test the bit using
         // DIR_RTL_FLAG, if set then the direction is rtl.
 
-        /* package */ int[] mDirections;
+        int[] mDirections;
 
-        /* package */ Directions(int[] dirs) {
+        Directions(int[] dirs) {
             mDirections = dirs;
         }
     }
 
-    /* package */ static class Ellipsizer implements CharSequence, GetChars {
-        /* package */ CharSequence mText;
-        /* package */ Layout mLayout;
-        /* package */ int mWidth;
-        /* package */ TextUtils.TruncateAt mMethod;
+    static class Ellipsizer implements CharSequence, GetChars {
+        CharSequence mText;
+        Layout mLayout;
+        int mWidth;
+        TextUtils.TruncateAt mMethod;
 
         public Ellipsizer(CharSequence s) {
             mText = s;
@@ -1983,7 +1983,7 @@ public abstract class Layout {
 
     }
 
-    /* package */ static class SpannedEllipsizer extends Ellipsizer implements Spanned {
+    static class SpannedEllipsizer extends Ellipsizer implements Spanned {
         private Spanned mSpanned;
 
         public SpannedEllipsizer(CharSequence display) {

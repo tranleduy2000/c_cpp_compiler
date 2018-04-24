@@ -187,7 +187,7 @@ public class StaticLayout extends Layout {
         mFontMetricsInt = null;
     }
 
-    /* package */ StaticLayout(LayoutContext layoutContext, CharSequence text) {
+    StaticLayout(LayoutContext layoutContext, CharSequence text) {
         super(layoutContext, text, null, 0, null, 0, 0);
 
 //        mColumns = COLUMNS_ELLIPSIZE;
@@ -232,11 +232,11 @@ public class StaticLayout extends Layout {
         return Arrays.copyOf(array, array.length * 2);
     }
 
-    /* package */ void generate(CharSequence source, int bufStart, int bufEnd,
-                                TextPaint paint, int outerWidth,
-                                TextDirectionHeuristic textDir, float spacingmult,
-                                float spacingadd, boolean includepad,
-                                boolean trackpad/*, float ellipsizedWidth,
+    void generate(CharSequence source, int bufStart, int bufEnd,
+                  TextPaint paint, int outerWidth,
+                  TextDirectionHeuristic textDir, float spacingmult,
+                  float spacingadd, boolean includepad,
+                  boolean trackpad/*, float ellipsizedWidth,
                         TextUtils.TruncateAt ellipsize*/) {
         int[] breakOpp = null;
 //        final String localeLanguageTag = paint.getTextLocale().toLanguageTag();

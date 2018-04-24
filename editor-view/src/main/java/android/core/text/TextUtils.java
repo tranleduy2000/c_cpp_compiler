@@ -1285,7 +1285,7 @@ public class TextUtils {
         return width;
     }
 
-    /* package */
+
     static boolean doesNotNeedBidi(CharSequence s, int start, int end) {
         for (int i = start; i < end; i++) {
             if (s.charAt(i) >= FIRST_RIGHT_TO_LEFT) {
@@ -1295,7 +1295,7 @@ public class TextUtils {
         return true;
     }
 
-    /* package */
+
     static boolean doesNotNeedBidi(char[] text, int start, int len) {
         for (int i = start, e = i + len; i < e; i++) {
             if (text[i] >= FIRST_RIGHT_TO_LEFT) {
@@ -1305,7 +1305,7 @@ public class TextUtils {
         return true;
     }
 
-    /* package */
+
     static char[] obtain(int len) {
         char[] buf;
 
@@ -1320,7 +1320,7 @@ public class TextUtils {
         return buf;
     }
 
-    /* package */
+
     static void recycle(char[] temp) {
         if (temp.length > 1000)
             return;

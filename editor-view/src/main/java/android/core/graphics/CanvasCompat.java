@@ -32,41 +32,14 @@ public class CanvasCompat {
     @SuppressLint("NewApi")
     public static void drawTextRun(Canvas c, @NonNull char[] text, int index, int count, int contextIndex,
                                    int contextCount, float x, float y, boolean isRtl, @NonNull Paint paint) {
-//        try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0以上
             c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl, paint);
-//                MethodReflection.callAny(c, "drawTextRun",
-//                        new Class[]{char[].class, int.class, int.class, int.class, int.class, float.class, float.class, boolean.class, Paint.class},
-//                        new Object[]{text, index, count, contextIndex, contextCount, x, y, isRtl, paint}
-//                );
         } else {
             c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl /*? 1 : 0*/, paint);
-//                MethodReflection.callAny(c, "drawTextRun",
-//                        new Class[]{char[].class, int.class, int.class, int.class, int.class, float.class, float.class, int.class, Paint.class},
-//                        new Object[]{text, index, count, contextIndex, contextCount, x, y, isRtl ? 1 : 0, paint}
-//                );
         }
-//        } catch (Throwable e) {
-//            L.e(e);
-//        }
     }
 
-    /**
-     * 4.4
-     * public void drawTextRun(CharSequence text, int start, int end, int contextStart, int contextEnd,
-     * float x, float y, int dir, Paint paint) //@param dir the run direction, either 0 for LTR or 1 for RTL.
-     *
-     * @param c
-     * @param text
-     * @param start
-     * @param end
-     * @param contextStart
-     * @param contextEnd
-     * @param x
-     * @param y
-     * @param isRtl
-     * @param paint
-     */
+
     @SuppressLint("NewApi")
     public static void drawTextRun(Canvas c, @NonNull CharSequence text, int start, int end, int contextStart,
                                    int contextEnd, float x, float y, boolean isRtl, @NonNull Paint paint) {

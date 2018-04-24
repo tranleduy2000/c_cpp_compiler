@@ -52,7 +52,7 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
 //    }
     private static final TextPaint sTemp =
             new TextPaint();
-    /* package */ int mBottom, mDesc;   // for Direct
+    int mBottom, mDesc;   // for Direct
 
     //    public BoringLayout(CharSequence source,
 //                        TextPaint paint, int outerwidth,
@@ -272,12 +272,12 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
         return this;
     }
 
-    /* package */ void init(LayoutContext layoutContext, CharSequence source,
-                            TextPaint paint, int outerwidth,
-                            Alignment align,
-                            float spacingmult, float spacingadd,
-                            Metrics metrics, boolean includepad,
-                            boolean trustWidth) {
+    void init(LayoutContext layoutContext, CharSequence source,
+              TextPaint paint, int outerwidth,
+              Alignment align,
+              float spacingmult, float spacingadd,
+              Metrics metrics, boolean includepad,
+              boolean trustWidth) {
         int spacing;
 
         if (source instanceof String && align == Alignment.ALIGN_NORMAL) {

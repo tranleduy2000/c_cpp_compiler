@@ -188,6 +188,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private static final Spanned EMPTY_SPANNED = new SpannedString("");
     private static final int CHANGE_WATCHER_PRIORITY = 100;
     private static final BoringLayout.Metrics UNKNOWN_BORING = new BoringLayout.Metrics();
+    private static final String TAG = "BaseEditorView";
     // System wide time for last cut or copy action.
     static long LAST_CUT_OR_COPY_TIME;
 
@@ -205,7 +206,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     // display attributes
     private final TextPaint mTextPaint;
     private final Paint mHighlightPaint;
-
     /**
      * EditText specific data, created on demand when one of the Editor fields is used.
      * See {@link #createEditorIfNeeded()}.
@@ -801,10 +801,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
-    }
-
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -818,6 +814,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
+    }
+
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -1364,7 +1364,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     public float getScaledTextSize() {
         return mTextPaint.getTextSize() / mTextPaint.density;
     }
-
 
     public int getTypefaceStyle() {
         return mTextPaint.getTypeface().getStyle();
@@ -2007,19 +2006,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mMinWidthMode == EMS ? mMinWidth : -1;
     }
 
-    /**
-     * Makes the TextView at least this many ems wide
-     *
-     * @attr ref android.R.styleable#TextView_minEms
-     */
-    public void setMinEms(int minems) {
-        mMinWidth = minems;
-        mMinWidthMode = EMS;
-
-        requestLayout();
-        invalidate();
-    }
-
 //    @Override
 //    public void drawableHotspotChanged(float x, float y) {
 //        super.drawableHotspotChanged(x, y);
@@ -2046,6 +2032,19 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 //            }
 //        }
 //    }
+
+    /**
+     * Makes the TextView at least this many ems wide
+     *
+     * @attr ref android.R.styleable#TextView_minEms
+     */
+    public void setMinEms(int minems) {
+        mMinWidth = minems;
+        mMinWidthMode = EMS;
+
+        requestLayout();
+        invalidate();
+    }
 
     /**
      * @return the minimum width of the TextView, in pixels or -1 if the minimum width
@@ -2095,6 +2094,16 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         invalidate();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+
+//    /**
+//     * Sets the Factory used to create new Editables.
+//     */
+//    public final void setEditableFactory(Editable.Factory factory) {
+//        mEditableFactory = factory;
+//        setText(mText);
+//    }
+
     /**
      * @return the maximum width of the TextView, in pixels or -1 if the maximum width
      * was set in ems instead (using {@link #setMaxEms(int)} or {@link #setEms(int)}).
@@ -2105,16 +2114,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     public int getMaxWidth() {
         return mMaxWidthMode == PIXELS ? mMaxWidth : -1;
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-
-//    /**
-//     * Sets the Factory used to create new Editables.
-//     */
-//    public final void setEditableFactory(Editable.Factory factory) {
-//        mEditableFactory = factory;
-//        setText(mText);
-//    }
 
     /**
      * Makes the TextView at most this many pixels wide
@@ -2358,7 +2357,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         }
     }
 
-    private static final String TAG = "BaseEditorView";
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         if (!(state instanceof SavedState)) {

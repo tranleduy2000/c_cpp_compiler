@@ -19,47 +19,15 @@
 package android.core.text;
 
 
-import com.jecelyin.common.utils.MethodReflection;
-
 /**
  * Access the ICU bidi implementation.
  *
  * @hide
  */
-/* package */ class AndroidBidi {
-    private static MethodReflection bidi;
+class AndroidBidi {
 
     public static int bidi(int dir, char[] chs, byte[] chInfo, int n, boolean haveInfo) {
-//        if (chs == null || chInfo == null) {
-//            throw new NullPointerException();
-//        }
-//
-//        if (n < 0 || chs.length < n || chInfo.length < n) {
-//            throw new IndexOutOfBoundsException();
-//        }
-//
-//        switch(dir) {
-//            case Layout.DIR_REQUEST_LTR: dir = 0; break;
-//            case Layout.DIR_REQUEST_RTL: dir = 1; break;
-//            case Layout.DIR_REQUEST_DEFAULT_LTR: dir = -2; break;
-//            case Layout.DIR_REQUEST_DEFAULT_RTL: dir = -1; break;
-//            default: dir = 0; break;
-//        }
-//
-//        int result = runBidi(dir, chs, chInfo, n, haveInfo);
-//        result = (result & 0x1) == 0 ? Layout.DIR_LEFT_TO_RIGHT : Layout.DIR_RIGHT_TO_LEFT;
-//        return result;
-        try {
-            if (bidi == null) {
-                Class<?> cls = Class.forName("android.text.AndroidBidi");
-                Class[] argTypes = new Class[]{int.class, char[].class, byte[].class, int.class, boolean.class};
-                bidi = new MethodReflection(cls, "bidi", argTypes);
-            }
-
-            return bidi.staticGet(dir, chs, chInfo, n, haveInfo);
-        } catch (Throwable e) {
-            return Layout.DIR_LEFT_TO_RIGHT;
-        }
+        return AndroidBidi.bidi(dir, chs, chInfo, n, haveInfo);
     }
 
     /**
@@ -196,5 +164,4 @@ import com.jecelyin.common.utils.MethodReflection;
         return new Layout.Directions(ld);
     }
 
-//    private native static int runBidi(int dir, char[] chs, byte[] chInfo, int n, boolean haveInfo);
 }
