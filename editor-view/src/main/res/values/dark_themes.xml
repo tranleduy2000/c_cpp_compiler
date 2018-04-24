@@ -36,7 +36,7 @@
 
         <item name="dividerColor">@color/darkDividerColor</item>
 
-        <item name="netLoadingDrawable">@drawable/loading_icon</item>
+        <!--<item name="netLoadingDrawable">@drawable/loading_icon</item>-->
         <item name="highlightBackground">#545454</item>
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#50ffffff</item>
