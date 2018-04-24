@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CCppCompiler.iml" filepath="$PROJECT_DIR$/CCppCompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/editor-view/editor-view.iml" filepath="$PROJECT_DIR$/editor-view/editor-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/terminal-emulator/terminal-emulator.iml" filepath="$PROJECT_DIR$/terminal-emulator/terminal-emulator.iml" />
       <module fileurl="file://$PROJECT_DIR$/terminal-view/terminal-view.iml" filepath="$PROJECT_DIR$/terminal-view/terminal-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/termux/termux.iml" filepath="$PROJECT_DIR$/termux/termux.iml" />
