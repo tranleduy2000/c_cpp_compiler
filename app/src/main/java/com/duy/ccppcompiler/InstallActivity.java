@@ -127,7 +127,7 @@ public class InstallActivity extends AppCompatActivity {
 
     private void closeAndStartMainActivity() {
         if (DLog.DEBUG) DLog.d(TAG, "closeAndStartMainActivity() called");
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, com.jecelyin.editor.v2.ui.activities.MainActivity.class);
         startActivity(intent);
         overridePendingTransition(0, 0);
         finish();

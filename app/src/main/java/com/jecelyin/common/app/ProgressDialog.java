@@ -27,7 +27,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.jecelyin.common.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.common.listeners.ProgressInterface;
 
 import java.util.ArrayList;

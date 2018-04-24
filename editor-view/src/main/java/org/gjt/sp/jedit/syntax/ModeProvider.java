@@ -16,6 +16,7 @@
 package org.gjt.sp.jedit.syntax;
 
 
+import android.content.Context;
 import android.util.Log;
 
 import com.duy.text.editor.utils.IStreamProvider;
@@ -222,8 +223,8 @@ public class ModeProvider {
         }
     }
 
-    public void loadMode(Mode mode) {
-        XModeHandler xmh = new XModeHandler(mode.getName()) {
+    public void loadMode(Mode mode, Context context) {
+        XModeHandler xmh = new XModeHandler(mode.getName(), context) {
             @Override
             public void error(String what, Object subst) {
                 if (DLog.DEBUG) DLog.e(TAG, "error: ", subst);
@@ -235,7 +236,7 @@ public class ModeProvider {
                 if (mode == null)
                     return null;
                 else
-                    return mode.getTokenMarker();
+                    return mode.getTokenMarker(context);
             }
         };
         loadMode(mode, xmh, StreamProviderFactory.provider());

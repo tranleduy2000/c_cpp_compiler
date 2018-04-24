@@ -1,13 +1,11 @@
 /*
- * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
- *
- * This file is part of 920 Text Editor.
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -178,7 +176,7 @@ public class Document implements ReadFileListener, TextWatcher {
         if (mode == null)
             mode = ModeProvider.instance.getMode(Catalog.DEFAULT_MODE_NAME);
         modeName = mode.getName();
-        buffer.setMode(mode);
+        buffer.setMode(mode, context);
 
         lineNumber = fileReader.getLineNumber();
         encoding = fileReader.getEncoding();
@@ -242,7 +240,7 @@ public class Document implements ReadFileListener, TextWatcher {
             Mode mode = ModeProvider.instance.getModeForFile(file == null ? null : file.getPath(), null, s.subSequence(0, Math.min(80, s.length())).toString());
             if (mode != null)
                 modeName = mode.getName();
-            buffer.setMode(mode);
+            buffer.setMode(mode, context);
         }
 
         if (!canHighlight)
@@ -264,7 +262,7 @@ public class Document implements ReadFileListener, TextWatcher {
     public void setMode(String name) {
         modeName = name;
 
-        buffer.setMode(Catalog.getModeByName(name));
+        buffer.setMode(Catalog.getModeByName(name), context);
         editorDelegate.getEditableText().clearSpans();
 
         highlight(editorDelegate.getEditableText());
@@ -355,8 +353,6 @@ public class Document implements ReadFileListener, TextWatcher {
         if (!buffer.isCanHighlight())
             return;
         DefaultTokenHandler tokenHandler;
-//        L.d("hl startLine=" + startLine + " endLine=" + endLine);
-        DLog.startTracing(null);
         if (styles == null)
             styles = StyleLoader.loadStyles(context);
         ArrayList<HighlightInfo> mergerArray;

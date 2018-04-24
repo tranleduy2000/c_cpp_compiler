@@ -1,25 +1,32 @@
 /*
- * Copyright 2018 Mr Duy
+ * XModeHandler.java - XML handler for mode files
+ * :tabSize=4:indentSize=4:noTabs=false:
+ * :folding=explicit:collapseFolds=1:
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (C) 1999 mike dillon
+ * Portions copyright (C) 2000, 2001 Slava Pestov
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package org.gjt.sp.jedit.syntax;
 
 
+import android.content.Context;
 import android.util.Log;
 
 import com.jecelyin.common.utils.DLog;
-import com.jecelyin.editor.v2.TextEditorApplication;
 
 import org.gjt.sp.jedit.Mode;
 import org.xml.sax.Attributes;
@@ -60,24 +67,29 @@ public abstract class XModeHandler extends DefaultHandler {
 
     /**
      * A list of modes to be reloaded at the end, loaded through DELEGATEs
-     *
-     * @see http://sourceforge.net/tracker/index.php?func=detail&aid=1742250&group_id=588&atid=100588
+     * <p>
+     * {see https://sourceforge.net/tracker/index.php?func=detail&aid=1742250&group_id=588&atid=100588}
      */
     private Vector<Mode> reloadModes;
 
+    private Context context;
 
-    public XModeHandler(String modeName) {
+    public XModeHandler(String modeName, Context context) {
         this.modeName = modeName;
         marker = new TokenMarker();
         marker.addRuleSet(new ParserRuleSet(modeName, "MAIN"));
         stateStack = new Stack<TagDecl>();
+        this.context = context;
     }
 
+    public Context getContext() {
+        return context;
+    }
 
     public InputSource resolveEntity(String publicId, String systemId) {
 //        return XMLUtilities.findEntity(systemId, "xmode.dtd", XModeHandler.class);
         try {
-            return new InputSource(TextEditorApplication.getContext().getAssets().open("xmode.dtd"));
+            return new InputSource(getContext().getAssets().open("xmode.dtd"));
         } catch (IOException e) {
             e.printStackTrace();
         }

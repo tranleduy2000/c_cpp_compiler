@@ -32,6 +32,8 @@ dependencies {
     implementation "com.android.support:design:$androidSupportVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
+    implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
+
     api project(':terminal-view')
     api project(':terminal-emulator')
     api project(':editor-view')

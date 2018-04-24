@@ -17,6 +17,8 @@
 package org.gjt.sp.jedit;
 
 
+import android.content.Context;
+
 import com.jecelyin.common.utils.DLog;
 
 import org.gjt.sp.jedit.syntax.ModeProvider;
@@ -107,8 +109,9 @@ public class Mode {
 
     /**
      * Returns the token marker for this mode.
+     * @param context
      */
-    public TokenMarker getTokenMarker() {
+    public TokenMarker getTokenMarker(Context context) {
         loadIfNecessary();
         return marker;
     }
