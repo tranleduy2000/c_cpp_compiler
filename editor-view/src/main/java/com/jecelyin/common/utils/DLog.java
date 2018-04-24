@@ -1,21 +1,11 @@
 package com.jecelyin.common.utils;
 
-import android.os.Debug;
-import android.text.TextUtils;
-
 import java.util.Arrays;
 
 
 public class DLog {
-    private static final String TAG = "JecLog";
+    private static final String TAG = "DLog";
     public static boolean DEBUG = true;
-
-    public static void startTracing(String name) {
-        if (!DEBUG)
-            return;
-        if (!TextUtils.isEmpty(name))
-            Debug.startMethodTracing(name);
-    }
 
     public static int v(String tag, String msg) {
         if (!DEBUG)
@@ -29,12 +19,6 @@ public class DLog {
         return android.util.Log.v(tag, msg, tr);
     }
 
-    /**
-     * 非格式化的字符串，避免有%等字符时出错
-     *
-     * @param msg
-     * @return
-     */
     public static int d(String msg) {
         return d(TAG, msg);
     }
@@ -95,12 +79,6 @@ public class DLog {
         return logError(tag, msg, tr);
     }
 
-    /**
-     * 非格式化的字符串，避免有%等字符时出错
-     *
-     * @param msg
-     * @return
-     */
     public static int e(String msg) {
         return e(TAG, msg);
     }

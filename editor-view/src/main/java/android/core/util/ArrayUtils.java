@@ -18,12 +18,6 @@
 
 package android.core.util;
 
-//import android.util.ArraySet;
-//
-//import dalvik.system.VMRuntime;
-//
-//import libcore.util.EmptyArray;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -38,43 +32,35 @@ public class ArrayUtils {
     private ArrayUtils() { /* cannot be instantiated */ }
 
     public static byte[] newUnpaddedByteArray(int minLen) {
-//        return (byte[])VMRuntime.getRuntime().newUnpaddedArray(byte.class, minLen);
         return new byte[minLen];
     }
 
     public static char[] newUnpaddedCharArray(int minLen) {
-//        return (char[])VMRuntime.getRuntime().newUnpaddedArray(char.class, minLen);
         return new char[minLen];
     }
 
     public static int[] newUnpaddedIntArray(int minLen) {
-//        return (int[])VMRuntime.getRuntime().newUnpaddedArray(int.class, minLen);
         return new int[minLen];
     }
 
     public static boolean[] newUnpaddedBooleanArray(int minLen) {
-//        return (boolean[])VMRuntime.getRuntime().newUnpaddedArray(boolean.class, minLen);
         return new boolean[minLen];
     }
 
     public static long[] newUnpaddedLongArray(int minLen) {
-//        return (long[])VMRuntime.getRuntime().newUnpaddedArray(long.class, minLen);
         return new long[minLen];
     }
 
     public static float[] newUnpaddedFloatArray(int minLen) {
-//        return (float[])VMRuntime.getRuntime().newUnpaddedArray(float.class, minLen);
         return new float[minLen];
     }
 
     public static Object[] newUnpaddedObjectArray(int minLen) {
-//        return (Object[])VMRuntime.getRuntime().newUnpaddedArray(Object.class, minLen);
         return new Object[minLen];
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T[] newUnpaddedArray(Class<T> clazz, int minLen) {
-//        return (T[])VMRuntime.getRuntime().newUnpaddedArray(clazz, minLen);
         return (T[]) Array.newInstance(clazz, minLen);
     }
 
@@ -113,7 +99,6 @@ public class ArrayUtils {
     @SuppressWarnings("unchecked")
     public static <T> T[] emptyArray(Class<T> kind) {
         if (kind == Object.class) {
-//            return (T[]) EmptyArray.OBJECT;
             return (T[]) new Object[0];
         }
 
@@ -351,30 +336,6 @@ public class ArrayUtils {
     public static long[] cloneOrNull(long[] array) {
         return (array != null) ? array.clone() : null;
     }
-
-//    public static <T> ArraySet<T> add(ArraySet<T> cur, T val) {
-//        if (cur == null) {
-//            cur = new ArraySet<>();
-//        }
-//        cur.add(val);
-//        return cur;
-//    }
-//
-//    public static <T> ArraySet<T> remove(ArraySet<T> cur, T val) {
-//        if (cur == null) {
-//            return null;
-//        }
-//        cur.remove(val);
-//        if (cur.isEmpty()) {
-//            return null;
-//        } else {
-//            return cur;
-//        }
-//    }
-//
-//    public static <T> boolean contains(ArraySet<T> cur, T val) {
-//        return (cur != null) ? cur.contains(val) : false;
-//    }
 
     public static <T> ArrayList<T> add(ArrayList<T> cur, T val) {
         if (cur == null) {

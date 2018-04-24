@@ -301,7 +301,9 @@ public class TextUtils {
                         break;
 
                     case LOCALE_SPAN:
-                        readSpan(p, sp, new LocaleSpan(p));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                            readSpan(p, sp, new LocaleSpan(p));
+                        }
                         break;
 
 //                case TTS_SPAN:

@@ -117,10 +117,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews.RemoteView;
 import android.widget.Scroller;
 
-import com.duy.text.editor.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Pref;
+import com.termux.view.R;
 
 import org.xmlpull.v1.XmlPullParserException;
 

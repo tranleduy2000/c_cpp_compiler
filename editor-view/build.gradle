@@ -21,7 +21,10 @@ android {
 dependencies {
     testImplementation 'junit:junit:4.12'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation "com.android.support:support-annotations:$androidSupportVersion"
+    implementation "com.android.support:support-v4:$androidSupportVersion"
+    implementation "com.android.support:support-vector-drawable:$androidSupportVersion"
+    implementation "com.android.support:cardview-v7:$androidSupportVersion"
     implementation "com.android.support:support-annotations:$androidSupportVersion"
 }
 
