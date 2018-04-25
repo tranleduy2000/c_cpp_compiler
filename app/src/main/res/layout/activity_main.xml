@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,46 +23,34 @@
                 app:popupTheme="?actionBarPopupTheme" />
         </android.support.design.widget.AppBarLayout>
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
+            <android.support.v4.view.ViewPager
+                android:id="@+id/tab_pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/tab_pager"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:fillViewport="true">
-
-                    <com.jecelyin.editor.v2.ui.widget.SymbolBarLayout
-                        android:id="@+id/symbolBarLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?android:attr/windowBackground"
-                        android:visibility="gone" />
-                </HorizontalScrollView>
-            </LinearLayout>
-
-            <include
-                layout="@layout/loading_layout"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="bottom"
+                android:fillViewport="true">
 
-        </FrameLayout>
+                <com.jecelyin.editor.v2.ui.widget.SymbolBarLayout
+                    android:id="@+id/symbolBarLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/windowBackground"
+                    android:visibility="gone" />
+            </HorizontalScrollView>
+        </LinearLayout>
 
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/tabNavView"
@@ -89,6 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_marginStart="15dp"
                     android:text="@string/app_name"
                     android:textColor="#fff"
@@ -100,8 +89,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/appNameTextView"
+                    android:layout_toRightOf="@id/appNameTextView"
                     android:text="16.1.1"
                     android:textColor="#fff" />
 

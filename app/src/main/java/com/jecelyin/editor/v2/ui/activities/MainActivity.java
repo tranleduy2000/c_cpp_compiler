@@ -29,7 +29,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -42,13 +41,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
-import com.afollestad.materialdialogs.util.DialogUtils;
-import com.azeesoft.lib.colorpicker.ColorPickerDialog;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
@@ -98,7 +93,6 @@ public class MainActivity extends BaseActivity
     private static final int RC_SETTINGS = 5;
 
     public Toolbar mToolbar;
-    public LinearLayout mLoadingLayout;
     public ViewPager mTabPager;
     public RecyclerView mMenuRecyclerView;
     public DrawerLayout mDrawerLayout;
@@ -111,7 +105,7 @@ public class MainActivity extends BaseActivity
     private Pref pref;
     private ClusterCommand clusterCommand;
     //    TabDrawable tabDrawable;
-    private MenuManager menuManager;
+    private MenuManager mMenuManager;
     private FolderChooserDialog.FolderCallback findFolderCallback;
     private long mExitTime;
 
@@ -175,7 +169,6 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
 
         mToolbar = findViewById(R.id.toolbar);
-        mLoadingLayout = findViewById(R.id.loading_layout);
         mTabPager = findViewById(R.id.tab_pager);
         mMenuRecyclerView = findViewById(R.id.menuRecyclerView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -208,22 +201,7 @@ public class MainActivity extends BaseActivity
         final String version = SysUtils.getVersionName(this);
         mVersionTextView.setText(version);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-                ) {
-            requestWriteExternalStoragePermission();
-        } else {
-            start();
-
-            /*if (savedInstanceState == null && pref.isAutoCheckUpdates()) {
-                mDrawerLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        new CheckUpgradeTask(getContext()).checkVersion(version);
-                    }
-                }, 3000);
-            }*/
-        }
+        start();
     }
 
     private void bindPreferences() {
@@ -236,13 +214,6 @@ public class MainActivity extends BaseActivity
         pref.registerOnSharedPreferenceChangeListener(this);
     }
 
-    /**
-     * 注意registerOnSharedPreferenceChangeListener的listeners是使用WeakHashMap引用的
-     * 不能直接registerOnSharedPreferenceChangeListener(new ...) 否则可能监听不起作用
-     *
-     * @param sharedPreferences
-     * @param key
-     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mToolbar == null)
@@ -281,11 +252,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void start() {
-        ((ViewGroup) mLoadingLayout.getParent()).removeView(mLoadingLayout);
-
-//                inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mTabPager.setVisibility(View.VISIBLE);
-
         initUI();
     }
 
@@ -296,10 +263,10 @@ public class MainActivity extends BaseActivity
 
         initToolbar();
 
-        if (menuManager == null)
-            menuManager = new MenuManager(this);
+        if (mMenuManager == null) {
+            mMenuManager = new MenuManager(this);
+        }
 
-        //系统可能会随时杀掉后台运行的Activity，如果这一切发生，那么系统就会调用onCreate方法，而不调用onNewIntent方法
         processIntent();
     }
 
@@ -437,10 +404,6 @@ public class MainActivity extends BaseActivity
                 tabManager.newTab();
                 break;
             case R.id.m_open:
-//                if (L.debug) {
-//                    SpeedActivity.startActivity(this);
-//                    break;
-//                }
                 FileExplorerActivity.startPickFileActivity(this, null, RC_OPEN_FILE);
                 break;
             case R.id.m_goto_line:
@@ -499,7 +462,6 @@ public class MainActivity extends BaseActivity
             case R.id.m_readonly:
                 boolean readOnly = !pref.isReadOnly();
                 pref.setReadOnly(readOnly);
-//                mDrawerLayout.setHideBottomDrawer(readOnly);
                 doClusterCommand(new Command(Command.CommandEnum.READONLY_MODE));
                 break;
             case R.id.m_encoding:
@@ -507,16 +469,16 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.m_color:
                 if (ensureNotReadOnly()) {
-                    final int primaryTextColor = DialogUtils.resolveColor(this, android.R.attr.textColorPrimary);
-                    int theme = DialogUtils.isColorDark(primaryTextColor) ? ColorPickerDialog.LIGHT_THEME : ColorPickerDialog.DARK_THEME;
-                    ColorPickerDialog colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this, theme);
-                    colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
-                        @Override
-                        public void onColorPicked(int color, String hexVal) {
-                            insertText(hexVal);
-                        }
-                    });
-                    colorPickerDialog.show();
+//                    final int primaryTextColor = DialogUtils.resolveColor(this, android.R.attr.textColorPrimary);
+//                    int theme = DialogUtils.isColorDark(primaryTextColor) ? ColorPickerDialog.LIGHT_THEME : ColorPickerDialog.DARK_THEME;
+//                    ColorPickerDialog colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this, theme);
+//                    colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+//                        @Override
+//                        public void onColorPicked(int color, String hexVal) {
+//                            insertText(hexVal);
+//                        }
+//                    });
+//                    colorPickerDialog.show();
                 }
                 break;
             case R.id.m_datetime:
@@ -584,11 +546,6 @@ public class MainActivity extends BaseActivity
         doCommand(new Command(Command.CommandEnum.SHOW_SOFT_INPUT));
     }
 
-    /**
-     * 需要手动回调 {@link #doNextCommand}
-     *
-     * @param command
-     */
     public void doClusterCommand(Command command) {
         clusterCommand = tabManager.getEditorAdapter().makeClusterCommand();
         clusterCommand.setCommand(command);
