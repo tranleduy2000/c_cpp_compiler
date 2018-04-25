@@ -7018,16 +7018,17 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             return;
         }
 
-        int gutterPadding = SysUtils.dpAsPixels(getContext(), 4);
+        int numberPadding = SysUtils.dpAsPixels(getContext(), 2);
+        int gutterPaddingRight = SysUtils.dpAsPixels(getContext(), 2);
 
         float textWidth = layoutContext.lineNumberPaint.measureText(" ");
         double columnCount = Math.ceil(Math.log10(lineNumber)) + 2;
         columnCount = Math.max(1, columnCount);
 
-        layoutContext.gutterWidth = ((int) (textWidth * columnCount)) + gutterPadding * 2/*Left and right*/;
-        layoutContext.lineNumberX = gutterPadding;
+        layoutContext.gutterWidth = ((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/;
+        layoutContext.lineNumberX = numberPadding;
 
-        int newPaddingLeft = layoutContext.gutterWidth;
+        int newPaddingLeft = layoutContext.gutterWidth + gutterPaddingRight;
         if (getPaddingLeft() != newPaddingLeft) {
             setPaddingRelative(newPaddingLeft, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
         }
