@@ -20,11 +20,11 @@ package com.jecelyin.editor.v2.ui.dialog;
 
 import android.content.Context;
 import android.core.widget.EditAreaView;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.ui.editor.Document;
 
@@ -70,12 +70,14 @@ public class DocumentInfoDialog extends AbstractDialog {
         viewHolder.mEncodingTextView.setText(context.getString(R.string.encoding_x, document.getEncoding()));
         viewHolder.mLineCountTextView.setText(context.getString(R.string.line_number_x, document.getLineNumber()));
 
-        MaterialDialog dlg = getDialogBuilder().title(R.string.document_info)
-                .customView(view, false)
-                .positiveText(R.string.close)
-                .show();
-
-        handleDialog(dlg);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.document_info)
+                .setView(view)
+                .setPositiveButton(R.string.close, null);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.setCancelable(true);
+        alertDialog.show();
     }
 
     /**
