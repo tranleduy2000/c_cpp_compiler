@@ -34,7 +34,6 @@ import com.jecelyin.common.adapter.ViewPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.common.TabCloseListener;
-import com.jecelyin.editor.v2.common.TabInfo;
 import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.SaveConfirmDialog;
@@ -47,7 +46,7 @@ import java.util.ArrayList;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditorPagerAdapter extends ViewPagerAdapter {
+public class EditorPagerAdapter extends ViewPagerAdapter implements IEditorPagerAdapter {
     private static final String TAG = "EditorPagerAdapter";
     private final Context context;
     private final ArrayList<EditorDelegate> editorDelegates = new ArrayList<>();
@@ -59,10 +58,10 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public View getView(int position, ViewGroup pager) {
-        EditorDelegate delegate = getEditorDelegateAt(position);
-        if (delegate != null && delegate.getEditorView() != null) {
-            return delegate.getEditorView();
-        }
+//        EditorDelegate delegate = getEditorDelegateAt(position);
+//        if (delegate != null && delegate.getEditorView() != null && !delegate.getEditorView().isRemoved()) {
+//            return delegate.getEditorView();
+//        }
         EditorView view = (EditorView) LayoutInflater.from(context).inflate(R.layout.editor, pager, false);
         setEditorView(position, view);
         return view;
@@ -108,6 +107,7 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         notifyDataSetChanged();
     }
 
+    @Override
     public void newEditor(boolean notify, @NonNull File file, int offset, String encoding) {
         editorDelegates.add(new EditorDelegate(file, offset, encoding));
         if (notify)
@@ -123,24 +123,27 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
             delegate.setEditorView(editorView);
     }
 
+    @Override
     public EditorDelegate getCurrentEditorDelegate() {
         if (editorDelegates.isEmpty() || currentPosition >= editorDelegates.size())
             return null;
         return editorDelegates.get(currentPosition);
     }
 
-    public TabInfo[] getTabInfoList() {
+    @Override
+    public TabAdapter.TabInfo[] getTabInfoList() {
         int size = editorDelegates.size();
-        TabInfo[] arr = new TabInfo[size];
+        TabAdapter.TabInfo[] arr = new TabAdapter.TabInfo[size];
         EditorDelegate delegate;
         for (int i = 0; i < size; i++) {
             delegate = editorDelegates.get(i);
-            arr[i] = new TabInfo(delegate.getTitle(), delegate.getPath(), delegate.isChanged());
+            arr[i] = new TabAdapter.TabInfo(delegate.getTitle(), delegate.getPath(), delegate.isChanged());
         }
 
         return arr;
     }
 
+    @Override
     public boolean removeEditor(final int position, final TabCloseListener listener) {
         EditorDelegate f = editorDelegates.get(position);
 
@@ -157,14 +160,14 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
                         command.object = new SaveListener() {
                             @Override
                             public void onSaved() {
-                                remove(position);
+                                removePageAt(position);
                                 if (listener != null)
                                     listener.onClose(path, encoding, offset);
                             }
                         };
                         ((EditorActivity) context).doCommand(command);
                     } else if (which == DialogAction.NEGATIVE) {
-                        remove(position);
+                        removePageAt(position);
                         if (listener != null)
                             listener.onClose(path, encoding, offset);
                     } else {
@@ -174,14 +177,14 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
             }).show();
             return false;
         } else {
-            remove(position);
+            removePageAt(position);
             if (listener != null)
                 listener.onClose(path, encoding, offset);
             return true;
         }
     }
 
-    private void remove(int position) {
+    private void removePageAt(int position) {
         EditorDelegate delegate = editorDelegates.remove(position);
         delegate.setRemoved();
         notifyDataSetChanged();

@@ -62,7 +62,6 @@ public class EditorFragment extends Fragment {
             int offset = arguments.getInt(KEY_OFFSET);
             File file = (File) arguments.getSerializable(KEY_FILE);
             mEditorDelegate = new EditorDelegate(file, offset, encoding);
-
         }
         EditorView view = (EditorView) inflater.inflate(R.layout.editor, container, false);
         mEditorDelegate.setEditorView(view);
@@ -91,5 +90,8 @@ public class EditorFragment extends Fragment {
         }
     }
 
-
+    @Nullable
+    public EditorDelegate getEditorDelegate() {
+        return mEditorDelegate;
+    }
 }

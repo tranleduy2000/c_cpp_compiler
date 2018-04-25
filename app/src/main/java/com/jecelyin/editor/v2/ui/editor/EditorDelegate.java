@@ -65,7 +65,7 @@ public class EditorDelegate implements TextWatcher {
     public EditAreaView mEditText;
     private Context context;
     private EditorView mEditorView;
-    private Document document;
+    private Document mDocument;
     private SavedState savedState;
     private int orientation;
     private boolean loaded = true;
@@ -78,7 +78,6 @@ public class EditorDelegate implements TextWatcher {
     public EditorDelegate(@Nullable File file, int offset, String encoding) {
         savedState = new SavedState();
         savedState.file = file;
-        savedState.offset = offset;
         savedState.encoding = encoding;
         if (savedState.file != null) {
             savedState.title = savedState.file.getName();
@@ -90,7 +89,7 @@ public class EditorDelegate implements TextWatcher {
     }
 
     private void init() {
-        if (document != null)
+        if (mDocument != null)
             return;
 
         TypedArray a = context.obtainStyledAttributes(new int[]{
@@ -99,15 +98,15 @@ public class EditorDelegate implements TextWatcher {
         findResultsKeywordColor = a.getColor(0, Color.BLACK);
         a.recycle();
 
-        document = new Document(context, this);
+        mDocument = new Document(context, this);
         mEditText.setReadOnly(Preferences.getInstance(context).isReadOnly());
         mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
 
         if (savedState.editorState != null) {
-            document.onRestoreInstanceState(savedState);
+            mDocument.onRestoreInstanceState(savedState);
             mEditText.onRestoreInstanceState(savedState.editorState);
         } else if (savedState.file != null) {
-            document.loadFile(savedState.file, savedState.encoding);
+            mDocument.loadFile(savedState.file, savedState.encoding);
         } else if (!TextUtils.isEmpty(savedState.content)) {
             mEditText.setText(savedState.content);
         }
@@ -155,11 +154,11 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public String getPath() {
-        return document == null ? (savedState.file == null ? null : savedState.file.getPath()) : document.getPath();
+        return mDocument == null ? (savedState.file == null ? null : savedState.file.getPath()) : mDocument.getPath();
     }
 
     public String getEncoding() {
-        return document == null ? null : document.getEncoding();
+        return mDocument == null ? null : mDocument.getEncoding();
     }
 
     public String getText() {
@@ -187,12 +186,12 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public boolean isChanged() {
-        return document != null && document.isChanged();
+        return mDocument != null && mDocument.isChanged();
     }
 
     public CharSequence getToolbarText() {
-        String encode = document == null ? "UTF-8" : document.getEncoding();
-        String fileMode = document == null || document.getModeName() == null ? "" : document.getModeName();
+        String encode = mDocument == null ? "UTF-8" : mDocument.getEncoding();
+        String fileMode = mDocument == null || mDocument.getModeName() == null ? "" : mDocument.getModeName();
         String title = getTitle();
         String changed = isChanged() ? "*" : "";
         String cursor = "";
@@ -205,11 +204,11 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public void startSaveFileSelectorActivity() {
-        getMainActivity().startPickPathActivity(document.getPath(), document.getEncoding());
+        getMainActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
     }
 
     public void saveTo(File file, String encoding) {
-        document.saveTo(file, encoding == null ? document.getEncoding() : encoding);
+        mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding);
     }
 
     public void addHightlight(int start, int end) {
@@ -271,9 +270,9 @@ public class EditorDelegate implements TextWatcher {
                 break;
             case DOC_INFO:
                 DocumentInfoDialog documentInfoDialog = new DocumentInfoDialog(context);
-                documentInfoDialog.setDocument(document);
+                documentInfoDialog.setDocument(mDocument);
                 documentInfoDialog.setEditAreaView(mEditText);
-                documentInfoDialog.setPath(document.getPath());
+                documentInfoDialog.setPath(mDocument.getPath());
                 documentInfoDialog.show();
                 break;
             case READONLY_MODE:
@@ -284,10 +283,10 @@ public class EditorDelegate implements TextWatcher {
                 break;
             case SAVE:
                 if (!readonly)
-                    document.save(command.args.getBoolean(KEY_CLUSTER, false), (SaveListener) command.object);
+                    mDocument.save(command.args.getBoolean(KEY_CLUSTER, false), (SaveListener) command.object);
                 break;
             case SAVE_AS:
-                document.saveAs();
+                mDocument.saveAs();
                 break;
             case FIND:
                 FinderDialog.showFindDialog(this);
@@ -297,10 +296,10 @@ public class EditorDelegate implements TextWatcher {
                 if (scope == null) {
                     Mode mode;
                     String firstLine = getEditableText().subSequence(0, Math.min(80, getEditableText().length())).toString();
-                    if (TextUtils.isEmpty(document.getPath()) || TextUtils.isEmpty(firstLine)) {
+                    if (TextUtils.isEmpty(mDocument.getPath()) || TextUtils.isEmpty(firstLine)) {
                         mode = ModeProvider.instance.getMode(Catalog.DEFAULT_MODE_NAME);
                     } else {
-                        mode = ModeProvider.instance.getModeForFile(document.getPath(), null, firstLine);
+                        mode = ModeProvider.instance.getModeForFile(mDocument.getPath(), null, firstLine);
                     }
 
                     if (mode == null) {
@@ -309,7 +308,7 @@ public class EditorDelegate implements TextWatcher {
 
                     scope = mode.getName();
                 }
-                document.setMode(scope);
+                mDocument.setMode(scope);
                 ((EditorActivity) context).doNextCommand();
                 break;
             case INSERT_TEXT:
@@ -337,12 +336,12 @@ public class EditorDelegate implements TextWatcher {
     }
 
     private void reOpenWithEncoding(final String encoding) {
-        final File file = document.getFile();
+        final File file = mDocument.getFile();
         if (file == null) {
             UIUtils.toast(context, R.string.please_save_as_file_first);
             return;
         }
-        if (document.isChanged()) {
+        if (mDocument.isChanged()) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.document_changed)
                     .setMessage(R.string.give_up_document_changed_message)
@@ -356,18 +355,18 @@ public class EditorDelegate implements TextWatcher {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
-                            document.loadFile(file, encoding);
+                            mDocument.loadFile(file, encoding);
                         }
                     })
                     .create()
                     .show();
             return;
         }
-        document.loadFile(file, encoding);
+        mDocument.loadFile(file, encoding);
     }
 
     void noticeDocumentChanged() {
-        File file = document.getFile();
+        File file = mDocument.getFile();
         if (file != null) {
             savedState.title = file.getName();
         }
@@ -376,9 +375,11 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public void setRemoved() {
-        if (mEditorView == null)
+        if (mEditorView == null) {
             return;
+        }
         mEditorView.setRemoved();
+        mDocument = null;
     }
 
     private void noticeMenuChanged() {
@@ -406,9 +407,9 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public String getLang() {
-        if (document == null)
+        if (mDocument == null)
             return null;
-        return document.getModeName();
+        return mDocument.getModeName();
     }
 
     private void convertSelectedText(int id) {
@@ -433,21 +434,21 @@ public class EditorDelegate implements TextWatcher {
 
     public Parcelable onSaveInstanceState() {
         SavedState ss = savedState;
-        if (document != null) {
-            document.onSaveInstanceState(ss);
+        if (mDocument != null) {
+            mDocument.onSaveInstanceState(ss);
         }
         if (mEditText != null) {
             mEditText.setFreezesText(true);
             ss.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
         }
 
-        if (loaded && !disableAutoSave && document != null && document.getFile() != null && Preferences.getInstance(context).isAutoSave()) {
+        if (loaded && !disableAutoSave && mDocument != null && mDocument.getFile() != null && Preferences.getInstance(context).isAutoSave()) {
             int newOrientation = context.getResources().getConfiguration().orientation;
             if (orientation != newOrientation) {
                 DLog.d("current is screen orientation, discard auto save!");
                 orientation = newOrientation;
             } else {
-                document.save();
+                mDocument.save();
             }
         }
 
@@ -471,7 +472,6 @@ public class EditorDelegate implements TextWatcher {
                 return new SavedState[size];
             }
         };
-        int offset;
         int lineNumber;
         @Nullable
         File file;
@@ -488,7 +488,6 @@ public class EditorDelegate implements TextWatcher {
         }
 
         SavedState(Parcel in) {
-            this.offset = in.readInt();
             this.lineNumber = in.readInt();
             String file, rootFile;
             file = in.readString();
@@ -513,7 +512,6 @@ public class EditorDelegate implements TextWatcher {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.offset);
             dest.writeInt(this.lineNumber);
             dest.writeString(this.file == null ? null : this.file.getPath());
             dest.writeString(this.rootFile == null ? null : this.rootFile.getPath());

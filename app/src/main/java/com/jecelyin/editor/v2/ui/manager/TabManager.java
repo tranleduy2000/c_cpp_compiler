@@ -25,13 +25,12 @@ import android.view.View;
 
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.adapter.EditorPagerAdapter;
+import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.DBHelper;
-import com.jecelyin.editor.v2.view.EditorView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.io.File;
@@ -43,7 +42,7 @@ import java.util.ArrayList;
 public class TabManager implements ViewPager.OnPageChangeListener {
     private final EditorActivity mActivity;
     private final TabAdapter mTabAdapter;
-    private EditorPagerAdapter mEditorPagerAdapter;
+    private EditorFragmentPagerAdapter mEditorFragmentPagerAdapter;
     private boolean exitApp;
 
     public TabManager(EditorActivity activity) {
@@ -84,8 +83,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void initEditor() {
-        mEditorPagerAdapter = new EditorPagerAdapter(mActivity);
-        mActivity.mEditorPager.setAdapter(mEditorPagerAdapter);
+        mEditorFragmentPagerAdapter = new EditorFragmentPagerAdapter(mActivity);
+        mActivity.mEditorPager.setAdapter(mEditorFragmentPagerAdapter);
 
         if (Preferences.getInstance(mActivity).isOpenLastFiles()) {
             ArrayList<DBHelper.RecentFileItem> recentFiles = DBHelper.getInstance(mActivity).getRecentFiles(true);
@@ -96,21 +95,21 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                     DBHelper.getInstance(mActivity).updateRecentFile(item.path, false);
                     continue;
                 }
-                mEditorPagerAdapter.newEditor(false, file, item.offset, item.encoding);
-                setCurrentTab(mEditorPagerAdapter.getCount() - 1); //fixme: auto load file, otherwise click other tab will crash by search result
+                mEditorFragmentPagerAdapter.newEditor(false, file, item.offset, item.encoding);
+                setCurrentTab(mEditorFragmentPagerAdapter.getCount() - 1); //fixme: auto load file, otherwise click other tab will crash by search result
             }
-            mEditorPagerAdapter.notifyDataSetChanged();
+            mEditorFragmentPagerAdapter.notifyDataSetChanged();
             updateTabList();
 
             int lastTab = Preferences.getInstance(mActivity).getLastTab();
             setCurrentTab(lastTab);
         }
 
-        mEditorPagerAdapter.registerDataSetObserver(new DataSetObserver() {
+        mEditorFragmentPagerAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 updateTabList();
-                if (!exitApp && mEditorPagerAdapter.getCount() == 0) {
+                if (!exitApp && mEditorFragmentPagerAdapter.getCount() == 0) {
                     // TODO: 25-Apr-18 show layout create new file
                 }
             }
@@ -124,9 +123,9 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public boolean newTab(File file, int offset, String encoding) {
-        int count = mEditorPagerAdapter.getCount();
+        int count = mEditorFragmentPagerAdapter.getCount();
         for (int i = 0; i < count; i++) {
-            EditorDelegate delegate = mEditorPagerAdapter.getEditorDelegateAt(i);
+            EditorDelegate delegate = mEditorFragmentPagerAdapter.getEditorDelegateAt(i);
             if (delegate.getPath() == null)
                 continue;
             if (delegate.getPath().equals(file.getPath())) {
@@ -134,7 +133,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 return false;
             }
         }
-        mEditorPagerAdapter.newEditor(true, file, offset, encoding);
+        mEditorFragmentPagerAdapter.newEditor(true, file, offset, encoding);
         setCurrentTab(count);
         return true;
     }
@@ -159,7 +158,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public void closeTab(int position) {
-        mEditorPagerAdapter.removeEditor(position, new TabCloseListener() {
+        mEditorFragmentPagerAdapter.removeEditor(position, new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
                 DBHelper.getInstance(mActivity).updateRecentFile(path, false);
@@ -171,8 +170,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         });
     }
 
-    public EditorPagerAdapter getEditorPagerAdapter() {
-        return mEditorPagerAdapter;
+    public EditorFragmentPagerAdapter getEditorFragmentPagerAdapter() {
+        return mEditorFragmentPagerAdapter;
     }
 
     @Override
@@ -192,12 +191,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void updateTabList() {
-        mTabAdapter.setTabInfoList(mEditorPagerAdapter.getTabInfoList());
+        mTabAdapter.setTabInfoList(mEditorFragmentPagerAdapter.getTabInfoList());
         mTabAdapter.notifyDataSetChanged();
-    }
-
-    public void updateEditorView(int index, EditorView editorView) {
-        mEditorPagerAdapter.setEditorView(index, editorView);
     }
 
     public void onDocumentChanged() {
@@ -206,7 +201,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void updateToolbar() {
-        EditorDelegate delegate = mEditorPagerAdapter.getEditorDelegateAt(getCurrentTab());
+        EditorDelegate delegate = mEditorFragmentPagerAdapter.getEditorDelegateAt(getCurrentTab());
         if (delegate == null)
             return;
         mActivity.mToolbar.setTitle(delegate.getToolbarText());
@@ -218,7 +213,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
-        return mEditorPagerAdapter.removeAll(new TabCloseListener() {
+        return mEditorFragmentPagerAdapter.removeAll(new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
                 DBHelper.getInstance(mActivity).updateRecentFile(path, encoding, offset);
@@ -226,7 +221,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 if (count == 0) {
                     mActivity.finish();
                 } else {
-                    mEditorPagerAdapter.removeAll(this);
+                    mEditorFragmentPagerAdapter.removeAll(this);
                 }
             }
         });
