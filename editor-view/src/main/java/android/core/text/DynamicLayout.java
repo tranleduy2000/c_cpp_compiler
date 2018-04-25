@@ -145,15 +145,9 @@ public class DynamicLayout extends Layout {
         mBase = base;
         mDisplay = display;
 
-//        if (ellipsize != null) {
-//            mInts = new PackedIntVector(COLUMNS_ELLIPSIZE);
-//            mEllipsizedWidth = ellipsizedWidth;
-//            mEllipsizeAt = ellipsize;
-//        } else {
         mInts = new PackedIntVector(COLUMNS_NORMAL);
         mEllipsizedWidth = width;
         mEllipsizeAt = null;
-//        }
 
         mObjects = new PackedObjectVector<Directions>(1);
 
@@ -167,27 +161,10 @@ public class DynamicLayout extends Layout {
          * This will break if the superclass constructor ever actually
          * cares about the content instead of just holding the reference.
          */
-//        if (ellipsize != null) {
-//            Ellipsizer e = (Ellipsizer) getText();
-//
-//            e.mLayout = this;
-//            e.mWidth = ellipsizedWidth;
-//            e.mMethod = ellipsize;
-//            mEllipsize = true;
-//        }
-
-        // Initial state is a single line with 0 characters (0 to 0),
-        // with top at 0 and bottom at whatever is natural, and
-        // undefined ellipsis.
 
         int[] start;
 
-//        if (ellipsize != null) {
-//            start = new int[COLUMNS_ELLIPSIZE];
-//            start[ELLIPSIS_START] = ELLIPSIS_UNDEFINED;
-//        } else {
         start = new int[COLUMNS_NORMAL];
-//        }
 
         Directions[] dirs = new Directions[]{DIRS_ALL_LEFT_TO_RIGHT};
 

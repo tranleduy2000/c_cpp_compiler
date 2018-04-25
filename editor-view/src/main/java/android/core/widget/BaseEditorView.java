@@ -4684,7 +4684,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
+getLayout().getLineCount()
         int width;
         int height;
 
@@ -7046,6 +7046,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         float textWidth = layoutContext.lineNumberPaint.measureText(" ");
         double columnCount = Math.ceil(Math.log10(lineNumber));
+        columnCount = Math.max(1, columnCount);
 
         layoutContext.gutterWidth = ((int) (textWidth * columnCount)) + gutterPadding * 2/*Left and right*/;
         layoutContext.lineNumberX = gutterPadding;
@@ -7062,7 +7063,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             return;
         }
 
-        int width = layoutContext.gutterWidth + getScrollX();
+        int width = getScrollX() + layoutContext.gutterWidth;
         int height = getScrollY() + getHeight();
         canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.gutterBackgroundPaint);
         canvas.drawLine(width, getScrollY(), width, height, layoutContext.linePaint);
