@@ -138,22 +138,22 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         return true;
     }
 
-    public boolean newTab(File path, String encoding) {
-        return newTab(path, 0, encoding);
+    public boolean newTab(File file, String encoding) {
+        return newTab(file, 0, encoding);
     }
 
-    public boolean newTab(File path, int offset, String encoding) {
+    public boolean newTab(File file, int offset, String encoding) {
         int count = editorAdapter.getCount();
         for (int i = 0; i < count; i++) {
             EditorDelegate fragment = editorAdapter.getItem(i);
             if (fragment.getPath() == null)
                 continue;
-            if (fragment.getPath().equals(path.getPath())) {
+            if (fragment.getPath().equals(file.getPath())) {
                 setCurrentTab(i);
                 return false;
             }
         }
-        editorAdapter.newEditor(path, offset, encoding);
+        editorAdapter.newEditor(file, offset, encoding);
         setCurrentTab(count);
         return true;
     }

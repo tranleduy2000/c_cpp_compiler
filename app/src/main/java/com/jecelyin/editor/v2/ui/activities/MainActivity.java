@@ -621,17 +621,17 @@ public class MainActivity extends BaseActivity
         openFile(file, null, 0);
     }
 
-    public void openFile(String file, String encoding, int offset) {
-        if (TextUtils.isEmpty(file))
+    public void openFile(String filePath, String encoding, int offset) {
+        if (TextUtils.isEmpty(filePath))
             return;
-        File f = new File(file);
-        if (!f.isFile()) {
+        File file = new File(filePath);
+        if (!file.isFile()) {
             UIUtils.toast(this, R.string.file_not_exists);
             return;
         }
-        if (!tabManager.newTab(f, offset, encoding))
+        if (!tabManager.newTab(file, offset, encoding))
             return;
-        DBHelper.getInstance(this).addRecentFile(file, encoding);
+        DBHelper.getInstance(this).addRecentFile(filePath, encoding);
     }
 
     public void insertText(CharSequence text) {

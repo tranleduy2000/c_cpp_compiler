@@ -56,17 +56,17 @@ public class ProgressDialog extends Dialog implements ProgressInterface {
         setCanceledOnTouchOutside(false);
         setContentView(R.layout.progress_layout);
 //        getWindow().setBackgroundDrawable(null);
-        getWindow().getAttributes().gravity= Gravity.CENTER;
+        getWindow().getAttributes().gravity = Gravity.CENTER;
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.dimAmount=0.2f;
+        lp.dimAmount = 0.2f;
         getWindow().setAttributes(lp);
-        messageTextView = (TextView)findViewById(R.id.messageTextView);
+        messageTextView = (TextView) findViewById(R.id.messageTextView);
         setTitle(title);
     }
 
     @Override
     public void setTitle(CharSequence title) {
-        if(messageTextView != null && title != null) {
+        if (messageTextView != null && title != null) {
             messageTextView.setText(title);
             messageTextView.setVisibility(View.VISIBLE);
         }

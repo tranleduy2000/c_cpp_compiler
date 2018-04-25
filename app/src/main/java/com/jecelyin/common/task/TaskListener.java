@@ -23,6 +23,8 @@ package com.jecelyin.common.task;
  */
 public interface TaskListener<T> {
     void onCompleted();
+
     void onSuccess(T result);
+
     void onError(Exception e);
 }

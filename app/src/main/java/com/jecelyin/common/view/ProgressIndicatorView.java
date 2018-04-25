@@ -39,14 +39,11 @@ public class ProgressIndicatorView extends View {
     //Sizes (with defaults in DP)
     public static final int DEFAULT_SIZE = 45;
     public static final float SCALE = 1.0f;
-
+    Paint mPaint;
     //scale x ,y
     private float[] scaleFloats = new float[]{SCALE,
             SCALE,
             SCALE};
-
-    Paint mPaint;
-
     private boolean mHasAnimation;
     private List<Animator> mAnimators;
 
@@ -190,11 +187,6 @@ public class ProgressIndicatorView extends View {
         }
     }
 
-
-    public enum AnimStatus {
-        START, END, CANCEL
-    }
-
     public List<Animator> createAnimation() {
         List<Animator> animators = new ArrayList<>();
         int[] delays = new int[]{120, 240, 360};
@@ -219,5 +211,9 @@ public class ProgressIndicatorView extends View {
             animators.add(scaleAnim);
         }
         return animators;
+    }
+
+    public enum AnimStatus {
+        START, END, CANCEL
     }
 }

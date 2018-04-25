@@ -37,6 +37,10 @@ public abstract class JecAsyncTask<Params, Progress, Result> extends AsyncTask<P
         return this;
     }
 
+    public ProgressInterface getProgress() {
+        return progressInterface;
+    }
+
     public void setProgress(ProgressInterface progressInterface) {
         this.progressInterface = progressInterface;
         if (progressInterface != null) {
@@ -48,10 +52,6 @@ public abstract class JecAsyncTask<Params, Progress, Result> extends AsyncTask<P
                 }
             });
         }
-    }
-
-    public ProgressInterface getProgress() {
-        return progressInterface;
     }
 
     @Override

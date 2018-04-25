@@ -26,14 +26,6 @@ import android.widget.BaseAdapter;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public abstract class SimpleAdapter extends BaseAdapter {
-    public static class SimpleViewHolder {
-        public View itemView;
-
-        public SimpleViewHolder(View itemView) {
-            this.itemView = itemView;
-        }
-    }
-
     @Override
     public long getItemId(int position) {
         return 0;
@@ -42,7 +34,7 @@ public abstract class SimpleAdapter extends BaseAdapter {
     @Override
     final public View getView(int position, View convertView, ViewGroup parent) {
         SimpleViewHolder holder;
-        if(convertView == null) {
+        if (convertView == null) {
             holder = onCreateViewHolder(parent);
             convertView = holder.itemView;
             convertView.setTag(holder);
@@ -54,5 +46,14 @@ public abstract class SimpleAdapter extends BaseAdapter {
     }
 
     public abstract SimpleViewHolder onCreateViewHolder(ViewGroup parent);
+
     public abstract void onBindViewHolder(SimpleViewHolder holder, int position);
+
+    public static class SimpleViewHolder {
+        public View itemView;
+
+        public SimpleViewHolder(View itemView) {
+            this.itemView = itemView;
+        }
+    }
 }

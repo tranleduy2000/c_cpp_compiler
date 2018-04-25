@@ -139,7 +139,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
     public void setEditorView(EditorView editorView) {
         context = editorView.getContext();
         this.mEditorView = editorView;
-        this.mEditText = (EditAreaView) editorView.getEditText();
+        this.mEditText = editorView.getEditText();
 
         this.orientation = context.getResources().getConfiguration().orientation;
 
@@ -491,6 +491,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         int index;
         int offset;
         int lineNumber;
+        @Nullable
         File file;
         String title;
         String encoding;
@@ -501,10 +502,10 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         File rootFile;
         int textLength;
 
-        public SavedState() {
+        SavedState() {
         }
 
-        protected SavedState(Parcel in) {
+        SavedState(Parcel in) {
             this.index = in.readInt();
             this.offset = in.readInt();
             this.lineNumber = in.readInt();

@@ -28,7 +28,7 @@ import com.jecelyin.common.app.JecActivity;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class FullScreenActivity extends JecActivity {
+public abstract class FullScreenActivity extends JecActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

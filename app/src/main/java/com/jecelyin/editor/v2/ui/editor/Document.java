@@ -119,12 +119,10 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
     public void onRestoreInstanceState(EditorDelegate.SavedState ss) {
-        //为了避免光标不正确的现象（原因暂时不研究），先设置好高亮类型
         if (ss.modeName != null) {
             setMode(ss.modeName);
         }
 
-        //还原行数，不能放在上面，避免因还没设置文本导致高亮崩溃
         if (ss.lineNumber > 0) {
             lineNumber = ss.lineNumber;
         }
@@ -181,7 +179,6 @@ public class Document implements ReadFileListener, TextWatcher {
 
     @Override
     public void onDone(SpannableStringBuilder spannableStringBuilder, boolean ok) {
-        //给回收了。。
         if (editorDelegate == null || editorDelegate.mEditText == null)
             return;
         if (!ok) {
@@ -203,7 +200,6 @@ public class Document implements ReadFileListener, TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-//        L.d("","onTextChanged: start=" + start + " before=" + before + " count=" + count, new Exception());
 
         Editable editableText = editorDelegate.getEditableText();
         buffer.setEditable(editableText);
@@ -374,7 +370,6 @@ public class Document implements ReadFileListener, TextWatcher {
         ArrayList<ForegroundColorSpan> spans = new ArrayList<>(mergerArray.size());
         for (HighlightInfo hi : mergerArray) {
             if (hi.endOffset > length) {
-                // TODO: 15/12/27 不应该出现这种情况，要找到原因并解决
                 DLog.e("assert hi.endOffset %d > maxLength %d", hi.endOffset, length);
                 hi.endOffset = length;
             }
@@ -391,10 +386,6 @@ public class Document implements ReadFileListener, TextWatcher {
 
     private void collectToken(Buffer buffer, int lineNumber, Token token
             , ArrayList<HighlightInfo> mergerArray) {
-//        Segment segment = new Segment();
-//        buffer.getLineText(lineNumber, segment);
-//        String line = segment.toString();
-//        String match;
 
         int lineStartOffset = buffer.getLineManager().getLineStartOffset(lineNumber);
 
@@ -403,13 +394,11 @@ public class Document implements ReadFileListener, TextWatcher {
             int startIndex = lineStartOffset + token.offset;
             int endIndex = lineStartOffset + token.offset + token.length;
             SyntaxStyle style = styles[token.id];
-            //注意下面这句的使用
             token = token.next;
 
             if (style == null)
                 continue;
 
-//            int color = 0xFFFFFF & style.getForegroundColor();
             int color = style.getForegroundColor();
 
             if (mergerArray.isEmpty()) {
@@ -424,10 +413,6 @@ public class Document implements ReadFileListener, TextWatcher {
             }
         }
 
-//        for(HighlightInfo hl : mergerArray) {
-//            match = line.substring(hl.startOffset, hl.endOffset);
-//            System.err.println("<" + String.format("#%06X", hl.color) + ">" + match + "</" + String.format("#%06X", hl.color) + ">");
-//        }
 
     }
 

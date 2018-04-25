@@ -31,21 +31,11 @@ import android.widget.LinearLayout;
 
 /**
  * Created by Jaeger on 16/2/14.
- *
+ * <p>
  * Email: chjie.jaeger@gmail.com
  * GitHub: https://github.com/laobie
  */
 public class StatusBarUtil {
-
-    public static class StatusBarView extends View {
-        public StatusBarView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        public StatusBarView(Context context) {
-            super(context);
-        }
-    }
 
     public static final int DEFAULT_STATUS_BAR_ALPHA = 112;
 
@@ -121,7 +111,7 @@ public class StatusBarUtil {
 
     /**
      * 使状态栏半透明
-     *
+     * <p>
      * 适用于图片作为背景的界面,此时需要图片填充到状态栏
      *
      * @param activity 需要设置的activity
@@ -132,7 +122,7 @@ public class StatusBarUtil {
 
     /**
      * 使状态栏半透明
-     *
+     * <p>
      * 适用于图片作为背景的界面,此时需要图片填充到状态栏
      *
      * @param activity       需要设置的activity
@@ -161,7 +151,7 @@ public class StatusBarUtil {
 
     /**
      * 使状态栏透明(5.0以上半透明效果,不建议使用)
-     *
+     * <p>
      * 适用于图片作为背景的界面,此时需要图片填充到状态栏
      *
      * @param activity 需要设置的activity
@@ -375,11 +365,11 @@ public class StatusBarUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
             activity.getWindow()
-                .getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                    .getDecorView()
+                    .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         } else {
             activity.getWindow()
-                .setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    .setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         addTranslucentView(activity, statusBarAlpha);
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) needOffsetView.getLayoutParams();
@@ -412,7 +402,7 @@ public class StatusBarUtil {
         // 绘制一个和状态栏一样高的矩形
         StatusBarView statusBarView = new StatusBarView(activity);
         LinearLayout.LayoutParams params =
-            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
         statusBarView.setLayoutParams(params);
         statusBarView.setBackgroundColor(color);
         return statusBarView;
@@ -430,7 +420,7 @@ public class StatusBarUtil {
         // 绘制一个和状态栏一样高的矩形
         StatusBarView statusBarView = new StatusBarView(activity);
         LinearLayout.LayoutParams params =
-            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
         statusBarView.setLayoutParams(params);
         statusBarView.setBackgroundColor(calculateStatusColor(color, alpha));
         return statusBarView;
@@ -470,7 +460,7 @@ public class StatusBarUtil {
         // 绘制一个和状态栏一样高的矩形
         StatusBarView statusBarView = new StatusBarView(activity);
         LinearLayout.LayoutParams params =
-            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
         statusBarView.setLayoutParams(params);
         statusBarView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
         return statusBarView;
@@ -504,5 +494,15 @@ public class StatusBarUtil {
         green = (int) (green * a + 0.5);
         blue = (int) (blue * a + 0.5);
         return 0xff << 24 | red << 16 | green << 8 | blue;
+    }
+
+    public static class StatusBarView extends View {
+        public StatusBarView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public StatusBarView(Context context) {
+            super(context);
+        }
     }
 }

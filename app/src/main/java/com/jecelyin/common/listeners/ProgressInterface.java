@@ -24,8 +24,12 @@ package com.jecelyin.common.listeners;
 
 public interface ProgressInterface {
     void addOnDismissListener(OnDismissListener listener);
+
     void removeOnDismissListener(OnDismissListener listener);
+
     void setMessage(CharSequence message);
+
     void show();
+
     void dismiss();
 }
