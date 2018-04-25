@@ -469,16 +469,7 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.m_color:
                 if (ensureNotReadOnly()) {
-//                    final int primaryTextColor = DialogUtils.resolveColor(this, android.R.attr.textColorPrimary);
-//                    int theme = DialogUtils.isColorDark(primaryTextColor) ? ColorPickerDialog.LIGHT_THEME : ColorPickerDialog.DARK_THEME;
-//                    ColorPickerDialog colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this, theme);
-//                    colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
-//                        @Override
-//                        public void onColorPicked(int color, String hexVal) {
-//                            insertText(hexVal);
-//                        }
-//                    });
-//                    colorPickerDialog.show();
+                    openColorPicker();
                 }
                 break;
             case R.id.m_datetime:
@@ -501,6 +492,19 @@ public class MainActivity extends BaseActivity
                 if (commandEnum != Command.CommandEnum.NONE)
                     doCommand(new Command(commandEnum));
         }
+    }
+
+    private void openColorPicker() {
+        //                    final int primaryTextColor = DialogUtils.resolveColor(this, android.R.attr.textColorPrimary);
+//                    int theme = DialogUtils.isColorDark(primaryTextColor) ? ColorPickerDialog.LIGHT_THEME : ColorPickerDialog.DARK_THEME;
+//                    ColorPickerDialog colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this, theme);
+//                    colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+//                        @Override
+//                        public void onColorPicked(int color, String hexVal) {
+//                            insertText(hexVal);
+//                        }
+//                    });
+//                    colorPickerDialog.show();
     }
 
     private boolean ensureNotReadOnly() {

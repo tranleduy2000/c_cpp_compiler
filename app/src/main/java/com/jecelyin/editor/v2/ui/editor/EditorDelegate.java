@@ -118,7 +118,6 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         mEditText.setReadOnly(Pref.getInstance(context).isReadOnly());
         mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
 
-        //还原文本时，onTextChange事件触发高亮
         if (savedState.editorState != null) {
             document.onRestoreInstanceState(savedState);
             mEditText.onRestoreInstanceState(savedState.editorState);
@@ -130,7 +129,6 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
 
         mEditText.addTextChangedListener(this);
 
-        // 更新标题
         noticeDocumentChanged();
 
         if (savedState.object != null) {
@@ -168,12 +166,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         });
 
         noticeDocumentChanged();
-
-//        if (!"com.jecelyin.editor.v2".equals(context.getPackageName())) {
-//            mEditText.setEnabled(false);
-//        }
         loaded = true;
-
     }
 
     public Context getContext() {
@@ -209,7 +202,6 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
     }
 
     public boolean isChanged() {
-        //如果多个标签情况下，屏幕旋转后，可能某个标签没有初始化
         if (document == null)
             return false;
         return document.isChanged();
@@ -241,10 +233,6 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         return mEditText.getSelectionEnd();
     }
 
-    /**
-     * @param command
-     * @return 执行结果
-     */
     public boolean doCommand(Command command) {
         if (mEditText == null)
             return false;
@@ -390,11 +378,9 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
     void noticeDocumentChanged() {
         File file = document.getFile();
         if (file != null) {
-            // 另存为后更新一下文件名
             savedState.title = file.getName();
         }
 
-        //保存文件后判断改变
         noticeMenuChanged();
     }
 
