@@ -20,6 +20,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 
 import com.duy.ccppcompiler.console.activities.ConsoleActivity;
+import com.duy.common.DLog;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
 import com.jecelyin.common.utils.UIUtils;
@@ -32,6 +33,7 @@ import java.io.File;
  */
 
 public class CompileManager implements ICompileManager {
+    private static final String TAG = "CompileManager";
     private ProgressDialog mCompileDialog;
     private EditorActivity mActivity;
 
@@ -58,6 +60,7 @@ public class CompileManager implements ICompileManager {
             mCompileDialog.dismiss();
         }
         UIUtils.toast(mActivity, "Compile failed");
+        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
     }
 
     @Override

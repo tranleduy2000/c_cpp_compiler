@@ -23,6 +23,7 @@ public class ShellResult {
     public final int resultCode;
     @Nullable
     public String message;
+    private long time = 0;
 
     public ShellResult(int resultCode) {
         this.resultCode = resultCode;
@@ -31,6 +32,23 @@ public class ShellResult {
     public ShellResult(int resultCode, @Nullable String message) {
         this.resultCode = resultCode;
         this.message = message;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return "ShellResult{" +
+                "resultCode=" + resultCode +
+                ", message='" + message + '\'' +
+                ", time=" + time +
+                '}';
     }
 
     public int getResultCode() {
