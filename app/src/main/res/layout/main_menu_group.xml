@@ -18,5 +18,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
-        android:background="?attr/dividerColor" />
+        android:background="?android:listDivider" />
 </LinearLayout>
