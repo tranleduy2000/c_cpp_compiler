@@ -37,7 +37,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;

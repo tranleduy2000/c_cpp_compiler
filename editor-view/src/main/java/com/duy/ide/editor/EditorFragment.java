@@ -24,11 +24,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+
 /**
  * Created by Duy on 25-Apr-18.
  */
 
 public class EditorFragment extends Fragment {
+    public static EditorFragment newInstance(File file) {
+
+        Bundle args = new Bundle();
+
+        EditorFragment fragment = new EditorFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

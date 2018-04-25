@@ -189,6 +189,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     @Override
     public void onPageSelected(int position) {
         mTabAdapter.setCurrentTab(position);
+        updateToolbar();
     }
 
     @Override

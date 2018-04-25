@@ -86,14 +86,6 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
         dialog.show();
     }
 
-    public static void showFindInFilesDialog(EditorDelegate fragment) {
-        FinderDialog dialog = new FinderDialog(fragment.getContext());
-        dialog.mode = 2;
-        dialog.fragment = fragment;
-        dialog.findText = fragment.getSelectedText();
-        dialog.show();
-    }
-
     @Override
     public void show() {
         View view = LayoutInflater.from(context).inflate(R.layout.search_replace, null);
