@@ -46,7 +46,7 @@ public class MenuFactory {
         groups.put(MenuGroup.TOP, topList);
         Integer[] toolbarIcons = Preferences.getInstance(context).getToolbarIcons();
         if (toolbarIcons == null) {
-            toolbarIcons = new Integer[]{R.id.m_new, R.id.m_open, R.id.m_save, R.id.m_undo, R.id.m_redo};
+            toolbarIcons = new Integer[]{R.id.m_run, R.id.m_new, R.id.m_open, R.id.m_save, R.id.m_undo, R.id.m_redo};
         }
 
         List<MenuItemInfo> items;

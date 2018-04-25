@@ -55,6 +55,7 @@ public class ConsoleActivity extends AppCompatActivity implements ServiceConnect
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_console);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         computeFontSize();
         initView();

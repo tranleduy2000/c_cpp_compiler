@@ -60,11 +60,10 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public View getView(int position, ViewGroup pager) {
-        /*EditorDelegate delegate = getEditorDelegateAt(position);
+        EditorDelegate delegate = getEditorDelegateAt(position);
         if (delegate != null && delegate.getEditorView() != null) {
             return delegate.getEditorView();
-        }*/
-
+        }
         EditorView view = (EditorView) LayoutInflater.from(context).inflate(R.layout.editor, pager, false);
         setEditorView(position, view);
         return view;
@@ -140,7 +139,7 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
     }
 
     public EditorDelegate getCurrentEditorDelegate() {
-        if (editorDelegates == null || editorDelegates.isEmpty() || currentPosition >= editorDelegates.size())
+        if (editorDelegates.isEmpty() || currentPosition >= editorDelegates.size())
             return null;
         return editorDelegates.get(currentPosition);
     }
@@ -165,10 +164,6 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         }
 
         return arr;
-    }
-
-    public ArrayList<EditorDelegate> getEditorDelegates() {
-        return editorDelegates;
     }
 
     public boolean removeEditor(final int position, final TabCloseListener listener) {
@@ -251,7 +246,6 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         }
 
         protected SavedState(Parcel in) {
-//            states = in.readParcelableArray();
             states = in.createTypedArray(EditorDelegate.SavedState.CREATOR);
         }
 

@@ -22,7 +22,7 @@
             android:hint="@string/find_label"
             app:met_floatingLabel="highlight" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/replace_check_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,57 +37,23 @@
             android:hint="@string/replace_label"
             app:met_floatingLabel="highlight" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/case_sensitive_check_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/case_sensitive" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/whole_words_only_check_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/whole_words_only" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/regex_check_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/regex" />
 
-        <CheckBox
-            android:id="@+id/in_path_check_box"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/in_path" />
-
-        <FrameLayout
-            android:id="@+id/pathLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/path_edit_text"
-                style="@style/MaterialEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/directory"
-                android:paddingRight="42dp" />
-
-            <ImageView
-                android:id="@+id/browserBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="end|center_vertical"
-                android:scaleType="center"
-                android:src="@drawable/ic_more_horiz_grey600_24dp" />
-        </FrameLayout>
-
-        <CheckBox
-            android:id="@+id/recursively_check_box"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/recursively" />
     </LinearLayout>
 </ScrollView>

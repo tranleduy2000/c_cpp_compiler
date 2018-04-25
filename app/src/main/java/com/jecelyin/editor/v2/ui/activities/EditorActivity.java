@@ -537,10 +537,6 @@ public class EditorActivity extends FullScreenActivity
         }
     }
 
-    public void setFindFolderCallback(FolderChooserDialog.FolderCallback findFolderCallback) {
-        this.findFolderCallback = findFolderCallback;
-    }
-
     private void hideSoftInput() {
         doCommand(new Command(Command.CommandEnum.HIDE_SOFT_INPUT));
     }
