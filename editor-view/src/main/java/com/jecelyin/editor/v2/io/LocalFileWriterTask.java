@@ -30,7 +30,7 @@ import java.io.OutputStreamWriter;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class LocalFileWriter extends AsyncTask<Editable, Void, Exception> {
+public class LocalFileWriterTask extends AsyncTask<Editable, Void, Exception> {
     private final static int BUFFER_SIZE = 16 * 1024;
     private final String encoding;
     private final File file;
@@ -39,7 +39,7 @@ public class LocalFileWriter extends AsyncTask<Editable, Void, Exception> {
     private final boolean keepBackupFile;
     private FileWriteListener fileWriteListener;
 
-    public LocalFileWriter(File file, File orgiFile, String encoding, boolean keepBackupFile) {
+    public LocalFileWriterTask(File file, File orgiFile, String encoding, boolean keepBackupFile) {
         this.file = file;
         this.orgiFile = orgiFile;
         this.backupFile = makeBackupFile(file);

@@ -20,6 +20,7 @@ package com.jecelyin.editor.v2.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -52,7 +53,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
 
         MenuFactory menuFactory = MenuFactory.getInstance(context);
         MenuGroup[] groups = MenuGroup.values();
-        menuItems = new ArrayList<MenuItemInfo>();
+        menuItems = new ArrayList<>();
 
         for (MenuGroup group : groups) {
             if (group.getNameResId() == 0)
@@ -71,8 +72,9 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
         return menuItems.get(position).getItemId() == 0 ? ITEM_TYPE_GROUP : super.getItemViewType(position);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_TYPE_GROUP) {
             return new GroupViewHolder(inflater.inflate(R.layout.main_menu_group, parent, false));
         } else {
@@ -81,29 +83,29 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final MenuItemInfo item = menuItems.get(position);
         if (holder instanceof ItemViewHolder) {
-            final ItemViewHolder vh = (ItemViewHolder) holder;
-            vh.mTextView.setText(item.getTitleResId());
-            Drawable icon = MenuManager.makeMenuNormalIcon(vh.itemView.getResources(), item.getIconResId());
-            vh.mTextView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-            vh.itemView.setOnClickListener(new View.OnClickListener() {
+            final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            itemViewHolder.mTextView.setText(item.getTitleResId());
+            Drawable icon = MenuManager.makeMenuNormalIcon(itemViewHolder.itemView.getResources(), item.getIconResId());
+            itemViewHolder.mTextView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (menuItemClickListener != null) {
                         menuItemClickListener.onMenuItemClick(item);
                         if (MenuFactory.isCheckboxMenu(item.getItemId())) {
-                            vh.mCheckBox.setChecked(!vh.mCheckBox.isChecked());
+                            itemViewHolder.mCheckBox.setChecked(!itemViewHolder.mCheckBox.isChecked());
                         }
                     }
                 }
             });
             if (MenuFactory.isCheckboxMenu(item.getItemId())) {
-                vh.mCheckBox.setVisibility(View.VISIBLE);
-                vh.mCheckBox.setChecked(MenuFactory.isChecked(vh.itemView.getContext(), item.getItemId()));
+                itemViewHolder.mCheckBox.setVisibility(View.VISIBLE);
+                itemViewHolder.mCheckBox.setChecked(MenuFactory.isChecked(itemViewHolder.itemView.getContext(), item.getItemId()));
             } else {
-                vh.mCheckBox.setVisibility(View.GONE);
+                itemViewHolder.mCheckBox.setVisibility(View.GONE);
             }
         } else {
             GroupViewHolder vh = (GroupViewHolder) holder;

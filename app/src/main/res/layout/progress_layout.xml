@@ -36,7 +36,8 @@
         android:textSize="12sp"
         android:visibility="gone" />
 
-    <com.jecelyin.common.view.ProgressIndicatorView
+    <android.support.v4.widget.ContentLoadingProgressBar
+        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_gravity="center" />

@@ -19,6 +19,7 @@
 package com.jecelyin.editor.v2.common;
 
 import android.core.text.SpannableStringBuilder;
+
 import com.jecelyin.editor.v2.io.FileReader;
 
 /**

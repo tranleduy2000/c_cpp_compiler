@@ -79,7 +79,7 @@ public class RunDialog extends AbstractDialog {
     private void onItemClick(int i) {
         String path = null;
         try {
-            path = getMainActivity().getTabManager().getEditorAdapter().getCurrentEditorDelegate().getPath();
+            path = getMainActivity().getTabManager().getEditorPagerAdapter().getCurrentEditorDelegate().getPath();
         } catch (Exception e) {
             DLog.e(e);
             UIUtils.toast(context, R.string.editor_initialing);

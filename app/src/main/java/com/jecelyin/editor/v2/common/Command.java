@@ -24,8 +24,8 @@ import android.os.Bundle;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class Command {
-    public CommandEnum what;
-    public Bundle args = new Bundle();
+    public final Bundle args = new Bundle();
+    public final CommandEnum what;
     public Object object;
 
     public Command(CommandEnum what) {

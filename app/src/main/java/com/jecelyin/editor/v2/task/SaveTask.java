@@ -23,7 +23,7 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.common.SaveListener;
-import com.jecelyin.editor.v2.io.LocalFileWriter;
+import com.jecelyin.editor.v2.io.LocalFileWriterTask;
 import com.jecelyin.editor.v2.ui.editor.Document;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 
@@ -89,8 +89,8 @@ public class SaveTask {
         if (editorDelegateWR.get() == null || contextWR.get() == null)
             return;
         writing = true;
-        LocalFileWriter fileWriter = new LocalFileWriter(rootFile, orgiFile, encoding, Pref.getInstance(contextWR.get()).isKeepBackupFile());
-        fileWriter.setFileWriteListener(new LocalFileWriter.FileWriteListener() {
+        LocalFileWriterTask fileWriter = new LocalFileWriterTask(rootFile, orgiFile, encoding, Pref.getInstance(contextWR.get()).isKeepBackupFile());
+        fileWriter.setFileWriteListener(new LocalFileWriterTask.FileWriteListener() {
             @Override
             public void onSuccess() {
                 writing = false;

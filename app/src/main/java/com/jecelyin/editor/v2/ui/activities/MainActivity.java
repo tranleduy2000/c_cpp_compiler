@@ -551,7 +551,7 @@ public class MainActivity extends BaseActivity
     }
 
     public void doClusterCommand(Command command) {
-        clusterCommand = tabManager.getEditorAdapter().makeClusterCommand();
+        clusterCommand = tabManager.getEditorPagerAdapter().makeClusterCommand();
         clusterCommand.setCommand(command);
         clusterCommand.doNextCommand();
     }
@@ -576,9 +576,9 @@ public class MainActivity extends BaseActivity
     }
 
     private EditorDelegate getCurrentEditorDelegate() {
-        if (tabManager == null || tabManager.getEditorAdapter() == null)
+        if (tabManager == null || tabManager.getEditorPagerAdapter() == null)
             return null;
-        return tabManager.getEditorAdapter().getCurrentEditorDelegate();
+        return tabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
     }
 
     public void startOpenFileSelectorActivity(Intent it) {
@@ -604,7 +604,7 @@ public class MainActivity extends BaseActivity
             case RC_SAVE:
                 String file = FileExplorerActivity.getFile(data);
                 String encoding = FileExplorerActivity.getFileEncoding(data);
-                tabManager.getEditorAdapter().getCurrentEditorDelegate().saveTo(new File(file), encoding);
+                tabManager.getEditorPagerAdapter().getCurrentEditorDelegate().saveTo(new File(file), encoding);
                 break;
             case RC_SETTINGS:
                 break;

@@ -22,9 +22,9 @@ package com.jecelyin.editor.v2.highlight;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class HighlightInfo {
-    public int startOffset;
-    public int endOffset;
-    public int color;
+    public final int startOffset;
+    public final int endOffset;
+    public final int color;
 
     public HighlightInfo(int startOffset, int endOffset, int color) {
         this.startOffset = startOffset;

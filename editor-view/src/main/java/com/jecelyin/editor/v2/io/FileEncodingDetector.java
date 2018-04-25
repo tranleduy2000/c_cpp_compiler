@@ -35,16 +35,6 @@ public class FileEncodingDetector {
     public final static String DEFAULT_ENCODING = "UTF-8";
 
     public static String detectEncoding(File file) {
-//        CharsetDetector detector = new CharsetDetector();
-//        try {
-//            detector.setText(new BufferedInputStream(new FileInputStream(file)));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        CharsetMatch detect = detector.detect();
-//        if(detect == null)
-//            return DEFAULT_ENCODING;
-//        String encoding = detect.getName();
         String encoding = null;
         try {
             BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));

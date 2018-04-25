@@ -47,12 +47,12 @@ import java.util.ArrayList;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditorAdapter extends ViewPagerAdapter {
+public class EditorPagerAdapter extends ViewPagerAdapter {
     private final Context context;
     private ArrayList<EditorDelegate> list = new ArrayList<>();
     private int currentPosition;
 
-    public EditorAdapter(Context context) {
+    public EditorPagerAdapter(Context context) {
         this.context = context;
     }
 
@@ -132,10 +132,10 @@ public class EditorAdapter extends ViewPagerAdapter {
     public TabInfo[] getTabInfoList() {
         int size = list.size();
         TabInfo[] arr = new TabInfo[size];
-        EditorDelegate f;
+        EditorDelegate delegate;
         for (int i = 0; i < size; i++) {
-            f = list.get(i);
-            arr[i] = new TabInfo(f.getTitle(), f.getPath(), f.isChanged());
+            delegate = list.get(i);
+            arr[i] = new TabInfo(delegate.getTitle(), delegate.getPath(), delegate.isChanged());
         }
 
         return arr;

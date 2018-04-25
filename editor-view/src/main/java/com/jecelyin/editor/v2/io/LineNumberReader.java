@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
  *
@@ -42,8 +41,7 @@ public class LineNumberReader extends BufferedReader {
      * Constructs a new LineNumberReader on the Reader {@code in}. The internal
      * buffer gets the default size (8 KB).
      *
-     * @param in
-     *            the Reader that is buffered.
+     * @param in the Reader that is buffered.
      */
     public LineNumberReader(Reader in) {
         super(in);
@@ -53,12 +51,9 @@ public class LineNumberReader extends BufferedReader {
      * Constructs a new LineNumberReader on the Reader {@code in}. The size of
      * the internal buffer is specified by the parameter {@code size}.
      *
-     * @param in
-     *            the Reader that is buffered.
-     * @param size
-     *            the size of the buffer to allocate.
-     * @throws IllegalArgumentException
-     *             if {@code size <= 0}.
+     * @param in   the Reader that is buffered.
+     * @param size the size of the buffer to allocate.
+     * @throws IllegalArgumentException if {@code size <= 0}.
      */
     public LineNumberReader(Reader in, int size) {
         super(in, size);
@@ -76,6 +71,21 @@ public class LineNumberReader extends BufferedReader {
     }
 
     /**
+     * Sets the line number of this reader to the specified {@code lineNumber}.
+     * Note that this may have side effects on the line number associated with
+     * the last marked position.
+     *
+     * @param lineNumber the new line number value.
+     * @see #mark(int)
+     * @see #reset()
+     */
+    public void setLineNumber(int lineNumber) {
+        synchronized (lock) {
+            this.lineNumber = lineNumber;
+        }
+    }
+
+    /**
      * Sets a mark position in this reader. The parameter {@code readlimit}
      * indicates how many characters can be read before the mark is invalidated.
      * Sending {@code reset()} will reposition this reader back to the marked
@@ -83,11 +93,9 @@ public class LineNumberReader extends BufferedReader {
      * line number associated with this marked position is also stored so that
      * it can be restored when {@code reset()} is called.
      *
-     * @param readlimit
-     *            the number of characters that can be read from this stream
-     *            before the mark is invalidated.
-     * @throws IOException
-     *             if an error occurs while setting the mark in this reader.
+     * @param readlimit the number of characters that can be read from this stream
+     *                  before the mark is invalidated.
+     * @throws IOException if an error occurs while setting the mark in this reader.
      * @see #markSupported()
      * @see #reset()
      */
@@ -111,9 +119,8 @@ public class LineNumberReader extends BufferedReader {
      * {@code '\n'}.
      *
      * @return the character read or -1 if the end of the source reader has been
-     *         reached.
-     * @throws IOException
-     *             if the reader is closed or another IOException occurs.
+     * reached.
+     * @throws IOException if the reader is closed or another IOException occurs.
      */
     @SuppressWarnings("fallthrough")
     @Override
@@ -141,13 +148,12 @@ public class LineNumberReader extends BufferedReader {
      * them in the character array {@code buffer} starting at {@code offset}.
      * Returns the number of characters actually read or -1 if no characters
      * have been read and the end of this reader has been reached.
-     *
+     * <p>
      * <p>The line number count is incremented if a line terminator is encountered.
      * Recognized line terminator sequences are {@code '\r'}, {@code '\n'} and
      * {@code "\r\n"}.
      *
-     * @throws IOException
-     *             if this reader is closed or another IOException occurs.
+     * @throws IOException if this reader is closed or another IOException occurs.
      */
     @Override
     public int read(char[] buffer, int offset, int count) throws IOException {
@@ -181,9 +187,8 @@ public class LineNumberReader extends BufferedReader {
      * string does not include the newline sequence.
      *
      * @return the contents of the line or {@code null} if no characters have
-     *         been read before the end of the stream has been reached.
-     * @throws IOException
-     *             if this reader is closed or another IOException occurs.
+     * been read before the end of the stream has been reached.
+     * @throws IOException if this reader is closed or another IOException occurs.
      */
     @Override
     public String readLine() throws IOException {
@@ -205,10 +210,9 @@ public class LineNumberReader extends BufferedReader {
      * count to what is was when this reader was marked. This implementation
      * resets the source reader.
      *
-     * @throws IOException
-     *             if this reader is already closed, no mark has been set or the
-     *             mark is no longer valid because more than {@code readlimit}
-     *             bytes have been read since setting the mark.
+     * @throws IOException if this reader is already closed, no mark has been set or the
+     *                     mark is no longer valid because more than {@code readlimit}
+     *                     bytes have been read since setting the mark.
      * @see #mark(int)
      * @see #markSupported()
      */
@@ -222,22 +226,6 @@ public class LineNumberReader extends BufferedReader {
     }
 
     /**
-     * Sets the line number of this reader to the specified {@code lineNumber}.
-     * Note that this may have side effects on the line number associated with
-     * the last marked position.
-     *
-     * @param lineNumber
-     *            the new line number value.
-     * @see #mark(int)
-     * @see #reset()
-     */
-    public void setLineNumber(int lineNumber) {
-        synchronized (lock) {
-            this.lineNumber = lineNumber;
-        }
-    }
-
-    /**
      * Skips {@code charCount} characters in this reader. Subsequent calls to
      * {@code read} will not return these characters unless {@code reset}
      * is used. This implementation skips {@code charCount} number of characters in
@@ -245,10 +233,8 @@ public class LineNumberReader extends BufferedReader {
      * terminator sequences are skipped.
      *
      * @return the number of characters actually skipped.
-     * @throws IllegalArgumentException
-     *             if {@code charCount < 0}.
-     * @throws IOException
-     *             if this reader is closed or another IOException occurs.
+     * @throws IllegalArgumentException if {@code charCount < 0}.
+     * @throws IOException              if this reader is closed or another IOException occurs.
      * @see #mark(int)
      * @see #read()
      * @see #reset()

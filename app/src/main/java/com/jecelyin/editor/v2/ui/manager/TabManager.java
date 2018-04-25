@@ -25,7 +25,7 @@ import android.view.View;
 
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.Pref;
-import com.jecelyin.editor.v2.adapter.EditorAdapter;
+import com.jecelyin.editor.v2.adapter.EditorPagerAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.ui.activities.MainActivity;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 public class TabManager implements ViewPager.OnPageChangeListener {
     private final MainActivity mainActivity;
     private final TabAdapter tabAdapter;
-    private EditorAdapter editorAdapter;
+    private EditorPagerAdapter editorPagerAdapter;
     private boolean exitApp;
 
     public TabManager(MainActivity activity) {
@@ -85,8 +85,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void initEditor() {
-        editorAdapter = new EditorAdapter(mainActivity);
-        mainActivity.mTabPager.setAdapter(editorAdapter); //优先，避免TabAdapter获取不到正确的CurrentItem
+        editorPagerAdapter = new EditorPagerAdapter(mainActivity);
+        mainActivity.mTabPager.setAdapter(editorPagerAdapter); //优先，避免TabAdapter获取不到正确的CurrentItem
 
         if (Pref.getInstance(mainActivity).isOpenLastFiles()) {
             ArrayList<DBHelper.RecentFileItem> recentFiles = DBHelper.getInstance(mainActivity).getRecentFiles(true);
@@ -96,45 +96,45 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 f = new File(item.path);
                 if (!f.isFile())
                     continue;
-                editorAdapter.newEditor(false, f, item.offset, item.encoding);
-                setCurrentTab(editorAdapter.getCount() - 1); //fixme: auto load file, otherwise click other tab will crash by search result
+                editorPagerAdapter.newEditor(false, f, item.offset, item.encoding);
+                setCurrentTab(editorPagerAdapter.getCount() - 1); //fixme: auto load file, otherwise click other tab will crash by search result
             }
-            editorAdapter.notifyDataSetChanged();
+            editorPagerAdapter.notifyDataSetChanged();
             updateTabList();
 
             int lastTab = Pref.getInstance(mainActivity).getLastTab();
             setCurrentTab(lastTab);
         }
 
-        editorAdapter.registerDataSetObserver(new DataSetObserver() {
+        editorPagerAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 updateTabList();
 
-                if (!exitApp && editorAdapter.getCount() == 0) {
+                if (!exitApp && editorPagerAdapter.getCount() == 0) {
                     newTab();
                 }
             }
         });
 
-        if (editorAdapter.getCount() == 0)
-            editorAdapter.newEditor(mainActivity.getString(R.string.new_filename, editorAdapter.countNoFileEditor() + 1), null);
+        if (editorPagerAdapter.getCount() == 0)
+            editorPagerAdapter.newEditor(mainActivity.getString(R.string.new_filename, editorPagerAdapter.countNoFileEditor() + 1), null);
     }
 
     public void newTab() {
-        editorAdapter.newEditor(mainActivity.getString(R.string.new_filename, editorAdapter.getCount() + 1), null);
-        setCurrentTab(editorAdapter.getCount() - 1);
+        editorPagerAdapter.newEditor(mainActivity.getString(R.string.new_filename, editorPagerAdapter.getCount() + 1), null);
+        setCurrentTab(editorPagerAdapter.getCount() - 1);
     }
 
     public boolean newTab(CharSequence content) {
-        editorAdapter.newEditor(mainActivity.getString(R.string.new_filename, editorAdapter.getCount() + 1), content);
-        setCurrentTab(editorAdapter.getCount() - 1);
+        editorPagerAdapter.newEditor(mainActivity.getString(R.string.new_filename, editorPagerAdapter.getCount() + 1), content);
+        setCurrentTab(editorPagerAdapter.getCount() - 1);
         return true;
     }
 
     public boolean newTab(ExtGrep grep) {
-        editorAdapter.newEditor(grep);
-        setCurrentTab(editorAdapter.getCount() - 1);
+        editorPagerAdapter.newEditor(grep);
+        setCurrentTab(editorPagerAdapter.getCount() - 1);
         return true;
     }
 
@@ -143,9 +143,9 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public boolean newTab(File file, int offset, String encoding) {
-        int count = editorAdapter.getCount();
+        int count = editorPagerAdapter.getCount();
         for (int i = 0; i < count; i++) {
-            EditorDelegate fragment = editorAdapter.getItem(i);
+            EditorDelegate fragment = editorPagerAdapter.getItem(i);
             if (fragment.getPath() == null)
                 continue;
             if (fragment.getPath().equals(file.getPath())) {
@@ -153,7 +153,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 return false;
             }
         }
-        editorAdapter.newEditor(file, offset, encoding);
+        editorPagerAdapter.newEditor(file, offset, encoding);
         setCurrentTab(count);
         return true;
     }
@@ -175,7 +175,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public void closeTab(int position) {
-        editorAdapter.removeEditor(position, new TabCloseListener() {
+        editorPagerAdapter.removeEditor(position, new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
                 DBHelper.getInstance(mainActivity).updateRecentFile(path, false);
@@ -188,8 +188,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         });
     }
 
-    public EditorAdapter getEditorAdapter() {
-        return editorAdapter;
+    public EditorPagerAdapter getEditorPagerAdapter() {
+        return editorPagerAdapter;
     }
 
     @Override
@@ -208,12 +208,12 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void updateTabList() {
-        tabAdapter.setTabInfoList(editorAdapter.getTabInfoList());
+        tabAdapter.setTabInfoList(editorPagerAdapter.getTabInfoList());
         tabAdapter.notifyDataSetChanged();
     }
 
     public void updateEditorView(int index, EditorView editorView) {
-        editorAdapter.setEditorView(index, editorView);
+        editorPagerAdapter.setEditorView(index, editorView);
     }
 
     public void onDocumentChanged(int index) {
@@ -222,7 +222,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void updateToolbar() {
-        EditorDelegate delegate = editorAdapter.getItem(getCurrentTab());
+        EditorDelegate delegate = editorPagerAdapter.getItem(getCurrentTab());
         if (delegate == null)
             return;
         mainActivity.mToolbar.setTitle(delegate.getToolbarText());
@@ -234,7 +234,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         if (mainActivity.mTabPager != null) {
             Pref.getInstance(mainActivity).setLastTab(getCurrentTab());
         }
-        return editorAdapter.removeAll(new TabCloseListener() {
+        return editorPagerAdapter.removeAll(new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
                 DBHelper.getInstance(mainActivity).updateRecentFile(path, encoding, offset);
@@ -242,7 +242,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 if (count == 0) {
                     mainActivity.finish();
                 } else {
-                    editorAdapter.removeAll(this);
+                    editorPagerAdapter.removeAll(this);
                 }
             }
         });

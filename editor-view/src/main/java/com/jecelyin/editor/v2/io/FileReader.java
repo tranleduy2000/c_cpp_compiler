@@ -32,12 +32,11 @@ import java.io.InputStreamReader;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class FileReader {
-    private SpannableStringBuilder ssb = null;
+    private final static int BUFFER_SIZE = 16384;
+    private SpannableStringBuilder stringBuilder = null;
     private File file;
     private String encoding;
     private int lineNumber;
-//    private int BUFFER_SIZE = 8192;
-    private final static int BUFFER_SIZE = 16*1024;
 
     public FileReader(File file, String encodingName) {
         this.file = file;
@@ -46,33 +45,22 @@ public class FileReader {
 
     public boolean read() {
         try {
-            if(TextUtils.isEmpty(encoding))
+            if (TextUtils.isEmpty(encoding)) {
                 encoding = FileEncodingDetector.detectEncoding(file);
+            }
 
-            DLog.d(file.getPath()+" encoding is "+encoding);
+            DLog.d(file.getPath() + " encoding is " + encoding);
             LineNumberReader reader = new LineNumberReader(new InputStreamReader(new FileInputStream(file), encoding));
-//            String line, firstLine = null;
-//            while ((line = reader.readLine()) != null) {
-//                if (firstLine == null && !line.trim().isEmpty())
-//                    firstLine = line;
-//
-//                int offset = buffer.getOffset();
-//                if(offset < 0)
-//                    throw new ArrayIndexOutOfBoundsException(offset);
-//                //仅支持\r\n , \n两种结束符
-//                buffer.append(offset, line + (reader.isLastWasCR() ? "\r\n" : "\n"));
-//            }
             char[] buf = new char[BUFFER_SIZE];
             int len;
-            CharArrayBuffer arrayBuffer = new CharArrayBuffer(GrowingArrayUtils.growSize((int)file.length()));
+            CharArrayBuffer arrayBuffer = new CharArrayBuffer(GrowingArrayUtils.growSize((int) file.length()));
             while ((len = reader.read(buf, 0, BUFFER_SIZE)) != -1) {
                 arrayBuffer.append(buf, 0, len);
             }
 
             lineNumber = reader.getLineNumber() + 1;
             reader.close();
-
-            ssb = new SpannableStringBuilder(arrayBuffer.buffer(), 0, arrayBuffer.length());
+            stringBuilder = new SpannableStringBuilder(arrayBuffer.buffer(), 0, arrayBuffer.length());
 
             return true;
         } catch (Exception e) {
@@ -90,7 +78,7 @@ public class FileReader {
     }
 
     public SpannableStringBuilder getBuffer() {
-        return ssb;
+        return stringBuilder;
     }
 
 }

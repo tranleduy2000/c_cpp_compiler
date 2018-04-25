@@ -51,8 +51,6 @@ public class Buffer {
         editable = new SpannableStringBuilder();
         lineMgr = new LineManager();
         integerArray = new IntegerArray();
-
-//        ModeProvider.instance.setAssets(context.getAssets());
     }
 
     /**
@@ -153,11 +151,9 @@ public class Buffer {
                 || start + length > editable.length())
             throw new ArrayIndexOutOfBoundsException(start + "+" + length + " > " + editable.length());
 
-//        editable.getText(start, length, seg);
         getTextByContentManager(start, length, seg);
     }
 
-    //{{{ markTokens() method
 
     /**
      * Returns the specified text range in a <code>Segment</code>.<p>
@@ -178,7 +174,6 @@ public class Buffer {
         seg.count = len;
     }
 
-    //{{{ getRuleSetAtOffset() method
 
     protected TokenMarker.LineContext markTokens(Segment seg, TokenMarker.LineContext prevContext,
                                                  TokenHandler _tokenHandler) {
@@ -259,7 +254,6 @@ public class Buffer {
         return token.rules;
     }
 
-    //{{{ contentInserted() method
     private void contentInserted(int offset, int length,
                                  IntegerArray endOffsets) {
         int startLine = lineMgr.getLineOfOffset(offset);

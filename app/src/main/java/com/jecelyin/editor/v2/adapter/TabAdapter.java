@@ -18,6 +18,7 @@
 
 package com.jecelyin.editor.v2.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,24 +37,21 @@ public class TabAdapter extends RecyclerView.Adapter {
     private View.OnClickListener onClickListener;
     private int currentTab = 0;
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.tab_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         TabInfo tabInfo = getItem(position);
 
-//        if (position == currentTab) {
-//            viewHolder.itemView.setBackgroundResource(R.drawable.drawer_tab_item_background);
-//        } else {
-//            viewHolder.itemView.setBackgroundResource(R.drawable.white_selectable_item_background);
-//        }
         viewHolder.itemView.setSelected(position == currentTab);
 
-        viewHolder.mTitleTextView.setText((tabInfo.hasChanged() ? "* " : "") + tabInfo.getTitle());
+        String title = (tabInfo.hasChanged() ? "* " : "") + tabInfo.getTitle();
+        viewHolder.mTitleTextView.setText(title);
         viewHolder.mFileTextView.setText(tabInfo.getPath());
 
         if (onClickListener != null) {
@@ -97,9 +95,9 @@ public class TabAdapter extends RecyclerView.Adapter {
 
         ViewHolder(View itemView) {
             super(itemView);
-            mTitleTextView = (TextView) itemView.findViewById(R.id.title_text_view);
-            mFileTextView = (TextView) itemView.findViewById(R.id.file_text_view);
-            mCloseImageView = (ImageView) itemView.findViewById(R.id.close_image_view);
+            mTitleTextView = itemView.findViewById(R.id.title_text_view);
+            mFileTextView = itemView.findViewById(R.id.file_text_view);
+            mCloseImageView = itemView.findViewById(R.id.close_image_view);
         }
     }
 
