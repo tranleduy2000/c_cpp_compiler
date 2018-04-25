@@ -22,6 +22,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.text.TextPaint;
 
+import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.MethodReflection;
 
 /**
@@ -58,7 +59,7 @@ public class TextPaintCompat {
      * @hide
      */
     public static final int CURSOR_BEFORE = 2;
-
+    private static final String TAG = "TextPaintCompat";
 
     public static void setUnderlineText(TextPaint tp, int color, float thickness) {
         try {
@@ -66,7 +67,6 @@ public class TextPaintCompat {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-//        tp.setUnderlineText(color, thickness);
     }
 
     public static int getUnderlineColor(TextPaint tp) {
@@ -76,19 +76,21 @@ public class TextPaintCompat {
             e.printStackTrace();
             return 0;
         }
-//        return tp.underlineColor;
     }
 
     public static float getUnderlineThickness(TextPaint tp) {
         try {
             return (int) MethodReflection.getField(tp, "underlineThickness");
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "getUnderlineThickness: " + e.getMessage());
             return 0;
         }
-//        return tp.underlineThickness;
     }
 
+    /**
+     * Convenience overload that takes a char array instead of a
+     * String.
+     */
     public static float getTextRunAdvances(Paint tp, char[] chars, int index, int count,
                                            int contextIndex, int contextCount, boolean isRtl, float[] advances,
                                            int advancesIndex) {
@@ -99,13 +101,11 @@ public class TextPaintCompat {
                         , new Class[]{char[].class, int.class, int.class, int.class, int.class, boolean.class, float[].class, int.class}
                         , new Object[]{chars, index, count, contextIndex, contextCount, isRtl, advances, advancesIndex}
                 );
-//                return tp.getTextRunAdvances(chars, index, count, contextIndex, contextCount, isRtl, advances, advancesIndex);
             } else {
                 return (float) MethodReflection.callAny(tp, "getTextRunAdvances"
                         , new Class[]{char[].class, int.class, int.class, int.class, int.class, int.class, float[].class, int.class}
                         , new Object[]{chars, index, count, contextIndex, contextCount, isRtl ? 1 : 0, advances, advancesIndex}
                 );
-//                return tp.getTextRunAdvances(chars, index, count, contextIndex, contextCount, isRtl ? 1 : 0, advances, advancesIndex);
             }
         } catch (Throwable e) {
             e.printStackTrace();

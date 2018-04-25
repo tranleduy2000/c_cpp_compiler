@@ -751,9 +751,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * and turns on the fake bold and italic bits in the Paint if the
      * Typeface that you provided does not have all the bits in the
      * style that you specified.
-     *
-     * @attr ref android.R.styleable#TextView_typeface
-     * @attr ref android.R.styleable#TextView_textStyle
+     * <p>
+     * attr ref android.R.styleable#TextView_typeface
+     * attr ref android.R.styleable#TextView_textStyle
      */
     public void setTypeface(Typeface tf, int style) {
         if (style > 0) {
@@ -798,8 +798,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * <p>
      * Note: The content of the return value should not be modified. If you want
      * a modifiable one, you should make your own copy first.
-     *
-     * @attr ref android.R.styleable#TextView_text
+     * <p>
+     * attr ref android.R.styleable#TextView_text
      */
     public CharSequence getText() {
         return mText;
@@ -817,8 +817,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * <a href="{@docRoot}guide/topics/resources/available-resources.html#stringresources">
      * Available Resource Types</a> documentation for an example of setting
      * formatted text in the XML resource file.
-     *
-     * @attr ref android.R.styleable#TextView_text
+     * <p>
+     * attr ref android.R.styleable#TextView_text
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
@@ -914,12 +914,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the current key listener for this TextView.
      * This will frequently be null for non-EditText TextViews.
-     * @attr ref android.R.styleable#TextView_numeric
-     * @attr ref android.R.styleable#TextView_digits
-     * @attr ref android.R.styleable#TextView_phoneNumber
-     * @attr ref android.R.styleable#TextView_inputMethod
-     * @attr ref android.R.styleable#TextView_capitalize
-     * @attr ref android.R.styleable#TextView_autoText
+     * attr ref android.R.styleable#TextView_numeric
+     * attr ref android.R.styleable#TextView_digits
+     * attr ref android.R.styleable#TextView_phoneNumber
+     * attr ref android.R.styleable#TextView_inputMethod
+     * attr ref android.R.styleable#TextView_capitalize
+     * attr ref android.R.styleable#TextView_autoText
      */
     public final KeyListener getKeyListener() {
         return mEditor == null ? null : mEditor.mKeyListener;
@@ -939,13 +939,13 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * key listener or movement method to be focusable, you must call
      * {@link #setFocusable} again after calling this to get the focusability
      * back the way you want it.
-     *
-     * @attr ref android.R.styleable#TextView_numeric
-     * @attr ref android.R.styleable#TextView_digits
-     * @attr ref android.R.styleable#TextView_phoneNumber
-     * @attr ref android.R.styleable#TextView_inputMethod
-     * @attr ref android.R.styleable#TextView_capitalize
-     * @attr ref android.R.styleable#TextView_autoText
+     * <p>
+     * attr ref android.R.styleable#TextView_numeric
+     * attr ref android.R.styleable#TextView_digits
+     * attr ref android.R.styleable#TextView_phoneNumber
+     * attr ref android.R.styleable#TextView_inputMethod
+     * attr ref android.R.styleable#TextView_capitalize
+     * attr ref android.R.styleable#TextView_autoText
      */
     public void setKeyListener(KeyListener input) {
         setKeyListenerOnly(input);
@@ -1034,8 +1034,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * @return the current transformation method for this TextView.
      * This will frequently be null except for single-line and password
      * fields.
-     * @attr ref android.R.styleable#TextView_password
-     * @attr ref android.R.styleable#TextView_singleLine
+     * attr ref android.R.styleable#TextView_password
+     * attr ref android.R.styleable#TextView_singleLine
      */
     public final TransformationMethod getTransformationMethod() {
         return mTransformation;
@@ -1044,9 +1044,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets the transformation that is applied to the text that this
      * TextView is displaying.
-     *
-     * @attr ref android.R.styleable#TextView_password
-     * @attr ref android.R.styleable#TextView_singleLine
+     * <p>
+     * attr ref android.R.styleable#TextView_password
+     * attr ref android.R.styleable#TextView_singleLine
      */
     public final void setTransformationMethod(TransformationMethod method) {
         if (method == mTransformation) {
@@ -1296,8 +1296,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Gets the autolink mask of the text.  See {@link
      * Linkify#ALL Linkify.ALL} and peers for
      * possible values.
-     *
-     * @attr ref android.R.styleable#TextView_autoLink
+     * <p>
+     * attr ref android.R.styleable#TextView_autoLink
      */
     public final int getAutoLinkMask() {
         return mAutoLinkMask;
@@ -1307,8 +1307,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Sets the autolink mask of the text.  See {@link
      * Linkify#ALL Linkify.ALL} and peers for
      * possible values.
-     *
-     * @attr ref android.R.styleable#TextView_autoLink
+     * <p>
+     * attr ref android.R.styleable#TextView_autoLink
      */
     public final void setAutoLinkMask(int mask) {
         mAutoLinkMask = mask;
@@ -1357,7 +1357,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * user font size preference.
      *
      * @param size The scaled pixel size.
-     * @attr ref android.R.styleable#TextView_textSize
+     *             attr ref android.R.styleable#TextView_textSize
      */
     public void setTextSize(float size) {
         setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
@@ -1381,7 +1381,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      *
      * @param unit The desired dimension unit.
      * @param size The desired size in the given units.
-     * @attr ref android.R.styleable#TextView_textSize
+     *             attr ref android.R.styleable#TextView_textSize
      */
     public void setTextSize(int unit, float size) {
         Context c = getContext();
@@ -1418,8 +1418,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Sets the extent by which text should be stretched horizontally.
-     *
-     * @attr ref android.R.styleable#TextView_textScaleX
+     * <p>
+     * attr ref android.R.styleable#TextView_textScaleX
      */
     public void setTextScaleX(float size) {
         if (size != mTextPaint.getTextScaleX()) {
@@ -1437,9 +1437,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the current typeface and style in which the text is being
      * displayed.
-     * @attr ref android.R.styleable#TextView_fontFamily
-     * @attr ref android.R.styleable#TextView_typeface
-     * @attr ref android.R.styleable#TextView_textStyle
+     * attr ref android.R.styleable#TextView_fontFamily
+     * attr ref android.R.styleable#TextView_typeface
+     * attr ref android.R.styleable#TextView_textStyle
      * @see #setTypeface(Typeface)
      */
     public Typeface getTypeface() {
@@ -1452,10 +1452,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * variants, so you may need to use
      * {@link #setTypeface(Typeface, int)} to get the appearance
      * that you actually want.
+     * <p>
+     * attr ref android.R.styleable#TextView_fontFamily
+     * attr ref android.R.styleable#TextView_typeface
+     * attr ref android.R.styleable#TextView_textStyle
      *
-     * @attr ref android.R.styleable#TextView_fontFamily
-     * @attr ref android.R.styleable#TextView_typeface
-     * @attr ref android.R.styleable#TextView_textStyle
      * @see #getTypeface()
      */
     public void setTypeface(Typeface tf) {
@@ -1473,8 +1474,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets the text color for all the states (normal, selected,
      * focused) to be this color.
+     * <p>
+     * attr ref android.R.styleable#TextView_textColor
      *
-     * @attr ref android.R.styleable#TextView_textColor
      * @see #setTextColor(ColorStateList)
      * @see #getTextColors()
      */
@@ -1485,8 +1487,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Sets the text color.
+     * <p>
+     * attr ref android.R.styleable#TextView_textColor
      *
-     * @attr ref android.R.styleable#TextView_textColor
      * @see #setTextColor(int)
      * @see #getTextColors()
      * @see #setHintTextColor(ColorStateList)
@@ -1503,8 +1506,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Gets the text colors for the different states (normal, selected, focused) of the TextView.
+     * <p>
+     * attr ref android.R.styleable#TextView_textColor
      *
-     * @attr ref android.R.styleable#TextView_textColor
      * @see #setTextColor(ColorStateList)
      * @see #setTextColor(int)
      */
@@ -1523,7 +1527,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * @return the color used to display the selection highlight
-     * @attr ref android.R.styleable#TextView_textColorHighlight
+     * attr ref android.R.styleable#TextView_textColorHighlight
      * @see #setHighlightColor(int)
      */
     public int getHighlightColor() {
@@ -1532,8 +1536,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Sets the color used to display the selection highlight.
-     *
-     * @attr ref android.R.styleable#TextView_textColorHighlight
+     * <p>
+     * attr ref android.R.styleable#TextView_textColorHighlight
      */
     public void setHighlightColor(int color) {
         if (mHighlightColor != color) {
@@ -1568,11 +1572,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * that are responsible for real time shadows,
      * {@link View#getElevation() elevation} and
      * {@link View#getTranslationZ() translationZ}.
+     * <p>
+     * attr ref android.R.styleable#TextView_shadowColor
+     * attr ref android.R.styleable#TextView_shadowDx
+     * attr ref android.R.styleable#TextView_shadowDy
+     * attr ref android.R.styleable#TextView_shadowRadius
      *
-     * @attr ref android.R.styleable#TextView_shadowColor
-     * @attr ref android.R.styleable#TextView_shadowDx
-     * @attr ref android.R.styleable#TextView_shadowDy
-     * @attr ref android.R.styleable#TextView_shadowRadius
      * @see Paint#setShadowLayer(float, float, float, int)
      */
     public void setShadowLayer(float radius, float dx, float dy, int color) {
@@ -1592,7 +1597,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Gets the radius of the shadow layer.
      *
      * @return the radius of the shadow layer. If 0, the shadow layer is not visible
-     * @attr ref android.R.styleable#TextView_shadowRadius
+     * attr ref android.R.styleable#TextView_shadowRadius
      * @see #setShadowLayer(float, float, float, int)
      */
     public float getShadowRadius() {
@@ -1601,7 +1606,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * @return the horizontal offset of the shadow layer
-     * @attr ref android.R.styleable#TextView_shadowDx
+     * attr ref android.R.styleable#TextView_shadowDx
      * @see #setShadowLayer(float, float, float, int)
      */
     public float getShadowDx() {
@@ -1610,7 +1615,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * @return the vertical offset of the shadow layer
-     * @attr ref android.R.styleable#TextView_shadowDy
+     * attr ref android.R.styleable#TextView_shadowDy
      * @see #setShadowLayer(float, float, float, int)
      */
     public float getShadowDy() {
@@ -1619,7 +1624,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * @return the color of the shadow layer
-     * @attr ref android.R.styleable#TextView_shadowColor
+     * attr ref android.R.styleable#TextView_shadowColor
      * @see #setShadowLayer(float, float, float, int)
      */
     public int getShadowColor() {
@@ -1639,8 +1644,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * {@link android.text.method.LinkMovementMethod} if {@link #setAutoLinkMask} has been
      * set to nonzero and links are detected in {@link #setText}.
      * The default is true.
-     *
-     * @attr ref android.R.styleable#TextView_linksClickable
+     * <p>
+     * attr ref android.R.styleable#TextView_linksClickable
      */
     public final boolean getLinksClickable() {
         return mLinksClickable;
@@ -1651,8 +1656,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * {@link android.text.method.LinkMovementMethod} if {@link #setAutoLinkMask} has been
      * set to nonzero and links are detected in {@link #setText}.
      * The default is true.
-     *
-     * @attr ref android.R.styleable#TextView_linksClickable
+     * <p>
+     * attr ref android.R.styleable#TextView_linksClickable
      */
     public final void setLinksClickable(boolean whether) {
         mLinksClickable = whether;
@@ -1676,8 +1681,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets the color of the hint text for all the states (disabled, focussed, selected...) of this
      * TextView.
+     * <p>
+     * attr ref android.R.styleable#TextView_textColorHint
      *
-     * @attr ref android.R.styleable#TextView_textColorHint
      * @see #setHintTextColor(ColorStateList)
      * @see #getHintTextColors()
      * @see #setTextColor(int)
@@ -1689,8 +1695,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Sets the color of the hint text.
+     * <p>
+     * attr ref android.R.styleable#TextView_textColorHint
      *
-     * @attr ref android.R.styleable#TextView_textColorHint
      * @see #getHintTextColors()
      * @see #setHintTextColor(int)
      * @see #setTextColor(ColorStateList)
@@ -1703,7 +1710,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * @return the color of the hint text, for the different states of this TextView.
-     * @attr ref android.R.styleable#TextView_textColorHint
+     * attr ref android.R.styleable#TextView_textColorHint
      * @see #setHintTextColor(ColorStateList)
      * @see #setHintTextColor(int)
      * @see #setTextColor(ColorStateList)
@@ -1724,8 +1731,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Sets the color of links in the text.
+     * <p>
+     * attr ref android.R.styleable#TextView_textColorLink
      *
-     * @attr ref android.R.styleable#TextView_textColorLink
      * @see #setLinkTextColor(ColorStateList)
      * @see #getLinkTextColors()
      */
@@ -1736,8 +1744,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Sets the color of links in the text.
+     * <p>
+     * attr ref android.R.styleable#TextView_textColorLink
      *
-     * @attr ref android.R.styleable#TextView_textColorLink
      * @see #setLinkTextColor(int)
      * @see #getLinkTextColors()
      * @see #setTextColor(ColorStateList)
@@ -1751,7 +1760,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the list of colors used to paint the links in the text, for the different states of
      * this TextView
-     * @attr ref android.R.styleable#TextView_textColorLink
+     * attr ref android.R.styleable#TextView_textColorLink
      * @see #setLinkTextColor(ColorStateList)
      * @see #setLinkTextColor(int)
      */
@@ -1761,8 +1770,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Returns the horizontal and vertical alignment of this TextView.
+     * <p>
+     * attr ref android.R.styleable#TextView_gravity
      *
-     * @attr ref android.R.styleable#TextView_gravity
      * @see Gravity
      */
     public int getGravity() {
@@ -1773,8 +1783,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Sets the horizontal alignment of the text and the
      * vertical gravity that will be used when there is extra space
      * in the TextView beyond what is required for the text itself.
+     * <p>
+     * attr ref android.R.styleable#TextView_gravity
      *
-     * @attr ref android.R.styleable#TextView_gravity
      * @see Gravity
      */
     public void setGravity(int gravity) {
@@ -1838,8 +1849,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Returns whether the text is allowed to be wider than the View is.
      * If false, the text will be wrapped to the width of the View.
+     * <p>
+     * attr ref android.R.styleable#TextView_scrollHorizontally
      *
-     * @attr ref android.R.styleable#TextView_scrollHorizontally
      * @hide
      */
     public boolean getHorizontallyScrolling() {
@@ -1849,8 +1861,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets whether the text should be allowed to be wider than the
      * View is.  If false, it will be wrapped to the width of the View.
-     *
-     * @attr ref android.R.styleable#TextView_scrollHorizontally
+     * <p>
+     * attr ref android.R.styleable#TextView_scrollHorizontally
      */
     public void setHorizontallyScrolling(boolean whether) {
         if (mHorizontallyScrolling != whether) {
@@ -1867,7 +1879,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the minimum number of lines displayed in this TextView, or -1 if the minimum
      * height was set in pixels instead using {@link #setMinHeight(int) or #setHeight(int)}.
-     * @attr ref android.R.styleable#TextView_minLines
+     * attr ref android.R.styleable#TextView_minLines
      * @see #setMinLines(int)
      */
     public int getMinLines() {
@@ -1879,8 +1891,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * <p>
      * Setting this value overrides any other (minimum) height setting. A single line TextView will
      * set this value to 1.
+     * <p>
+     * attr ref android.R.styleable#TextView_minLines
      *
-     * @attr ref android.R.styleable#TextView_minLines
      * @see #getMinLines()
      */
     public void setMinLines(int minlines) {
@@ -1894,7 +1907,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the minimum height of this TextView expressed in pixels, or -1 if the minimum
      * height was set in number of lines instead using {@link #setMinLines(int) or #setLines(int)}.
-     * @attr ref android.R.styleable#TextView_minHeight
+     * attr ref android.R.styleable#TextView_minHeight
      * @see #setMinHeight(int)
      */
     public int getMinHeight() {
@@ -1905,8 +1918,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Makes the TextView at least this many pixels tall.
      * <p>
      * Setting this value overrides any other (minimum) number of lines setting.
-     *
-     * @attr ref android.R.styleable#TextView_minHeight
+     * <p>
+     * attr ref android.R.styleable#TextView_minHeight
      */
     public void setMinHeight(int minHeight) {
         mMinimum = minHeight;
@@ -1919,7 +1932,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the maximum number of lines displayed in this TextView, or -1 if the maximum
      * height was set in pixels instead using {@link #setMaxHeight(int) or #setHeight(int)}.
-     * @attr ref android.R.styleable#TextView_maxLines
+     * attr ref android.R.styleable#TextView_maxLines
      * @see #setMaxLines(int)
      */
     public int getMaxLines() {
@@ -1930,8 +1943,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Makes the TextView at most this many lines tall.
      * <p>
      * Setting this value overrides any other (maximum) height setting.
-     *
-     * @attr ref android.R.styleable#TextView_maxLines
+     * <p>
+     * attr ref android.R.styleable#TextView_maxLines
      */
     public void setMaxLines(int maxlines) {
         mMaximum = maxlines;
@@ -1944,7 +1957,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the maximum height of this TextView expressed in pixels, or -1 if the maximum
      * height was set in number of lines instead using {@link #setMaxLines(int) or #setLines(int)}.
-     * @attr ref android.R.styleable#TextView_maxHeight
+     * attr ref android.R.styleable#TextView_maxHeight
      * @see #setMaxHeight(int)
      */
     public int getMaxHeight() {
@@ -1956,8 +1969,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * {@link #setMaxLines(int)} method.
      * <p>
      * Setting this value overrides any other (maximum) number of lines setting.
-     *
-     * @attr ref android.R.styleable#TextView_maxHeight
+     * <p>
+     * attr ref android.R.styleable#TextView_maxHeight
      */
     public void setMaxHeight(int maxHeight) {
         mMaximum = maxHeight;
@@ -1972,8 +1985,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * <p>
      * Note that setting this value overrides any other (minimum / maximum) number of lines or
      * height setting. A single line TextView will set this value to 1.
-     *
-     * @attr ref android.R.styleable#TextView_lines
+     * <p>
+     * attr ref android.R.styleable#TextView_lines
      */
     public void setLines(int lines) {
         mMaximum = mMinimum = lines;
@@ -1990,8 +2003,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * <p>
      * Note that setting this value overrides any other (minimum / maximum) number of lines or
      * height setting.
-     *
-     * @attr ref android.R.styleable#TextView_height
+     * <p>
+     * attr ref android.R.styleable#TextView_height
      */
     public void setHeight(int pixels) {
         mMaximum = mMinimum = pixels;
@@ -2004,7 +2017,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the minimum width of the TextView, expressed in ems or -1 if the minimum width
      * was set in pixels instead (using {@link #setMinWidth(int)} or {@link #setWidth(int)}).
-     * @attr ref android.R.styleable#TextView_minEms
+     * attr ref android.R.styleable#TextView_minEms
      * @see #setMinEms(int)
      * @see #setEms(int)
      */
@@ -2041,8 +2054,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Makes the TextView at least this many ems wide
-     *
-     * @attr ref android.R.styleable#TextView_minEms
+     * <p>
+     * attr ref android.R.styleable#TextView_minEms
      */
     public void setMinEms(int minems) {
         mMinWidth = minems;
@@ -2055,7 +2068,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the minimum width of the TextView, in pixels or -1 if the minimum width
      * was set in ems instead (using {@link #setMinEms(int)} or {@link #setEms(int)}).
-     * @attr ref android.R.styleable#TextView_minWidth
+     * attr ref android.R.styleable#TextView_minWidth
      * @see #setMinWidth(int)
      * @see #setWidth(int)
      */
@@ -2065,8 +2078,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Makes the TextView at least this many pixels wide
-     *
-     * @attr ref android.R.styleable#TextView_minWidth
+     * <p>
+     * attr ref android.R.styleable#TextView_minWidth
      */
     public void setMinWidth(int minpixels) {
         mMinWidth = minpixels;
@@ -2079,7 +2092,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the maximum width of the TextView, expressed in ems or -1 if the maximum width
      * was set in pixels instead (using {@link #setMaxWidth(int)} or {@link #setWidth(int)}).
-     * @attr ref android.R.styleable#TextView_maxEms
+     * attr ref android.R.styleable#TextView_maxEms
      * @see #setMaxEms(int)
      * @see #setEms(int)
      */
@@ -2089,8 +2102,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Makes the TextView at most this many ems wide
-     *
-     * @attr ref android.R.styleable#TextView_maxEms
+     * <p>
+     * attr ref android.R.styleable#TextView_maxEms
      */
     public void setMaxEms(int maxems) {
         mMaxWidth = maxems;
@@ -2113,7 +2126,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * @return the maximum width of the TextView, in pixels or -1 if the maximum width
      * was set in ems instead (using {@link #setMaxEms(int)} or {@link #setEms(int)}).
-     * @attr ref android.R.styleable#TextView_maxWidth
+     * attr ref android.R.styleable#TextView_maxWidth
      * @see #setMaxWidth(int)
      * @see #setWidth(int)
      */
@@ -2123,8 +2136,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Makes the TextView at most this many pixels wide
-     *
-     * @attr ref android.R.styleable#TextView_maxWidth
+     * <p>
+     * attr ref android.R.styleable#TextView_maxWidth
      */
     public void setMaxWidth(int maxpixels) {
         mMaxWidth = maxpixels;
@@ -2136,8 +2149,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Makes the TextView exactly this many ems wide
+     * <p>
+     * attr ref android.R.styleable#TextView_ems
      *
-     * @attr ref android.R.styleable#TextView_ems
      * @see #setMaxEms(int)
      * @see #setMinEms(int)
      * @see #getMinEms()
@@ -2155,8 +2169,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Makes the TextView exactly this many pixels wide.
      * You could do the same thing by specifying this number in the
      * LayoutParams.
+     * <p>
+     * attr ref android.R.styleable#TextView_width
      *
-     * @attr ref android.R.styleable#TextView_width
      * @see #setMaxWidth(int)
      * @see #setMinWidth(int)
      * @see #getMinWidth()
@@ -2173,9 +2188,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets line spacing for this TextView.  Each line will have its height
      * multiplied by <code>mult</code> and have <code>add</code> added to it.
-     *
-     * @attr ref android.R.styleable#TextView_lineSpacingExtra
-     * @attr ref android.R.styleable#TextView_lineSpacingMultiplier
+     * <p>
+     * attr ref android.R.styleable#TextView_lineSpacingExtra
+     * attr ref android.R.styleable#TextView_lineSpacingMultiplier
      */
     public void setLineSpacing(float add, float mult) {
         if (mSpacingAdd != add || mSpacingMult != mult) {
@@ -2194,7 +2209,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Gets the line spacing multiplier
      *
      * @return the value by which each line's height is multiplied to get its actual height.
-     * @attr ref android.R.styleable#TextView_lineSpacingMultiplier
+     * attr ref android.R.styleable#TextView_lineSpacingMultiplier
      * @see #setLineSpacing(float, float)
      * @see #getLineSpacingExtra()
      */
@@ -2206,7 +2221,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Gets the line spacing extra space
      *
      * @return the extra space that is added to the height of each lines of this TextView.
-     * @attr ref android.R.styleable#TextView_lineSpacingExtra
+     * attr ref android.R.styleable#TextView_lineSpacingExtra
      * @see #setLineSpacing(float, float)
      * @see #getLineSpacingMultiplier()
      */
@@ -2437,7 +2452,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      *
      * @param freezesText Controls whether a frozen icicle should include the
      *                    entire text data: true to include it, false to not.
-     * @attr ref android.R.styleable#TextView_freezesText
+     *                    attr ref android.R.styleable#TextView_freezesText
      */
     public void setFreezesText(boolean freezesText) {
         mFreezesText = freezesText;
@@ -2466,9 +2481,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Sets the text that this TextView is to display (see
      * {@link #setText(CharSequence)}) and also sets whether it is stored
      * in a styleable/spannable buffer and whether it is editable.
-     *
-     * @attr ref android.R.styleable#TextView_text
-     * @attr ref android.R.styleable#TextView_bufferType
+     * <p>
+     * attr ref android.R.styleable#TextView_text
+     * attr ref android.R.styleable#TextView_bufferType
      */
     public void setText(CharSequence text, BufferType type) {
         setText(text, type, true, 0);
@@ -2654,8 +2669,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Sets the text to be displayed when the text of the TextView is empty.
      * Null means to use the normal empty text. The hint does not currently
      * participate in determining the size of the view.
-     *
-     * @attr ref android.R.styleable#TextView_hint
+     * <p>
+     * attr ref android.R.styleable#TextView_hint
      */
     public final void setHint(CharSequence hint) {
         mHint = TextUtils.stringOrSpannedString(hint);
@@ -2677,8 +2692,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Returns the hint that is displayed when the text of the TextView
      * is empty.
-     *
-     * @attr ref android.R.styleable#TextView_hint
+     * <p>
+     * attr ref android.R.styleable#TextView_hint
      */
     public CharSequence getHint() {
         return mHint;
@@ -2687,8 +2702,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets the text to be displayed when the text of the TextView is empty,
      * from a resource.
-     *
-     * @attr ref android.R.styleable#TextView_hint
+     * <p>
+     * attr ref android.R.styleable#TextView_hint
      */
     public final void setHint(int resid) {
         setHint(getContext().getResources().getText(resid));
@@ -2705,8 +2720,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * <p>
      * Note that the default conditions are not necessarily those that were in effect prior this
      * method, and you may want to reset these properties to your custom values.
-     *
-     * @attr ref android.R.styleable#TextView_singleLine
+     * <p>
+     * attr ref android.R.styleable#TextView_singleLine
      */
     public void setSingleLine(boolean singleLine) {
         // Could be used, but may break backward compatibility.
@@ -2758,8 +2773,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Directly change the content type integer of the text view, without
      * modifying any other state.
+     * <p>
+     * attr ref android.R.styleable#TextView_inputType
      *
-     * @attr ref android.R.styleable#TextView_inputType
      * @see #setInputType(int)
      * @see InputType
      */
@@ -2834,8 +2850,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Note that the maximum number of displayed lines (see {@link #setMaxLines(int)}) will be
      * modified if you change the {@link EditorInfo#TYPE_TEXT_FLAG_MULTI_LINE} flag of the input
      * type.
+     * <p>
+     * attr ref android.R.styleable#TextView_inputType
      *
-     * @attr ref android.R.styleable#TextView_inputType
      * @see #getInputType()
      * @see #setRawInputType(int)
      * @see InputType
@@ -2896,8 +2913,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Change the editor type integer associated with the text view, which
      * will be reported to an IME with {@link EditorInfo#imeOptions} when it
      * has focus.
+     * <p>
+     * attr ref android.R.styleable#TextView_imeOptions
      *
-     * @attr ref android.R.styleable#TextView_imeOptions
      * @see #getImeOptions
      * @see EditorInfo
      */
@@ -2911,9 +2929,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Change the custom IME action associated with the text view, which
      * will be reported to an IME with {@link EditorInfo#actionLabel}
      * and {@link EditorInfo#actionId} when it has focus.
+     * <p>
+     * attr ref android.R.styleable#TextView_imeActionLabel
+     * attr ref android.R.styleable#TextView_imeActionId
      *
-     * @attr ref android.R.styleable#TextView_imeActionLabel
-     * @attr ref android.R.styleable#TextView_imeActionId
      * @see #getImeActionLabel
      * @see #getImeActionId
      * @see EditorInfo
@@ -3021,8 +3040,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Set the private content type of the text, which is the
      * {@link EditorInfo#privateImeOptions EditorInfo.privateImeOptions}
      * field that will be filled in when creating an input connection.
+     * <p>
+     * attr ref android.R.styleable#TextView_privateImeOptions
      *
-     * @attr ref android.R.styleable#TextView_privateImeOptions
      * @see #getPrivateImeOptions()
      * @see EditorInfo#privateImeOptions
      */
@@ -3038,8 +3058,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Bundle that will be filled in when creating an input connection.  The
      * given integer is the resource ID of an XML resource holding an
      * {link android.R.styleable#InputExtras &lt;input-extras&gt;} XML tree.
+     * <p>
+     * attr ref android.R.styleable#TextView_editorExtras
      *
-     * @attr ref android.R.styleable#TextView_editorExtras
      * @see #getInputExtras(boolean)
      * @see EditorInfo#extras
      */
@@ -3057,7 +3078,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      *
      * @param create If true, the extras will be created if they don't already
      *               exist.  Otherwise, null will be returned if none have been created.
-     * @attr ref android.R.styleable#TextView_editorExtras
+     *               attr ref android.R.styleable#TextView_editorExtras
      * @see #setInputExtras(int)
      * @see EditorInfo#extras
      */
@@ -3160,8 +3181,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * Returns the current list of input filters.
-     *
-     * @attr ref android.R.styleable#TextView_maxLength
+     * <p>
+     * attr ref android.R.styleable#TextView_maxLength
      */
     public InputFilter[] getFilters() {
         return mFilters;
@@ -3170,8 +3191,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets the list of input filters that will be used if the buffer is
      * Editable. Has no effect otherwise.
-     *
-     * @attr ref android.R.styleable#TextView_maxLength
+     * <p>
+     * attr ref android.R.styleable#TextView_maxLength
      */
     public void setFilters(InputFilter[] filters) {
         if (filters == null) {
@@ -3509,7 +3530,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * <p>
      *
      * @return True if the text displayed in this TextView can be selected by the user.
-     * @attr ref android.R.styleable#TextView_textIsSelectable
+     * attr ref android.R.styleable#TextView_textIsSelectable
      */
     public boolean isTextSelectable() {
         return mEditor == null ? false : mEditor.mTextIsSelectable;
@@ -3635,7 +3656,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         final int compoundPaddingTop = getCompoundPaddingTop();
         final int compoundPaddingRight = getCompoundPaddingRight();
         final int compoundPaddingBottom = getCompoundPaddingBottom();
-        final int scrollX = getScrollX(); // getScrollX();
+        final int scrollX = getScrollX();
         final int scrollY = getScrollY();
         final int right = getRight();
         final int left = getLeft();
@@ -3701,23 +3722,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         layoutContext.translateX = compoundPaddingLeft;
         layoutContext.translateY = extendedPaddingTop + voffsetText;
         layoutContext.scrollX = getScrollX();
-//        final int layoutDirection = getLayoutDirection();
-//        final int absoluteGravity = Gravity.getAbsoluteGravity(mGravity, layoutDirection);
-//        if (mEllipsize == TruncateAt.MARQUEE &&
-//                mMarqueeFadeMode != MARQUEE_FADE_SWITCH_SHOW_ELLIPSIS) {
-//            if (!mSingleLine && getLineCount() == 1 && canMarquee() &&
-//                    (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) != Gravity.LEFT) {
-//                final int width = getRight() - getLeft();
-//                final int padding = getCompoundPaddingLeft() + getCompoundPaddingRight();
-//                final float dx = mLayout.getLineRight(0) - (width - padding);
-//                canvas.translate(layout.getParagraphDirection(0) * dx, 0.0f);
-//            }
-//
-//            if (mMarquee != null && mMarquee.isRunning()) {
-//                final float dx = -mMarquee.getScroll();
-//                canvas.translate(layout.getParagraphDirection(0) * dx, 0.0f);
-//            }
-//        }
 
         final int cursorOffsetVertical = voffsetCursor - voffsetText;
 
@@ -3728,14 +3732,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             layout.draw(canvas, highlight, mHighlightPaint, cursorOffsetVertical);
         }
 
-//        if (mMarquee != null && mMarquee.shouldDrawGhost()) {
-//            final float dx = mMarquee.getGhostOffset();
-//            canvas.translate(layout.getParagraphDirection(0) * dx, 0.0f);
-//            layout.draw(canvas, highlight, mHighlightPaint, cursorOffsetVertical);
-//        }
-
         canvas.restore();
-
         drawLineNumber(canvas);
     }
 
@@ -4729,8 +4726,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Gets whether the TextView includes extra top and bottom padding to make
      * room for accents that go above the normal ascent and descent.
+     * <p>
+     * attr ref android.R.styleable#TextView_includeFontPadding
      *
-     * @attr ref android.R.styleable#TextView_includeFontPadding
      * @see #setIncludeFontPadding(boolean)
      */
     public boolean getIncludeFontPadding() {
@@ -4741,8 +4739,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Set whether the TextView includes extra top and bottom padding to make
      * room for accents that go above the normal ascent and descent.
      * The default is true.
+     * <p>
+     * attr ref android.R.styleable#TextView_includeFontPadding
      *
-     * @attr ref android.R.styleable#TextView_includeFontPadding
      * @see #getIncludeFontPadding()
      */
     public void setIncludeFontPadding(boolean includepad) {
@@ -5496,8 +5495,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets the properties of this field (lines, horizontally scrolling,
      * transformation method) to be for a single-line input.
-     *
-     * @attr ref android.R.styleable#TextView_singleLine
+     * <p>
+     * attr ref android.R.styleable#TextView_singleLine
      */
     public void setSingleLine() {
         setSingleLine(true);
@@ -5511,8 +5510,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * This call replaces the current transformation method. Disabling this
      * will not necessarily restore the previous behavior from before this
      * was enabled.
+     * <p>
+     * attr ref android.R.styleable#TextView_textAllCaps
      *
-     * @attr ref android.R.styleable#TextView_textAllCaps
      * @see #setTransformationMethod(TransformationMethod)
      */
     public void setAllCaps(boolean allCaps) {
@@ -5565,7 +5565,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      *
      * @return the number of times the marquee animation is repeated. -1 if the animation
      * repeats indefinitely
-     * @attr ref android.R.styleable#TextView_marqueeRepeatLimit
+     * attr ref android.R.styleable#TextView_marqueeRepeatLimit
      * @see #setMarqueeRepeatLimit(int)
      */
     public int getMarqueeRepeatLimit() {
@@ -5575,8 +5575,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Sets how many times to repeat the marquee animation. Only applied if the
      * TextView has marquee enabled. Set to -1 to repeat indefinitely.
+     * <p>
+     * attr ref android.R.styleable#TextView_marqueeRepeatLimit
      *
-     * @attr ref android.R.styleable#TextView_marqueeRepeatLimit
      * @see #getMarqueeRepeatLimit()
      */
     public void setMarqueeRepeatLimit(int marqueeLimit) {
@@ -5586,8 +5587,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Set the TextView so that when it takes focus, all the text is
      * selected.
-     *
-     * @attr ref android.R.styleable#TextView_selectAllOnFocus
+     * <p>
+     * attr ref android.R.styleable#TextView_selectAllOnFocus
      */
     public void setSelectAllOnFocus(boolean selectAllOnFocus) {
         createEditorIfNeeded();
@@ -5600,7 +5601,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     /**
      * @return whether or not the cursor is visible (assuming this TextView is editable)
-     * @attr ref android.R.styleable#TextView_cursorVisible
+     * attr ref android.R.styleable#TextView_cursorVisible
      * @see #setCursorVisible(boolean)
      */
     public boolean isCursorVisible() {
@@ -5611,8 +5612,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Set whether the cursor is visible. The default is true. Note that this property only
      * makes sense for editable TextView.
+     * <p>
+     * attr ref android.R.styleable#TextView_cursorVisible
      *
-     * @attr ref android.R.styleable#TextView_cursorVisible
      * @see #isCursorVisible()
      */
     public void setCursorVisible(boolean visible) {
@@ -6811,7 +6813,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         if (clip != null) {
             boolean didFirst = false;
             for (int i = 0; i < clip.getItemCount(); i++) {
-                CharSequence paste = clip.getItemAt(i).coerceToStyledText(getContext());
+                CharSequence paste = clip.getItemAt(i).coerceToText(getContext());
                 if (paste != null) {
                     if (!didFirst) {
                         Selection.setSelection((Spannable) mText, max);
@@ -7129,8 +7131,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     // TODO: 24-Apr-18 improve calculate padding and recalculate when layout changed
     private void drawLineNumber(Canvas canvas) {
-        if (!layoutContext.pref.isShowLineNumber())
+        if (!layoutContext.pref.isShowLineNumber()) {
             return;
+        }
+
         int width = layoutContext.gutterWidth + getScrollX();
         int height = getScrollY() + getHeight();
         canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.gutterBackgroundPaint);

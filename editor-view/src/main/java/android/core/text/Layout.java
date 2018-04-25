@@ -383,7 +383,6 @@ public abstract class Layout {
     /**
      * @hide
      */
-//    public void drawText(Canvas canvas, int firstLine, int lastLine) {
     public void drawText(Canvas canvas, int firstLine, int lastLine) {
         int previousLineBottom = getLineTop(firstLine);
         int previousLineEnd = getLineStart(firstLine);
@@ -414,79 +413,13 @@ public abstract class Layout {
             int left = 0;
             int right = mWidth;
 
-            //jec+
+            //calculate line number position
             if (layoutContext.pref.isShowLineNumber()) {
                 int realLine = getRealLine(i);
                 if (realLine != 0) {
                     layoutContext.textLineNumber.addLine(Integer.toString(realLine), lbottom);
                 }
             }
-            //end jec+
-
-//            if (mSpannedText) {
-//                Spanned sp = (Spanned) buf;
-//                int textLength = buf.length();
-//                boolean isFirstParaLine = (start == 0 || buf.charAt(start - 1) == '\n');
-
-            // New batch of paragraph styles, collect into spans array.
-            // Compute the alignment, last alignment style wins.
-            // Reset tabStops, we'll rebuild if we encounter a line with
-            // tabs.
-            // We expect paragraph spans to be relatively infrequent, use
-            // spanEnd so that we can check less frequently.  Since
-            // paragraph styles ought to apply to entire paragraphs, we can
-            // just collect the ones present at the start of the paragraph.
-            // If spanEnd is before the end of the paragraph, that's not
-            // our problem.
-//                if (start >= spanEnd && (i == firstLine || isFirstParaLine)) {
-//                    spanEnd = sp.nextSpanTransition(start, textLength,
-//                                                    ParagraphStyle.class);
-//                    spans = getParagraphSpans(sp, start, spanEnd, ParagraphStyle.class);
-//
-//                    paraAlign = mAlignment;
-//                    for (int n = spans.length - 1; n >= 0; n--) {
-//                        if (spans[n] instanceof AlignmentSpan) {
-//                            paraAlign = ((AlignmentSpan) spans[n]).getAlignment();
-//                            break;
-//                        }
-//                    }
-
-//                    tabStopsIsInitialized = false;
-//                }
-
-            // Draw all leading margin spans.  Adjust left or right according
-            // to the paragraph direction of the line.
-//                final int length = spans.length;
-//                boolean useFirstLineMargin = isFirstParaLine;
-//                for (int n = 0; n < length; n++) {
-//                    if (spans[n] instanceof LeadingMarginSpan2) {
-//                        int count = ((LeadingMarginSpan2) spans[n]).getLeadingMarginLineCount();
-//                        int startLine = getLineForOffset(sp.getSpanStart(spans[n]));
-//                        // if there is more than one LeadingMarginSpan2, use
-//                        // the count that is greatest
-//                        if (i < startLine + count) {
-//                            useFirstLineMargin = true;
-//                            break;
-//                        }
-//                    }
-//                }
-//                for (int n = 0; n < length; n++) {
-//                    if (spans[n] instanceof LeadingMarginSpan) {
-//                        LeadingMarginSpan margin = (LeadingMarginSpan) spans[n];
-//                        if (dir == DIR_RIGHT_TO_LEFT) {
-//                            margin.drawLeadingMargin(canvas, paint, right, dir, ltop,
-//                                                     lbaseline, lbottom, buf,
-//                                                     start, end, isFirstParaLine, this);
-//                            right -= margin.getLeadingMargin(useFirstLineMargin);
-//                        } else {
-//                            margin.drawLeadingMargin(canvas, paint, left, dir, ltop,
-//                                                     lbaseline, lbottom, buf,
-//                                                     start, end, isFirstParaLine, this);
-//                            left += margin.getLeadingMargin(useFirstLineMargin);
-//                        }
-//                    }
-//                }
-//            }
 
             boolean hasTabOrEmoji = getLineContainsTab(i);
             // Can't tell if we have tabs for sure, currently
@@ -842,28 +775,10 @@ public abstract class Layout {
      */
     public abstract boolean getLineContainsTab(int line);
 
-    /**
-     * 真实行
-     *
-     * @param line
-     * @return
-     */
     public abstract int getRealLine(int line);
 
-    /**
-     * 是否新的真实行
-     *
-     * @param line
-     * @return
-     */
     public abstract boolean isRealNewLine(int line);
 
-    /**
-     * 真实行转换为虚拟行
-     *
-     * @param line
-     * @return
-     */
     public abstract int realLineToVirtualLine(int line);
 
     /**
