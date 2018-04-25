@@ -79,12 +79,6 @@ public class SaveTask {
         saveTo(file, null, encoding, null);
     }
 
-    /**
-     * @param rootFile 要注意这里是否ROOT处理
-     * @param orgiFile 如果是Root处理，保存成功后要回写到原始文件
-     * @param encoding
-     * @param listener
-     */
     private void saveTo(final File rootFile, final File orgiFile, final String encoding, final SaveListener listener) {
         if (editorDelegateWR.get() == null || contextWR.get() == null)
             return;

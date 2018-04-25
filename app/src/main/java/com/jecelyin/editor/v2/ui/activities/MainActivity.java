@@ -50,6 +50,7 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.common.utils.UIUtils;
+import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
@@ -57,7 +58,6 @@ import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.dialog.ChangeThemeDialog;
 import com.jecelyin.editor.v2.ui.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.ui.dialog.GotoLineDialog;
-import com.jecelyin.editor.v2.ui.dialog.InsertDateTimeDialog;
 import com.jecelyin.editor.v2.ui.dialog.LangListDialog;
 import com.jecelyin.editor.v2.ui.dialog.RunDialog;
 import com.jecelyin.editor.v2.ui.dialog.WrapCharDialog;
@@ -81,7 +81,7 @@ import java.util.List;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class MainActivity extends BaseActivity
+public class MainActivity extends FullScreenActivity
         implements MenuItem.OnMenuItemClickListener
         , FolderChooserDialog.FolderCallback
         , SharedPreferences.OnSharedPreferenceChangeListener {
@@ -470,11 +470,6 @@ public class MainActivity extends BaseActivity
             case R.id.m_color:
                 if (ensureNotReadOnly()) {
                     openColorPicker();
-                }
-                break;
-            case R.id.m_datetime:
-                if (ensureNotReadOnly()) {
-                    new InsertDateTimeDialog(this).show();
                 }
                 break;
             case R.id.m_run:

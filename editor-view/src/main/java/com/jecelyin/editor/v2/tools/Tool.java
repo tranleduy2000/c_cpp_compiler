@@ -36,23 +36,6 @@ public class Tool {
         System.out.println(String.format(format, args));
     }
 
-    public static String fileNameToResName(String filename) {
-        StringBuilder sb = new StringBuilder(filename.length());
-        int size = filename.length();
-        for (int i = 0; i < size; i++) {
-            char c = filename.charAt(i);
-            if (c == '-') {
-                i++;
-                sb.append('_');
-            } else if (c == '.') {
-                return sb.toString();
-            } else {
-                sb.append(Character.toLowerCase(filename.charAt(i)));
-            }
-        }
-        return sb.toString();
-    }
-
     public static String textString(String string) {
         StringBuilder sb = new StringBuilder(string.length() * 2);
         sb.append('"');

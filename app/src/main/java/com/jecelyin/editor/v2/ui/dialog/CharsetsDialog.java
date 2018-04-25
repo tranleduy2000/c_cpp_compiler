@@ -54,17 +54,6 @@ public class CharsetsDialog extends AbstractDialog {
         int i = 0;
         while (iterator.hasNext()) {
             String n = (String) iterator.next();
-//            Charset e = (Charset) m.get(n);
-//            String d = e.displayName();
-//            boolean c = e.canEncode();
-//            System.out.print(n+", "+d+", "+c);
-//            Set s = e.aliases();
-//            Iterator j = s.iterator();
-//            while (j.hasNext()) {
-//                String a = (String) j.next();
-//                System.out.print(", "+a);
-//            }
-//            System.out.println("");
             names[i++] = n;
         }
     }

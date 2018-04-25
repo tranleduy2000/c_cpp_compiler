@@ -26,7 +26,6 @@
     <item name="m_highlight" type="id" />
     <item name="m_encoding" type="id" />
     <item name="m_color" type="id" />
-    <item name="m_datetime" type="id" />
     <item name="m_run" type="id" />
     <item name="m_menu" type="id" />
     <item name="m_settings" type="id" />
