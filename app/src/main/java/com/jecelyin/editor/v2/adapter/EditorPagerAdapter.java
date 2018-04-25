@@ -60,10 +60,10 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public View getView(int position, ViewGroup pager) {
-        EditorDelegate delegate = getEditorDelegateAt(position);
+        /*EditorDelegate delegate = getEditorDelegateAt(position);
         if (delegate != null && delegate.getEditorView() != null) {
             return delegate.getEditorView();
-        }
+        }*/
 
         EditorView view = (EditorView) LayoutInflater.from(context).inflate(R.layout.editor, pager, false);
         setEditorView(position, view);

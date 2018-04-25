@@ -16,7 +16,6 @@
 
 package com.duy.ide.compiler;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,17 +29,16 @@ import java.io.File;
  */
 
 public class CompileTask extends AsyncTask<Void, Void, ShellResult> {
-    private Context mContext;
+    @NonNull
     private INativeCompiler mCompiler;
+    @NonNull
     private File[] mFiles;
     @Nullable
     private ICompileManager mCompileManager;
 
-    public CompileTask(Context context,
-                       INativeCompiler compiler,
+    public CompileTask(@NonNull INativeCompiler compiler,
                        @NonNull File[] files,
                        @Nullable ICompileManager compileManager) {
-        mContext = context;
         mCompiler = compiler;
         mFiles = files;
         mCompileManager = compileManager;

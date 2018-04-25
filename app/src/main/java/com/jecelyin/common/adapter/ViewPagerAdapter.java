@@ -63,13 +63,7 @@ public abstract class ViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View view = getView(position, container);
-
-//        if (view != mCurrentPrimaryItem) {
-//            view.setVisibility(View.INVISIBLE);
-//        }
-
         container.addView(view);
-
         return view;
     }
 
@@ -79,10 +73,6 @@ public abstract class ViewPagerAdapter extends PagerAdapter {
 
         View view = (View) object;
         if (view != mCurrentPrimaryItem) {
-            if (mCurrentPrimaryItem != null) {
-//                mCurrentPrimaryItem.setVisibility(View.INVISIBLE);
-            }
-//            view.setVisibility(View.VISIBLE);
             mCurrentPrimaryItem = view;
         }
     }

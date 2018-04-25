@@ -208,7 +208,7 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void bindPreferences() {
-//        mEditorPager.setOffscreenPageLimit(pref.getMaxEditor());
+        mEditorPager.setOffscreenPageLimit(preferences.getMaxEditor());
         mDrawerLayout.setKeepScreenOn(preferences.isKeepScreenOn());
         mDrawerLayout.setDrawerLockMode(preferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mSymbolBarLayout.setVisibility(preferences.isReadOnly() ? View.GONE : View.VISIBLE);
@@ -509,7 +509,7 @@ public class EditorActivity extends FullScreenActivity
                 INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
                 ICompileManager compileManager = CompilerFactory.createCompileManager(EditorActivity.this);
 
-                CompileTask compileTask = new CompileTask(EditorActivity.this, compiler, srcFiles, compileManager);
+                CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
                 compileTask.execute();
             }
         });
