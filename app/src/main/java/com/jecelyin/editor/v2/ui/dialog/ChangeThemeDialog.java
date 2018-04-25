@@ -23,7 +23,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.ui.activities.MainActivity;

@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.common.OnVisibilityChangedListener;
 
 /**

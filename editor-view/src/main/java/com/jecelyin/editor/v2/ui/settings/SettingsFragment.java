@@ -18,8 +18,6 @@
 
 package com.jecelyin.editor.v2.ui.settings;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -31,7 +29,6 @@ import android.preference.PreferenceGroup;
 import com.duy.text.editor.R;
 import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.preference.JecListPreference;
-import com.jecelyin.editor.v2.ui.activities.AboutActivity;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -146,23 +143,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        Intent it;
-        switch (preference.getKey()) {
-            case "pref_about":
-                it = new Intent(getActivity(), AboutActivity.class);
-                startActivity(it);
-                break;
-            case "pref_translate":
-                // TODO: 10-Apr-18 goto translate page
-                break;
-            case "pref_feedback":
-                // TODO: 10-Apr-18 feedback
-                break;
-            case "pref_donate":
-                it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://jecelyin.github.io/donate/?project=920%20Text%20Editor"));
-                startActivity(it);
-                break;
-        }
         return true;
     }
 

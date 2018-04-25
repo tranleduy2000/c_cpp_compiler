@@ -1,13 +1,11 @@
 /*
- * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
- *
- * This file is part of 920 Text Editor.
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,12 +35,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.text.editor.R;
-import com.duy.text.editor.databinding.FileExplorerFragmentBinding;
+import com.duy.ccppcompiler.databinding.FileExplorerFragmentBinding;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.android.file_explorer.adapter.FileListItemAdapter;
 import com.jecelyin.android.file_explorer.adapter.PathButtonAdapter;
 import com.jecelyin.android.file_explorer.io.JecFile;
-import com.jecelyin.android.file_explorer.io.RootFile;
 import com.jecelyin.android.file_explorer.listener.FileListResultListener;
 import com.jecelyin.android.file_explorer.listener.OnClipboardPasteFinishListener;
 import com.jecelyin.android.file_explorer.util.FileListSorter;
@@ -90,7 +87,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        action = new FileExplorerAction(getContext(), this, ((FileExplorerActivity)getActivity()).getFileClipboard(), this);
+        action = new FileExplorerAction(getContext(), this, ((FileExplorerActivity) getActivity()).getFileClipboard(), this);
         adapter = new FileListItemAdapter();
         adapter.setOnCheckedChangeListener(action);
         adapter.setOnItemClickListener(this);
@@ -157,7 +154,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
         view.post(new Runnable() {
             @Override
             public void run() {
-                isRoot = Pref.getInstance(getContext()).isRootable();
+                isRoot = false;
                 onRefresh();
             }
         });
@@ -216,7 +213,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
                 path = f;
             }
         };
-        task = new ScanFilesTask(getActivity(), path, isRoot, updateRootInfo);
+        task = new ScanFilesTask(getActivity(), path, updateRootInfo);
         task.setTaskListener(new TaskListener<JecFile[]>() {
             @Override
             public void onCompleted() {
@@ -244,8 +241,8 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
     @Override
     public void onItemClick(int position, View view) {
         JecFile file = adapter.getItem(position);
-        if(!((FileExplorerActivity)getActivity()).onSelectFile(file)) {
-            if(file.isDirectory()) {
+        if (!((FileExplorerActivity) getActivity()).onSelectFile(file)) {
+            if (file.isDirectory()) {
                 switchToPath(file);
             }
         }
@@ -253,7 +250,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
 
     public boolean onBackPressed() {
         JecFile parent = path.getParentFile();
-        if(parent == null || parent.getPath().startsWith(path.getPath())) {
+        if (parent == null || parent.getPath().startsWith(path.getPath())) {
             switchToPath(parent);
             return true;
         }
@@ -269,7 +266,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
-        return ((AppCompatActivity)getActivity()).startSupportActionMode(callback);
+        return ((AppCompatActivity) getActivity()).startSupportActionMode(callback);
     }
 
     @Override
@@ -303,14 +300,13 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
 
     private static class ScanFilesTask extends JecAsyncTask<Void, Void, JecFile[]> {
         private final UpdateRootInfo updateRootInfo;
-        private JecFile path;
-        private boolean isRoot;
         private final Context context;
+        private JecFile path;
+        private final boolean isRoot = false;
 
-        private ScanFilesTask(Context context, JecFile path, boolean isRoot, UpdateRootInfo updateRootInfo) {
+        private ScanFilesTask(Context context, JecFile path, UpdateRootInfo updateRootInfo) {
             this.context = context.getApplicationContext();
             this.path = path;
-            this.isRoot = isRoot;
             this.updateRootInfo = updateRootInfo;
         }
 
@@ -319,9 +315,6 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
             Pref pref = Pref.getInstance(context);
             final boolean showHiddenFiles = pref.isShowHiddenFiles();
             final int sortType = pref.getFileSortType();
-            if (isRoot && !(path instanceof RootFile) && !path.getPath().startsWith(Environment.getExternalStorageDirectory().getPath())) {
-                path = new RootFile(path.getPath());
-            }
             updateRootInfo.onUpdate(path);
             path.listFiles(new FileListResultListener() {
                 @Override

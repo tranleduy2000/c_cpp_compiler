@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jecelyin.common.adapter.SimpleAdapter;
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.utils.ExtGrep;
 
 import java.io.File;

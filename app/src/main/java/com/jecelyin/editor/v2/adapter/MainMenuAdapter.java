@@ -28,7 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.manager.MenuManager;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;

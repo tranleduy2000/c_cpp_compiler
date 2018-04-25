@@ -1,13 +1,11 @@
 /*
- * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
- *
- * This file is part of 920 Text Editor.
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,12 +18,12 @@ package com.jecelyin.editor.v2.task;
 
 import android.content.Context;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.common.SaveListener;
-import com.jecelyin.editor.v2.io.FileWriter;
+import com.jecelyin.editor.v2.io.LocalFileWriter;
 import com.jecelyin.editor.v2.ui.editor.Document;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 
@@ -91,8 +89,8 @@ public class SaveTask {
         if (editorDelegateWR.get() == null || contextWR.get() == null)
             return;
         writing = true;
-        FileWriter fileWriter = new FileWriter(rootFile, orgiFile, encoding, Pref.getInstance(contextWR.get()).isKeepBackupFile());
-        fileWriter.setFileWriteListener(new FileWriter.FileWriteListener() {
+        LocalFileWriter fileWriter = new LocalFileWriter(rootFile, orgiFile, encoding, Pref.getInstance(contextWR.get()).isKeepBackupFile());
+        fileWriter.setFileWriteListener(new LocalFileWriter.FileWriteListener() {
             @Override
             public void onSuccess() {
                 writing = false;

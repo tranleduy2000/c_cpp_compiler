@@ -22,11 +22,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.jecelyin.editor.v2.ui.activities.BaseActivity;
 import com.duy.text.editor.R;
+
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -44,7 +45,7 @@ import com.duy.text.editor.R;
  * API Guide</a> for more information on developing a Settings UI.
  * <p/>
  */
-public class SettingsActivity extends BaseActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     public static void startActivity(Activity activity, int requestCode) {
         activity.startActivityForResult(new Intent(activity, SettingsActivity.class), requestCode);
@@ -55,7 +56,7 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_editor_setting);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -70,6 +71,10 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

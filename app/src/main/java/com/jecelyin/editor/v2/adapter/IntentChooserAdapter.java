@@ -28,7 +28,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 
 import java.util.List;
 

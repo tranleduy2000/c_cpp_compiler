@@ -10,7 +10,7 @@ import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.task.TaskResult;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.io.FileEncodingDetector;
 
 import java.io.BufferedReader;

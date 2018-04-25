@@ -21,7 +21,7 @@ package com.jecelyin.android.file_explorer;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.android.file_explorer.io.JecFile;
 import com.jecelyin.android.file_explorer.listener.OnClipboardDataChangedListener;
 import com.jecelyin.android.file_explorer.listener.OnClipboardPasteFinishListener;

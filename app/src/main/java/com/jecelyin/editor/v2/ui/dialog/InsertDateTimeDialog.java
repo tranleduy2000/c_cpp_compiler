@@ -27,7 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

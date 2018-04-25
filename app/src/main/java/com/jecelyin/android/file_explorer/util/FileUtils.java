@@ -1,13 +1,11 @@
 /*
- * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
- *
- * This file is part of 920 Text Editor.
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +20,6 @@ import com.jecelyin.android.file_explorer.ExplorerException;
 import com.jecelyin.android.file_explorer.io.JecFile;
 import com.jecelyin.android.file_explorer.listener.BoolResultListener;
 import com.jecelyin.android.file_explorer.listener.FileListResultListener;
-import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,18 +30,6 @@ import java.util.List;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class FileUtils {
-    private static Boolean mRootAccess = null;
-
-    public static boolean hasRootAccess() {
-        if (mRootAccess != null)
-            return mRootAccess;
-        try {
-            mRootAccess = RootTools.isAccessGiven();
-        } catch (Exception e) {
-            mRootAccess = false;
-        }
-        return mRootAccess;
-    }
 
 
     /**

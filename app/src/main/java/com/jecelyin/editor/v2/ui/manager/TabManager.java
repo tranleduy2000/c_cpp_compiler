@@ -23,7 +23,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.adapter.EditorAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;

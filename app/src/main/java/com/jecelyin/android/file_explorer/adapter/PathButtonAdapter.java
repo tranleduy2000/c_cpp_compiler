@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.android.file_explorer.io.JecFile;
 import com.jecelyin.common.listeners.OnItemClickListener;
 

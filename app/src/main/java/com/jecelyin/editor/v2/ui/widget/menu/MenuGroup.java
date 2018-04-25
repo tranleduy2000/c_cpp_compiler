@@ -19,7 +19,7 @@
 package com.jecelyin.editor.v2.ui.widget.menu;
 
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>

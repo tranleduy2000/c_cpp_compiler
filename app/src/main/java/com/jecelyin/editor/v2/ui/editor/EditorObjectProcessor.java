@@ -32,7 +32,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UpdateAppearance;
 import android.view.View;
 
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.utils.ExtGrep;

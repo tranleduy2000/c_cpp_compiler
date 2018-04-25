@@ -35,9 +35,16 @@ dependencies {
     implementation "com.android.support:design:$androidSupportVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
+    implementation 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
+    implementation 'com.rengwuxian.materialedittext:library:2.0.3'
+
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.1.4'
+    implementation 'org.apmem.tools:layouts:1.10@aar'
+    implementation 'com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar'
+    implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 
-    api project(':terminal-view')
-    api project(':terminal-emulator')
-    api project(':editor-view')
+    compile project(':terminal-view')
+    compile project(':terminal-emulator')
+    compile project(':editor-view')
 }

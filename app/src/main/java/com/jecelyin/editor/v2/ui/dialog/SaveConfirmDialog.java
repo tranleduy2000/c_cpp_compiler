@@ -21,7 +21,7 @@ package com.jecelyin.editor.v2.ui.dialog;
 import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>

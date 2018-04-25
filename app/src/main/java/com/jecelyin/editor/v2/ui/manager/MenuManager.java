@@ -25,7 +25,7 @@ import android.graphics.drawable.Drawable;
 
 import com.jecelyin.editor.v2.ui.activities.MainActivity;
 import com.jecelyin.common.utils.DrawableUtils;
-import com.duy.text.editor.R;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
 
 /**

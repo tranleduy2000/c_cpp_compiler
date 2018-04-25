@@ -32,8 +32,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.text.editor.R;
-import com.duy.text.editor.databinding.ActivityFileExplorerBinding;
+import com.duy.ccppcompiler.databinding.ActivityFileExplorerBinding;
+import com.duy.ccppcompiler.R;
 import com.jecelyin.android.file_explorer.adapter.FileListPagerAdapter;
 import com.jecelyin.android.file_explorer.io.JecFile;
 import com.jecelyin.android.file_explorer.io.LocalFile;
