@@ -84,8 +84,8 @@ public class MainActivity extends FullScreenActivity
         implements MenuItem.OnMenuItemClickListener
         , FolderChooserDialog.FolderCallback
         , SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = "MainActivity";
 
-    private static final String TAG = MainActivity.class.getName();
     private static final int RC_OPEN_FILE = 1;
     private final static int RC_SAVE = 3;
     private static final int RC_PERMISSION_STORAGE = 2;
@@ -103,7 +103,6 @@ public class MainActivity extends FullScreenActivity
 
     private Pref pref;
     private ClusterCommand clusterCommand;
-    //    TabDrawable tabDrawable;
     private MenuManager mMenuManager;
     private FolderChooserDialog.FolderCallback findFolderCallback;
     private long mExitTime;
@@ -204,12 +203,10 @@ public class MainActivity extends FullScreenActivity
     }
 
     private void bindPreferences() {
+        mEditorPager.setOffscreenPageLimit(pref.getMaxEditor());
         mDrawerLayout.setKeepScreenOn(pref.isKeepScreenOn());
         mDrawerLayout.setDrawerLockMode(pref.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mSymbolBarLayout.setVisibility(pref.isReadOnly() ? View.GONE : View.VISIBLE);
-        //bind other preference
-//        pref.getSharedPreferences().registerOnSharedPreferenceChangeListener(this); //不能这样使用，无法监听
-//        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         pref.registerOnSharedPreferenceChangeListener(this);
     }
 

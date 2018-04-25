@@ -35,7 +35,7 @@ public class MetaKeyKeyListenerCompat extends MetaKeyKeyListener {
         try {
             return (int) MethodReflection.getField(MetaKeyKeyListener.class, "META_SELECTING");
         } catch (Throwable e) {
-            if (DLog.DEBUG) DLog.w(TAG, "getMetaSelecting: ", e);
+            if (DLog.DEBUG) DLog.w(TAG, "getMetaSelecting: " + e.getMessage());
             return 0x800;
         }
     }

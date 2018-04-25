@@ -667,10 +667,6 @@ public class EditAreaView extends BaseEditorView {
     @Override
     public void onRtlPropertiesChanged(int layoutDirection) {
         super.onRtlPropertiesChanged(layoutDirection);
-
-//        if (mFastScroller != null) {
-//            mFastScroller.setScrollbarPosition(getVerticalScrollbarPosition());
-//        }
     }
 
     @Override

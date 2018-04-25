@@ -805,6 +805,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
+    }
+
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -818,10 +822,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
-    }
-
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -1099,7 +1099,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Drawable if any.
      */
     public int getCompoundPaddingLeft() {
-        return getPaddingStart();
+        return getPaddingLeft();
     }
 
     /**
@@ -1107,7 +1107,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Drawable if any.
      */
     public int getCompoundPaddingRight() {
-        return getPaddingEnd();
+        return getPaddingRight();
     }
 
     /**
@@ -2299,7 +2299,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     @Override
     public Parcelable onSaveInstanceState() {
-        if (DLog.DEBUG) DLog.d(TAG, "onSaveInstanceState() called");
         Parcelable superState = super.onSaveInstanceState();
 
         // Save state if we are forced to
@@ -2366,8 +2365,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "onRestoreInstanceState() called with: state = [" + state + "]");
         if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
@@ -6916,10 +6913,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     public void onRtlPropertiesChanged(int layoutDirection) {
         super.onRtlPropertiesChanged(layoutDirection);
 
-        mTextDir = getTextDirectionHeuristic();
-
-        if (mLayout != null) {
-            checkForRelayout();
+        final TextDirectionHeuristic newTextDir = getTextDirectionHeuristic();
+        if (mTextDir != newTextDir) {
+            mTextDir = newTextDir;
+            if (mLayout != null) {
+                checkForRelayout();
+            }
         }
     }
 
@@ -7241,7 +7240,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             selEnd = in.readInt();
             frozenWithFocus = (in.readInt() != 0);
 //            text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
-            text = in.createCharArray();
+//            text = in.createCharArray();
             textLength = in.readInt();
 
             if (in.readInt() != 0) {
@@ -7258,7 +7257,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             out.writeInt(selEnd);
             out.writeInt(frozenWithFocus ? 1 : 0);
 //            TextUtils.writeToParcel(text, out, flags);
-            out.writeCharArray(this.text);
+//            out.writeCharArray(this.text);
             out.writeInt(this.textLength);
 
             if (error == null) {

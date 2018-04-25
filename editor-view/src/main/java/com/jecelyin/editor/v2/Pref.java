@@ -83,6 +83,10 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
             R.style.DarkTheme
     };
 
+    public int getMaxEditor() {
+        return 10;
+    }
+
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
     public @interface ScreenOrientation {}
 

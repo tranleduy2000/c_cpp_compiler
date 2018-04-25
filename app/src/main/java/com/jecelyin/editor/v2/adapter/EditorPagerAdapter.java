@@ -21,6 +21,7 @@ package com.jecelyin.editor.v2.adapter;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,7 @@ import java.util.ArrayList;
  */
 public class EditorPagerAdapter extends ViewPagerAdapter {
     private final Context context;
-    private ArrayList<EditorDelegate> list = new ArrayList<>();
+    private ArrayList<EditorDelegate> editorDelegates = new ArrayList<>();
     private int currentPosition;
 
     public EditorPagerAdapter(Context context) {
@@ -58,6 +59,11 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public View getView(int position, ViewGroup pager) {
+        EditorDelegate delegate = getEditorDelegateAt(position);
+        if (delegate != null && delegate.getEditorView() != null) {
+            return delegate.getEditorView();
+        }
+
         EditorView view = (EditorView) LayoutInflater.from(context).inflate(R.layout.editor, pager, false);
         setEditorView(position, view);
         return view;
@@ -65,40 +71,9 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public int getCount() {
-        return list.size();
+        return editorDelegates.size();
     }
 
-    /**
-     * @param file 一个路径或标题
-     */
-    public void newEditor(@Nullable File file, int offset, String encoding) {
-        newEditor(true, file, offset, encoding);
-    }
-
-    public void newEditor(boolean notify, @Nullable File file, int offset, String encoding) {
-        list.add(new EditorDelegate(list.size(), file, offset, encoding));
-        if (notify)
-            notifyDataSetChanged();
-    }
-
-    public void newEditor(String title, @Nullable CharSequence content) {
-        list.add(new EditorDelegate(list.size(), title, content));
-        notifyDataSetChanged();
-    }
-
-    public void newEditor(ExtGrep grep) {
-        list.add(new EditorDelegate(list.size(), context.getString(R.string.find_title, grep.getRegex()), grep));
-        notifyDataSetChanged();
-    }
-
-    public void setEditorView(int index, EditorView editorView) {
-        if (index >= getCount()) {
-            return;
-        }
-        EditorDelegate delegate = list.get(index);
-        if (delegate != null)
-            delegate.setEditorView(editorView);
-    }
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
@@ -108,16 +83,16 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object) {
+    public int getItemPosition(@NonNull Object object) {
         return ((EditorView) object).isRemoved() ? POSITION_NONE : POSITION_UNCHANGED;
     }
 
     @Override
     public Parcelable saveState() {
         SavedState ss = new SavedState();
-        ss.states = new EditorDelegate.SavedState[list.size()];
-        for (int i = list.size() - 1; i >= 0; i--) {
-            ss.states[i] = (EditorDelegate.SavedState) list.get(i).onSaveInstanceState();
+        ss.states = new EditorDelegate.SavedState[editorDelegates.size()];
+        for (int i = editorDelegates.size() - 1; i >= 0; i--) {
+            ss.states[i] = (EditorDelegate.SavedState) editorDelegates.get(i).onSaveInstanceState();
         }
         return ss;
     }
@@ -126,23 +101,52 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
     public void restoreState(Parcelable state, ClassLoader loader) {
         if (!(state instanceof SavedState))
             return;
-        EditorDelegate.SavedState[] ss = ((SavedState) state).states;
-        list.clear();
-        for (int i = 0; i < ss.length; i++) {
-            list.add(new EditorDelegate(ss[i]));
+        EditorDelegate.SavedState[] savedStates = ((SavedState) state).states;
+        editorDelegates.clear();
+        for (EditorDelegate.SavedState savedState : savedStates) {
+            editorDelegates.add(new EditorDelegate(savedState));
         }
         notifyDataSetChanged();
     }
 
+    public void newEditor(@Nullable File file, int offset, String encoding) {
+        newEditor(true, file, offset, encoding);
+    }
+
+    public void newEditor(boolean notify, @Nullable File file, int offset, String encoding) {
+        editorDelegates.add(new EditorDelegate(editorDelegates.size(), file, offset, encoding));
+        if (notify)
+            notifyDataSetChanged();
+    }
+
+    public void newEditor(String title, @Nullable CharSequence content) {
+        editorDelegates.add(new EditorDelegate(editorDelegates.size(), title, content));
+        notifyDataSetChanged();
+    }
+
+    public void newEditor(ExtGrep grep) {
+        editorDelegates.add(new EditorDelegate(editorDelegates.size(), context.getString(R.string.find_title, grep.getRegex()), grep));
+        notifyDataSetChanged();
+    }
+
+    public void setEditorView(int index, EditorView editorView) {
+        if (index >= getCount()) {
+            return;
+        }
+        EditorDelegate delegate = editorDelegates.get(index);
+        if (delegate != null)
+            delegate.setEditorView(editorView);
+    }
+
     public EditorDelegate getCurrentEditorDelegate() {
-        if (list == null || list.isEmpty() || currentPosition >= list.size())
+        if (editorDelegates == null || editorDelegates.isEmpty() || currentPosition >= editorDelegates.size())
             return null;
-        return list.get(currentPosition);
+        return editorDelegates.get(currentPosition);
     }
 
     public int countNoFileEditor() {
         int count = 0;
-        for (EditorDelegate f : list) {
+        for (EditorDelegate f : editorDelegates) {
             if (f.getPath() == null) {
                 count++;
             }
@@ -151,11 +155,11 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
     }
 
     public TabInfo[] getTabInfoList() {
-        int size = list.size();
+        int size = editorDelegates.size();
         TabInfo[] arr = new TabInfo[size];
         EditorDelegate delegate;
         for (int i = 0; i < size; i++) {
-            delegate = list.get(i);
+            delegate = editorDelegates.get(i);
             arr[i] = new TabInfo(delegate.getTitle(), delegate.getPath(), delegate.isChanged());
         }
 
@@ -163,7 +167,7 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
     }
 
     public boolean removeEditor(final int position, final TabCloseListener listener) {
-        EditorDelegate f = list.get(position);
+        EditorDelegate f = editorDelegates.get(position);
 
         final String encoding = f.getEncoding();
         final int offset = f.getCursorOffset();
@@ -203,25 +207,25 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
     }
 
     private void remove(int position) {
-        EditorDelegate delegate = list.remove(position);
+        EditorDelegate delegate = editorDelegates.remove(position);
         delegate.setRemoved();
         notifyDataSetChanged();
     }
 
     public ClusterCommand makeClusterCommand() {
-        return new ClusterCommand(new ArrayList<>(list));
+        return new ClusterCommand(new ArrayList<>(editorDelegates));
     }
 
     public boolean removeAll(TabCloseListener tabCloseListener) {
-        int position = list.size() - 1;
+        int position = editorDelegates.size() - 1;
         return position < 0 || removeEditor(position, tabCloseListener);
     }
 
     @Nullable
-    public EditorDelegate getItem(int index) {
-        if (index >= list.size())
+    public EditorDelegate getEditorDelegateAt(int index) {
+        if (index >= editorDelegates.size())
             return null;
-        return list.get(index);
+        return editorDelegates.get(index);
     }
 
     public static class SavedState implements Parcelable {

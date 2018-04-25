@@ -137,18 +137,6 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         }
     }
 
-    public void setEditorView(EditorView editorView) {
-        context = editorView.getContext();
-        this.mEditorView = editorView;
-        this.mEditText = editorView.getEditText();
-
-        this.orientation = context.getResources().getConfiguration().orientation;
-
-        editorView.setVisibilityChangedListener(this);
-
-        init();
-    }
-
     public void onLoadStart() {
         loaded = false;
         mEditText.setEnabled(false);
@@ -196,6 +184,22 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
 
     public Editable getEditableText() {
         return mEditText.getText();
+    }
+
+    public EditorView getEditorView() {
+        return mEditorView;
+    }
+
+    public void setEditorView(EditorView editorView) {
+        context = editorView.getContext();
+        this.mEditorView = editorView;
+        this.mEditText = editorView.getEditText();
+
+        this.orientation = context.getResources().getConfiguration().orientation;
+
+        editorView.setVisibilityChangedListener(this);
+
+        init();
     }
 
     public CharSequence getSelectedText() {
