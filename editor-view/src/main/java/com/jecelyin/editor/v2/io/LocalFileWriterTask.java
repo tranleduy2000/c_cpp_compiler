@@ -17,6 +17,7 @@
 package com.jecelyin.editor.v2.io;
 
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 
 import com.jecelyin.common.utils.IOUtils;
@@ -39,7 +40,7 @@ public class LocalFileWriterTask extends AsyncTask<Editable, Void, Exception> {
     private final boolean keepBackupFile;
     private FileWriteListener fileWriteListener;
 
-    public LocalFileWriterTask(File file, File orgiFile, String encoding, boolean keepBackupFile) {
+    public LocalFileWriterTask(File file, @Nullable File orgiFile, String encoding, boolean keepBackupFile) {
         this.file = file;
         this.orgiFile = orgiFile;
         this.backupFile = makeBackupFile(file);

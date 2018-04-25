@@ -31,7 +31,6 @@ import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.DBHelper;
-import com.jecelyin.editor.v2.utils.ExtGrep;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -129,12 +128,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     public boolean newTab(CharSequence content) {
         mEditorPagerAdapter.newEditor(mActivity.getString(R.string.new_filename, mEditorPagerAdapter.getCount() + 1), content);
-        setCurrentTab(mEditorPagerAdapter.getCount() - 1);
-        return true;
-    }
-
-    public boolean newTab(ExtGrep grep) {
-        mEditorPagerAdapter.newEditor(grep);
         setCurrentTab(mEditorPagerAdapter.getCount() - 1);
         return true;
     }

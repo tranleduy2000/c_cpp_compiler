@@ -212,10 +212,6 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
         new FindKeywordsDialog(context, editText, editText.getId() != R.id.find_edit_text).show();
     }
 
-    private void doInFiles(ExtGrep grep) {
-        getMainActivity().getTabManager().newTab(grep);
-    }
-
     private static class FindTextActionModeCallback implements ActionMode.Callback {
         EditorDelegate fragment;
         ExtGrep grep;

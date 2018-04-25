@@ -50,6 +50,7 @@ import com.duy.ccppcompiler.compiler.CompilerFactory;
 import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.INativeCompiler;
+import com.duy.ide.filemanager.FileManager;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -609,7 +610,11 @@ public class EditorActivity extends FullScreenActivity
     private void openText(CharSequence content) {
         if (TextUtils.isEmpty(content))
             return;
-        tabManager.newTab(content);
+        FileManager fileManager = new FileManager(this);
+        File newFile = fileManager.createNewFile("_" + System.currentTimeMillis() + ".txt");
+        if (IOUtils.writeFile(newFile, content.toString())) {
+            tabManager.newTab(newFile, "UTF-8");
+        }
     }
 
     private void openFile(String file) {

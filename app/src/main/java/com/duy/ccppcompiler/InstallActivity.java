@@ -23,6 +23,7 @@ import com.duy.common.DLog;
 import com.duy.utils.ApkUtils;
 import com.duy.utils.ExtractCallback;
 import com.duy.utils.IOUtils;
+import com.duy.utils.ZipExtractor;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 
 import java.io.File;
@@ -188,7 +189,7 @@ public class InstallActivity extends AppCompatActivity {
 
                 publishProgress("Extracting GCC library");
                 final InputStream inputStream = mContext.getAssets().open(GCCConstants.GCC_ASSET_FILE);
-                boolean success = IOUtils.unzip(inputStream, internalDir);
+                boolean success = ZipExtractor.unzip(inputStream, internalDir);
 
                 if (success) {
                     final String sep = File.separator;

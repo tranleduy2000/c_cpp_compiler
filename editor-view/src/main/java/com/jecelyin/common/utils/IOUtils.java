@@ -71,8 +71,7 @@ public class IOUtils {
             bufferedWriter.close();
             return true;
         } catch (IOException e) {
-            DLog.e(e);
-            file.delete();
+
             return false;
         }
     }
@@ -203,4 +202,5 @@ public class IOUtils {
             }
         }
     }
+
 }
