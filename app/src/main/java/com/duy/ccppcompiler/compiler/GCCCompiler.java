@@ -65,7 +65,7 @@ public class GCCCompiler implements INativeCompiler {
         flags.add("-o");
         flags.add(new File(internalDir.getAbsolutePath(), GCCConstants.TEMP_BIN_NAME).getAbsolutePath());
 
-        String TEMPEnv = new File(gccDir, "tmpdir").getAbsolutePath();
+        String TEMPEnv = new File(gccDir, GCCConstants.BUILD_DIR).getAbsolutePath();
         String PATHEnv =
                 internalDir.getAbsolutePath() + File.pathSeparator
                         + gccBinDir.getAbsolutePath() + File.pathSeparator

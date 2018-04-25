@@ -16,6 +16,8 @@
 
 package com.duy.ide.compiler;
 
+import android.support.annotation.WorkerThread;
+
 import com.duy.ide.compiler.shell.ShellResult;
 
 import java.io.File;
@@ -25,6 +27,6 @@ import java.io.File;
  */
 
 public interface INativeCompiler {
-
+    @WorkerThread
     ShellResult compile(File[] sourceFiles);
 }

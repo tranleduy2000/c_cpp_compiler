@@ -29,4 +29,5 @@ public class GCCConstants {
     public static final String TEMP_BIN_NAME = "temp";
     public static final String INDENT_FILE_NAME = "indent.c";
     public static final String INDENT_ARGS = "-nbap -bli0 -i2 -l79 -ts2 -ncs -npcs -npsl -fca -lc79 -fc1 -ts1 -ce -br -cdw -brs -brf";
+    public static final String BUILD_DIR = "tmpdir";
 }

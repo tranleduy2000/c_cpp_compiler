@@ -20,21 +20,63 @@ import android.content.Context;
 
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.compiler.shell.ShellResult;
+import com.duy.ide.compiler.shell.ShellUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
 public class GPlusPlusCompiler implements INativeCompiler {
-    public GPlusPlusCompiler(Context context) {
+    private Context mContext;
 
+    public GPlusPlusCompiler(Context context) {
+        this.mContext = context;
     }
 
     @Override
     public ShellResult compile(File[] sourceFiles) {
+        File internalDir = mContext.getFilesDir();
+        File gccDir = new File(internalDir, "gcc");
 
-        return null;
+        final String sysPath = System.getenv("PATH");
+        final File gccBinDir = new File(gccDir, "bin");
+        final File armGccBinDir = new File(gccDir, "arm-linux-androideabi" + File.separator + "bin");
+
+        String compilerPath = new File(gccBinDir, "arm-linux-androideabi-g++").getAbsolutePath();
+
+        List<String> flags = new ArrayList<>();
+        for (File sourceFile : sourceFiles) {
+            flags.add(sourceFile.getAbsolutePath());
+        }
+        flags.add("-pie");
+        flags.add("-std=c++14");
+        flags.add("-lz");
+        flags.add("-ldl");
+        flags.add("-lm");
+        flags.add("-llog");
+        flags.add("-lncurses");
+        flags.add("-Og");
+        flags.add("-o");
+        flags.add(internalDir.getAbsolutePath() + File.separator + GCCConstants.TEMP_BIN_NAME);
+
+        String TEMPEnv = new File(gccDir, GCCConstants.BUILD_DIR).getAbsolutePath();
+        String PATHEnv = internalDir.getAbsolutePath() + File.pathSeparator
+                + gccBinDir.getAbsolutePath() + File.pathSeparator
+                + armGccBinDir.getAbsolutePath() + File.pathSeparator
+                + sysPath;
+
+
+        Map<String, String> envMap = new HashMap<>();
+        envMap.put("PATH", PATHEnv);
+        envMap.put("TEMP", TEMPEnv);
+
+        return ShellUtils.execCommand(compilerPath, flags, envMap);
+
     }
 }

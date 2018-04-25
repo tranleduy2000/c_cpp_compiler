@@ -16,9 +16,12 @@
 
 package com.duy.ide.compiler;
 
+import com.duy.ide.compiler.shell.ShellResult;
+
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public interface OnCompileListener {
+public interface ICompileListener {
+    void onCompileResult(ShellResult result);
 }

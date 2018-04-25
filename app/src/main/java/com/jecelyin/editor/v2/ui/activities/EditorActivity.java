@@ -17,6 +17,7 @@
 package com.jecelyin.editor.v2.ui.activities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -30,7 +31,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,8 +46,9 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.CompileTask;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
+import com.duy.ide.compiler.CompileTask;
+import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.INativeCompiler;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
@@ -110,6 +111,7 @@ public class EditorActivity extends FullScreenActivity
     private MenuManager mMenuManager;
     private FolderChooserDialog.FolderCallback findFolderCallback;
     private long mExitTime;
+    private ProgressDialog mCompileDialog;
 
     public static Intent getOpenFileIntent(File file, int offset) {
         Intent intent = new Intent();
@@ -437,16 +439,7 @@ public class EditorActivity extends FullScreenActivity
 
                 break;
             case R.id.m_save_all:
-                commandEnum = Command.CommandEnum.SAVE;
-                Command command = new Command(commandEnum);
-                command.args.putBoolean(EditorDelegate.KEY_CLUSTER, true);
-                command.object = new SaveListener() {
-                    @Override
-                    public void onSaved() {
-                        doNextCommand();
-                    }
-                };
-                doClusterCommand(command);
+                saveAll();
                 break;
             case R.id.m_theme:
                 new ChangeThemeDialog(getContext()).show();
@@ -483,15 +476,43 @@ public class EditorActivity extends FullScreenActivity
         }
     }
 
-    private void compileAndRun() {
-        EditorDelegate currentEditor = getCurrentEditorDelegate();
-        if (currentEditor != null){
-            String path = currentEditor.getPath();
+    private void saveAll() {
+        Command command = new Command(Command.CommandEnum.SAVE);
+        command.args.putBoolean(EditorDelegate.KEY_CLUSTER, true);
+        command.object = new SaveListener() {
+            @Override
+            public void onSaved() {
+                doNextCommand();
+            }
+        };
+        doClusterCommand(command);
+    }
 
+    private void compileAndRun() {
+        showDialogProgress();
+
+        saveAll();
+
+        EditorDelegate currentEditor = getCurrentEditorDelegate();
+        File[] srcFiles = new File[1];
+        if (currentEditor != null) {
+            String path = currentEditor.getPath();
+            srcFiles[0] = new File(path);
         }
+
         CompilerFactory.CompileType compileType = CompilerFactory.CompileType.GCC;
-        INativeCompiler compiler = CompilerFactory.create(compileType);
-        CompileTask compileTask = new CompileTask(compiler);
+        INativeCompiler compiler = CompilerFactory.createCompiler(this, compileType);
+        ICompileManager compileManager = CompilerFactory.createCompileManager(this);
+
+        CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
+        compileTask.execute();
+    }
+
+    private void showDialogProgress() {
+        if (mCompileDialog == null) {
+            mCompileDialog = new ProgressDialog(this);
+            mCompileDialog.show();
+        }
     }
 
     private boolean ensureNotReadOnly() {

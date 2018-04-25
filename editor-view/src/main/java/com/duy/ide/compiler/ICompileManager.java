@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ide.compiler;
 
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import android.support.annotation.MainThread;
 
-import com.duy.ide.compiler.INativeCompiler;
-
-import java.io.File;
+import com.duy.ide.compiler.shell.ShellResult;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompileTask extends AsyncTask<Void, Void, Void> {
-    private INativeCompiler mCompiler;
-    private File[] mFiles;
+public interface ICompileManager {
+    @MainThread
+    void onCompileSuccess(ShellResult shellResult);
 
-    public CompileTask(INativeCompiler compiler, @NonNull File[] files) {
-        mCompiler = compiler;
-        mFiles = files;
-    }
-
-    @Override
-    protected Void doInBackground(Void... voids) {
-        return null;
-    }
+    @MainThread
+    void onCompileFailed(ShellResult shellResult);
 }

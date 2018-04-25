@@ -37,7 +37,7 @@ public class ShellUtils {
 
 
     public static boolean checkRootPermission() {
-        return execCommand(true, false).result == 0;
+        return execCommand(true, false).resultCode == 0;
     }
 
     public static ShellResult execCommand(String command) {

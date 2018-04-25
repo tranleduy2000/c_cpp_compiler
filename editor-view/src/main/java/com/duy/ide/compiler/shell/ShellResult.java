@@ -16,22 +16,28 @@
 
 package com.duy.ide.compiler.shell;
 
+import android.support.annotation.Nullable;
+
 public class ShellResult {
 
-    public int result;
-    public String msg;
+    public final int resultCode;
+    @Nullable
+    public String message;
 
-    public ShellResult(int result) {
-        this.result = result;
+    public ShellResult(int resultCode) {
+        this.resultCode = resultCode;
     }
 
-
-    public ShellResult(int result, String msg) {
-        this.result = result;
-        this.msg = msg;
+    public ShellResult(int resultCode, @Nullable String message) {
+        this.resultCode = resultCode;
+        this.message = message;
     }
 
-    public String getMsg() {
-        return msg;
+    public int getResultCode() {
+        return resultCode;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }
