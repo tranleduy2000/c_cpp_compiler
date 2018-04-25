@@ -206,7 +206,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         mEditorPagerAdapter.setEditorView(index, editorView);
     }
 
-    public void onDocumentChanged(int index) {
+    public void onDocumentChanged() {
         updateTabList();
         updateToolbar();
     }

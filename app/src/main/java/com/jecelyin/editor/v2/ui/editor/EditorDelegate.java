@@ -77,7 +77,6 @@ public class EditorDelegate implements TextWatcher {
 
     public EditorDelegate(int index, @Nullable File file, int offset, String encoding) {
         savedState = new SavedState();
-        savedState.index = index;
         savedState.file = file;
         savedState.offset = offset;
         savedState.encoding = encoding;
@@ -88,14 +87,12 @@ public class EditorDelegate implements TextWatcher {
 
     public EditorDelegate(int index, String title, Parcelable object) {
         savedState = new SavedState();
-        savedState.index = index;
         savedState.title = title;
         savedState.object = object;
     }
 
     public EditorDelegate(int index, String title, CharSequence content) {
         savedState = new SavedState();
-        savedState.index = index;
         savedState.title = title;
         savedState.content = content;
     }
@@ -401,7 +398,7 @@ public class EditorDelegate implements TextWatcher {
         editorActivity.setMenuStatus(R.id.m_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.m_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.m_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        ((EditorActivity) context).getTabManager().onDocumentChanged(savedState.index);
+        ((EditorActivity) context).getTabManager().onDocumentChanged();
     }
 
     @Override
@@ -486,7 +483,6 @@ public class EditorDelegate implements TextWatcher {
                 return new SavedState[size];
             }
         };
-        int index;
         int offset;
         int lineNumber;
         @Nullable
@@ -504,7 +500,6 @@ public class EditorDelegate implements TextWatcher {
         }
 
         SavedState(Parcel in) {
-            this.index = in.readInt();
             this.offset = in.readInt();
             this.lineNumber = in.readInt();
             String file, rootFile;
@@ -530,7 +525,6 @@ public class EditorDelegate implements TextWatcher {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.index);
             dest.writeInt(this.offset);
             dest.writeInt(this.lineNumber);
             dest.writeString(this.file == null ? null : this.file.getPath());

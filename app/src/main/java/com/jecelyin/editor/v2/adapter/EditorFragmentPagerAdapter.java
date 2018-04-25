@@ -20,7 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.duy.ide.editor.EditorFragment;
+import com.jecelyin.editor.v2.ui.editor.EditorFragment;
 
 import java.io.File;
 import java.util.ArrayList;

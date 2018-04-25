@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor;
+package com.jecelyin.editor.v2.ui.editor;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +24,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.duy.ccppcompiler.R;
+import com.jecelyin.editor.v2.view.EditorView;
+
 import java.io.File;
 
 /**
@@ -31,6 +34,7 @@ import java.io.File;
  */
 
 public class EditorFragment extends Fragment {
+
     public static EditorFragment newInstance(File file) {
 
         Bundle args = new Bundle();
@@ -43,7 +47,8 @@ public class EditorFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        EditorView view = (EditorView) inflater.inflate(R.layout.editor, container, false);
+        return view;
     }
 
     @Override
