@@ -86,17 +86,19 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     private void initEditor() {
         editorPagerAdapter = new EditorPagerAdapter(mainActivity);
-        mainActivity.mTabPager.setAdapter(editorPagerAdapter); //优先，避免TabAdapter获取不到正确的CurrentItem
+        mainActivity.mTabPager.setAdapter(editorPagerAdapter);
 
         if (Pref.getInstance(mainActivity).isOpenLastFiles()) {
             ArrayList<DBHelper.RecentFileItem> recentFiles = DBHelper.getInstance(mainActivity).getRecentFiles(true);
-
-            File f;
+            boolean needUpdateRecentFile = false;
+            File file;
             for (DBHelper.RecentFileItem item : recentFiles) {
-                f = new File(item.path);
-                if (!f.isFile())
+                file = new File(item.path);
+                if (!(file.isFile() && file.canRead() && file.canWrite())) {
+                    needUpdateRecentFile = true;
                     continue;
-                editorPagerAdapter.newEditor(false, f, item.offset, item.encoding);
+                }
+                editorPagerAdapter.newEditor(false, file, item.offset, item.encoding);
                 setCurrentTab(editorPagerAdapter.getCount() - 1); //fixme: auto load file, otherwise click other tab will crash by search result
             }
             editorPagerAdapter.notifyDataSetChanged();
@@ -145,10 +147,10 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     public boolean newTab(File file, int offset, String encoding) {
         int count = editorPagerAdapter.getCount();
         for (int i = 0; i < count; i++) {
-            EditorDelegate fragment = editorPagerAdapter.getItem(i);
-            if (fragment.getPath() == null)
+            EditorDelegate delegate = editorPagerAdapter.getItem(i);
+            if (delegate.getPath() == null)
                 continue;
-            if (fragment.getPath().equals(file.getPath())) {
+            if (delegate.getPath().equals(file.getPath())) {
                 setCurrentTab(i);
                 return false;
             }
@@ -168,7 +170,9 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         return mainActivity.mTabPager.getCurrentItem();
     }
 
-    public void setCurrentTab(final int index) {
+    public void setCurrentTab(int index) {
+        int tabCount = mainActivity.mTabPager.getAdapter().getCount();
+        index = Math.min(Math.max(0, index), tabCount);
         mainActivity.mTabPager.setCurrentItem(index);
         tabAdapter.setCurrentTab(index);
         updateToolbar();

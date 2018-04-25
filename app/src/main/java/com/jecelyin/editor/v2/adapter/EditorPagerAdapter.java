@@ -91,12 +91,6 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         notifyDataSetChanged();
     }
 
-    /**
-     * 当View被创建或是内存不足重建时，如果不更新list的内容，就会链接到旧的View
-     *
-     * @param index
-     * @param editorView
-     */
     public void setEditorView(int index, EditorView editorView) {
         if (index >= getCount()) {
             return;

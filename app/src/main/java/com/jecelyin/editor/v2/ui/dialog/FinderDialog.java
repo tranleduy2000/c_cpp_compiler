@@ -281,9 +281,6 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
     }
 
     private void doInFiles(ExtGrep grep, String replaceText) {
-//        Intent intent = new Intent(context, FindInFileActivity.class);
-//        intent.putExtra("grep", grep);
-//        getMainActivity().startFileSelectorActivity(intent);
         getMainActivity().getTabManager().newTab(grep);
     }
 
