@@ -21,7 +21,7 @@ package org.gjt.sp.jedit;
 import android.content.Context;
 import android.content.res.TypedArray;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 
 import org.gjt.sp.jedit.syntax.SyntaxStyle;
 import org.gjt.sp.jedit.syntax.Token;

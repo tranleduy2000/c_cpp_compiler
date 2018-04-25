@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.ide;
+package com.duy.ide.editor.utils;
+
+import android.content.Context;
 
 /**
- * Created by Duy on 25-Apr-18.
+ * Created by Duy on 15-Apr-18.
  */
 
-public interface ICompiler {
+public class StreamProviderFactory {
+    public static IStreamProvider create(Context context) {
+        return new StreamProviderImpl(context);
+    }
 }

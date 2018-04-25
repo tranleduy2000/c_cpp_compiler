@@ -46,7 +46,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
-import com.duy.ide.ICompiler;
+import com.duy.ide.compiler.INativeCompiler;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -482,7 +482,7 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void compileAndRun() {
-        ICompiler compiler = CompilerFactory.create();
+        INativeCompiler compiler = CompilerFactory.create();
 
     }
 

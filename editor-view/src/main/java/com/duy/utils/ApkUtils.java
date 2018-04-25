@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.utils;
+package com.duy.utils;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

@@ -18,10 +18,9 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.duy.ccppcompiler.utils.ApkUtils;
-import com.duy.ccppcompiler.utils.Constants;
-import com.duy.ccppcompiler.utils.ExtractCallback;
-import com.duy.ccppcompiler.utils.IOUtils;
+import com.duy.utils.ApkUtils;
+import com.duy.utils.Constants;
+import com.duy.utils.IOUtils;
 import com.duy.common.DLog;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 

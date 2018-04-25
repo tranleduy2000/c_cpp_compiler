@@ -119,7 +119,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews.RemoteView;
 import android.widget.Scroller;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Preferences;

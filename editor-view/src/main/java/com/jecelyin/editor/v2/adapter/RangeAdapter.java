@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 
 
 /**

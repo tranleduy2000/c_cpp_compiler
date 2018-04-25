@@ -30,7 +30,7 @@ import android.text.Spannable;
 import android.view.MotionEvent;
 import android.widget.SectionIndexer;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
 
 /**

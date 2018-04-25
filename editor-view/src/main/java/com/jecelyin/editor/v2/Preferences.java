@@ -23,7 +23,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 import com.jecelyin.common.utils.SysUtils;

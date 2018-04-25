@@ -22,22 +22,5 @@ import com.duy.ide.compiler.INativeCompiler;
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompilerFactory {
-    public static INativeCompiler create(CompileType compileType) {
-        switch (compileType) {
-            case G_PLUS_PLUS:
-                return new GPlusPlusCompiler();
-            case GCC:
-                return new GCCCompiler();
-        }
-        return null;
-    }
-
-    /**
-     * Created by Duy on 25-Apr-18.
-     */
-
-    public static enum CompileType {
-        GCC, G_PLUS_PLUS
-    }
+public class GPlusPlusCompiler implements INativeCompiler {
 }

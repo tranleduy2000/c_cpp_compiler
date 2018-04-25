@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ide.editor.span;
 
-import com.duy.ide.compiler.INativeCompiler;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.style.ReplacementSpan;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompilerFactory {
-    public static INativeCompiler create(CompileType compileType) {
-        switch (compileType) {
-            case G_PLUS_PLUS:
-                return new GPlusPlusCompiler();
-            case GCC:
-                return new GCCCompiler();
-        }
-        return null;
+public class ErrorSpan extends ReplacementSpan{
+    @Override
+    public int getSize(@NonNull Paint paint, CharSequence text, int start, int end, @Nullable Paint.FontMetricsInt fm) {
+        return 0;
     }
 
-    /**
-     * Created by Duy on 25-Apr-18.
-     */
+    @Override
+    public void draw(@NonNull Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, @NonNull Paint paint) {
 
-    public static enum CompileType {
-        GCC, G_PLUS_PLUS
     }
 }

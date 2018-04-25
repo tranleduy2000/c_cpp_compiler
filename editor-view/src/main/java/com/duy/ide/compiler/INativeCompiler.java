@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.ide;
+package com.duy.ide.compiler;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public interface ICompileResult {
+public interface INativeCompiler {
 }

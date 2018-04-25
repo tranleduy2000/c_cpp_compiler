@@ -99,7 +99,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.MethodReflection;
 

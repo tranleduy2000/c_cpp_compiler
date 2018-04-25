@@ -16,11 +16,11 @@
 
 package com.duy.ccppcompiler.compiler;
 
-import com.duy.ide.ICompiler;
+import com.duy.ide.compiler.INativeCompiler;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompilerManager implements ICompiler {
+public class CompilerManager implements INativeCompiler {
 }

@@ -25,7 +25,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.preference.JecListPreference;
 

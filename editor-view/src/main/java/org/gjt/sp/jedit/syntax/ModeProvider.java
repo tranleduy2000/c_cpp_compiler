@@ -19,8 +19,8 @@ package org.gjt.sp.jedit.syntax;
 import android.content.Context;
 import android.util.Log;
 
-import com.duy.text.editor.utils.IStreamProvider;
-import com.duy.text.editor.utils.StreamProviderFactory;
+import com.duy.ide.editor.utils.IStreamProvider;
+import com.duy.ide.editor.utils.StreamProviderFactory;
 import com.jecelyin.common.utils.DLog;
 
 import org.gjt.sp.jedit.Catalog;

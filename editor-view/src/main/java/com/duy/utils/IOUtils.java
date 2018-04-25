@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.utils;
+package com.duy.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

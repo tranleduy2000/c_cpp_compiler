@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.utils;
+package com.duy.utils;
 
 /**
  * Created by Duy on 22-Apr-18.

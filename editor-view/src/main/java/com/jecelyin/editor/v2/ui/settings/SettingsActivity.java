@@ -26,7 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.duy.text.editor.R;
+import com.duy.ide.editor.editor.R;
 
 
 /**

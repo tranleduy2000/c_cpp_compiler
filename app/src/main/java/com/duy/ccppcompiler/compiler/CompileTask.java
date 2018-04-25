@@ -16,28 +16,28 @@
 
 package com.duy.ccppcompiler.compiler;
 
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+
 import com.duy.ide.compiler.INativeCompiler;
+
+import java.io.File;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompilerFactory {
-    public static INativeCompiler create(CompileType compileType) {
-        switch (compileType) {
-            case G_PLUS_PLUS:
-                return new GPlusPlusCompiler();
-            case GCC:
-                return new GCCCompiler();
-        }
-        return null;
+public class CompileTask extends AsyncTask<Void, Void, Void> {
+    private INativeCompiler mCompiler;
+    private File[] mFiles;
+
+    public CompileTask(INativeCompiler compiler, @NonNull File[] files) {
+        mCompiler = compiler;
+        mFiles = files;
     }
 
-    /**
-     * Created by Duy on 25-Apr-18.
-     */
-
-    public static enum CompileType {
-        GCC, G_PLUS_PLUS
+    @Override
+    protected Void doInBackground(Void... voids) {
+        return null;
     }
 }
