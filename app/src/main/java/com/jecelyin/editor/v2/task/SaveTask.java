@@ -59,6 +59,9 @@ public class SaveTask {
         if (document == null || editorDelegate == null)
             return;
         if (!document.isChanged()) {
+            if (listener != null) {
+                listener.onSaved();
+            }
             return;
         }
         this.isCluster = isCluster;

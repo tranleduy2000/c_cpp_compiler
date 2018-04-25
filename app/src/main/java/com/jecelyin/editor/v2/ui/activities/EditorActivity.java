@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -437,7 +438,8 @@ public class EditorActivity extends FullScreenActivity
 
                 break;
             case R.id.m_save_all:
-                saveAll();
+                UIUtils.toast(this, R.string.save_all);
+                saveAll(null);
                 break;
             case R.id.m_theme:
                 new ChangeThemeDialog(getContext()).show();
@@ -474,34 +476,43 @@ public class EditorActivity extends FullScreenActivity
         }
     }
 
-    private void saveAll() {
+    private void saveAll(@Nullable final SaveListener onSaveListener) {
         Command command = new Command(Command.CommandEnum.SAVE);
         command.args.putBoolean(EditorDelegate.KEY_CLUSTER, true);
         command.object = new SaveListener() {
             @Override
             public void onSaved() {
-                doNextCommand();
+                if (clusterCommand != null && clusterCommand.hasNextCommand()) {
+                    doNextCommand();
+                } else {
+                    if (onSaveListener != null) {
+                        onSaveListener.onSaved();
+                    }
+                }
             }
         };
         doClusterCommand(command);
     }
 
     private void compileAndRun() {
-        saveAll();
+        saveAll(new SaveListener() {
+            @Override
+            public void onSaved() {
+                EditorDelegate currentEditor = getCurrentEditorDelegate();
+                File[] srcFiles = new File[1];
+                if (currentEditor != null) {
+                    String path = currentEditor.getPath();
+                    srcFiles[0] = new File(path);
+                }
 
-        EditorDelegate currentEditor = getCurrentEditorDelegate();
-        File[] srcFiles = new File[1];
-        if (currentEditor != null) {
-            String path = currentEditor.getPath();
-            srcFiles[0] = new File(path);
-        }
+                CompilerFactory.CompileType compileType = CompilerFactory.CompileType.GCC;
+                INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
+                ICompileManager compileManager = CompilerFactory.createCompileManager(EditorActivity.this);
 
-        CompilerFactory.CompileType compileType = CompilerFactory.CompileType.GCC;
-        INativeCompiler compiler = CompilerFactory.createCompiler(this, compileType);
-        ICompileManager compileManager = CompilerFactory.createCompileManager(this);
-
-        CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-        compileTask.execute();
+                CompileTask compileTask = new CompileTask(EditorActivity.this, compiler, srcFiles, compileManager);
+                compileTask.execute();
+            }
+        });
     }
 
     @Override

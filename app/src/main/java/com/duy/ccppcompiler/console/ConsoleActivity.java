@@ -22,7 +22,9 @@ import com.termux.view.TerminalView;
 
 public class ConsoleActivity extends AppCompatActivity implements ServiceConnection {
 
+    public static final String EXTRA_BINARY_FILE_PATH = "file_path";
     private static final String TAG = "ConsoleActivity";
+
     private static final int MAX_FONTSIZE = 256;
     private static int MIN_FONTSIZE;
     public TerminalView mEmulatorView;

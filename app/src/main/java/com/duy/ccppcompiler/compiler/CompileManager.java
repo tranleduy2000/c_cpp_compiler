@@ -17,11 +17,15 @@
 package com.duy.ccppcompiler.compiler;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 
+import com.duy.ccppcompiler.console.ConsoleActivity;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+
+import java.io.File;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -41,7 +45,11 @@ public class CompileManager implements ICompileManager {
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
         }
-        UIUtils.toast(mActivity, "Compile failed");
+        File internalDir = mActivity.getFilesDir();
+        String cmd = new File(internalDir, GCCConstants.TEMP_BINARY_NAME).getAbsolutePath();
+        Intent intent = new Intent(mActivity, ConsoleActivity.class);
+        intent.putExtra(ConsoleActivity.EXTRA_BINARY_FILE_PATH, cmd);
+        mActivity.startActivity(intent);
     }
 
     @Override
@@ -49,5 +57,11 @@ public class CompileManager implements ICompileManager {
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
         }
+        UIUtils.toast(mActivity, "Compile failed");
+    }
+
+    @Override
+    public void onPrepareCompile() {
+        mCompileDialog.show();
     }
 }

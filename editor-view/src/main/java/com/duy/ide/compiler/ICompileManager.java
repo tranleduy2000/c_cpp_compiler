@@ -30,4 +30,7 @@ public interface ICompileManager {
 
     @MainThread
     void onCompileFailed(ShellResult shellResult);
+
+    @MainThread
+    void onPrepareCompile();
 }

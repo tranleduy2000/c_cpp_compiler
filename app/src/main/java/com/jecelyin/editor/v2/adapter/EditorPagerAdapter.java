@@ -51,7 +51,7 @@ import java.util.ArrayList;
 public class EditorPagerAdapter extends ViewPagerAdapter {
     private static final String TAG = "EditorPagerAdapter";
     private final Context context;
-    private ArrayList<EditorDelegate> editorDelegates = new ArrayList<>();
+    private final ArrayList<EditorDelegate> editorDelegates = new ArrayList<>();
     private int currentPosition;
 
     public EditorPagerAdapter(Context context) {
@@ -165,6 +165,10 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         }
 
         return arr;
+    }
+
+    public ArrayList<EditorDelegate> getEditorDelegates() {
+        return editorDelegates;
     }
 
     public boolean removeEditor(final int position, final TabCloseListener listener) {

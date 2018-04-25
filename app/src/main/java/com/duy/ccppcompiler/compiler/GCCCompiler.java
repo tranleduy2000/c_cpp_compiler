@@ -63,7 +63,7 @@ public class GCCCompiler implements INativeCompiler {
         flags.add("-lncurses");
         flags.add("-Og");
         flags.add("-o");
-        flags.add(new File(internalDir.getAbsolutePath(), GCCConstants.TEMP_BIN_NAME).getAbsolutePath());
+        flags.add(new File(internalDir.getAbsolutePath(), GCCConstants.TEMP_BINARY_NAME).getAbsolutePath());
 
         String TEMPEnv = new File(gccDir, GCCConstants.BUILD_DIR).getAbsolutePath();
         String PATHEnv =
