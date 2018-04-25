@@ -19,6 +19,7 @@
 package com.jecelyin.editor.v2.ui.editor;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.core.widget.BaseEditorView;
 import android.core.widget.EditAreaView;
@@ -26,6 +27,7 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -357,23 +359,24 @@ public class EditorDelegate implements TextWatcher {
             return;
         }
         if (document.isChanged()) {
-            new MaterialDialog.Builder(context)
-                    .title(R.string.document_changed)
-                    .content(R.string.give_up_document_changed_message)
-                    .positiveText(R.string.cancel)
-                    .negativeText(R.string.ok)
-                    .callback(new MaterialDialog.ButtonCallback() {
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.document_changed)
+                    .setMessage(R.string.give_up_document_changed_message)
+                    .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onNegative(MaterialDialog dialog) {
-                            dialog.dismiss();
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
                             document.loadFile(file, encoding);
                         }
-
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            dialog.dismiss();
-                        }
-                    }).show();
+                    })
+                    .create()
+                    .show();
             return;
         }
         document.loadFile(file, encoding);
