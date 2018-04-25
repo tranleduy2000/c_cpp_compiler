@@ -40,7 +40,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.OnVisibilityChangedListener;
 import com.jecelyin.editor.v2.common.SaveListener;
@@ -116,7 +116,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         a.recycle();
 
         document = new Document(context, this);
-        mEditText.setReadOnly(Pref.getInstance(context).isReadOnly());
+        mEditText.setReadOnly(Preferences.getInstance(context).isReadOnly());
         mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
 
         if (savedState.editorState != null) {
@@ -248,7 +248,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
     public boolean doCommand(Command command) {
         if (mEditText == null)
             return false;
-        boolean readonly = Pref.getInstance(context).isReadOnly();
+        boolean readonly = Preferences.getInstance(context).isReadOnly();
         switch (command.what) {
             case HIDE_SOFT_INPUT:
                 mEditText.hideSoftInput();
@@ -299,8 +299,8 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
                 documentInfoDialog.show();
                 break;
             case READONLY_MODE:
-                Pref pref = Pref.getInstance(context);
-                boolean readOnly = pref.isReadOnly();
+                Preferences preferences = Preferences.getInstance(context);
+                boolean readOnly = preferences.isReadOnly();
                 mEditText.setReadOnly(readOnly);
                 ((MainActivity) context).doNextCommand();
                 break;
@@ -470,7 +470,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
             ss.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
         }
 
-        if (loaded && !disableAutoSave && document != null && document.getFile() != null && Pref.getInstance(context).isAutoSave()) {
+        if (loaded && !disableAutoSave && document != null && document.getFile() != null && Preferences.getInstance(context).isAutoSave()) {
             int newOrientation = context.getResources().getConfiguration().orientation;
             if (orientation != newOrientation) {
                 DLog.d("current is screen orientation, discard auto save!");
@@ -568,7 +568,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
             final TypedArray styledAttributes = context.obtainStyledAttributes(
                     R.styleable.SelectionModeDrawables);
 
-            boolean readOnly = Pref.getInstance(context).isReadOnly();
+            boolean readOnly = Preferences.getInstance(context).isReadOnly();
             boolean selected = mEditText.hasSelection();
             if (selected) {
                 menu.add(0, R.id.m_find_replace, 0, R.string.find).

@@ -25,7 +25,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ui.activities.MainActivity;
 import com.jecelyin.editor.v2.ui.editor.Document;
 
@@ -43,7 +43,7 @@ public class ChangeThemeDialog extends AbstractDialog {
                 context.getString(R.string.default_theme),
                 context.getString(R.string.dark_theme)
         };
-        int themeIndex = Pref.getInstance(context).getTheme();
+        int themeIndex = Preferences.getInstance(context).getTheme();
 
         getDialogBuilder()
                 .items(names)
@@ -56,7 +56,7 @@ public class ChangeThemeDialog extends AbstractDialog {
                         UIUtils.showConfirmDialog(context, R.string.confirm_change_theme_message, new UIUtils.OnClickCallback() {
                             @Override
                             public void onOkClick() {
-                                Pref.getInstance(context).setTheme(i);
+                                Preferences.getInstance(context).setTheme(i);
                                 restartApp();
                             }
                         });

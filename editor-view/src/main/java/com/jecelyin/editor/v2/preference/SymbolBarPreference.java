@@ -24,7 +24,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -72,8 +72,8 @@ public class SymbolBarPreference extends MaterialEditTextPreference {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             getDialog().dismiss();
         } else {
-            getEditText().setText(Pref.VALUE_SYMBOL);
-            setText(Pref.VALUE_SYMBOL);
+            getEditText().setText(Preferences.VALUE_SYMBOL);
+            setText(Preferences.VALUE_SYMBOL);
         }
     }
 

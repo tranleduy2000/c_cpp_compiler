@@ -22,25 +22,24 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 
 import com.duy.text.editor.R;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.preference.JecListPreference;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class SettingsFragment extends PreferenceFragment implements android.preference.Preference.OnPreferenceClickListener {
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+    private static android.preference.Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new android.preference.Preference.OnPreferenceChangeListener() {
         @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
+        public boolean onPreferenceChange(android.preference.Preference preference, Object value) {
             if (value == null)
                 return true;
             String stringValue = value.toString();
@@ -73,11 +72,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     private static void dependBindPreference(PreferenceGroup pg) {
         int count = pg.getPreferenceCount();
-        Preference preference;
+        android.preference.Preference preference;
         String key;
         Object value;
 
-        Pref pref = Pref.getInstance(pg.getContext());
+        Preferences prefercence = Preferences.getInstance(pg.getContext());
 
         for (int i = 0; i < count; i++) {
             preference = pg.getPreference(i);
@@ -88,11 +87,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 continue;
             }
 
-            Class<? extends Preference> cls = preference.getClass();
-            if (cls.equals(Preference.class))
+            Class<? extends android.preference.Preference> cls = preference.getClass();
+            if (cls.equals(android.preference.Preference.class))
                 continue;
 
-            value = pref.getValue(key);
+            value = prefercence.getValue(key);
 
             if (preference instanceof JecListPreference) {
 //                if("pref_font_size".equals(key)) {
@@ -106,7 +105,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 ((CheckBoxPreference) preference).setChecked((boolean) value);
             }
 
-            if (!Pref.KEY_SYMBOL.equals(key))
+            if (!Preferences.KEY_SYMBOL.equals(key))
                 bindPreferenceSummaryToValue(preference);
         }
     }
@@ -120,12 +119,12 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
      *
      * @see #sBindPreferenceSummaryToValueListener
      */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
+    private static void bindPreferenceSummaryToValue(android.preference.Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
         String key = preference.getKey();
-        Object value = Pref.getInstance(preference.getContext()).getValue(key);
+        Object value = Preferences.getInstance(preference.getContext()).getValue(key);
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, value);
     }
 
@@ -142,7 +141,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     }
 
     @Override
-    public boolean onPreferenceClick(Preference preference) {
+    public boolean onPreferenceClick(android.preference.Preference preference) {
         return true;
     }
 

@@ -21,7 +21,7 @@ import android.content.Context;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.io.LocalFileWriterTask;
 import com.jecelyin.editor.v2.ui.editor.Document;
@@ -83,7 +83,7 @@ public class SaveTask {
         if (editorDelegateWR.get() == null || contextWR.get() == null)
             return;
         writing = true;
-        LocalFileWriterTask fileWriter = new LocalFileWriterTask(rootFile, orgiFile, encoding, Pref.getInstance(contextWR.get()).isKeepBackupFile());
+        LocalFileWriterTask fileWriter = new LocalFileWriterTask(rootFile, orgiFile, encoding, Preferences.getInstance(contextWR.get()).isKeepBackupFile());
         fileWriter.setFileWriteListener(new LocalFileWriterTask.FileWriteListener() {
             @Override
             public void onSuccess() {

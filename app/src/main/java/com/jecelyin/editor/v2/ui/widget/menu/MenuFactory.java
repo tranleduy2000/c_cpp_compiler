@@ -21,7 +21,7 @@ package com.jecelyin.editor.v2.ui.widget.menu;
 import android.content.Context;
 
 import com.duy.ccppcompiler.R;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class MenuFactory {
         groups = new EnumMap<>(MenuGroup.class);
         List<MenuItemInfo> topList = new ArrayList<>();
         groups.put(MenuGroup.TOP, topList);
-        Integer[] toolbarIcons = Pref.getInstance(context).getToolbarIcons();
+        Integer[] toolbarIcons = Preferences.getInstance(context).getToolbarIcons();
         if (toolbarIcons == null) {
             toolbarIcons = new Integer[]{R.id.m_new, R.id.m_open, R.id.m_save, R.id.m_undo, R.id.m_redo};
         }
@@ -86,9 +86,9 @@ public class MenuFactory {
     public static boolean isChecked(Context context, int id) {
         switch (id) {
             case R.id.m_readonly:
-                return Pref.getInstance(context).isReadOnly();
+                return Preferences.getInstance(context).isReadOnly();
             case R.id.m_fullscreen:
-                return Pref.getInstance(context).isFullScreenMode();
+                return Preferences.getInstance(context).isFullScreenMode();
         }
         return false;
     }

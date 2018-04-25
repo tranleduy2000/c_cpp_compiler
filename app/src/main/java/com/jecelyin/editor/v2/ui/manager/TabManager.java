@@ -24,7 +24,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.duy.ccppcompiler.R;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorPagerAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
@@ -88,7 +88,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         mEditorPagerAdapter = new EditorPagerAdapter(mActivity);
         mActivity.mEditorPager.setAdapter(mEditorPagerAdapter);
 
-        if (Pref.getInstance(mActivity).isOpenLastFiles()) {
+        if (Preferences.getInstance(mActivity).isOpenLastFiles()) {
             ArrayList<DBHelper.RecentFileItem> recentFiles = DBHelper.getInstance(mActivity).getRecentFiles(true);
             boolean needUpdateRecentFile = false;
             File file;
@@ -104,7 +104,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
             mEditorPagerAdapter.notifyDataSetChanged();
             updateTabList();
 
-            int lastTab = Pref.getInstance(mActivity).getLastTab();
+            int lastTab = Preferences.getInstance(mActivity).getLastTab();
             setCurrentTab(lastTab);
         }
 
@@ -235,7 +235,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         EditorDelegate.setDisableAutoSave(true);
         exitApp = true;
         if (mActivity.mEditorPager != null) {
-            Pref.getInstance(mActivity).setLastTab(getCurrentTab());
+            Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
         return mEditorPagerAdapter.removeAll(new TabCloseListener() {
             @Override

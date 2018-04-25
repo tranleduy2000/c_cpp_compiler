@@ -39,7 +39,7 @@ import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 
 import com.jecelyin.common.utils.LimitedQueue;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -376,7 +376,7 @@ public class EditAreaView extends BaseEditorView {
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getActionMasked();
 
-        if (mScaleDetector != null && pref.isTouchScaleTextSize())
+        if (mScaleDetector != null && preferences.isTouchScaleTextSize())
             mScaleDetector.onTouchEvent(ev);
 
         if (mFastScroller != null) {
@@ -764,8 +764,8 @@ public class EditAreaView extends BaseEditorView {
 
         public ScaleListener() {
             DisplayMetrics metrics = getResources().getDisplayMetrics();
-            minSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, Pref.DEF_MIN_FONT_SIZE, metrics);
-            maxSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, Pref.DEF_MAX_FONT_SIZE, metrics);
+            minSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, Preferences.DEF_MIN_FONT_SIZE, metrics);
+            maxSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, Preferences.DEF_MAX_FONT_SIZE, metrics);
         }
 
         @Override

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -49,7 +48,7 @@ import com.jecelyin.common.task.JecAsyncTask;
 import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.task.TaskResult;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -149,7 +148,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
             }
         });
 
-        Pref.getInstance(getContext()).registerOnSharedPreferenceChangeListener(this);
+        Preferences.getInstance(getContext()).registerOnSharedPreferenceChangeListener(this);
 
         view.post(new Runnable() {
             @Override
@@ -163,7 +162,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Pref.getInstance(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        Preferences.getInstance(getContext()).unregisterOnSharedPreferenceChangeListener(this);
         if (action != null) {
             action.destroy();
         }
@@ -260,7 +259,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
     private void switchToPath(JecFile file) {
         path = file;
         pathAdapter.setPath(file);
-        Pref.getInstance(getContext()).setLastOpenPath(file.getPath());
+        Preferences.getInstance(getContext()).setLastOpenPath(file.getPath());
         onRefresh();
     }
 
@@ -312,9 +311,9 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
 
         @Override
         protected void onRun(final TaskResult<JecFile[]> taskResult, Void... params) throws Exception {
-            Pref pref = Pref.getInstance(context);
-            final boolean showHiddenFiles = pref.isShowHiddenFiles();
-            final int sortType = pref.getFileSortType();
+            Preferences preferences = Preferences.getInstance(context);
+            final boolean showHiddenFiles = preferences.isShowHiddenFiles();
+            final int sortType = preferences.getFileSortType();
             updateRootInfo.onUpdate(path);
             path.listFiles(new FileListResultListener() {
                 @Override

@@ -28,7 +28,7 @@ import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.ReadFileListener;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.highlight.Buffer;
@@ -60,7 +60,7 @@ public class Document implements ReadFileListener, TextWatcher {
     private final EditorDelegate editorDelegate;
     private final Context context;
     private final SaveTask saveTask;
-    private final Pref pref;
+    private final Preferences preferences;
     private final Buffer buffer;
     private final HashMap<Integer, ArrayList<ForegroundColorSpan>> colorSpanMap;
     private int lineNumber;
@@ -74,7 +74,7 @@ public class Document implements ReadFileListener, TextWatcher {
     public Document(Context context, EditorDelegate editorDelegate) {
         this.editorDelegate = editorDelegate;
         this.context = context;
-        pref = Pref.getInstance(context);
+        preferences = Preferences.getInstance(context);
         root = false;
 
         buffer = new Buffer(context);
@@ -213,7 +213,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
         lineNumber = buffer.getLineManager().getLineCount();
 
-        if (!pref.isHighlight() || editableText.length() > pref.getHighlightSizeLimit())
+        if (!preferences.isHighlight() || editableText.length() > preferences.getHighlightSizeLimit())
             return;
 
         LineManager lineManager = buffer.getLineManager();

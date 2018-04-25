@@ -42,7 +42,7 @@ import com.jecelyin.android.file_explorer.util.FileListSorter;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -111,7 +111,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mode == MODE_PICK_FILE ? R.string.open_file : R.string.save_file);
 
-        lastPath = Pref.getInstance(this).getLastOpenPath();
+        lastPath = Preferences.getInstance(this).getLastOpenPath();
         if (TextUtils.isEmpty(lastPath)) {
             lastPath = Environment.getExternalStorageDirectory().getPath();
         }
@@ -154,12 +154,12 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_explorer, menu);
 
-        Pref pref = Pref.getInstance(this);
-        menu.findItem(R.id.show_hidden_files_menu).setChecked(pref.isShowHiddenFiles());
+        Preferences preferences = Preferences.getInstance(this);
+        menu.findItem(R.id.show_hidden_files_menu).setChecked(preferences.isShowHiddenFiles());
         pasteMenu = menu.findItem(R.id.paste_menu);
 
         int sortId;
-        switch (pref.getFileSortType()) {
+        switch (preferences.getFileSortType()) {
             case FileListSorter.SORT_DATE:
                 sortId = R.id.sort_by_datetime_menu;
                 break;
@@ -181,23 +181,23 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Pref pref = Pref.getInstance(this);
+        Preferences preferences = Preferences.getInstance(this);
         int id = item.getItemId();
         if (id == R.id.show_hidden_files_menu) {
             item.setChecked(!item.isChecked());
-            pref.setShowHiddenFiles(item.isChecked());
+            preferences.setShowHiddenFiles(item.isChecked());
         } else if (id == R.id.sort_by_name_menu) {
             item.setChecked(true);
-            pref.setFileSortType(FileListSorter.SORT_NAME);
+            preferences.setFileSortType(FileListSorter.SORT_NAME);
         } else if (id == R.id.sort_by_datetime_menu) {
             item.setChecked(true);
-            pref.setFileSortType(FileListSorter.SORT_DATE);
+            preferences.setFileSortType(FileListSorter.SORT_DATE);
         } else if (id == R.id.sort_by_size_menu) {
             item.setChecked(true);
-            pref.setFileSortType(FileListSorter.SORT_SIZE);
+            preferences.setFileSortType(FileListSorter.SORT_SIZE);
         } else if (id == R.id.sort_by_type_menu) {
             item.setChecked(true);
-            pref.setFileSortType(FileListSorter.SORT_TYPE);
+            preferences.setFileSortType(FileListSorter.SORT_TYPE);
         }
         return super.onOptionsItemSelected(item);
     }

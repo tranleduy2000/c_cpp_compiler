@@ -122,7 +122,7 @@ import android.widget.Scroller;
 import com.duy.text.editor.R;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.SysUtils;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -216,7 +216,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * See {@link #createEditorIfNeeded()}.
      */
     protected Editor mEditor;
-    protected Pref pref;
+    protected Preferences preferences;
     // It is possible to have a selection even when mEditor is null (programmatically set, like when
     // a link is pressed). These highlight-related fields do not go in mEditor.
     int mHighlightColor = 0x6633B5E5;
@@ -2608,8 +2608,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         // SelectionModifierCursorController depends on textCanBeSelected, which depends on text
         if (mEditor != null) mEditor.prepareCursorControllers();
 
-        if (pref != null && mText instanceof SpannableStringBuilder) {
-            ((SpannableStringBuilder) mText).setAutoIndent(pref.isAutoIndent());
+        if (preferences != null && mText instanceof SpannableStringBuilder) {
+            ((SpannableStringBuilder) mText).setAutoIndent(preferences.isAutoIndent());
         }
     }
 
@@ -6944,8 +6944,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private void init() {
         setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-        pref = layoutContext.preference = Pref.getInstance(getContext());
-        pref.registerOnSharedPreferenceChangeListener(this);
+        preferences = layoutContext.preferences = Preferences.getInstance(getContext());
+        preferences.registerOnSharedPreferenceChangeListener(this);
 
         TextPaint lineNumberPaint = new TextPaint();
         lineNumberPaint.setColor(Color.BLACK);
@@ -6968,46 +6968,46 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         onTextSizeChanged();
         initTheme();
 
-        onSharedPreferenceChanged(null, Pref.KEY_FONT_SIZE);
-        onSharedPreferenceChanged(null, Pref.KEY_CURSOR_WIDTH);
-        onSharedPreferenceChanged(null, Pref.KEY_SHOW_LINE_NUMBER);
-        onSharedPreferenceChanged(null, Pref.KEY_WORD_WRAP);
-        onSharedPreferenceChanged(null, Pref.KEY_SHOW_WHITESPACE);
-        onSharedPreferenceChanged(null, Pref.KEY_TAB_SIZE);
-        onSharedPreferenceChanged(null, Pref.KEY_AUTO_INDENT);
-        onSharedPreferenceChanged(null, Pref.KEY_AUTO_CAPITALIZE);
+        onSharedPreferenceChanged(null, Preferences.KEY_FONT_SIZE);
+        onSharedPreferenceChanged(null, Preferences.KEY_CURSOR_WIDTH);
+        onSharedPreferenceChanged(null, Preferences.KEY_SHOW_LINE_NUMBER);
+        onSharedPreferenceChanged(null, Preferences.KEY_WORD_WRAP);
+        onSharedPreferenceChanged(null, Preferences.KEY_SHOW_WHITESPACE);
+        onSharedPreferenceChanged(null, Preferences.KEY_TAB_SIZE);
+        onSharedPreferenceChanged(null, Preferences.KEY_AUTO_INDENT);
+        onSharedPreferenceChanged(null, Preferences.KEY_AUTO_CAPITALIZE);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
-            case Pref.KEY_FONT_SIZE:
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, pref.getFontSize());
+            case Preferences.KEY_FONT_SIZE:
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, preferences.getFontSize());
                 break;
-            case Pref.KEY_CURSOR_WIDTH:
+            case Preferences.KEY_CURSOR_WIDTH:
                 mHighlightPathBogus = true;
-                layoutContext.cursorThickness = pref.getCursorThickness();
+                layoutContext.cursorThickness = preferences.getCursorThickness();
                 break;
-            case Pref.KEY_SHOW_LINE_NUMBER:
+            case Preferences.KEY_SHOW_LINE_NUMBER:
                 setLineNumber(layoutContext.lineNumber);
                 break;
-            case Pref.KEY_WORD_WRAP:
-                setHorizontallyScrolling(!pref.isWordWrap());
+            case Preferences.KEY_WORD_WRAP:
+                setHorizontallyScrolling(!preferences.isWordWrap());
                 break;
-            case Pref.KEY_SHOW_WHITESPACE:
-                layoutContext.isShowWhiteSpace = pref.isShowWhiteSpace();
+            case Preferences.KEY_SHOW_WHITESPACE:
+                layoutContext.isShowWhiteSpace = preferences.isShowWhiteSpace();
                 break;
-            case Pref.KEY_TAB_SIZE:
+            case Preferences.KEY_TAB_SIZE:
                 updateTabChar();
                 break;
-            case Pref.KEY_AUTO_INDENT:
+            case Preferences.KEY_AUTO_INDENT:
                 if (mText != null && mText instanceof SpannableStringBuilder) {
-                    ((SpannableStringBuilder) mText).setAutoIndent(pref.isAutoIndent());
+                    ((SpannableStringBuilder) mText).setAutoIndent(preferences.isAutoIndent());
                 }
                 break;
-            case Pref.KEY_AUTO_CAPITALIZE:
+            case Preferences.KEY_AUTO_CAPITALIZE:
                 if (mEditor != null) {
-                    if (!pref.isAutoCapitalize()) {
+                    if (!preferences.isAutoCapitalize()) {
                         mEditor.mInputType &= ~EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES;
                     } else {
                         mEditor.mInputType |= EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES;
@@ -7024,7 +7024,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private void updateTabChar() {
 
         float spaceWidth = mTextPaint.measureText(" ");
-        float tabWidth = spaceWidth * (pref == null ? 4 : pref.getTabSize());
+        float tabWidth = spaceWidth * (preferences == null ? 4 : preferences.getTabSize());
 
         Layout.TAB_INCREMENT = (int) tabWidth;
     }
@@ -7035,7 +7035,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         }
         layoutContext.setLineNumber(lineNumber);
 
-        if (!layoutContext.preference.isShowLineNumber()) {
+        if (!layoutContext.preferences.isShowLineNumber()) {
             //invalidate
             setPaddingRelative(getPaddingEnd(), getPaddingTop(), getPaddingEnd(), getPaddingBottom());
             return;
@@ -7058,7 +7058,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     // TODO: 24-Apr-18 improve calculate padding and recalculate when layout changed
     private void drawLineNumber(Canvas canvas) {
-        if (!layoutContext.preference.isShowLineNumber()) {
+        if (!layoutContext.preferences.isShowLineNumber()) {
             return;
         }
 

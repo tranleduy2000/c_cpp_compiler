@@ -51,7 +51,7 @@ import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.task.ClusterCommand;
@@ -101,7 +101,7 @@ public class MainActivity extends FullScreenActivity
 
     private TabManager tabManager;
 
-    private Pref pref;
+    private Preferences preferences;
     private ClusterCommand clusterCommand;
     private MenuManager mMenuManager;
     private FolderChooserDialog.FolderCallback findFolderCallback;
@@ -161,7 +161,7 @@ public class MainActivity extends FullScreenActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pref = Pref.getInstance(this);
+        preferences = Preferences.getInstance(this);
         MenuManager.init(this);
 
         setContentView(R.layout.activity_main);
@@ -204,10 +204,10 @@ public class MainActivity extends FullScreenActivity
 
     private void bindPreferences() {
 //        mEditorPager.setOffscreenPageLimit(pref.getMaxEditor());
-        mDrawerLayout.setKeepScreenOn(pref.isKeepScreenOn());
-        mDrawerLayout.setDrawerLockMode(pref.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mSymbolBarLayout.setVisibility(pref.isReadOnly() ? View.GONE : View.VISIBLE);
-        pref.registerOnSharedPreferenceChangeListener(this);
+        mDrawerLayout.setKeepScreenOn(preferences.isKeepScreenOn());
+        mDrawerLayout.setDrawerLockMode(preferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mSymbolBarLayout.setVisibility(preferences.isReadOnly() ? View.GONE : View.VISIBLE);
+        preferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -215,34 +215,34 @@ public class MainActivity extends FullScreenActivity
         if (mToolbar == null)
             return;
         switch (key) {
-            case Pref.KEY_KEEP_SCREEN_ON:
+            case Preferences.KEY_KEEP_SCREEN_ON:
                 mToolbar.setKeepScreenOn(sharedPreferences.getBoolean(key, false));
                 break;
-            case Pref.KEY_ENABLE_HIGHLIGHT:
+            case Preferences.KEY_ENABLE_HIGHLIGHT:
                 Command command = new Command(Command.CommandEnum.HIGHLIGHT);
-                command.object = pref.isHighlight() ? null : Catalog.DEFAULT_MODE_NAME;
+                command.object = preferences.isHighlight() ? null : Catalog.DEFAULT_MODE_NAME;
                 doClusterCommand(command);
                 break;
-            case Pref.KEY_SCREEN_ORIENTATION:
+            case Preferences.KEY_SCREEN_ORIENTATION:
                 setScreenOrientation();
                 break;
-            case Pref.KEY_PREF_ENABLE_DRAWERS:
-                mDrawerLayout.setDrawerLockMode(pref.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            case Preferences.KEY_PREF_ENABLE_DRAWERS:
+                mDrawerLayout.setDrawerLockMode(preferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 break;
-            case Pref.KEY_READ_ONLY:
-                mSymbolBarLayout.setVisibility(pref.isReadOnly() ? View.GONE : View.VISIBLE);
+            case Preferences.KEY_READ_ONLY:
+                mSymbolBarLayout.setVisibility(preferences.isReadOnly() ? View.GONE : View.VISIBLE);
                 break;
         }
     }
 
     private void setScreenOrientation() {
-        int orgi = pref.getScreenOrientation();
+        int orgi = preferences.getScreenOrientation();
 
-        if (Pref.SCREEN_ORIENTATION_AUTO == orgi) {
+        if (Preferences.SCREEN_ORIENTATION_AUTO == orgi) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        } else if (Pref.SCREEN_ORIENTATION_LANDSCAPE == orgi) {
+        } else if (Preferences.SCREEN_ORIENTATION_LANDSCAPE == orgi) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else if (Pref.SCREEN_ORIENTATION_PORTRAIT == orgi) {
+        } else if (Preferences.SCREEN_ORIENTATION_PORTRAIT == orgi) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
@@ -449,15 +449,15 @@ public class MainActivity extends FullScreenActivity
                 new ChangeThemeDialog(getContext()).show();
                 break;
             case R.id.m_fullscreen:
-                boolean fullscreenMode = pref.isFullScreenMode();
-                pref.setFullScreenMode(!fullscreenMode);
+                boolean fullscreenMode = preferences.isFullScreenMode();
+                preferences.setFullScreenMode(!fullscreenMode);
                 UIUtils.toast(this, fullscreenMode
                         ? R.string.disabled_fullscreen_mode_message
                         : R.string.enable_fullscreen_mode_message);
                 break;
             case R.id.m_readonly:
-                boolean readOnly = !pref.isReadOnly();
-                pref.setReadOnly(readOnly);
+                boolean readOnly = !preferences.isReadOnly();
+                preferences.setReadOnly(readOnly);
                 doClusterCommand(new Command(Command.CommandEnum.READONLY_MODE));
                 break;
             case R.id.m_encoding:
@@ -485,7 +485,7 @@ public class MainActivity extends FullScreenActivity
     }
 
     private boolean ensureNotReadOnly() {
-        boolean readOnly = pref.isReadOnly();
+        boolean readOnly = preferences.isReadOnly();
         if (readOnly) {
             UIUtils.toast(this, R.string.readonly_mode_not_support_this_action);
             return false;

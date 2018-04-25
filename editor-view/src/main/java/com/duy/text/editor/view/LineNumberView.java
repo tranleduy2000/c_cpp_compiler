@@ -71,7 +71,7 @@ public class LineNumberView extends View implements TextWatcher {
             return;
         }
         LayoutContext layoutContext = editorView.getLayoutContext();
-        if (!layoutContext.preference.isShowLineNumber()) {
+        if (!layoutContext.preferences.isShowLineNumber()) {
             return;
         }
 

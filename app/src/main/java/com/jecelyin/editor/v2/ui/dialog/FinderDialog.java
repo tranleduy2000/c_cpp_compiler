@@ -41,7 +41,7 @@ import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.common.widget.DrawClickableEditText;
-import com.jecelyin.editor.v2.Pref;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.jecelyin.editor.v2.utils.ExtGrep;
@@ -109,7 +109,7 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
         holder.mReplaceEditText.setDrawableClickListener(this);
         if (findText != null)
             holder.mFindEditText.setText(findText.toString());
-        if (Pref.getInstance(context).isReadOnly()) {
+        if (Preferences.getInstance(context).isReadOnly()) {
             holder.mReplaceCheckBox.setVisibility(View.GONE);
             holder.mReplaceEditText.setVisibility(View.GONE);
         } else {
@@ -144,7 +144,7 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
         holder.mBrowserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String path = Pref.getInstance(context).getLastOpenPath();
+                String path = Preferences.getInstance(context).getLastOpenPath();
                 if (!new File(path).isDirectory())
                     path = Environment.getExternalStorageDirectory().getPath();
                 new FolderChooserDialog.Builder(getMainActivity())
