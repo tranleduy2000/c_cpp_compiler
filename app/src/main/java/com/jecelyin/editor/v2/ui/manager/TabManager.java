@@ -134,7 +134,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 return false;
             }
         }
-        mEditorPagerAdapter.newEditor(file, offset, encoding);
+        mEditorPagerAdapter.newEditor(true, file, offset, encoding);
         setCurrentTab(count);
         return true;
     }

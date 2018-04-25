@@ -108,11 +108,7 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void newEditor(@Nullable File file, int offset, String encoding) {
-        newEditor(true, file, offset, encoding);
-    }
-
-    public void newEditor(boolean notify, @Nullable File file, int offset, String encoding) {
+    public void newEditor(boolean notify, @NonNull File file, int offset, String encoding) {
         editorDelegates.add(new EditorDelegate(file, offset, encoding));
         if (notify)
             notifyDataSetChanged();

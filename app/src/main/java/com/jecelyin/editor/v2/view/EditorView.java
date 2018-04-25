@@ -21,7 +21,6 @@ package com.jecelyin.editor.v2.view;
 import android.content.Context;
 import android.core.widget.EditAreaView;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -58,10 +57,10 @@ public class EditorView extends RelativeLayout {
 
     public void setLoading(boolean loading) {
         if (loading) {
-            ((View) editText).setVisibility(GONE);
+            editText.setVisibility(GONE);
             progressView.setVisibility(VISIBLE);
         } else {
-            ((View) editText).setVisibility(VISIBLE);
+            editText.setVisibility(VISIBLE);
             progressView.setVisibility(GONE);
         }
     }

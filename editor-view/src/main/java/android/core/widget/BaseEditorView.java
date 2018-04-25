@@ -253,21 +253,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     // the user holding the movement key down) then we shouldn't prevent the focus from changing.
     private boolean mPreventDefaultMovement;
     private int mLastCursorOffset = -1;
-    private Marquee mMarquee;
-    private boolean mRestartMarquee;
     private int mMarqueeRepeatLimit = 3;
     private int mLastLayoutDirection = -1;
-    /**
-     * On some devices the fading edges add a performance penalty if used
-     * extensively in the same layout. This mode indicates how the marquee
-     * is currently being shown, if applicable. (mEllipsize will == MARQUEE)
-     */
-    private int mMarqueeFadeMode = MARQUEE_FADE_NORMAL;
-    /**
-     * When mMarqueeFadeMode is not MARQUEE_FADE_NORMAL, this stores
-     * the layout that should be used when the mode switches.
-     */
-    private Layout mSavedMarqueeModeLayout;
     private CharSequence mText;
     private CharSequence mTransformed;
     private BufferType mBufferType = BufferType.NORMAL;
@@ -2310,18 +2297,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             ss.selStart = start;
             ss.selEnd = end;
 
-//            if (mText instanceof Spanned) {
-//                Spannable sp = new SpannableStringBuilder(mText);
-//
-//                if (mEditor != null) {
-//                    removeMisspelledSpans(sp);
-//                    sp.removeSpan(mEditor.mSuggestionRangeSpan);
-//                }
-//
-//                ss.text = sp;
-//            } else {
-//                ss.text = mText.toString();
-//            }
             if (mText instanceof SpannableStringBuilder) {
                 SpannableStringBuilder ssb = (SpannableStringBuilder) mText;
                 ss.text = ssb.toCharArray();
@@ -4370,7 +4345,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             mSavedHintLayout = (BoringLayout) mHintLayout;
         }
 
-        mSavedMarqueeModeLayout = mLayout = mHintLayout = null;
+        mLayout = mHintLayout = null;
 
         mBoring = mHintBoring = null;
 
@@ -4460,7 +4435,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                                  BoringLayout.Metrics boring,
                                  BoringLayout.Metrics hintBoring,
                                  int ellipsisWidth, boolean bringIntoView) {
-        stopMarquee();
 
         // Update "old" cached values
         mOldMaximum = mMaximum;
@@ -4531,21 +4505,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             registerForPreDraw();
         }
 
-//        if (mEllipsize == TruncateAt.MARQUEE) {
-//            if (!compressText(ellipsisWidth)) {
-//                final int height = mLayoutParams.height;
-//                // If the size of the view does not depend on the size of the text, try to
-//                // start the marquee immediately
-//                if (height != LayoutParams.WRAP_CONTENT && height != LayoutParams.MATCH_PARENT) {
-//                    startMarquee();
-//                } else {
-//                    // Defer the start of the marquee until we know our width (see setFrame())
-//                    mRestartMarquee = true;
-//                }
-//            }
-//        }
-
-        // CursorControllers need a non-null mLayout
         if (mEditor != null) mEditor.prepareCursorControllers();
     }
 
@@ -4592,28 +4551,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             }
         }
         return result;
-    }
-
-    private boolean compressText(float width) {
-        if (isHardwareAccelerated()) return false;
-
-        // Only compress the text if it hasn't been compressed by the previous pass
-        if (width > 0.0f && mLayout != null && getLineCount() == 1 && !mUserSetTextScaleX &&
-                mTextPaint.getTextScaleX() == 1.0f) {
-            final float textWidth = mLayout.getLineWidth(0);
-            final float overflow = (textWidth + 1.0f - width) / width;
-            if (overflow > 0.0f && overflow <= Marquee.MARQUEE_DELTA_MAX) {
-                mTextPaint.setTextScaleX(1.0f - overflow - 0.005f);
-                post(new Runnable() {
-                    public void run() {
-                        requestLayout();
-                    }
-                });
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -5523,59 +5460,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         }
     }
 
-    private boolean canMarquee() {
-//        int width = (getRight() - getLeft() - getCompoundPaddingLeft() - getCompoundPaddingRight());
-//        return width > 0 && (mLayout.getLineWidth(0) > width ||
-//                (mMarqueeFadeMode != MARQUEE_FADE_NORMAL && mSavedMarqueeModeLayout != null &&
-//                        mSavedMarqueeModeLayout.getLineWidth(0) > width));
-        return false;
-    }
-
-    private void startMarquee() {
-        // Do not ellipsize EditText
-        if (getKeyListener() != null) return;
-
-        if (compressText(getWidth() - getCompoundPaddingLeft() - getCompoundPaddingRight())) {
-            return;
-        }
-
-        if ((mMarquee == null || mMarquee.isStopped()) && (isFocused() || isSelected()) &&
-                getLineCount() == 1 && canMarquee()) {
-
-            if (mMarqueeFadeMode == MARQUEE_FADE_SWITCH_SHOW_ELLIPSIS) {
-                mMarqueeFadeMode = MARQUEE_FADE_SWITCH_SHOW_FADE;
-                final Layout tmp = mLayout;
-                mLayout = mSavedMarqueeModeLayout;
-                mSavedMarqueeModeLayout = tmp;
-                setHorizontalFadingEdgeEnabled(true);
-                requestLayout();
-                invalidate();
-            }
-
-            if (mMarquee == null) mMarquee = new Marquee(this);
-            mMarquee.start(mMarqueeRepeatLimit);
-        }
-    }
-
-    private void stopMarquee() {
-        if (mMarquee != null && !mMarquee.isStopped()) {
-            mMarquee.stop();
-        }
-
-        if (mMarqueeFadeMode == MARQUEE_FADE_SWITCH_SHOW_FADE) {
-            mMarqueeFadeMode = MARQUEE_FADE_SWITCH_SHOW_ELLIPSIS;
-            final Layout tmp = mSavedMarqueeModeLayout;
-            mSavedMarqueeModeLayout = mLayout;
-            mLayout = tmp;
-            setHorizontalFadingEdgeEnabled(false);
-            requestLayout();
-            invalidate();
-        }
-    }
-
-    private void startStopMarquee(boolean start) {
-    }
-
     /**
      * This method is called when the text is changed, in case any subclasses
      * would like to know.
@@ -5918,7 +5802,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             }
         }
 
-        startStopMarquee(focused);
 
         if (mTransformation != null) {
             mTransformation.onFocusChanged(this, mText, focused, direction, previouslyFocusedRect);
@@ -5933,7 +5816,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         if (mEditor != null) mEditor.onWindowFocusChanged(hasWindowFocus);
 
-        startStopMarquee(hasWindowFocus);
     }
 
     @Override
@@ -7153,7 +7035,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             selEnd = in.readInt();
             frozenWithFocus = (in.readInt() != 0);
 //            text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
-//            text = in.createCharArray();
+            text = in.createCharArray();
             textLength = in.readInt();
 
             if (in.readInt() != 0) {
@@ -7170,7 +7052,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             out.writeInt(selEnd);
             out.writeInt(frozenWithFocus ? 1 : 0);
 //            TextUtils.writeToParcel(text, out, flags);
-//            out.writeCharArray(this.text);
+            out.writeCharArray(this.text);
             out.writeInt(this.textLength);
 
             if (error == null) {
@@ -7190,148 +7072,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 str += " text=" + text;
             }
             return str + "}";
-        }
-    }
-
-    private static final class Marquee {
-        // TODO: Add an option to configure this
-        private static final float MARQUEE_DELTA_MAX = 0.07f;
-        private static final int MARQUEE_DELAY = 1200;
-        private static final int MARQUEE_RESTART_DELAY = 1200;
-        private static final int MARQUEE_DP_PER_SECOND = 30;
-
-        private static final byte MARQUEE_STOPPED = 0x0;
-        private static final byte MARQUEE_STARTING = 0x1;
-        private static final byte MARQUEE_RUNNING = 0x2;
-
-        private final WeakReference<BaseEditorView> mView;
-        private final float mPixelsPerSecond;
-        private Choreographer mChoreographer;
-        private byte mStatus = MARQUEE_STOPPED;
-        private float mMaxScroll;
-        private float mMaxFadeScroll;
-        private float mGhostStart;
-        private float mGhostOffset;
-        private float mFadeStop;
-        private int mRepeatLimit;
-
-        private float mScroll;
-        private long mLastAnimationMs;
-        private Choreographer.FrameCallback mTickCallback = new Choreographer.FrameCallback() {
-            @Override
-            public void doFrame(long frameTimeNanos) {
-                tick();
-            }
-        };
-        private Choreographer.FrameCallback mStartCallback = new Choreographer.FrameCallback() {
-            @Override
-            public void doFrame(long frameTimeNanos) {
-                mStatus = MARQUEE_RUNNING;
-//                mLastAnimationMs = mChoreographer.getFrameTime();
-                tick();
-            }
-        };
-        private Choreographer.FrameCallback mRestartCallback = new Choreographer.FrameCallback() {
-            @Override
-            public void doFrame(long frameTimeNanos) {
-                if (mStatus == MARQUEE_RUNNING) {
-                    if (mRepeatLimit >= 0) {
-                        mRepeatLimit--;
-                    }
-                    start(mRepeatLimit);
-                }
-            }
-        };
-
-        Marquee(BaseEditorView v) {
-            final float density = v.getContext().getResources().getDisplayMetrics().density;
-            mPixelsPerSecond = MARQUEE_DP_PER_SECOND * density;
-            mView = new WeakReference<>(v);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                mChoreographer = Choreographer.getInstance();
-            }
-        }
-
-        void tick() {
-            if (mStatus != MARQUEE_RUNNING) {
-                return;
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                mChoreographer.removeFrameCallback(mTickCallback);
-            }
-
-        }
-
-        void stop() {
-            mStatus = MARQUEE_STOPPED;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                mChoreographer.removeFrameCallback(mStartCallback);
-                mChoreographer.removeFrameCallback(mRestartCallback);
-                mChoreographer.removeFrameCallback(mTickCallback);
-            }
-            resetScroll();
-        }
-
-        private void resetScroll() {
-            mScroll = 0.0f;
-            final BaseEditorView textView = mView.get();
-            if (textView != null) textView.invalidate();
-        }
-
-        void start(int repeatLimit) {
-            if (repeatLimit == 0) {
-                stop();
-                return;
-            }
-            mRepeatLimit = repeatLimit;
-            final BaseEditorView textView = mView.get();
-            if (textView != null && textView.mLayout != null) {
-                mStatus = MARQUEE_STARTING;
-                mScroll = 0.0f;
-                final int textWidth = textView.getWidth() - textView.getCompoundPaddingLeft() -
-                        textView.getCompoundPaddingRight();
-                final float lineWidth = textView.mLayout.getLineWidth(0);
-                final float gap = textWidth / 3.0f;
-                mGhostStart = lineWidth - textWidth + gap;
-                mMaxScroll = mGhostStart + textWidth;
-                mGhostOffset = lineWidth + gap;
-                mFadeStop = lineWidth + textWidth / 6.0f;
-                mMaxFadeScroll = mGhostStart + lineWidth + lineWidth;
-
-                textView.invalidate();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    mChoreographer.postFrameCallback(mStartCallback);
-                }
-            }
-        }
-
-        float getGhostOffset() {
-            return mGhostOffset;
-        }
-
-        float getScroll() {
-            return mScroll;
-        }
-
-        float getMaxFadeScroll() {
-            return mMaxFadeScroll;
-        }
-
-        boolean shouldDrawLeftFade() {
-            return mScroll <= mFadeStop;
-        }
-
-        boolean shouldDrawGhost() {
-            return mStatus == MARQUEE_RUNNING && mScroll > mGhostStart;
-        }
-
-        boolean isRunning() {
-            return mStatus == MARQUEE_RUNNING;
-        }
-
-        boolean isStopped() {
-            return mStatus == MARQUEE_STOPPED;
         }
     }
 
