@@ -49,6 +49,7 @@ import java.util.ArrayList;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class EditorPagerAdapter extends ViewPagerAdapter {
+    private static final String TAG = "EditorPagerAdapter";
     private final Context context;
     private ArrayList<EditorDelegate> editorDelegates = new ArrayList<>();
     private int currentPosition;
@@ -89,12 +90,12 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public Parcelable saveState() {
-        SavedState ss = new SavedState();
-        ss.states = new EditorDelegate.SavedState[editorDelegates.size()];
+        SavedState savedState = new SavedState();
+        savedState.states = new EditorDelegate.SavedState[editorDelegates.size()];
         for (int i = editorDelegates.size() - 1; i >= 0; i--) {
-            ss.states[i] = (EditorDelegate.SavedState) editorDelegates.get(i).onSaveInstanceState();
+            savedState.states[i] = (EditorDelegate.SavedState) editorDelegates.get(i).onSaveInstanceState();
         }
-        return ss;
+        return savedState;
     }
 
     @Override

@@ -43,22 +43,22 @@ import java.util.ArrayList;
  */
 public class TabManager implements ViewPager.OnPageChangeListener {
     private final MainActivity mActivity;
-    private final TabAdapter tabAdapter;
+    private final TabAdapter mTabAdapter;
     private EditorPagerAdapter mEditorPagerAdapter;
     private boolean exitApp;
 
     public TabManager(MainActivity activity) {
         this.mActivity = activity;
 
-        this.tabAdapter = new TabAdapter();
-        tabAdapter.setOnClickListener(new View.OnClickListener() {
+        this.mTabAdapter = new TabAdapter();
+        mTabAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onTabMenuViewsClick(v);
             }
         });
         mActivity.getTabRecyclerView().addItemDecoration(new HorizontalDividerItemDecoration.Builder(activity.getContext()).build());
-        mActivity.getTabRecyclerView().setAdapter(tabAdapter);
+        mActivity.getTabRecyclerView().setAdapter(mTabAdapter);
 
         initEditor();
 
@@ -68,7 +68,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 mActivity.mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
-        mActivity.mEditorPager.setOnPageChangeListener(this);
+        mActivity.mEditorPager.addOnPageChangeListener(this);
     }
 
     private void onTabMenuViewsClick(View v) {
@@ -160,9 +160,9 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public int getTabCount() {
-        if (tabAdapter == null)
+        if (mTabAdapter == null)
             return 0;
-        return tabAdapter.getItemCount();
+        return mTabAdapter.getItemCount();
     }
 
     public int getCurrentTab() {
@@ -172,8 +172,9 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     public void setCurrentTab(int index) {
         int tabCount = mActivity.mEditorPager.getAdapter().getCount();
         index = Math.min(Math.max(0, index), tabCount);
+
         mActivity.mEditorPager.setCurrentItem(index);
-        tabAdapter.setCurrentTab(index);
+        mTabAdapter.setCurrentTab(index);
         updateToolbar();
     }
 
@@ -201,7 +202,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     @Override
     public void onPageSelected(int position) {
-        tabAdapter.setCurrentTab(position);
+        mTabAdapter.setCurrentTab(position);
     }
 
     @Override
@@ -210,8 +211,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void updateTabList() {
-        tabAdapter.setTabInfoList(mEditorPagerAdapter.getTabInfoList());
-        tabAdapter.notifyDataSetChanged();
+        mTabAdapter.setTabInfoList(mEditorPagerAdapter.getTabInfoList());
+        mTabAdapter.notifyDataSetChanged();
     }
 
     public void updateEditorView(int index, EditorView editorView) {
