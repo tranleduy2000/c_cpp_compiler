@@ -19,12 +19,15 @@
 package com.jecelyin.editor.v2.ui.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v7.widget.Toolbar;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 
 import com.jecelyin.common.utils.SysUtils;
 
@@ -32,32 +35,47 @@ import com.jecelyin.common.utils.SysUtils;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class EditorToolbar extends Toolbar {
-    private TextPaint titlePaint;
+    private TextPaint mTitlePaint;
     private CharSequence title;
 
     public EditorToolbar(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public EditorToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public EditorToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         setWillNotDraw(false);
-        titlePaint = new TextPaint();
-        titlePaint.setColor(Color.WHITE);
-        titlePaint.setTextSize(SysUtils.dpAsPixels(getContext(), 10));
-        titlePaint.setTextAlign(Paint.Align.LEFT);
-        titlePaint.setAntiAlias(true);
+
+        // Get the secondary text color of the theme
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true);
+        TypedArray arr = context.obtainStyledAttributes(typedValue.data, new int[]{
+                android.R.attr.textColorSecondary});
+        int textColor = arr.getColor(0, Color.WHITE);
+        arr.recycle();
+
+        mTitlePaint = new TextPaint();
+        mTitlePaint.setColor(textColor);
+        mTitlePaint.setTextSize(SysUtils.spToPixels(getContext(), 10));
+        mTitlePaint.setTextAlign(Paint.Align.LEFT);
+        mTitlePaint.setAntiAlias(true);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -73,9 +91,9 @@ public class EditorToolbar extends Toolbar {
         if (title == null) {
             return;
         }
-        Paint.FontMetrics fontMetrics = titlePaint.getFontMetrics();
+        Paint.FontMetrics fontMetrics = mTitlePaint.getFontMetrics();
         int x = SysUtils.dpAsPixels(getContext(), 16);
         int y = (int) (getHeight() - (fontMetrics.bottom)) - SysUtils.dpAsPixels(getContext(), 2);
-        canvas.drawText(title, 0, title.length(), x, y, titlePaint);
+        canvas.drawText(title, 0, title.length(), x, y, mTitlePaint);
     }
 }
