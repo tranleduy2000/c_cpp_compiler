@@ -602,15 +602,23 @@ public class MainActivity extends FullScreenActivity
     }
 
     public void openFile(String filePath, String encoding, int offset) {
-        if (TextUtils.isEmpty(filePath))
+        //ensure file exist, can read/write
+        if (TextUtils.isEmpty(filePath)) {
             return;
+        }
         File file = new File(filePath);
         if (!file.isFile()) {
             UIUtils.toast(this, R.string.file_not_exists);
             return;
         }
-        if (!tabManager.newTab(file, offset, encoding))
+        if (!file.canRead()) {
+            UIUtils.alert(this, this.getString(R.string.cannt_read_file, file.getPath()));
             return;
+        }
+
+        if (!tabManager.newTab(file, offset, encoding)) {
+            return;
+        }
         DBHelper.getInstance(this).addRecentFile(filePath, encoding);
     }
 

@@ -43,12 +43,6 @@ public class RecentFilesManager implements MaterialDialog.ListCallback, Material
 
     public void show(Context context) {
         list = dbHelper.getRecentFiles();
-//        Collections.sort(list, new Comparator<DBHelper.RecentFileItem>() {
-//            @Override
-//            public int compare(DBHelper.RecentFileItem lhs, DBHelper.RecentFileItem rhs) {
-//                return (int) (lhs.time - rhs.time);
-//            }
-//        });
         String[] items = new String[list.size()];
         for (int i = list.size() - 1; i >= 0; i--) {
             items[i] = list.get(i).path;

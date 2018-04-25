@@ -18,7 +18,6 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/drawer_tab_item_bg_pressed" />
     <item android:state_selected="true" android:drawable="@drawable/drawer_tab_item_bg_selected"/>
     <item>
         <shape android:shape="rectangle">

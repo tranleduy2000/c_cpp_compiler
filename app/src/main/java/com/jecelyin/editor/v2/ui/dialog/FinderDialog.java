@@ -306,10 +306,10 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
             int w = fragment.getContext().getResources().getDimensionPixelSize(R.dimen.cab_find_text_width);
             view.setLayoutParams(new ViewGroup.LayoutParams(w, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            TextView searchTextView = (TextView) view.findViewById(R.id.searchTextView);
+            TextView searchTextView = view.findViewById(R.id.searchTextView);
             searchTextView.setText(grep.getRegex());
 
-            TextView replaceTextView = (TextView) view.findViewById(R.id.replaceTextView);
+            TextView replaceTextView = view.findViewById(R.id.replaceTextView);
             if (replaceText == null) {
                 replaceTextView.setVisibility(View.GONE);
             } else {
@@ -432,16 +432,16 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
         View mPathLayout;
 
         ViewHolder(View view) {
-            mFindEditText = (DrawClickableEditText) view.findViewById(R.id.find_edit_text);
-            mReplaceEditText = (DrawClickableEditText) view.findViewById(R.id.replace_edit_text);
-            mReplaceCheckBox = (CheckBox) view.findViewById(R.id.replace_check_box);
-            mCaseSensitiveCheckBox = (CheckBox) view.findViewById(R.id.case_sensitive_check_box);
-            mWholeWordsOnlyCheckBox = (CheckBox) view.findViewById(R.id.whole_words_only_check_box);
-            mRegexCheckBox = (CheckBox) view.findViewById(R.id.regex_check_box);
-            mInPathCheckBox = (CheckBox) view.findViewById(R.id.in_path_check_box);
-            mPathEditText = (MaterialEditText) view.findViewById(R.id.path_edit_text);
+            mFindEditText = view.findViewById(R.id.find_edit_text);
+            mReplaceEditText = view.findViewById(R.id.replace_edit_text);
+            mReplaceCheckBox = view.findViewById(R.id.replace_check_box);
+            mCaseSensitiveCheckBox = view.findViewById(R.id.case_sensitive_check_box);
+            mWholeWordsOnlyCheckBox = view.findViewById(R.id.whole_words_only_check_box);
+            mRegexCheckBox = view.findViewById(R.id.regex_check_box);
+            mInPathCheckBox = view.findViewById(R.id.in_path_check_box);
+            mPathEditText = view.findViewById(R.id.path_edit_text);
             mBrowserBtn = view.findViewById(R.id.browserBtn);
-            mRecursivelyCheckBox = (CheckBox) view.findViewById(R.id.recursively_check_box);
+            mRecursivelyCheckBox = view.findViewById(R.id.recursively_check_box);
             mPathLayout = view.findViewById(R.id.pathLayout);
         }
     }

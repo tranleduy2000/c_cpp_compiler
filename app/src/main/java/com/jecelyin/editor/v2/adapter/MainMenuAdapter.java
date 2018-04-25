@@ -47,6 +47,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
     private final List<MenuItemInfo> menuItems;
     private final LayoutInflater inflater;
     private MenuItem.OnMenuItemClickListener menuItemClickListener;
+    private MenuManager mMenuManager;
 
     public MainMenuAdapter(Context context) {
         inflater = LayoutInflater.from(context);

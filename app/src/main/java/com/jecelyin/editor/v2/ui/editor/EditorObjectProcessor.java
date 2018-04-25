@@ -39,6 +39,7 @@ import com.jecelyin.editor.v2.utils.ExtGrep;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -109,12 +110,9 @@ public class EditorObjectProcessor {
                     ssb.append(file.getPath(), new ForegroundColorSpan(findResultsPathColor), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     ssb.append("\n");
                 }
-                //%[index$][标识]*[最小宽度][.精度]转换符
-//                ssb.append(String.format("%1$4d  %2$s\n", rs.lineNumber, rs.line), new FileClickableSpan(editorDelegate, rs), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb.append(String.format("%1$4d  ", rs.lineNumber));
+                ssb.append(String.format(Locale.US, "%1$4d  ", rs.lineNumber));
                 int start = ssb.length();
                 ssb.append(rs.line);
-//                ssb.setSpan(new ForegroundColorSpan(findResultsKeywordColor), start + rs.matchStart, start + rs.matchEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 ssb.setSpan(new FileClickableSpan(findResultsKeywordColor, editorDelegate, rs), start + rs.matchStart, start + rs.matchEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 ssb.append('\n');
             }
