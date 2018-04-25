@@ -113,14 +113,9 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
     }
 
     public void newEditor(boolean notify, @Nullable File file, int offset, String encoding) {
-        editorDelegates.add(new EditorDelegate(editorDelegates.size(), file, offset, encoding));
+        editorDelegates.add(new EditorDelegate(file, offset, encoding));
         if (notify)
             notifyDataSetChanged();
-    }
-
-    public void newEditor(String title, @Nullable CharSequence content) {
-        editorDelegates.add(new EditorDelegate(editorDelegates.size(), title, content));
-        notifyDataSetChanged();
     }
 
     public void setEditorView(int index, EditorView editorView) {
@@ -136,16 +131,6 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         if (editorDelegates.isEmpty() || currentPosition >= editorDelegates.size())
             return null;
         return editorDelegates.get(currentPosition);
-    }
-
-    public int countNoFileEditor() {
-        int count = 0;
-        for (EditorDelegate f : editorDelegates) {
-            if (f.getPath() == null) {
-                count++;
-            }
-        }
-        return count;
     }
 
     public TabInfo[] getTabInfoList() {
@@ -236,10 +221,10 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         };
         EditorDelegate.SavedState[] states;
 
-        protected SavedState() {
+        public SavedState() {
         }
 
-        protected SavedState(Parcel in) {
+        public SavedState(Parcel in) {
             states = in.createTypedArray(EditorDelegate.SavedState.CREATOR);
         }
 

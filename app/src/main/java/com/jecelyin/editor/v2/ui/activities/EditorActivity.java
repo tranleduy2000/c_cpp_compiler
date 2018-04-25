@@ -613,7 +613,7 @@ public class EditorActivity extends FullScreenActivity
         FileManager fileManager = new FileManager(this);
         File newFile = fileManager.createNewFile("_" + System.currentTimeMillis() + ".txt");
         if (IOUtils.writeFile(newFile, content.toString())) {
-            tabManager.newTab(newFile, "UTF-8");
+            tabManager.newTab(newFile);
         }
     }
 

@@ -111,22 +111,16 @@ public class TabManager implements ViewPager.OnPageChangeListener {
             public void onChanged() {
                 updateTabList();
                 if (!exitApp && mEditorPagerAdapter.getCount() == 0) {
-                    newTab();
+                    // TODO: 25-Apr-18 show layout create new file
                 }
             }
         });
 
-        if (mEditorPagerAdapter.getCount() == 0)
-            mEditorPagerAdapter.newEditor(mActivity.getString(R.string.new_filename, mEditorPagerAdapter.countNoFileEditor() + 1), null);
+        // TODO: 25-Apr-18 show layout create new file
     }
 
-    public void newTab() {
-        mEditorPagerAdapter.newEditor(mActivity.getString(R.string.new_filename, mEditorPagerAdapter.getCount() + 1), null);
-        setCurrentTab(mEditorPagerAdapter.getCount() - 1);
-    }
-
-    public boolean newTab(File file, String encoding) {
-        return newTab(file, 0, encoding);
+    public void newTab(File file) {
+        newTab(file, 0, "UTF-8");
     }
 
     public boolean newTab(File file, int offset, String encoding) {
@@ -219,7 +213,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public boolean closeAllTabAndExitApp() {
-        EditorDelegate.setDisableAutoSave(true);
+        EditorDelegate.setDisableAutoSave();
         exitApp = true;
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());

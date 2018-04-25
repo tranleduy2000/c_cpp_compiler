@@ -75,7 +75,7 @@ public class EditorDelegate implements TextWatcher {
         savedState = ss;
     }
 
-    public EditorDelegate(int index, @Nullable File file, int offset, String encoding) {
+    public EditorDelegate(@Nullable File file, int offset, String encoding) {
         savedState = new SavedState();
         savedState.file = file;
         savedState.offset = offset;
@@ -85,20 +85,8 @@ public class EditorDelegate implements TextWatcher {
         }
     }
 
-    public EditorDelegate(int index, String title, Parcelable object) {
-        savedState = new SavedState();
-        savedState.title = title;
-        savedState.object = object;
-    }
-
-    public EditorDelegate(int index, String title, CharSequence content) {
-        savedState = new SavedState();
-        savedState.title = title;
-        savedState.content = content;
-    }
-
-    public static void setDisableAutoSave(boolean b) {
-        disableAutoSave = b;
+    public static void setDisableAutoSave() {
+        disableAutoSave = true;
     }
 
     private void init() {
