@@ -129,8 +129,6 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_highlight, Command.CommandEnum.NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_encoding, Command.CommandEnum.NONE, R.drawable.m_encoding, R.string.encoding));
 
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_color, Command.CommandEnum.NONE, R.drawable.ic_color_lens_white_24dp, R.string.insert_color));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_datetime, Command.CommandEnum.NONE, R.drawable.ic_date_range_white_24dp, R.string.insert_datetime));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_run, Command.CommandEnum.NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_settings, Command.CommandEnum.NONE, R.drawable.ic_settings_white_24dp, R.string.settings));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_exit, Command.CommandEnum.NONE, R.drawable.ic_exit_to_app_white_24dp, R.string.exit));

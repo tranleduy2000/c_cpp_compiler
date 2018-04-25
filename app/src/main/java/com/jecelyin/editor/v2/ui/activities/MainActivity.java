@@ -59,7 +59,6 @@ import com.jecelyin.editor.v2.ui.dialog.ChangeThemeDialog;
 import com.jecelyin.editor.v2.ui.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.ui.dialog.GotoLineDialog;
 import com.jecelyin.editor.v2.ui.dialog.LangListDialog;
-import com.jecelyin.editor.v2.ui.dialog.RunDialog;
 import com.jecelyin.editor.v2.ui.dialog.WrapCharDialog;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.manager.MenuManager;
@@ -467,13 +466,8 @@ public class MainActivity extends FullScreenActivity
             case R.id.m_encoding:
                 new CharsetsDialog(this).show();
                 break;
-            case R.id.m_color:
-                if (ensureNotReadOnly()) {
-                    openColorPicker();
-                }
-                break;
             case R.id.m_run:
-                new RunDialog(this).show();
+                run();
                 break;
             case R.id.m_settings:
                 SettingsActivity.startActivity(this, RC_SETTINGS);
@@ -489,17 +483,8 @@ public class MainActivity extends FullScreenActivity
         }
     }
 
-    private void openColorPicker() {
-        //                    final int primaryTextColor = DialogUtils.resolveColor(this, android.R.attr.textColorPrimary);
-//                    int theme = DialogUtils.isColorDark(primaryTextColor) ? ColorPickerDialog.LIGHT_THEME : ColorPickerDialog.DARK_THEME;
-//                    ColorPickerDialog colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this, theme);
-//                    colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
-//                        @Override
-//                        public void onColorPicked(int color, String hexVal) {
-//                            insertText(hexVal);
-//                        }
-//                    });
-//                    colorPickerDialog.show();
+    private void run() {
+        //// TODO: 25-Apr-18 implement
     }
 
     private boolean ensureNotReadOnly() {
