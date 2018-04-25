@@ -66,7 +66,6 @@ public class JecActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // 当setDisplayHomeAsUpEnabled(true)时，提供返回支持
             case android.R.id.home:
                 onBackPressed();
                 return true;

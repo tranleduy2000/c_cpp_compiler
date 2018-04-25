@@ -44,7 +44,7 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.OnVisibilityChangedListener;
 import com.jecelyin.editor.v2.common.SaveListener;
-import com.jecelyin.editor.v2.ui.activities.MainActivity;
+import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.ui.dialog.FinderDialog;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
@@ -162,8 +162,8 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         return context;
     }
 
-    public MainActivity getMainActivity() {
-        return (MainActivity) context;
+    public EditorActivity getMainActivity() {
+        return (EditorActivity) context;
     }
 
     public String getTitle() {
@@ -302,7 +302,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
                 Preferences preferences = Preferences.getInstance(context);
                 boolean readOnly = preferences.isReadOnly();
                 mEditText.setReadOnly(readOnly);
-                ((MainActivity) context).doNextCommand();
+                ((EditorActivity) context).doNextCommand();
                 break;
             case SAVE:
                 if (!readonly)
@@ -332,7 +332,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
                     scope = mode.getName();
                 }
                 document.setMode(scope);
-                ((MainActivity) context).doNextCommand();
+                ((EditorActivity) context).doNextCommand();
                 break;
             case INSERT_TEXT:
                 if (!readonly) {
@@ -411,11 +411,11 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
     }
 
     private void noticeMenuChanged() {
-        MainActivity mainActivity = (MainActivity) this.context;
-        mainActivity.setMenuStatus(R.id.m_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        mainActivity.setMenuStatus(R.id.m_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        mainActivity.setMenuStatus(R.id.m_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        ((MainActivity) context).getTabManager().onDocumentChanged(savedState.index);
+        EditorActivity editorActivity = (EditorActivity) this.context;
+        editorActivity.setMenuStatus(R.id.m_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        editorActivity.setMenuStatus(R.id.m_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        editorActivity.setMenuStatus(R.id.m_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        ((EditorActivity) context).getTabManager().onDocumentChanged(savedState.index);
     }
 
     @Override

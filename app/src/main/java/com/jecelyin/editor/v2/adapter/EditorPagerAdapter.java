@@ -36,7 +36,7 @@ import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.common.TabInfo;
 import com.jecelyin.editor.v2.task.ClusterCommand;
-import com.jecelyin.editor.v2.ui.activities.MainActivity;
+import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.SaveConfirmDialog;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.ExtGrep;
@@ -188,7 +188,7 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
                                     listener.onClose(path, encoding, offset);
                             }
                         };
-                        ((MainActivity) context).doCommand(command);
+                        ((EditorActivity) context).doCommand(command);
                     } else if (which == DialogAction.NEGATIVE) {
                         remove(position);
                         if (listener != null)

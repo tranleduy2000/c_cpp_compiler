@@ -45,6 +45,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.CompilerFactory;
+import com.duy.ide.ICompiler;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -80,7 +82,7 @@ import java.util.List;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class MainActivity extends FullScreenActivity
+public class EditorActivity extends FullScreenActivity
         implements MenuItem.OnMenuItemClickListener
         , FolderChooserDialog.FolderCallback
         , SharedPreferences.OnSharedPreferenceChangeListener {
@@ -132,7 +134,7 @@ public class MainActivity extends FullScreenActivity
             UIUtils.showConfirmDialog(this, null, getString(R.string.need_to_enable_read_storage_permissions), new UIUtils.OnClickCallback() {
                 @Override
                 public void onOkClick() {
-                    ActivityCompat.requestPermissions(MainActivity.this, permissions, RC_PERMISSION_STORAGE);
+                    ActivityCompat.requestPermissions(EditorActivity.this, permissions, RC_PERMISSION_STORAGE);
                 }
 
                 @Override
@@ -141,7 +143,7 @@ public class MainActivity extends FullScreenActivity
                 }
             });
         } else {
-            ActivityCompat.requestPermissions(MainActivity.this, permissions, RC_PERMISSION_STORAGE);
+            ActivityCompat.requestPermissions(EditorActivity.this, permissions, RC_PERMISSION_STORAGE);
         }
     }
 
@@ -437,7 +439,6 @@ public class MainActivity extends FullScreenActivity
                 Command command = new Command(commandEnum);
                 command.args.putBoolean(EditorDelegate.KEY_CLUSTER, true);
                 command.object = new SaveListener() {
-
                     @Override
                     public void onSaved() {
                         doNextCommand();
@@ -464,7 +465,7 @@ public class MainActivity extends FullScreenActivity
                 new CharsetsDialog(this).show();
                 break;
             case R.id.m_run:
-                run();
+                compileAndRun();
                 break;
             case R.id.m_settings:
                 SettingsActivity.startActivity(this, RC_SETTINGS);
@@ -480,8 +481,9 @@ public class MainActivity extends FullScreenActivity
         }
     }
 
-    private void run() {
-        //// TODO: 25-Apr-18 implement
+    private void compileAndRun() {
+        ICompiler compiler = CompilerFactory.create();
+
     }
 
     private boolean ensureNotReadOnly() {

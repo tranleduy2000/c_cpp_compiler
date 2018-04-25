@@ -26,7 +26,7 @@
         <activity android:name=".console.ConsoleActivity" />
 
         <activity
-            android:name="com.jecelyin.editor.v2.ui.activities.MainActivity"
+            android:name="com.jecelyin.editor.v2.ui.activities.EditorActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask">
             <intent-filter>

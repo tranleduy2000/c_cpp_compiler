@@ -23,6 +23,7 @@ import com.duy.ccppcompiler.utils.Constants;
 import com.duy.ccppcompiler.utils.ExtractCallback;
 import com.duy.ccppcompiler.utils.IOUtils;
 import com.duy.common.DLog;
+import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 
 import java.io.File;
 import java.io.InputStream;
@@ -129,7 +130,7 @@ public class InstallActivity extends AppCompatActivity {
 
     private void closeAndStartMainActivity() {
         if (DLog.DEBUG) DLog.d(TAG, "closeAndStartMainActivity() called");
-        Intent intent = new Intent(this, com.jecelyin.editor.v2.ui.activities.MainActivity.class);
+        Intent intent = new Intent(this, EditorActivity.class);
         startActivity(intent);
         overridePendingTransition(0, 0);
         finish();

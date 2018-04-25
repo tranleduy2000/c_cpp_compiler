@@ -18,6 +18,8 @@
 
 package com.jecelyin.editor.v2.task;
 
+import android.support.annotation.Nullable;
+
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 
@@ -27,11 +29,12 @@ import java.util.ArrayList;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class ClusterCommand {
-    private ArrayList<EditorDelegate> buffer;
+    @Nullable
+    private ArrayList<EditorDelegate> delegates;
     private Command command;
 
-    public ClusterCommand(ArrayList<EditorDelegate> buffer) {
-        this.buffer = buffer;
+    public ClusterCommand(@Nullable ArrayList<EditorDelegate> delegates) {
+        this.delegates = delegates;
     }
 
     public void setCommand(Command command) {
@@ -39,10 +42,10 @@ public class ClusterCommand {
     }
 
     public void doNextCommand() {
-        if (buffer == null || buffer.size() == 0) {
+        if (delegates == null || delegates.size() == 0) {
             return;
         }
-        EditorDelegate editorFragment = buffer.remove(0);
+        EditorDelegate editorFragment = delegates.remove(0);
         if (!editorFragment.doCommand(command)) {
             doNextCommand();
         }

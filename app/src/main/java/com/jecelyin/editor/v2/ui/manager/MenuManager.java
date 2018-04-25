@@ -23,7 +23,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 
-import com.jecelyin.editor.v2.ui.activities.MainActivity;
+import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.common.utils.DrawableUtils;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
@@ -37,10 +37,10 @@ public class MenuManager {
     private static int toolbarIconDisabledColor;
     private static int menuIconNormalColor;
 
-    public MenuManager(MainActivity mainActivity) {
-        MainMenuAdapter adapter = new MainMenuAdapter(mainActivity);
-        mainActivity.getMenuRecyclerView().setAdapter(adapter);
-        adapter.setMenuItemClickListener(mainActivity);
+    public MenuManager(EditorActivity editorActivity) {
+        MainMenuAdapter adapter = new MainMenuAdapter(editorActivity);
+        editorActivity.getMenuRecyclerView().setAdapter(adapter);
+        adapter.setMenuItemClickListener(editorActivity);
     }
 
     @SuppressWarnings("ResourceType")

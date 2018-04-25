@@ -28,7 +28,7 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorPagerAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
-import com.jecelyin.editor.v2.ui.activities.MainActivity;
+import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.jecelyin.editor.v2.utils.ExtGrep;
@@ -42,12 +42,12 @@ import java.util.ArrayList;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class TabManager implements ViewPager.OnPageChangeListener {
-    private final MainActivity mActivity;
+    private final EditorActivity mActivity;
     private final TabAdapter mTabAdapter;
     private EditorPagerAdapter mEditorPagerAdapter;
     private boolean exitApp;
 
-    public TabManager(MainActivity activity) {
+    public TabManager(EditorActivity activity) {
         this.mActivity = activity;
 
         this.mTabAdapter = new TabAdapter();

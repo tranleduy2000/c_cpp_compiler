@@ -21,7 +21,7 @@ package com.jecelyin.editor.v2.ui.dialog;
 import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jecelyin.editor.v2.ui.activities.MainActivity;
+import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -42,8 +42,8 @@ public abstract class AbstractDialog {
         dlg.setCancelable(true);
     }
 
-    protected MainActivity getMainActivity() {
-        return (MainActivity) context;
+    protected EditorActivity getMainActivity() {
+        return (EditorActivity) context;
     }
 
     abstract public void show();
