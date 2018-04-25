@@ -19,15 +19,28 @@
 package android.core.text;
 
 
+import com.jecelyin.common.utils.MethodReflection;
+
 /**
  * Access the ICU bidi implementation.
  *
  * @hide
  */
-class AndroidBidi {
+/* package */ class AndroidBidi {
+    private static MethodReflection bidi;
 
     public static int bidi(int dir, char[] chs, byte[] chInfo, int n, boolean haveInfo) {
-        return AndroidBidi.bidi(dir, chs, chInfo, n, haveInfo);
+        try {
+            if (bidi == null) {
+                Class<?> cls = Class.forName("android.text.AndroidBidi");
+                Class[] argTypes = new Class[]{int.class, char[].class, byte[].class, int.class, boolean.class};
+                bidi = new MethodReflection(cls, "bidi", argTypes);
+            }
+
+            return bidi.staticGet(dir, chs, chInfo, n, haveInfo);
+        } catch (Throwable e) {
+            return Layout.DIR_LEFT_TO_RIGHT;
+        }
     }
 
     /**

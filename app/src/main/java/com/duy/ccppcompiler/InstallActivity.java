@@ -72,7 +72,7 @@ public class InstallActivity extends AppCompatActivity {
                 && preferences.getString(KEY_APP_VERSION, "").equals(appVersion);
         if (DLog.DEBUG) DLog.d(TAG, "extracted = " + extracted);
         //in debug mode, always extract data
-        extracted &= !BuildConfig.DEBUG;
+//        extracted &= !BuildConfig.DEBUG;
         if (!extracted) {
             mExtractDataTask = new ExtractDataTask(this, new ExtractCallback() {
                 @Override
