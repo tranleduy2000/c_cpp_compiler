@@ -18,10 +18,11 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.duy.utils.ApkUtils;
-import com.duy.utils.Constants;
-import com.duy.utils.IOUtils;
+import com.duy.ccppcompiler.compiler.GCCConstants;
 import com.duy.common.DLog;
+import com.duy.utils.ApkUtils;
+import com.duy.utils.ExtractCallback;
+import com.duy.utils.IOUtils;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 
 import java.io.File;
@@ -179,14 +180,14 @@ public class InstallActivity extends AppCompatActivity {
             if (DLog.DEBUG) DLog.d(TAG, "doInBackground() called with: voids = [" + voids + "]");
             try {
                 final File internalDir = mContext.getFilesDir();
-                final File gccDir = new File(internalDir, Constants.GCC_DIR_NAME);
+                final File gccDir = new File(internalDir, GCCConstants.GCC_DIR_NAME);
                 if (gccDir.exists()) {
                     publishProgress("Delete old file");
                     IOUtils.delete(gccDir);
                 }
 
                 publishProgress("Extracting GCC library");
-                final InputStream inputStream = mContext.getAssets().open(Constants.GCC_ASSET_FILE);
+                final InputStream inputStream = mContext.getAssets().open(GCCConstants.GCC_ASSET_FILE);
                 boolean success = IOUtils.unzip(inputStream, internalDir);
 
                 if (success) {
@@ -194,7 +195,7 @@ public class InstallActivity extends AppCompatActivity {
 
                     final File binDir1 = new File(gccDir, "bin");
                     final File binDir2 = new File(gccDir, "arm-linux-androideabi" + sep + "bin");
-                    final File binDir3 = new File(gccDir, "libexec" + sep + "gcc" + sep + "arm-linux-androideabi" + sep + Constants.GCC_VERSION);
+                    final File binDir3 = new File(gccDir, "libexec" + sep + "gcc" + sep + "arm-linux-androideabi" + sep + GCCConstants.GCC_VERSION);
 
                     publishProgress("Make executable for " + binDir1.getName());
                     changeToExecutable(binDir1);

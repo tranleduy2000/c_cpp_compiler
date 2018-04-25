@@ -16,9 +16,15 @@
 
 package com.duy.ide.compiler;
 
+import com.duy.ide.compiler.shell.ShellResult;
+
+import java.io.File;
+
 /**
  * Created by Duy on 25-Apr-18.
  */
 
 public interface INativeCompiler {
+
+    ShellResult compile(File[] sourceFiles);
 }

@@ -16,6 +16,8 @@
 
 package com.duy.ccppcompiler.compiler;
 
+import android.content.Context;
+
 import com.duy.ide.compiler.INativeCompiler;
 
 /**
@@ -23,12 +25,12 @@ import com.duy.ide.compiler.INativeCompiler;
  */
 
 public class CompilerFactory {
-    public static INativeCompiler create(CompileType compileType) {
+    public static INativeCompiler create(Context context, CompileType compileType) {
         switch (compileType) {
             case G_PLUS_PLUS:
-                return new GPlusPlusCompiler();
+                return new GPlusPlusCompiler(context);
             case GCC:
-                return new GCCCompiler();
+                return new GCCCompiler(context);
         }
         return null;
     }

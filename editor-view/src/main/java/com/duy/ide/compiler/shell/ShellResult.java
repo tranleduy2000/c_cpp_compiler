@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package com.duy.text.editor.utils;
+package com.duy.ide.compiler.shell;
 
-import android.content.Context;
+public class ShellResult {
 
-/**
- * Created by Duy on 15-Apr-18.
- */
+    public int result;
+    public String msg;
 
-public class StreamProviderFactory {
-    public static IStreamProvider create(Context context) {
-        return new StreamProviderImpl(context);
+    public ShellResult(int result) {
+        this.result = result;
+    }
+
+
+    public ShellResult(int result, String msg) {
+        this.result = result;
+        this.msg = msg;
+    }
+
+    public String getMsg() {
+        return msg;
     }
 }

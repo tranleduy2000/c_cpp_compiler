@@ -16,11 +16,25 @@
 
 package com.duy.ccppcompiler.compiler;
 
+import android.content.Context;
+
 import com.duy.ide.compiler.INativeCompiler;
+import com.duy.ide.compiler.shell.ShellResult;
+
+import java.io.File;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
 public class GPlusPlusCompiler implements INativeCompiler {
+    public GPlusPlusCompiler(Context context) {
+
+    }
+
+    @Override
+    public ShellResult compile(File[] sourceFiles) {
+
+        return null;
+    }
 }
