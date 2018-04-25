@@ -210,6 +210,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     // display attributes
     private final TextPaint mTextPaint;
     private final Paint mHighlightPaint;
+    private final LayoutContext layoutContext = new LayoutContext();
     /**
      * EditText specific data, created on demand when one of the Editor fields is used.
      * See {@link #createEditorIfNeeded()}.
@@ -310,7 +311,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private volatile Locale mCurrentSpellCheckerLocaleCache;
     private Path mHighlightPath;
     private boolean mHighlightPathBogus = true;
-    private LayoutContext layoutContext = new LayoutContext();
 
     public BaseEditorView(Context context) {
         this(context, null);
@@ -3683,9 +3683,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             voffsetCursor = getVerticalOffset(true);
         }
         canvas.translate(compoundPaddingLeft, extendedPaddingTop + voffsetText);
-        layoutContext.translateX = compoundPaddingLeft;
-        layoutContext.translateY = extendedPaddingTop + voffsetText;
-        layoutContext.scrollX = getScrollX();
 
         final int cursorOffsetVertical = voffsetCursor - voffsetText;
 
@@ -4684,7 +4681,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-getLayout().getLineCount()
         int width;
         int height;
 
@@ -5633,7 +5629,6 @@ getLayout().getLineCount()
      * @param selEnd   The new selection end location.
      */
     protected void onSelectionChanged(int selStart, int selEnd) {
-//        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED);
     }
 
     /**
@@ -6949,7 +6944,7 @@ getLayout().getLineCount()
     private void init() {
         setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-        pref = layoutContext.pref = Pref.getInstance(getContext());
+        pref = layoutContext.preference = Pref.getInstance(getContext());
         pref.registerOnSharedPreferenceChangeListener(this);
 
         TextPaint lineNumberPaint = new TextPaint();
@@ -7035,9 +7030,13 @@ getLayout().getLineCount()
     }
 
     public void setLineNumber(int lineNumber) {
-        layoutContext.lineNumber = lineNumber;
+        if (layoutContext.getLineNumber() == lineNumber) {
+            return;
+        }
+        layoutContext.setLineNumber(lineNumber);
 
-        if (!layoutContext.pref.isShowLineNumber()) {
+        if (!layoutContext.preference.isShowLineNumber()) {
+            //invalidate
             setPaddingRelative(getPaddingEnd(), getPaddingTop(), getPaddingEnd(), getPaddingBottom());
             return;
         }
@@ -7059,7 +7058,7 @@ getLayout().getLineCount()
 
     // TODO: 24-Apr-18 improve calculate padding and recalculate when layout changed
     private void drawLineNumber(Canvas canvas) {
-        if (!layoutContext.pref.isShowLineNumber()) {
+        if (!layoutContext.preference.isShowLineNumber()) {
             return;
         }
 
@@ -7070,8 +7069,12 @@ getLayout().getLineCount()
 
         List<TextLineNumber.LineInfo> lines = layoutContext.textLineNumber.getLines();
         for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.text, layoutContext.lineNumberX + layoutContext.scrollX, line.y, layoutContext.lineNumberPaint);
+            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.lineNumberPaint);
         }
+    }
+
+    public LayoutContext getLayoutContext() {
+        return layoutContext;
     }
 
     public int getMaxScrollY() {
@@ -7356,7 +7359,6 @@ getLayout().getLineCount()
 
     public static class ChangeWatcher implements TextWatcher, SpanWatcher {
         private WeakReference<BaseEditorView> textView;
-//        private CharSequence mBeforeText;
 
         public ChangeWatcher(BaseEditorView textView) {
             this.textView = new WeakReference<>(textView);

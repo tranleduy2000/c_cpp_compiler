@@ -299,7 +299,7 @@ class TextLine {
                         h = mDir * nextTab(h * mDir);
 
                         if (layoutContext.isShowWhiteSpace) {
-                            float descent = mPaint.descent(); //文字中间
+                            float descent = mPaint.descent();
                             TextPaint wp = mWorkPaint;
                             wp.set(mPaint);
                             wp.setColor(layoutContext.whiteSpaceColor);

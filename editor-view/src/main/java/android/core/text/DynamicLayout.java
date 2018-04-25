@@ -699,7 +699,7 @@ public class DynamicLayout extends Layout {
         private WeakReference<DynamicLayout> mLayout;
 
         public ChangeWatcher(DynamicLayout layout) {
-            mLayout = new WeakReference<DynamicLayout>(layout);
+            mLayout = new WeakReference<>(layout);
         }
 
         private void reflow(CharSequence s, int where, int before, int after) {

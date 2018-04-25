@@ -27,19 +27,37 @@ import com.jecelyin.editor.v2.Pref;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class LayoutContext {
-    public int lineNumber = 1;
+    public int lineNumber = -1;
     public Paint lineNumberPaint;
     public Paint linePaint;
     public Paint gutterBackgroundPaint;
-    public float tabPath;
     public int gutterWidth;
     public int lineNumberX;
-    public float translateX;
-    public float translateY;
+
+
     public int cursorThickness;
-    public Pref pref;
-    public int scrollX;
+    public Pref preference;
     public boolean isShowWhiteSpace;
     public int whiteSpaceColor;
     public TextLineNumber textLineNumber = new TextLineNumber();
+
+    public int getWhiteSpaceColor() {
+        return whiteSpaceColor;
+    }
+
+    public boolean isShowWhiteSpace() {
+        return isShowWhiteSpace;
+    }
+
+    public int getCursorThickness() {
+        return cursorThickness;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
 }

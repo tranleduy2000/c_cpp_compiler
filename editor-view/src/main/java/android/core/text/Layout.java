@@ -414,7 +414,7 @@ public abstract class Layout {
             int right = mWidth;
 
             //calculate line number position
-            if (layoutContext.pref.isShowLineNumber()) {
+            if (layoutContext.preference.isShowLineNumber()) {
                 int realLine = getRealLine(i);
                 if (realLine != 0) {
                     layoutContext.textLineNumber.addLine(Integer.toString(realLine), lbottom);
