@@ -403,7 +403,7 @@ public class EditorActivity extends FullScreenActivity
 
         switch (id) {
             case R.id.m_new:
-                tabManager.newTab();
+                createNewFile();
                 break;
             case R.id.m_open:
                 FileExplorerActivity.startPickFileActivity(this, null, RC_OPEN_FILE);
@@ -466,15 +466,15 @@ public class EditorActivity extends FullScreenActivity
             case R.id.m_settings:
                 SettingsActivity.startActivity(this, RC_SETTINGS);
                 break;
-            case R.id.m_exit:
-                if (tabManager != null)
-                    tabManager.closeAllTabAndExitApp();
-                break;
             default:
                 commandEnum = MenuFactory.getInstance(this).idToCommandEnum(id);
                 if (commandEnum != Command.CommandEnum.NONE)
                     doCommand(new Command(commandEnum));
         }
+    }
+
+    private void createNewFile() {
+        // TODO: 25-Apr-18 implement
     }
 
     private void saveAll(@Nullable final SaveListener onSaveListener) {

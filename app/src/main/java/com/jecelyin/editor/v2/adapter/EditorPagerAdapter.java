@@ -39,7 +39,6 @@ import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.SaveConfirmDialog;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
-import com.jecelyin.editor.v2.utils.ExtGrep;
 import com.jecelyin.editor.v2.view.EditorView;
 
 import java.io.File;
@@ -121,11 +120,6 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
 
     public void newEditor(String title, @Nullable CharSequence content) {
         editorDelegates.add(new EditorDelegate(editorDelegates.size(), title, content));
-        notifyDataSetChanged();
-    }
-
-    public void newEditor(ExtGrep grep) {
-        editorDelegates.add(new EditorDelegate(editorDelegates.size(), context.getString(R.string.find_title, grep.getRegex()), grep));
         notifyDataSetChanged();
     }
 

@@ -89,12 +89,11 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
         if (Preferences.getInstance(mActivity).isOpenLastFiles()) {
             ArrayList<DBHelper.RecentFileItem> recentFiles = DBHelper.getInstance(mActivity).getRecentFiles(true);
-            boolean needUpdateRecentFile = false;
             File file;
             for (DBHelper.RecentFileItem item : recentFiles) {
                 file = new File(item.path);
                 if (!(file.isFile() && file.canRead() && file.canWrite())) {
-                    needUpdateRecentFile = true;
+                    DBHelper.getInstance(mActivity).updateRecentFile(item.path, false);
                     continue;
                 }
                 mEditorPagerAdapter.newEditor(false, file, item.offset, item.encoding);
@@ -124,12 +123,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     public void newTab() {
         mEditorPagerAdapter.newEditor(mActivity.getString(R.string.new_filename, mEditorPagerAdapter.getCount() + 1), null);
         setCurrentTab(mEditorPagerAdapter.getCount() - 1);
-    }
-
-    public boolean newTab(CharSequence content) {
-        mEditorPagerAdapter.newEditor(mActivity.getString(R.string.new_filename, mEditorPagerAdapter.getCount() + 1), content);
-        setCurrentTab(mEditorPagerAdapter.getCount() - 1);
-        return true;
     }
 
     public boolean newTab(File file, String encoding) {

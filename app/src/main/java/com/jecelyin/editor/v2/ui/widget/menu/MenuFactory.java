@@ -105,14 +105,9 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, Command.CommandEnum.SAVE_AS, R.drawable.m_save_as, R.string.save_as));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, Command.CommandEnum.NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
 
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT,  R.id.m_cut,            Command.CommandEnum.CUT,               R.drawable.m_cut, R.string.cut));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT,  R.id.m_copy,           Command.CommandEnum.COPY,              R.drawable.m_copy, R.string.copy));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT,  R.id.m_paste,          Command.CommandEnum.PASTE,             R.drawable.m_paste, R.string.paste));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT,  R.id.m_select_all,     Command.CommandEnum.SELECT_ALL,        R.drawable.m_select_all, R.string.select_all));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_undo, Command.CommandEnum.UNDO, R.drawable.ic_undo_white_24dp, R.string.undo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_redo, Command.CommandEnum.REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_wrap, Command.CommandEnum.CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT,  R.id.m_duplication,    Command.CommandEnum.DUPLICATION,       R.drawable.m_duplication, R.string.duplication));
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_find_replace, Command.CommandEnum.FIND, R.drawable.ic_find_in_page_white_24dp, R.string.find_or_replace));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_goto_top, Command.CommandEnum.GOTO_TOP, R.drawable.ic_vertical_align_top_white_24dp, R.string.jump_to_start));
@@ -131,7 +126,6 @@ public class MenuFactory {
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_run, Command.CommandEnum.NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_settings, Command.CommandEnum.NONE, R.drawable.ic_settings_white_24dp, R.string.settings));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_exit, Command.CommandEnum.NONE, R.drawable.ic_exit_to_app_white_24dp, R.string.exit));
     }
 
     public List<MenuItemInfo> getMenuItemsWithoutToolbarMenu(MenuGroup group) {
