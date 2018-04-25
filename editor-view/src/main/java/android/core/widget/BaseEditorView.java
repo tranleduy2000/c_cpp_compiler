@@ -805,10 +805,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
-    }
-
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -822,6 +818,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
+    }
+
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -2025,32 +2025,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mMinWidthMode == EMS ? mMinWidth : -1;
     }
 
-//    @Override
-//    public void drawableHotspotChanged(float x, float y) {
-//        super.drawableHotspotChanged(x, y);
-
-//        final Drawables dr = mDrawables;
-//        if (dr != null) {
-//            if (dr.mDrawableTop != null) {
-//                dr.mDrawableTop.setHotspot(x, y);
-//            }
-//            if (dr.mDrawableBottom != null) {
-//                dr.mDrawableBottom.setHotspot(x, y);
-//            }
-//            if (dr.mDrawableLeft != null) {
-//                dr.mDrawableLeft.setHotspot(x, y);
-//            }
-//            if (dr.mDrawableRight != null) {
-//                dr.mDrawableRight.setHotspot(x, y);
-//            }
-//            if (dr.mDrawableStart != null) {
-//                dr.mDrawableStart.setHotspot(x, y);
-//            }
-//            if (dr.mDrawableEnd != null) {
-//                dr.mDrawableEnd.setHotspot(x, y);
-//            }
-//        }
-//    }
 
     /**
      * Makes the TextView at least this many ems wide
@@ -2944,16 +2918,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         mEditor.mInputContentType.imeActionId = actionId;
     }
 
-//    @Override
-//    protected boolean setFrame(int l, int t, int r, int b) {
-//        boolean result = super.setFrame(l, t, r, b);
-//
-//        if (mEditor != null) mEditor.setFrame();
-//
-//        restartMarqueeIfNeeded();
-//
-//        return result;
-//    }
 
     /**
      * Get the IME action label previous set with {@link #setImeActionLabel}.
@@ -4520,14 +4484,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                         alignment == Layout.Alignment.ALIGN_OPPOSITE);
         int oldDir = 0;
         if (testDirChange) oldDir = mLayout.getParagraphDirection(0);
-//        boolean shouldEllipsize = mEllipsize != null && getKeyListener() == null;
-//        final boolean switchEllipsize = mEllipsize == TruncateAt.MARQUEE &&
-//                mMarqueeFadeMode != MARQUEE_FADE_NORMAL;
-//        TruncateAt effectiveEllipsize = mEllipsize;
-//        if (mEllipsize == TruncateAt.MARQUEE &&
-//                mMarqueeFadeMode == MARQUEE_FADE_SWITCH_SHOW_ELLIPSIS) {
-//            effectiveEllipsize = TruncateAt.END_SMALL;
-//        }
 
         if (mTextDir == null) {
             mTextDir = getTextDirectionHeuristic();
@@ -4535,18 +4491,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         mLayout = makeSingleLayout(wantWidth, boring, ellipsisWidth, alignment/*, shouldEllipsize,
                 effectiveEllipsize, effectiveEllipsize == mEllipsize*/);
-//        if (switchEllipsize) {
-//            TruncateAt oppositeEllipsize = effectiveEllipsize == TruncateAt.MARQUEE ?
-//                    TruncateAt.END : TruncateAt.MARQUEE;
-//            mSavedMarqueeModeLayout = makeSingleLayout(wantWidth, boring, ellipsisWidth, alignment,
-//                    shouldEllipsize, oppositeEllipsize, effectiveEllipsize != mEllipsize);
-//        }
-
-//        shouldEllipsize = mEllipsize != null;
         mHintLayout = null;
 
         if (mHint != null) {
-//            if (shouldEllipsize) hintWidth = wantWidth;
 
             if (hintBoring == UNKNOWN_BORING) {
                 hintBoring = BoringLayout.isBoring(layoutContext, mHint, mTextPaint, mTextDir,
@@ -4571,36 +4518,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                     }
 
                     mSavedHintLayout = (BoringLayout) mHintLayout;
-//                } else if (shouldEllipsize && hintBoring.width <= hintWidth) {
-//                    if (mSavedHintLayout != null) {
-//                        mHintLayout = mSavedHintLayout.
-//                                replaceOrMake(mHint, mTextPaint,
-//                                hintWidth, alignment, mSpacingMult, mSpacingAdd,
-//                                hintBoring, mIncludePad, mEllipsize,
-//                                ellipsisWidth);
-//                    } else {
-//                        mHintLayout = BoringLayout.make(mHint, mTextPaint,
-//                                hintWidth, alignment, mSpacingMult, mSpacingAdd,
-//                                hintBoring, mIncludePad, mEllipsize,
-//                                ellipsisWidth);
-//                    }
-//                } else if (shouldEllipsize) {
-//                    mHintLayout = new StaticLayout(mHint,
-//                                0, mHint.length(),
-//                                mTextPaint, hintWidth, alignment, mTextDir, mSpacingMult,
-//                                mSpacingAdd, mIncludePad, mEllipsize,
-//                                ellipsisWidth, mMaxMode == LINES ? mMaximum : Integer.MAX_VALUE);
                 } else {
                     mHintLayout = new StaticLayout(layoutContext, mHint, mTextPaint,
                             hintWidth, alignment, mTextDir, mSpacingMult, mSpacingAdd,
                             mIncludePad);
                 }
-//            } else if (shouldEllipsize) {
-//                mHintLayout = new StaticLayout(mHint,
-//                            0, mHint.length(),
-//                            mTextPaint, hintWidth, alignment, mTextDir, mSpacingMult,
-//                            mSpacingAdd, mIncludePad, mEllipsize,
-//                            ellipsisWidth, mMaxMode == LINES ? mMaximum : Integer.MAX_VALUE);
             } else {
                 mHintLayout = new StaticLayout(layoutContext, mHint, mTextPaint,
                         hintWidth, alignment, mTextDir, mSpacingMult, mSpacingAdd,
@@ -5606,7 +5528,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public boolean isCursorVisible() {
         // true is the default value
-        return mEditor == null ? true : mEditor.mCursorVisible;
+        return mEditor == null || mEditor.mCursorVisible;
     }
 
     /**
@@ -7030,11 +6952,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         pref = layoutContext.pref = Pref.getInstance(getContext());
         pref.registerOnSharedPreferenceChangeListener(this);
 
-        Paint lineNumberPaint = new Paint();
+        TextPaint lineNumberPaint = new TextPaint();
         lineNumberPaint.setColor(Color.BLACK);
         lineNumberPaint.setTypeface(getPaint().getTypeface());
-        lineNumberPaint.setTextSize(getPaint().getTextSize() / 2);
-        lineNumberPaint.setTextAlign(Paint.Align.RIGHT);
+        lineNumberPaint.setTextSize(getPaint().getTextSize() * 0.5f);
+        lineNumberPaint.setTextAlign(Paint.Align.LEFT);
         lineNumberPaint.setAntiAlias(true);
         layoutContext.lineNumberPaint = lineNumberPaint;
 
@@ -7120,12 +7042,17 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             return;
         }
 
-        int gutterPadding = SysUtils.dpAsPixels(getContext(), 8);
-        layoutContext.gutterWidth = (int) layoutContext.lineNumberPaint.measureText(Integer.toString(lineNumber * 10));
-        layoutContext.gutterWidth += gutterPadding;
-        layoutContext.lineNumberX = layoutContext.gutterWidth - SysUtils.dpAsPixels(getContext(), 4);
-        if (getPaddingLeft() != layoutContext.gutterWidth + gutterPadding) {
-            setPaddingRelative(layoutContext.gutterWidth + gutterPadding, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
+        int gutterPadding = SysUtils.dpAsPixels(getContext(), 4);
+
+        float textWidth = layoutContext.lineNumberPaint.measureText(" ");
+        double columnCount = Math.ceil(Math.log10(lineNumber));
+
+        layoutContext.gutterWidth = ((int) (textWidth * columnCount)) + gutterPadding * 2/*Left and right*/;
+        layoutContext.lineNumberX = gutterPadding;
+
+        int newPaddieLeft = layoutContext.gutterWidth;
+        if (getPaddingLeft() != newPaddieLeft) {
+            setPaddingRelative(newPaddieLeft, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
         }
     }
 
@@ -7352,21 +7279,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 mChoreographer.removeFrameCallback(mTickCallback);
             }
 
-//            final TextView textView = mView.get();
-//            if (textView != null && (textView.isFocused() || textView.isSelected())) {
-//                long currentMs = mChoreographer.getFrameTime();
-//                long deltaMs = currentMs - mLastAnimationMs;
-//                mLastAnimationMs = currentMs;
-//                float deltaPx = deltaMs / 1000f * mPixelsPerSecond;
-//                mScroll += deltaPx;
-//                if (mScroll > mMaxScroll) {
-//                    mScroll = mMaxScroll;
-//                    mChoreographer.postFrameCallbackDelayed(mRestartCallback, MARQUEE_DELAY);
-//                } else {
-//                    mChoreographer.postFrameCallback(mTickCallback);
-//                }
-//                textView.invalidate();
-//            }
         }
 
         void stop() {

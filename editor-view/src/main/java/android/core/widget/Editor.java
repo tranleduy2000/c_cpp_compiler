@@ -238,111 +238,9 @@ public class Editor {
 //        getPositionListener().addSubscriber(mCursorAnchorInfoNotifier, true);
     }
 
-//    private void showError() {
-//        if (mTextView.getWindowToken() == null) {
-//            mShowErrorAfterAttach = true;
-//            return;
-//        }
-//
-//        if (mErrorPopup == null) {
-//            LayoutInflater inflater = LayoutInflater.from(mTextView.getContext());
-//            final TextView err = (TextView) inflater.inflate(
-//                    R.layout.textview_hint, null);
-//
-//            final float scale = mTextView.getResources().getDisplayMetrics().density;
-//            mErrorPopup = new ErrorPopup(err, (int)(200 * scale + 0.5f), (int)(50 * scale + 0.5f));
-//            mErrorPopup.setFocusable(false);
-//            // The user is entering text, so the input method is needed.  We
-//            // don't want the popup to be displayed on top of it.
-//            mErrorPopup.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-//        }
-//
-//        TextView tv = (TextView) mErrorPopup.getContentView();
-//        chooseSize(mErrorPopup, mError, tv);
-//        tv.setText(mError);
-//
-//        mErrorPopup.showAsDropDown(mTextView, getErrorX(), getErrorY());
-//        mErrorPopup.fixDirection(mErrorPopup.isAboveAnchor());
-//    }
 
-//    public void setError(CharSequence error, Drawable icon) {
-//        mError = TextUtils.stringOrSpannedString(error);
-//        mErrorWasChanged = true;
-//
-//        if (mError == null) {
-//            setErrorIcon(null);
-//            if (mErrorPopup != null) {
-//                if (mErrorPopup.isShowing()) {
-//                    mErrorPopup.dismiss();
-//                }
-//
-//                mErrorPopup = null;
-//            }
-//            mShowErrorAfterAttach = false;
-//        } else {
-//            setErrorIcon(icon);
-//            if (mTextView.isFocused()) {
-//                showError();
-//            }
-//        }
-//    }
-
-//    private void setErrorIcon(Drawable icon) {
-//        Drawables dr = mTextView.mDrawables;
-//        if (dr == null) {
-//            mTextView.mDrawables = dr = new Drawables(mTextView.getContext());
-//        }
-//        dr.setErrorDrawable(icon, mTextView);
-//
-//        mTextView.resetResolvedDrawables();
-//        mTextView.invalidate();
-//        mTextView.requestLayout();
-//    }
-
-//    private void hideError() {
-//        if (mErrorPopup != null) {
-//            if (mErrorPopup.isShowing()) {
-//                mErrorPopup.dismiss();
-//            }
-//        }
-//
-//        mShowErrorAfterAttach = false;
-//    }
-
-    /**
-     * Returns the X offset to make the pointy top of the error point
-     * at the middle of the error icon.
-     */
-//    private int getErrorX() {
-//        /*
-//         * The "25" is the distance between the point and the right edge
-//         * of the background
-//         */
-//        final float scale = mTextView.getResources().getDisplayMetrics().density;
-//
-//        final Drawables dr = mTextView.mDrawables;
-//
-//        final int layoutDirection = mTextView.getLayoutDirection();
-//        int errorX;
-//        int offset;
-//        switch (layoutDirection) {
-//            default:
-//            case View.LAYOUT_DIRECTION_LTR:
-//                offset = - (dr != null ? dr.mDrawableSizeRight : 0) / 2 + (int) (25 * scale + 0.5f);
-//                errorX = mTextView.getWidth() - mErrorPopup.getWidth() -
-//                        mTextView.getPaddingRight() + offset;
-//                break;
-//            case View.LAYOUT_DIRECTION_RTL:
-//                offset = (dr != null ? dr.mDrawableSizeLeft : 0) / 2 - (int) (25 * scale + 0.5f);
-//                errorX = mTextView.getPaddingLeft() + offset;
-//                break;
-//        }
-//        return errorX;
-//    }
 
     void onDetachedFromWindow() {
-//        getPositionListener().removeSubscriber(mCursorAnchorInfoNotifier);
-
         if (mError != null) {
 //            hideError();
         }
@@ -390,43 +288,6 @@ public class Editor {
 //            }
 //        }
     }
-
-    /**
-     * Returns the Y offset to make the pointy top of the error point
-     * at the bottom of the error icon.
-     */
-//    private int getErrorY() {
-//        /*
-//         * Compound, not extended, because the icon is not clipped
-//         * if the text height is smaller.
-//         */
-//        final int compoundPaddingTop = mTextView.getCompoundPaddingTop();
-//        int vspace = mTextView.getBottom() - mTextView.getTop() -
-//                mTextView.getCompoundPaddingBottom() - compoundPaddingTop;
-//
-//        final Drawables dr = mTextView.mDrawables;
-//
-//        final int layoutDirection = mTextView.getLayoutDirection();
-//        int height;
-//        switch (layoutDirection) {
-//            default:
-//            case View.LAYOUT_DIRECTION_LTR:
-//                height = (dr != null ? dr.mDrawableHeightRight : 0);
-//                break;
-//            case View.LAYOUT_DIRECTION_RTL:
-//                height = (dr != null ? dr.mDrawableHeightLeft : 0);
-//                break;
-//        }
-//
-//        int icontop = compoundPaddingTop + (vspace - height) / 2;
-//
-//        /*
-//         * The "2" is the distance between the point and the top edge
-//         * of the background.
-//         */
-//        final float scale = mTextView.getResources().getDisplayMetrics().density;
-//        return icontop + height - mTextView.getHeight() - (int) (2 * scale + 0.5f);
-//    }
 
     void createInputContentTypeIfNeeded() {
         if (mInputContentType == null) {
@@ -589,15 +450,6 @@ public class Editor {
                         | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD;
             }
         }
-    }
-
-    void setFrame() {
-//        if (mErrorPopup != null) {
-//            TextView tv = (TextView) mErrorPopup.getContentView();
-//            chooseSize(mErrorPopup, mError, tv);
-//            mErrorPopup.update(mTextView, getErrorX(), getErrorY(),
-//                    mErrorPopup.getWidth(), mErrorPopup.getHeight());
-//        }
     }
 
     /**
