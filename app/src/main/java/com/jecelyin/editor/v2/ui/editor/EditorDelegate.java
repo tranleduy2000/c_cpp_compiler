@@ -34,7 +34,6 @@ import android.text.style.BackgroundColorSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ccppcompiler.R;
@@ -42,7 +41,6 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.common.OnVisibilityChangedListener;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.DocumentInfoDialog;
@@ -60,7 +58,7 @@ import java.util.Locale;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher {
+public class EditorDelegate implements TextWatcher {
     public final static String KEY_CLUSTER = "is_cluster";
     private static boolean disableAutoSave = false;
     public EditAreaView mEditText;
@@ -194,11 +192,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         context = editorView.getContext();
         this.mEditorView = editorView;
         this.mEditText = editorView.getEditText();
-
         this.orientation = context.getResources().getConfiguration().orientation;
-
-        editorView.setVisibilityChangedListener(this);
-
         init();
     }
 
@@ -207,9 +201,7 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
     }
 
     public boolean isChanged() {
-        if (document == null)
-            return false;
-        return document.isChanged();
+        return document != null && document.isChanged();
     }
 
     public CharSequence getToolbarText() {
@@ -400,14 +392,6 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
         if (mEditorView == null)
             return;
         mEditorView.setRemoved();
-    }
-
-    @Override
-    public void onVisibilityChanged(int visibility) {
-        if (visibility != View.VISIBLE)
-            return;
-
-        noticeMenuChanged();
     }
 
     private void noticeMenuChanged() {

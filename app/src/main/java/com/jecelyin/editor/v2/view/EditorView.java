@@ -26,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.duy.ccppcompiler.R;
-import com.jecelyin.editor.v2.common.OnVisibilityChangedListener;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -35,7 +34,6 @@ public class EditorView extends RelativeLayout {
     private EditAreaView editText;
     private ProgressBar progressView;
     private boolean removed = false;
-    private OnVisibilityChangedListener visibilityChangedListener;
 
     public EditorView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -80,17 +78,5 @@ public class EditorView extends RelativeLayout {
 
     public void setRemoved() {
         this.removed = true;
-    }
-
-    @Override
-    public void setVisibility(int visibility) {
-        super.setVisibility(visibility);
-
-        if (visibilityChangedListener != null)
-            visibilityChangedListener.onVisibilityChanged(visibility);
-    }
-
-    public void setVisibilityChangedListener(OnVisibilityChangedListener visibilityChangedListener) {
-        this.visibilityChangedListener = visibilityChangedListener;
     }
 }
