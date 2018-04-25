@@ -35,9 +35,11 @@ import java.util.Arrays;
 public class InstallActivity extends AppCompatActivity {
     private static final String KEY_EXTRACTED = "KEY_EXTRACTED";
     private static final String KEY_APP_VERSION = "KEY_APP_VERSION";
+
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     private static final String TAG = "InstallActivity";
     private ProgressBar mProgressBar;
     private TextView mTxtMessage;

@@ -181,9 +181,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 DBHelper.getInstance(mainActivity).updateRecentFile(path, false);
                 int currentTab = getCurrentTab();
                 if (getTabCount() != 0) {
-                    setCurrentTab(currentTab); //设置title等等
+                    setCurrentTab(currentTab);
                 }
-//                tabAdapter.setCurrentTab(currentTab);
             }
         });
     }
