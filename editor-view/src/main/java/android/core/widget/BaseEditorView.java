@@ -378,9 +378,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         setEnabled(isEnabled());
         createEditorIfNeeded();
         mEditor.createInputContentTypeIfNeeded();
-        mTextSelectHandleLeftRes = R.drawable.text_select_handle_left_mtrl_alpha;
-        mTextSelectHandleRightRes = R.drawable.text_select_handle_right_mtrl_alpha;
-        mTextSelectHandleRes = R.drawable.text_select_handle_middle_mtrl_alpha;
+        mTextSelectHandleLeftRes = R.drawable.editor_select_handle_left_mtrl_alpha;
+        mTextSelectHandleRightRes = R.drawable.editor_select_handle_right_mtrl_alpha;
+        mTextSelectHandleRes = R.drawable.editor_select_handle_middle_mtrl_alpha;
         mTextEditSuggestionItemLayout = R.layout.text_edit_suggestion_item;
 
         BufferType bufferType = BufferType.EDITABLE;
@@ -805,6 +805,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
+    }
+
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -818,10 +822,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
-    }
-
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -4579,38 +4579,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                                 boring, mIncludePad);
                     }
 
-//                    if (useSaved) {
                     mSavedLayout = (BoringLayout) result;
-//                    }
-//                } else if (shouldEllipsize && boring.width <= wantWidth) {
-//                    if (useSaved && mSavedLayout != null) {
-//                        result = mSavedLayout.replaceOrMake(mTransformed, mTextPaint,
-//                                wantWidth, alignment, mSpacingMult, mSpacingAdd,
-//                                boring, mIncludePad, effectiveEllipsize,
-//                                ellipsisWidth);
-//                    } else {
-//                        result = BoringLayout.make(mTransformed, mTextPaint,
-//                                wantWidth, alignment, mSpacingMult, mSpacingAdd,
-//                                boring, mIncludePad, effectiveEllipsize,
-//                                ellipsisWidth);
-//                    }
-//                } else if (shouldEllipsize) {
-//                    result = new StaticLayout(mTransformed,
-//                            0, mTransformed.length(),
-//                            mTextPaint, wantWidth, alignment, mTextDir, mSpacingMult,
-//                            mSpacingAdd, mIncludePad, effectiveEllipsize,
-//                            ellipsisWidth, mMaxMode == LINES ? mMaximum : Integer.MAX_VALUE);
                 } else {
                     result = new StaticLayout(layoutContext, mTransformed, mTextPaint,
                             wantWidth, alignment, mTextDir, mSpacingMult, mSpacingAdd,
                             mIncludePad);
                 }
-//            } else if (shouldEllipsize) {
-//                result = new StaticLayout(mTransformed,
-//                        0, mTransformed.length(),
-//                        mTextPaint, wantWidth, alignment, mTextDir, mSpacingMult,
-//                        mSpacingAdd, mIncludePad, effectiveEllipsize,
-//                        ellipsisWidth, mMaxMode == LINES ? mMaximum : Integer.MAX_VALUE);
             } else {
                 result = new StaticLayout(layoutContext, mTransformed, mTextPaint,
                         wantWidth, alignment, mTextDir, mSpacingMult, mSpacingAdd,
@@ -7029,6 +7003,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         Layout.TAB_INCREMENT = (int) tabWidth;
     }
 
+    /**
+     * Calculate padding line number padding
+     */
     public void setLineNumber(int lineNumber) {
         if (layoutContext.getLineNumber() == lineNumber) {
             return;
@@ -7044,15 +7021,15 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         int gutterPadding = SysUtils.dpAsPixels(getContext(), 4);
 
         float textWidth = layoutContext.lineNumberPaint.measureText(" ");
-        double columnCount = Math.ceil(Math.log10(lineNumber));
+        double columnCount = Math.ceil(Math.log10(lineNumber)) + 2;
         columnCount = Math.max(1, columnCount);
 
         layoutContext.gutterWidth = ((int) (textWidth * columnCount)) + gutterPadding * 2/*Left and right*/;
         layoutContext.lineNumberX = gutterPadding;
 
-        int newPaddieLeft = layoutContext.gutterWidth;
-        if (getPaddingLeft() != newPaddieLeft) {
-            setPaddingRelative(newPaddieLeft, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
+        int newPaddingLeft = layoutContext.gutterWidth;
+        if (getPaddingLeft() != newPaddingLeft) {
+            setPaddingRelative(newPaddingLeft, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
         }
     }
 

@@ -1191,121 +1191,6 @@ public class Editor {
 //        }
     }
 
-//    private void drawHardwareAccelerated(Canvas canvas, Layout layout, Path highlight,
-//            Paint highlightPaint, int cursorOffsetVertical) {
-//        final long lineRange = layout.getLineRangeForDraw(canvas);
-//        int firstLine = TextUtils.unpackRangeStartFromLong(lineRange);
-//        int lastLine = TextUtils.unpackRangeEndFromLong(lineRange);
-//        if (lastLine < 0) return;
-//
-//        layout.drawBackground(canvas, highlight, highlightPaint, cursorOffsetVertical,
-//                firstLine, lastLine);
-//
-//        if (layout instanceof DynamicLayout) {
-//            if (mTextDisplayLists == null) {
-//                mTextDisplayLists = ArrayUtils.emptyArray(TextDisplayList.class);
-//            }
-//
-//            DynamicLayout dynamicLayout = (DynamicLayout) layout;
-//            int[] blockEndLines = dynamicLayout.getBlockEndLines();
-//            int[] blockIndices = dynamicLayout.getBlockIndices();
-//            final int numberOfBlocks = dynamicLayout.getNumberOfBlocks();
-//            final int indexFirstChangedBlock = dynamicLayout.getIndexFirstChangedBlock();
-//
-//            int endOfPreviousBlock = -1;
-//            int searchStartIndex = 0;
-//            for (int i = 0; i < numberOfBlocks; i++) {
-//                int blockEndLine = blockEndLines[i];
-//                int blockIndex = blockIndices[i];
-//
-//                final boolean blockIsInvalid = blockIndex == DynamicLayout.INVALID_BLOCK_INDEX;
-//                if (blockIsInvalid) {
-//                    blockIndex = getAvailableDisplayListIndex(blockIndices, numberOfBlocks,
-//                            searchStartIndex);
-//                    // Note how dynamic layout's internal block indices get updated from Editor
-//                    blockIndices[i] = blockIndex;
-//                    searchStartIndex = blockIndex + 1;
-//                }
-//
-//                if (mTextDisplayLists[blockIndex] == null) {
-//                    mTextDisplayLists[blockIndex] =
-//                            new TextDisplayList("Text " + blockIndex);
-//                }
-//
-//                final boolean blockDisplayListIsInvalid = mTextDisplayLists[blockIndex].needsRecord();
-//                RenderNode blockDisplayList = mTextDisplayLists[blockIndex].displayList;
-//                if (i >= indexFirstChangedBlock || blockDisplayListIsInvalid) {
-//                    final int blockBeginLine = endOfPreviousBlock + 1;
-//                    final int top = layout.getLineTop(blockBeginLine);
-//                    final int bottom = layout.getLineBottom(blockEndLine);
-//                    int left = 0;
-//                    int right = mTextView.getWidth();
-//                    if (mTextView.getHorizontallyScrolling()) {
-//                        float min = Float.MAX_VALUE;
-//                        float max = Float.MIN_VALUE;
-//                        for (int line = blockBeginLine; line <= blockEndLine; line++) {
-//                            min = Math.min(min, layout.getLineLeft(line));
-//                            max = Math.max(max, layout.getLineRight(line));
-//                        }
-//                        left = (int) min;
-//                        right = (int) (max + 0.5f);
-//                    }
-//
-//                    // Rebuild display list if it is invalid
-//                    if (blockDisplayListIsInvalid) {
-//                        final HardwareCanvas hardwareCanvas = blockDisplayList.start(
-//                                right - left, bottom - top);
-//                        try {
-//                            // drawText is always relative to TextView's origin, this translation
-//                            // brings this range of text back to the top left corner of the viewport
-//                            hardwareCanvas.translate(-left, -top);
-//                            layout.drawText(hardwareCanvas, blockBeginLine, blockEndLine);
-//                            // No need to untranslate, previous context is popped after
-//                            // drawDisplayList
-//                        } finally {
-//                            blockDisplayList.end(hardwareCanvas);
-//                            // Same as drawDisplayList below, handled by our TextView's parent
-//                            blockDisplayList.setClipToBounds(false);
-//                        }
-//                    }
-//
-//                    // Valid disply list whose index is >= indexFirstChangedBlock
-//                    // only needs to update its drawing location.
-//                    blockDisplayList.setLeftTopRightBottom(left, top, right, bottom);
-//                }
-//
-//                ((HardwareCanvas) canvas).drawRenderNode(blockDisplayList, null,
-//                        0 /* no child clipping, our TextView parent enforces it */);
-//
-//                endOfPreviousBlock = blockEndLine;
-//            }
-//
-//            dynamicLayout.setIndexFirstChangedBlock(numberOfBlocks);
-//        } else {
-//            // Boring layout is used for empty and hint text
-//            layout.drawText(canvas, firstLine, lastLine);
-//        }
-//    }
-
-//    private int getAvailableDisplayListIndex(int[] blockIndices, int numberOfBlocks,
-//            int searchStartIndex) {
-//        int length = mTextDisplayLists.length;
-//        for (int i = searchStartIndex; i < length; i++) {
-//            boolean blockIndexFound = false;
-//            for (int j = 0; j < numberOfBlocks; j++) {
-//                if (blockIndices[j] == i) {
-//                    blockIndexFound = true;
-//                    break;
-//                }
-//            }
-//            if (blockIndexFound) continue;
-//            return i;
-//        }
-//
-//        // No available index found, the pool has to grow
-//        mTextDisplayLists = GrowingArrayUtils.append(mTextDisplayLists, length, null);
-//        return length;
-//    }
 
     void invalidateTextDisplayList() {
 //        if (mTextDisplayLists != null) {
@@ -3121,173 +3006,6 @@ public class Editor {
         }
     }
 
-    /**
-     * A listener to call {@link InputMethodManager#updateCursorAnchorInfo(View, android.view.inputmethod.CursorAnchorInfo)}
-     * while the input method is requesting the cursor/anchor position. Does nothing as long as
-     * {@link InputMethodManager#isWatchingCursor(View)} returns false.
-     */
-//    private final class CursorAnchorInfoNotifier implements TextViewPositionListener {
-//        final CursorAnchorInfo.Builder mSelectionInfoBuilder = new CursorAnchorInfo.Builder();
-//        final int[] mTmpIntOffset = new int[2];
-//        final Matrix mViewToScreenMatrix = new Matrix();
-//
-//        @Override
-//        public void updatePosition(int parentPositionX, int parentPositionY,
-//                boolean parentPositionChanged, boolean parentScrolled) {
-//            final InputMethodState ims = mInputMethodState;
-//            if (ims == null || ims.mBatchEditNesting > 0) {
-//                return;
-//            }
-//            final InputMethodManager imm = InputMethodManagerCompat.peekInstance();
-//            if (null == imm) {
-//                return;
-//            }
-//            if (!imm.isActive(mTextView)) {
-//                return;
-//            }
-//            // Skip if the IME has not requested the cursor/anchor position.
-////            if (!imm.isCursorAnchorInfoEnabled()) {
-//            if (!InputMethodManagerCompat.isCursorAnchorInfoEnabled(imm)) {
-//                return;
-//            }
-//            Layout layout = mTextView.getLayout();
-//            if (layout == null) {
-//                return;
-//            }
-//
-//            final CursorAnchorInfo.Builder builder = mSelectionInfoBuilder;
-//            builder.reset();
-//
-//            final int selectionStart = mTextView.getSelectionStart();
-//            builder.setSelectionRange(selectionStart, mTextView.getSelectionEnd());
-//
-//            // Construct transformation matrix from view local coordinates to screen coordinates.
-//            mViewToScreenMatrix.set(mTextView.getMatrix());
-//            mTextView.getLocationOnScreen(mTmpIntOffset);
-//            mViewToScreenMatrix.postTranslate(mTmpIntOffset[0], mTmpIntOffset[1]);
-//            builder.setMatrix(mViewToScreenMatrix);
-//
-//            final float viewportToContentHorizontalOffset =
-//                    mTextView.viewportToContentHorizontalOffset();
-//            final float viewportToContentVerticalOffset =
-//                    mTextView.viewportToContentVerticalOffset();
-//
-//            final CharSequence text = mTextView.getText();
-//            if (text instanceof Spannable) {
-//                final Spannable sp = (Spannable) text;
-//                int composingTextStart = EditableInputConnection.getComposingSpanStart(sp);
-//                int composingTextEnd = EditableInputConnection.getComposingSpanEnd(sp);
-//                if (composingTextEnd < composingTextStart) {
-//                    final int temp = composingTextEnd;
-//                    composingTextEnd = composingTextStart;
-//                    composingTextStart = temp;
-//                }
-//                final boolean hasComposingText =
-//                        (0 <= composingTextStart) && (composingTextStart < composingTextEnd);
-//                if (hasComposingText) {
-//                    final CharSequence composingText = text.subSequence(composingTextStart,
-//                            composingTextEnd);
-//                    builder.setComposingText(composingTextStart, composingText);
-//
-//                    final int minLine = layout.getLineForOffset(composingTextStart);
-//                    final int maxLine = layout.getLineForOffset(composingTextEnd - 1);
-//                    for (int line = minLine; line <= maxLine; ++line) {
-//                        final int lineStart = layout.getLineStart(line);
-//                        final int lineEnd = layout.getLineEnd(line);
-//                        final int offsetStart = Math.max(lineStart, composingTextStart);
-//                        final int offsetEnd = Math.min(lineEnd, composingTextEnd);
-//                        final boolean ltrLine =
-//                                layout.getParagraphDirection(line) == Layout.DIR_LEFT_TO_RIGHT;
-//                        final float[] widths = new float[offsetEnd - offsetStart];
-//                        layout.getPaint().getTextWidths(text, offsetStart, offsetEnd, widths);
-//                        final float top = layout.getLineTop(line);
-//                        final float bottom = layout.getLineBottom(line);
-//                        for (int offset = offsetStart; offset < offsetEnd; ++offset) {
-//                            final float charWidth = widths[offset - offsetStart];
-//                            final boolean isRtl = layout.isRtlCharAt(offset);
-//                            final float primary = layout.getPrimaryHorizontal(offset);
-//                            final float secondary = layout.getSecondaryHorizontal(offset);
-//                            // TODO: This doesn't work perfectly for text with custom styles and
-//                            // TAB chars.
-//                            final float left;
-//                            final float right;
-//                            if (ltrLine) {
-//                                if (isRtl) {
-//                                    left = secondary - charWidth;
-//                                    right = secondary;
-//                                } else {
-//                                    left = primary;
-//                                    right = primary + charWidth;
-//                                }
-//                            } else {
-//                                if (!isRtl) {
-//                                    left = secondary;
-//                                    right = secondary + charWidth;
-//                                } else {
-//                                    left = primary - charWidth;
-//                                    right = primary;
-//                                }
-//                            }
-//                            // TODO: Check top-right and bottom-left as well.
-//                            final float localLeft = left + viewportToContentHorizontalOffset;
-//                            final float localRight = right + viewportToContentHorizontalOffset;
-//                            final float localTop = top + viewportToContentVerticalOffset;
-//                            final float localBottom = bottom + viewportToContentVerticalOffset;
-//                            final boolean isTopLeftVisible = isPositionVisible(localLeft, localTop);
-//                            final boolean isBottomRightVisible =
-//                                    isPositionVisible(localRight, localBottom);
-//                            int characterBoundsFlags = 0;
-//                            if (isTopLeftVisible || isBottomRightVisible) {
-//                                characterBoundsFlags |= CursorAnchorInfo.FLAG_HAS_VISIBLE_REGION;
-//                            }
-//                            if (!isTopLeftVisible || !isTopLeftVisible) {
-//                                characterBoundsFlags |= CursorAnchorInfo.FLAG_HAS_INVISIBLE_REGION;
-//                            }
-//                            if (isRtl) {
-//                                characterBoundsFlags |= CursorAnchorInfo.FLAG_IS_RTL;
-//                            }
-//                            // Here offset is the index in Java chars.
-//                            builder.addCharacterBounds(offset, localLeft, localTop, localRight,
-//                                    localBottom, characterBoundsFlags);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            // Treat selectionStart as the insertion point.
-//            if (0 <= selectionStart) {
-//                final int offset = selectionStart;
-//                final int line = layout.getLineForOffset(offset);
-//                final float insertionMarkerX = layout.getPrimaryHorizontal(offset)
-//                        + viewportToContentHorizontalOffset;
-//                final float insertionMarkerTop = layout.getLineTop(line)
-//                        + viewportToContentVerticalOffset;
-//                final float insertionMarkerBaseline = layout.getLineBaseline(line)
-//                        + viewportToContentVerticalOffset;
-//                final float insertionMarkerBottom = layout.getLineBottom(line)
-//                        + viewportToContentVerticalOffset;
-//                final boolean isTopVisible =
-//                        isPositionVisible(insertionMarkerX, insertionMarkerTop);
-//                final boolean isBottomVisible =
-//                        isPositionVisible(insertionMarkerX, insertionMarkerBottom);
-//                int insertionMarkerFlags = 0;
-//                if (isTopVisible || isBottomVisible) {
-//                    insertionMarkerFlags |= CursorAnchorInfo.FLAG_HAS_VISIBLE_REGION;
-//                }
-//                if (!isTopVisible || !isBottomVisible) {
-//                    insertionMarkerFlags |= CursorAnchorInfo.FLAG_HAS_INVISIBLE_REGION;
-//                }
-//                if (layout.isRtlCharAt(offset)) {
-//                    insertionMarkerFlags |= CursorAnchorInfo.FLAG_IS_RTL;
-//                }
-//                builder.setInsertionMarkerLocation(insertionMarkerX, insertionMarkerTop,
-//                        insertionMarkerBaseline, insertionMarkerBottom, insertionMarkerFlags);
-//            }
-//
-//            imm.updateCursorAnchorInfo(mTextView, builder.build());
-//        }
-//    }
-
     private abstract class HandleView extends View implements TextViewPositionListener {
         // Touch-up filter: number of previous positions remembered
         private static final int HISTORY_SIZE = 5;
@@ -3432,28 +3150,9 @@ public class Editor {
             if (!mTextView.hasSelection() && mSelectionActionMode == null) {
                 mSelectionActionMode = mTextView.startActionMode(new SelectionActionModeCallback());
             }
-//            if (mActionPopupWindow == null) {
-//                mActionPopupWindow = new ActionPopupWindow();
-//            }
-//            if (mActionPopupShower == null) {
-//                mActionPopupShower = new Runnable() {
-//                    public void run() {
-//                        mActionPopupWindow.show();
-//                    }
-//                };
-//            } else {
-//                mTextView.removeCallbacks(mActionPopupShower);
-//            }
-//            mTextView.postDelayed(mActionPopupShower, delay);
         }
 
         protected void hideActionPopupWindow() {
-//            if (mActionPopupShower != null) {
-//                mTextView.removeCallbacks(mActionPopupShower);
-//            }
-//            if (mActionPopupWindow != null) {
-//                mActionPopupWindow.hide();
-//            }
         }
 
         public boolean isShowing() {
@@ -3721,24 +3420,6 @@ public class Editor {
                     break;
 
                 case MotionEvent.ACTION_UP:
-//                    if (!offsetHasBeenChanged()) {
-//                        final float deltaX = mDownPositionX - ev.getRawX();
-//                        final float deltaY = mDownPositionY - ev.getRawY();
-//                        final float distanceSquared = deltaX * deltaX + deltaY * deltaY;
-//
-//                        final ViewConfiguration viewConfiguration = ViewConfiguration.get(
-//                                mTextView.getContext());
-//                        final int touchSlop = viewConfiguration.getScaledTouchSlop();
-//
-//                        if (distanceSquared < touchSlop * touchSlop) {
-//                            if (mActionPopupWindow != null && mActionPopupWindow.isShowing()) {
-//                                // Tapping on the handle dismisses the displayed action popup
-//                                mActionPopupWindow.hide();
-//                            } else {
-//                                showWithActionPopup();
-//                            }
-//                        }
-//                    }
                     hideAfterDelay();
                     break;
 
@@ -3824,64 +3505,8 @@ public class Editor {
             positionAtCursorOffset(offset, false);
         }
 
-//        public ActionPopupWindow getActionPopupWindow() {
-//            return mActionPopupWindow;
-//        }
     }
 
-//    private static class ErrorPopup extends PopupWindow {
-//        private boolean mAbove = false;
-//        private final TextView mView;
-//        private int mPopupInlineErrorBackgroundId = 0;
-//        private int mPopupInlineErrorAboveBackgroundId = 0;
-//
-//        ErrorPopup(TextView v, int width, int height) {
-//            super(v, width, height);
-//            mView = v;
-//            // Make sure the TextView has a background set as it will be used the first time it is
-//            // shown and positioned. Initialized with below background, which should have
-//            // dimensions identical to the above version for this to work (and is more likely).
-//            mPopupInlineErrorBackgroundId = getResourceId(mPopupInlineErrorBackgroundId,
-//                    R.styleable.Theme_errorMessageBackground);
-//            mView.setBackgroundResource(mPopupInlineErrorBackgroundId);
-//        }
-//
-//        void fixDirection(boolean above) {
-//            mAbove = above;
-//
-//            if (above) {
-//                mPopupInlineErrorAboveBackgroundId =
-//                    getResourceId(mPopupInlineErrorAboveBackgroundId,
-//                            R.styleable.Theme_errorMessageAboveBackground);
-//            } else {
-//                mPopupInlineErrorBackgroundId = getResourceId(mPopupInlineErrorBackgroundId,
-//                        R.styleable.Theme_errorMessageBackground);
-//            }
-//
-//            mView.setBackgroundResource(above ? mPopupInlineErrorAboveBackgroundId :
-//                mPopupInlineErrorBackgroundId);
-//        }
-//
-//        private int getResourceId(int currentId, int index) {
-//            if (currentId == 0) {
-//                TypedArray styledAttributes = mView.getContext().obtainStyledAttributes(
-//                        R.styleable.Theme);
-//                currentId = styledAttributes.getResourceId(index, 0);
-//                styledAttributes.recycle();
-//            }
-//            return currentId;
-//        }
-//
-//        @Override
-//        public void update(int x, int y, int w, int h, boolean force) {
-//            super.update(x, y, w, h, force);
-//
-//            boolean above = isAboveAnchor();
-//            if (above != mAbove) {
-//                fixDirection(above);
-//            }
-//        }
-//    }
 
     private class SelectionEndHandleView extends HandleView {
 
@@ -3928,9 +3553,6 @@ public class Editor {
             positionAtCursorOffset(offset, false);
         }
 
-//        public void setActionPopupWindow(ActionPopupWindow actionPopupWindow) {
-//            mActionPopupWindow = actionPopupWindow;
-//        }
     }
 
     private class InsertionPointCursorController implements CursorController {
