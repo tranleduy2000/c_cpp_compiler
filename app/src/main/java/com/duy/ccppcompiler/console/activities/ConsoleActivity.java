@@ -77,7 +77,7 @@ public class ConsoleActivity extends AppCompatActivity implements ServiceConnect
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
         mEmulatorView = findViewById(R.id.emulatorView);
-        cmd = getIntent().getStringExtra("bin");
+        cmd = getIntent().getStringExtra(EXTRA_BINARY_FILE_PATH);
         mEmulatorView.setTextSize(mFontSize);
         mEmulatorView.requestFocus();
         mEmulatorView.setOnKeyListener(new TermuxViewClient(this));
