@@ -28,16 +28,16 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jecelyin.common.adapter.ViewPagerAdapter;
 import com.duy.ccppcompiler.R;
+import com.jecelyin.common.adapter.ViewPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.common.TabInfo;
 import com.jecelyin.editor.v2.task.ClusterCommand;
-import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.activities.MainActivity;
 import com.jecelyin.editor.v2.ui.dialog.SaveConfirmDialog;
+import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.ExtGrep;
 import com.jecelyin.editor.v2.view.EditorView;
 
@@ -105,6 +105,33 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         super.setPrimaryItem(container, position, object);
         currentPosition = position;
         setEditorView(position, (EditorView) object);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return ((EditorView) object).isRemoved() ? POSITION_NONE : POSITION_UNCHANGED;
+    }
+
+    @Override
+    public Parcelable saveState() {
+        SavedState ss = new SavedState();
+        ss.states = new EditorDelegate.SavedState[list.size()];
+        for (int i = list.size() - 1; i >= 0; i--) {
+            ss.states[i] = (EditorDelegate.SavedState) list.get(i).onSaveInstanceState();
+        }
+        return ss;
+    }
+
+    @Override
+    public void restoreState(Parcelable state, ClassLoader loader) {
+        if (!(state instanceof SavedState))
+            return;
+        EditorDelegate.SavedState[] ss = ((SavedState) state).states;
+        list.clear();
+        for (int i = 0; i < ss.length; i++) {
+            list.add(new EditorDelegate(ss[i]));
+        }
+        notifyDataSetChanged();
     }
 
     public EditorDelegate getCurrentEditorDelegate() {
@@ -181,11 +208,6 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemPosition(Object object) {
-        return ((EditorView) object).isRemoved() ? POSITION_NONE : POSITION_UNCHANGED;
-    }
-
     public ClusterCommand makeClusterCommand() {
         return new ClusterCommand(new ArrayList<>(list));
     }
@@ -195,33 +217,11 @@ public class EditorPagerAdapter extends ViewPagerAdapter {
         return position < 0 || removeEditor(position, tabCloseListener);
     }
 
-    public EditorDelegate getItem(int i) {
-        //TabManager调用时，可能程序已经退出，updateToolbar时就不需要做处理了
-        if (i >= list.size())
+    @Nullable
+    public EditorDelegate getItem(int index) {
+        if (index >= list.size())
             return null;
-        return list.get(i);
-    }
-
-    @Override
-    public Parcelable saveState() {
-        SavedState ss = new SavedState();
-        ss.states = new EditorDelegate.SavedState[list.size()];
-        for (int i = list.size() - 1; i >= 0; i--) {
-            ss.states[i] = (EditorDelegate.SavedState) list.get(i).onSaveInstanceState();
-        }
-        return ss;
-    }
-
-    @Override
-    public void restoreState(Parcelable state, ClassLoader loader) {
-        if (!(state instanceof SavedState))
-            return;
-        EditorDelegate.SavedState[] ss = ((SavedState) state).states;
-        list.clear();
-        for (int i = 0; i < ss.length; i++) {
-            list.add(new EditorDelegate(ss[i]));
-        }
-        notifyDataSetChanged();
+        return list.get(index);
     }
 
     public static class SavedState implements Parcelable {

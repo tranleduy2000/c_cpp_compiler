@@ -55,6 +55,7 @@ import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.syntax.ModeProvider;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -208,10 +209,17 @@ public class EditorDelegate implements OnVisibilityChangedListener, TextWatcher 
     }
 
     public CharSequence getToolbarText() {
-        return String.format("%s%s  \t|\t  %s \t %s", isChanged() ? "*" : "", getTitle()
-                , document == null ? "UTF-8" : document.getEncoding()
-                , document == null || document.getModeName() == null ? "" : document.getModeName()
-        );
+        String encode = document == null ? "UTF-8" : document.getEncoding();
+        String fileMode = document == null || document.getModeName() == null ? "" : document.getModeName();
+        String title = getTitle();
+        String changed = isChanged() ? "*" : "";
+        String cursor = "";
+        if (mEditText != null && mEditText.getLayout() != null && getCursorOffset() >= 0) {
+            int cursorOffset = getCursorOffset();
+            int line = mEditText.getLayout().getLineForOffset(cursorOffset);
+            cursor += line + ":" + cursorOffset;
+        }
+        return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s", changed, title, encode, fileMode, cursor);
     }
 
     public void startSaveFileSelectorActivity() {

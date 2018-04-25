@@ -56,6 +56,7 @@ public class Command {
         DOC_INFO,
         READONLY_MODE,
         HIGHLIGHT,
+        COMMENT,
         INSERT_TEXT,
         RELOAD_WITH_ENCODING,
         FULL_SCREEN,

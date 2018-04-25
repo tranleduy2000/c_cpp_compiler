@@ -68,7 +68,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 mainActivity.mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
-        mainActivity.mTabPager.setOnPageChangeListener(this);
+        mainActivity.mEditorPager.setOnPageChangeListener(this);
     }
 
     private void onTabMenuViewsClick(View v) {
@@ -86,7 +86,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     private void initEditor() {
         editorPagerAdapter = new EditorPagerAdapter(mainActivity);
-        mainActivity.mTabPager.setAdapter(editorPagerAdapter);
+        mainActivity.mEditorPager.setAdapter(editorPagerAdapter);
 
         if (Pref.getInstance(mainActivity).isOpenLastFiles()) {
             ArrayList<DBHelper.RecentFileItem> recentFiles = DBHelper.getInstance(mainActivity).getRecentFiles(true);
@@ -167,13 +167,13 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public int getCurrentTab() {
-        return mainActivity.mTabPager.getCurrentItem();
+        return mainActivity.mEditorPager.getCurrentItem();
     }
 
     public void setCurrentTab(int index) {
-        int tabCount = mainActivity.mTabPager.getAdapter().getCount();
+        int tabCount = mainActivity.mEditorPager.getAdapter().getCount();
         index = Math.min(Math.max(0, index), tabCount);
-        mainActivity.mTabPager.setCurrentItem(index);
+        mainActivity.mEditorPager.setCurrentItem(index);
         tabAdapter.setCurrentTab(index);
         updateToolbar();
     }
@@ -234,7 +234,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     public boolean closeAllTabAndExitApp() {
         EditorDelegate.setDisableAutoSave(true);
         exitApp = true;
-        if (mainActivity.mTabPager != null) {
+        if (mainActivity.mEditorPager != null) {
             Pref.getInstance(mainActivity).setLastTab(getCurrentTab());
         }
         return editorPagerAdapter.removeAll(new TabCloseListener() {

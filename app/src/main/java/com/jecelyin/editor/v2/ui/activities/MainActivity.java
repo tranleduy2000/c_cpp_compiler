@@ -92,7 +92,7 @@ public class MainActivity extends FullScreenActivity
     private static final int RC_SETTINGS = 5;
 
     public Toolbar mToolbar;
-    public ViewPager mTabPager;
+    public ViewPager mEditorPager;
     public RecyclerView mMenuRecyclerView;
     public DrawerLayout mDrawerLayout;
     public RecyclerView mTabRecyclerView;
@@ -168,7 +168,7 @@ public class MainActivity extends FullScreenActivity
         setContentView(R.layout.activity_main);
 
         mToolbar = findViewById(R.id.toolbar);
-        mTabPager = findViewById(R.id.tab_pager);
+        mEditorPager = findViewById(R.id.view_pager);
         mMenuRecyclerView = findViewById(R.id.menuRecyclerView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -251,7 +251,7 @@ public class MainActivity extends FullScreenActivity
     }
 
     private void start() {
-        mTabPager.setVisibility(View.VISIBLE);
+        mEditorPager.setVisibility(View.VISIBLE);
         initUI();
     }
 

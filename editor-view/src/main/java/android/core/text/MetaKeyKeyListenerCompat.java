@@ -28,13 +28,14 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.MethodReflection;
 
 public class MetaKeyKeyListenerCompat extends MetaKeyKeyListener {
+    private static final String TAG = "MetaKeyKeyListenerCompa";
     public static final int META_SELECTING = getMetaSelecting();
 
     private static int getMetaSelecting() {
         try {
             return (int) MethodReflection.getField(MetaKeyKeyListener.class, "META_SELECTING");
         } catch (Throwable e) {
-            DLog.e(e);
+            if (DLog.DEBUG) DLog.w(TAG, "getMetaSelecting: ", e);
             return 0x800;
         }
     }

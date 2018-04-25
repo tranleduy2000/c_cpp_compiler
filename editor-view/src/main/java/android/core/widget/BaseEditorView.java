@@ -2299,6 +2299,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     @Override
     public Parcelable onSaveInstanceState() {
+        if (DLog.DEBUG) DLog.d(TAG, "onSaveInstanceState() called");
         Parcelable superState = super.onSaveInstanceState();
 
         // Save state if we are forced to
@@ -2365,6 +2366,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "onRestoreInstanceState() called with: state = [" + state + "]");
         if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
@@ -7238,7 +7241,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             selEnd = in.readInt();
             frozenWithFocus = (in.readInt() != 0);
 //            text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
-//            text = in.createCharArray();
+            text = in.createCharArray();
             textLength = in.readInt();
 
             if (in.readInt() != 0) {
@@ -7255,7 +7258,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             out.writeInt(selEnd);
             out.writeInt(frozenWithFocus ? 1 : 0);
 //            TextUtils.writeToParcel(text, out, flags);
-//            out.writeCharArray(this.text);
+            out.writeCharArray(this.text);
             out.writeInt(this.textLength);
 
             if (error == null) {
