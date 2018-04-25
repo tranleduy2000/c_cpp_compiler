@@ -17,7 +17,6 @@
 package com.jecelyin.editor.v2.ui.activities;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -111,7 +110,6 @@ public class EditorActivity extends FullScreenActivity
     private MenuManager mMenuManager;
     private FolderChooserDialog.FolderCallback findFolderCallback;
     private long mExitTime;
-    private ProgressDialog mCompileDialog;
 
     public static Intent getOpenFileIntent(File file, int offset) {
         Intent intent = new Intent();
@@ -489,8 +487,6 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void compileAndRun() {
-        showDialogProgress();
-
         saveAll();
 
         EditorDelegate currentEditor = getCurrentEditorDelegate();
@@ -506,22 +502,6 @@ public class EditorActivity extends FullScreenActivity
 
         CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
         compileTask.execute();
-    }
-
-    private void showDialogProgress() {
-        if (mCompileDialog == null) {
-            mCompileDialog = new ProgressDialog(this);
-            mCompileDialog.show();
-        }
-    }
-
-    private boolean ensureNotReadOnly() {
-        boolean readOnly = preferences.isReadOnly();
-        if (readOnly) {
-            UIUtils.toast(this, R.string.readonly_mode_not_support_this_action);
-            return false;
-        }
-        return true;
     }
 
     @Override
