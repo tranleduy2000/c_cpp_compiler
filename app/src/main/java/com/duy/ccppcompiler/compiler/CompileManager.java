@@ -19,7 +19,7 @@ package com.duy.ccppcompiler.compiler;
 import android.app.ProgressDialog;
 import android.content.Intent;
 
-import com.duy.ccppcompiler.console.ConsoleActivity;
+import com.duy.ccppcompiler.console.activities.ConsoleActivity;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
 import com.jecelyin.common.utils.UIUtils;

@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.console;
-
-import android.content.Context;
-
-import java.io.File;
+package com.duy.ccppcompiler.console.activities;
 
 /**
- * Created by Duy on 25-Apr-18.
+ * Created by Duy on 22-Apr-18.
  */
 
-public class EnvironmentVariable {
-
-    public static String getHomePath(Context context) {
-        return new File(context.getFilesDir(), "home").getAbsolutePath();
-    }
-
-    public static String getPrefixPath(Context context) {
-        return new File(context.getFilesDir(), "usr").getAbsolutePath();
-    }
+public interface IConsole {
+    void changeFontSize(boolean increase);
 }
