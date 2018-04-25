@@ -25,13 +25,8 @@ public final class TermuxService extends Service implements SessionChangedCallba
      * Intent action to launch a new terminal session. Executed from TermuxWidgetProvider.
      */
     public static final String ACTION_EXECUTE = "com.termux.service_execute";
-    /**
-     * Note that this is a symlink on the Android M preview.
-     */
-    @SuppressLint("SdCardPath")
-    private static final String FILES_PATH = "/data/data/com.luoye.simpleC/files";
-    public static final String PREFIX_PATH = FILES_PATH + "/usr";
-    public static final String HOME_PATH = FILES_PATH + "/home";
+
+
     private static final String EXTRA_ARGUMENTS = "com.termux.execute.arguments";
     private static final String EXTRA_CURRENT_WORKING_DIRECTORY = "com.termux.execute.cwd";
     private static final int NOTIFICATION_ID = 1337;
@@ -39,6 +34,8 @@ public final class TermuxService extends Service implements SessionChangedCallba
     private static final String ACTION_LOCK_WAKE = "com.termux.service_wake_lock";
     private static final String ACTION_UNLOCK_WAKE = "com.termux.service_wake_unlock";
     private static final String EXTRA_EXECUTE_IN_BACKGROUND = "com.termux.execute.background";
+
+
     private final IBinder mBinder = new LocalBinder();
     private final Handler mHandler = new Handler();
     SessionChangedCallback mSessionChangeCallback;
@@ -53,6 +50,10 @@ public final class TermuxService extends Service implements SessionChangedCallba
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
     private Toast toast;
+
+    @Override
+    public void onCreate() {
+    }
 
     @SuppressLint("Wakelock")
     @Override
@@ -123,11 +124,6 @@ public final class TermuxService extends Service implements SessionChangedCallba
         return mBinder;
     }
 
-    @Override
-    public void onCreate() {
-
-    }
-
 
     public TerminalSession getTermSession() {
         return mTerminalSessions;
@@ -146,19 +142,19 @@ public final class TermuxService extends Service implements SessionChangedCallba
 
     private TerminalSession createTermSession(String executablePath, String[] arguments, String cwd) {
         //System.out.println("----------------->createTermSession");
-        File f = new File(HOME_PATH);
+        File f = new File(EnvironmentVariable.getHomePath(this));
         if (!f.exists())
             f.mkdirs();
 
         if (cwd == null)
-            cwd = HOME_PATH;
+            cwd = EnvironmentVariable.getHomePath(this);
 
-        String[] env = BackgroundJob.buildEnvironment(true, cwd);
+        String[] env = BackgroundJob.buildEnvironment(true, cwd, this);
         boolean isLoginShell = false;
 
         if (executablePath == null) {
             for (String shellBinary : new String[]{"login", "bash", "zsh"}) {
-                File shellFile = new File(PREFIX_PATH + "/bin/" + shellBinary);
+                File shellFile = new File(EnvironmentVariable.getPrefixPath(this) + "/bin/" + shellBinary);
                 if (shellFile.canExecute()) {
                     executablePath = shellFile.getAbsolutePath();
                     break;
@@ -172,7 +168,7 @@ public final class TermuxService extends Service implements SessionChangedCallba
             isLoginShell = true;
         }
 
-        String[] processArgs = BackgroundJob.setupProcessArgs(executablePath, arguments);
+        String[] processArgs = BackgroundJob.setupProcessArgs(executablePath, arguments, this);
         executablePath = processArgs[0];
         int lastSlashIndex = executablePath.lastIndexOf('/');
         String processName = (isLoginShell ? "-" : "") +
