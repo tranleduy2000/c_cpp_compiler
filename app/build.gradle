@@ -40,11 +40,11 @@ dependencies {
 
     implementation 'me.zhanghai.android.materialprogressbar:library:1.1.4'
     implementation 'org.apmem.tools:layouts:1.10@aar'
-    implementation 'com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar'
+//    implementation 'com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar'
     implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 
-    compile project(':terminal-view')
-    compile project(':terminal-emulator')
-    compile project(':editor-view')
+    api project(':terminal-view')
+    api project(':terminal-emulator')
+    api project(':editor-view')
 }
