@@ -36,7 +36,7 @@ public class FileReader {
     private SpannableStringBuilder stringBuilder = null;
     private File file;
     private String encoding;
-    private int lineNumber;
+    private int lineCount;
 
     public FileReader(File file, String encodingName) {
         this.file = file;
@@ -58,7 +58,7 @@ public class FileReader {
                 arrayBuffer.append(buf, 0, len);
             }
 
-            lineNumber = reader.getLineNumber() + 1;
+            lineCount = reader.getLineNumber() + 1;
             reader.close();
             stringBuilder = new SpannableStringBuilder(arrayBuffer.buffer(), 0, arrayBuffer.length());
 
@@ -73,8 +73,8 @@ public class FileReader {
         return encoding;
     }
 
-    public int getLineNumber() {
-        return lineNumber;
+    public int getLineCount() {
+        return lineCount;
     }
 
     public SpannableStringBuilder getBuffer() {

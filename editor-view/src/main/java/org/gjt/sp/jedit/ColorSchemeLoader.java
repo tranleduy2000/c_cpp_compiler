@@ -29,7 +29,7 @@ import org.gjt.sp.jedit.syntax.Token;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class StyleLoader {
+public class ColorSchemeLoader {
     public static SyntaxStyle[] loadStyles(Context context) {
         int[] attrs = new int[]{
                 R.attr.hlComment1,

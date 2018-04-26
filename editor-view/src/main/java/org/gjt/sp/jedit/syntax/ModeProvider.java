@@ -17,6 +17,7 @@ package org.gjt.sp.jedit.syntax;
 
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duy.ide.editor.utils.IStreamProvider;
@@ -59,6 +60,10 @@ public class ModeProvider {
         modes = Catalog.modes;
     }
 
+    public static ModeProvider getInstance() {
+        return instance;
+    }
+
     public void removeAll() {
         modes.clear();
     }
@@ -94,7 +99,7 @@ public class ModeProvider {
      * @return the edit mode, or null if no mode match the file
      * @since jEdit 4.5pre1
      */
-    public Mode getModeForFile(String filepath, String filename, String firstLine) {
+    public Mode getModeForFile(@Nullable String filepath, @Nullable String filename, String firstLine) {
         if (filepath != null && filepath.endsWith(".gz"))
             filepath = filepath.substring(0, filepath.length() - 3);
         if (filename != null && filename.endsWith(".gz"))

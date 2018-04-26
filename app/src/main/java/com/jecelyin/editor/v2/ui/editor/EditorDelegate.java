@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spanned;
@@ -64,6 +65,8 @@ public class EditorDelegate implements TextWatcher {
     EditAreaView mEditText;
     private Context mContext;
     private EditorView mEditorView;
+
+    @Nullable
     private Document mDocument;
     private SavedState savedState;
 
@@ -95,7 +98,7 @@ public class EditorDelegate implements TextWatcher {
         findResultsKeywordColor = a.getColor(0, Color.BLACK);
         a.recycle();
 
-        mDocument = new Document(mContext, this);
+        mDocument = new Document(mContext, this, savedState.file);
         mEditText.setReadOnly(Preferences.getInstance(mContext).isReadOnly());
         mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
 
@@ -105,7 +108,7 @@ public class EditorDelegate implements TextWatcher {
             mEditText.onRestoreInstanceState(savedState.editorState);
         } else {
             if (DLog.DEBUG) DLog.d(TAG, "init: file not null");
-            mDocument.loadFile(savedState.file, savedState.encoding);
+            mDocument.loadFile(savedState.encoding);
         }
 
         mEditText.addTextChangedListener(this);
@@ -356,14 +359,14 @@ public class EditorDelegate implements TextWatcher {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
-                            mDocument.loadFile(file, encoding);
+                            mDocument.loadFile(encoding);
                         }
                     })
                     .create()
                     .show();
             return;
         }
-        mDocument.loadFile(file, encoding);
+        mDocument.loadFile(encoding);
     }
 
     void noticeDocumentChanged() {
