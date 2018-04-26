@@ -85,10 +85,14 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
         int size = getCount();
         TabAdapter.TabInfo[] arr = new TabAdapter.TabInfo[size];
         for (int i = 0; i < size; i++) {
-            EditorPageDescriptor pageDescriptor = getItem(i);
-            EditorDelegate delegate = getEditorDelegateAt(i);
-            boolean changed = delegate != null && delegate.isChanged();
-            arr[i] = new TabAdapter.TabInfo(pageDescriptor.getTitle(), pageDescriptor.getPath(), changed);
+            EditorDelegate editorDelegate = getEditorDelegateAt(i);
+            if (editorDelegate != null) {
+                boolean changed = editorDelegate.isChanged();
+                arr[i] = new TabAdapter.TabInfo(editorDelegate.getTitle(), editorDelegate.getPath(), changed);
+            } else {
+                EditorPageDescriptor pageDescriptor = getItem(i);
+                arr[i] = new TabAdapter.TabInfo(pageDescriptor.getTitle(), pageDescriptor.getPath(), false);
+            }
         }
 
         return arr;

@@ -25,7 +25,6 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spanned;
@@ -66,7 +65,6 @@ public class EditorDelegate implements TextWatcher {
     private Context mContext;
     private EditorView mEditorView;
 
-    @Nullable
     private Document mDocument;
     private SavedState savedState;
 
@@ -79,13 +77,19 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public EditorDelegate(@NonNull File file, int offset, String encoding) {
-        savedState = new SavedState(file, encoding);
+        savedState = new SavedState();
+        savedState.encoding = encoding;
         savedState.cursorOffset = offset;
-        savedState.title = savedState.file.getName();
+        setCurrentFileToEdit(file);
     }
 
     public static void setDisableAutoSave() {
         disableAutoSave = true;
+    }
+
+    private void setCurrentFileToEdit(File file) {
+        savedState.file = file;
+        savedState.title = savedState.file.getName();
     }
 
     private void init() {
@@ -103,12 +107,10 @@ public class EditorDelegate implements TextWatcher {
         mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
 
         if (savedState.editorState != null) {
-            if (DLog.DEBUG) DLog.d(TAG, "init: save state not null");
             mDocument.onRestoreInstanceState(savedState);
             mEditText.onRestoreInstanceState(savedState.editorState);
         } else {
-            if (DLog.DEBUG) DLog.d(TAG, "init: file not null");
-            mDocument.loadFile(savedState.encoding);
+            mDocument.loadFile(savedState.file, savedState.encoding);
         }
 
         mEditText.addTextChangedListener(this);
@@ -124,13 +126,13 @@ public class EditorDelegate implements TextWatcher {
         }
     }
 
-    public void onLoadStart() {
+    void onLoadStart() {
         loaded = false;
         mEditText.setEnabled(false);
         mEditorView.setLoading(true);
     }
 
-    public void onLoadFinish() {
+    void onLoadFinish() {
         mEditorView.setLoading(false);
         mEditText.setEnabled(true);
         mEditText.post(new Runnable() {
@@ -158,7 +160,7 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public String getPath() {
-        return mDocument == null ? (savedState.file == null ? null : savedState.file.getPath()) : mDocument.getPath();
+        return mDocument == null ? savedState.file.getPath() : mDocument.getPath();
     }
 
     public String getEncoding() {
@@ -171,10 +173,6 @@ public class EditorDelegate implements TextWatcher {
 
     public Editable getEditableText() {
         return mEditText.getText();
-    }
-
-    public EditorView getEditorView() {
-        return mEditorView;
     }
 
     public void setEditorView(EditorView editorView) {
@@ -208,14 +206,23 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public void startSaveFileSelectorActivity() {
-        getMainActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
+        if (mDocument != null) {
+            getMainActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
+        }
     }
 
+    /**
+     * Should be call in save as action
+     *
+     * @param file - new file to write
+     */
     public void saveTo(File file, String encoding) {
-        mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding);
+        if (mDocument != null) {
+            mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding);
+        }
     }
 
-    public void addHightlight(int start, int end) {
+    public void addHighlight(int start, int end) {
         mEditText.getText().setSpan(new BackgroundColorSpan(findResultsKeywordColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         mEditText.setSelection(end, end);
     }
@@ -290,7 +297,7 @@ public class EditorDelegate implements TextWatcher {
                     mDocument.save(command.args.getBoolean(KEY_CLUSTER, false), (SaveListener) command.object);
                 break;
             case SAVE_AS:
-                mDocument.saveAs();
+                startSaveFileSelectorActivity();
                 break;
             case FIND:
                 FinderDialog.showFindDialog(this);
@@ -359,22 +366,24 @@ public class EditorDelegate implements TextWatcher {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
-                            mDocument.loadFile(encoding);
+                            mDocument.loadFile(file, encoding);
                         }
                     })
                     .create()
                     .show();
             return;
         }
-        mDocument.loadFile(encoding);
+        mDocument.loadFile(file, encoding);
     }
 
+    /**
+     * This method will be called when document changed file
+     */
     void noticeDocumentChanged() {
         File file = mDocument.getFile();
         if (file != null) {
             savedState.title = file.getName();
         }
-
         noticeMenuChanged();
     }
 
@@ -469,7 +478,6 @@ public class EditorDelegate implements TextWatcher {
         };
         int cursorOffset;
         int lineNumber;
-        @NonNull
         File file;
         String title;
         String encoding;
@@ -497,10 +505,6 @@ public class EditorDelegate implements TextWatcher {
             this.textLength = in.readInt();
         }
 
-        public SavedState(@NonNull File file, String encoding) {
-            this.file = file;
-            this.encoding = encoding;
-        }
 
         @Override
         public int describeContents() {

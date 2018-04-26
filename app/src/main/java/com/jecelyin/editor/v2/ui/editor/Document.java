@@ -40,9 +40,9 @@ import com.jecelyin.editor.v2.io.FileReader;
 import com.jecelyin.editor.v2.task.SaveTask;
 
 import org.gjt.sp.jedit.Catalog;
+import org.gjt.sp.jedit.ColorSchemeLoader;
 import org.gjt.sp.jedit.LineManager;
 import org.gjt.sp.jedit.Mode;
-import org.gjt.sp.jedit.ColorSchemeLoader;
 import org.gjt.sp.jedit.syntax.DefaultTokenHandler;
 import org.gjt.sp.jedit.syntax.ModeProvider;
 import org.gjt.sp.jedit.syntax.SyntaxStyle;
@@ -135,15 +135,16 @@ public class Document implements ReadFileListener, TextWatcher {
         mFile = ss.file;
     }
 
-    public void loadFile(@Nullable String encodingName) {
-        if (!mFile.isFile() || !mFile.exists()) {
-            UIUtils.alert(mContext, mContext.getString(R.string.cannt_access_file, mFile.getPath()));
+    public void loadFile(File file, @Nullable String encodingName) {
+        if (!file.isFile() || !file.exists()) {
+            UIUtils.alert(mContext, mContext.getString(R.string.cannt_access_file, file.getPath()));
             return;
         }
-        if (!mFile.canRead()) {
-            UIUtils.alert(mContext, mContext.getString(R.string.cannt_read_file, mFile.getPath()));
+        if (!file.canRead()) {
+            UIUtils.alert(mContext, mContext.getString(R.string.cannt_read_file, file.getPath()));
             return;
         }
+        mFile = file;
         FileReader reader = new FileReader(mFile, encodingName);
         new ReadFileTask(reader, this).execute();
     }
@@ -295,27 +296,21 @@ public class Document implements ReadFileListener, TextWatcher {
             UIUtils.toast(mContext, R.string.writing);
             return;
         }
-        if (isCluster && mFile == null) {
-            listener.onSaved();
-            UIUtils.toast(mContext, R.string.save_all_without_new_document_message);
-            return;
-        }
         mSaveTask.save(isCluster, listener);
     }
 
-    public void saveAs() {
-        mEditorDelegate.startSaveFileSelectorActivity();
-    }
-
+    /**
+     * Write current content to new file and set current file to edit is new file
+     *
+     * @param file - file to write
+     */
     void saveTo(File file, String encoding) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "]");
-        mSaveTask.saveTo(file, encoding);
+        mSaveTask.saveTo(file, encoding, null);
     }
 
-    public void onSaveSuccess(File file, String encoding) {
-        this.mFile = file;
-        this.mEncoding = encoding;
+    public void onSaveSuccess(File newFile, String encoding) {
+        mFile = newFile;
+        mEncoding = encoding;
         mSourceMD5 = md5(mEditorDelegate.getText());
         mSourceLength = mEditorDelegate.getText().length();
         mEditorDelegate.noticeDocumentChanged();
@@ -422,7 +417,7 @@ public class Document implements ReadFileListener, TextWatcher {
         private final ReadFileListener listener;
         private final FileReader fileReader;
 
-        public ReadFileTask(FileReader reader, ReadFileListener listener) {
+        ReadFileTask(FileReader reader, ReadFileListener listener) {
             this.fileReader = reader;
             this.listener = listener;
         }
@@ -434,8 +429,9 @@ public class Document implements ReadFileListener, TextWatcher {
 
         @Override
         protected SpannableStringBuilder doInBackground(File... params) {
-            if (!fileReader.read())
+            if (!fileReader.read()) {
                 return null;
+            }
 
             return listener.onAsyncReaded(fileReader, true);
         }

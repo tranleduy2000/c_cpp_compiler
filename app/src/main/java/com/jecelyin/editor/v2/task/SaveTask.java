@@ -17,6 +17,7 @@
 package com.jecelyin.editor.v2.task;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ide.filemanager.SaveListener;
@@ -78,11 +79,7 @@ public class SaveTask {
 
     }
 
-    public void saveTo(final File file, final String encoding) {
-        saveTo(file, encoding, null);
-    }
-
-    private void saveTo(final File file, final String encoding, final SaveListener listener) {
+    public void saveTo(final File file, final String encoding, @Nullable final SaveListener listener) {
         if (editorDelegateWR.get() == null || contextWR.get() == null) {
             return;
         }

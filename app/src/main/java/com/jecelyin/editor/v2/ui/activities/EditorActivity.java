@@ -59,6 +59,7 @@ import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Preferences;
+import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.task.ClusterCommand;
@@ -583,10 +584,6 @@ public class EditorActivity extends FullScreenActivity
         return tabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
     }
 
-    public void startOpenFileSelectorActivity(Intent it) {
-        startActivityForResult(it, RC_OPEN_FILE);
-    }
-
     public void startPickPathActivity(String path, String encoding) {
         FileExplorerActivity.startPickPathActivity(this, path, encoding, RC_SAVE);
     }
@@ -606,7 +603,11 @@ public class EditorActivity extends FullScreenActivity
             case RC_SAVE:
                 String file = FileExplorerActivity.getFile(data);
                 String encoding = FileExplorerActivity.getFileEncoding(data);
-                tabManager.getEditorPagerAdapter().getCurrentEditorDelegate().saveTo(new File(file), encoding);
+                IEditorPagerAdapter adapter = tabManager.getEditorPagerAdapter();
+                EditorDelegate delegate = adapter.getCurrentEditorDelegate();
+                if (delegate != null) {
+                    delegate.saveTo(new File(file), encoding);
+                }
                 break;
             case RC_SETTINGS:
                 break;
