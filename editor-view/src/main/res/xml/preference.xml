@@ -106,23 +106,4 @@
 
     </PreferenceCategory>
 
-    <CheckBoxPreference
-        android:key="pref_auto_check_updates"
-        android:title="@string/auto_check_updates" />
-
-    <!--<Preference-->
-    <!--android:key="pref_donate"-->
-    <!--android:title="@string/donate" />-->
-
-    <Preference
-        android:key="pref_feedback"
-        android:title="@string/feedback" />
-
-    <Preference
-        android:key="pref_translate"
-        android:title="@string/help_translate" />
-
-    <Preference
-        android:key="pref_about"
-        android:title="@string/about" />
 </PreferenceScreen>
