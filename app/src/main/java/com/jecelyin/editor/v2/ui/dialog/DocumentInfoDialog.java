@@ -68,7 +68,7 @@ public class DocumentInfoDialog extends AbstractDialog {
         viewHolder.mCharCountTextView.setText(context.getString(R.string.char_x, editAreaView.getText().length()));
         viewHolder.mWordCountTextView.setText(context.getString(R.string.word_x, wordCount));
         viewHolder.mEncodingTextView.setText(context.getString(R.string.encoding_x, document.getEncoding()));
-        viewHolder.mLineCountTextView.setText(context.getString(R.string.line_number_x, document.getLineNumber()));
+        viewHolder.mLineCountTextView.setText(context.getString(R.string.line_number_x, document.getLineCount()));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.document_info)

@@ -24,7 +24,7 @@ import android.core.widget.EditAreaView;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spanned;
@@ -61,11 +61,12 @@ public class EditorDelegate implements TextWatcher {
     public final static String KEY_CLUSTER = "is_cluster";
     private static final String TAG = "EditorDelegate";
     private static boolean disableAutoSave = false;
-    public EditAreaView mEditText;
+    EditAreaView mEditText;
     private Context mContext;
     private EditorView mEditorView;
     private Document mDocument;
     private SavedState savedState;
+
     private int mOrientation;
     private boolean loaded = true;
     private int findResultsKeywordColor;
@@ -74,14 +75,10 @@ public class EditorDelegate implements TextWatcher {
         savedState = ss;
     }
 
-    public EditorDelegate(@Nullable File file, int offset, String encoding) {
-        savedState = new SavedState();
-        savedState.file = file;
+    public EditorDelegate(@NonNull File file, int offset, String encoding) {
+        savedState = new SavedState(file, encoding);
         savedState.cursorOffset = offset;
-        savedState.encoding = encoding;
-        if (savedState.file != null) {
-            savedState.title = savedState.file.getName();
-        }
+        savedState.title = savedState.file.getName();
     }
 
     public static void setDisableAutoSave() {
@@ -106,7 +103,7 @@ public class EditorDelegate implements TextWatcher {
             if (DLog.DEBUG) DLog.d(TAG, "init: save state not null");
             mDocument.onRestoreInstanceState(savedState);
             mEditText.onRestoreInstanceState(savedState.editorState);
-        } else if (savedState.file != null) {
+        } else {
             if (DLog.DEBUG) DLog.d(TAG, "init: file not null");
             mDocument.loadFile(savedState.file, savedState.encoding);
         }
@@ -469,7 +466,7 @@ public class EditorDelegate implements TextWatcher {
         };
         int cursorOffset;
         int lineNumber;
-        @Nullable
+        @NonNull
         File file;
         String title;
         String encoding;
@@ -485,7 +482,7 @@ public class EditorDelegate implements TextWatcher {
             this.cursorOffset = in.readInt();
             this.lineNumber = in.readInt();
             String file = in.readString();
-            this.file = TextUtils.isEmpty(file) ? null : new File(file);
+            this.file = new File(file);
             this.title = in.readString();
             this.encoding = in.readString();
             this.modeName = in.readString();
@@ -497,6 +494,11 @@ public class EditorDelegate implements TextWatcher {
             this.textLength = in.readInt();
         }
 
+        public SavedState(@NonNull File file, String encoding) {
+            this.file = file;
+            this.encoding = encoding;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -506,7 +508,7 @@ public class EditorDelegate implements TextWatcher {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.cursorOffset);
             dest.writeInt(this.lineNumber);
-            dest.writeString(this.file == null ? null : this.file.getPath());
+            dest.writeString(this.file.getPath());
             dest.writeString(this.title);
             dest.writeString(this.encoding);
             dest.writeString(this.modeName);

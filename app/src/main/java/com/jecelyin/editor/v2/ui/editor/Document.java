@@ -56,28 +56,31 @@ import java.util.HashMap;
  */
 public class Document implements ReadFileListener, TextWatcher {
     private static final String TAG = "Document";
+
     public static SyntaxStyle[] styles;
-    private final EditorDelegate editorDelegate;
-    private final Context context;
+    private final EditorDelegate mEditorDelegate;
+    private final Context mContext;
     private final SaveTask mSaveTask;
-    private final Preferences preferences;
-    private final Buffer buffer;
-    private final HashMap<Integer, ArrayList<ForegroundColorSpan>> colorSpanMap;
-    private int lineNumber;
+    private final Preferences mPreferences;
+    private final Buffer mBuffer;
+    private final HashMap<Integer, ArrayList<ForegroundColorSpan>> mColorSpanMap;
+
+    private int lineCount;
     private String encoding = "UTF-8";
     private byte[] srcMD5;
     private int srcLength;
-    private File file;
+
     private String modeName;
+    private File file;
 
     public Document(Context context, EditorDelegate editorDelegate) {
-        this.editorDelegate = editorDelegate;
-        this.context = context;
-        preferences = Preferences.getInstance(context);
+        mEditorDelegate = editorDelegate;
+        mContext = context;
+        mPreferences = Preferences.getInstance(context);
 
-        buffer = new Buffer(context);
-        colorSpanMap = new HashMap<>();
-        this.mSaveTask = new SaveTask(context, editorDelegate, this);
+        mBuffer = new Buffer(context);
+        mColorSpanMap = new HashMap<>();
+        mSaveTask = new SaveTask(context, editorDelegate, this);
         editorDelegate.mEditText.addTextChangedListener(this);
     }
 
@@ -107,7 +110,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
     public void onSaveInstanceState(EditorDelegate.SavedState ss) {
         ss.modeName = modeName;
-        ss.lineNumber = lineNumber;
+        ss.lineNumber = lineCount;
         ss.textMd5 = srcMD5;
         ss.textLength = srcLength;
         ss.encoding = encoding;
@@ -119,7 +122,7 @@ public class Document implements ReadFileListener, TextWatcher {
             setMode(ss.modeName);
         }
         if (ss.lineNumber > 0) {
-            lineNumber = ss.lineNumber;
+            lineCount = ss.lineNumber;
         }
         srcMD5 = ss.textMd5;
         srcLength = ss.textLength;
@@ -127,17 +130,13 @@ public class Document implements ReadFileListener, TextWatcher {
         file = ss.file;
     }
 
-    public void loadFile(File file) {
-        loadFile(file, null);
-    }
-
     public void loadFile(File file, String encodingName) {
         if (!file.isFile() || !file.exists()) {
-            UIUtils.alert(context, context.getString(R.string.cannt_access_file, file.getPath()));
+            UIUtils.alert(mContext, mContext.getString(R.string.cannt_access_file, file.getPath()));
             return;
         }
         if (!file.canRead()) {
-            UIUtils.alert(context, context.getString(R.string.cannt_read_file, file.getPath()));
+            UIUtils.alert(mContext, mContext.getString(R.string.cannt_read_file, file.getPath()));
             return;
         }
         this.file = file;
@@ -147,7 +146,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
     @Override
     public void onStart() {
-        editorDelegate.onLoadStart();
+        mEditorDelegate.onLoadStart();
     }
 
     @Override
@@ -158,9 +157,9 @@ public class Document implements ReadFileListener, TextWatcher {
             mode = ModeProvider.instance.getMode(Catalog.DEFAULT_MODE_NAME);
         }
         modeName = mode.getName();
-        buffer.setMode(mode, context);
+        mBuffer.setMode(mode, mContext);
 
-        lineNumber = fileReader.getLineNumber();
+        lineCount = fileReader.getLineNumber();
         encoding = fileReader.getEncoding();
 
         srcMD5 = md5(text);
@@ -172,17 +171,17 @@ public class Document implements ReadFileListener, TextWatcher {
 
     @Override
     public void onDone(SpannableStringBuilder spannableStringBuilder, boolean ok) {
-        if (editorDelegate == null || editorDelegate.mEditText == null)
+        if (mEditorDelegate == null || mEditorDelegate.mEditText == null)
             return;
         if (!ok) {
-            editorDelegate.onLoadFinish();
-            UIUtils.alert(context, context.getString(R.string.read_file_exception));
+            mEditorDelegate.onLoadFinish();
+            UIUtils.alert(mContext, mContext.getString(R.string.read_file_exception));
             return;
         }
 
-        editorDelegate.mEditText.setLineNumber(lineNumber);
-        editorDelegate.mEditText.setText(spannableStringBuilder);
-        editorDelegate.onLoadFinish();
+        mEditorDelegate.mEditText.setLineNumber(lineCount);
+        mEditorDelegate.mEditText.setText(spannableStringBuilder);
+        mEditorDelegate.onLoadFinish();
 
     }
 
@@ -194,33 +193,33 @@ public class Document implements ReadFileListener, TextWatcher {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-        Editable editableText = editorDelegate.getEditableText();
-        buffer.setEditable(editableText);
+        Editable editableText = mEditorDelegate.getEditableText();
+        mBuffer.setEditable(editableText);
 
         if (before > 0) {
-            buffer.remove(start, before);
+            mBuffer.remove(start, before);
         }
         if (count > 0) {
-            buffer.insert(start, s.subSequence(start, start + count));
+            mBuffer.insert(start, s.subSequence(start, start + count));
         }
 
-        lineNumber = buffer.getLineManager().getLineCount();
+        lineCount = mBuffer.getLineManager().getLineCount();
 
-        if (!preferences.isHighlight() || editableText.length() > preferences.getHighlightSizeLimit())
+        if (!mPreferences.isHighlight() || editableText.length() > mPreferences.getHighlightSizeLimit())
             return;
 
-        LineManager lineManager = buffer.getLineManager();
+        LineManager lineManager = mBuffer.getLineManager();
         int startLine = lineManager.getLineOfOffset(start);
         int endLine = lineManager.getLineOfOffset(start + count);
         int lineStartOffset = lineManager.getLineStartOffset(startLine);
         int lineEndOffset = lineManager.getLineEndOffset(endLine);
 
-        boolean canHighlight = buffer.isCanHighlight();
+        boolean canHighlight = mBuffer.isCanHighlight();
         if (startLine == 0 && !canHighlight) {
             Mode mode = ModeProvider.instance.getModeForFile(file == null ? null : file.getPath(), null, s.subSequence(0, Math.min(80, s.length())).toString());
             if (mode != null)
                 modeName = mode.getName();
-            buffer.setMode(mode, context);
+            mBuffer.setMode(mode, mContext);
         }
 
         if (!canHighlight)
@@ -242,10 +241,10 @@ public class Document implements ReadFileListener, TextWatcher {
     public void setMode(String name) {
         modeName = name;
 
-        buffer.setMode(Catalog.getModeByName(name), context);
-        editorDelegate.getEditableText().clearSpans();
+        mBuffer.setMode(Catalog.getModeByName(name), mContext);
+        mEditorDelegate.getEditableText().clearSpans();
 
-        highlight(editorDelegate.getEditableText());
+        highlight(mEditorDelegate.getEditableText());
     }
 
     public String getModeName() {
@@ -253,7 +252,7 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
     public Buffer getBuffer() {
-        return buffer;
+        return mBuffer;
     }
 
     public File getFile() {
@@ -264,8 +263,8 @@ public class Document implements ReadFileListener, TextWatcher {
         return file == null ? null : file.getPath();
     }
 
-    public int getLineNumber() {
-        return lineNumber;
+    public int getLineCount() {
+        return lineCount;
     }
 
     public String getEncoding() {
@@ -281,19 +280,19 @@ public class Document implements ReadFileListener, TextWatcher {
             DLog.d(TAG, "save() called with: isCluster = [" + isCluster + "], listener = [" + listener + "]");
         }
         if (mSaveTask.isWriting()) {
-            UIUtils.toast(context, R.string.writing);
+            UIUtils.toast(mContext, R.string.writing);
             return;
         }
         if (isCluster && file == null) {
             listener.onSaved();
-            UIUtils.toast(context, R.string.save_all_without_new_document_message);
+            UIUtils.toast(mContext, R.string.save_all_without_new_document_message);
             return;
         }
         mSaveTask.save(isCluster, listener);
     }
 
     public void saveAs() {
-        editorDelegate.startSaveFileSelectorActivity();
+        mEditorDelegate.startSaveFileSelectorActivity();
     }
 
     void saveTo(File file, String encoding) {
@@ -305,43 +304,43 @@ public class Document implements ReadFileListener, TextWatcher {
     public void onSaveSuccess(File file, String encoding) {
         this.file = file;
         this.encoding = encoding;
-        srcMD5 = md5(editorDelegate.getText());
-        srcLength = editorDelegate.getText().length();
-        editorDelegate.noticeDocumentChanged();
+        srcMD5 = md5(mEditorDelegate.getText());
+        srcLength = mEditorDelegate.getText().length();
+        mEditorDelegate.noticeDocumentChanged();
     }
 
     public boolean isChanged() {
         if (srcMD5 == null) {
-            return editorDelegate.getText().length() != 0;
+            return mEditorDelegate.getText().length() != 0;
         }
-        if (srcLength != editorDelegate.getEditableText().length())
+        if (srcLength != mEditorDelegate.getEditableText().length())
             return true;
 
-        byte[] curMD5 = md5(editorDelegate.getEditableText());
+        byte[] curMD5 = md5(mEditorDelegate.getEditableText());
 
         return !StringUtils.isEqual(srcMD5, curMD5);
     }
 
     private void highlight(Spannable spannableStringBuilder) {
-        highlight(spannableStringBuilder, 0, lineNumber - 1);
+        highlight(spannableStringBuilder, 0, lineCount - 1);
     }
 
     private void highlight(Spannable spannableStringBuilder, int startLine, int endLine) {
-        if (!buffer.isCanHighlight())
+        if (!mBuffer.isCanHighlight())
             return;
         DefaultTokenHandler tokenHandler;
         if (styles == null) {
-            styles = StyleLoader.loadStyles(context);
+            styles = StyleLoader.loadStyles(mContext);
         }
         ArrayList<HighlightInfo> mergerArray;
 
         for (int i = startLine; i <= endLine; i++) {
             tokenHandler = new DefaultTokenHandler();
-            buffer.markTokens(i, tokenHandler);
+            mBuffer.markTokens(i, tokenHandler);
             Token token = tokenHandler.getTokens();
 
             mergerArray = new ArrayList<>();
-            collectToken(buffer, i, token, mergerArray);
+            collectToken(mBuffer, i, token, mergerArray);
             addTokenSpans(spannableStringBuilder, i, mergerArray);
         }
     }
@@ -349,7 +348,7 @@ public class Document implements ReadFileListener, TextWatcher {
     private void addTokenSpans(Spannable spannableStringBuilder, int line, ArrayList<HighlightInfo> mergerArray) {
         ForegroundColorSpan fcs;
 
-        ArrayList<ForegroundColorSpan> oldSpans = colorSpanMap.remove(line);
+        ArrayList<ForegroundColorSpan> oldSpans = mColorSpanMap.remove(line);
         if (oldSpans != null) {
             for (ForegroundColorSpan span : oldSpans) {
                 spannableStringBuilder.removeSpan(span);
@@ -372,7 +371,7 @@ public class Document implements ReadFileListener, TextWatcher {
             spannableStringBuilder.setSpan(fcs, hi.startOffset, hi.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
             spans.add(fcs);
         }
-        colorSpanMap.put(line, spans);
+        mColorSpanMap.put(line, spans);
     }
 
     private void collectToken(Buffer buffer, int lineNumber, Token token,
