@@ -61,13 +61,14 @@ import java.util.Locale;
  */
 public class EditorDelegate implements TextWatcher {
     public final static String KEY_CLUSTER = "is_cluster";
+    private static final String TAG = "EditorDelegate";
     private static boolean disableAutoSave = false;
     public EditAreaView mEditText;
-    private Context context;
+    private Context mContext;
     private EditorView mEditorView;
     private Document mDocument;
     private SavedState savedState;
-    private int orientation;
+    private int mOrientation;
     private boolean loaded = true;
     private int findResultsKeywordColor;
 
@@ -90,35 +91,30 @@ public class EditorDelegate implements TextWatcher {
     }
 
     private void init() {
-        if (mDocument != null)
+        //if initiated, return
+        if (mDocument != null) {
             return;
+        }
 
-        TypedArray a = context.obtainStyledAttributes(new int[]{
-                R.attr.findResultsKeyword,
-        });
+        TypedArray a = mContext.obtainStyledAttributes(new int[]{R.attr.findResultsKeyword});
         findResultsKeywordColor = a.getColor(0, Color.BLACK);
         a.recycle();
 
-        mDocument = new Document(context, this);
-        mEditText.setReadOnly(Preferences.getInstance(context).isReadOnly());
+        mDocument = new Document(mContext, this);
+        mEditText.setReadOnly(Preferences.getInstance(mContext).isReadOnly());
         mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
 
         if (savedState.editorState != null) {
+            if (DLog.DEBUG) DLog.d(TAG, "init: save state not null");
             mDocument.onRestoreInstanceState(savedState);
             mEditText.onRestoreInstanceState(savedState.editorState);
         } else if (savedState.file != null) {
+            if (DLog.DEBUG) DLog.d(TAG, "init: file not null");
             mDocument.loadFile(savedState.file, savedState.encoding);
-        } else if (!TextUtils.isEmpty(savedState.content)) {
-            mEditText.setText(savedState.content);
         }
 
         mEditText.addTextChangedListener(this);
-
         noticeDocumentChanged();
-
-        if (savedState.object != null) {
-            EditorObjectProcessor.process(savedState.object, this);
-        }
     }
 
     public void onLoadStart() {
@@ -143,11 +139,11 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public Context getContext() {
-        return context;
+        return mContext;
     }
 
     public EditorActivity getMainActivity() {
-        return (EditorActivity) context;
+        return (EditorActivity) mContext;
     }
 
     public String getTitle() {
@@ -175,10 +171,10 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public void setEditorView(EditorView editorView) {
-        context = editorView.getContext();
-        this.mEditorView = editorView;
-        this.mEditText = editorView.getEditText();
-        this.orientation = context.getResources().getConfiguration().orientation;
+        mContext = editorView.getContext();
+        mEditorView = editorView;
+        mEditText = editorView.getEditText();
+        mOrientation = mContext.getResources().getConfiguration().orientation;
         init();
     }
 
@@ -226,7 +222,7 @@ public class EditorDelegate implements TextWatcher {
     public boolean doCommand(Command command) {
         if (mEditText == null)
             return false;
-        boolean readonly = Preferences.getInstance(context).isReadOnly();
+        boolean readonly = Preferences.getInstance(mContext).isReadOnly();
         switch (command.what) {
             case HIDE_SOFT_INPUT:
                 mEditText.hideSoftInput();
@@ -270,17 +266,17 @@ public class EditorDelegate implements TextWatcher {
                 mEditText.gotoEnd();
                 break;
             case DOC_INFO:
-                DocumentInfoDialog documentInfoDialog = new DocumentInfoDialog(context);
+                DocumentInfoDialog documentInfoDialog = new DocumentInfoDialog(mContext);
                 documentInfoDialog.setDocument(mDocument);
                 documentInfoDialog.setEditAreaView(mEditText);
                 documentInfoDialog.setPath(mDocument.getPath());
                 documentInfoDialog.show();
                 break;
             case READONLY_MODE:
-                Preferences preferences = Preferences.getInstance(context);
+                Preferences preferences = Preferences.getInstance(mContext);
                 boolean readOnly = preferences.isReadOnly();
                 mEditText.setReadOnly(readOnly);
-                ((EditorActivity) context).doNextCommand();
+                ((EditorActivity) mContext).doNextCommand();
                 break;
             case SAVE:
                 if (!readonly)
@@ -310,7 +306,7 @@ public class EditorDelegate implements TextWatcher {
                     scope = mode.getName();
                 }
                 mDocument.setMode(scope);
-                ((EditorActivity) context).doNextCommand();
+                ((EditorActivity) mContext).doNextCommand();
                 break;
             case INSERT_TEXT:
                 if (!readonly) {
@@ -339,11 +335,11 @@ public class EditorDelegate implements TextWatcher {
     private void reOpenWithEncoding(final String encoding) {
         final File file = mDocument.getFile();
         if (file == null) {
-            UIUtils.toast(context, R.string.please_save_as_file_first);
+            UIUtils.toast(mContext, R.string.please_save_as_file_first);
             return;
         }
         if (mDocument.isChanged()) {
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(mContext)
                     .setTitle(R.string.document_changed)
                     .setMessage(R.string.give_up_document_changed_message)
                     .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -376,19 +372,20 @@ public class EditorDelegate implements TextWatcher {
     }
 
     public void setRemoved() {
-        if (mEditorView == null) {
-            return;
+        if (mEditorView != null) {
+            mEditText.removeTextChangedListener(mDocument);
+            mEditText.removeTextChangedListener(this);
+            mEditorView.setRemoved();
+            mDocument = null;
         }
-        mEditorView.setRemoved();
-        mDocument = null;
     }
 
     private void noticeMenuChanged() {
-        EditorActivity editorActivity = (EditorActivity) this.context;
+        EditorActivity editorActivity = (EditorActivity) this.mContext;
         editorActivity.setMenuStatus(R.id.m_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.m_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.m_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        ((EditorActivity) context).getTabManager().onDocumentChanged();
+        ((EditorActivity) mContext).getTabManager().onDocumentChanged();
     }
 
     @Override
@@ -443,11 +440,11 @@ public class EditorDelegate implements TextWatcher {
             ss.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
         }
 
-        if (loaded && !disableAutoSave && mDocument != null && mDocument.getFile() != null && Preferences.getInstance(context).isAutoSave()) {
-            int newOrientation = context.getResources().getConfiguration().orientation;
-            if (orientation != newOrientation) {
+        if (loaded && !disableAutoSave && mDocument != null && mDocument.getFile() != null && Preferences.getInstance(mContext).isAutoSave()) {
+            int newOrientation = mContext.getResources().getConfiguration().orientation;
+            if (mOrientation != newOrientation) {
                 DLog.d("current is screen orientation, discard auto save!");
-                orientation = newOrientation;
+                mOrientation = newOrientation;
             } else {
                 mDocument.save();
             }
@@ -457,8 +454,6 @@ public class EditorDelegate implements TextWatcher {
     }
 
     private static class Arguments {
-        CharSequence content;
-        Parcelable object;
     }
 
     public static class SavedState extends Arguments implements Parcelable {
@@ -529,10 +524,10 @@ public class EditorDelegate implements TextWatcher {
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            final TypedArray arr = context.obtainStyledAttributes(
+            final TypedArray arr = mContext.obtainStyledAttributes(
                     R.styleable.SelectionModeDrawables);
 
-            boolean readOnly = Preferences.getInstance(context).isReadOnly();
+            boolean readOnly = Preferences.getInstance(mContext).isReadOnly();
             boolean selected = mEditText.hasSelection();
             if (selected) {
                 menu.add(0, R.id.m_find_replace, 0, R.string.find).

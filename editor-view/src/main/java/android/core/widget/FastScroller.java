@@ -227,7 +227,7 @@ public class FastScroller {
         if (totalItemCount - visibleItemCount > 0 && mState != STATE_DRAGGING) {
             mThumbY = ((mList.getHeight() - mThumbH) * firstVisibleItem)
                     / (totalItemCount - visibleItemCount);
-            DLog.d("FSL onScroll thumbY=" + mThumbY);
+//            DLog.d("FSL onScroll thumbY=" + mThumbY);
             if (mChangedBounds) {
                 resetThumbPos();
                 mChangedBounds = false;

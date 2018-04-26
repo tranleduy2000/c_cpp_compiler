@@ -20,18 +20,22 @@ package com.jecelyin.editor.v2.view;
 
 import android.content.Context;
 import android.core.widget.EditAreaView;
+import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.duy.ccppcompiler.R;
+import com.duy.common.DLog;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class EditorView extends RelativeLayout {
-    private EditAreaView editText;
-    private ProgressBar progressView;
+    private static final String TAG = "EditorView";
+    private EditAreaView mEditText;
+    private ProgressBar mProgressView;
     private boolean removed = false;
 
     public EditorView(Context context, AttributeSet attrs) {
@@ -43,25 +47,37 @@ public class EditorView extends RelativeLayout {
     }
 
     @Override
+    public void restoreHierarchyState(SparseArray<Parcelable> container) {
+        super.restoreHierarchyState(container);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        super.dispatchRestoreInstanceState(container);
+        if (DLog.DEBUG)
+            DLog.d(TAG, "dispatchRestoreInstanceState() called with: container = [" + container + "]");
+    }
+
+    @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        editText = findViewById(R.id.edit_text);
-        progressView = findViewById(R.id.progress_view);
+        mEditText = findViewById(R.id.edit_text);
+        mProgressView = findViewById(R.id.progress_view);
 
     }
 
     public EditAreaView getEditText() {
-        return editText;
+        return mEditText;
     }
 
     public void setLoading(boolean loading) {
         if (loading) {
-            editText.setVisibility(GONE);
-            progressView.setVisibility(VISIBLE);
+            mEditText.setVisibility(INVISIBLE);
+            mProgressView.setVisibility(VISIBLE);
         } else {
-            editText.setVisibility(VISIBLE);
-            progressView.setVisibility(GONE);
+            mEditText.setVisibility(VISIBLE);
+            mProgressView.setVisibility(GONE);
         }
     }
 

@@ -58,6 +58,7 @@ public class EditorFragment extends Fragment {
         return newInstance(desc.getFile(), desc.getCursorOffset(), desc.getEncoding());
     }
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,6 +73,22 @@ public class EditorFragment extends Fragment {
         EditorView view = (EditorView) inflater.inflate(R.layout.editor, container, false);
         mEditorDelegate.setEditorView(view);
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mEditorDelegate != null) {
+            mEditorDelegate.setRemoved();
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (DLog.DEBUG)
+            DLog.d(TAG, "onViewStateRestored() called with: savedInstanceState = [" + savedInstanceState + "]");
+
     }
 
     private void onRestoreState(@Nullable Bundle savedInstanceState) {

@@ -21,8 +21,6 @@ import android.support.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.ide.editor.pager.ArrayPagerAdapter;
-import com.duy.ide.editor.pager.PageDescriptor;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.common.TabCloseListener;
@@ -40,19 +38,24 @@ import java.util.ArrayList;
  * Created by Duy on 25-Apr-18.
  */
 
-public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment> implements IEditorPagerAdapter {
+public class EditorFragmentPagerAdapter extends EditorFragmentStatePagerAdapter<EditorFragment> implements IEditorPagerAdapter {
     private EditorActivity context;
+    private ArrayList<EditorPageDescriptor> descriptors = new ArrayList<>();
 
     public EditorFragmentPagerAdapter(EditorActivity activity) {
-        super(activity.getSupportFragmentManager(), new ArrayList<PageDescriptor>());
+        super(activity.getSupportFragmentManager());
         this.context = activity;
     }
 
     @Override
-    protected EditorFragment createFragment(PageDescriptor desc) {
-        return EditorFragment.newInstance((EditorPageDescriptor) desc);
+    public EditorFragment getItem(int position) {
+        return EditorFragment.newInstance(descriptors.get(position));
     }
 
+    @Override
+    public int getCount() {
+        return descriptors.size();
+    }
 
     @Override
     public boolean removeAll(TabCloseListener tabCloseListener) {
@@ -61,7 +64,7 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
 
     @Override
     public void newEditor(boolean notify, @NonNull File file, int offset, String encoding) {
-        add(new EditorPageDescriptor(file, offset, encoding));
+        descriptors.add(new EditorPageDescriptor(file, offset, encoding));
         if (notify) {
             notifyDataSetChanged();
         }
@@ -79,10 +82,10 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
 
     @Override
     public TabAdapter.TabInfo[] getTabInfoList() {
-        int size = getCount();
+        int size = descriptors.size();
         TabAdapter.TabInfo[] arr = new TabAdapter.TabInfo[size];
         for (int i = 0; i < size; i++) {
-            EditorPageDescriptor pageDescriptor = (EditorPageDescriptor) getPageDescriptor(i);
+            EditorPageDescriptor pageDescriptor = descriptors.get(i);
             EditorDelegate delegate = getEditorDelegateAt(i);
             boolean changed = delegate != null && delegate.isChanged();
             arr[i] = new TabAdapter.TabInfo(pageDescriptor.getTitle(), pageDescriptor.getPath(), changed);
@@ -135,6 +138,11 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
         }
     }
 
+    private void remove(int position) {
+        descriptors.remove(position);
+        notifyDataSetChanged();
+    }
+
     public ArrayList<EditorDelegate> getAllEditor() {
         ArrayList<EditorDelegate> delegates = new ArrayList<>();
         for (int i = 0; i < getCount(); i++) {
@@ -150,7 +158,7 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
 
     @Nullable
     public EditorDelegate getEditorDelegateAt(int index) {
-        EditorFragment fragment = getExistingFragment(index);
+        EditorFragment fragment = super.getExistingFragment(index);
         if (fragment != null) {
             return fragment.getEditorDelegate();
         }

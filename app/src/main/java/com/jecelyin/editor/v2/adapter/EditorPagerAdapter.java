@@ -157,14 +157,14 @@ public class EditorPagerAdapter extends ViewPagerAdapter implements IEditorPager
                         command.object = new SaveListener() {
                             @Override
                             public void onSaved() {
-                                removePageAt(position);
+                                remove(position);
                                 if (listener != null)
                                     listener.onClose(path, encoding, offset);
                             }
                         };
                         ((EditorActivity) context).doCommand(command);
                     } else if (which == DialogAction.NEGATIVE) {
-                        removePageAt(position);
+                        remove(position);
                         if (listener != null)
                             listener.onClose(path, encoding, offset);
                     } else {
@@ -174,14 +174,14 @@ public class EditorPagerAdapter extends ViewPagerAdapter implements IEditorPager
             }).show();
             return false;
         } else {
-            removePageAt(position);
+            remove(position);
             if (listener != null)
                 listener.onClose(path, encoding, offset);
             return true;
         }
     }
 
-    private void removePageAt(int position) {
+    private void remove(int position) {
         EditorDelegate delegate = editorDelegates.remove(position);
         delegate.setRemoved();
         notifyDataSetChanged();

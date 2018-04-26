@@ -85,6 +85,10 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends
 
     @Override
     public void startUpdate(ViewGroup container) {
+        if (container.getId() == View.NO_ID) {
+            throw new IllegalStateException("ViewPager with adapter " + this
+                    + " requires a view id");
+        }
     }
 
     @Override
@@ -131,8 +135,7 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setPrimaryItem(ViewGroup container, int position,
-                               Object object) {
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
         T fragment = (T) object;
 
         if (fragment != currPrimaryItem) {

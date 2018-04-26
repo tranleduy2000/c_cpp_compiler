@@ -106,11 +106,11 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
     public void onSaveInstanceState(EditorDelegate.SavedState ss) {
+        ss.modeName = modeName;
         ss.lineNumber = lineNumber;
         ss.textMd5 = srcMD5;
         ss.textLength = srcLength;
         ss.encoding = encoding;
-        ss.modeName = modeName;
         ss.file = file;
     }
 
@@ -118,7 +118,6 @@ public class Document implements ReadFileListener, TextWatcher {
         if (ss.modeName != null) {
             setMode(ss.modeName);
         }
-
         if (ss.lineNumber > 0) {
             lineNumber = ss.lineNumber;
         }

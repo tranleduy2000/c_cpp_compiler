@@ -128,7 +128,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -2329,39 +2328,35 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
         if (!(state instanceof SavedState)) {
-            super.onRestoreInstanceState(state);
             return;
         }
-
-        SavedState ss = (SavedState) state;
-        if (ss.getSuperState() != null) //旋转屏幕时，不需要设置这里
-            super.onRestoreInstanceState(ss.getSuperState());
+        SavedState savedState = (SavedState) state;
 
         // XXX restore buffer type too, as well as lots of other stuff
-        if (ss.text != null) {
-            //setText(ss.text);
-            setText(new SpannableStringBuilder(ss.text, 0, ss.textLength));
+        if (savedState.text != null) {
+            setText(new SpannableStringBuilder(savedState.text, 0, savedState.textLength));
         }
 
-        if (ss.selStart >= 0 && ss.selEnd >= 0) {
+        if (savedState.selStart >= 0 && savedState.selEnd >= 0) {
             if (mText instanceof Spannable) {
                 int len = mText.length();
 
-                if (ss.selStart > len || ss.selEnd > len) {
+                if (savedState.selStart > len || savedState.selEnd > len) {
                     String restored = "";
 
-                    if (ss.text != null) {
+                    if (savedState.text != null) {
                         restored = "(restored) ";
                     }
 
-                    Log.e(LOG_TAG, "Saved cursor position " + ss.selStart +
-                            "/" + ss.selEnd + " out of range for " + restored +
+                    Log.e(LOG_TAG, "Saved cursor position " + savedState.selStart +
+                            "/" + savedState.selEnd + " out of range for " + restored +
                             "text " + mText);
                 } else {
-                    Selection.setSelection((Spannable) mText, ss.selStart, ss.selEnd);
+                    Selection.setSelection((Spannable) mText, savedState.selStart, savedState.selEnd);
 
-                    if (ss.frozenWithFocus) {
+                    if (savedState.frozenWithFocus) {
                         createEditorIfNeeded();
                         mEditor.mFrozenWithFocus = true;
                     }
@@ -2369,8 +2364,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             }
         }
 
-        if (ss.error != null) {
-            final CharSequence error = ss.error;
+        if (savedState.error != null) {
+            final CharSequence error = savedState.error;
             // Display the error later, after the first layout pass
             post(new Runnable() {
                 public void run() {
@@ -7017,8 +7012,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         private static final String TAG = "SavedState";
         int selStart;
         int selEnd;
-        //        CharSequence text;
-        char[] text;
+//        CharSequence text;
+                char[] text;
         int textLength;
         boolean frozenWithFocus;
         CharSequence error;
@@ -7069,7 +7064,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                     + Integer.toHexString(System.identityHashCode(this))
                     + " start=" + selStart + " end=" + selEnd;
             if (text != null) {
-                str += " text=" + Arrays.toString(text);
+                str += " text=" + text;
             }
             return str + "}";
         }
