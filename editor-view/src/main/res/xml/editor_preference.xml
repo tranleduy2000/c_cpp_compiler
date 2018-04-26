@@ -5,28 +5,34 @@
             android:key="pref_font_size"
             android:summary="@string/default_value"
             android:title="@string/font_size" />
+
         <com.jecelyin.editor.v2.preference.CursorWidthPreference
             android:key="pref_cursor_width"
             android:summary="@string/default_value"
             android:title="@string/cursor_width" />
 
         <CheckBoxPreference
+            android:defaultValue="false"
             android:key="pref_touch_to_adjust_text_size"
             android:title="@string/touch_to_adjust_text_size" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="pref_word_wrap"
             android:title="@string/word_wrap_in_editor" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="pref_show_linenumber"
             android:title="@string/show_linenumber" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="pref_show_whitespace"
             android:title="@string/show_whitespace" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="pref_auto_indent"
             android:title="@string/auto_indent" />
 

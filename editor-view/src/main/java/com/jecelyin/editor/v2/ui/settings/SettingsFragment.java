@@ -131,7 +131,7 @@ public class SettingsFragment extends PreferenceFragment implements android.pref
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preference);
+        addPreferencesFromResource(R.xml.editor_preference);
 
         dependBindPreference(getPreferenceScreen());
 
