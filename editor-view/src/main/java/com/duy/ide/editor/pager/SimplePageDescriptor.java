@@ -37,7 +37,7 @@ public class SimplePageDescriptor implements PageDescriptor {
         this.title = title;
     }
 
-    private SimplePageDescriptor(Parcel in) {
+    protected SimplePageDescriptor(Parcel in) {
         tag = in.readString();
         title = in.readString();
     }

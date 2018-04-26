@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.jecelyin.editor.v2.common.TabCloseListener;
+import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 
 import java.io.File;
@@ -28,10 +29,13 @@ import java.io.File;
  * Created by Duy on 25-Apr-18.
  */
 public interface IEditorPagerAdapter {
+    ClusterCommand makeClusterCommand();
+
     boolean removeAll(TabCloseListener tabCloseListener);
 
     void newEditor(boolean notify, @NonNull File file, int offset, String encoding);
 
+    @Nullable
     EditorDelegate getCurrentEditorDelegate();
 
     TabAdapter.TabInfo[] getTabInfoList();

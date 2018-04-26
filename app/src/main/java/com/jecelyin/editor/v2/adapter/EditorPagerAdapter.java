@@ -58,10 +58,6 @@ public class EditorPagerAdapter extends ViewPagerAdapter implements IEditorPager
 
     @Override
     public View getView(int position, ViewGroup pager) {
-//        EditorDelegate delegate = getEditorDelegateAt(position);
-//        if (delegate != null && delegate.getEditorView() != null && !delegate.getEditorView().isRemoved()) {
-//            return delegate.getEditorView();
-//        }
         EditorView view = (EditorView) LayoutInflater.from(context).inflate(R.layout.editor, pager, false);
         setEditorView(position, view);
         return view;
@@ -123,6 +119,7 @@ public class EditorPagerAdapter extends ViewPagerAdapter implements IEditorPager
             delegate.setEditorView(editorView);
     }
 
+    @Nullable
     @Override
     public EditorDelegate getCurrentEditorDelegate() {
         if (editorDelegates.isEmpty() || currentPosition >= editorDelegates.size())
@@ -190,6 +187,7 @@ public class EditorPagerAdapter extends ViewPagerAdapter implements IEditorPager
         notifyDataSetChanged();
     }
 
+    @Override
     public ClusterCommand makeClusterCommand() {
         return new ClusterCommand(new ArrayList<>(editorDelegates));
     }

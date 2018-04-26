@@ -161,7 +161,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public int getMaxEditor() {
-        return 10;
+        return 3;
     }
 
     private void updateValue(String key, Map<String, ?> values) {

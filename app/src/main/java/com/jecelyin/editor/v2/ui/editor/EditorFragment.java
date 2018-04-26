@@ -52,6 +52,10 @@ public class EditorFragment extends Fragment {
         return fragment;
     }
 
+    public static EditorFragment newInstance(EditorPageDescriptor desc) {
+        return newInstance(desc.getFile(), desc.getCursorOffset(), desc.getEncoding());
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,7 +72,10 @@ public class EditorFragment extends Fragment {
         return view;
     }
 
-    private void onRestoreState(Bundle savedInstanceState) {
+    private void onRestoreState(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
         Parcelable parcelable = savedInstanceState.getParcelable(KEY_SAVE_STATE);
         if (parcelable instanceof EditorDelegate.SavedState) {
             EditorDelegate.SavedState savedState = (EditorDelegate.SavedState) parcelable;

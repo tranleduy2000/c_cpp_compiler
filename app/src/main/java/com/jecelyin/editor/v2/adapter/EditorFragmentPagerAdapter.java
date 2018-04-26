@@ -26,10 +26,12 @@ import com.duy.ide.editor.pager.PageDescriptor;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.common.TabCloseListener;
+import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.SaveConfirmDialog;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.editor.EditorFragment;
+import com.jecelyin.editor.v2.ui.editor.EditorPageDescriptor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,23 +41,18 @@ import java.util.ArrayList;
  */
 
 public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment> implements IEditorPagerAdapter {
-    private ArrayList<File> files = new ArrayList<>();
     private EditorActivity context;
 
     public EditorFragmentPagerAdapter(EditorActivity activity) {
-        super(activity.getSupportFragmentManager(), null);
+        super(activity.getSupportFragmentManager(), new ArrayList<PageDescriptor>());
         this.context = activity;
     }
 
     @Override
     protected EditorFragment createFragment(PageDescriptor desc) {
-        return null;
+        return EditorFragment.newInstance((EditorPageDescriptor) desc);
     }
 
-    @Override
-    public int getCount() {
-        return files.size();
-    }
 
     @Override
     public boolean removeAll(TabCloseListener tabCloseListener) {
@@ -64,29 +61,49 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
 
     @Override
     public void newEditor(boolean notify, @NonNull File file, int offset, String encoding) {
-
+        add(new EditorPageDescriptor(file, offset, encoding));
+        if (notify) {
+            notifyDataSetChanged();
+        }
     }
 
+    @Nullable
     @Override
     public EditorDelegate getCurrentEditorDelegate() {
+        EditorFragment fragment = getCurrentFragment();
+        if (fragment != null) {
+            return fragment.getEditorDelegate();
+        }
         return null;
     }
 
     @Override
     public TabAdapter.TabInfo[] getTabInfoList() {
-        return new TabAdapter.TabInfo[0];
+        int size = getCount();
+        TabAdapter.TabInfo[] arr = new TabAdapter.TabInfo[size];
+        for (int i = 0; i < size; i++) {
+            EditorPageDescriptor pageDescriptor = (EditorPageDescriptor) getPageDescriptor(i);
+            EditorDelegate delegate = getEditorDelegateAt(i);
+            boolean changed = delegate != null && delegate.isChanged();
+            arr[i] = new TabAdapter.TabInfo(pageDescriptor.getTitle(), pageDescriptor.getPath(), changed);
+        }
+
+        return arr;
     }
 
     @Override
     public boolean removeEditor(final int position, final TabCloseListener listener) {
-        EditorDelegate f = editorDelegates.get(position);
+        EditorDelegate delegate = getEditorDelegateAt(position);
+        if (delegate == null) {
+            return false;
+        }
 
-        final String encoding = f.getEncoding();
-        final int offset = f.getCursorOffset();
-        final String path = f.getPath();
+        final String encoding = delegate.getEncoding();
+        final int offset = delegate.getCursorOffset();
+        final String path = delegate.getPath();
 
-        if (f.isChanged()) {
-            new SaveConfirmDialog(context, f.getTitle(), new MaterialDialog.SingleButtonCallback() {
+        if (delegate.isChanged()) {
+            new SaveConfirmDialog(context, delegate.getTitle(), new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(MaterialDialog dialog, DialogAction which) {
                     if (which == DialogAction.POSITIVE) {
@@ -94,14 +111,14 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
                         command.object = new SaveListener() {
                             @Override
                             public void onSaved() {
-                                removePageAt(position);
+                                remove(position);
                                 if (listener != null)
                                     listener.onClose(path, encoding, offset);
                             }
                         };
                         context.doCommand(command);
                     } else if (which == DialogAction.NEGATIVE) {
-                        removePageAt(position);
+                        remove(position);
                         if (listener != null)
                             listener.onClose(path, encoding, offset);
                     } else {
@@ -111,17 +128,24 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
             }).show();
             return false;
         } else {
-            removePageAt(position);
+            remove(position);
             if (listener != null)
                 listener.onClose(path, encoding, offset);
             return true;
         }
     }
 
-    private void removePageAt(int position) {
-        EditorDelegate delegate = editorDelegates.remove(position);
-        delegate.setRemoved();
-        notifyDataSetChanged();
+    public ArrayList<EditorDelegate> getAllEditor() {
+        ArrayList<EditorDelegate> delegates = new ArrayList<>();
+        for (int i = 0; i < getCount(); i++) {
+            delegates.add(getEditorDelegateAt(i));
+        }
+        return delegates;
+    }
+
+    @Override
+    public ClusterCommand makeClusterCommand() {
+        return new ClusterCommand(getAllEditor());
     }
 
     @Nullable

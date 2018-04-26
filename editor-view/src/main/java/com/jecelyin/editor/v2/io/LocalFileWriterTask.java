@@ -18,7 +18,7 @@ package com.jecelyin.editor.v2.io;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.text.Editable;
+import android.text.GetChars;
 
 import com.jecelyin.common.utils.IOUtils;
 
@@ -31,7 +31,7 @@ import java.io.OutputStreamWriter;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class LocalFileWriterTask extends AsyncTask<Editable, Void, Exception> {
+public class LocalFileWriterTask extends AsyncTask<GetChars, Void, Exception> {
     private final static int BUFFER_SIZE = 16 * 1024;
     private final String encoding;
     private final File file;
@@ -52,7 +52,7 @@ public class LocalFileWriterTask extends AsyncTask<Editable, Void, Exception> {
         return new File(file.getParent(), ".920bak." + file.getName());
     }
 
-    public void write(Editable text) {
+    public void write(GetChars text) {
         execute(text);
     }
 
@@ -61,13 +61,13 @@ public class LocalFileWriterTask extends AsyncTask<Editable, Void, Exception> {
     }
 
     @Override
-    protected Exception doInBackground(Editable... params) {
+    protected Exception doInBackground(GetChars... params) {
         if (file.isFile() && !IOUtils.copyFile(file, backupFile)) {
             return new IOException("Couldn't copy file " + file
                     + " to backup file " + backupFile);
         }
 
-        Editable text = params[0];
+        GetChars text = params[0];
         try {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding), BUFFER_SIZE);
             char[] buffer = new char[BUFFER_SIZE]; //16kb

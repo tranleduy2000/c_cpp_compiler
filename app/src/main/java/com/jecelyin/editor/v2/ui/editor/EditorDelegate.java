@@ -78,6 +78,7 @@ public class EditorDelegate implements TextWatcher {
     public EditorDelegate(@Nullable File file, int offset, String encoding) {
         savedState = new SavedState();
         savedState.file = file;
+        savedState.offset = offset;
         savedState.encoding = encoding;
         if (savedState.file != null) {
             savedState.title = savedState.file.getName();
@@ -472,6 +473,7 @@ public class EditorDelegate implements TextWatcher {
                 return new SavedState[size];
             }
         };
+        int offset;
         int lineNumber;
         @Nullable
         File file;
@@ -488,6 +490,7 @@ public class EditorDelegate implements TextWatcher {
         }
 
         SavedState(Parcel in) {
+            this.offset = in.readInt();
             this.lineNumber = in.readInt();
             String file, rootFile;
             file = in.readString();
@@ -512,6 +515,7 @@ public class EditorDelegate implements TextWatcher {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.offset);
             dest.writeInt(this.lineNumber);
             dest.writeString(this.file == null ? null : this.file.getPath());
             dest.writeString(this.rootFile == null ? null : this.rootFile.getPath());

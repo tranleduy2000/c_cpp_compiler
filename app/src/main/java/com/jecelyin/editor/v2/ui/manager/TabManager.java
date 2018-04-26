@@ -26,6 +26,7 @@ import android.view.View;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
+import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
@@ -225,5 +226,9 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 }
             }
         });
+    }
+
+    public IEditorPagerAdapter getEditorPagerAdapter() {
+        return mEditorFragmentPagerAdapter;
     }
 }

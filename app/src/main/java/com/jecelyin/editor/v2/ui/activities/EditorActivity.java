@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -127,6 +128,11 @@ public class EditorActivity extends FullScreenActivity
         } catch (Exception e) {
             DLog.d(e); //ignore exception: Unmarshalling unknown type code 7602281 at offset 58340
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     private void requestWriteExternalStoragePermission() {
