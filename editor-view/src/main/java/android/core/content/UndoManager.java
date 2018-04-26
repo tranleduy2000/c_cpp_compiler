@@ -52,7 +52,7 @@ import java.util.ArrayList;
  *
  * @hide
  */
-public class UndoManager {
+public class UndoManager implements IUndoManager {
     /**
      * Never merge with the last undo state.
      */
@@ -742,6 +742,26 @@ public class UndoManager {
         }
 
         return -1;
+    }
+
+    @Override
+    public boolean canRedo() {
+        return countRedos(null) > 0;
+    }
+
+    @Override
+    public void undo() {
+        undo(null, 1);
+    }
+
+    @Override
+    public void redo() {
+        redo(null, 1);
+    }
+
+    @Override
+    public boolean canUndo() {
+        return countUndos(null) > 0;
     }
 
     final static class UndoState {

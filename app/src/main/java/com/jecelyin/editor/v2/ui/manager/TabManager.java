@@ -45,7 +45,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     private final EditorActivity mActivity;
     private final TabAdapter mTabAdapter;
     private EditorFragmentPagerAdapter mEditorFragmentPagerAdapter;
-    private boolean exitApp;
 
     public TabManager(EditorActivity activity) {
         this.mActivity = activity;
@@ -171,10 +170,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         });
     }
 
-    public EditorFragmentPagerAdapter getEditorFragmentPagerAdapter() {
-        return mEditorFragmentPagerAdapter;
-    }
-
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -212,7 +207,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     public boolean closeAllTabAndExitApp() {
         EditorDelegate.setDisableAutoSave();
-        exitApp = true;
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }

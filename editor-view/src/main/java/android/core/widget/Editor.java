@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v7.view.menu.MenuBuilder;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -124,6 +125,7 @@ public class Editor {
     private static final float[] TEMP_POSITION = new float[2];
     private static int DRAG_SHADOW_MAX_TEXT_LENGTH = 20;
     final Drawable[] mCursorDrawable = new Drawable[2];
+    @Nullable
     UndoManager mUndoManager;
     UndoOwner mUndoOwner;
     InputFilter mUndoInputFilter;
@@ -237,7 +239,6 @@ public class Editor {
 
 //        getPositionListener().addSubscriber(mCursorAnchorInfoNotifier, true);
     }
-
 
 
     void onDetachedFromWindow() {

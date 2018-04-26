@@ -168,19 +168,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     // TODO: How can we get this from the XML instead of hardcoding it here?
     private static final int SIGNED = 2;
     private static final int DECIMAL = 4;
-    /**
-     * Draw marquee text with fading edges as usual
-     */
-    private static final int MARQUEE_FADE_NORMAL = 0;
-    /**
-     * Draw marquee text as ellipsize end while inactive instead of with the fade.
-     * (Useful for devices where the fade can be expensive if overdone)
-     */
-    private static final int MARQUEE_FADE_SWITCH_SHOW_ELLIPSIS = 1;
-    /**
-     * Draw marquee text with fading edges because it is currently active/animating.p
-     */
-    private static final int MARQUEE_FADE_SWITCH_SHOW_FADE = 2;
     private static final int LINES = 1;
     private static final int EMS = LINES;
     private static final int PIXELS = 2;
@@ -2308,15 +2295,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             }
 
             savedState.error = getError();
-
-            UndoManager undoManager = getUndoManager();
-            if (undoManager != null) {
-                try {
-                    savedState.undoState = undoManager.saveInstanceState();
-                } catch (Exception ignored) {
-                }
-            }
-
             return savedState;
         }
 
@@ -2381,14 +2359,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                     setError(error);
                 }
             });
-        }
-
-        if (getUndoManager() != null && savedState.undoState != null) {
-            try {
-                getUndoManager().restoreInstanceState(savedState.undoState);
-                mEditor.mUndoOwner = getUndoManager().getOwner("undo", this);
-            } catch (Exception ignored) {
-            }
         }
     }
 

@@ -19,7 +19,7 @@
 package android.core.widget;
 
 import android.content.Context;
-import android.core.content.UndoManager;
+import android.core.content.IUndoManager;
 import android.core.text.Selection;
 import android.core.text.method.ArrowKeyMovementMethod;
 import android.core.text.method.MovementMethod;
@@ -38,6 +38,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 
+import com.duy.ide.editor.content.UndoRedoHelper;
 import com.jecelyin.common.utils.LimitedQueue;
 import com.jecelyin.editor.v2.Preferences;
 
@@ -111,7 +112,7 @@ public class EditAreaView extends BaseEditorView {
      */
     int mMotionCorrection;
     private OnEditorSizeChangedListener onEditorSizeChangedListener;
-    private UndoManager undoManager;
+    private IUndoManager undoManager;
     private EditorHelper editorHelper;
     private ScaleGestureDetector mScaleDetector;
     private LimitedQueue<Integer> mPositionHistoryList = new LimitedQueue<>(30);
@@ -279,7 +280,6 @@ public class EditAreaView extends BaseEditorView {
     }
 
     private void init() {
-        //自动获取焦点并弹出键盘
         setFocusableInTouchMode(true);
 
         mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
@@ -293,8 +293,8 @@ public class EditAreaView extends BaseEditorView {
         mOverscrollDistance = configuration.getScaledOverscrollDistance();
 
         editorHelper = new EditorHelper(this);
-        undoManager = new UndoManager();
-        setUndoManager(undoManager, "undo");
+        createUndoRedoManager();
+
         if (mEditor != null) {
             final boolean undoFilter = mEditor.mUndoInputFilter != null;
             final boolean keyFilter = mEditor.mKeyListener instanceof InputFilter;
@@ -318,20 +318,25 @@ public class EditAreaView extends BaseEditorView {
         }
     }
 
+    private void createUndoRedoManager() {
+        undoManager = new UndoRedoHelper(this);
+        //setUndoManager(undoManager, "undo");
+    }
+
     public void redo() {
-        undoManager.redo(null, 1);
+        undoManager.redo();
     }
 
     public void undo() {
-        undoManager.undo(null, 1);
+        undoManager.undo();
     }
 
     public boolean canRedo() {
-        return undoManager.countRedos(null) > 0;
+        return undoManager.canRedo();
     }
 
     public boolean canUndo() {
-        return undoManager.countUndos(null) > 0;
+        return undoManager.canUndo();
     }
 
     public boolean copy() {
