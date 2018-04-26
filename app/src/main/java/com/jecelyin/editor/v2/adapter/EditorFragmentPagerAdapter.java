@@ -21,8 +21,9 @@ import android.support.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.duy.ide.editor.pager.EditorFragmentStatePagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.common.SaveListener;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
