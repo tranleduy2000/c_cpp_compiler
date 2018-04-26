@@ -92,6 +92,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     private final Context context;
     private final WeakHashMap<SharedPreferences.OnSharedPreferenceChangeListener, Object> mListeners = new WeakHashMap<>();
     private Set<String> toolbarIcons;
+
     public Preferences(Context context) {
         this.context = context;
         pm = PreferenceManager.getDefaultSharedPreferences(context);
@@ -239,7 +240,8 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public boolean isAutoSave() {
-        return (boolean) map.get(KEY_AUTO_SAVE);
+//        return (boolean) map.get(KEY_AUTO_SAVE);
+        return false;
     }
 
     public boolean isKeepScreenOn() {

@@ -115,6 +115,15 @@ public class EditorDelegate implements TextWatcher {
         noticeDocumentChanged();
     }
 
+    public void setRemoved() {
+        if (mEditorView != null) {
+            mEditText.removeTextChangedListener(mDocument);
+            mEditText.removeTextChangedListener(this);
+            mEditorView.setRemoved();
+            mDocument = null;
+        }
+    }
+
     public void onLoadStart() {
         loaded = false;
         mEditText.setEnabled(false);
@@ -369,14 +378,6 @@ public class EditorDelegate implements TextWatcher {
         noticeMenuChanged();
     }
 
-    public void setRemoved() {
-        if (mEditorView != null) {
-            mEditText.removeTextChangedListener(mDocument);
-            mEditText.removeTextChangedListener(this);
-            mEditorView.setRemoved();
-            mDocument = null;
-        }
-    }
 
     private void noticeMenuChanged() {
         EditorActivity editorActivity = (EditorActivity) this.mContext;

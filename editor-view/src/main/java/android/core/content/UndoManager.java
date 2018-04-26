@@ -1,19 +1,17 @@
 /*
+ * Copyright (C) 2013 The Android Open Source Project
  *
- *  * Copyright (C) 2006 The Android Open Source Project
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *      http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package android.core.content;
@@ -21,9 +19,9 @@ package android.core.content;
 import android.core.text.TextUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.util.ArrayMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Top-level class for managing and interacting with the global undo state for
@@ -68,7 +66,9 @@ public class UndoManager {
      * Always allow merge with the last undo state, if possible.
      */
     public static final int MERGE_MODE_ANY = 2;
-    private final HashMap<String, UndoOwner> mOwners = new HashMap<String, UndoOwner>();
+    // The common case is a single undo owner (e.g. for a TextView), so default to that capacity.
+    private final ArrayMap<String, UndoOwner> mOwners =
+            new ArrayMap<String, UndoOwner>(1 /* capacity */);
     private final ArrayList<UndoState> mUndos = new ArrayList<UndoState>();
     private final ArrayList<UndoState> mRedos = new ArrayList<UndoState>();
     private int mUpdateCount;
@@ -100,8 +100,7 @@ public class UndoManager {
             return owner;
         }
 
-        owner = new UndoOwner(tag);
-        owner.mManager = this;
+        owner = new UndoOwner(tag, this);
         owner.mData = data;
         mOwners.put(tag, owner);
         return owner;
@@ -111,13 +110,12 @@ public class UndoManager {
         // XXX need to figure out how to prune.
         if (false) {
             mOwners.remove(owner.mTag);
-            owner.mManager = null;
         }
     }
 
     /**
      * Flatten the current undo state into a Parcelable object, which can later be restored
-     * with {@link #restoreInstanceState(Parcelable)}.
+     * with {@link #restoreInstanceState(android.os.Parcelable)}.
      */
     public Parcelable saveInstanceState() {
         if (mUpdateCount > 0) {
@@ -159,6 +157,7 @@ public class UndoManager {
             owner.mSavedIdx = mNextSavedIdx;
             out.writeInt(owner.mSavedIdx);
             out.writeString(owner.mTag);
+            out.writeInt(owner.mOpCount);
             mNextSavedIdx++;
         }
     }
@@ -197,7 +196,9 @@ public class UndoManager {
         UndoOwner owner = mStateOwners[idx];
         if (owner == null) {
             String tag = in.readString();
-            owner = new UndoOwner(tag);
+            int opCount = in.readInt();
+            owner = new UndoOwner(tag, this);
+            owner.mOpCount = opCount;
             mStateOwners[idx] = owner;
             mOwners.put(tag, owner);
         }

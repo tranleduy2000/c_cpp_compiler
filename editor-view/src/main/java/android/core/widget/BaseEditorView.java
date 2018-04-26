@@ -792,10 +792,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
-    }
-
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -809,6 +805,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
+    }
+
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -2311,8 +2311,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
             UndoManager undoManager = getUndoManager();
             if (undoManager != null) {
-                Parcelable parcelable = undoManager.saveInstanceState();
-                savedState.undoState = parcelable;
+                try {
+                    savedState.undoState = undoManager.saveInstanceState();
+                } catch (Exception ignored) {
+                }
             }
 
             return savedState;
@@ -2382,7 +2384,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         }
 
         if (getUndoManager() != null && savedState.undoState != null) {
-            getUndoManager().restoreInstanceState(savedState.undoState);
+            try {
+                getUndoManager().restoreInstanceState(savedState.undoState);
+                mEditor.mUndoOwner = getUndoManager().getOwner("undo", this);
+            } catch (Exception ignored) {
+            }
         }
     }
 
