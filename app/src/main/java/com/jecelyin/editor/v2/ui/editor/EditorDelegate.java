@@ -490,16 +490,15 @@ public class EditorDelegate implements TextWatcher {
         SavedState(Parcel in) {
             this.cursorOffset = in.readInt();
             this.lineNumber = in.readInt();
-            String file, rootFile;
-            file = in.readString();
-            rootFile = in.readString();
+            String file = in.readString();
             this.file = TextUtils.isEmpty(file) ? null : new File(file);
             this.title = in.readString();
             this.encoding = in.readString();
             this.modeName = in.readString();
             int hasState = in.readInt();
-            if (hasState == 1)
+            if (hasState == 1) {
                 this.editorState = in.readParcelable(BaseEditorView.SavedState.class.getClassLoader());
+            }
             this.textMd5 = in.createByteArray();
             this.textLength = in.readInt();
         }
@@ -518,8 +517,9 @@ public class EditorDelegate implements TextWatcher {
             dest.writeString(this.encoding);
             dest.writeString(this.modeName);
             dest.writeInt(this.editorState == null ? 0 : 1);
-            if (this.editorState != null)
+            if (this.editorState != null) {
                 dest.writeParcelable(this.editorState, flags);
+            }
             dest.writeByteArray(this.textMd5);
             dest.writeInt(textLength);
         }

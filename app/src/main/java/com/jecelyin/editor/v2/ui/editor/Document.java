@@ -67,7 +67,7 @@ public class Document implements ReadFileListener, TextWatcher {
     private String encoding = "UTF-8";
     private byte[] srcMD5;
     private int srcLength;
-    private File file, rootFile;
+    private File file;
     private String modeName;
 
     public Document(Context context, EditorDelegate editorDelegate) {
@@ -126,7 +126,6 @@ public class Document implements ReadFileListener, TextWatcher {
         srcLength = ss.textLength;
         encoding = ss.encoding;
         file = ss.file;
-        rootFile = ss.rootFile;
     }
 
     public void loadFile(File file) {
