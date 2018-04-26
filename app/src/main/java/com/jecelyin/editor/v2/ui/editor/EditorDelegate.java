@@ -24,7 +24,9 @@ import android.core.widget.EditAreaView;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spanned;
@@ -216,9 +218,10 @@ public class EditorDelegate implements TextWatcher {
      *
      * @param file - new file to write
      */
+    @WorkerThread
     public void saveTo(File file, String encoding) {
         if (mDocument != null) {
-            mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding);
+            mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding, null);
         }
     }
 
@@ -379,6 +382,7 @@ public class EditorDelegate implements TextWatcher {
     /**
      * This method will be called when document changed file
      */
+    @MainThread
     void noticeDocumentChanged() {
         File file = mDocument.getFile();
         if (file != null) {
@@ -387,7 +391,7 @@ public class EditorDelegate implements TextWatcher {
         noticeMenuChanged();
     }
 
-
+    @MainThread
     private void noticeMenuChanged() {
         EditorActivity editorActivity = (EditorActivity) this.mContext;
         editorActivity.setMenuStatus(R.id.m_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
@@ -448,13 +452,15 @@ public class EditorDelegate implements TextWatcher {
             ss.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
         }
 
-        if (loaded && !disableAutoSave && mDocument != null && mDocument.getFile() != null && Preferences.getInstance(mContext).isAutoSave()) {
-            int newOrientation = mContext.getResources().getConfiguration().orientation;
-            if (mOrientation != newOrientation) {
-                DLog.d("current is screen orientation, discard auto save!");
-                mOrientation = newOrientation;
-            } else {
-                mDocument.save();
+        if (loaded && !disableAutoSave && mDocument != null && mDocument.getFile() != null) {
+            if (Preferences.getInstance(mContext).isAutoSave()) {
+                int newOrientation = mContext.getResources().getConfiguration().orientation;
+                if (mOrientation != newOrientation) {
+                    DLog.d("current is screen orientation, discard auto save!");
+                    mOrientation = newOrientation;
+                } else {
+                    mDocument.save();
+                }
             }
         }
 

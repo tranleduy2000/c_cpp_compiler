@@ -96,6 +96,7 @@ public class SaveTask {
                 if (documentWR.get() == null || contextWR.get() == null || editorDelegateWR.get() == null) {
                     return;
                 }
+
                 documentWR.get().onSaveSuccess(file, encoding);
                 if (!isCluster) {
                     UIUtils.toast(contextWR.get(), R.string.save_success);

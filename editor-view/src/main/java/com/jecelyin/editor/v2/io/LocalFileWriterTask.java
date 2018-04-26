@@ -17,6 +17,7 @@
 package com.jecelyin.editor.v2.io;
 
 import android.os.AsyncTask;
+import android.support.annotation.MainThread;
 import android.text.GetChars;
 
 import java.io.BufferedWriter;
@@ -86,10 +87,12 @@ public class LocalFileWriterTask extends AsyncTask<GetChars, Void, Exception> {
             fileWriteListener.onError(e);
     }
 
-    public static interface FileWriteListener {
-        public void onSuccess();
+    public interface FileWriteListener {
+        @MainThread
+        void onSuccess();
 
-        public void onError(Exception e);
+        @MainThread
+        void onError(Exception e);
     }
 
 }

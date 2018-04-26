@@ -603,9 +603,11 @@ public class EditorActivity extends FullScreenActivity
             case RC_SAVE:
                 String file = FileExplorerActivity.getFile(data);
                 String encoding = FileExplorerActivity.getFileEncoding(data);
+
                 IEditorPagerAdapter adapter = tabManager.getEditorPagerAdapter();
                 EditorDelegate delegate = adapter.getCurrentEditorDelegate();
                 if (delegate != null) {
+                    adapter.updateDescriptor(file, encoding);
                     delegate.saveTo(new File(file), encoding);
                 }
                 break;

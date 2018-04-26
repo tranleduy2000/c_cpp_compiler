@@ -44,4 +44,6 @@ public interface IEditorPagerAdapter {
 
     @Nullable
     EditorDelegate getEditorDelegateAt(int index);
+
+    void updateDescriptor(String file, String encoding);
 }

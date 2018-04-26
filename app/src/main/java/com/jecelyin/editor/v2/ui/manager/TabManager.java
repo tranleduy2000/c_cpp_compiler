@@ -101,6 +101,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
             }
 
             mEditorFragmentPagerAdapter.addAll(descriptors);
+            mActivity.mEditorPager.setOffscreenPageLimit(mEditorFragmentPagerAdapter.getCount());
             updateTabList();
 
             int lastTab = Preferences.getInstance(mActivity).getLastTab();
@@ -112,6 +113,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
             public void onChanged() {
                 updateTabList();
                 updateToolbar();
+                mActivity.mEditorPager.setOffscreenPageLimit(mEditorFragmentPagerAdapter.getCount());
             }
         });
 
@@ -210,6 +212,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
+
         return mEditorFragmentPagerAdapter.removeAll(new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
