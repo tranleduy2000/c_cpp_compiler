@@ -11,7 +11,7 @@ android {
 
         ndk {
             moduleName "libjackpal-androidterm5"
-            abiFilters 'armeabi', 'mips', 'x86'
+            abiFilters 'armeabi-v7a', 'x86'
             ldLibs "log"
         }
     }
@@ -25,6 +25,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
         }
     }
 }

@@ -18,8 +18,7 @@ android {
 
         ndk {
             moduleName 'libjackpal-termexec2'
-            abiFilters 'all'
-            ldLibs 'log', 'c'
+            abiFilters 'armeabi-v7a', 'x86'
         }
     }
 
@@ -29,9 +28,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:support-annotations:$androidSupportVersion"
 }
