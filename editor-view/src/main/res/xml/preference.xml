@@ -43,6 +43,7 @@
             android:title="@string/tab_size" />
 
         <CheckBoxPreference
+            android:defaultValue="false"
             android:key="pref_auto_capitalize"
             android:title="@string/auto_capitalize" />
 
@@ -58,6 +59,7 @@
 
     <PreferenceCategory android:title="@string/highlight_and_theme">
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="pref_enable_highlight"
             android:title="@string/enable_highlight" />
 
@@ -73,6 +75,7 @@
     <PreferenceCategory android:title="@string/other">
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="pref_auto_save"
             android:title="@string/auto_save" />
 

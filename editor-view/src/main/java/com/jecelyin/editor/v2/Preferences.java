@@ -108,11 +108,11 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_INSERT_SPACE_FOR_TAB, true);
         map.put(KEY_TAB_SIZE, 4);
         map.put(KEY_SYMBOL, VALUE_SYMBOL);
-        map.put(KEY_AUTO_CAPITALIZE, true);
+        map.put(KEY_AUTO_CAPITALIZE, false);
         map.put(KEY_ENABLE_HIGHLIGHT, true);
         map.put(KEY_HIGHLIGHT_FILE_SIZE_LIMIT, 500);
         map.put(KEY_THEME, 0);
-        map.put(KEY_AUTO_SAVE, false);
+        map.put(KEY_AUTO_SAVE, true);
         map.put(KEY_REMEMBER_LAST_OPENED_FILES, true);
         map.put(KEY_SCREEN_ORIENTATION, "auto");
         map.put(KEY_KEEP_SCREEN_ON, false);
