@@ -16,11 +16,11 @@
 
 package com.duy.ccppcompiler.compiler;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.INativeCompiler;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -37,8 +37,8 @@ public class CompilerFactory {
         return null;
     }
 
-    public static ICompileManager createCompileManager(EditorActivity editorActivity) {
-        return new CompileManager(editorActivity);
+    public static ICompileManager createCompileManager(Activity activity) {
+        return new CompileManager(activity);
     }
 
     /**

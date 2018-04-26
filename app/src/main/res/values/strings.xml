@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">C/Cpp Compiler</string>
+    <string name="app_name">C/C++ Compiler</string>
     <string name="installing_system">Installing system</string>
+    <string name="title_compiling">Compiling…</string>
 </resources>

@@ -26,6 +26,9 @@ import com.duy.ide.compiler.shell.ShellResult;
 
 public interface ICompileManager {
     @MainThread
+    void onNewMessage(CharSequence charSequence);
+
+    @MainThread
     void onCompileSuccess(ShellResult shellResult);
 
     @MainThread

@@ -16,15 +16,16 @@
 
 package com.duy.ccppcompiler.compiler;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 
+import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.console.activities.ConsoleActivity;
 import com.duy.common.DLog;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 
 import java.io.File;
 
@@ -35,11 +36,22 @@ import java.io.File;
 public class CompileManager implements ICompileManager {
     private static final String TAG = "CompileManager";
     private ProgressDialog mCompileDialog;
-    private EditorActivity mActivity;
+    private Activity mActivity;
 
-    public CompileManager(EditorActivity activity) {
+    public CompileManager(Activity activity) {
         mCompileDialog = new ProgressDialog(activity);
         mActivity = activity;
+    }
+
+    @Override
+    public void onPrepareCompile() {
+        mCompileDialog.setTitle(R.string.title_compiling);
+        mCompileDialog.show();
+    }
+
+    @Override
+    public void onNewMessage(CharSequence charSequence) {
+        mCompileDialog.setMessage(charSequence);
     }
 
     @Override
@@ -63,8 +75,4 @@ public class CompileManager implements ICompileManager {
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
     }
 
-    @Override
-    public void onPrepareCompile() {
-        mCompileDialog.show();
-    }
 }
