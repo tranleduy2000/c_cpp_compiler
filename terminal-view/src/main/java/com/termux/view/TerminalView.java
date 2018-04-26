@@ -104,9 +104,11 @@ public final class TerminalView extends View {
                 }
                 requestFocus();
                 if (!mEmulator.isMouseTrackingActive()) {
-                    if (!e.isFromSource(InputDevice.SOURCE_MOUSE)) {
-                        mClient.onSingleTapUp(e);
-                        return true;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        if (!e.isFromSource(InputDevice.SOURCE_MOUSE)) {
+                            mClient.onSingleTapUp(e);
+                            return true;
+                        }
                     }
                 }
                 return false;
@@ -115,18 +117,20 @@ public final class TerminalView extends View {
             @Override
             public boolean onScroll(MotionEvent e, float distanceX, float distanceY) {
                 if (mEmulator == null || mIsSelectingText) return true;
-                if (mEmulator.isMouseTrackingActive() && e.isFromSource(InputDevice.SOURCE_MOUSE)) {
-                    // If moving with mouse pointer while pressing button, report that instead of scroll.
-                    // This means that we never report moving with button press-events for touch input,
-                    // since we cannot just start sending these events without a starting press event,
-                    // which we do not do for touch input, only mouse in onTouchEvent().
-                    sendMouseEventCode(e, TerminalEmulator.MOUSE_LEFT_BUTTON_MOVED, true);
-                } else {
-                    scrolledWithFinger = true;
-                    distanceY += mScrollRemainder;
-                    int deltaRows = (int) (distanceY / mRenderer.mFontLineSpacing);
-                    mScrollRemainder = distanceY - deltaRows * mRenderer.mFontLineSpacing;
-                    doScroll(e, deltaRows);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    if (mEmulator.isMouseTrackingActive() && e.isFromSource(InputDevice.SOURCE_MOUSE)) {
+                        // If moving with mouse pointer while pressing button, report that instead of scroll.
+                        // This means that we never report moving with button press-events for touch input,
+                        // since we cannot just start sending these events without a starting press event,
+                        // which we do not do for touch input, only mouse in onTouchEvent().
+                        sendMouseEventCode(e, TerminalEmulator.MOUSE_LEFT_BUTTON_MOVED, true);
+                    } else {
+                        scrolledWithFinger = true;
+                        distanceY += mScrollRemainder;
+                        int deltaRows = (int) (distanceY / mRenderer.mFontLineSpacing);
+                        mScrollRemainder = distanceY - deltaRows * mRenderer.mFontLineSpacing;
+                        doScroll(e, deltaRows);
+                    }
                 }
                 return true;
             }
@@ -450,11 +454,13 @@ public final class TerminalView extends View {
     /** Overriding {@link View#onGenericMotionEvent(MotionEvent)}. */
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        if (mEmulator != null && event.isFromSource(InputDevice.SOURCE_MOUSE) && event.getAction() == MotionEvent.ACTION_SCROLL) {
-            // Handle mouse wheel scrolling.
-            boolean up = event.getAxisValue(MotionEvent.AXIS_VSCROLL) > 0.0f;
-            doScroll(event, up ? -3 : 3);
-            return true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (mEmulator != null && event.isFromSource(InputDevice.SOURCE_MOUSE) && event.getAction() == MotionEvent.ACTION_SCROLL) {
+                // Handle mouse wheel scrolling.
+                boolean up = event.getAxisValue(MotionEvent.AXIS_VSCROLL) > 0.0f;
+                doScroll(event, up ? -3 : 3);
+                return true;
+            }
         }
         return false;
     }

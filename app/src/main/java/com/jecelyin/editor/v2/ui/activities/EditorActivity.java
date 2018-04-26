@@ -52,6 +52,7 @@ import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -61,7 +62,6 @@ import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
-import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.dialog.ChangeThemeDialog;
 import com.jecelyin.editor.v2.ui.dialog.CharsetsDialog;
@@ -468,7 +468,9 @@ public class EditorActivity extends FullScreenActivity
                 new CharsetsDialog(this).show();
                 break;
             case R.id.m_run:
-                compileAndRun();
+                if (!isCompiling()) {
+                    compileAndRun();
+                }
                 break;
             case R.id.m_settings:
                 SettingsActivity.startActivity(this, RC_SETTINGS);
@@ -478,6 +480,10 @@ public class EditorActivity extends FullScreenActivity
                 if (commandEnum != Command.CommandEnum.NONE)
                     doCommand(new Command(commandEnum));
         }
+    }
+
+    private boolean isCompiling() {
+        return false;
     }
 
     private void createNewFile() {
@@ -503,6 +509,7 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void compileAndRun() {
+
         saveAll(new SaveListener() {
             @Override
             public void onSaved() {

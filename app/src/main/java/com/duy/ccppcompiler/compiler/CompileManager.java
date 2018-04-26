@@ -69,7 +69,8 @@ public class CompileManager implements ICompileManager {
     @Override
     public void onCompileFailed(ShellResult shellResult) {
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
-            mCompileDialog.dismiss();
+            mCompileDialog.setMessage(shellResult.getMessage());
+//            mCompileDialog.dismiss();
         }
         UIUtils.toast(mActivity, "Compile failed");
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());

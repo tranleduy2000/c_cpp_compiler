@@ -1,6 +1,7 @@
 package com.termux.view;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -85,7 +86,9 @@ final class GestureAndScaleRecognizer {
                 return mListener.onScale(detector.getFocusX(), detector.getFocusY(), detector.getScaleFactor());
             }
         });
-        mScaleDetector.setQuickScaleEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mScaleDetector.setQuickScaleEnabled(false);
+        }
     }
 
     public void onTouchEvent(MotionEvent event) {

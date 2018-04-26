@@ -16,7 +16,6 @@
 
 package com.duy.ccppcompiler.console.activities;
 
-import android.app.ActionBar;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -31,6 +30,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.console.services.TermuxService;
@@ -74,9 +74,6 @@ public class ConsoleActivity extends AppCompatActivity implements ServiceConnect
     }
 
     private void initView() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null)
-            actionBar.setDisplayHomeAsUpEnabled(true);
         mEmulatorView = findViewById(R.id.emulatorView);
         cmd = getIntent().getStringExtra(EXTRA_BINARY_FILE_PATH);
         mEmulatorView.setTextSize(mFontSize);

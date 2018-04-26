@@ -63,7 +63,7 @@ public final class TermuxViewClient implements TerminalViewClient {
 
     @Override
     public boolean shouldBackButtonBeMappedToEscape() {
-        return true;
+        return false;
     }
 
     @Override
@@ -82,7 +82,6 @@ public final class TermuxViewClient implements TerminalViewClient {
             return true;
 
         if (keyCode == KeyEvent.KEYCODE_ENTER && !currentSession.isRunning()) {
-            //程序结束
             mActivity.finish();
             return true;
         } else if (e.isCtrlPressed() && e.isAltPressed()) {
