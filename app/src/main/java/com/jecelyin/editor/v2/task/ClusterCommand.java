@@ -46,7 +46,7 @@ public class ClusterCommand {
             return;
         }
         EditorDelegate delegate = delegates.remove(0);
-        if (!delegate.doCommand(command)) {
+        if (delegate == null || !delegate.doCommand(command)) {
             doNextCommand();
         }
     }

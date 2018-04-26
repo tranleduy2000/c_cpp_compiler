@@ -18,6 +18,7 @@ package com.duy.ide.editor.pager;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +27,8 @@ import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.jecelyin.common.utils.DLog;
 
 import java.util.ArrayList;
 
@@ -67,13 +70,14 @@ import java.util.ArrayList;
  */
 public abstract class EditorFragmentStatePagerAdapter<T extends Fragment> extends PagerAdapter {
     private static final String TAG = "FragmentStatePagerAdapt";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = DLog.DEBUG;
 
     private final FragmentManager mFragmentManager;
     private FragmentTransaction mCurTransaction = null;
 
     private ArrayList<Fragment.SavedState> mSavedState = new ArrayList<Fragment.SavedState>();
     private ArrayList<T> mFragments = new ArrayList<T>();
+
     private T mCurrentPrimaryItem = null;
 
     public EditorFragmentStatePagerAdapter(FragmentManager fm) {
@@ -91,6 +95,15 @@ public abstract class EditorFragmentStatePagerAdapter<T extends Fragment> extend
             throw new IllegalStateException("ViewPager with adapter " + this
                     + " requires a view id");
         }
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        int i = mFragments.indexOf(object);
+        if (i < 0) {
+            return POSITION_NONE;
+        }
+        return super.getItemPosition(object);
     }
 
     @Override
@@ -232,6 +245,16 @@ public abstract class EditorFragmentStatePagerAdapter<T extends Fragment> extend
         }
     }
 
+    public void remove(int index) {
+        if (index >= 0 && index < mFragments.size()) {
+            mFragments.set(index, null);
+        }
+        if (index >= 0 && index < mSavedState.size()) {
+            mSavedState.set(index, null);
+        }
+        notifyDataSetChanged();
+    }
+
     public T getCurrentFragment() {
         return mCurrentPrimaryItem;
     }
@@ -247,4 +270,5 @@ public abstract class EditorFragmentStatePagerAdapter<T extends Fragment> extend
         }
         return mFragments.get(index);
     }
+
 }

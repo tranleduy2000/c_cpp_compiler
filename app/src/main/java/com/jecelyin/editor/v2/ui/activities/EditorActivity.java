@@ -215,7 +215,7 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void bindPreferences() {
-        mEditorPager.setOffscreenPageLimit(preferences.getMaxEditor());
+//        mEditorPager.setOffscreenPageLimit(preferences.getMaxEditor());
         mDrawerLayout.setKeepScreenOn(preferences.isKeepScreenOn());
         mDrawerLayout.setDrawerLockMode(preferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mSymbolBarLayout.setVisibility(preferences.isReadOnly() ? View.GONE : View.VISIBLE);

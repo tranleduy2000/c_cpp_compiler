@@ -18,12 +18,12 @@ package com.jecelyin.editor.v2.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.ide.editor.pager.EditorFragmentStatePagerAdapter;
-import com.jecelyin.editor.v2.common.Command;
 import com.duy.ide.filemanager.SaveListener;
+import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
@@ -31,6 +31,7 @@ import com.jecelyin.editor.v2.ui.dialog.SaveConfirmDialog;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.editor.EditorFragment;
 import com.jecelyin.editor.v2.ui.editor.EditorPageDescriptor;
+import com.nakama.arraypageradapter.ArrayFragmentStatePagerAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,9 +40,9 @@ import java.util.ArrayList;
  * Created by Duy on 25-Apr-18.
  */
 
-public class EditorFragmentPagerAdapter extends EditorFragmentStatePagerAdapter<EditorFragment> implements IEditorPagerAdapter {
+public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<EditorPageDescriptor> implements IEditorPagerAdapter {
+    private static final String TAG = "EditorFragmentPagerAdap";
     private EditorActivity context;
-    private ArrayList<EditorPageDescriptor> descriptors = new ArrayList<>();
 
     public EditorFragmentPagerAdapter(EditorActivity activity) {
         super(activity.getSupportFragmentManager());
@@ -49,32 +50,30 @@ public class EditorFragmentPagerAdapter extends EditorFragmentStatePagerAdapter<
     }
 
     @Override
-    public EditorFragment getItem(int position) {
-        return EditorFragment.newInstance(descriptors.get(position));
+    public Fragment getFragment(EditorPageDescriptor item, int position) {
+        return EditorFragment.newInstance(item);
     }
 
     @Override
-    public int getCount() {
-        return descriptors.size();
+    public void add(EditorPageDescriptor item) {
+        super.add(item);
     }
 
     @Override
     public boolean removeAll(TabCloseListener tabCloseListener) {
-        return false;
+        int position = getCount();
+        return position < 0 || removeEditor(position, tabCloseListener);
     }
 
     @Override
     public void newEditor(boolean notify, @NonNull File file, int offset, String encoding) {
-        descriptors.add(new EditorPageDescriptor(file, offset, encoding));
-        if (notify) {
-            notifyDataSetChanged();
-        }
+        add(new EditorPageDescriptor(file, offset, encoding));
     }
 
     @Nullable
     @Override
     public EditorDelegate getCurrentEditorDelegate() {
-        EditorFragment fragment = getCurrentFragment();
+        EditorFragment fragment = (EditorFragment) getCurrentFragment();
         if (fragment != null) {
             return fragment.getEditorDelegate();
         }
@@ -83,10 +82,10 @@ public class EditorFragmentPagerAdapter extends EditorFragmentStatePagerAdapter<
 
     @Override
     public TabAdapter.TabInfo[] getTabInfoList() {
-        int size = descriptors.size();
+        int size = getCount();
         TabAdapter.TabInfo[] arr = new TabAdapter.TabInfo[size];
         for (int i = 0; i < size; i++) {
-            EditorPageDescriptor pageDescriptor = descriptors.get(i);
+            EditorPageDescriptor pageDescriptor = getItem(i);
             EditorDelegate delegate = getEditorDelegateAt(i);
             boolean changed = delegate != null && delegate.isChanged();
             arr[i] = new TabAdapter.TabInfo(pageDescriptor.getTitle(), pageDescriptor.getPath(), changed);
@@ -99,7 +98,9 @@ public class EditorFragmentPagerAdapter extends EditorFragmentStatePagerAdapter<
     public boolean removeEditor(final int position, final TabCloseListener listener) {
         EditorDelegate delegate = getEditorDelegateAt(position);
         if (delegate == null) {
-            return false;
+            //not init
+            remove(position);
+            return true;
         }
 
         final String encoding = delegate.getEncoding();
@@ -139,10 +140,6 @@ public class EditorFragmentPagerAdapter extends EditorFragmentStatePagerAdapter<
         }
     }
 
-    private void remove(int position) {
-        descriptors.remove(position);
-        notifyDataSetChanged();
-    }
 
     public ArrayList<EditorDelegate> getAllEditor() {
         ArrayList<EditorDelegate> delegates = new ArrayList<>();
@@ -158,8 +155,14 @@ public class EditorFragmentPagerAdapter extends EditorFragmentStatePagerAdapter<
     }
 
     @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return getItem(position).getTitle();
+    }
+
+    @Nullable
     public EditorDelegate getEditorDelegateAt(int index) {
-        EditorFragment fragment = super.getExistingFragment(index);
+        EditorFragment fragment = (EditorFragment) super.getExistingFragment(index);
         if (fragment != null) {
             return fragment.getEditorDelegate();
         }

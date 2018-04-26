@@ -31,6 +31,7 @@ import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
+import com.jecelyin.editor.v2.ui.editor.EditorPageDescriptor;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -89,6 +90,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
         if (Preferences.getInstance(mActivity).isOpenLastFiles()) {
             ArrayList<DBHelper.RecentFileItem> recentFiles = DBHelper.getInstance(mActivity).getRecentFiles(true);
+            ArrayList<EditorPageDescriptor> descriptors = new ArrayList<>();
             File file;
             for (DBHelper.RecentFileItem item : recentFiles) {
                 file = new File(item.path);
@@ -96,10 +98,10 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                     DBHelper.getInstance(mActivity).updateRecentFile(item.path, false);
                     continue;
                 }
-                mEditorFragmentPagerAdapter.newEditor(false, file, item.offset, item.encoding);
-                setCurrentTab(mEditorFragmentPagerAdapter.getCount() - 1); //fixme: auto load file, otherwise click other tab will crash by search result
+                descriptors.add(new EditorPageDescriptor(file, item.offset, item.encoding));
             }
-            mEditorFragmentPagerAdapter.notifyDataSetChanged();
+
+            mEditorFragmentPagerAdapter.addAll(descriptors);
             updateTabList();
 
             int lastTab = Preferences.getInstance(mActivity).getLastTab();
@@ -110,9 +112,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
             @Override
             public void onChanged() {
                 updateTabList();
-                if (!exitApp && mEditorFragmentPagerAdapter.getCount() == 0) {
-                    // TODO: 25-Apr-18 show layout create new file
-                }
+                updateToolbar();
             }
         });
 
@@ -126,10 +126,10 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     public boolean newTab(File file, int offset, String encoding) {
         int count = mEditorFragmentPagerAdapter.getCount();
         for (int i = 0; i < count; i++) {
-            EditorDelegate delegate = mEditorFragmentPagerAdapter.getEditorDelegateAt(i);
-            if (delegate.getPath() == null)
+            EditorPageDescriptor descriptor = mEditorFragmentPagerAdapter.getItem(i);
+            if (descriptor.getPath() == null)
                 continue;
-            if (delegate.getPath().equals(file.getPath())) {
+            if (descriptor.getPath().equals(file.getPath())) {
                 setCurrentTab(i);
                 return false;
             }
@@ -203,9 +203,11 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     private void updateToolbar() {
         EditorDelegate delegate = mEditorFragmentPagerAdapter.getEditorDelegateAt(getCurrentTab());
-        if (delegate == null)
-            return;
-        mActivity.mToolbar.setTitle(delegate.getToolbarText());
+        if (delegate == null) {
+            mActivity.mToolbar.setTitle("");
+        } else {
+            mActivity.mToolbar.setTitle(delegate.getToolbarText());
+        }
     }
 
     public boolean closeAllTabAndExitApp() {
@@ -223,6 +225,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                     mActivity.finish();
                 } else {
                     mEditorFragmentPagerAdapter.removeAll(this);
+                    mActivity.mEditorPager.setCurrentItem(0);
                 }
             }
         });
