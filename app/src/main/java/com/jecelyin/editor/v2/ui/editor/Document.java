@@ -69,13 +69,11 @@ public class Document implements ReadFileListener, TextWatcher {
     private int srcLength;
     private File file, rootFile;
     private String modeName;
-    private boolean root;
 
     public Document(Context context, EditorDelegate editorDelegate) {
         this.editorDelegate = editorDelegate;
         this.context = context;
         preferences = Preferences.getInstance(context);
-        root = false;
 
         buffer = new Buffer(context);
         colorSpanMap = new HashMap<>();
@@ -114,8 +112,6 @@ public class Document implements ReadFileListener, TextWatcher {
         ss.encoding = encoding;
         ss.modeName = modeName;
         ss.file = file;
-        ss.rootFile = rootFile;
-        ss.root = root;
     }
 
     public void onRestoreInstanceState(EditorDelegate.SavedState ss) {
@@ -131,7 +127,6 @@ public class Document implements ReadFileListener, TextWatcher {
         encoding = ss.encoding;
         file = ss.file;
         rootFile = ss.rootFile;
-        root = ss.root;
     }
 
     public void loadFile(File file) {
@@ -143,13 +138,12 @@ public class Document implements ReadFileListener, TextWatcher {
             UIUtils.alert(context, context.getString(R.string.cannt_access_file, file.getPath()));
             return;
         }
-        root = false;
-        if (!file.canRead() && !root) {
+        if (!file.canRead()) {
             UIUtils.alert(context, context.getString(R.string.cannt_read_file, file.getPath()));
             return;
         }
         this.file = file;
-        FileReader reader = new FileReader(root ? rootFile : file, encodingName);
+        FileReader reader = new FileReader(file, encodingName);
         new ReadFileTask(reader, this).execute();
     }
 
@@ -162,8 +156,9 @@ public class Document implements ReadFileListener, TextWatcher {
     public SpannableStringBuilder onAsyncReaded(FileReader fileReader, boolean ok) {
         Editable text = fileReader.getBuffer();
         Mode mode = ModeProvider.instance.getModeForFile(file == null ? null : file.getPath(), null, text.subSequence(0, Math.min(80, text.length())).toString());
-        if (mode == null)
+        if (mode == null) {
             mode = ModeProvider.instance.getMode(Catalog.DEFAULT_MODE_NAME);
+        }
         modeName = mode.getName();
         buffer.setMode(mode, context);
 
@@ -279,14 +274,6 @@ public class Document implements ReadFileListener, TextWatcher {
         return encoding;
     }
 
-    public File getRootFile() {
-        return rootFile;
-    }
-
-    public boolean isRoot() {
-        return root;
-    }
-
     public void save() {
         save(false, null);
     }
@@ -340,8 +327,9 @@ public class Document implements ReadFileListener, TextWatcher {
         if (!buffer.isCanHighlight())
             return;
         DefaultTokenHandler tokenHandler;
-        if (styles == null)
+        if (styles == null) {
             styles = StyleLoader.loadStyles(context);
+        }
         ArrayList<HighlightInfo> mergerArray;
 
         for (int i = startLine; i <= endLine; i++) {
@@ -384,8 +372,8 @@ public class Document implements ReadFileListener, TextWatcher {
         colorSpanMap.put(line, spans);
     }
 
-    private void collectToken(Buffer buffer, int lineNumber, Token token
-            , ArrayList<HighlightInfo> mergerArray) {
+    private void collectToken(Buffer buffer, int lineNumber, Token token,
+                              ArrayList<HighlightInfo> mergerArray) {
 
         int lineStartOffset = buffer.getLineManager().getLineStartOffset(lineNumber);
 

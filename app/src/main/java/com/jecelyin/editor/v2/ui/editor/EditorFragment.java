@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.duy.ccppcompiler.R;
+import com.duy.common.DLog;
 import com.jecelyin.editor.v2.view.EditorView;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class EditorFragment extends Fragment {
     private static final String KEY_FILE = "KEY_FILE";
     private static final String KEY_OFFSET = "KEY_OFFSET";
     private static final String KEY_ENCODING = "KEY_ENCODING";
+    private static final String TAG = "EditorFragment";
     @Nullable
     private EditorDelegate mEditorDelegate;
 
@@ -73,6 +75,8 @@ public class EditorFragment extends Fragment {
     }
 
     private void onRestoreState(@Nullable Bundle savedInstanceState) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "onRestoreState() called with: savedInstanceState = [" + savedInstanceState + "]");
         if (savedInstanceState == null) {
             return;
         }
@@ -91,6 +95,8 @@ public class EditorFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (DLog.DEBUG)
+            DLog.d(TAG, "onSaveInstanceState() called with: outState = [" + outState + "]");
         if (mEditorDelegate != null) {
             Parcelable value = mEditorDelegate.onSaveInstanceState();
             outState.putParcelable(KEY_SAVE_STATE, value);

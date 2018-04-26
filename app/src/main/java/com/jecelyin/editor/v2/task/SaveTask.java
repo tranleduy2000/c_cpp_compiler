@@ -70,23 +70,19 @@ public class SaveTask {
             editorDelegate.startSaveFileSelectorActivity();
             return;
         }
-        if (document.isRoot()) {
-            saveTo(document.getRootFile(), file, document.getEncoding(), listener);
-        } else {
-            saveTo(file, null, document.getEncoding(), listener);
-        }
+        saveTo(file, document.getEncoding(), listener);
 
     }
 
     public void saveTo(final File file, final String encoding) {
-        saveTo(file, null, encoding, null);
+        saveTo(file, encoding, null);
     }
 
-    private void saveTo(final File rootFile, final File orgiFile, final String encoding, final SaveListener listener) {
+    private void saveTo(final File file, final String encoding, final SaveListener listener) {
         if (editorDelegateWR.get() == null || contextWR.get() == null)
             return;
         writing = true;
-        LocalFileWriterTask fileWriter = new LocalFileWriterTask(rootFile, orgiFile, encoding, Preferences.getInstance(contextWR.get()).isKeepBackupFile());
+        LocalFileWriterTask fileWriter = new LocalFileWriterTask(file, null, encoding, Preferences.getInstance(contextWR.get()).isKeepBackupFile());
         fileWriter.setFileWriteListener(new LocalFileWriterTask.FileWriteListener() {
             @Override
             public void onSuccess() {
@@ -95,7 +91,7 @@ public class SaveTask {
                 if (documentWR.get() == null || contextWR.get() == null || editorDelegateWR.get() == null) {
                     return;
                 }
-                documentWR.get().onSaveSuccess(orgiFile != null ? orgiFile : rootFile, encoding);
+                documentWR.get().onSaveSuccess(file, encoding);
                 if (!isCluster) {
                     UIUtils.toast(contextWR.get(), R.string.save_success);
                 } else {

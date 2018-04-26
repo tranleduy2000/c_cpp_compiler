@@ -78,7 +78,7 @@ public class EditorDelegate implements TextWatcher {
     public EditorDelegate(@Nullable File file, int offset, String encoding) {
         savedState = new SavedState();
         savedState.file = file;
-        savedState.offset = offset;
+        savedState.cursorOffset = offset;
         savedState.encoding = encoding;
         if (savedState.file != null) {
             savedState.title = savedState.file.getName();
@@ -133,8 +133,8 @@ public class EditorDelegate implements TextWatcher {
         mEditText.post(new Runnable() {
             @Override
             public void run() {
-                if (savedState.offset < mEditText.getText().length())
-                    mEditText.setSelection(savedState.offset);
+                if (savedState.cursorOffset < mEditText.getText().length())
+                    mEditText.setSelection(savedState.cursorOffset);
             }
         });
 
@@ -473,7 +473,7 @@ public class EditorDelegate implements TextWatcher {
                 return new SavedState[size];
             }
         };
-        int offset;
+        int cursorOffset;
         int lineNumber;
         @Nullable
         File file;
@@ -482,22 +482,18 @@ public class EditorDelegate implements TextWatcher {
         String modeName;
         BaseEditorView.SavedState editorState;
         byte[] textMd5;
-        boolean root;
-        File rootFile;
         int textLength;
 
         SavedState() {
         }
 
         SavedState(Parcel in) {
-            this.offset = in.readInt();
+            this.cursorOffset = in.readInt();
             this.lineNumber = in.readInt();
             String file, rootFile;
             file = in.readString();
             rootFile = in.readString();
             this.file = TextUtils.isEmpty(file) ? null : new File(file);
-            this.rootFile = TextUtils.isEmpty(rootFile) ? null : new File(rootFile);
-            this.root = in.readInt() == 1;
             this.title = in.readString();
             this.encoding = in.readString();
             this.modeName = in.readString();
@@ -515,11 +511,9 @@ public class EditorDelegate implements TextWatcher {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.offset);
+            dest.writeInt(this.cursorOffset);
             dest.writeInt(this.lineNumber);
             dest.writeString(this.file == null ? null : this.file.getPath());
-            dest.writeString(this.rootFile == null ? null : this.rootFile.getPath());
-            dest.writeInt(root ? 1 : 0);
             dest.writeString(this.title);
             dest.writeString(this.encoding);
             dest.writeString(this.modeName);
@@ -535,7 +529,7 @@ public class EditorDelegate implements TextWatcher {
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            final TypedArray styledAttributes = context.obtainStyledAttributes(
+            final TypedArray arr = context.obtainStyledAttributes(
                     R.styleable.SelectionModeDrawables);
 
             boolean readOnly = Preferences.getInstance(context).isReadOnly();
@@ -566,7 +560,7 @@ public class EditorDelegate implements TextWatcher {
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             }
 
-            styledAttributes.recycle();
+            arr.recycle();
             return true;
         }
 

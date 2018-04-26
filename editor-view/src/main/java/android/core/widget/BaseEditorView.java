@@ -96,7 +96,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ActionMode;
-import android.view.Choreographer;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -129,6 +128,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -7069,7 +7069,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                     + Integer.toHexString(System.identityHashCode(this))
                     + " start=" + selStart + " end=" + selEnd;
             if (text != null) {
-                str += " text=" + text;
+                str += " text=" + Arrays.toString(text);
             }
             return str + "}";
         }
