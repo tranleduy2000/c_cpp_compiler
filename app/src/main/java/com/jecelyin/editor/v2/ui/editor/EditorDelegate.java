@@ -374,7 +374,7 @@ public class EditorDelegate implements TextWatcher {
             mEditText.removeTextChangedListener(mDocument);
             mEditText.removeTextChangedListener(this);
             mEditorView.setRemoved();
-            mDocument = null;
+//            mDocument = null;
         }
     }
 

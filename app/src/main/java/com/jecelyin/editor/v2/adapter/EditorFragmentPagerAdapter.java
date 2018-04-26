@@ -99,8 +99,7 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
         EditorDelegate delegate = getEditorDelegateAt(position);
         if (delegate == null) {
             //not init
-            remove(position);
-            return true;
+            return false;
         }
 
         final String encoding = delegate.getEncoding();

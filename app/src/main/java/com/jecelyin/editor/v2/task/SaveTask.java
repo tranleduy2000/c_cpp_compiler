@@ -19,10 +19,10 @@ package com.jecelyin.editor.v2.task;
 import android.content.Context;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.io.LocalFileWriterTask;
 import com.jecelyin.editor.v2.ui.editor.Document;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
@@ -34,6 +34,7 @@ import java.lang.ref.WeakReference;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class SaveTask {
+    private static final String TAG = "SaveTask";
     private final WeakReference<Context> contextWR;
     private final WeakReference<EditorDelegate> editorDelegateWR;
     private final WeakReference<Document> documentWR;
@@ -51,19 +52,23 @@ public class SaveTask {
     }
 
     public void save(boolean isCluster, SaveListener listener) {
-        if (writing)
+        if (isWriting()) {
             return;
+        }
 
         Document document = documentWR.get();
         EditorDelegate editorDelegate = editorDelegateWR.get();
-        if (document == null || editorDelegate == null)
+        if (document == null || editorDelegate == null) {
             return;
+        }
+
         if (!document.isChanged()) {
             if (listener != null) {
                 listener.onSaved();
             }
             return;
         }
+
         this.isCluster = isCluster;
         File file = document.getFile();
         if (file == null) {
@@ -79,8 +84,12 @@ public class SaveTask {
     }
 
     private void saveTo(final File file, final String encoding, final SaveListener listener) {
-        if (editorDelegateWR.get() == null || contextWR.get() == null)
+        if (editorDelegateWR.get() == null || contextWR.get() == null) {
             return;
+        }
+        if (DLog.DEBUG)
+            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], listener = [" + listener + "]");
+
         writing = true;
         LocalFileWriterTask fileWriter = new LocalFileWriterTask(file, null, encoding, Preferences.getInstance(contextWR.get()).isKeepBackupFile());
         fileWriter.setFileWriteListener(new LocalFileWriterTask.FileWriteListener() {

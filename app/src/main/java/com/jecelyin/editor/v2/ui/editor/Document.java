@@ -25,12 +25,12 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ide.filemanager.ReadFileListener;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.duy.ide.filemanager.ReadFileListener;
-import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.highlight.HighlightInfo;
 import com.jecelyin.editor.v2.io.FileReader;
@@ -55,11 +55,11 @@ import java.util.HashMap;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class Document implements ReadFileListener, TextWatcher {
+    private static final String TAG = "Document";
     public static SyntaxStyle[] styles;
-
     private final EditorDelegate editorDelegate;
     private final Context context;
-    private final SaveTask saveTask;
+    private final SaveTask mSaveTask;
     private final Preferences preferences;
     private final Buffer buffer;
     private final HashMap<Integer, ArrayList<ForegroundColorSpan>> colorSpanMap;
@@ -77,7 +77,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
         buffer = new Buffer(context);
         colorSpanMap = new HashMap<>();
-        this.saveTask = new SaveTask(context, editorDelegate, this);
+        this.mSaveTask = new SaveTask(context, editorDelegate, this);
         editorDelegate.mEditText.addTextChangedListener(this);
     }
 
@@ -277,7 +277,10 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
     public void save(boolean isCluster, SaveListener listener) {
-        if (saveTask.isWriting()) {
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "save() called with: isCluster = [" + isCluster + "], listener = [" + listener + "]");
+        }
+        if (mSaveTask.isWriting()) {
             UIUtils.toast(context, R.string.writing);
             return;
         }
@@ -286,7 +289,7 @@ public class Document implements ReadFileListener, TextWatcher {
             UIUtils.toast(context, R.string.save_all_without_new_document_message);
             return;
         }
-        saveTask.save(isCluster, listener);
+        mSaveTask.save(isCluster, listener);
     }
 
     public void saveAs() {
@@ -294,7 +297,9 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
     void saveTo(File file, String encoding) {
-        saveTask.saveTo(file, encoding);
+        if (DLog.DEBUG)
+            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "]");
+        mSaveTask.saveTo(file, encoding);
     }
 
     public void onSaveSuccess(File file, String encoding) {
