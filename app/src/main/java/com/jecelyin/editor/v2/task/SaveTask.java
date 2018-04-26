@@ -22,7 +22,6 @@ import com.duy.ccppcompiler.R;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.io.LocalFileWriterTask;
 import com.jecelyin.editor.v2.ui.editor.Document;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
@@ -91,7 +90,7 @@ public class SaveTask {
             DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], listener = [" + listener + "]");
 
         writing = true;
-        LocalFileWriterTask fileWriter = new LocalFileWriterTask(file, null, encoding, Preferences.getInstance(contextWR.get()).isKeepBackupFile());
+        LocalFileWriterTask fileWriter = new LocalFileWriterTask(file, encoding);
         fileWriter.setFileWriteListener(new LocalFileWriterTask.FileWriteListener() {
             @Override
             public void onSuccess() {
