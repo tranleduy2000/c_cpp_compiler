@@ -26,6 +26,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.core.content.ParcelableParcel;
 import android.core.content.UndoManager;
 import android.core.text.BoringLayout;
 import android.core.text.DynamicLayout;
@@ -2291,24 +2292,30 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         }
 
         if (save) {
-            SavedState ss = new SavedState(superState);
+            SavedState savedState = new SavedState(superState);
             // XXX Should also save the current scroll position!
-            ss.selStart = start;
-            ss.selEnd = end;
+            savedState.selStart = start;
+            savedState.selEnd = end;
 
             if (mText instanceof SpannableStringBuilder) {
                 SpannableStringBuilder ssb = (SpannableStringBuilder) mText;
-                ss.text = ssb.toCharArray();
-                ss.textLength = ssb.length();
+                savedState.text = ssb.toCharArray();
+                savedState.textLength = ssb.length();
             }
 
             if (isFocused() && start >= 0 && end >= 0) {
-                ss.frozenWithFocus = true;
+                savedState.frozenWithFocus = true;
             }
 
-            ss.error = getError();
+            savedState.error = getError();
 
-            return ss;
+            UndoManager undoManager = getUndoManager();
+            if (undoManager != null) {
+                Parcelable parcelable = undoManager.saveInstanceState();
+                savedState.undoState = parcelable;
+            }
+
+            return savedState;
         }
 
         return superState;
@@ -2372,6 +2379,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                     setError(error);
                 }
             });
+        }
+
+        if (getUndoManager() != null && savedState.undoState != null) {
+            getUndoManager().restoreInstanceState(savedState.undoState);
         }
     }
 
@@ -7012,11 +7023,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         private static final String TAG = "SavedState";
         int selStart;
         int selEnd;
-//        CharSequence text;
-                char[] text;
+        //        CharSequence text;
+        char[] text;
         int textLength;
         boolean frozenWithFocus;
         CharSequence error;
+        Parcelable undoState;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -7036,6 +7048,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             if (in.readInt() != 0) {
                 error = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
             }
+            undoState = in.readParcelable(ParcelableParcel.class.getClassLoader());
         }
 
         @Override
@@ -7056,6 +7069,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 out.writeInt(1);
                 TextUtils.writeToParcel(error, out, flags);
             }
+            out.writeParcelable(undoState, flags);
         }
 
         @Override

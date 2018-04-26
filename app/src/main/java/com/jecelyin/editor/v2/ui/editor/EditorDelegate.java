@@ -36,11 +36,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
-import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.ui.dialog.FinderDialog;
@@ -374,7 +374,7 @@ public class EditorDelegate implements TextWatcher {
             mEditText.removeTextChangedListener(mDocument);
             mEditText.removeTextChangedListener(this);
             mEditorView.setRemoved();
-//            mDocument = null;
+            mDocument = null;
         }
     }
 

@@ -102,7 +102,7 @@ public class SettingsFragment extends PreferenceFragment implements android.pref
             } else if (preference instanceof EditTextPreference) {
                 ((EditTextPreference) preference).setText(String.valueOf(value));
             } else if (preference instanceof CheckBoxPreference) {
-                ((CheckBoxPreference) preference).setChecked((boolean) value);
+                ((CheckBoxPreference) preference).setChecked(Boolean.valueOf(String.valueOf(value)));
             }
 
             if (!Preferences.KEY_SYMBOL.equals(key))
@@ -134,10 +134,6 @@ public class SettingsFragment extends PreferenceFragment implements android.pref
         addPreferencesFromResource(R.xml.editor_preference);
 
         dependBindPreference(getPreferenceScreen());
-
-        findPreference("pref_about").setOnPreferenceClickListener(this);
-        findPreference("pref_translate").setOnPreferenceClickListener(this);
-        findPreference("pref_feedback").setOnPreferenceClickListener(this);
     }
 
     @Override

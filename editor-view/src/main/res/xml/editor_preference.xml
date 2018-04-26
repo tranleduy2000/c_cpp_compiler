@@ -12,27 +12,27 @@
             android:title="@string/cursor_width" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
+
             android:key="pref_touch_to_adjust_text_size"
             android:title="@string/touch_to_adjust_text_size" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+
             android:key="pref_word_wrap"
             android:title="@string/word_wrap_in_editor" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+
             android:key="pref_show_linenumber"
             android:title="@string/show_linenumber" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+
             android:key="pref_show_whitespace"
             android:title="@string/show_whitespace" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+
             android:key="pref_auto_indent"
             android:title="@string/auto_indent" />
 
@@ -49,7 +49,7 @@
             android:title="@string/tab_size" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
+
             android:key="pref_auto_capitalize"
             android:title="@string/auto_capitalize" />
 
@@ -65,7 +65,7 @@
 
     <PreferenceCategory android:title="@string/highlight_and_theme">
         <CheckBoxPreference
-            android:defaultValue="true"
+
             android:key="pref_enable_highlight"
             android:title="@string/enable_highlight" />
 
@@ -81,7 +81,7 @@
     <PreferenceCategory android:title="@string/other">
 
         <CheckBoxPreference
-            android:defaultValue="true"
+
             android:key="pref_auto_save"
             android:title="@string/auto_save" />
 
