@@ -35,7 +35,6 @@ public class TermService extends Service implements TermSession.FinishCallback {
 
     private static final int RUNNING_NOTIFICATION = 1;
     private final IBinder mTSBinder = new TSBinder();
-    private ServiceForegroundCompat compat;
     private SessionList mTermSessions;
 
     @Override
@@ -62,14 +61,7 @@ public class TermService extends Service implements TermSession.FinishCallback {
         String homePath = prefs.getString("home_path", defValue);
         editor.putString("home_path", homePath);
         editor.apply();
-
-        compat = new ServiceForegroundCompat(this);
         mTermSessions = new SessionList();
-
-        /* Put the service in the foreground. */
-        Notification notification = createNotification();
-        compat.startForeground(RUNNING_NOTIFICATION, notification);
-
         Log.d(TermDebug.LOG_TAG, "TermService started");
     }
 
@@ -89,7 +81,6 @@ public class TermService extends Service implements TermSession.FinishCallback {
 
     @Override
     public void onDestroy() {
-        compat.stopForeground(true);
         for (TermSession session : mTermSessions) {
             /* Don't automatically remove from list of sessions -- we clear the
              * list below anyway and we could trigger

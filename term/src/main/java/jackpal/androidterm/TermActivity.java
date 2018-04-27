@@ -154,6 +154,8 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             mTermService = null;
         }
     };
+
+
     private Handler mHandler = new Handler();
 
     protected static TermSession createTermSession(Context context, TermSettings settings, String initialCommand) throws IOException {
@@ -180,8 +182,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         mSettings = new TermSettings(getResources(), mPrefs);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-        TSIntent = new Intent(this, TermService.class);
-        startService(TSIntent);
+        startService();
 
         setContentView(R.layout.term_activity);
         mViewFlipper = findViewById(R.id.view_flipper);
@@ -190,6 +191,11 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
 
         updatePrefs();
         mAlreadyStarted = true;
+    }
+
+    private void startService() {
+        TSIntent = new Intent(this, TermService.class);
+        startService(TSIntent);
     }
 
     @Override
