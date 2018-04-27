@@ -77,10 +77,7 @@ import jackpal.androidterm.setting.TermSettings;
 public class TermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
-    /**
-     * The name of the ViewFlipper in the resources.
-     */
-    private static final int VIEW_FLIPPER = R.id.view_flipper;
+
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
     private final static int PASTE_ID = 2;
@@ -213,7 +210,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         startService(TSIntent);
 
         setContentView(R.layout.term_activity);
-        mViewFlipper = findViewById(VIEW_FLIPPER);
+        mViewFlipper = findViewById(R.id.view_flipper);
 
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
         if (actionBar != null) {
