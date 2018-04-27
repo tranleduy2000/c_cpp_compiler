@@ -29,7 +29,6 @@ import jackpal.androidterm.util.SessionList;
 
 public class TermService extends Service implements TermSession.FinishCallback {
 
-    private static final int RUNNING_NOTIFICATION = 1;
     private final IBinder mTSBinder = new TSBinder();
     private SessionList mTermSessions;
 
