@@ -22,18 +22,12 @@ import android.app.Activity;
  * Compatibility class for android.app.Activity
  */
 public class ActivityCompat {
-    public static void invalidateOptionsMenu(Activity activity) {
-        Api11OrLater.invalidateOptionsMenu(activity);
-    }
 
     public static ActionBarCompat getActionBar(Activity activity) {
         return ActionBarCompat.wrap(Api11OrLater.getActionBar(activity));
     }
 
     private static class Api11OrLater {
-        public static void invalidateOptionsMenu(Activity activity) {
-            activity.invalidateOptionsMenu();
-        }
 
         public static Object getActionBar(Activity activity) {
             return activity.getActionBar();

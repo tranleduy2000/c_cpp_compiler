@@ -26,20 +26,20 @@ import jackpal.androidterm.R;
  * Terminal emulator settings
  */
 public class TermSettings {
-    public static final int WHITE = 0xffffffff;
-    public static final int BLACK = 0xff000000;
-    public static final int BLUE = 0xff344ebd;
-    public static final int GREEN = 0xff00ff00;
-    public static final int AMBER = 0xffffb651;
-    public static final int RED = 0xffff0113;
-    public static final int HOLO_BLUE = 0xff33b5e5;
-    public static final int SOLARIZED_FG = 0xff657b83;
-    public static final int SOLARIZED_BG = 0xfffdf6e3;
-    public static final int SOLARIZED_DARK_FG = 0xff839496;
-    public static final int SOLARIZED_DARK_BG = 0xff002b36;
-    public static final int LINUX_CONSOLE_WHITE = 0xffaaaaaa;
+    private static final int WHITE = 0xffffffff;
+    private static final int BLACK = 0xff000000;
+    private static final int BLUE = 0xff344ebd;
+    private static final int GREEN = 0xff00ff00;
+    private static final int AMBER = 0xffffb651;
+    private static final int RED = 0xffff0113;
+    private static final int HOLO_BLUE = 0xff33b5e5;
+    private static final int SOLARIZED_FG = 0xff657b83;
+    private static final int SOLARIZED_BG = 0xfffdf6e3;
+    private static final int SOLARIZED_DARK_FG = 0xff839496;
+    private static final int SOLARIZED_DARK_BG = 0xff002b36;
+    private static final int LINUX_CONSOLE_WHITE = 0xffaaaaaa;
     // foreground color, background color
-    public static final int[][] COLOR_SCHEMES = {
+    private static final int[][] COLOR_SCHEMES = {
             {BLACK, WHITE},
             {WHITE, BLACK},
             {WHITE, BLUE},
@@ -58,9 +58,9 @@ public class TermSettings {
     /**
      * An integer not in the range of real key codes.
      */
-    public static final int KEYCODE_NONE = -1;
+    private static final int KEYCODE_NONE = -1;
     public static final int CONTROL_KEY_ID_NONE = 7;
-    public static final int[] CONTROL_KEY_SCHEMES = {
+    private static final int[] CONTROL_KEY_SCHEMES = {
             KeyEvent.KEYCODE_DPAD_CENTER,
             KeyEvent.KEYCODE_AT,
             KeyEvent.KEYCODE_ALT_LEFT,
@@ -71,7 +71,7 @@ public class TermSettings {
             KEYCODE_NONE
     };
     public static final int FN_KEY_ID_NONE = 7;
-    public static final int[] FN_KEY_SCHEMES = {
+    private static final int[] FN_KEY_SCHEMES = {
             KeyEvent.KEYCODE_DPAD_CENTER,
             KeyEvent.KEYCODE_AT,
             KeyEvent.KEYCODE_ALT_LEFT,
@@ -84,8 +84,8 @@ public class TermSettings {
     public static final int BACK_KEY_STOPS_SERVICE = 0;
     public static final int BACK_KEY_CLOSES_WINDOW = 1;
     public static final int BACK_KEY_CLOSES_ACTIVITY = 2;
-    public static final int BACK_KEY_SENDS_ESC = 3;
-    public static final int BACK_KEY_SENDS_TAB = 4;
+    private static final int BACK_KEY_SENDS_ESC = 3;
+    private static final int BACK_KEY_SENDS_TAB = 4;
     private static final String STATUSBAR_KEY = "statusbar";
     private static final String ORIENTATION_KEY = "orientation";
     private static final String FONTSIZE_KEY = "fontsize";
