@@ -21,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import jackpal.androidterm.R;
-import jackpal.androidterm.compat.ActionBarCompat;
 
 public class TermSettingActivity extends AppCompatActivity {
 
@@ -38,7 +37,7 @@ public class TermSettingActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case ActionBarCompat.ID_HOME:
+            case android.R.id.home:
                 // Action bar home button selected
                 finish();
                 return true;

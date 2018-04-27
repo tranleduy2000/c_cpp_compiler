@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import jackpal.androidterm.compat.ActionBarCompat;
 import jackpal.androidterm.util.SessionList;
 
 public class WindowList extends ListActivity {
@@ -111,7 +110,7 @@ public class WindowList extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case ActionBarCompat.ID_HOME:
+            case android.R.id.home:
                 // Action bar home button selected
                 finish();
                 return true;
