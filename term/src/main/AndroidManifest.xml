@@ -27,16 +27,6 @@
             </intent-filter>
         </activity>
 
-
-        <activity
-            android:name=".RemoteInterface"
-            android:excludeFromRecents="true">
-            <intent-filter>
-                <action android:name="jackpal.androidterm.OPEN_NEW_WINDOW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".setting.TermSettingActivity"
             android:label="@string/preferences" />
