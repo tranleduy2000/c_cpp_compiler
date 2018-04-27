@@ -30,12 +30,9 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -62,7 +59,6 @@ import java.util.List;
 
 import jackpal.androidterm.compat.ActionBarCompat;
 import jackpal.androidterm.compat.ActivityCompat;
-import jackpal.androidterm.compat.AndroidCompat;
 import jackpal.androidterm.compat.MenuItemCompat;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -102,12 +98,8 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private Intent TSIntent;
     private int onResumeSelectWindow = -1;
     private ComponentName mPrivateAlias;
-    private PowerManager.WakeLock mWakeLock;
-    private WifiManager.WifiLock mWifiLock;
-    private boolean mBackKeyPressed;
     private TermService mTermService;
     private ActionBarCompat mActionBar;
-    private int mActionBarMode = TermSettings.ACTION_BAR_MODE_NONE;
     private WindowListAdapter mWinListAdapter;
     private boolean mHaveFullHwKeyboard = false;
     /**
@@ -160,7 +152,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
          * Make sure the back button always leaves the application.
          */
         private boolean backkeyInterceptor(int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES && mActionBar != null && mActionBar.isShowing()) {
+            if (keyCode == KeyEvent.KEYCODE_BACK && false && mActionBar != null && mActionBar.isShowing()) {
                 /* We need to intercept the key event before the view sees it,
                    otherwise the view will handle it before we get it */
                 onKeyUp(keyCode, event);
@@ -178,7 +170,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
                     mViewFlipper.addView(createEmulatorView(mTermSessions.get(position)));
                 }
                 mViewFlipper.setDisplayedChild(position);
-                if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
+                if (false) {
                     mActionBar.hide();
                 }
             }
@@ -231,35 +223,14 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         TSIntent = new Intent(this, TermService.class);
         startService(TSIntent);
 
-        mActionBarMode = mSettings.actionBarMode();
-        if (AndroidCompat.V11ToV20) {
-            switch (mActionBarMode) {
-                case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
-                    setTheme(R.style.Theme_Holo);
-                    break;
-                case TermSettings.ACTION_BAR_MODE_HIDES:
-                    setTheme(R.style.Theme_Holo_ActionBarOverlay);
-                    break;
-            }
-        }
-
         setContentView(R.layout.term_activity);
         mViewFlipper = findViewById(VIEW_FLIPPER);
-
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TermDebug.LOG_TAG);
-        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        int wifiLockMode = WIFI_MODE_FULL_HIGH_PERF;
-        mWifiLock = wm.createWifiLock(wifiLockMode, TermDebug.LOG_TAG);
 
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
         if (actionBar != null) {
             mActionBar = actionBar;
             actionBar.setNavigationMode(ActionBarCompat.NAVIGATION_MODE_LIST);
             actionBar.setDisplayOptions(0, ActionBarCompat.DISPLAY_SHOW_TITLE);
-            if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
-                actionBar.hide();
-            }
         }
 
         mHaveFullHwKeyboard = checkHaveFullHwKeyboard(getResources().getConfiguration());
@@ -340,12 +311,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         }
         mTermService = null;
         mTSConnection = null;
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
-        }
-        if (mWifiLock.isHeld()) {
-            mWifiLock.release();
-        }
     }
 
     private void restart() {
@@ -409,18 +374,13 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             WindowManager.LayoutParams params = win.getAttributes();
             final int FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
             int desiredFlag = mSettings.showStatusBar() ? 0 : FULLSCREEN;
-            if (desiredFlag != (params.flags & FULLSCREEN) || mActionBarMode != mSettings.actionBarMode()) {
+            if (desiredFlag != (params.flags & FULLSCREEN)) {
                 if (mAlreadyStarted) {
                     // Can't switch to/from fullscreen after
                     // starting the activity.
                     restart();
                 } else {
                     win.setFlags(desiredFlag, FULLSCREEN);
-                    if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
-                        if (mActionBar != null) {
-                            mActionBar.hide();
-                        }
-                    }
                 }
             }
         }
@@ -526,10 +486,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             doDocumentKeys();
         } else if (id == R.id.menu_toggle_soft_keyboard) {
             doToggleSoftKeyboard();
-        }
-        // Hide the action bar if appropriate
-        if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
-            mActionBar.hide();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -644,22 +600,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         }
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem wakeLockItem = menu.findItem(R.id.menu_toggle_wakelock);
-        MenuItem wifiLockItem = menu.findItem(R.id.menu_toggle_wifilock);
-        if (mWakeLock.isHeld()) {
-            wakeLockItem.setTitle(R.string.disable_wakelock);
-        } else {
-            wakeLockItem.setTitle(R.string.enable_wakelock);
-        }
-        if (mWifiLock.isHeld()) {
-            wifiLockItem.setTitle(R.string.disable_wifilock);
-        } else {
-            wifiLockItem.setTitle(R.string.enable_wifilock);
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -703,7 +643,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES && mActionBar != null && mActionBar.isShowing()) {
+                if (false && mActionBar != null && mActionBar.isShowing()) {
                     mActionBar.hide();
                     return true;
                 }
@@ -774,7 +714,10 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private void doCopyAll() {
         ClipboardManagerCompat clip = ClipboardManagerCompatFactory
                 .getManager(getApplicationContext());
-        clip.setText(getCurrentTermSession().getTranscriptText().trim());
+        TermSession currentTermSession = getCurrentTermSession();
+        if (currentTermSession != null) {
+            clip.setText(currentTermSession.getTranscriptText().trim());
+        }
     }
 
     private void doPaste() {
@@ -784,7 +727,10 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         ClipboardManagerCompat clip = ClipboardManagerCompatFactory
                 .getManager(getApplicationContext());
         CharSequence paste = clip.getText();
-        getCurrentTermSession().write(paste.toString());
+        TermSession currentTermSession = getCurrentTermSession();
+        if (currentTermSession != null) {
+            currentTermSession.write(paste.toString());
+        }
     }
 
     private void doSendControlKey() {
@@ -826,10 +772,10 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     }
 
     private void doToggleSoftKeyboard() {
-        InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
     }
 
     private void doToggleActionBar() {
@@ -845,25 +791,9 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     }
 
     private void doUIToggle(int x, int y, int width, int height) {
-        switch (mActionBarMode) {
-            case TermSettings.ACTION_BAR_MODE_NONE:
-                if (Build.VERSION.SDK_INT >= 11 && (mHaveFullHwKeyboard || y < height / 2)) {
-                    openOptionsMenu();
-                    return;
-                } else {
-                    doToggleSoftKeyboard();
-                }
-                break;
+        switch (TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE) {
             case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
                 if (!mHaveFullHwKeyboard) {
-                    doToggleSoftKeyboard();
-                }
-                break;
-            case TermSettings.ACTION_BAR_MODE_HIDES:
-                if (mHaveFullHwKeyboard || y < height / 2) {
-                    doToggleActionBar();
-                    return;
-                } else {
                     doToggleSoftKeyboard();
                 }
                 break;
@@ -899,11 +829,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             TextView label = new TextView(TermActivity.this);
             String title = getSessionTitle(position, getString(R.string.window_title, position + 1));
             label.setText(title);
-            if (Build.VERSION.SDK_INT >= 13) {
-                label.setTextAppearance(TermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
-            } else {
-                label.setTextAppearance(TermActivity.this, android.R.style.TextAppearance_Medium);
-            }
+            label.setTextAppearance(TermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
             return label;
         }
 
@@ -921,7 +847,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private class EmulatorViewGestureListener extends SimpleOnGestureListener {
         private EmulatorView view;
 
-        public EmulatorViewGestureListener(EmulatorView view) {
+        EmulatorViewGestureListener(EmulatorView view) {
             this.view = view;
         }
 

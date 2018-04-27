@@ -17,9 +17,7 @@
 package jackpal.androidterm;
 
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.view.MenuItem;
 
 import jackpal.androidterm.compat.ActionBarCompat;
@@ -27,25 +25,15 @@ import jackpal.androidterm.compat.ActivityCompat;
 import jackpal.androidterm.compat.AndroidCompat;
 
 public class TermPreferences extends PreferenceActivity {
-    private static final String ACTIONBAR_KEY = "actionbar";
-    private static final String CATEGORY_SCREEN_KEY = "screen";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.term_preferences);
 
         // Remove the action bar pref on older platforms without an action bar
-        if (Build.VERSION.SDK_INT < 11) {
-            Preference actionBarPref = findPreference(ACTIONBAR_KEY);
-            PreferenceCategory screenCategory =
-                    (PreferenceCategory) findPreference(CATEGORY_SCREEN_KEY);
-            if ((actionBarPref != null) && (screenCategory != null)) {
-                screenCategory.removePreference(actionBarPref);
-            }
-        }
 
         // Display up indicator on action bar home button
         if (AndroidCompat.V11ToV20) {

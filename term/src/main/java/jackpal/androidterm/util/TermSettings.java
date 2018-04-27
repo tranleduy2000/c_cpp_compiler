@@ -89,7 +89,6 @@ public class TermSettings {
     public static final int BACK_KEY_SENDS_ESC = 3;
     public static final int BACK_KEY_SENDS_TAB = 4;
     private static final String STATUSBAR_KEY = "statusbar";
-    private static final String ACTIONBAR_KEY = "actionbar";
     private static final String ORIENTATION_KEY = "orientation";
     private static final String FONTSIZE_KEY = "fontsize";
     private static final String COLOR_KEY = "color";
@@ -113,7 +112,6 @@ public class TermSettings {
     private static final int BACK_KEY_MAX = 4;
     private SharedPreferences mPrefs;
     private int mStatusBar;
-    private int mActionBarMode;
     private int mOrientation;
     private int mCursorStyle;
     private int mCursorBlink;
@@ -146,7 +144,6 @@ public class TermSettings {
 
     private void readDefaultPrefs(Resources res) {
         mStatusBar = Integer.parseInt(res.getString(R.string.pref_statusbar_default));
-        mActionBarMode = res.getInteger(R.integer.pref_actionbar_default);
         mOrientation = res.getInteger(R.integer.pref_orientation_default);
         mCursorStyle = Integer.parseInt(res.getString(R.string.pref_cursorstyle_default));
         mCursorBlink = Integer.parseInt(res.getString(R.string.pref_cursorblink_default));
@@ -174,7 +171,6 @@ public class TermSettings {
     public void readPrefs(SharedPreferences prefs) {
         mPrefs = prefs;
         mStatusBar = readIntPref(STATUSBAR_KEY, mStatusBar, 1);
-        mActionBarMode = readIntPref(ACTIONBAR_KEY, mActionBarMode, ACTION_BAR_MODE_MAX);
         mOrientation = readIntPref(ORIENTATION_KEY, mOrientation, 2);
         // mCursorStyle = readIntPref(CURSORSTYLE_KEY, mCursorStyle, 2);
         // mCursorBlink = readIntPref(CURSORBLINK_KEY, mCursorBlink, 1);
@@ -224,10 +220,6 @@ public class TermSettings {
 
     public boolean showStatusBar() {
         return (mStatusBar != 0);
-    }
-
-    public int actionBarMode() {
-        return mActionBarMode;
     }
 
     public int getScreenOrientation() {
