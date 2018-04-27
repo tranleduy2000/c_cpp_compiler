@@ -3,7 +3,7 @@ package jackpal.androidterm;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.setting.TermSettings;
 
 class BoundSession extends GenericTermSession {
     private final String issuerTitle;

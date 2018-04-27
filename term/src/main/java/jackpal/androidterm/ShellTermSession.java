@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import jackpal.androidterm.compat.FileCompat;
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.setting.TermSettings;
 
 /**
  * A terminal session, controlling the process attached to the session (usually

@@ -18,31 +18,6 @@
 
 <resources>
 
-    <!-- This style is used for all activities except the main terminal
-       window. (Example: preferences.)
-   -->
-    <style name="Theme" parent="Theme.AppCompat">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
-    <!-- This style is used for the main terminal window when the action bar
-         is visible. It is set programmatically at run time.
-     -->
-    <style name="Theme.Holo" parent="Theme.AppCompat">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
-    <!-- This style is used for the main terminal window when the action bar
-         is hidden. It is set programmatically at run time.
-     -->
-    <style name="Theme.Holo.ActionBarOverlay" parent="@style/Theme.Holo">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:actionBarStyle">@style/Widget.ActionBarOverlay</item>
-    </style>
-
-    <style name="Widget.ActionBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:background">#a0000000</item>
-    </style>
+    <style name="Theme" parent="Theme.AppCompat" />
 </resources>
 

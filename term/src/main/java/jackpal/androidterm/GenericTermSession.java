@@ -28,7 +28,7 @@ import java.lang.reflect.Field;
 import jackpal.androidterm.emulatorview.ColorScheme;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.setting.TermSettings;
 
 /**
  * A terminal session, consisting of a TerminalEmulator, a TranscriptScreen,

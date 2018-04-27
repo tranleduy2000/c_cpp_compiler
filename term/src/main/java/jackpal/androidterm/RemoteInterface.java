@@ -33,7 +33,7 @@ import java.util.UUID;
 
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.util.SessionList;
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.setting.TermSettings;
 
 public class RemoteInterface extends Activity {
     protected static final String PRIVACT_OPEN_NEW_WINDOW = "jackpal.androidterm.private.OPEN_NEW_WINDOW";

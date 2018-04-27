@@ -66,8 +66,9 @@ import jackpal.androidterm.emulatorview.UpdateCallback;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
 import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
+import jackpal.androidterm.setting.TermSettingActivity;
 import jackpal.androidterm.util.SessionList;
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.setting.TermSettings;
 
 /**
  * A terminal emulator activity.
@@ -685,7 +686,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     }
 
     private void doPreferences() {
-        startActivity(new Intent(this, TermPreferences.class));
+        startActivity(new Intent(this, TermSettingActivity.class));
     }
 
     private void doResetTerminal() {

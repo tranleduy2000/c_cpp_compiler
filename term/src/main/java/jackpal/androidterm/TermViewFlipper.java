@@ -19,7 +19,6 @@ package jackpal.androidterm;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -33,7 +32,7 @@ import java.util.LinkedList;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.setting.TermSettings;
 
 public class TermViewFlipper extends ViewFlipper implements Iterable<View> {
     private static final int SCREEN_CHECK_PERIOD = 1000;
