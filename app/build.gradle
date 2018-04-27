@@ -46,4 +46,7 @@ dependencies {
     api project(':terminal-view')
     api project(':terminal-emulator')
     api project(':editor-view')
+
+    api project(':emulatorview')
+    api project(':libtermexec')
 }

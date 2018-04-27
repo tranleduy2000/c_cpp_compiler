@@ -103,7 +103,7 @@ public class TermService extends Service implements TermSession.FinishCallback {
         builder.setTicker(getText(R.string.service_notify_text));
         builder.setOngoing(true);
 
-        Intent notifyIntent = new Intent(this, Term.class);
+        Intent notifyIntent = new Intent(this, TermActivity.class);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
 

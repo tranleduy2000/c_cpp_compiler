@@ -12,13 +12,7 @@ android {
         ndk {
             moduleName "libjackpal-androidterm5"
             abiFilters 'armeabi-v7a', 'x86'
-            ldLibs "log"
         }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     buildTypes {
@@ -35,6 +29,10 @@ android {
 }
 
 dependencies {
-    compile project(':emulatorview')
-    compile project(':libtermexec')
+    api project(':emulatorview')
+    api project(':libtermexec')
+
+//    implementation "com.android.support:appcompat-v7:$androidSupportVersion"
+//    implementation "com.android.support:support-v4:$androidSupportVersion"
+//    implementation "com.android.support:design:$androidSupportVersion"
 }

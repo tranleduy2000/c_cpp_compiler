@@ -7,7 +7,7 @@ package jackpal.androidterm.compat;
  * are unavailable on older platforms in subclasses which are only ever
  * accessed on platforms where they are available, we can preserve
  * compatibility with older platforms without resorting to reflection.
- *
+ * <p>
  * See http://developer.android.com/resources/articles/backward-compatibility.html
  * and http://android-developers.blogspot.com/2010/07/how-to-have-your-cupcake-and-eat-it-too.html
  * for further discussion of this technique.

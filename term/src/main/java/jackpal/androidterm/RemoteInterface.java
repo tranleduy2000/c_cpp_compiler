@@ -16,10 +16,6 @@
 
 package jackpal.androidterm;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -31,8 +27,11 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import jackpal.androidterm.emulatorview.TermSession;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
+import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.util.SessionList;
 import jackpal.androidterm.util.TermSettings;
 
@@ -160,7 +159,7 @@ public class RemoteInterface extends Activity {
         }
 
         try {
-            TermSession session = Term.createTermSession(this, mSettings, initialCommand);
+            TermSession session = TermActivity.createTermSession(this, mSettings, initialCommand);
 
             session.setFinishCallback(service);
             service.getSessions().add(session);
