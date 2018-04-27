@@ -34,6 +34,7 @@ import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -42,12 +43,10 @@ import java.util.UUID;
 import jackpal.androidterm.compat.ServiceForegroundCompat;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.libtermexec.v1.ITerminal;
-import jackpal.androidterm.util.SessionList;
 import jackpal.androidterm.setting.TermSettings;
+import jackpal.androidterm.util.SessionList;
 
 public class TermService extends Service implements TermSession.FinishCallback {
-    /* Parallels the value of START_STICKY on API Level >= 5 */
-    private static final int COMPAT_START_STICKY = 1;
 
     private static final int RUNNING_NOTIFICATION = 1;
     private final IBinder mTSBinder = new TSBinder();
@@ -60,7 +59,7 @@ public class TermService extends Service implements TermSession.FinishCallback {
 
     /* This should be @Override if building with API Level >=5 */
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return COMPAT_START_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -84,7 +83,7 @@ public class TermService extends Service implements TermSession.FinishCallback {
         String defValue = getDir("HOME", MODE_PRIVATE).getAbsolutePath();
         String homePath = prefs.getString("home_path", defValue);
         editor.putString("home_path", homePath);
-        editor.commit();
+        editor.apply();
 
         compat = new ServiceForegroundCompat(this);
         mTermSessions = new SessionList();
@@ -94,11 +93,10 @@ public class TermService extends Service implements TermSession.FinishCallback {
         compat.startForeground(RUNNING_NOTIFICATION, notification);
 
         Log.d(TermDebug.LOG_TAG, "TermService started");
-        return;
     }
 
     private Notification createNotification() {
-        Notification.Builder builder = new Notification.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(R.drawable.ic_stat_service_notification_icon);
         builder.setTicker(getText(R.string.service_notify_text));
         builder.setOngoing(true);
@@ -108,7 +106,6 @@ public class TermService extends Service implements TermSession.FinishCallback {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
 
         builder.setContentIntent(pendingIntent);
-//        notification.setLatestEventInfo(this, getText(R.string.application_terminal), getText(R.string.service_notify_text), pendingIntent);
         return builder.build();
     }
 
@@ -123,7 +120,6 @@ public class TermService extends Service implements TermSession.FinishCallback {
             session.finish();
         }
         mTermSessions.clear();
-        return;
     }
 
     public SessionList getSessions() {
@@ -216,7 +212,7 @@ public class TermService extends Service implements TermSession.FinishCallback {
         private final PendingIntent result;
         private final ResultReceiver callback;
 
-        public RBinderCleanupCallback(PendingIntent result, ResultReceiver callback) {
+        RBinderCleanupCallback(PendingIntent result, ResultReceiver callback) {
             this.result = result;
             this.callback = callback;
         }
