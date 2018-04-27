@@ -30,7 +30,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.console.services.TermuxService;
@@ -82,13 +81,13 @@ public class ConsoleActivity extends AppCompatActivity implements ServiceConnect
     }
 
     private void startService() {
-        Intent serviceIntent = new Intent(this, TermuxService.class);
+        Intent intent = new Intent(this, TermuxService.class);
         // Start the service and make it run regardless of who is bound to it:
-        serviceIntent.setAction(TermuxService.ACTION_EXECUTE);
+        intent.setAction(TermuxService.ACTION_EXECUTE);
         String uriStr = "file:///" + cmd;
-        serviceIntent.setData(Uri.parse(uriStr));
-        startService(serviceIntent);
-        if (!bindService(serviceIntent, this, 0)) {
+        intent.setData(Uri.parse(uriStr));
+        startService(intent);
+        if (!bindService(intent, this, 0)) {
             throw new RuntimeException("bindService() failed");
         }
     }

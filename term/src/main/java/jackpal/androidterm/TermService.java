@@ -28,7 +28,6 @@ import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.util.SessionList;
 
 public class TermService extends Service implements TermSession.FinishCallback {
-
     private final IBinder mTSBinder = new TSBinder();
     private SessionList mTermSessions;
 
@@ -36,9 +35,9 @@ public class TermService extends Service implements TermSession.FinishCallback {
     public void onStart(Intent intent, int flags) {
     }
 
-    /* This should be @Override if building with API Level >=5 */
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

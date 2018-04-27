@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -71,7 +72,7 @@ import jackpal.androidterm.util.SessionList;
 public class TermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
-
+    public static final String EXTRA_BINARY_FILE_PATH = "file_path";
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
     private final static int PASTE_ID = 2;
@@ -154,8 +155,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             mTermService = null;
         }
     };
-
-
     private Handler mHandler = new Handler();
 
     protected static TermSession createTermSession(Context context, TermSettings settings, String initialCommand) throws IOException {
@@ -166,10 +165,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         return session;
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        mSettings.readPrefs(sharedPreferences);
-    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -196,6 +191,12 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private void startService() {
         TSIntent = new Intent(this, TermService.class);
         startService(TSIntent);
+    }
+
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        mSettings.readPrefs(sharedPreferences);
     }
 
     @Override
@@ -259,9 +260,23 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
 
     private TermSession createTermSession() throws IOException {
         TermSettings settings = mSettings;
-        TermSession session = createTermSession(this, settings, settings.getInitialCommand());
+        TermSession session = createTermSession(this, settings, getInitCommand());
         session.setFinishCallback(mTermService);
         return session;
+    }
+
+    /**
+     * Init command, this method should be return the path of binary file
+     */
+    private String getInitCommand() {
+        String initialCommand;
+        String path = getIntent().getStringExtra(EXTRA_BINARY_FILE_PATH);
+        if (path != null) {
+            initialCommand = path;
+        } else {
+            initialCommand = mSettings.getInitialCommand();
+        }
+        return initialCommand;
     }
 
     private TermView createEmulatorView(TermSession session) {
@@ -276,6 +291,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         return emulatorView;
     }
 
+    @Nullable
     private TermSession getCurrentTermSession() {
         SessionList sessions = mTermSessions;
         if (sessions == null) {

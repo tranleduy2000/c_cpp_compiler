@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion project.compileSdkVersion
@@ -7,8 +7,6 @@ android {
     defaultConfig {
         minSdkVersion project.minSdkVersion
         targetSdkVersion project.targetSdkVersion
-        applicationId "jackpal.androidterm"
-
         ndk {
             moduleName "libjackpal-androidterm5"
             abiFilters 'armeabi-v7a', 'x86'
