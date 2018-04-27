@@ -109,7 +109,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
      */
     private View.OnKeyListener mKeyListener = new View.OnKeyListener() {
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            return backkeyInterceptor(keyCode, event) || keyboardShortcuts(keyCode, event);
+            return backkeyInterceptor() || keyboardShortcuts(keyCode, event);
         }
 
         /**
@@ -149,7 +149,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         /**
          * Make sure the back button always leaves the application.
          */
-        private boolean backkeyInterceptor(int keyCode, KeyEvent event) {
+        private boolean backkeyInterceptor() {
             return false;
         }
     };
@@ -161,9 +161,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
                     mViewFlipper.addView(createEmulatorView(mTermSessions.get(position)));
                 }
                 mViewFlipper.setDisplayedChild(position);
-                if (false) {
-                    mActionBar.hide();
-                }
             }
             return true;
         }
@@ -634,10 +631,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if (false && mActionBar != null && mActionBar.isShowing()) {
-                    mActionBar.hide();
-                    return true;
-                }
                 switch (mSettings.getBackKeyAction()) {
                     case TermSettings.BACK_KEY_STOPS_SERVICE:
                         mStopServiceOnFinish = true;
@@ -769,25 +762,9 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         }
     }
 
-    private void doToggleActionBar() {
-        ActionBarCompat bar = mActionBar;
-        if (bar == null) {
-            return;
-        }
-        if (bar.isShowing()) {
-            bar.hide();
-        } else {
-            bar.show();
-        }
-    }
-
     private void doUIToggle(int x, int y, int width, int height) {
-        switch (TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE) {
-            case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
-                if (!mHaveFullHwKeyboard) {
-                    doToggleSoftKeyboard();
-                }
-                break;
+        if (!mHaveFullHwKeyboard) {
+            doToggleSoftKeyboard();
         }
         getCurrentEmulatorView().requestFocus();
     }

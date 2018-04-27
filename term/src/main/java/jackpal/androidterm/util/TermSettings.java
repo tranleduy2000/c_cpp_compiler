@@ -51,9 +51,7 @@ public class TermSettings {
             {SOLARIZED_DARK_FG, SOLARIZED_DARK_BG},
             {LINUX_CONSOLE_WHITE, BLACK}
     };
-    public static final int ACTION_BAR_MODE_NONE = 0;
-    public static final int ACTION_BAR_MODE_ALWAYS_VISIBLE = 1;
-    public static final int ACTION_BAR_MODE_HIDES = 2;
+
     public static final int ORIENTATION_UNSPECIFIED = 0;
     public static final int ORIENTATION_LANDSCAPE = 1;
     public static final int ORIENTATION_PORTRAIT = 2;
