@@ -16,7 +16,6 @@
 
 package jackpal.androidterm;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,18 +46,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
 
-import jackpal.androidterm.compat.ActionBarCompat;
-import jackpal.androidterm.compat.ActivityCompat;
 import jackpal.androidterm.compat.MenuItemCompat;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -67,8 +62,8 @@ import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
 import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
 import jackpal.androidterm.setting.TermSettingActivity;
-import jackpal.androidterm.util.SessionList;
 import jackpal.androidterm.setting.TermSettings;
+import jackpal.androidterm.util.SessionList;
 
 /**
  * A terminal emulator activity.
@@ -95,8 +90,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private int onResumeSelectWindow = -1;
     private ComponentName mPrivateAlias;
     private TermService mTermService;
-    private ActionBarCompat mActionBar;
-    private WindowListAdapter mWinListAdapter;
     private boolean mHaveFullHwKeyboard = false;
     /**
      * Should we use keyboard shortcuts?
@@ -151,25 +144,12 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             return false;
         }
     };
-    private ActionBarCompat.OnNavigationListener mWinListItemSelected = new ActionBarCompat.OnNavigationListener() {
-        public boolean onNavigationItemSelected(int position, long id) {
-            int oldPosition = mViewFlipper.getDisplayedChild();
-            if (position != oldPosition) {
-                if (position >= mViewFlipper.getChildCount()) {
-                    mViewFlipper.addView(createEmulatorView(mTermSessions.get(position)));
-                }
-                mViewFlipper.setDisplayedChild(position);
-            }
-            return true;
-        }
-    };
     private ServiceConnection mTSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             Log.i(TermDebug.LOG_TAG, "Bound to TermService");
             TermService.TSBinder binder = (TermService.TSBinder) service;
             mTermService = binder.getService();
             populateViewFlipper();
-            populateWindowList();
         }
 
         public void onServiceDisconnected(ComponentName arg0) {
@@ -211,13 +191,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
 
         setContentView(R.layout.term_activity);
         mViewFlipper = findViewById(R.id.view_flipper);
-
-        ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
-        if (actionBar != null) {
-            mActionBar = actionBar;
-            actionBar.setNavigationMode(ActionBarCompat.NAVIGATION_MODE_LIST);
-            actionBar.setDisplayOptions(0, ActionBarCompat.DISPLAY_SHOW_TITLE);
-        }
 
         mHaveFullHwKeyboard = checkHaveFullHwKeyboard(getResources().getConfiguration());
 
@@ -262,26 +235,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
                 onResumeSelectWindow = -1;
             }
             mViewFlipper.onResume();
-        }
-    }
-
-    private void populateWindowList() {
-        if (mActionBar == null) {
-            // Not needed
-            return;
-        }
-        if (mTermSessions != null) {
-            int position = mViewFlipper.getDisplayedChild();
-            if (mWinListAdapter == null) {
-                mWinListAdapter = new WindowListActionBarAdapter(mTermSessions);
-
-                mActionBar.setListNavigationCallbacks(mWinListAdapter, mWinListItemSelected);
-            } else {
-                mWinListAdapter.setSessions(mTermSessions);
-            }
-            mViewFlipper.addCallback(mWinListAdapter);
-
-            mActionBar.setSelectedNavigationItem(position);
         }
     }
 
@@ -407,12 +360,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         mViewFlipper.onPause();
         if (mTermSessions != null) {
             mTermSessions.removeCallback(this);
-
-            if (mWinListAdapter != null) {
-                mTermSessions.removeCallback(mWinListAdapter);
-                mTermSessions.removeTitleChangedListener(mWinListAdapter);
-                mViewFlipper.removeCallback(mWinListAdapter);
-            }
         }
 
         mViewFlipper.removeAllViews();
@@ -438,10 +385,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             v.updateSize(false);
         }
 
-        if (mWinListAdapter != null) {
-            // Force Android to redraw the label in the navigation dropdown
-            mWinListAdapter.notifyDataSetChanged();
-        }
     }
 
     @Override
@@ -642,12 +585,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
                         return false;
                 }
             case KeyEvent.KEYCODE_MENU:
-                if (mActionBar != null && !mActionBar.isShowing()) {
-                    mActionBar.show();
-                    return true;
-                } else {
-                    return super.onKeyUp(keyCode, event);
-                }
+                return super.onKeyUp(keyCode, event);
             default:
                 return super.onKeyUp(keyCode, event);
         }
@@ -779,35 +717,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         List<ResolveInfo> handlers = pm.queryIntentActivities(openLink, 0);
         if (handlers.size() > 0)
             startActivity(openLink);
-    }
-
-    private class WindowListActionBarAdapter extends WindowListAdapter implements UpdateCallback {
-        // From android.R.style in API 13
-        private static final int TextAppearance_Holo_Widget_ActionBar_Title = 0x01030112;
-
-        WindowListActionBarAdapter(SessionList sessions) {
-            super(sessions);
-        }
-
-        @SuppressLint("StringFormatInvalid")
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView label = new TextView(TermActivity.this);
-            String title = getSessionTitle(position, getString(R.string.window_title, position + 1));
-            label.setText(title);
-            label.setTextAppearance(TermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
-            return label;
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return super.getView(position, convertView, parent);
-        }
-
-        public void onUpdate() {
-            notifyDataSetChanged();
-            mActionBar.setSelectedNavigationItem(mViewFlipper.getDisplayedChild());
-        }
     }
 
     private class EmulatorViewGestureListener extends SimpleOnGestureListener {

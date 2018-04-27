@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -91,7 +92,7 @@ public class TermViewFlipper extends ViewFlipper implements Iterable<View> {
         return new ViewFlipperIterator();
     }
 
-    public void addCallback(UpdateCallback callback) {
+    public void addCallback(@NonNull UpdateCallback callback) {
         callbacks.add(callback);
     }
 

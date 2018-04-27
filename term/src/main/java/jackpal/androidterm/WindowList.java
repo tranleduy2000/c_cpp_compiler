@@ -31,7 +31,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import jackpal.androidterm.compat.ActionBarCompat;
-import jackpal.androidterm.compat.ActivityCompat;
 import jackpal.androidterm.util.SessionList;
 
 public class WindowList extends ListActivity {
@@ -59,12 +58,6 @@ public class WindowList extends ListActivity {
         listView.addHeaderView(newWindow, null, true);
 
         setResult(RESULT_CANCELED);
-
-        // Display up indicator on action bar home button
-        ActionBarCompat bar = ActivityCompat.getActionBar(this);
-        if (bar != null) {
-            bar.setDisplayOptions(ActionBarCompat.DISPLAY_HOME_AS_UP, ActionBarCompat.DISPLAY_HOME_AS_UP);
-        }
     }
 
     @Override

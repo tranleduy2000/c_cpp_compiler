@@ -17,6 +17,7 @@
 package jackpal.androidterm.compat;
 
 import android.app.ActionBar;
+import android.support.annotation.NonNull;
 import android.widget.SpinnerAdapter;
 
 /**
@@ -68,7 +69,7 @@ public abstract class ActionBarCompat {
 
     public abstract void setDisplayOptions(int options, int mask);
 
-    public abstract void setListNavigationCallbacks(SpinnerAdapter adapter, OnNavigationListener callback);
+    public abstract void setListNavigationCallbacks(@NonNull SpinnerAdapter adapter, OnNavigationListener callback);
 
     public abstract void setSelectedNavigationItem(int position);
 
@@ -147,7 +148,7 @@ class ActionBarApi11OrLater extends ActionBarCompat {
         bar.setDisplayOptions(options, mask);
     }
 
-    public void setListNavigationCallbacks(SpinnerAdapter adapter, OnNavigationListener callback) {
+    public void setListNavigationCallbacks(@NonNull SpinnerAdapter adapter, OnNavigationListener callback) {
         bar.setListNavigationCallbacks(adapter, wrapOnNavigationCallback(callback));
     }
 
