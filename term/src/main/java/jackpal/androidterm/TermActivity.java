@@ -16,7 +16,6 @@
 
 package jackpal.androidterm;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -37,6 +36,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -79,7 +79,7 @@ import jackpal.androidterm.util.TermSettings;
  * A terminal emulator activity.
  */
 
-public class TermActivity extends Activity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+public class TermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
     /**
@@ -93,8 +93,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     private final static int SEND_FN_KEY_ID = 4;
     // Available on API 12 and later
     private static final int WIFI_MODE_FULL_HIGH_PERF = 3;
-    // Available on API 12 and later
-    private static final int FLAG_INCLUDE_STOPPED_PACKAGES = 0x20;
     /**
      * The ViewFlipper which holds the collection of EmulatorView widgets.
      */
@@ -109,7 +107,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
     private boolean mBackKeyPressed;
-    private int mPendingPathBroadcasts = 0;
     private TermService mTermService;
     private ActionBarCompat mActionBar;
     private int mActionBarMode = TermSettings.ACTION_BAR_MODE_NONE;
@@ -195,10 +192,8 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
             Log.i(TermDebug.LOG_TAG, "Bound to TermService");
             TermService.TSBinder binder = (TermService.TSBinder) service;
             mTermService = binder.getService();
-            if (mPendingPathBroadcasts <= 0) {
-                populateViewFlipper();
-                populateWindowList();
-            }
+            populateViewFlipper();
+            populateWindowList();
         }
 
         public void onServiceDisconnected(ComponentName arg0) {
@@ -256,7 +251,7 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
         }
 
         setContentView(R.layout.term_activity);
-        mViewFlipper = (TermViewFlipper) findViewById(VIEW_FLIPPER);
+        mViewFlipper = findViewById(VIEW_FLIPPER);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TermDebug.LOG_TAG);
@@ -281,28 +276,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
 
         updatePrefs();
         mAlreadyStarted = true;
-    }
-
-    private String makePathFromBundle(Bundle extras) {
-        if (extras == null || extras.size() == 0) {
-            return "";
-        }
-
-        String[] keys = new String[extras.size()];
-        keys = extras.keySet().toArray(keys);
-        Collator collator = Collator.getInstance(Locale.US);
-        Arrays.sort(keys, collator);
-
-        StringBuilder path = new StringBuilder();
-        for (String key : keys) {
-            String dir = extras.getString(key);
-            if (dir != null && !dir.equals("")) {
-                path.append(dir);
-                path.append(":");
-            }
-        }
-
-        return path.substring(0, path.length() - 1);
     }
 
     @Override
@@ -835,10 +808,7 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     private boolean canPaste() {
         ClipboardManagerCompat clip = ClipboardManagerCompatFactory
                 .getManager(getApplicationContext());
-        if (clip.hasText()) {
-            return true;
-        }
-        return false;
+        return clip.hasText();
     }
 
     private void doPreferences() {

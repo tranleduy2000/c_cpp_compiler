@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jackpal.androidterm"
-    android:versionCode="71"
-    android:versionName="1.0.70">
+    package="jackpal.androidterm">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -29,50 +26,24 @@
 
 
         <activity
-            android:name="RemoteInterface"
+            android:name=".RemoteInterface"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="jackpal.androidterm.OPEN_NEW_WINDOW" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity-alias
-            android:name="TermHere"
-            android:exported="true"
-            android:label="@string/activity_term_here_title"
-            android:targetActivity="RemoteInterface">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <data android:mimeType="*/*" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity-alias>
 
         <activity
-            android:name="RunScript"
-            android:excludeFromRecents="true"
-            android:permission="jackpal.androidterm.permission.RUN_SCRIPT">
-            <intent-filter>
-                <action android:name="jackpal.androidterm.RUN_SCRIPT" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="RunShortcut"
-            android:excludeFromRecents="true">
-            <intent-filter>
-                <action android:name="jackpal.androidterm.RUN_SHORTCUT" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="TermPreferences"
+            android:name=".TermPreferences"
             android:label="@string/preferences" />
         <activity
-            android:name="WindowList"
+            android:name=".WindowList"
             android:label="@string/window_list" />
 
-        <service android:name="TermService">
+        <service
+            android:name=".TermService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="jackpal.androidterm.action.START_TERM.v1" />
                 <category android:name="android.intent.category.DEFAULT" />

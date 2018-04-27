@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -22,7 +21,7 @@
     <!-- This style is used for all activities except the main terminal
        window. (Example: preferences.)
    -->
-    <style name="Theme" parent="@android:style/Theme.Holo">
+    <style name="Theme" parent="Theme.AppCompat">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -30,7 +29,7 @@
     <!-- This style is used for the main terminal window when the action bar
          is visible. It is set programmatically at run time.
      -->
-    <style name="Theme.Holo" parent="@android:style/Theme.Holo">
+    <style name="Theme.Holo" parent="Theme.AppCompat">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
@@ -41,7 +40,8 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:actionBarStyle">@style/Widget.ActionBarOverlay</item>
     </style>
-    <style name="Widget.ActionBarOverlay" parent="@android:style/Widget.Holo.ActionBar">
+
+    <style name="Widget.ActionBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">#a0000000</item>
     </style>
 </resources>
