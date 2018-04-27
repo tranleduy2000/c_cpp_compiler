@@ -16,18 +16,14 @@
 
 package jackpal.androidterm;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import jackpal.androidterm.compat.ServiceForegroundCompat;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.util.SessionList;
 
@@ -63,20 +59,6 @@ public class TermService extends Service implements TermSession.FinishCallback {
         editor.apply();
         mTermSessions = new SessionList();
         Log.d(TermDebug.LOG_TAG, "TermService started");
-    }
-
-    private Notification createNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.drawable.ic_stat_service_notification_icon);
-        builder.setTicker(getText(R.string.service_notify_text));
-        builder.setOngoing(true);
-
-        Intent notifyIntent = new Intent(this, TermActivity.class);
-        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
-
-        builder.setContentIntent(pendingIntent);
-        return builder.build();
     }
 
     @Override
