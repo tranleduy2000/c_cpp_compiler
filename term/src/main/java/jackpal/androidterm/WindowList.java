@@ -23,16 +23,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import jackpal.androidterm.compat.ActionBarCompat;
 import jackpal.androidterm.compat.ActivityCompat;
-import jackpal.androidterm.compat.AndroidCompat;
 import jackpal.androidterm.util.SessionList;
 
 public class WindowList extends ListActivity {
@@ -62,11 +61,9 @@ public class WindowList extends ListActivity {
         setResult(RESULT_CANCELED);
 
         // Display up indicator on action bar home button
-        if (Build.VERSION.SDK_INT >= 11) {
-            ActionBarCompat bar = ActivityCompat.getActionBar(this);
-            if (bar != null) {
-                bar.setDisplayOptions(ActionBarCompat.DISPLAY_HOME_AS_UP, ActionBarCompat.DISPLAY_HOME_AS_UP);
-            }
+        ActionBarCompat bar = ActivityCompat.getActionBar(this);
+        if (bar != null) {
+            bar.setDisplayOptions(ActionBarCompat.DISPLAY_HOME_AS_UP, ActionBarCompat.DISPLAY_HOME_AS_UP);
         }
     }
 
@@ -138,7 +135,7 @@ public class WindowList extends ListActivity {
      * <p>
      * Used by layout xml.
      */
-    public static class CloseButton extends ImageView {
+    public static class CloseButton extends AppCompatImageView {
         public CloseButton(Context context) {
             super(context);
         }

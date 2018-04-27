@@ -19,6 +19,7 @@ package jackpal.androidterm;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -29,7 +30,6 @@ import android.widget.ViewFlipper;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import jackpal.androidterm.compat.AndroidCompat;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
@@ -42,7 +42,7 @@ public class TermViewFlipper extends ViewFlipper implements Iterable<View> {
      * This is the only known way to detect the view changing size due to
      * the IME being shown or hidden in API level <= 7.
      */
-    private final boolean mbPollForWindowSizeChange = (Build.VERSION.SDK_INT < 8);
+    private final boolean mbPollForWindowSizeChange = false;
     private final Handler mHandler = new Handler();
     private Context context;
     private Toast mToast;

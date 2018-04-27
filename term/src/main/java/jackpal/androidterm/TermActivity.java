@@ -85,8 +85,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private final static int PASTE_ID = 2;
     private final static int SEND_CONTROL_KEY_ID = 3;
     private final static int SEND_FN_KEY_ID = 4;
-    // Available on API 12 and later
-    private static final int WIFI_MODE_FULL_HIGH_PERF = 3;
     /**
      * The ViewFlipper which holds the collection of EmulatorView widgets.
      */
@@ -152,14 +150,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
          * Make sure the back button always leaves the application.
          */
         private boolean backkeyInterceptor(int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && false && mActionBar != null && mActionBar.isShowing()) {
-                /* We need to intercept the key event before the view sees it,
-                   otherwise the view will handle it before we get it */
-                onKeyUp(keyCode, event);
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
     };
     private ActionBarCompat.OnNavigationListener mWinListItemSelected = new ActionBarCompat.OnNavigationListener() {

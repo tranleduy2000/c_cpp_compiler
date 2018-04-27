@@ -23,11 +23,7 @@ import java.io.File;
  */
 public class FileCompat {
     public static boolean canExecute(File file) {
-        if (Build.VERSION.SDK_INT < 9) {
-            return Api8OrEarlier.canExecute(file);
-        } else {
-            return Api9OrLater.canExecute(file);
-        }
+        return Api9OrLater.canExecute(file);
     }
 
     private static class Api9OrLater {

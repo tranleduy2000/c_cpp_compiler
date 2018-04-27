@@ -16,10 +16,10 @@
 
 package jackpal.androidterm.emulatorview;
 
+import android.os.Build;
 import android.util.Log;
 
 import jackpal.androidterm.emulatorview.compat.AndroidCharacterCompat;
-import jackpal.androidterm.emulatorview.compat.AndroidCompat;
 
 /**
  * A backing store for a TranscriptScreen.
@@ -489,7 +489,7 @@ class UnicodeTranscript {
      * the emulator's broken for some reason), but not on 4.0.4 -- hence the
      * choice of API 16 as the minimum.
      */
-    static final int HANGUL_CONJOINING_MIN_SDK = 16;
+    private static final int HANGUL_CONJOINING_MIN_SDK = 16;
 
     /**
      * Gives the display width of the code point in a monospace font.
