@@ -26,7 +26,6 @@ import android.widget.TextView;
 
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
-
 import jackpal.androidterm.util.SessionList;
 
 public class WindowListAdapter extends BaseAdapter implements UpdateCallback {
@@ -34,6 +33,18 @@ public class WindowListAdapter extends BaseAdapter implements UpdateCallback {
 
     public WindowListAdapter(SessionList sessions) {
         setSessions(sessions);
+    }
+
+    private static Activity findActivityFromContext(Context context) {
+        if (context == null) {
+            return null;
+        } else if (context instanceof Activity) {
+            return (Activity) context;
+        } else if (context instanceof ContextWrapper) {
+            ContextWrapper cw = (ContextWrapper) context;
+            return findActivityFromContext(cw.getBaseContext());
+        }
+        return null;
     }
 
     public void setSessions(SessionList sessions) {
@@ -78,7 +89,7 @@ public class WindowListAdapter extends BaseAdapter implements UpdateCallback {
         View close = child.findViewById(R.id.window_list_close);
 
         TextView label = (TextView) child.findViewById(R.id.window_list_label);
-        String defaultTitle = act.getString(R.string.window_title, position+1);
+        String defaultTitle = act.getString(R.string.window_title, position + 1);
         label.setText(getSessionTitle(position, defaultTitle));
 
         final SessionList sessions = mSessions;
@@ -98,17 +109,5 @@ public class WindowListAdapter extends BaseAdapter implements UpdateCallback {
 
     public void onUpdate() {
         notifyDataSetChanged();
-    }
-
-    private static Activity findActivityFromContext(Context context) {
-        if (context == null) {
-            return null;
-        } else if (context instanceof Activity) {
-            return (Activity) context;
-        } else if (context instanceof ContextWrapper) {
-            ContextWrapper cw = (ContextWrapper) context;
-            return findActivityFromContext(cw.getBaseContext());
-        }
-        return null;
     }
 }

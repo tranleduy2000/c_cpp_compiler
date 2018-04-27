@@ -22,7 +22,6 @@ import android.util.DisplayMetrics;
 import jackpal.androidterm.emulatorview.ColorScheme;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
-
 import jackpal.androidterm.util.TermSettings;
 
 public class TermView extends EmulatorView {

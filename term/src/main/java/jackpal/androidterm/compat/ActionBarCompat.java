@@ -60,6 +60,8 @@ public abstract class ActionBarCompat {
 
     public abstract CharSequence getTitle();
 
+    public abstract void setTitle(int resId);
+
     public abstract void setTitle(CharSequence title);
 
     public abstract void hide();
@@ -71,8 +73,6 @@ public abstract class ActionBarCompat {
     public abstract void setListNavigationCallbacks(SpinnerAdapter adapter, OnNavigationListener callback);
 
     public abstract void setSelectedNavigationItem(int position);
-
-    public abstract void setTitle(int resId);
 
     public abstract void show();
 
@@ -129,6 +129,10 @@ class ActionBarApi11OrLater extends ActionBarCompat {
         return bar.getTitle();
     }
 
+    public void setTitle(int resId) {
+        bar.setTitle(resId);
+    }
+
     public void setTitle(CharSequence title) {
         bar.setTitle(title);
     }
@@ -151,10 +155,6 @@ class ActionBarApi11OrLater extends ActionBarCompat {
 
     public void setSelectedNavigationItem(int position) {
         bar.setSelectedNavigationItem(position);
-    }
-
-    public void setTitle(int resId) {
-        bar.setTitle(resId);
     }
 
     public void show() {

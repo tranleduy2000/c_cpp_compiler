@@ -59,6 +59,25 @@ public class RemoteInterface extends Activity {
         }
     };
 
+    /**
+     * Quote a string so it can be used as a parameter in bash and similar shells.
+     */
+    public static String quoteForBash(String s) {
+        StringBuilder builder = new StringBuilder();
+        String specialChars = "\"\\$`!";
+        builder.append('"');
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            char c = s.charAt(i);
+            if (specialChars.indexOf(c) >= 0) {
+                builder.append('\\');
+            }
+            builder.append(c);
+        }
+        builder.append('"');
+        return builder.toString();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,25 +144,6 @@ public class RemoteInterface extends Activity {
         }
 
         finish();
-    }
-
-    /**
-     *  Quote a string so it can be used as a parameter in bash and similar shells.
-     */
-    public static String quoteForBash(String s) {
-        StringBuilder builder = new StringBuilder();
-        String specialChars = "\"\\$`!";
-        builder.append('"');
-        int length = s.length();
-        for (int i = 0; i < length; i++) {
-            char c = s.charAt(i);
-            if (specialChars.indexOf(c) >= 0) {
-                builder.append('\\');
-            }
-            builder.append(c);
-        }
-        builder.append('"');
-        return builder.toString();
     }
 
     protected String openNewWindow(String iInitialCommand) {

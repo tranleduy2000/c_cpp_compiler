@@ -16,50 +16,78 @@
 
 package jackpal.androidterm.util;
 
-import jackpal.androidterm.R;
-import jackpal.androidterm.compat.AndroidCompat;
-
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.view.KeyEvent;
+
+import jackpal.androidterm.R;
 
 /**
  * Terminal emulator settings
  */
 public class TermSettings {
-    private SharedPreferences mPrefs;
-
-    private int mStatusBar;
-    private int mActionBarMode;
-    private int mOrientation;
-    private int mCursorStyle;
-    private int mCursorBlink;
-    private int mFontSize;
-    private int mColorId;
-    private boolean mUTF8ByDefault;
-    private int mBackKeyAction;
-    private int mControlKeyId;
-    private int mFnKeyId;
-    private int mUseCookedIME;
-    private String mShell;
-    private String mFailsafeShell;
-    private String mInitialCommand;
-    private String mTermType;
-    private boolean mCloseOnExit;
-    private boolean mVerifyPath;
-    private boolean mDoPathExtensions;
-    private boolean mAllowPathPrepend;
-    private String mHomePath;
-
-    private String mPrependPath = null;
-    private String mAppendPath = null;
-
-    private boolean mAltSendsEsc;
-
-    private boolean mMouseTracking;
-
-    private boolean mUseKeyboardShortcuts;
-
+    public static final int WHITE = 0xffffffff;
+    public static final int BLACK = 0xff000000;
+    public static final int BLUE = 0xff344ebd;
+    public static final int GREEN = 0xff00ff00;
+    public static final int AMBER = 0xffffb651;
+    public static final int RED = 0xffff0113;
+    public static final int HOLO_BLUE = 0xff33b5e5;
+    public static final int SOLARIZED_FG = 0xff657b83;
+    public static final int SOLARIZED_BG = 0xfffdf6e3;
+    public static final int SOLARIZED_DARK_FG = 0xff839496;
+    public static final int SOLARIZED_DARK_BG = 0xff002b36;
+    public static final int LINUX_CONSOLE_WHITE = 0xffaaaaaa;
+    // foreground color, background color
+    public static final int[][] COLOR_SCHEMES = {
+            {BLACK, WHITE},
+            {WHITE, BLACK},
+            {WHITE, BLUE},
+            {GREEN, BLACK},
+            {AMBER, BLACK},
+            {RED, BLACK},
+            {HOLO_BLUE, BLACK},
+            {SOLARIZED_FG, SOLARIZED_BG},
+            {SOLARIZED_DARK_FG, SOLARIZED_DARK_BG},
+            {LINUX_CONSOLE_WHITE, BLACK}
+    };
+    public static final int ACTION_BAR_MODE_NONE = 0;
+    public static final int ACTION_BAR_MODE_ALWAYS_VISIBLE = 1;
+    public static final int ACTION_BAR_MODE_HIDES = 2;
+    public static final int ORIENTATION_UNSPECIFIED = 0;
+    public static final int ORIENTATION_LANDSCAPE = 1;
+    public static final int ORIENTATION_PORTRAIT = 2;
+    /**
+     * An integer not in the range of real key codes.
+     */
+    public static final int KEYCODE_NONE = -1;
+    public static final int CONTROL_KEY_ID_NONE = 7;
+    public static final int[] CONTROL_KEY_SCHEMES = {
+            KeyEvent.KEYCODE_DPAD_CENTER,
+            KeyEvent.KEYCODE_AT,
+            KeyEvent.KEYCODE_ALT_LEFT,
+            KeyEvent.KEYCODE_ALT_RIGHT,
+            KeyEvent.KEYCODE_VOLUME_UP,
+            KeyEvent.KEYCODE_VOLUME_DOWN,
+            KeyEvent.KEYCODE_CAMERA,
+            KEYCODE_NONE
+    };
+    public static final int FN_KEY_ID_NONE = 7;
+    public static final int[] FN_KEY_SCHEMES = {
+            KeyEvent.KEYCODE_DPAD_CENTER,
+            KeyEvent.KEYCODE_AT,
+            KeyEvent.KEYCODE_ALT_LEFT,
+            KeyEvent.KEYCODE_ALT_RIGHT,
+            KeyEvent.KEYCODE_VOLUME_UP,
+            KeyEvent.KEYCODE_VOLUME_DOWN,
+            KeyEvent.KEYCODE_CAMERA,
+            KEYCODE_NONE
+    };
+    public static final int BACK_KEY_STOPS_SERVICE = 0;
+    public static final int BACK_KEY_CLOSES_WINDOW = 1;
+    public static final int BACK_KEY_CLOSES_ACTIVITY = 2;
+    public static final int BACK_KEY_SENDS_ESC = 3;
+    public static final int BACK_KEY_SENDS_TAB = 4;
     private static final String STATUSBAR_KEY = "statusbar";
     private static final String ACTIONBAR_KEY = "actionbar";
     private static final String ORIENTATION_KEY = "orientation";
@@ -81,76 +109,35 @@ public class TermSettings {
     private static final String ALT_SENDS_ESC = "alt_sends_esc";
     private static final String MOUSE_TRACKING = "mouse_tracking";
     private static final String USE_KEYBOARD_SHORTCUTS = "use_keyboard_shortcuts";
-
-    public static final int WHITE               = 0xffffffff;
-    public static final int BLACK               = 0xff000000;
-    public static final int BLUE                = 0xff344ebd;
-    public static final int GREEN               = 0xff00ff00;
-    public static final int AMBER               = 0xffffb651;
-    public static final int RED                 = 0xffff0113;
-    public static final int HOLO_BLUE           = 0xff33b5e5;
-    public static final int SOLARIZED_FG        = 0xff657b83;
-    public static final int SOLARIZED_BG        = 0xfffdf6e3;
-    public static final int SOLARIZED_DARK_FG   = 0xff839496;
-    public static final int SOLARIZED_DARK_BG   = 0xff002b36;
-    public static final int LINUX_CONSOLE_WHITE = 0xffaaaaaa;
-
-    // foreground color, background color
-    public static final int[][] COLOR_SCHEMES = {
-        {BLACK,             WHITE},
-        {WHITE,             BLACK},
-        {WHITE,             BLUE},
-        {GREEN,             BLACK},
-        {AMBER,             BLACK},
-        {RED,               BLACK},
-        {HOLO_BLUE,         BLACK},
-        {SOLARIZED_FG,      SOLARIZED_BG},
-        {SOLARIZED_DARK_FG, SOLARIZED_DARK_BG},
-        {LINUX_CONSOLE_WHITE, BLACK}
-    };
-
-    public static final int ACTION_BAR_MODE_NONE = 0;
-    public static final int ACTION_BAR_MODE_ALWAYS_VISIBLE = 1;
-    public static final int ACTION_BAR_MODE_HIDES = 2;
     private static final int ACTION_BAR_MODE_MAX = 2;
-
-    public static final int ORIENTATION_UNSPECIFIED = 0;
-    public static final int ORIENTATION_LANDSCAPE = 1;
-    public static final int ORIENTATION_PORTRAIT = 2;
-
-    /** An integer not in the range of real key codes. */
-    public static final int KEYCODE_NONE = -1;
-
-    public static final int CONTROL_KEY_ID_NONE = 7;
-    public static final int[] CONTROL_KEY_SCHEMES = {
-        KeyEvent.KEYCODE_DPAD_CENTER,
-        KeyEvent.KEYCODE_AT,
-        KeyEvent.KEYCODE_ALT_LEFT,
-        KeyEvent.KEYCODE_ALT_RIGHT,
-        KeyEvent.KEYCODE_VOLUME_UP,
-        KeyEvent.KEYCODE_VOLUME_DOWN,
-        KeyEvent.KEYCODE_CAMERA,
-        KEYCODE_NONE
-    };
-
-    public static final int FN_KEY_ID_NONE = 7;
-    public static final int[] FN_KEY_SCHEMES = {
-        KeyEvent.KEYCODE_DPAD_CENTER,
-        KeyEvent.KEYCODE_AT,
-        KeyEvent.KEYCODE_ALT_LEFT,
-        KeyEvent.KEYCODE_ALT_RIGHT,
-        KeyEvent.KEYCODE_VOLUME_UP,
-        KeyEvent.KEYCODE_VOLUME_DOWN,
-        KeyEvent.KEYCODE_CAMERA,
-        KEYCODE_NONE
-    };
-
-    public static final int BACK_KEY_STOPS_SERVICE = 0;
-    public static final int BACK_KEY_CLOSES_WINDOW = 1;
-    public static final int BACK_KEY_CLOSES_ACTIVITY = 2;
-    public static final int BACK_KEY_SENDS_ESC = 3;
-    public static final int BACK_KEY_SENDS_TAB = 4;
     private static final int BACK_KEY_MAX = 4;
+    private SharedPreferences mPrefs;
+    private int mStatusBar;
+    private int mActionBarMode;
+    private int mOrientation;
+    private int mCursorStyle;
+    private int mCursorBlink;
+    private int mFontSize;
+    private int mColorId;
+    private boolean mUTF8ByDefault;
+    private int mBackKeyAction;
+    private int mControlKeyId;
+    private int mFnKeyId;
+    private int mUseCookedIME;
+    private String mShell;
+    private String mFailsafeShell;
+    private String mInitialCommand;
+    private String mTermType;
+    private boolean mCloseOnExit;
+    private boolean mVerifyPath;
+    private boolean mDoPathExtensions;
+    private boolean mAllowPathPrepend;
+    private String mHomePath;
+    private String mPrependPath = null;
+    private String mAppendPath = null;
+    private boolean mAltSendsEsc;
+    private boolean mMouseTracking;
+    private boolean mUseKeyboardShortcuts;
 
     public TermSettings(Resources res, SharedPreferences prefs) {
         readDefaultPrefs(res);
@@ -219,7 +206,7 @@ public class TermSettings {
         int val;
         try {
             val = Integer.parseInt(
-                mPrefs.getString(key, Integer.toString(defaultValue)));
+                    mPrefs.getString(key, Integer.toString(defaultValue)));
         } catch (NumberFormatException e) {
             val = defaultValue;
         }
@@ -289,9 +276,12 @@ public class TermSettings {
 
     public int getBackKeyCharacter() {
         switch (mBackKeyAction) {
-            case BACK_KEY_SENDS_ESC: return 27;
-            case BACK_KEY_SENDS_TAB: return 9;
-            default: return 0;
+            case BACK_KEY_SENDS_ESC:
+                return 27;
+            case BACK_KEY_SENDS_TAB:
+                return 9;
+            default:
+                return 0;
         }
     }
 
@@ -347,27 +337,27 @@ public class TermSettings {
         return mAllowPathPrepend;
     }
 
-    public void setPrependPath(String prependPath) {
-        mPrependPath = prependPath;
-    }
-
     public String getPrependPath() {
         return mPrependPath;
     }
 
-    public void setAppendPath(String appendPath) {
-        mAppendPath = appendPath;
+    public void setPrependPath(String prependPath) {
+        mPrependPath = prependPath;
     }
 
     public String getAppendPath() {
         return mAppendPath;
     }
 
-    public void setHomePath(String homePath) {
-        mHomePath = homePath;
+    public void setAppendPath(String appendPath) {
+        mAppendPath = appendPath;
     }
 
     public String getHomePath() {
         return mHomePath;
+    }
+
+    public void setHomePath(String homePath) {
+        mHomePath = homePath;
     }
 }
