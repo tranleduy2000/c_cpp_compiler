@@ -16,8 +16,8 @@
 
 package jackpal.androidterm;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,6 +31,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -57,10 +58,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.text.Collator;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import jackpal.androidterm.compat.ActionBarCompat;
 import jackpal.androidterm.compat.ActivityCompat;
@@ -233,21 +231,16 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         TSIntent = new Intent(this, TermService.class);
         startService(TSIntent);
 
-        if (AndroidCompat.SDK >= 11) {
-            int actionBarMode = mSettings.actionBarMode();
-            mActionBarMode = actionBarMode;
-            if (AndroidCompat.V11ToV20) {
-                switch (actionBarMode) {
-                    case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
-                        setTheme(R.style.Theme_Holo);
-                        break;
-                    case TermSettings.ACTION_BAR_MODE_HIDES:
-                        setTheme(R.style.Theme_Holo_ActionBarOverlay);
-                        break;
-                }
+        mActionBarMode = mSettings.actionBarMode();
+        if (AndroidCompat.V11ToV20) {
+            switch (mActionBarMode) {
+                case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
+                    setTheme(R.style.Theme_Holo);
+                    break;
+                case TermSettings.ACTION_BAR_MODE_HIDES:
+                    setTheme(R.style.Theme_Holo_ActionBarOverlay);
+                    break;
             }
-        } else {
-            mActionBarMode = TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE;
         }
 
         setContentView(R.layout.term_activity);
@@ -255,11 +248,8 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TermDebug.LOG_TAG);
-        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        int wifiLockMode = WifiManager.WIFI_MODE_FULL;
-        if (AndroidCompat.SDK >= 12) {
-            wifiLockMode = WIFI_MODE_FULL_HIGH_PERF;
-        }
+        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        int wifiLockMode = WIFI_MODE_FULL_HIGH_PERF;
         mWifiLock = wm.createWifiLock(wifiLockMode, TermDebug.LOG_TAG);
 
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
@@ -419,7 +409,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             WindowManager.LayoutParams params = win.getAttributes();
             final int FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
             int desiredFlag = mSettings.showStatusBar() ? 0 : FULLSCREEN;
-            if (desiredFlag != (params.flags & FULLSCREEN) || (AndroidCompat.SDK >= 11 && mActionBarMode != mSettings.actionBarMode())) {
+            if (desiredFlag != (params.flags & FULLSCREEN) || mActionBarMode != mSettings.actionBarMode()) {
                 if (mAlreadyStarted) {
                     // Can't switch to/from fullscreen after
                     // starting the activity.
@@ -443,8 +433,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             o = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         } else if (orientation == 2) {
             o = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        } else {
-            /* Shouldn't be happened. */
         }
         setRequestedOrientation(o);
     }
@@ -452,13 +440,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     @Override
     public void onPause() {
         super.onPause();
-
-        if (AndroidCompat.SDK < 5) {
-            /* If we lose focus between a back key down and a back key up,
-               we shouldn't respond to the next back key up event unless
-               we get another key down first */
-            mBackKeyPressed = false;
-        }
 
         /* Explicitly close the input method
            Otherwise, the soft keyboard could cover up whatever activity takes
@@ -468,7 +449,9 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             @Override
             public void run() {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(token, 0);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(token, 0);
+                }
             }
         }.start();
     }
@@ -539,20 +522,10 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
             Toast toast = Toast.makeText(this, R.string.reset_toast_notification, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-        } else if (id == R.id.menu_send_email) {
-            doEmailTranscript();
         } else if (id == R.id.menu_special_keys) {
             doDocumentKeys();
         } else if (id == R.id.menu_toggle_soft_keyboard) {
             doToggleSoftKeyboard();
-        } else if (id == R.id.menu_toggle_wakelock) {
-            doToggleWakeLock();
-        } else if (id == R.id.menu_toggle_wifilock) {
-            doToggleWifiLock();
-        } else if (id == R.id.action_help) {
-            Intent openHelp = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(getString(R.string.help_url)));
-            startActivity(openHelp);
         }
         // Hide the action bar if appropriate
         if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
@@ -727,34 +700,9 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        /* The pre-Eclair default implementation of onKeyDown() would prevent
-           our handling of the Back key in onKeyUp() from taking effect, so
-           ignore it here */
-        if (AndroidCompat.SDK < 5 && keyCode == KeyEvent.KEYCODE_BACK) {
-            /* Android pre-Eclair has no key event tracking, and a back key
-               down event delivered to an activity above us in the back stack
-               could be succeeded by a back key up event to us, so we need to
-               keep track of our own back key presses */
-            mBackKeyPressed = true;
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
-
-    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if (AndroidCompat.SDK < 5) {
-                    if (!mBackKeyPressed) {
-                    /* This key up event might correspond to a key down
-                       delivered to another activity -- ignore */
-                        return false;
-                    }
-                    mBackKeyPressed = false;
-                }
                 if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES && mActionBar != null && mActionBar.isShowing()) {
                     mActionBar.hide();
                     return true;
@@ -784,6 +732,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     }
 
     // Called when the list of sessions changes
+    @Override
     public void onUpdate() {
         SessionList sessions = mTermSessions;
         if (sessions == null) {
@@ -819,36 +768,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         TermSession session = getCurrentTermSession();
         if (session != null) {
             session.reset();
-        }
-    }
-
-    private void doEmailTranscript() {
-        TermSession session = getCurrentTermSession();
-        if (session != null) {
-            // Don't really want to supply an address, but
-            // currently it's required, otherwise nobody
-            // wants to handle the intent.
-            String addr = "user@example.com";
-            Intent intent =
-                    new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"
-                            + addr));
-
-            String subject = getString(R.string.email_transcript_subject);
-            String title = session.getTitle();
-            if (title != null) {
-                subject = subject + " - " + title;
-            }
-            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-            intent.putExtra(Intent.EXTRA_TEXT,
-                    session.getTranscriptText().trim());
-            try {
-                startActivity(Intent.createChooser(intent,
-                        getString(R.string.email_transcript_chooser_title)));
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(this,
-                        R.string.email_transcript_no_email_activity_found,
-                        Toast.LENGTH_LONG).show();
-            }
         }
     }
 
@@ -903,8 +822,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         String[] keyNames = r.getStringArray(arrayId);
         String keyName = keyNames[keyId];
         String template = r.getString(enabledId);
-        String result = template.replaceAll(regex, keyName);
-        return result;
+        return template.replaceAll(regex, keyName);
     }
 
     private void doToggleSoftKeyboard() {
@@ -912,24 +830,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-    }
-
-    private void doToggleWakeLock() {
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
-        } else {
-            mWakeLock.acquire();
-        }
-        ActivityCompat.invalidateOptionsMenu(this);
-    }
-
-    private void doToggleWifiLock() {
-        if (mWifiLock.isHeld()) {
-            mWifiLock.release();
-        } else {
-            mWifiLock.acquire();
-        }
-        ActivityCompat.invalidateOptionsMenu(this);
     }
 
     private void doToggleActionBar() {
@@ -947,7 +847,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private void doUIToggle(int x, int y, int width, int height) {
         switch (mActionBarMode) {
             case TermSettings.ACTION_BAR_MODE_NONE:
-                if (AndroidCompat.SDK >= 11 && (mHaveFullHwKeyboard || y < height / 2)) {
+                if (Build.VERSION.SDK_INT >= 11 && (mHaveFullHwKeyboard || y < height / 2)) {
                     openOptionsMenu();
                     return;
                 } else {
@@ -989,16 +889,17 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         // From android.R.style in API 13
         private static final int TextAppearance_Holo_Widget_ActionBar_Title = 0x01030112;
 
-        public WindowListActionBarAdapter(SessionList sessions) {
+        WindowListActionBarAdapter(SessionList sessions) {
             super(sessions);
         }
 
+        @SuppressLint("StringFormatInvalid")
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             TextView label = new TextView(TermActivity.this);
             String title = getSessionTitle(position, getString(R.string.window_title, position + 1));
             label.setText(title);
-            if (AndroidCompat.SDK >= 13) {
+            if (Build.VERSION.SDK_INT >= 13) {
                 label.setTextAppearance(TermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
             } else {
                 label.setTextAppearance(TermActivity.this, android.R.style.TextAppearance_Medium);

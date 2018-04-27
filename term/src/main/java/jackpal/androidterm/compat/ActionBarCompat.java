@@ -37,7 +37,7 @@ public abstract class ActionBarCompat {
 
     public static ActionBarCompat wrap(Object actionBar) {
         if (actionBar != null) {
-            if (AndroidCompat.SDK >= 11) {
+            if (Build.VERSION.SDK_INT >= 11) {
                 return new ActionBarApi11OrLater(actionBar);
             }
         }

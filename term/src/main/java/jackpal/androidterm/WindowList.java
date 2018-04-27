@@ -62,7 +62,7 @@ public class WindowList extends ListActivity {
         setResult(RESULT_CANCELED);
 
         // Display up indicator on action bar home button
-        if (AndroidCompat.SDK >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             ActionBarCompat bar = ActivityCompat.getActionBar(this);
             if (bar != null) {
                 bar.setDisplayOptions(ActionBarCompat.DISPLAY_HOME_AS_UP, ActionBarCompat.DISPLAY_HOME_AS_UP);

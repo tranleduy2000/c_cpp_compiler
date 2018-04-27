@@ -38,7 +38,7 @@ public class TermPreferences extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
 
         // Remove the action bar pref on older platforms without an action bar
-        if (AndroidCompat.SDK < 11) {
+        if (Build.VERSION.SDK_INT < 11) {
             Preference actionBarPref = findPreference(ACTIONBAR_KEY);
             PreferenceCategory screenCategory =
                     (PreferenceCategory) findPreference(CATEGORY_SCREEN_KEY);

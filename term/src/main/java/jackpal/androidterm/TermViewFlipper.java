@@ -42,7 +42,7 @@ public class TermViewFlipper extends ViewFlipper implements Iterable<View> {
      * This is the only known way to detect the view changing size due to
      * the IME being shown or hidden in API level <= 7.
      */
-    private final boolean mbPollForWindowSizeChange = (AndroidCompat.SDK < 8);
+    private final boolean mbPollForWindowSizeChange = (Build.VERSION.SDK_INT < 8);
     private final Handler mHandler = new Handler();
     private Context context;
     private Toast mToast;

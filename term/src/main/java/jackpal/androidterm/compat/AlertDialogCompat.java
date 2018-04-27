@@ -29,10 +29,10 @@ public class AlertDialogCompat extends AlertDialog {
 
     ////////////////////////////////////////////////////////////
     public static AlertDialog newInstance(Context context, int theme) {
-        if (AndroidCompat.SDK >= 14) {
+        if (Build.VERSION.SDK_INT >= 14) {
             return (new Api14OrLater(context, theme));
         }
-        if (AndroidCompat.SDK >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             return (new Api11OrLater(context, theme));
         }
         return (new AlertDialogCompat(context));
@@ -44,7 +44,7 @@ public class AlertDialogCompat extends AlertDialog {
     }
 
     public static AlertDialog.Builder newInstanceBuilder(Context context, int theme) {
-        if (AndroidCompat.SDK >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             return new Api11OrLaterBuilder(context, theme);
         } else {
             return new AlertDialog.Builder(context);
