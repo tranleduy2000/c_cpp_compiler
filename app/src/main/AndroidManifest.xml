@@ -73,12 +73,6 @@
         <activity android:name="com.jecelyin.editor.v2.ui.settings.SettingsActivity" />
         <activity android:name="com.jecelyin.android.file_explorer.FileExplorerActivity" />
 
-        <activity
-            android:name=".console.activities.ConsoleActivity"
-            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
-            android:label="Console"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <service
             android:name=".console.services.TermuxService"
             android:exported="false" />

@@ -21,13 +21,14 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.console.activities.ConsoleActivity;
 import com.duy.common.DLog;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
 import com.jecelyin.common.utils.UIUtils;
 
 import java.io.File;
+
+import jackpal.androidterm.TermActivity;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -60,9 +61,9 @@ public class CompileManager implements ICompileManager {
             mCompileDialog.dismiss();
         }
         File internalDir = mActivity.getFilesDir();
-        String cmd = new File(internalDir, GCCConstants.TEMP_BINARY_NAME).getAbsolutePath();
-        Intent intent = new Intent(mActivity, ConsoleActivity.class);
-        intent.putExtra(ConsoleActivity.EXTRA_BINARY_FILE_PATH, cmd);
+        String path = new File(internalDir, GCCConstants.TEMP_BINARY_NAME).getAbsolutePath();
+        Intent intent = new Intent(mActivity, TermActivity.class);
+        intent.putExtra(TermActivity.EXTRA_BINARY_FILE_PATH, path);
         mActivity.startActivity(intent);
     }
 

@@ -467,10 +467,7 @@ public class EditorDelegate implements TextWatcher {
         return ss;
     }
 
-    private static class Arguments {
-    }
-
-    public static class SavedState extends Arguments implements Parcelable {
+    public static class SavedState implements Parcelable {
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
             @Override
             public SavedState createFromParcel(Parcel source) {

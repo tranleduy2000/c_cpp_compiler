@@ -1,1 +1,1 @@
-include ':app', ':terminal-emulator', ':terminal-view', ':termux', ':editor-view', ':term', ':libtermexec', ':emulatorview'
+include ':app', /*':terminal-emulator', ':terminal-view', ':termux',*/ ':editor-view', ':term', ':libtermexec', ':emulatorview'

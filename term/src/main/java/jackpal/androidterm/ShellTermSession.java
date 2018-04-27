@@ -52,8 +52,13 @@ public class ShellTermSession extends GenericTermSession {
     };
 
     public ShellTermSession(TermSettings settings, String initialCommand) throws IOException {
-        super(ParcelFileDescriptor.open(new File("/dev/ptmx"), ParcelFileDescriptor.MODE_READ_WRITE),
-                settings, false);
+        this(ParcelFileDescriptor.open(new File("/dev/ptmx"), ParcelFileDescriptor.MODE_READ_WRITE),
+                settings, false, initialCommand);
+
+    }
+
+    public ShellTermSession(ParcelFileDescriptor fileDescriptor, TermSettings settings, boolean exitOnEOF, String initialCommand) throws IOException {
+        super(fileDescriptor, settings, exitOnEOF);
 
         initializeSession();
 

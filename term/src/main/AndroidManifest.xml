@@ -5,43 +5,26 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <application
-        android:allowBackup="true"
-        android:fullBackupContent="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/application_terminal"
-        android:theme="@style/Theme">
+    <application>
 
         <activity
             android:name=".TermActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
             android:name=".setting.TermSettingActivity"
             android:label="@string/preferences" />
+
         <activity
             android:name=".WindowList"
             android:label="@string/window_list" />
 
         <service
             android:name=".TermService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="jackpal.androidterm.action.START_TERM.v1" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
+            android:exported="false" />
 
 
     </application>

@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +52,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -165,6 +167,15 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
         return session;
     }
 
+    protected static TermSession createTermSession(Context context, TermSettings settings,
+                                                   String initialCommand, ParcelFileDescriptor fileDescriptor) throws IOException {
+        GenericTermSession session = new ShellTermSession(fileDescriptor, settings, true, initialCommand);
+        // XXX We should really be able to fetch this from within TermSession
+        session.setProcessExitMessage(context.getString(R.string.process_exit_message));
+
+        return session;
+    }
+
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -214,7 +225,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
 
             if (mTermSessions.size() == 0) {
                 try {
-                    mTermSessions.add(createTermSession());
+                    mTermSessions.add(createDefaultTermSession());
                 } catch (IOException e) {
                     Toast.makeText(this, "Failed to start terminal session", Toast.LENGTH_LONG).show();
                     finish();
@@ -260,24 +271,22 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
 
     private TermSession createTermSession() throws IOException {
         TermSettings settings = mSettings;
-        TermSession session = createTermSession(this, settings, getInitCommand());
+        TermSession session = createTermSession(this, settings, mSettings.getInitialCommand());
         session.setFinishCallback(mTermService);
         return session;
     }
 
-    /**
-     * Init command, this method should be return the path of binary file
-     */
-    private String getInitCommand() {
-        String initialCommand;
+    private TermSession createDefaultTermSession() throws IOException {
         String path = getIntent().getStringExtra(EXTRA_BINARY_FILE_PATH);
-        if (path != null) {
-            initialCommand = path;
-        } else {
-            initialCommand = mSettings.getInitialCommand();
-        }
-        return initialCommand;
+        File file = new File(path);
+        ParcelFileDescriptor fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+
+        TermSettings settings = mSettings;
+        TermSession session = createTermSession(this, settings, "", fileDescriptor);
+        session.setFinishCallback(mTermService);
+        return session;
     }
+
 
     private TermView createEmulatorView(TermSession session) {
         DisplayMetrics metrics = new DisplayMetrics();
