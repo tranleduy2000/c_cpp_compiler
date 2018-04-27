@@ -21,7 +21,7 @@ import java.io.File;
 /**
  * Compatibility class for java.io.File
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("ALL")
 public class FileCompat {
     public static boolean canExecute(File file) {
         return Api9OrLater.canExecute(file);

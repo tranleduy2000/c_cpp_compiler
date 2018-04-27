@@ -21,6 +21,7 @@ import java.io.IOException;
 /**
  * Utility methods for managing a pty file descriptor.
  */
+@SuppressWarnings("ALL")
 public class Exec {
     // Warning: bump the library revision, when an incompatible change happens
     static {

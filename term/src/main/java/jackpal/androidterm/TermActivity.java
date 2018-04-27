@@ -34,7 +34,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -88,7 +87,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     private boolean mStopServiceOnFinish = false;
     private Intent TSIntent;
     private int onResumeSelectWindow = -1;
-    private ComponentName mPrivateAlias;
     private TermService mTermService;
     private boolean mHaveFullHwKeyboard = false;
     /**
@@ -174,10 +172,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
-        Log.v(TermDebug.LOG_TAG, "onCreate");
-
-        mPrivateAlias = new ComponentName(this, RemoteInterface.PRIVACT_ACTIVITY_ALIAS);
 
         if (icicle == null)
             onNewIntent(getIntent());
@@ -506,26 +500,7 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     protected void onNewIntent(Intent intent) {
         if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
             // Don't repeat action if intent comes from history
-            return;
-        }
-
-        String action = intent.getAction();
-        if (TextUtils.isEmpty(action) || !mPrivateAlias.equals(intent.getComponent())) {
-            return;
-        }
-
-        // huge number simply opens new window
-        // TODO: add a way to restrict max number of windows per caller (possibly via reusing BoundSession)
-        switch (action) {
-            case RemoteInterface.PRIVACT_OPEN_NEW_WINDOW:
-                onResumeSelectWindow = Integer.MAX_VALUE;
-                break;
-            case RemoteInterface.PRIVACT_SWITCH_WINDOW:
-                int target = intent.getIntExtra(RemoteInterface.PRIVEXTRA_TARGET_WINDOW, -1);
-                if (target >= 0) {
-                    onResumeSelectWindow = target;
-                }
-                break;
+            System.out.println("TermActivity.onNewIntent");
         }
     }
 
