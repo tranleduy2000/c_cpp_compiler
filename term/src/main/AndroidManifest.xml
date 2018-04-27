@@ -80,26 +80,5 @@
         </service>
 
 
-        <activity
-            android:name="jackpal.androidterm.shortcuts.FSNavigator"
-            android:configChanges="orientation|keyboardHidden"
-            android:exported="true"
-            android:label="@string/addshortcut_button_find_command"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.OPENABLE" />
-
-                <data android:mimeType="*/*" />
-            </intent-filter>
-        </activity>
-
-
     </application>
 </manifest>
