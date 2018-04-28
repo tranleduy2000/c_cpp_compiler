@@ -20,16 +20,16 @@ import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
 import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
 
-import org.junit.Test;
+import junit.framework.TestCase;
 
 import java.util.ArrayList;
 
 /**
  * Created by Duy on 28-Apr-18.
  */
-public class OutputParserTest {
-    @Test
-    public void parse() throws Exception {
+public class OutputParserTest extends TestCase {
+
+    public void testParse() throws Exception {
         DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
         OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("D:\\Data\\Downloads\\c\\file.c: In function 'main':\n" +
@@ -38,8 +38,8 @@ public class OutputParserTest {
                 "       ^");
     }
 
-    @Test
-    public void parse2() throws Exception {
+
+    public void testParse2() throws Exception {
         DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
         OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("D:\\Data\\Downloads\\c\\file.c: In function 'main':\n" +
@@ -57,6 +57,18 @@ public class OutputParserTest {
         for (Diagnostic<? extends Diagnostic> diagnostic : diagnostics) {
             System.out.println(diagnostic);
         }
+    }
+
+
+    public void testFixIt() {
+        DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
+        OutputParser outputParser = new OutputParser(diagnosticsCollector);
+        outputParser.parse("fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{13:7-13:23}:\"temporaryVariable\"");
+        ArrayList<Diagnostic<? extends Diagnostic>> diagnostics = diagnosticsCollector.getDiagnostics();
+        for (Diagnostic<? extends Diagnostic> diagnostic : diagnostics) {
+            System.out.println(diagnostic);
+        }
+        assertEquals(diagnostics.size(), 1);
     }
 
 }

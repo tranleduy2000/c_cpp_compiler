@@ -16,6 +16,9 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic;
 
+import com.duy.ccppcompiler.compiler.diagnostic.model.SimpleDiagnostic;
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.DiagnosticSuggestion;
+
 /**
  * Created by Duy on 28-Apr-18.
  */
@@ -49,4 +52,7 @@ public class DiagnosticFactory {
         return Kind.OTHER;
     }
 
+    public static Diagnostic createFixIt(String filePath, int lineStart, int colStart, int lineEnd, int colEnd, String suggestion) {
+        return new DiagnosticSuggestion(filePath, lineStart, colStart, lineEnd, colEnd, suggestion);
+    }
 }

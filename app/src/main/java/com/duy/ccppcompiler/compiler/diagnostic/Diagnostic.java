@@ -18,6 +18,9 @@ package com.duy.ccppcompiler.compiler.diagnostic;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.
@@ -38,6 +41,7 @@ public interface Diagnostic<S> extends Parcelable {
      * {@code null} if no source object is associated with the
      * diagnostic.
      */
+    @Nullable
     S getSource();
 
     /**
@@ -98,8 +102,11 @@ public interface Diagnostic<S> extends Parcelable {
      *
      * @return a diagnostic code
      */
+    @Nullable
     String getCode();
 
     String getMessage(Context context);
 
+    @Nullable
+    ISuggestion getSuggestion();
 }

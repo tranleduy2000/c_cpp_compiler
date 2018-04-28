@@ -16,6 +16,11 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,13 +33,20 @@ import java.util.regex.Pattern;
  */
 
 public class OutputParser {
-    public static final Pattern PATTERN = Pattern.compile(
-            "(.*):" + /*File name*/
+    public static final Pattern DIAGNOSTICS_PATTERN = Pattern.compile(
+            "(.*):" + /*File path*/
                     "([0-9]+):" + /*Line*/
                     "([0-9]+):" + /*Col*/
                     "(\\s+.*:\\s+)" + /*Type*/
-                    "(.*)" /*Message*/
-            , Pattern.CASE_INSENSITIVE);
+                    "(.*)" /*Message*/);
+
+    //fix-it:"/storage/emulated/0/examples/simple/bit_print.c":{6:7-6:11}:"printf"
+    public static final Pattern FIX_IT_PATTERN = Pattern.compile(
+            "(fix-it):" +/*prefix*/
+                    "(.*):" +/*File path*/
+                    "\\{([0-9]+):([0-9]+)-([0-9]+):([0-9]+)}" + /*Index (line:col)-(line:col)*/
+                    "\"(.*)\"" /*Message*/
+    );
 
     private DiagnosticsCollector diagnosticsCollector;
 
@@ -44,21 +56,56 @@ public class OutputParser {
 
     @SuppressWarnings("unchecked")
     public void parse(String inputData) {
-        Matcher matcher = PATTERN.matcher(inputData);
-        while (matcher.find()) {
-            try {
-                String file = matcher.group(1);
-                int line = Integer.parseInt(matcher.group(2));
-                int col = Integer.parseInt(matcher.group(3));
+        try {
+            StringReader stringReader = new StringReader(inputData);
+            LineNumberReader lineNumberReader = new LineNumberReader(stringReader);
+
+            String line;
+            while ((line = lineNumberReader.readLine()) != null) {
+                processLine(line, lineNumberReader.readLine());
+            }
+
+        } catch (Exception e) {
+            //should not happened
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void processLine(@NonNull String line, @Nullable String nextLine) {
+        try {
+            Matcher matcher = DIAGNOSTICS_PATTERN.matcher(line);
+            if (matcher.find()) {
+                String filePath = matcher.group(1);
+                int lineNumber = Integer.parseInt(matcher.group(2));
+                int colNumber = Integer.parseInt(matcher.group(3));
                 Kind type = DiagnosticFactory.createType(matcher.group(4));
                 String message = matcher.group(5);
 
-                Diagnostic diagnostic = DiagnosticFactory.create(type, file, line, col, message);
+                Diagnostic diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
                 diagnosticsCollector.report(diagnostic);
-            } catch (Exception e) {
-                //should not happened
-                e.printStackTrace();
+                return;
             }
+            if (nextLine == null) {
+                return;
+            }
+
+            matcher = FIX_IT_PATTERN.matcher(line);
+            if (matcher.find()) {
+                String filePath = matcher.group(2);
+                int lineStart = Integer.parseInt(matcher.group(3));
+                int colStart = Integer.parseInt(matcher.group(4));
+                int lineEnd = Integer.parseInt(matcher.group(5));
+                int colEnd = Integer.parseInt(matcher.group(6));
+                String suggestion = matcher.group(7);
+                Diagnostic diagnostic = DiagnosticFactory.createFixIt(filePath, lineStart, colStart, lineEnd, colEnd, suggestion);
+                diagnosticsCollector.report(diagnostic);
+            } else {
+                processLine(nextLine, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //should not happend
         }
     }
 }

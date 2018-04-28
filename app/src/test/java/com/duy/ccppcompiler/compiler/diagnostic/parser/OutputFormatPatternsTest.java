@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 
 import java.util.regex.Matcher;
 
-import static com.duy.ccppcompiler.compiler.diagnostic.OutputParser.PATTERN;
+import static com.duy.ccppcompiler.compiler.diagnostic.OutputParser.DIAGNOSTICS_PATTERN;
 
 /**
  * Created by Duy on 28-Apr-18.
@@ -28,7 +28,7 @@ import static com.duy.ccppcompiler.compiler.diagnostic.OutputParser.PATTERN;
 public class OutputFormatPatternsTest extends TestCase {
 
     public void testError() {
-        Matcher matcher = PATTERN.matcher("D:\\Data\\Downloads\\c\\file.c:21:57: error: 'firstNber' undeclared (first use in this function)\n" +
+        Matcher matcher = DIAGNOSTICS_PATTERN.matcher("D:\\Data\\Downloads\\c\\file.c:21:57: error: 'firstNber' undeclared (first use in this function)\n" +
                 "       printf(\"\\nAfter swapping, firstNumber = %.2lf\\n\", firstNber);\n" +
                 "                                                         ^");
         assertTrue(matcher.find());
