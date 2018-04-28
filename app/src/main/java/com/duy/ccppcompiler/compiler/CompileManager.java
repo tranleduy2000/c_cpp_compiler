@@ -81,7 +81,7 @@ public class CompileManager implements ICompileManager {
     public void onCompileFailed(ShellResult shellResult) {
         finishCompile();
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
-            mCompileDialog.setMessage(shellResult.getMessage());
+            mCompileDialog.dismiss();
         }
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
         if (mDiagnosticPresenter != null) {
@@ -89,6 +89,7 @@ public class CompileManager implements ICompileManager {
             OutputParser parser = new OutputParser(diagnosticsCollector);
             parser.parse(shellResult.getMessage());
             mDiagnosticPresenter.setDiagnostics(diagnosticsCollector.getDiagnostics());
+            mDiagnosticPresenter.showView();
         }
     }
 

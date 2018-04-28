@@ -70,12 +70,6 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
         return mDiagnostics.size();
     }
 
-    public void addAll(List<Diagnostic> diagnostics) {
-        int start = mDiagnostics.size() - 1;
-        mDiagnostics.addAll(diagnostics);
-        notifyItemRangeInserted(start, start + diagnostics.size());
-    }
-
     public void remove(Diagnostic diagnostic) {
         int i = mDiagnostics.indexOf(diagnostic);
         if (i >= 0) {
@@ -100,6 +94,12 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
 
     public List<Diagnostic> getDiagnostics() {
         return mDiagnostics;
+    }
+
+    public void setData(List<Diagnostic> diagnostics) {
+        mDiagnostics.clear();
+        mDiagnostics.addAll(diagnostics);
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

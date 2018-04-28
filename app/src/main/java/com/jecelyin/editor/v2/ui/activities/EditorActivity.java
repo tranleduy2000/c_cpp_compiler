@@ -106,14 +106,12 @@ public class EditorActivity extends FullScreenActivity
     public RecyclerView mTabRecyclerView;
     public TextView mVersionTextView;
     public SymbolBarLayout mSymbolBarLayout;
-
+    public SlidingUpPanelLayout mSlidingUpPanelLayout;
     private TabManager mTabManager;
-
     private Preferences mPreferences;
     private ClusterCommand clusterCommand;
     private MenuManager mMenuManager;
     private long mExitTime;
-    private SlidingUpPanelLayout mSlidingUpPanelLayout;
     private DiagnosticPresenter mDiagnosticPresenter;
 
     @Override

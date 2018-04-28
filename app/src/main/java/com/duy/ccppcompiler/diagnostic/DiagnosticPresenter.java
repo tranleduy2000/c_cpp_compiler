@@ -22,6 +22,7 @@ import android.view.View;
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.manager.TabManager;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,16 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Override
     public void onDiagnosticClick(View view, Diagnostic diagnostic) {
         // TODO: 28-Apr-18 implement
+    }
+
+    @Override
+    public void showView() {
+        mActivity.mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+    }
+
+    @Override
+    public void hideView(){
+        mActivity.mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
     @MainThread

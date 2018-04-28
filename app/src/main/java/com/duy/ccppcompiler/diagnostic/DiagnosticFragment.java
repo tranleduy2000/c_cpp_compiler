@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -70,6 +71,9 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
         mRecyclerView = view.findViewById(R.id.diagnostic_list_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
+
         mAdapter = new DiagnosticAdapter(diagnostics, getContext());
         mAdapter.setDiagnosticClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
@@ -84,12 +88,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     @Override
     public void show(List<Diagnostic> diagnostics) {
-        clear();
-        addAll(diagnostics);
-    }
-
-    private void addAll(List<Diagnostic> diagnostics) {
-        mAdapter.addAll(diagnostics);
+        mAdapter.setData(diagnostics);
     }
 
     @Override
