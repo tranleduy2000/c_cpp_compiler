@@ -17,6 +17,7 @@
 package com.duy.ccppcompiler.diagnostic;
 
 import android.support.annotation.MainThread;
+import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
@@ -58,8 +59,14 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         Object source = diagnostic.getSource();
         if (source instanceof File) {
             File file = (File) source;
-            EditorDelegate editorDelegate = mTabManager.getEditorDelegate(file);
-            if (editorDelegate != null) {
+            Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(file);
+            if (pair != null) {
+                int index = pair.first;
+                EditorDelegate editorDelegate = pair.second;
+
+                mTabManager.setCurrentTab(index);
+                editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
+
                 Command command = new Command(Command.CommandEnum.GOTO_LINE_COL);
                 command.args.putInt("line", (int) diagnostic.getLineNumber());
                 command.args.putInt("col", (int) diagnostic.getColumnNumber());

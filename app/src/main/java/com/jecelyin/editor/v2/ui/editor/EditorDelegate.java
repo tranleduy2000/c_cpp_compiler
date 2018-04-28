@@ -347,6 +347,9 @@ public class EditorDelegate implements TextWatcher {
             case BACK:
                 mEditText.backLocation();
                 break;
+            case REQUEST_FOCUS:
+                mEditText.requestFocus();
+                break;
         }
         return true;
     }

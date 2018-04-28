@@ -60,6 +60,6 @@ public class Command {
         INSERT_TEXT,
         RELOAD_WITH_ENCODING,
         FULL_SCREEN,
-        THEME,
+        THEME, REQUEST_FOCUS,
     }
 }

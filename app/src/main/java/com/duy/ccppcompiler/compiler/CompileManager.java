@@ -86,6 +86,7 @@ public class CompileManager implements ICompileManager {
             mCompileDialog.dismiss();
         }
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
+
         if (mDiagnosticPresenter != null) {
             DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector<>();
             OutputParser parser = new OutputParser(diagnosticsCollector);
