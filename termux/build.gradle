@@ -10,6 +10,9 @@ android {
         applicationId "com.termux"
         versionCode 60
         versionName "0.60"
+        ndk {
+            abiFilters 'armeabi-v7a', 'x86'
+        }
     }
 
     buildTypes {
