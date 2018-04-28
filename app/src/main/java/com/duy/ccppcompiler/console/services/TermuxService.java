@@ -18,16 +18,11 @@ package com.duy.ccppcompiler.console.services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.termux.terminal.EmulatorDebug;
 import com.termux.terminal.TerminalSession;
@@ -42,30 +37,15 @@ public final class TermuxService extends Service implements SessionChangedCallba
      */
     public static final String ACTION_EXECUTE = "com.termux.service_execute";
 
-
     private static final String EXTRA_ARGUMENTS = "com.termux.execute.arguments";
     private static final String EXTRA_CURRENT_WORKING_DIRECTORY = "com.termux.execute.cwd";
-    private static final int NOTIFICATION_ID = 1337;
     private static final String ACTION_STOP_SERVICE = "com.termux.service_stop";
-    private static final String ACTION_LOCK_WAKE = "com.termux.service_wake_lock";
-    private static final String ACTION_UNLOCK_WAKE = "com.termux.service_wake_unlock";
     private static final String EXTRA_EXECUTE_IN_BACKGROUND = "com.termux.execute.background";
 
 
     private final IBinder mBinder = new LocalBinder();
-    private final Handler mHandler = new Handler();
     public SessionChangedCallback mSessionChangeCallback;
-    /**
-     * If the user has executed the {@link #ACTION_STOP_SERVICE} intent.
-     */
-    private boolean mWantsToStop = false;
     private TerminalSession mTerminalSessions = null;
-    /**
-     * The wake lock and wifi lock are always acquired and released together.
-     */
-    private PowerManager.WakeLock mWakeLock;
-    private WifiManager.WifiLock mWifiLock;
-    private Toast toast;
 
     @Override
     public void onCreate() {
@@ -77,30 +57,8 @@ public final class TermuxService extends Service implements SessionChangedCallba
 
         String action = intent.getAction();
         if (ACTION_STOP_SERVICE.equals(action)) {
-            mWantsToStop = true;
             mTerminalSessions.finishIfRunning();
             stopSelf();
-        } else if (ACTION_LOCK_WAKE.equals(action)) {
-            if (mWakeLock == null) {
-                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, EmulatorDebug.LOG_TAG);
-                mWakeLock.acquire();
-
-                // http://tools.android.com/tech-docs/lint-in-studio-2-3#TOC-WifiManager-Leak
-                WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, EmulatorDebug.LOG_TAG);
-                mWifiLock.acquire();
-
-            }
-        } else if (ACTION_UNLOCK_WAKE.equals(action)) {
-            if (mWakeLock != null) {
-                mWakeLock.release();
-                mWakeLock = null;
-
-                mWifiLock.release();
-                mWifiLock = null;
-
-            }
         } else if (ACTION_EXECUTE.equals(action)) {
             Uri executableUri = intent.getData();
             String executablePath = (executableUri == null ? null : executableUri.getPath());
@@ -147,9 +105,6 @@ public final class TermuxService extends Service implements SessionChangedCallba
 
     @Override
     public void onDestroy() {
-        if (mWakeLock != null) mWakeLock.release();
-        if (mWifiLock != null) mWifiLock.release();
-
         stopForeground(true);
         //System.out.println("TermuxService:onDestroy");
         mTerminalSessions.finishIfRunning();
@@ -157,7 +112,6 @@ public final class TermuxService extends Service implements SessionChangedCallba
     }
 
     private TerminalSession createTermSession(String executablePath, String[] arguments, String cwd) {
-        //System.out.println("----------------->createTermSession");
         File f = new File(EnvironmentVariable.getHomePath(this));
         if (!f.exists())
             f.mkdirs();
@@ -195,12 +149,7 @@ public final class TermuxService extends Service implements SessionChangedCallba
         if (processArgs.length > 1)
             System.arraycopy(processArgs, 1, args, 1, processArgs.length - 1);
 
-        TerminalSession session = new TerminalSession(executablePath, cwd, args, env, this);
-        return session;
-    }
-
-    public void removeTermSession() {
-        stopSelf();
+        return new TerminalSession(executablePath, cwd, args, env, this);
     }
 
     @Override
@@ -236,15 +185,6 @@ public final class TermuxService extends Service implements SessionChangedCallba
 
     public void onBackgroundJobExited(final BackgroundJob task) {
         stopSelf();
-    }
-
-    private void showToast(CharSequence text) {
-        if (toast == null) {
-            toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(text);
-        }
-        toast.show();
     }
 
     /**
