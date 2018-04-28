@@ -97,25 +97,6 @@ public interface Diagnostic<S> {
      */
     String getCode();
 
-    public enum Kind {
-        /**
-         * Problem which prevents the tool's normal completion.
-         */
-        ERROR,
-        /**
-         * Problem which does not usually prevent the tool from
-         * completing normally.
-         */
-        WARNING,
-        /**
-         * Informative message from the tool.
-         */
-        NOTE,
-        /**
-         * Diagnostic which does not fit within the other kinds.
-         */
-        OTHER,
-    }
 
 
 }
