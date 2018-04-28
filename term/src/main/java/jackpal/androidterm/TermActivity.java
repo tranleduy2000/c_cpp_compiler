@@ -35,6 +35,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -169,19 +170,16 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
-        if (icicle == null)
-            onNewIntent(getIntent());
+        setContentView(R.layout.term_activity);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mViewFlipper = findViewById(R.id.view_flipper);
 
         final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettings = new TermSettings(getResources(), mPrefs);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         startService();
-
-        setContentView(R.layout.term_activity);
-        mViewFlipper = findViewById(R.id.view_flipper);
-
         mHaveFullHwKeyboard = checkHaveFullHwKeyboard(getResources().getConfiguration());
 
         updatePrefs();
@@ -517,15 +515,6 @@ public class TermActivity extends AppCompatActivity implements UpdateCallback, S
                 break;
         }
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
-            // Don't repeat action if intent comes from history
-            System.out.println("TermActivity.onNewIntent");
-        }
-    }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
