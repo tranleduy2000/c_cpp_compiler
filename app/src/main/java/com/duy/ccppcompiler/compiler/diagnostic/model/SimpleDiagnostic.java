@@ -105,17 +105,6 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
     }
 
     @Override
-    public String toString() {
-        return "SimpleDiagnostic{" +
-                "kind=" + kind +
-                ", filePath='" + filePath + '\'' +
-                ", line=" + line +
-                ", col=" + col +
-                ", message='" + message + '\'' +
-                '}';
-    }
-
-    @Override
     public long getEndPosition() {
         return NOPOS;
     }
@@ -143,12 +132,24 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
     @Nullable
     @Override
     public ISuggestion getSuggestion() {
-        return null;
+        return suggestion;
     }
 
     @Override
     public void setSuggestion(ISuggestion suggestion) {
         this.suggestion = suggestion;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleDiagnostic{" +
+                "kind=" + kind +
+                ", filePath='" + filePath + '\'' +
+                ", line=" + line +
+                ", col=" + col +
+                ", message='" + message + '\'' +
+                ", suggestion=" + suggestion +
+                '}';
     }
 
     @Override
@@ -163,7 +164,8 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
         if (getKind() != that.getKind()) return false;
         if (filePath != null ? !filePath.equals(that.filePath) : that.filePath != null)
             return false;
-        return message != null ? message.equals(that.message) : that.message == null;
+        if (message != null ? !message.equals(that.message) : that.message != null) return false;
+        return getSuggestion() != null ? getSuggestion().equals(that.getSuggestion()) : that.getSuggestion() == null;
     }
 
     @Override
@@ -173,7 +175,7 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
         result = 31 * result + line;
         result = 31 * result + col;
         result = 31 * result + (message != null ? message.hashCode() : 0);
+        result = 31 * result + (getSuggestion() != null ? getSuggestion().hashCode() : 0);
         return result;
     }
-
 }

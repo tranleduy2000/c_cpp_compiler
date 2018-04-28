@@ -23,6 +23,7 @@ import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 
 /**
  * Created by Duy on 28-Apr-18.
@@ -63,7 +64,8 @@ public class OutputParserTest extends TestCase {
     public void testFixIt() {
         DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
         OutputParser outputParser = new OutputParser(diagnosticsCollector);
-        outputParser.parse("fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{13:7-13:23}:\"temporaryVariable\"");
+        outputParser.parse("/storage/emulated/0/examples/simple/bit_print.c:6:7: warning: implicit declaration of function 'pinf'; did you mean 'printf'?\n" +
+                "                  fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");
         ArrayList<Diagnostic<? extends Diagnostic>> diagnostics = diagnosticsCollector.getDiagnostics();
         for (Diagnostic<? extends Diagnostic> diagnostic : diagnostics) {
             System.out.println(diagnostic);
@@ -71,4 +73,8 @@ public class OutputParserTest extends TestCase {
         assertEquals(diagnostics.size(), 1);
     }
 
+    public void testFixIt2() {
+        Matcher matcher = OutputParser.FIX_IT_PATTERN.matcher("fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");
+        assertTrue(matcher.find());
+    }
 }

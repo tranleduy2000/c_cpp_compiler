@@ -43,12 +43,11 @@ public class OutputParser {
                     "(.*)" /*Message*/);
 
     //fix-it:"/storage/emulated/0/examples/simple/bit_print.c":{6:7-6:11}:"printf"
-    public static final Pattern FIX_IT_PATTERN = Pattern.compile(Pattern.quote(
+    public static final Pattern FIX_IT_PATTERN = Pattern.compile(
             "(fix-it):" +/*prefix*/
                     "(.*):" +/*File path*/
-                    "\\{([0-9]+):([0-9]+)-([0-9]+):([0-9]+)}:" + /*Index (line:col)-(line:col)*/
-                    "\"(.*)\"" /*Message*/
-    ));
+                    "\\{([0-9]+):([0-9]+)-([0-9]+):([0-9]+)\\}:" + /*Index (line:col)-(line:col)*/
+                    Pattern.quote("\"") + "(.*)" + Pattern.quote("\"")/*Message*/);
 
     private DiagnosticsCollector diagnosticsCollector;
 
@@ -76,6 +75,7 @@ public class OutputParser {
     @SuppressWarnings("unchecked")
     private void processLine(@NonNull String line, @Nullable String nextLine) {
         try {
+            line = line.trim();
             Matcher matcher = DIAGNOSTICS_PATTERN.matcher(line);
             Diagnostic diagnostic;
             if (matcher.find()) {
@@ -96,6 +96,7 @@ public class OutputParser {
             if (nextLine == null) {
                 return;
             }
+            nextLine = nextLine.trim();
 
             matcher = FIX_IT_PATTERN.matcher(nextLine);
             if (matcher.find()) {

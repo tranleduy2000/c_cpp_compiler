@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2018 Mr Duy
  *
@@ -31,6 +32,7 @@ import com.jecelyin.editor.v2.ui.activities.EditorActivity;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -88,8 +90,17 @@ public class CompileManager implements ICompileManager {
             DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector<>();
             OutputParser parser = new OutputParser(diagnosticsCollector);
             parser.parse(shellResult.getMessage());
-            mDiagnosticPresenter.setDiagnostics(diagnosticsCollector.getDiagnostics());
+            ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
+            mDiagnosticPresenter.setDiagnostics(diagnostics);
             mDiagnosticPresenter.showView();
+
+            debug(diagnostics);
+        }
+    }
+
+    private void debug(ArrayList diagnostics) {
+        for (Object diagnostic : diagnostics) {
+            System.out.println(diagnostic);
         }
     }
 

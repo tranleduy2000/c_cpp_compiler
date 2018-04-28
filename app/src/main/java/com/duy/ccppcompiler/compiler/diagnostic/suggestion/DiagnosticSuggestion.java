@@ -83,6 +83,45 @@ public class DiagnosticSuggestion implements Parcelable, ISuggestion {
     }
 
     @Override
+    public String toString() {
+        return "DiagnosticSuggestion{" +
+                "filePath='" + filePath + '\'' +
+                ", lineStart=" + lineStart +
+                ", colStart=" + colStart +
+                ", lineEnd=" + lineEnd +
+                ", colEnd=" + colEnd +
+                ", suggestion='" + suggestion + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DiagnosticSuggestion)) return false;
+
+        DiagnosticSuggestion that = (DiagnosticSuggestion) o;
+
+        if (getLineStart() != that.getLineStart()) return false;
+        if (getColStart() != that.getColStart()) return false;
+        if (getLineEnd() != that.getLineEnd()) return false;
+        if (getColEnd() != that.getColEnd()) return false;
+        if (getFilePath() != null ? !getFilePath().equals(that.getFilePath()) : that.getFilePath() != null)
+            return false;
+        return getSuggestion() != null ? getSuggestion().equals(that.getSuggestion()) : that.getSuggestion() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getFilePath() != null ? getFilePath().hashCode() : 0;
+        result = 31 * result + getLineStart();
+        result = 31 * result + getColStart();
+        result = 31 * result + getLineEnd();
+        result = 31 * result + getColEnd();
+        result = 31 * result + (getSuggestion() != null ? getSuggestion().hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
