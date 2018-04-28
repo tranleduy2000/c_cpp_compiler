@@ -16,6 +16,8 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic;
 
+import android.content.Context;
+
 /**
  * Created by Duy on 28-Apr-18.
  */
@@ -97,6 +99,6 @@ public interface Diagnostic<S> {
      */
     String getCode();
 
-
+    String getMessage(Context context);
 
 }

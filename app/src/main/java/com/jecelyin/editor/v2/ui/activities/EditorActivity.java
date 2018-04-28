@@ -75,6 +75,7 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.gjt.sp.jedit.Catalog;
 
@@ -111,6 +112,7 @@ public class EditorActivity extends FullScreenActivity
     private MenuManager mMenuManager;
     private FolderChooserDialog.FolderCallback findFolderCallback;
     private long mExitTime;
+    private SlidingUpPanelLayout mSlidingUpPanelLayout;
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -231,23 +233,27 @@ public class EditorActivity extends FullScreenActivity
         if (mMenuManager == null) {
             mMenuManager = new MenuManager(this);
         }
+        final View toggleView = findViewById(R.id.btn_toggle_panel);
+        mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);
+        mSlidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                toggleView.animate().rotation(180 * slideOffset).start();
+            }
+        });
     }
 
     private void initToolbar() {
-
-
         Resources res = getResources();
-
         mToolbar.setNavigationIcon(R.drawable.ic_drawer_raw);
         mToolbar.setNavigationContentDescription(R.string.tab);
 
         Menu menu = mToolbar.getMenu();
-        List<MenuItemInfo> menuItemInfos = MenuFactory.getInstance(this).getToolbarIcon();
-        for (MenuItemInfo item : menuItemInfos) {
+        List<MenuItemInfo> items = MenuFactory.getInstance(this).getToolbarIcon();
+        for (MenuItemInfo item : items) {
             MenuItem menuItem = menu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), Menu.NONE, item.getTitleResId());
             menuItem.setIcon(MenuManager.makeToolbarNormalIcon(res, item.getIconResId()));
 
-            //menuItem.setShortcut()
             menuItem.setOnMenuItemClickListener(this);
             menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }

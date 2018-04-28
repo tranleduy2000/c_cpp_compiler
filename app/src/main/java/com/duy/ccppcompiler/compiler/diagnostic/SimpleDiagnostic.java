@@ -16,13 +16,15 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic;
 
+import android.content.Context;
+
 import java.io.File;
 
 /**
  * Created by Duy on 28-Apr-18.
  */
 
-public class SimpleDiagnostic implements Diagnostic {
+public class SimpleDiagnostic implements Diagnostic<File> {
     private final Kind kind;
     private final String filePath;
     private final int line;
@@ -43,7 +45,7 @@ public class SimpleDiagnostic implements Diagnostic {
     }
 
     @Override
-    public Object getSource() {
+    public File getSource() {
         return new File(filePath);
     }
 
@@ -86,5 +88,35 @@ public class SimpleDiagnostic implements Diagnostic {
     @Override
     public String getCode() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getMessage(Context context) {
+        return message;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SimpleDiagnostic)) return false;
+
+        SimpleDiagnostic that = (SimpleDiagnostic) o;
+
+        if (line != that.line) return false;
+        if (col != that.col) return false;
+        if (getKind() != that.getKind()) return false;
+        if (filePath != null ? !filePath.equals(that.filePath) : that.filePath != null)
+            return false;
+        return message != null ? message.equals(that.message) : that.message == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getKind() != null ? getKind().hashCode() : 0;
+        result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
+        result = 31 * result + line;
+        result = 31 * result + col;
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        return result;
     }
 }
