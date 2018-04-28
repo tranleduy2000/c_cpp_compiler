@@ -367,13 +367,22 @@ public class EditAreaView extends BaseEditorView {
         setSelection(getLayout().getLineStart(getLineCount() - 1));
     }
 
-    public void gotoLine(int line) {
+    /**
+     * Move cursor to line: column
+     *
+     * @param line - the line, if line not exist, doesn't work
+     * @param col  - current column, if col < 0, cursor is start at line
+     */
+    public void gotoLine(int line, int col) {
         if (line <= 0 || line > getLineCount())
             return;
         int vLine = getLayout().realLineToVirtualLine(line);
         if (vLine == -1)
             return;
         int offset = getLayout().getLineStart(vLine);
+        if (col > 0) {
+            offset += col - 1; /*the column start at 1*/
+        }
         setSelection(offset);
     }
 

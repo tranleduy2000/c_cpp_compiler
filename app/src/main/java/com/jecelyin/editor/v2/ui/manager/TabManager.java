@@ -19,6 +19,7 @@
 package com.jecelyin.editor.v2.ui.manager;
 
 import android.database.DataSetObserver;
+import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -230,5 +231,22 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     public IEditorPagerAdapter getEditorPagerAdapter() {
         return mEditorFragmentPagerAdapter;
+    }
+
+    /**
+     * Get current editor edit file
+     *
+     * @return null if not found
+     */
+    @Nullable
+    public EditorDelegate getEditorDelegate(File file) {
+        String path = file.getPath();
+        ArrayList<EditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
+        for (EditorDelegate editorDelegate : allEditor) {
+            if (editorDelegate.getPath().equals(path)) {
+                return editorDelegate;
+            }
+        }
+        return null;
     }
 }

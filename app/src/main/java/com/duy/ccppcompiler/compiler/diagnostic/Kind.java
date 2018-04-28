@@ -16,6 +16,10 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic;
 
+/**
+ * https://gcc.gnu.org/onlinedocs/gcc-7.2.0/gcc/Diagnostic-Message-Formatting-Options.html
+ * https://gcc.gnu.org/onlinedocs/gcc-3.3.5/gnat_ug_unx/Output-and-Error-Message-Control.html
+ */
 public enum Kind {
     /**
      * Problem which prevents the tool's normal completion.

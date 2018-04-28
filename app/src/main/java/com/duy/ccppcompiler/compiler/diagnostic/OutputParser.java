@@ -20,6 +20,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * https://gcc.gnu.org/onlinedocs/gcc-3.3.5/gnat_ug_unx/Output-and-Error-Message-Control.html
+ * <p>
+ * https://gcc.gnu.org/onlinedocs/gcc-7.2.0/gcc/Diagnostic-Message-Formatting-Options.html
+ * <p>
  * Created by Duy on 28-Apr-18.
  */
 

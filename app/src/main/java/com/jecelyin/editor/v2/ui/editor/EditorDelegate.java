@@ -273,8 +273,10 @@ public class EditorDelegate implements TextWatcher {
                 if (!readonly)
                     mEditText.convertWrapCharTo((String) command.object);
                 break;
-            case GOTO_LINE:
-                mEditText.gotoLine(command.args.getInt("line"));
+            case GOTO_LINE_COL:
+                int col = command.args.getInt("col", -1);
+                int line = command.args.getInt("line", -1);
+                mEditText.gotoLine(line, col);
                 break;
             case GOTO_TOP:
                 mEditText.gotoTop();

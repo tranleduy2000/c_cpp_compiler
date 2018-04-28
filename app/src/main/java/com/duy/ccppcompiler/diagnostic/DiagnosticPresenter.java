@@ -20,10 +20,14 @@ import android.support.annotation.MainThread;
 import android.view.View;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
+import com.duy.common.DLog;
+import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.manager.TabManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -31,6 +35,7 @@ import java.util.ArrayList;
  */
 
 public class DiagnosticPresenter implements DiagnosticContract.Presenter {
+    private static final String TAG = "DiagnosticPresenter";
     private final EditorActivity mActivity;
     private final TabManager mTabManager;
     private ArrayList<Diagnostic> diagnostics;
@@ -48,7 +53,22 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @MainThread
     @Override
     public void onDiagnosticClick(View view, Diagnostic diagnostic) {
-        // TODO: 28-Apr-18 implement
+        if (DLog.DEBUG)
+            DLog.d(TAG, "onDiagnosticClick() called with: view = [" + view + "], diagnostic = [" + diagnostic + "]");
+        Object source = diagnostic.getSource();
+        if (source instanceof File) {
+            File file = (File) source;
+            EditorDelegate editorDelegate = mTabManager.getEditorDelegate(file);
+            if (editorDelegate != null) {
+                Command command = new Command(Command.CommandEnum.GOTO_LINE_COL);
+                command.args.putInt("line", (int) diagnostic.getLineNumber());
+                command.args.putInt("col", (int) diagnostic.getColumnNumber());
+                editorDelegate.doCommand(command);
+            } else {
+                mTabManager.newTab(file);
+                onDiagnosticClick(view, diagnostic);
+            }
+        }
     }
 
     @Override
@@ -57,7 +77,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @Override
-    public void hideView(){
+    public void hideView() {
         mActivity.mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 

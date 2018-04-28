@@ -64,6 +64,7 @@ public class GCCCompiler implements INativeCompiler {
         flags.add("-Og");
         flags.add("-o");
         flags.add(new File(internalDir.getAbsolutePath(), GCCConstants.TEMP_BINARY_NAME).getAbsolutePath());
+        flags.addAll(getUserFlags());
 
         String TEMPEnv = new File(gccDir, GCCConstants.BUILD_DIR).getAbsolutePath();
         String PATHEnv =
@@ -80,5 +81,11 @@ public class GCCCompiler implements INativeCompiler {
         envMap.put("PATH", PATHEnv);
         envMap.put("TEMP", TEMPEnv);
         return ShellUtils.execCommand(compilerPath, flags, envMap);
+    }
+
+    private ArrayList<String> getUserFlags() {
+        ArrayList<String> flags = new ArrayList<>();
+        flags.add("-fdiagnostics-show-location=every-line");
+        return flags;
     }
 }

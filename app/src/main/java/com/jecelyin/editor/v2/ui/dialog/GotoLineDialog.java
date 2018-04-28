@@ -42,7 +42,7 @@ public class GotoLineDialog extends AbstractDialog {
             public void onConfirm(CharSequence input) {
                 try {
                     int line = StringUtils.toInt(input.toString());
-                    Command command = new Command(Command.CommandEnum.GOTO_LINE);
+                    Command command = new Command(Command.CommandEnum.GOTO_LINE_COL);
                     command.args.putInt("line", line);
                     getMainActivity().doCommand(command);
                 } catch (Exception e) {
