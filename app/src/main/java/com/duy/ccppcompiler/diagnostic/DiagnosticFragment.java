@@ -37,10 +37,10 @@ import java.util.List;
  */
 
 public class DiagnosticFragment extends Fragment implements DiagnosticContract.View, DiagnosticClickListener {
+    private static final String KEY_DATA = "data";
     private RecyclerView mRecyclerView;
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticAdapter mAdapter;
-
 
     private void init() {
 
@@ -56,9 +56,16 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ArrayList<Diagnostic> diagnostics;
+        if (savedInstanceState != null) {
+            diagnostics = savedInstanceState.getParcelableArrayList(KEY_DATA);
+        } else {
+            diagnostics = new ArrayList<>();
+        }
+
         mRecyclerView = view.findViewById(R.id.diagnostic_list_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new DiagnosticAdapter(new ArrayList<Diagnostic>(), getContext());
+        mAdapter = new DiagnosticAdapter(diagnostics, getContext());
         mAdapter.setDiagnosticClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         init();
@@ -67,6 +74,8 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        ArrayList<Diagnostic> diagnostics = new ArrayList<>(mAdapter.getDiagnostics());
+        outState.putParcelableArrayList(KEY_DATA, diagnostics);
     }
 
     @Override
