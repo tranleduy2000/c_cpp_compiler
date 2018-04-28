@@ -42,14 +42,19 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticAdapter mAdapter;
 
-    private void init() {
+    public static DiagnosticFragment newInstance() {
 
+        Bundle args = new Bundle();
+
+        DiagnosticFragment fragment = new DiagnosticFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+   return inflater.inflate(R.layout.fragment_diagnostic, container, false);
 
     }
 
@@ -68,7 +73,6 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         mAdapter = new DiagnosticAdapter(diagnostics, getContext());
         mAdapter.setDiagnosticClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-        init();
     }
 
     @Override

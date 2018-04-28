@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -45,6 +46,7 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
+import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.INativeCompiler;
@@ -227,9 +229,16 @@ public class EditorActivity extends FullScreenActivity
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.diagnostic_list_view);
-        DiagnosticView diagnosticView = new DiagnosticView(recyclerView, this);
-        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticView, this, mTabManager);
+        FragmentManager fm = getSupportFragmentManager();
+        String tag = DiagnosticFragment.class.getSimpleName();
+        DiagnosticFragment diagnosticFragment = (DiagnosticFragment)
+                fm.findFragmentByTag(tag);
+        if (diagnosticFragment == null) {
+            diagnosticFragment = DiagnosticFragment.newInstance();
+        }
+        fm.beginTransaction().replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
+                .commit();
+        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
     }
 
     private void initToolbar() {
