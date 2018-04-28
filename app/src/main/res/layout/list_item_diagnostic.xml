@@ -13,48 +13,64 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="?selectableItemBackground"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:background="?selectableItemBackground"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_line"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_line_col"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:padding="4dp"
+            android:textColor="?android:textColorPrimary"
+            android:typeface="monospace"
+            tools:text="12:22" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/txt_line_col"
+            android:layout_toRightOf="@+id/txt_line_col"
+            android:padding="4dp"
+            android:textColor="?android:textColorPrimary"
+            android:typeface="monospace"
+            tools:text="main.c" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/txt_file"
+            android:layout_toRightOf="@+id/txt_file"
+            android:padding="4dp"
+            android:textColor="?android:textColorPrimary"
+            android:typeface="monospace"
+            tools:text="Long message Long message Long message Long messageLong messageLong messageLong messageLong messageLong message" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_fix_it"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-        android:textColor="?android:textColorPrimary"
-        android:typeface="monospace"
-        tools:text="1" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="Fit it"
+        android:textAllCaps="false" />
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_col"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-
-        android:textColor="?android:textColorPrimary"
-        android:typeface="monospace"
-        tools:text="1" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_file"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-        android:textColor="?android:textColorPrimary"
-        android:typeface="monospace"
-        tools:text="main.c" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_message"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-        android:textColor="?android:textColorPrimary"
-        android:typeface="monospace"
-        tools:text="Sample message" />
-</TableRow>
+</LinearLayout>

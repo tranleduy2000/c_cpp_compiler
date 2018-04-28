@@ -109,4 +109,6 @@ public interface Diagnostic<S> extends Parcelable {
 
     @Nullable
     ISuggestion getSuggestion();
+
+    void setSuggestion(ISuggestion suggestion);
 }

@@ -16,13 +16,15 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic.suggestion;
 
+import android.os.Parcelable;
+
 import java.io.File;
 
 /**
  * Created by Duy on 29-Apr-18.
  */
 
-public interface ISuggestion {
+public interface ISuggestion extends Parcelable {
     File getFilePath();
 
     int getLineStart();

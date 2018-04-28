@@ -40,16 +40,19 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Diagnostic diagnostic = mDiagnostics.get(position);
         if (diagnostic.getLineNumber() != Diagnostic.NOPOS) {
-            holder.txtLine.setText(String.valueOf(diagnostic.getLineNumber()));
-            if (diagnostic.getColumnNumber() != Diagnostic.NOPOS) {
-                holder.txtCol.setText(String.valueOf(diagnostic.getColumnNumber()));
-            } else {
-                holder.txtCol.getEditableText().clear();
-            }
+            String text = diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber();
+            holder.txtLineCol.setText(text);
         } else {
-            holder.txtLine.getEditableText().clear();
-            holder.txtCol.getEditableText().clear();
+            holder.txtLineCol.getEditableText().clear();
         }
+        holder.btnFixIt.setVisibility(diagnostic.getSuggestion() != null ?
+                View.VISIBLE : View.GONE);
+        holder.btnFixIt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDiagnosticClickListener.onSuggestionClick(v, diagnostic.getSuggestion());
+            }
+        });
         Object source = diagnostic.getSource();
         if (source instanceof File) {
             holder.txtFile.setText(((File) source).getName());
@@ -103,15 +106,16 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtLine, txtCol, txtMessage, txtFile;
+        TextView txtLineCol, txtMessage, txtFile;
         View root;
+        View btnFixIt;
 
         ViewHolder(View itemView) {
             super(itemView);
-            txtLine = itemView.findViewById(R.id.txt_line);
-            txtCol = itemView.findViewById(R.id.txt_col);
+            txtLineCol = itemView.findViewById(R.id.txt_line_col);
             txtMessage = itemView.findViewById(R.id.txt_message);
             txtFile = itemView.findViewById(R.id.txt_file);
+            btnFixIt = itemView.findViewById(R.id.btn_fix_it);
             root = itemView;
         }
     }

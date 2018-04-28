@@ -19,9 +19,11 @@ package com.duy.ccppcompiler.compiler.diagnostic.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.compiler.diagnostic.Kind;
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
 import java.io.File;
 
@@ -46,13 +48,16 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
     private final int line;
     private final int col;
     private final String message;
+    @Nullable
+    private ISuggestion suggestion;
 
-    public SimpleDiagnostic(Kind kind, String filePath, int line, int col, String message) {
+    public SimpleDiagnostic(Kind kind, String filePath, int line, int col, String message, @Nullable ISuggestion suggestion) {
         this.kind = kind;
         this.filePath = filePath;
         this.line = line;
         this.col = col;
         this.message = message;
+        this.suggestion = suggestion;
     }
 
     protected SimpleDiagnostic(Parcel in) {
@@ -61,6 +66,7 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
         line = in.readInt();
         col = in.readInt();
         message = in.readString();
+        suggestion = in.readParcelable(ISuggestion.class.getClassLoader());
     }
 
     @Override
@@ -70,6 +76,7 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
         dest.writeInt(line);
         dest.writeInt(col);
         dest.writeString(message);
+        dest.writeParcelable(suggestion, flags);
     }
 
     @Override
@@ -131,6 +138,17 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
     @Override
     public String getMessage(Context context) {
         return message;
+    }
+
+    @Nullable
+    @Override
+    public ISuggestion getSuggestion() {
+        return null;
+    }
+
+    @Override
+    public void setSuggestion(ISuggestion suggestion) {
+        this.suggestion = suggestion;
     }
 
     @Override

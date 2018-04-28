@@ -19,6 +19,7 @@ package com.duy.ccppcompiler.diagnostic;
 import android.view.View;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.
@@ -26,4 +27,6 @@ import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 
 public interface DiagnosticClickListener {
     public void onDiagnosisClick(Diagnostic diagnostic, View view);
+
+    void onSuggestionClick(View v, ISuggestion suggestion);
 }

@@ -17,6 +17,9 @@
 package com.duy.ccppcompiler.compiler.diagnostic.suggestion;
 
 /**
+ * An empty replacement string indicates that the given range is to be removed. An empty range
+ * (e.g. “45:3-45:3”) indicates that the string is to be inserted at the given position.
+ * Otherwise replace
  * Created by Duy on 29-Apr-18.
  */
 

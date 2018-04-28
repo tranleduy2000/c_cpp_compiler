@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,5 +117,10 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         if (mPresenter != null) {
             mPresenter.onDiagnosticClick(view, diagnostic);
         }
+    }
+
+    @Override
+    public void onSuggestionClick(View v, ISuggestion suggestion) {
+
     }
 }

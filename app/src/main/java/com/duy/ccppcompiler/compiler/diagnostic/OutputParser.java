@@ -19,6 +19,8 @@ package com.duy.ccppcompiler.compiler.diagnostic;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
+
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.regex.Matcher;
@@ -41,12 +43,12 @@ public class OutputParser {
                     "(.*)" /*Message*/);
 
     //fix-it:"/storage/emulated/0/examples/simple/bit_print.c":{6:7-6:11}:"printf"
-    public static final Pattern FIX_IT_PATTERN = Pattern.compile(
+    public static final Pattern FIX_IT_PATTERN = Pattern.compile(Pattern.quote(
             "(fix-it):" +/*prefix*/
                     "(.*):" +/*File path*/
-                    "\\{([0-9]+):([0-9]+)-([0-9]+):([0-9]+)}" + /*Index (line:col)-(line:col)*/
+                    "\\{([0-9]+):([0-9]+)-([0-9]+):([0-9]+)}:" + /*Index (line:col)-(line:col)*/
                     "\"(.*)\"" /*Message*/
-    );
+    ));
 
     private DiagnosticsCollector diagnosticsCollector;
 
@@ -75,6 +77,7 @@ public class OutputParser {
     private void processLine(@NonNull String line, @Nullable String nextLine) {
         try {
             Matcher matcher = DIAGNOSTICS_PATTERN.matcher(line);
+            Diagnostic diagnostic;
             if (matcher.find()) {
                 String filePath = matcher.group(1);
                 int lineNumber = Integer.parseInt(matcher.group(2));
@@ -82,24 +85,28 @@ public class OutputParser {
                 Kind type = DiagnosticFactory.createType(matcher.group(4));
                 String message = matcher.group(5);
 
-                Diagnostic diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
+                diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
                 diagnosticsCollector.report(diagnostic);
+            } else {
+                if (nextLine != null) {
+                    processLine(nextLine, null);
+                }
                 return;
             }
             if (nextLine == null) {
                 return;
             }
 
-            matcher = FIX_IT_PATTERN.matcher(line);
+            matcher = FIX_IT_PATTERN.matcher(nextLine);
             if (matcher.find()) {
                 String filePath = matcher.group(2);
                 int lineStart = Integer.parseInt(matcher.group(3));
                 int colStart = Integer.parseInt(matcher.group(4));
                 int lineEnd = Integer.parseInt(matcher.group(5));
                 int colEnd = Integer.parseInt(matcher.group(6));
-                String suggestion = matcher.group(7);
-                Diagnostic diagnostic = DiagnosticFactory.createFixIt(filePath, lineStart, colStart, lineEnd, colEnd, suggestion);
-                diagnosticsCollector.report(diagnostic);
+                String message = matcher.group(7);
+                ISuggestion suggestion = DiagnosticFactory.createSuggestion(filePath, lineStart, colStart, lineEnd, colEnd, message);
+                diagnostic.setSuggestion(suggestion);
             } else {
                 processLine(nextLine, null);
             }
