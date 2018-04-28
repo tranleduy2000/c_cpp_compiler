@@ -16,11 +16,9 @@
 
 package com.jecelyin.editor.v2.ui.activities;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -30,7 +28,6 @@ import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -115,13 +112,6 @@ public class EditorActivity extends FullScreenActivity
     private FolderChooserDialog.FolderCallback findFolderCallback;
     private long mExitTime;
 
-    public static Intent getOpenFileIntent(File file, int offset) {
-        Intent intent = new Intent();
-        intent.putExtra("file", file.getPath());
-        intent.putExtra("offset", offset);
-        return intent;
-    }
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         try {
@@ -134,41 +124,6 @@ public class EditorActivity extends FullScreenActivity
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-    }
-
-    private void requestWriteExternalStoragePermission() {
-        final String[] permissions = new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE
-                , Manifest.permission.WRITE_EXTERNAL_STORAGE
-        };
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            UIUtils.showConfirmDialog(this, null, getString(R.string.need_to_enable_read_storage_permissions), new UIUtils.OnClickCallback() {
-                @Override
-                public void onOkClick() {
-                    ActivityCompat.requestPermissions(EditorActivity.this, permissions, RC_PERMISSION_STORAGE);
-                }
-
-                @Override
-                public void onCancelClick() {
-                    finish();
-                }
-            });
-        } else {
-            ActivityCompat.requestPermissions(EditorActivity.this, permissions, RC_PERMISSION_STORAGE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Write external store permission requires a restart
-        for (int i = 0; i < permissions.length; i++) {
-            //Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[i])
-            if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                requestWriteExternalStoragePermission();
-                return;
-            }
-        }
-        start();
     }
 
     @Override
@@ -263,6 +218,7 @@ public class EditorActivity extends FullScreenActivity
     private void start() {
         mEditorPager.setVisibility(View.VISIBLE);
         initUI();
+        processIntent();
     }
 
     private void initUI() {
@@ -275,8 +231,6 @@ public class EditorActivity extends FullScreenActivity
         if (mMenuManager == null) {
             mMenuManager = new MenuManager(this);
         }
-
-        processIntent();
     }
 
     private void initToolbar() {
