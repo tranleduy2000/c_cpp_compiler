@@ -13,32 +13,6 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Preference activity, vertical padding for the header list -->
-
-    <!-- Preference activity side margins -->
-    <!-- Preference activity side margins negative-->
-
-    <!-- Preference fragment padding, sides -->
-
-    <!-- Preference breadcrumbs padding, start padding -->
-
-    <!-- Preference breadcrumbs padding, end padding -->
-
-    <!-- Default height of an action bar. -->
-    <!-- Default padding of an action bar. -->
-    <!-- Vertical padding around action bar icons. -->
-    <!-- Top margin for action bar subtitles -->
-    <!-- Bottom margin for action bar subtitles -->
-
     <dimen name="text_size_large_material">22sp</dimen>
-
-    <!-- Elevation when button is pressed -->
-    <!-- Z translation to apply when button is pressed -->
-    <!-- Default insets (outer padding) around buttons -->
-    <!-- Default inner padding within buttons -->
-
-    <!-- Default insets (outer padding) around controls -->
-    <!-- Default inner padding within controls -->
-    <!-- Default rounded corner for controls -->
 
 </resources>

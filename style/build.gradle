@@ -17,13 +17,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-
-
+    compileSdkVersion project.compileSdkVersion
+    buildToolsVersion project.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -47,9 +46,17 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
+
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    api 'com.android.support.constraint:constraint-layout:1.1.0'
+
+    api "com.android.support:appcompat-v7:$androidSupportVersion"
+    api "com.android.support:support-v4:$androidSupportVersion"
+    api "com.android.support:support-vector-drawable:$androidSupportVersion"
+    api "com.android.support:cardview-v7:$androidSupportVersion"
+    api "com.android.support:support-annotations:$androidSupportVersion"
+    api "com.android.support:design:$androidSupportVersion"
 }

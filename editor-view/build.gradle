@@ -31,12 +31,6 @@ android {
 dependencies {
     testImplementation 'junit:junit:4.12'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:support-annotations:$androidSupportVersion"
-    implementation "com.android.support:support-v4:$androidSupportVersion"
-    implementation "com.android.support:support-vector-drawable:$androidSupportVersion"
-    implementation "com.android.support:cardview-v7:$androidSupportVersion"
-    implementation "com.android.support:support-annotations:$androidSupportVersion"
-    implementation "com.android.support:design:$androidSupportVersion"
 
     implementation 'com.rengwuxian.materialedittext:library:2.0.3'
     implementation 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
@@ -46,5 +40,7 @@ dependencies {
     implementation 'org.apmem.tools:layouts:1.10@aar'
     implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
+
+    api project(':style')
 }
 

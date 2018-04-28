@@ -29,6 +29,7 @@ android {
 dependencies {
     api project(':emulatorview')
     api project(':libtermexec')
+    api project(':style')
 
     implementation "com.android.support:appcompat-v7:$androidSupportVersion"
     implementation "com.android.support:support-v4:$androidSupportVersion"

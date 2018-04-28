@@ -15,15 +15,10 @@
   -->
 
 <resources>
-    <color name="darkColorControlNormal">@color/abc_secondary_text_material_dark</color>
     <color name="darkWindowBackground">#ff424242</color>
     <color name="darkDividerColor">#30ffffff</color>
 
     <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/primary_material_dark</item>
-        <item name="colorPrimaryDark">@color/primary_dark_material_dark</item>
-        <item name="colorControlNormal">@color/darkColorControlNormal</item>
-        <item name="colorAccent">@color/darkColorControlNormal</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowBackground">@color/darkWindowBackground</item>
 
@@ -77,9 +72,9 @@
         <item name="hlOperator">#D0D0FF</item>
     </style>
 
-    <style name="DarkToolbarTheme" parent="@style/Light.Toolbar"></style>
+    <style name="DarkToolbarTheme" parent="@style/Light.Toolbar" />
 
-    <style name="DarkToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark"></style>
+    <style name="DarkToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark" />
 
     <color name="dark_actionmode_light_background">#666666</color>
 

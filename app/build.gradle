@@ -32,10 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:appcompat-v7:$androidSupportVersion"
-    implementation "com.android.support:support-v4:$androidSupportVersion"
-    implementation "com.android.support:design:$androidSupportVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     implementation 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
     implementation 'com.rengwuxian.materialedittext:library:2.0.3'
