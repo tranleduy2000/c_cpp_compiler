@@ -24,7 +24,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -109,7 +108,7 @@ public class EditorActivity extends FullScreenActivity
 
     private TabManager mTabManager;
 
-    private Preferences preferences;
+    private Preferences mPreferences;
     private ClusterCommand clusterCommand;
     private MenuManager mMenuManager;
     private long mExitTime;
@@ -117,23 +116,9 @@ public class EditorActivity extends FullScreenActivity
     private DiagnosticPresenter mDiagnosticPresenter;
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        try {
-            super.onRestoreInstanceState(savedInstanceState);
-        } catch (Exception e) {
-            DLog.d(e); //ignore exception: Unmarshalling unknown type code 7602281 at offset 58340
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = Preferences.getInstance(this);
+        mPreferences = Preferences.getInstance(this);
         MenuManager.init(this);
 
         setContentView(R.layout.activity_main);
@@ -175,11 +160,10 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void bindPreferences() {
-//        mEditorPager.setOffscreenPageLimit(preferences.getMaxEditor());
-        mDrawerLayout.setKeepScreenOn(preferences.isKeepScreenOn());
-        mDrawerLayout.setDrawerLockMode(preferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mSymbolBarLayout.setVisibility(preferences.isReadOnly() ? View.GONE : View.VISIBLE);
-        preferences.registerOnSharedPreferenceChangeListener(this);
+        mDrawerLayout.setKeepScreenOn(mPreferences.isKeepScreenOn());
+        mDrawerLayout.setDrawerLockMode(mPreferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mSymbolBarLayout.setVisibility(mPreferences.isReadOnly() ? View.GONE : View.VISIBLE);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -192,23 +176,23 @@ public class EditorActivity extends FullScreenActivity
                 break;
             case Preferences.KEY_ENABLE_HIGHLIGHT:
                 Command command = new Command(Command.CommandEnum.HIGHLIGHT);
-                command.object = preferences.isHighlight() ? null : Catalog.DEFAULT_MODE_NAME;
+                command.object = mPreferences.isHighlight() ? null : Catalog.DEFAULT_MODE_NAME;
                 doClusterCommand(command);
                 break;
             case Preferences.KEY_SCREEN_ORIENTATION:
                 setScreenOrientation();
                 break;
             case Preferences.KEY_PREF_ENABLE_DRAWERS:
-                mDrawerLayout.setDrawerLockMode(preferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                mDrawerLayout.setDrawerLockMode(mPreferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 break;
             case Preferences.KEY_READ_ONLY:
-                mSymbolBarLayout.setVisibility(preferences.isReadOnly() ? View.GONE : View.VISIBLE);
+                mSymbolBarLayout.setVisibility(mPreferences.isReadOnly() ? View.GONE : View.VISIBLE);
                 break;
         }
     }
 
     private void setScreenOrientation() {
-        int orgi = preferences.getScreenOrientation();
+        int orgi = mPreferences.getScreenOrientation();
 
         if (Preferences.SCREEN_ORIENTATION_AUTO == orgi) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -419,15 +403,15 @@ public class EditorActivity extends FullScreenActivity
                 new ChangeThemeDialog(getContext()).show();
                 break;
             case R.id.m_fullscreen:
-                boolean fullscreenMode = preferences.isFullScreenMode();
-                preferences.setFullScreenMode(!fullscreenMode);
+                boolean fullscreenMode = mPreferences.isFullScreenMode();
+                mPreferences.setFullScreenMode(!fullscreenMode);
                 UIUtils.toast(this, fullscreenMode
                         ? R.string.disabled_fullscreen_mode_message
                         : R.string.enable_fullscreen_mode_message);
                 break;
             case R.id.m_readonly:
-                boolean readOnly = !preferences.isReadOnly();
-                preferences.setReadOnly(readOnly);
+                boolean readOnly = !mPreferences.isReadOnly();
+                mPreferences.setReadOnly(readOnly);
                 doClusterCommand(new Command(Command.CommandEnum.READONLY_MODE));
                 break;
             case R.id.m_encoding:
