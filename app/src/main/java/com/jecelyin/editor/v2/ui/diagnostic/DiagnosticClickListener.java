@@ -16,41 +16,14 @@
 
 package com.jecelyin.editor.v2.ui.diagnostic;
 
-import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
-
-import java.util.List;
 
 /**
  * Created by Duy on 28-Apr-18.
  */
 
-public class FileDiagnosticView implements DiagnosticContract.View {
-    private RecyclerView recyclerView;
-
-    public FileDiagnosticView(RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
-    }
-
-    @Override
-    public void show(List<Diagnostic> diagnostics) {
-
-    }
-
-    @Override
-    public void remove(Diagnostic diagnostic) {
-
-    }
-
-    @Override
-    public void add(Diagnostic diagnostic) {
-
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
+public interface DiagnosticClickListener {
+    public void onDiagnosisClick(Diagnostic diagnostic, View view);
 }

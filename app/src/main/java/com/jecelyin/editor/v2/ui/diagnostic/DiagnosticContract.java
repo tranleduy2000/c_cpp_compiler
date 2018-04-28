@@ -36,6 +36,6 @@ public class DiagnosticContract {
     }
 
     public interface Presenter {
-        void onDiagnosticClick(View view, Diagnostic diagnostic);
+        void onDiagnosticClick(android.view.View view, Diagnostic diagnostic);
     }
 }
