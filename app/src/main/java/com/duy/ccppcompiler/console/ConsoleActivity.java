@@ -29,11 +29,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.console.services.TermuxService;
-import com.duy.ccppcompiler.console.services.TermuxViewClient;
 import com.termux.terminal.TerminalSession;
 import com.termux.view.TerminalView;
 
@@ -55,10 +56,17 @@ public class ConsoleActivity extends AppCompatActivity implements ServiceConnect
         setContentView(R.layout.activity_console);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(R.string.title_activity_console);
 
         computeFontSize();
         initView();
         startService();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_console, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void computeFontSize() {
@@ -120,10 +128,23 @@ public class ConsoleActivity extends AppCompatActivity implements ServiceConnect
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.action_toggle_keyboard:
+                showKeyboard();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(mEmulatorView, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     @Override

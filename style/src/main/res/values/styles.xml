@@ -17,9 +17,7 @@
 <resources>
 
 
-    <style name="Light.Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:layout_height">?attr/actionBarSize</item>
-    </style>
+    <style name="Light.Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Light.Popup.Toolbar" parent="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -39,7 +37,6 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">#ffffff</item>
     </style>
-
 
 
 </resources>
