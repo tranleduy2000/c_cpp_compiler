@@ -46,7 +46,7 @@ public class MenuFactory {
         groups.put(MenuGroup.TOP, topList);
         Integer[] toolbarIcons = Preferences.getInstance(context).getToolbarIcons();
         if (toolbarIcons == null) {
-            toolbarIcons = new Integer[]{R.id.m_run, R.id.m_new, R.id.m_open, R.id.m_save, R.id.m_undo, R.id.m_redo};
+            toolbarIcons = new Integer[]{R.id.action_run, R.id.m_new, R.id.m_open, R.id.m_save, R.id.m_undo, R.id.m_redo};
         }
 
         List<MenuItemInfo> items;
@@ -124,7 +124,7 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_highlight, Command.CommandEnum.NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_encoding, Command.CommandEnum.NONE, R.drawable.m_encoding, R.string.encoding));
 
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_run, Command.CommandEnum.NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_run, Command.CommandEnum.NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_settings, Command.CommandEnum.NONE, R.drawable.ic_settings_white_24dp, R.string.settings));
     }
 

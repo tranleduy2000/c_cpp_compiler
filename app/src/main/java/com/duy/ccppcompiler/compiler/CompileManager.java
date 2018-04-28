@@ -16,7 +16,6 @@
 
 package com.duy.ccppcompiler.compiler;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 
@@ -25,7 +24,8 @@ import com.duy.ccppcompiler.console.ConsoleActivity;
 import com.duy.common.DLog;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
-import com.jecelyin.common.utils.UIUtils;
+import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 
 import java.io.File;
 
@@ -36,15 +36,16 @@ import java.io.File;
 public class CompileManager implements ICompileManager {
     private static final String TAG = "CompileManager";
     private ProgressDialog mCompileDialog;
-    private Activity mActivity;
+    private EditorActivity mActivity;
 
-    public CompileManager(Activity activity) {
+    CompileManager(EditorActivity activity) {
         mCompileDialog = new ProgressDialog(activity);
         mActivity = activity;
     }
 
     @Override
     public void onPrepareCompile() {
+        mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
         mCompileDialog.setTitle(R.string.title_compiling);
         mCompileDialog.show();
     }
@@ -56,9 +57,11 @@ public class CompileManager implements ICompileManager {
 
     @Override
     public void onCompileSuccess(ShellResult shellResult) {
+        finishCompile();
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
         }
+
         File internalDir = mActivity.getFilesDir();
         String path = new File(internalDir, GCCConstants.TEMP_BINARY_NAME).getAbsolutePath();
         Intent intent = new Intent(mActivity, ConsoleActivity.class);
@@ -66,13 +69,16 @@ public class CompileManager implements ICompileManager {
         mActivity.startActivity(intent);
     }
 
+    private void finishCompile() {
+        mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
+    }
+
     @Override
     public void onCompileFailed(ShellResult shellResult) {
+        finishCompile();
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.setMessage(shellResult.getMessage());
-//            mCompileDialog.dismiss();
         }
-        UIUtils.toast(mActivity, "Compile failed");
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
     }
 

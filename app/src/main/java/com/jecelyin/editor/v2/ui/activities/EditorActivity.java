@@ -467,7 +467,7 @@ public class EditorActivity extends FullScreenActivity
             case R.id.m_encoding:
                 new CharsetsDialog(this).show();
                 break;
-            case R.id.m_run:
+            case R.id.action_run:
                 if (!isCompiling()) {
                     compileAndRun();
                 }
@@ -509,7 +509,6 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void compileAndRun() {
-
         saveAll(new SaveListener() {
             @Override
             public void onSaved() {
