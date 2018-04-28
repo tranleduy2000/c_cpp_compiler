@@ -103,40 +103,36 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     private static final int REQUESTCODE_PERMISSION_STORAGE = 1234;
 
     private static final String RELOAD_STYLE_ACTION = "com.termux.app.reload_style";
-
-    /** The main view of the activity showing the terminal. Initialized in onCreate(). */
+    final SoundPool mBellSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(
+            new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).build()).build();
+    /**
+     * The main view of the activity showing the terminal. Initialized in onCreate().
+     */
     @SuppressWarnings("NullableProblems")
     @NonNull
     TerminalView mTerminalView;
-
     ExtraKeysView mExtraKeysView;
-
     TermuxPreferences mSettings;
-
     /**
      * The connection to the {@link TermuxService}. Requested in {@link #onCreate(Bundle)} with a call to
      * {@link #bindService(Intent, ServiceConnection, int)}, and obtained and stored in
      * {@link #onServiceConnected(ComponentName, IBinder)}.
      */
     TermuxService mTermService;
-
-    /** Initialized in {@link #onServiceConnected(ComponentName, IBinder)}. */
+    /**
+     * Initialized in {@link #onServiceConnected(ComponentName, IBinder)}.
+     */
     ArrayAdapter<TerminalSession> mListViewAdapter;
-
-    /** The last toast shown, used cancel current toast before showing new in {@link #showToast(String, boolean)}. */
+    /**
+     * The last toast shown, used cancel current toast before showing new in {@link #showToast(String, boolean)}.
+     */
     Toast mLastToast;
-
     /**
      * If between onResume() and onStop(). Note that only one session is in the foreground of the terminal view at the
      * time, so if the session causing a change is not in the foreground it should probably be treated as background.
      */
     boolean mIsVisible;
-
-    final SoundPool mBellSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(
-        new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).build()).build();
-    int mBellSoundId;
-
     private final BroadcastReceiver mBroadcastReceiever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -152,6 +148,24 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             }
         }
     };
+    int mBellSoundId;
+
+    static LinkedHashSet<CharSequence> extractUrls(String text) {
+        // Pattern for recognizing a URL, based off RFC 3986
+        // http://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
+        final Pattern urlPattern = Pattern.compile(
+                "(?:^|[\\W])((ht|f)tp(s?)://|www\\.)" + "(([\\w\\-]+\\.)+?([\\w\\-.~]+/?)*" + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        LinkedHashSet<CharSequence> urlSet = new LinkedHashSet<>();
+        Matcher matcher = urlPattern.matcher(text);
+        while (matcher.find()) {
+            int matchStart = matcher.start(1);
+            int matchEnd = matcher.end();
+            String url = text.substring(matchStart, matchEnd);
+            urlSet.add(url);
+        }
+        return urlSet;
+    }
 
     void checkForFontAndColors() {
         try {
@@ -160,8 +174,10 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
             final Properties props = new Properties();
             if (colorsFile.isFile()) {
-                try (InputStream in = new FileInputStream(colorsFile)) {
+                try {
+                    InputStream in = new FileInputStream(colorsFile);
                     props.load(in);
+                } catch (Exception e) {
                 }
             }
 
@@ -186,7 +202,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
-    /** For processes to access shared internal storage (/sdcard) we need this permission. */
+    /**
+     * For processes to access shared internal storage (/sdcard) we need this permission.
+     */
     @TargetApi(Build.VERSION_CODES.M)
     public boolean ensureStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -290,18 +308,18 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             @Override
             public boolean onLongClick(View v) {
                 DialogUtils.textInput(TermuxActivity.this, R.string.session_new_named_title, null, R.string.session_new_named_positive_button,
-                    new DialogUtils.TextSetListener() {
-                        @Override
-                        public void onTextSet(String text) {
-                            addNewSession(false, text);
+                        new DialogUtils.TextSetListener() {
+                            @Override
+                            public void onTextSet(String text) {
+                                addNewSession(false, text);
+                            }
+                        }, R.string.new_session_failsafe, new DialogUtils.TextSetListener() {
+                            @Override
+                            public void onTextSet(String text) {
+                                addNewSession(true, text);
+                            }
                         }
-                    }, R.string.new_session_failsafe, new DialogUtils.TextSetListener() {
-                        @Override
-                        public void onTextSet(String text) {
-                            addNewSession(true, text);
-                        }
-                    }
-                    , -1, null, null);
+                        , -1, null, null);
                 return true;
             }
         });
@@ -599,7 +617,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     void addNewSession(boolean failSafe, String sessionName) {
         if (mTermService.getSessions().size() >= MAX_SESSIONS) {
             new AlertDialog.Builder(this).setTitle(R.string.max_terminals_reached_title).setMessage(R.string.max_terminals_reached_message)
-                .setPositiveButton(android.R.string.ok, null).show();
+                    .setPositiveButton(android.R.string.ok, null).show();
         } else {
             String executablePath = (failSafe ? "/system/bin/sh" : null);
             TerminalSession newSession = mTermService.createTermSession(executablePath, null, null, failSafe);
@@ -611,7 +629,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
-    /** Try switching to session and note about it, but do nothing if already displaying the session. */
+    /**
+     * Try switching to session and note about it, but do nothing if already displaying the session.
+     */
     void switchToSession(TerminalSession session) {
         if (mTerminalView.attachSession(session)) {
             noteSessionInfo();
@@ -658,28 +678,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         menu.add(Menu.NONE, CONTEXTMENU_HELP_ID, Menu.NONE, R.string.help);
     }
 
-    /** Hook system menu to show context menu instead. */
+    /**
+     * Hook system menu to show context menu instead.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         mTerminalView.showContextMenu();
         return false;
-    }
-
-    static LinkedHashSet<CharSequence> extractUrls(String text) {
-        // Pattern for recognizing a URL, based off RFC 3986
-        // http://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
-        final Pattern urlPattern = Pattern.compile(
-            "(?:^|[\\W])((ht|f)tp(s?)://|www\\.)" + "(([\\w\\-]+\\.)+?([\\w\\-.~]+/?)*" + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)",
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        LinkedHashSet<CharSequence> urlSet = new LinkedHashSet<>();
-        Matcher matcher = urlPattern.matcher(text);
-        while (matcher.find()) {
-            int matchStart = matcher.start(1);
-            int matchEnd = matcher.end();
-            String url = text.substring(matchStart, matchEnd);
-            urlSet.add(url);
-        }
-        return urlSet;
     }
 
     void showUrlSelection() {
@@ -780,12 +785,12 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                     // The startActivity() call is not documented to throw IllegalArgumentException.
                     // However, crash reporting shows that it sometimes does, so catch it here.
                     new AlertDialog.Builder(this).setMessage(R.string.styling_not_installed)
-                        .setPositiveButton(R.string.styling_install, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.termux.styling")));
-                            }
-                        }).setNegativeButton(android.R.string.cancel, null).show();
+                            .setPositiveButton(R.string.styling_install, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.termux.styling")));
+                                }
+                            }).setNegativeButton(android.R.string.cancel, null).show();
                 }
                 return true;
             }
@@ -818,7 +823,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             getCurrentTermSession().getEmulator().paste(paste.toString());
     }
 
-    /** The current session as stored or the last one if that does not exist. */
+    /**
+     * The current session as stored or the last one if that does not exist.
+     */
     public TerminalSession getStoredCurrentSessionOrLast() {
         TerminalSession stored = TermuxPreferences.getCurrentSession(this);
         if (stored != null) return stored;
@@ -826,7 +833,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         return sessions.isEmpty() ? null : sessions.get(sessions.size() - 1);
     }
 
-    /** Show a toast and dismiss the last one if still visible. */
+    /**
+     * Show a toast and dismiss the last one if still visible.
+     */
     void showToast(String text, boolean longDuration) {
         if (mLastToast != null) mLastToast.cancel();
         mLastToast = Toast.makeText(TermuxActivity.this, text, longDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);

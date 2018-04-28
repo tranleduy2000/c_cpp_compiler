@@ -119,9 +119,9 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
 
             if (projection == null) {
                 projection = new String[]{
-                    MediaStore.MediaColumns.DISPLAY_NAME,
-                    MediaStore.MediaColumns.SIZE,
-                    MediaStore.MediaColumns._ID
+                        MediaStore.MediaColumns.DISPLAY_NAME,
+                        MediaStore.MediaColumns.SIZE,
+                        MediaStore.MediaColumns._ID
                 };
             }
 

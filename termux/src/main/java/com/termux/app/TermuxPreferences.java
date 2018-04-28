@@ -20,29 +20,24 @@ import java.util.Properties;
 
 final class TermuxPreferences {
 
-    @IntDef({BELL_VIBRATE, BELL_BEEP, BELL_IGNORE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface AsciiBellBehaviour {
-    }
-
+    public static final int SHORTCUT_ACTION_CREATE_SESSION = 1;
+    public static final int SHORTCUT_ACTION_NEXT_SESSION = 2;
+    public static final int SHORTCUT_ACTION_PREVIOUS_SESSION = 3;
+    public static final int SHORTCUT_ACTION_RENAME_SESSION = 4;
     static final int BELL_VIBRATE = 1;
     static final int BELL_BEEP = 2;
     static final int BELL_IGNORE = 3;
-
-    private final int MIN_FONTSIZE;
     private static final int MAX_FONTSIZE = 256;
-
     private static final String SHOW_EXTRA_KEYS_KEY = "show_extra_keys";
     private static final String FONTSIZE_KEY = "fontsize";
     private static final String CURRENT_SESSION_KEY = "current_session";
-
-    private int mFontSize;
-
+    final List<KeyboardShortcut> shortcuts = new ArrayList<>();
+    private final int MIN_FONTSIZE;
     @AsciiBellBehaviour
     int mBellBehaviour = BELL_VIBRATE;
-
     boolean mBackIsEscape;
     boolean mShowExtraKeys;
+    private int mFontSize;
 
     TermuxPreferences(Context context) {
         reloadFromProperties(context);
@@ -69,6 +64,19 @@ final class TermuxPreferences {
         mFontSize = Math.max(MIN_FONTSIZE, Math.min(mFontSize, MAX_FONTSIZE));
     }
 
+    static void storeCurrentSession(Context context, TerminalSession session) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(TermuxPreferences.CURRENT_SESSION_KEY, session.mHandle).apply();
+    }
+
+    static TerminalSession getCurrentSession(TermuxActivity context) {
+        String sessionHandle = PreferenceManager.getDefaultSharedPreferences(context).getString(TermuxPreferences.CURRENT_SESSION_KEY, "");
+        for (int i = 0, len = context.mTermService.getSessions().size(); i < len; i++) {
+            TerminalSession session = context.mTermService.getSessions().get(i);
+            if (session.mHandle.equals(sessionHandle)) return session;
+        }
+        return null;
+    }
+
     boolean isShowExtraKeys() {
         return mShowExtraKeys;
     }
@@ -89,19 +97,6 @@ final class TermuxPreferences {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString(FONTSIZE_KEY, Integer.toString(mFontSize)).apply();
-    }
-
-    static void storeCurrentSession(Context context, TerminalSession session) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(TermuxPreferences.CURRENT_SESSION_KEY, session.mHandle).apply();
-    }
-
-    static TerminalSession getCurrentSession(TermuxActivity context) {
-        String sessionHandle = PreferenceManager.getDefaultSharedPreferences(context).getString(TermuxPreferences.CURRENT_SESSION_KEY, "");
-        for (int i = 0, len = context.mTermService.getSessions().size(); i < len; i++) {
-            TerminalSession session = context.mTermService.getSessions().get(i);
-            if (session.mHandle.equals(sessionHandle)) return session;
-        }
-        return null;
     }
 
     public void reloadFromProperties(Context context) {
@@ -142,24 +137,6 @@ final class TermuxPreferences {
         }
     }
 
-    public static final int SHORTCUT_ACTION_CREATE_SESSION = 1;
-    public static final int SHORTCUT_ACTION_NEXT_SESSION = 2;
-    public static final int SHORTCUT_ACTION_PREVIOUS_SESSION = 3;
-    public static final int SHORTCUT_ACTION_RENAME_SESSION = 4;
-
-    public final static class KeyboardShortcut {
-
-        public KeyboardShortcut(int codePoint, int shortcutAction) {
-            this.codePoint = codePoint;
-            this.shortcutAction = shortcutAction;
-        }
-
-        final int codePoint;
-        final int shortcutAction;
-    }
-
-    final List<KeyboardShortcut> shortcuts = new ArrayList<>();
-
     private void parseAction(String name, int shortcutAction, Properties props) {
         String value = props.getProperty(name);
         if (value == null) return;
@@ -181,6 +158,21 @@ final class TermuxPreferences {
             }
         }
         shortcuts.add(new KeyboardShortcut(codePoint, shortcutAction));
+    }
+
+    @IntDef({BELL_VIBRATE, BELL_BEEP, BELL_IGNORE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AsciiBellBehaviour {
+    }
+
+    public final static class KeyboardShortcut {
+
+        final int codePoint;
+        final int shortcutAction;
+        public KeyboardShortcut(int codePoint, int shortcutAction) {
+            this.codePoint = codePoint;
+            this.shortcutAction = shortcutAction;
+        }
     }
 
 }

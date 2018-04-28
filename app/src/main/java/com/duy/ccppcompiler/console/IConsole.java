@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.console.activities;
+package com.duy.ccppcompiler.console;
 
 /**
  * Created by Duy on 22-Apr-18.

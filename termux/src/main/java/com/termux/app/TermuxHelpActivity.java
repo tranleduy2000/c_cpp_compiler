@@ -12,7 +12,9 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-/** Basic embedded browser for viewing help pages. */
+/**
+ * Basic embedded browser for viewing help pages.
+ */
 public final class TermuxHelpActivity extends Activity {
 
     WebView mWebView;

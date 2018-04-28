@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.console.activities;
+package com.duy.ccppcompiler.console;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;

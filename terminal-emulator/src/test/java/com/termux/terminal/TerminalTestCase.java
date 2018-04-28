@@ -89,7 +89,7 @@ public abstract class TerminalTestCase extends TestCase {
 	}
 
 	public TerminalTestCase enterString(String s) {
-		byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
+		byte[] bytes = s.getBytes(Charset.forName("UTF-8"));
 		mTerminal.append(bytes, bytes.length);
 		assertInvariants();
 		return this;

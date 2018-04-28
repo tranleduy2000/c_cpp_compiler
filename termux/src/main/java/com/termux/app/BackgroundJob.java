@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +49,7 @@ public final class BackgroundJob {
             public void run() {
                 Log.i(LOG_TAG, "[" + pid + "] starting: " + processDescription);
                 InputStream stdout = mProcess.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, Charset.forName("UTF-8")));
                 String line;
                 try {
                     // FIXME: Long lines.
@@ -79,7 +79,7 @@ public final class BackgroundJob {
             @Override
             public void run() {
                 InputStream stderr = mProcess.getErrorStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stderr, StandardCharsets.UTF_8));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stderr, Charset.forName("UTF-8")));
                 String line;
                 try {
                     // FIXME: Long lines.
@@ -145,38 +145,37 @@ public final class BackgroundJob {
         String interpreter = null;
         try {
             File file = new File(fileToExecute);
-            try (FileInputStream in = new FileInputStream(file)) {
-                byte[] buffer = new byte[256];
-                int bytesRead = in.read(buffer);
-                if (bytesRead > 4) {
-                    if (buffer[0] == 0x7F && buffer[1] == 'E' && buffer[2] == 'L' && buffer[3] == 'F') {
-                        // Elf file, do nothing.
-                    } else if (buffer[0] == '#' && buffer[1] == '!') {
-                        // Try to parse shebang.
-                        StringBuilder builder = new StringBuilder();
-                        for (int i = 2; i < bytesRead; i++) {
-                            char c = (char) buffer[i];
-                            if (c == ' ' || c == '\n') {
-                                if (builder.length() == 0) {
-                                    // Skip whitespace after shebang.
-                                } else {
-                                    // End of shebang.
-                                    String executable = builder.toString();
-                                    if (executable.startsWith("/usr") || executable.startsWith("/bin")) {
-                                        String[] parts = executable.split("/");
-                                        String binary = parts[parts.length - 1];
-                                        interpreter = TermuxService.PREFIX_PATH + "/bin/" + binary;
-                                    }
-                                    break;
-                                }
+            FileInputStream in = new FileInputStream(file);
+            byte[] buffer = new byte[256];
+            int bytesRead = in.read(buffer);
+            if (bytesRead > 4) {
+                if (buffer[0] == 0x7F && buffer[1] == 'E' && buffer[2] == 'L' && buffer[3] == 'F') {
+                    // Elf file, do nothing.
+                } else if (buffer[0] == '#' && buffer[1] == '!') {
+                    // Try to parse shebang.
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 2; i < bytesRead; i++) {
+                        char c = (char) buffer[i];
+                        if (c == ' ' || c == '\n') {
+                            if (builder.length() == 0) {
+                                // Skip whitespace after shebang.
                             } else {
-                                builder.append(c);
+                                // End of shebang.
+                                String executable = builder.toString();
+                                if (executable.startsWith("/usr") || executable.startsWith("/bin")) {
+                                    String[] parts = executable.split("/");
+                                    String binary = parts[parts.length - 1];
+                                    interpreter = TermuxService.PREFIX_PATH + "/bin/" + binary;
+                                }
+                                break;
                             }
+                        } else {
+                            builder.append(c);
                         }
-                    } else {
-                        // No shebang and no ELF, use standard shell.
-                        interpreter = TermuxService.PREFIX_PATH + "/bin/sh";
                     }
+                } else {
+                    // No shebang and no ELF, use standard shell.
+                    interpreter = TermuxService.PREFIX_PATH + "/bin/sh";
                 }
             }
         } catch (IOException e) {

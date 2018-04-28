@@ -72,6 +72,7 @@
         </activity>
         <activity android:name="com.jecelyin.editor.v2.ui.settings.SettingsActivity" />
         <activity android:name="com.jecelyin.android.file_explorer.FileExplorerActivity" />
+        <activity android:name=".console.ConsoleActivity" />
 
         <service
             android:name=".console.services.TermuxService"

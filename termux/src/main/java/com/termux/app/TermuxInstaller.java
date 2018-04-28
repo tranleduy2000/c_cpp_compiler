@@ -51,7 +51,9 @@ import java.util.zip.ZipInputStream;
  */
 final class TermuxInstaller {
 
-    /** Performs setup if necessary. */
+    /**
+     * Performs setup if necessary.
+     */
     static void setupIfNeeded(final Activity activity, final Runnable whenDone) {
         // Termux can only be run as the primary user (device owner) since only that
         // account has the expected file system paths. Verify that:
@@ -59,12 +61,12 @@ final class TermuxInstaller {
         boolean isPrimaryUser = um.getSerialNumberForUser(android.os.Process.myUserHandle()) == 0;
         if (!isPrimaryUser) {
             new AlertDialog.Builder(activity).setTitle(R.string.bootstrap_error_title).setMessage(R.string.bootstrap_error_not_primary_user_message)
-                .setOnDismissListener(new OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        System.exit(0);
-                    }
-                }).setPositiveButton(android.R.string.ok, null).show();
+                    .setOnDismissListener(new OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            System.exit(0);
+                        }
+                    }).setPositiveButton(android.R.string.ok, null).show();
             return;
         }
 
@@ -148,13 +150,13 @@ final class TermuxInstaller {
                         public void run() {
                             try {
                                 new AlertDialog.Builder(activity).setTitle(R.string.bootstrap_error_title).setMessage(R.string.bootstrap_error_body)
-                                    .setNegativeButton(R.string.bootstrap_error_abort, new OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                            activity.finish();
-                                        }
-                                    }).setPositiveButton(R.string.bootstrap_error_try_again, new OnClickListener() {
+                                        .setNegativeButton(R.string.bootstrap_error_abort, new OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                activity.finish();
+                                            }
+                                        }).setPositiveButton(R.string.bootstrap_error_try_again, new OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
@@ -182,7 +184,9 @@ final class TermuxInstaller {
         }.start();
     }
 
-    /** Get bootstrap zip url for this systems cpu architecture. */
+    /**
+     * Get bootstrap zip url for this systems cpu architecture.
+     */
     static URL determineZipUrl() throws MalformedURLException {
         String archName = determineTermuxArchName();
         return new URL("https://termux.net/bootstrap/bootstrap-" + archName + ".zip");
@@ -198,17 +202,23 @@ final class TermuxInstaller {
         // emulation is available.
         for (String androidArch : Build.SUPPORTED_ABIS) {
             switch (androidArch) {
-                case "arm64-v8a": return "aarch64";
-                case "armeabi-v7a": return "arm";
-                case "x86_64": return "x86_64";
-                case "x86": return "i686";
+                case "arm64-v8a":
+                    return "aarch64";
+                case "armeabi-v7a":
+                    return "arm";
+                case "x86_64":
+                    return "x86_64";
+                case "x86":
+                    return "i686";
             }
         }
         throw new RuntimeException("Unable to determine arch from Build.SUPPORTED_ABIS =  " +
-            Arrays.toString(Build.SUPPORTED_ABIS));
+                Arrays.toString(Build.SUPPORTED_ABIS));
     }
 
-    /** Delete a folder and all its content or throw. */
+    /**
+     * Delete a folder and all its content or throw.
+     */
     static void deleteFolder(File fileOrDirectory) {
         File[] children = fileOrDirectory.listFiles();
         if (children != null) {

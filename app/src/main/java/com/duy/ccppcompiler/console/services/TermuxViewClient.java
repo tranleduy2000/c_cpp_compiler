@@ -24,7 +24,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
-import com.duy.ccppcompiler.console.activities.ConsoleActivity;
+import com.duy.ccppcompiler.console.ConsoleActivity;
 import com.termux.terminal.KeyHandler;
 import com.termux.terminal.TerminalEmulator;
 import com.termux.terminal.TerminalSession;

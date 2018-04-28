@@ -21,7 +21,9 @@ import com.termux.view.TerminalView;
 public final class ExtraKeysView extends GridLayout {
 
     private static final int TEXT_COLOR = 0xFFFFFFFF;
-
+    private ToggleButton controlButton;
+    private ToggleButton altButton;
+    private ToggleButton fnButton;
     public ExtraKeysView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -67,10 +69,6 @@ public final class ExtraKeysView extends GridLayout {
         }
     }
 
-    private ToggleButton controlButton;
-    private ToggleButton altButton;
-    private ToggleButton fnButton;
-
     public boolean readControlButton() {
         if (controlButton.isPressed()) return true;
         boolean result = controlButton.isChecked();
@@ -106,7 +104,7 @@ public final class ExtraKeysView extends GridLayout {
         removeAllViews();
 
         String[][] buttons = {
-            {"ESC", "CTRL", "ALT", "TAB", "―", "/", "|"}
+                {"ESC", "CTRL", "ALT", "TAB", "―", "/", "|"}
         };
 
         final int rows = buttons.length;

@@ -1,13 +1,13 @@
 package com.termux.terminal;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 /** A client which receives callbacks from events triggered by feeding input to a {@link TerminalEmulator}. */
 public abstract class TerminalOutput {
 
     /** Write a string using the UTF-8 encoding to the terminal client. */
     public final void write(String data) {
-        byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = data.getBytes(Charset.forName("UTF-8"));
         write(bytes, 0, bytes.length);
     }
 

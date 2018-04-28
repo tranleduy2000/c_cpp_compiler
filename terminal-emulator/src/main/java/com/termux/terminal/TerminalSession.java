@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 /**
@@ -130,7 +130,7 @@ public final class TerminalSession extends TerminalOutput {
                 }
                 exitDescription += " - press Enter]";
 
-                byte[] bytesToWrite = exitDescription.getBytes(StandardCharsets.UTF_8);
+                byte[] bytesToWrite = exitDescription.getBytes(Charset.forName("UTF-8"));
                 mEmulator.append(bytesToWrite, bytesToWrite.length);
                 notifyScreenUpdate();
             }
