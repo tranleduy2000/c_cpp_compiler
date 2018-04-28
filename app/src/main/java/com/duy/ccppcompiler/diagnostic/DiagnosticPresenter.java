@@ -51,6 +51,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @MainThread
     @Override
     public void onDiagnosticClick(View view, Diagnostic diagnostic) {
@@ -63,6 +64,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             if (pair != null) {
                 int index = pair.first;
                 EditorDelegate editorDelegate = pair.second;
+                if (editorDelegate.isChanged()) {
+                    return;
+                }
 
                 mTabManager.setCurrentTab(index);
                 editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
