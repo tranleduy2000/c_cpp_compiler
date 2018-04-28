@@ -16,11 +16,17 @@
 
 package com.duy.ccppcompiler.diagnostic;
 
-import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 
 import java.util.ArrayList;
@@ -30,23 +36,37 @@ import java.util.List;
  * Created by Duy on 28-Apr-18.
  */
 
-public class DiagnosticView implements DiagnosticContract.View, DiagnosticClickListener {
+public class DiagnosticFragment extends Fragment implements DiagnosticContract.View, DiagnosticClickListener {
     private RecyclerView mRecyclerView;
-    private Context mContext;
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticAdapter mAdapter;
 
-    public DiagnosticView(RecyclerView recyclerView, Context context) {
-        this.mRecyclerView = recyclerView;
-        this.mContext = context;
+
+    private void init() {
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView = view.findViewById(R.id.diagnostic_list_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new DiagnosticAdapter(new ArrayList<Diagnostic>(), getContext());
+        mAdapter.setDiagnosticClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
         init();
     }
 
-    private void init() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mAdapter = new DiagnosticAdapter(new ArrayList<Diagnostic>(), mContext);
-        mAdapter.setDiagnosticClickListener(this);
-        mRecyclerView.setAdapter(mAdapter);
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

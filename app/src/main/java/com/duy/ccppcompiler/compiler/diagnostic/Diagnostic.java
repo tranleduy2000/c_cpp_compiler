@@ -17,12 +17,13 @@
 package com.duy.ccppcompiler.compiler.diagnostic;
 
 import android.content.Context;
+import android.os.Parcelable;
 
 /**
  * Created by Duy on 28-Apr-18.
  */
 
-public interface Diagnostic<S> {
+public interface Diagnostic<S> extends Parcelable {
     /**
      * Used to signal that no position is available.
      */

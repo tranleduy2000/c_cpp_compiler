@@ -98,6 +98,9 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
         this.mDiagnosticClickListener = diagnosticClickListener;
     }
 
+    public List<Diagnostic> getDiagnostics() {
+        return mDiagnostics;
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtLine, txtCol, txtMessage, txtFile;

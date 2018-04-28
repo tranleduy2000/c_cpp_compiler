@@ -17,6 +17,8 @@
 package com.duy.ccppcompiler.compiler.diagnostic;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.File;
 
@@ -24,7 +26,18 @@ import java.io.File;
  * Created by Duy on 28-Apr-18.
  */
 
-public class SimpleDiagnostic implements Diagnostic<File> {
+public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
+    public static final Creator<SimpleDiagnostic> CREATOR = new Creator<SimpleDiagnostic>() {
+        @Override
+        public SimpleDiagnostic createFromParcel(Parcel in) {
+            return new SimpleDiagnostic(in);
+        }
+
+        @Override
+        public SimpleDiagnostic[] newArray(int size) {
+            return new SimpleDiagnostic[size];
+        }
+    };
     private final Kind kind;
     private final String filePath;
     private final int line;
@@ -37,6 +50,28 @@ public class SimpleDiagnostic implements Diagnostic<File> {
         this.line = line;
         this.col = col;
         this.message = message;
+    }
+
+    protected SimpleDiagnostic(Parcel in) {
+        kind = Kind.values()[in.readInt()];
+        filePath = in.readString();
+        line = in.readInt();
+        col = in.readInt();
+        message = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(kind.ordinal());
+        dest.writeString(filePath);
+        dest.writeInt(line);
+        dest.writeInt(col);
+        dest.writeString(message);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     @Override
@@ -119,4 +154,5 @@ public class SimpleDiagnostic implements Diagnostic<File> {
         result = 31 * result + (message != null ? message.hashCode() : 0);
         return result;
     }
+
 }
