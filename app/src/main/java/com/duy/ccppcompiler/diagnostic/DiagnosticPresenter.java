@@ -17,7 +17,6 @@
 package com.duy.ccppcompiler.diagnostic;
 
 import android.support.annotation.MainThread;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
@@ -31,16 +30,18 @@ import java.util.ArrayList;
  */
 
 public class DiagnosticPresenter implements DiagnosticContract.Presenter {
-    private final RecyclerView mRecyclerView;
     private final EditorActivity mActivity;
     private final TabManager mTabManager;
     private ArrayList<Diagnostic> diagnostics;
     private DiagnosticContract.View mView;
 
-    public DiagnosticPresenter(RecyclerView recyclerView, EditorActivity activity, TabManager tabManager) {
-        this.mRecyclerView = recyclerView;
-        this.mActivity = activity;
-        this.mTabManager = tabManager;
+    public DiagnosticPresenter(DiagnosticContract.View view, EditorActivity activity, TabManager tabManager) {
+        mActivity = activity;
+        mTabManager = tabManager;
+        mView = view;
+        if (mView != null) {
+            mView.setPresenter(this);
+        }
     }
 
     @MainThread

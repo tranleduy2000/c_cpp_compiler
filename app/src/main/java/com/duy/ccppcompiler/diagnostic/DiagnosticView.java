@@ -36,10 +36,9 @@ public class DiagnosticView implements DiagnosticContract.View, DiagnosticClickL
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticAdapter mAdapter;
 
-    public DiagnosticView(RecyclerView recyclerView, Context context, DiagnosticContract.Presenter presenter) {
+    public DiagnosticView(RecyclerView recyclerView, Context context) {
         this.mRecyclerView = recyclerView;
         this.mContext = context;
-        mPresenter = presenter;
         init();
     }
 
@@ -76,7 +75,14 @@ public class DiagnosticView implements DiagnosticContract.View, DiagnosticClickL
     }
 
     @Override
+    public void setPresenter(DiagnosticContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
     public void onDiagnosisClick(Diagnostic diagnostic, View view) {
-        mPresenter.onDiagnosticClick(view, diagnostic);
+        if (mPresenter != null) {
+            mPresenter.onDiagnosticClick(view, diagnostic);
+        }
     }
 }

@@ -33,6 +33,8 @@ public class DiagnosticContract {
         void add(Diagnostic diagnostic);
 
         void clear();
+
+        void setPresenter(Presenter presenter);
     }
 
     public interface Presenter {

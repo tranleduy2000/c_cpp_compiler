@@ -47,6 +47,7 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
+import com.duy.ccppcompiler.diagnostic.DiagnosticView;
 import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
@@ -106,14 +107,14 @@ public class EditorActivity extends FullScreenActivity
     public TextView mVersionTextView;
     public SymbolBarLayout mSymbolBarLayout;
 
-    private TabManager tabManager;
+    private TabManager mTabManager;
 
     private Preferences preferences;
     private ClusterCommand clusterCommand;
     private MenuManager mMenuManager;
     private long mExitTime;
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
-    private DiagnosticPresenter diagnosticPresenter;
+    private DiagnosticPresenter mDiagnosticPresenter;
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -242,6 +243,10 @@ public class EditorActivity extends FullScreenActivity
                 toggleView.animate().rotation(180 * slideOffset).start();
             }
         });
+
+        RecyclerView recyclerView = findViewById(R.id.diagnostic_list_view);
+        DiagnosticView diagnosticView = new DiagnosticView(recyclerView, this);
+        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticView, this, mTabManager);
     }
 
     private void initToolbar() {
@@ -263,7 +268,7 @@ public class EditorActivity extends FullScreenActivity
         menuItem.setOnMenuItemClickListener(this);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        tabManager = new TabManager(this);
+        mTabManager = new TabManager(this);
     }
 
     @Override
@@ -483,7 +488,7 @@ public class EditorActivity extends FullScreenActivity
                 CompilerFactory.CompileType compileType = CompilerFactory.CompileType.GCC;
                 INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
                 CompileManager compileManager = new CompileManager(EditorActivity.this);
-                compileManager.setDiagnosticPresenter(diagnosticPresenter);
+                compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
                 CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
                 compileTask.execute();
@@ -520,7 +525,7 @@ public class EditorActivity extends FullScreenActivity
     }
 
     public void doClusterCommand(Command command) {
-        clusterCommand = tabManager.getEditorPagerAdapter().makeClusterCommand();
+        clusterCommand = mTabManager.getEditorPagerAdapter().makeClusterCommand();
         clusterCommand.setCommand(command);
         clusterCommand.doNextCommand();
     }
@@ -545,9 +550,9 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private EditorDelegate getCurrentEditorDelegate() {
-        if (tabManager == null || tabManager.getEditorPagerAdapter() == null)
+        if (mTabManager == null || mTabManager.getEditorPagerAdapter() == null)
             return null;
-        return tabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
+        return mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
     }
 
     public void startPickPathActivity(String path, String encoding) {
@@ -570,7 +575,7 @@ public class EditorActivity extends FullScreenActivity
                 String file = FileExplorerActivity.getFile(data);
                 String encoding = FileExplorerActivity.getFileEncoding(data);
 
-                IEditorPagerAdapter adapter = tabManager.getEditorPagerAdapter();
+                IEditorPagerAdapter adapter = mTabManager.getEditorPagerAdapter();
                 EditorDelegate delegate = adapter.getCurrentEditorDelegate();
                 if (delegate != null) {
                     adapter.updateDescriptor(file, encoding);
@@ -588,7 +593,7 @@ public class EditorActivity extends FullScreenActivity
         FileManager fileManager = new FileManager(this);
         File newFile = fileManager.createNewFile("_" + System.currentTimeMillis() + ".txt");
         if (IOUtils.writeFile(newFile, content.toString())) {
-            tabManager.newTab(newFile);
+            mTabManager.newTab(newFile);
         }
     }
 
@@ -611,7 +616,7 @@ public class EditorActivity extends FullScreenActivity
             return;
         }
 
-        if (!tabManager.newTab(file, offset, encoding)) {
+        if (!mTabManager.newTab(file, offset, encoding)) {
             return;
         }
         DBHelper.getInstance(this).addRecentFile(filePath, encoding);
@@ -626,7 +631,7 @@ public class EditorActivity extends FullScreenActivity
     }
 
     public TabManager getTabManager() {
-        return tabManager;
+        return mTabManager;
     }
 
     @Override
@@ -647,7 +652,7 @@ public class EditorActivity extends FullScreenActivity
                 mExitTime = System.currentTimeMillis();
                 return true;
             } else {
-                return tabManager == null || tabManager.closeAllTabAndExitApp();
+                return mTabManager == null || mTabManager.closeAllTabAndExitApp();
             }
         }
         return super.onKeyDown(keyCode, event);
