@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="divider_height">0.5dp</dimen>
     <dimen name="cab_find_text_width">110dp</dimen>
+
+    <dimen name="symbol_bar_height">48dp</dimen>
 </resources>

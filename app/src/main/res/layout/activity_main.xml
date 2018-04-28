@@ -23,32 +23,65 @@
                 app:popupTheme="?actionBarPopupTheme" />
         </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
+        <com.sothree.slidinguppanel.SlidingUpPanelLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="bottom"
             android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:umanoDragView="@+id/drag_view"
+            app:umanoFadeColor="@android:color/transparent"
+            app:umanoInitialState="collapsed"
+            app:umanoPanelHeight="@dimen/symbol_bar_height">
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="match_parent" />
 
-            <HorizontalScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:fillViewport="true">
+                android:orientation="vertical">
 
-                <com.jecelyin.editor.v2.ui.widget.SymbolBarLayout
-                    android:id="@+id/symbolBarLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/windowBackground"
-                    android:visibility="gone" />
-            </HorizontalScrollView>
-        </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/drag_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/symbol_bar_height"
+                    android:fillViewport="true"
+                    android:orientation="horizontal">
+
+                    <com.duy.view.TintImageView
+                        android:id="@+id/btn_toggle_panel"
+                        android:layout_width="@dimen/symbol_bar_height"
+                        android:layout_height="@dimen/symbol_bar_height"
+                        android:scaleType="centerInside"
+                        android:textColor="?android:textColorPrimary"
+                        app:srcCompat="@drawable/ic_keyboard_arrow_up_white_24dp" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.jecelyin.editor.v2.ui.widget.SymbolBarLayout
+                            android:id="@+id/symbolBarLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="?android:attr/windowBackground"
+                            android:visibility="visible" />
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/diagnostic_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+        </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

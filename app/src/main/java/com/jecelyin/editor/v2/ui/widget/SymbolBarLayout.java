@@ -60,6 +60,12 @@ public class SymbolBarLayout extends LinearLayout implements View.OnClickListene
             symbol = Preferences.getInstance(getContext()).getSymbol();
         }
         charList = TextUtils.split(symbol, "\n");
+
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
         makeItemViews(getContext());
     }
 
