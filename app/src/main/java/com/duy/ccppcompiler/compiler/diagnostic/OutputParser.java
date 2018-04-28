@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * Created by Duy on 28-Apr-18.
  */
 
-public class OutputParser<S> {
+public class OutputParser {
     public static final Pattern PATTERN = Pattern.compile(
             "(.*):" + /*File name*/
                     "([0-9]+):" + /*Line*/
@@ -32,12 +32,13 @@ public class OutputParser<S> {
                     "(.*)" /*Message*/
             , Pattern.CASE_INSENSITIVE);
 
-    private DiagnosticsCollector<? extends S> diagnosticsCollector;
+    private DiagnosticsCollector diagnosticsCollector;
 
-    public OutputParser(DiagnosticsCollector<? extends S> diagnosticsCollector) {
+    public OutputParser(DiagnosticsCollector diagnosticsCollector) {
         this.diagnosticsCollector = diagnosticsCollector;
     }
 
+    @SuppressWarnings("unchecked")
     public void parse(String inputData) {
         Matcher matcher = PATTERN.matcher(inputData);
         while (matcher.find()) {

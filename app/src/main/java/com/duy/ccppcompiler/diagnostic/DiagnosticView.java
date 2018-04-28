@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.ui.diagnostic;
+package com.duy.ccppcompiler.diagnostic;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;

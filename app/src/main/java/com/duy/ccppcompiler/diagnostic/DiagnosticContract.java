@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.ui.diagnostic;
+package com.duy.ccppcompiler.diagnostic;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 
@@ -25,7 +25,7 @@ import java.util.List;
  */
 
 public class DiagnosticContract {
-    public interface View {
+    public static interface View {
         void show(List<Diagnostic> diagnostics);
 
         void remove(Diagnostic diagnostic);

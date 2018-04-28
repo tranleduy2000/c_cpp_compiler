@@ -1,4 +1,4 @@
-package com.jecelyin.editor.v2.ui.diagnostic;
+package com.duy.ccppcompiler.diagnostic;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -23,7 +23,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
     private Context mContext;
     private DiagnosticClickListener mDiagnosticClickListener;
 
-    public DiagnosticAdapter(List<Diagnostic> diagnostics, Context context) {
+    DiagnosticAdapter(List<Diagnostic> diagnostics, Context context) {
         this.mDiagnostics = diagnostics;
         this.mContext = context;
     }

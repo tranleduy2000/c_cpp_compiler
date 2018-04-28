@@ -44,9 +44,10 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
+import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ide.compiler.CompileTask;
-import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
 import com.duy.ide.filemanager.SaveListener;
@@ -110,9 +111,9 @@ public class EditorActivity extends FullScreenActivity
     private Preferences preferences;
     private ClusterCommand clusterCommand;
     private MenuManager mMenuManager;
-    private FolderChooserDialog.FolderCallback findFolderCallback;
     private long mExitTime;
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
+    private DiagnosticPresenter diagnosticPresenter;
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -481,7 +482,8 @@ public class EditorActivity extends FullScreenActivity
 
                 CompilerFactory.CompileType compileType = CompilerFactory.CompileType.GCC;
                 INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
-                ICompileManager compileManager = CompilerFactory.createCompileManager(EditorActivity.this);
+                CompileManager compileManager = new CompileManager(EditorActivity.this);
+                compileManager.setDiagnosticPresenter(diagnosticPresenter);
 
                 CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
                 compileTask.execute();
@@ -506,9 +508,7 @@ public class EditorActivity extends FullScreenActivity
 
     @Override
     public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File file) {
-        if (findFolderCallback != null) {
-            findFolderCallback.onFolderSelection(dialog, file);
-        }
+
     }
 
     private void hideSoftInput() {
@@ -633,12 +633,12 @@ public class EditorActivity extends FullScreenActivity
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if (mDrawerLayout != null) {
-                if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+                    mDrawerLayout.closeDrawer(Gravity.START);
                     return true;
                 }
-                if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
-                    mDrawerLayout.closeDrawer(Gravity.RIGHT);
+                if (mDrawerLayout.isDrawerOpen(Gravity.END)) {
+                    mDrawerLayout.closeDrawer(Gravity.END);
                     return true;
                 }
             }

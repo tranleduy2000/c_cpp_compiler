@@ -31,7 +31,7 @@ public class OutputParserTest {
     @Test
     public void parse() throws Exception {
         DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
-        OutputParser<Diagnostic> outputParser = new OutputParser<>(diagnosticsCollector);
+        OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("D:\\Data\\Downloads\\c\\file.c: In function 'main':\n" +
                 "D:\\Data\\Downloads\\c\\file.c:16:7: error: expected ';' before 'firstNumber'\n" +
                 "       firstNumber = secondNumber;\n" +
@@ -41,7 +41,7 @@ public class OutputParserTest {
     @Test
     public void parse2() throws Exception {
         DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
-        OutputParser<Diagnostic> outputParser = new OutputParser<>(diagnosticsCollector);
+        OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("D:\\Data\\Downloads\\c\\file.c: In function 'main':\n" +
                 "D:\\Data\\Downloads\\c\\file.c:13:7: error: 'temporaryVaiable' undeclared (first use in this function)\n" +
                 "       temporaryVaiable = firstNumber;\n" +

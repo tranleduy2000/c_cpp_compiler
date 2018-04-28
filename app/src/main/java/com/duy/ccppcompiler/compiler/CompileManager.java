@@ -20,7 +20,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
+import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
 import com.duy.ccppcompiler.console.ConsoleActivity;
+import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
@@ -37,8 +40,9 @@ public class CompileManager implements ICompileManager {
     private static final String TAG = "CompileManager";
     private ProgressDialog mCompileDialog;
     private EditorActivity mActivity;
+    private DiagnosticPresenter mDiagnosticPresenter;
 
-    CompileManager(EditorActivity activity) {
+    public CompileManager(EditorActivity activity) {
         mCompileDialog = new ProgressDialog(activity);
         mActivity = activity;
     }
@@ -80,6 +84,15 @@ public class CompileManager implements ICompileManager {
             mCompileDialog.setMessage(shellResult.getMessage());
         }
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
+        if (mDiagnosticPresenter != null) {
+            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector<>();
+            OutputParser parser = new OutputParser(diagnosticsCollector);
+            parser.parse(shellResult.getMessage());
+            mDiagnosticPresenter.setDiagnostics(diagnosticsCollector.getDiagnostics());
+        }
     }
 
+    public void setDiagnosticPresenter(DiagnosticPresenter diagnosticPresenter) {
+        this.mDiagnosticPresenter = diagnosticPresenter;
+    }
 }

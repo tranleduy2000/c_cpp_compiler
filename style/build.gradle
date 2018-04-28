@@ -59,6 +59,4 @@ dependencies {
     api "com.android.support:cardview-v7:$androidSupportVersion"
     api "com.android.support:support-annotations:$androidSupportVersion"
     api "com.android.support:design:$androidSupportVersion"
-
-    api 'com.evrencoskun.library:tableview:0.8.6'
 }
