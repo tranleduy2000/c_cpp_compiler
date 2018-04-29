@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 public class OutputParserTest extends TestCase {
 
     public void testParse() throws Exception {
-        DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
+        DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
         OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("D:\\Data\\Downloads\\c\\file.c: In function 'main':\n" +
                 "D:\\Data\\Downloads\\c\\file.c:16:7: error: expected ';' before 'firstNumber'\n" +
@@ -41,7 +41,7 @@ public class OutputParserTest extends TestCase {
 
 
     public void testParse2() throws Exception {
-        DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
+        DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
         OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("D:\\Data\\Downloads\\c\\file.c: In function 'main':\n" +
                 "D:\\Data\\Downloads\\c\\file.c:13:7: error: 'temporaryVaiable' undeclared (first use in this function)\n" +
@@ -62,7 +62,7 @@ public class OutputParserTest extends TestCase {
 
 
     public void testFixIt() {
-        DiagnosticsCollector<Diagnostic> diagnosticsCollector = new DiagnosticsCollector<>();
+        DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
         OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("/storage/emulated/0/examples/simple/bit_print.c:6:7: warning: implicit declaration of function 'pinf'; did you mean 'printf'?\n" +
                 "                  fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");

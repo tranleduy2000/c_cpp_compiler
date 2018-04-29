@@ -88,7 +88,7 @@ public class CompileManager implements ICompileManager {
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
 
         if (mDiagnosticPresenter != null) {
-            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector<>();
+            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
             OutputParser parser = new OutputParser(diagnosticsCollector);
             parser.parse(shellResult.getMessage());
             ArrayList diagnostics = diagnosticsCollector.getDiagnostics();

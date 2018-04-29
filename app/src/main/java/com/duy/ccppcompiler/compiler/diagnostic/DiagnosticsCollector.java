@@ -24,15 +24,15 @@ import java.util.ArrayList;
  * Created by Duy on 28-Apr-18.
  */
 
-public class DiagnosticsCollector<S> implements DiagnosticListener<S> {
-    private final ArrayList<Diagnostic<? extends S>> diagnostics = new ArrayList<>();
+public class DiagnosticsCollector implements DiagnosticListener {
+    private final ArrayList<Diagnostic> diagnostics = new ArrayList<>();
 
     @Override
-    public void report(Diagnostic<? extends S> diagnostic) {
+    public void report(Diagnostic diagnostic) {
         diagnostics.add(diagnostic);
     }
 
-    public ArrayList<Diagnostic<? extends S>> getDiagnostics() {
+    public ArrayList<Diagnostic> getDiagnostics() {
         return diagnostics;
     }
 }

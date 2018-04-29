@@ -16,11 +16,11 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic;
 
-public interface DiagnosticListener<S> {
+public interface DiagnosticListener {
     /**
      * Call when a problem is found.
      *
      * @param diagnostic a diagnostic representing the problem that was found
      */
-    void report(Diagnostic<? extends S> diagnostic);
+    void report(Diagnostic diagnostic);
 }

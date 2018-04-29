@@ -17,6 +17,7 @@
 package com.duy.ccppcompiler.diagnostic;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
 import java.util.List;
 
@@ -40,8 +41,11 @@ public class DiagnosticContract {
     public interface Presenter {
         void onDiagnosticClick(android.view.View view, Diagnostic diagnostic);
 
+        void onSuggestionClick(ISuggestion suggestion);
+
         void showView();
 
         void hideView();
+
     }
 }

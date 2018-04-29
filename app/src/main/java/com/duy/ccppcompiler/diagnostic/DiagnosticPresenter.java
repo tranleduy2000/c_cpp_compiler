@@ -21,6 +21,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 import com.duy.common.DLog;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
@@ -57,7 +58,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     public void onDiagnosticClick(View view, Diagnostic diagnostic) {
         if (DLog.DEBUG)
             DLog.d(TAG, "onDiagnosticClick() called with: view = [" + view + "], diagnostic = [" + diagnostic + "]");
-        Object source = diagnostic.getSource();
+        Object source = diagnostic.getSourceFile();
         if (source instanceof File) {
             File file = (File) source;
             Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(file);
@@ -80,6 +81,11 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 onDiagnosticClick(view, diagnostic);
             }
         }
+    }
+
+    @Override
+    public void onSuggestionClick(ISuggestion suggestion) {
+
     }
 
     @Override

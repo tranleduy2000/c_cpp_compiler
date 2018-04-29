@@ -22,11 +22,13 @@ import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
+import java.io.File;
+
 /**
  * Created by Duy on 28-Apr-18.
  */
 
-public interface Diagnostic<S> extends Parcelable {
+public interface Diagnostic extends Parcelable {
     /**
      * Used to signal that no position is available.
      */
@@ -42,7 +44,7 @@ public interface Diagnostic<S> extends Parcelable {
      * diagnostic.
      */
     @Nullable
-    S getSource();
+    File getSourceFile();
 
     /**
      * Gets a character offset from the beginning of the source object
@@ -53,7 +55,7 @@ public interface Diagnostic<S> extends Parcelable {
      * <p>{@code getPosition() <= getEndPosition()}
      *
      * @return character offset from beginning of source; {@link
-     * #NOPOS} if {@link #getSource()} would return {@code null} or if
+     * #NOPOS} if {@link #getSourceFile()} would return {@code null} or if
      * no location is suitable
      */
     long getPosition();

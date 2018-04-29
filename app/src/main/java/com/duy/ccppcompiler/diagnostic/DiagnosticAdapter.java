@@ -53,7 +53,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
                 mDiagnosticClickListener.onSuggestionClick(v, diagnostic.getSuggestion());
             }
         });
-        Object source = diagnostic.getSource();
+        Object source = diagnostic.getSourceFile();
         if (source instanceof File) {
             holder.txtFile.setText(((File) source).getName());
         }

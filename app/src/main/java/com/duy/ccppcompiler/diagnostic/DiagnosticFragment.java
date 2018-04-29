@@ -121,6 +121,8 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     @Override
     public void onSuggestionClick(View v, ISuggestion suggestion) {
-
+        if (mPresenter != null) {
+            mPresenter.onSuggestionClick(suggestion);
+        }
     }
 }

@@ -31,7 +31,7 @@ import java.io.File;
  * Created by Duy on 28-Apr-18.
  */
 
-public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
+public class SimpleDiagnostic implements Diagnostic, Parcelable {
     public static final Creator<SimpleDiagnostic> CREATOR = new Creator<SimpleDiagnostic>() {
         @Override
         public SimpleDiagnostic createFromParcel(Parcel in) {
@@ -90,7 +90,7 @@ public class SimpleDiagnostic implements Diagnostic<File>, Parcelable {
     }
 
     @Override
-    public File getSource() {
+    public File getSourceFile() {
         return new File(filePath);
     }
 
