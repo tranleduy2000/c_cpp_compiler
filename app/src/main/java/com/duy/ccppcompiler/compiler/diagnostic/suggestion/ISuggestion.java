@@ -37,5 +37,5 @@ public interface ISuggestion extends Parcelable {
     int getColEnd();
 
     @NonNull
-    String getSuggestion();
+    String getMessage();
 }

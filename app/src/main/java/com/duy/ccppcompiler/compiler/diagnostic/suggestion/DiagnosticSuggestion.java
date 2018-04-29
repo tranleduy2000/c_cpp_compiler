@@ -108,7 +108,7 @@ public class DiagnosticSuggestion implements Parcelable, ISuggestion {
         if (getColEnd() != that.getColEnd()) return false;
         if (getSourceFile() != null ? !getSourceFile().equals(that.getSourceFile()) : that.getSourceFile() != null)
             return false;
-        return getSuggestion() != null ? getSuggestion().equals(that.getSuggestion()) : that.getSuggestion() == null;
+        return getMessage() != null ? getMessage().equals(that.getMessage()) : that.getMessage() == null;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DiagnosticSuggestion implements Parcelable, ISuggestion {
         result = 31 * result + getColStart();
         result = 31 * result + getLineEnd();
         result = 31 * result + getColEnd();
-        result = 31 * result + (getSuggestion() != null ? getSuggestion().hashCode() : 0);
+        result = 31 * result + (getMessage() != null ? getMessage().hashCode() : 0);
         return result;
     }
 
@@ -164,7 +164,7 @@ public class DiagnosticSuggestion implements Parcelable, ISuggestion {
 
     @NonNull
     @Override
-    public String getSuggestion() {
+    public String getMessage() {
         return suggestion;
     }
 }

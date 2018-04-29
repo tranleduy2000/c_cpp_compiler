@@ -39,7 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ide.editor.span.CustomUnderlineSpan;
+import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
@@ -363,15 +363,50 @@ public class EditorDelegate implements TextWatcher {
         return true;
     }
 
+    /**
+     * Set {@link com.duy.ide.editor.span.ErrorSpan} from line:col to lineEnd:colEnd
+     * If it hasn't end index, this method will be set span for all line
+     *
+     * @param args - contains four key
+     */
     private void highlightError(Bundle args) {
         if (DLog.DEBUG) DLog.d(TAG, "highlightError() called with: args = [" + args + "]");
         int realLine = args.getInt("line", -1);
         int virtualLine = mEditText.realLineToVirtualLine(realLine);
         if (virtualLine != -1) { //found
-            int start = mEditText.getLayout().getLineStart(virtualLine);
-            int end = mEditText.getLayout().getLineEnd(virtualLine);
             Editable editableText = mEditText.getEditableText();
-            editableText.setSpan(new CustomUnderlineSpan(Color.RED), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int startIndex;
+            int endIndex;
+            if (args.containsKey("lineEnd")) {
+                int lineEnd = args.getInt("lineEnd");
+                int colEnd = args.getInt("colEnd", 1);
+                int colStart = args.getInt("col", 1);
+                startIndex = mEditText.getCursorOffsetAt(realLine, colStart);
+                endIndex = mEditText.getCursorOffsetAt(lineEnd, colEnd);
+
+            } else {
+                startIndex = mEditText.getLayout().getLineStart(virtualLine);
+                endIndex = mEditText.getLayout().getLineEnd(virtualLine);
+                //remove white space, tab or line terminate
+                while (startIndex < endIndex) {
+                    if (Character.isWhitespace(editableText.charAt(startIndex))) {
+                        startIndex++;
+                        continue;
+                    }
+                    if (Character.isWhitespace(editableText.charAt(endIndex - 1))) {
+                        endIndex--;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            ErrorSpan[] spans = editableText.getSpans(startIndex, endIndex, ErrorSpan.class);
+            for (ErrorSpan span : spans) {
+                editableText.removeSpan(span);
+            }
+            if (startIndex < endIndex) {
+                editableText.setSpan(new ErrorSpan(Color.RED), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
         }
     }
 

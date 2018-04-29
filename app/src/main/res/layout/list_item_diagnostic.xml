@@ -34,7 +34,7 @@
             android:layout_alignParentTop="true"
             android:padding="4dp"
             android:textColor="?android:textColorPrimary"
-            android:typeface="monospace"
+
             tools:text="12:22" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -46,7 +46,6 @@
             android:layout_toRightOf="@+id/txt_line_col"
             android:padding="4dp"
             android:textColor="?android:textColorPrimary"
-            android:typeface="monospace"
             tools:text="main.c" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -59,7 +58,6 @@
             android:layout_toRightOf="@+id/txt_file"
             android:padding="4dp"
             android:textColor="?android:textColorPrimary"
-            android:typeface="monospace"
             tools:text="Long message Long message Long message Long messageLong messageLong messageLong messageLong messageLong message" />
 
     </RelativeLayout>
@@ -69,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="Fit it"
+        android:text="Fix it"
         android:textAllCaps="false" />
 
 </LinearLayout>

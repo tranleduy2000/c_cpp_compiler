@@ -100,8 +100,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             int end = delegate.getEditText()
                     .getCursorOffsetAt(suggestion.getLineEnd(), suggestion.getColEnd());
             if (start >= 0 && start <= end) {
-                delegate.getEditableText().replace(start, end, suggestion.getSuggestion());
-                delegate.getEditText().setSelection(start + suggestion.getSuggestion().length());
+                delegate.getEditableText().replace(start, end, suggestion.getMessage());
+                delegate.getEditText().setSelection(start + suggestion.getMessage().length());
             }
             mView.remove(diagnostic);
         }
@@ -131,7 +131,16 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 File sourceFile = diagnostic.getSourceFile();
                 if (sourceFile.getPath().equals(delegate.getPath())) {
                     Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
-                    command.args.putInt("line", (int) diagnostic.getLineNumber());
+                    if (diagnostic.getSuggestion() != null) {
+                        ISuggestion suggestion = diagnostic.getSuggestion();
+                        command.args.putInt("line", suggestion.getLineStart());
+                        command.args.putInt("col", suggestion.getColStart());
+                        command.args.putInt("lineEnd", suggestion.getLineEnd());
+                        command.args.putInt("colEnd", suggestion.getColEnd());
+                    } else {
+                        command.args.putInt("line", (int) diagnostic.getLineNumber());
+                        command.args.putInt("col", (int) diagnostic.getColumnNumber());
+                    }
                     delegate.doCommand(command);
                 }
             }

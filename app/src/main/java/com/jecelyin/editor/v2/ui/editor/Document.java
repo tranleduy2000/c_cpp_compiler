@@ -29,6 +29,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.filemanager.ReadFileListener;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -238,10 +239,17 @@ public class Document implements ReadFileListener, TextWatcher {
         if (!canHighlight) {
             return;
         }
-
-        ForegroundColorSpan[] spans = editableText.getSpans(lineStartOffset, lineEndOffset, ForegroundColorSpan.class);
-        for (ForegroundColorSpan span : spans) {
-            editableText.removeSpan(span);
+        {
+            ForegroundColorSpan[] spans = editableText.getSpans(lineStartOffset, lineEndOffset, ForegroundColorSpan.class);
+            for (ForegroundColorSpan span : spans) {
+                editableText.removeSpan(span);
+            }
+        }
+        {
+            ErrorSpan[] spans = editableText.getSpans(lineStartOffset, lineEndOffset, ErrorSpan.class);
+            for (ErrorSpan span : spans) {
+                editableText.removeSpan(span);
+            }
         }
 
         highlight(editableText, startLine, endLine);

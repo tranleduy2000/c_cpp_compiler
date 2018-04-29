@@ -46,6 +46,8 @@ import android.text.style.SuggestionSpan;
 import android.text.style.URLSpan;
 import android.util.Log;
 
+import com.duy.ide.editor.span.ErrorSpan;
+
 import java.lang.reflect.Array;
 
 /**
@@ -318,7 +320,7 @@ public class SpannableStringBuilder implements CharSequence, GetChars, Spannable
             Object what = mSpans[i];
 
             //start jec+: 仅清除颜色的Span就行了，不然会导致无法输入文字等等问题，因为默认还有其它非颜色的span
-            if (!(what instanceof ForegroundColorSpan))
+            if (!(what instanceof ForegroundColorSpan || what instanceof ErrorSpan))
                 continue;
             //end jec+
 

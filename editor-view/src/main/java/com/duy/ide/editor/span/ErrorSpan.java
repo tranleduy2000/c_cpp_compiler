@@ -16,51 +16,19 @@
 
 package com.duy.ide.editor.span;
 
-import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.ColorInt;
-import android.text.TextPaint;
-import android.text.style.CharacterStyle;
+import android.text.style.UnderlineSpan;
 import android.text.style.UpdateAppearance;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class ErrorSpan extends CharacterStyle implements UpdateAppearance, Parcelable {
-    public static final Creator<ErrorSpan> CREATOR = new Creator<ErrorSpan>() {
-        @Override
-        public ErrorSpan createFromParcel(Parcel in) {
-            return new ErrorSpan(in);
-        }
+public class ErrorSpan extends UnderlineSpan implements UpdateAppearance, Parcelable {
 
-        @Override
-        public ErrorSpan[] newArray(int size) {
-            return new ErrorSpan[size];
-        }
-    };
     private int mColor;
 
-    public ErrorSpan(@ColorInt int color) {
+    public ErrorSpan(int color) {
         mColor = color;
-    }
-
-    private ErrorSpan(Parcel in) {
-        mColor = in.readInt();
-    }
-
-    @Override
-    public void updateDrawState(TextPaint tp) {
-        tp.setUnderlineText(true);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mColor);
     }
 }
