@@ -338,6 +338,7 @@ public class Document implements ReadFileListener, TextWatcher {
     private void highlight(Spannable spannableStringBuilder, int startLine, int endLine) {
         if (!mBuffer.isCanHighlight())
             return;
+
         DefaultTokenHandler tokenHandler;
         if (styles == null) {
             styles = ColorSchemeLoader.loadStyles(mContext);

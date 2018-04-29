@@ -22,6 +22,7 @@ import android.content.res.TypedArray;
 import android.core.widget.BaseEditorView;
 import android.core.widget.EditAreaView;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.MainThread;
@@ -38,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ide.editor.span.CustomUnderlineSpan;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
@@ -354,8 +356,23 @@ public class EditorDelegate implements TextWatcher {
             case REQUEST_FOCUS:
                 mEditText.requestFocus();
                 break;
+            case HIGHLIGHT_ERROR:
+                highlightError(command.args);
+                break;
         }
         return true;
+    }
+
+    private void highlightError(Bundle args) {
+        if (DLog.DEBUG) DLog.d(TAG, "highlightError() called with: args = [" + args + "]");
+        int realLine = args.getInt("line", -1);
+        int virtualLine = mEditText.realLineToVirtualLine(realLine);
+        if (virtualLine != -1) { //found
+            int start = mEditText.getLayout().getLineStart(virtualLine);
+            int end = mEditText.getLayout().getLineEnd(virtualLine);
+            Editable editableText = mEditText.getEditableText();
+            editableText.setSpan(new CustomUnderlineSpan(Color.RED), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     private void reOpenWithEncoding(final String encoding) {

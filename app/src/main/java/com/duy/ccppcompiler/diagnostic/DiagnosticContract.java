@@ -21,6 +21,7 @@ import android.support.annotation.MainThread;
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,5 +52,7 @@ public class DiagnosticContract {
 
         void hideView();
 
+        @MainThread
+        void setDiagnostics(ArrayList<Diagnostic> diagnostics);
     }
 }

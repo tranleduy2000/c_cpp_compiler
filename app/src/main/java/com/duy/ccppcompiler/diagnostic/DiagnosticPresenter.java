@@ -118,10 +118,23 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @MainThread
+    @Override
     public void setDiagnostics(ArrayList<Diagnostic> diagnostics) {
         this.diagnostics = diagnostics;
         if (mView != null) {
             mView.show(diagnostics);
+        }
+        EditorDelegate delegate = mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
+        if (delegate != null) {
+            delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
+            for (Diagnostic diagnostic : diagnostics) {
+                File sourceFile = diagnostic.getSourceFile();
+                if (sourceFile.getPath().equals(delegate.getPath())) {
+                    Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
+                    command.args.putInt("line", (int) diagnostic.getLineNumber());
+                    delegate.doCommand(command);
+                }
+            }
         }
     }
 }

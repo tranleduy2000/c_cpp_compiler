@@ -55,8 +55,8 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
                 }
             }
         });
-        Object source = diagnostic.getSourceFile();
-        holder.txtFile.setText(((File) source).getName());
+        File source = diagnostic.getSourceFile();
+        holder.txtFile.setText(source.getName());
         holder.txtMessage.setText(diagnostic.getMessage(mContext));
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override

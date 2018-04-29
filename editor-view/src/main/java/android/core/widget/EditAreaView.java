@@ -329,36 +329,46 @@ public class EditAreaView extends BaseEditorView {
         setSelection(getLayout().getLineStart(getLineCount() - 1));
     }
 
-    public int getCursorOffsetAt(int line, int col) {
-        if (line <= 0 || line > getLineCount())
-            return line;
-        int vLine = getLayout().realLineToVirtualLine(line);
-        if (vLine == -1)
-            return line;
-        int offset = getLayout().getLineStart(vLine);
-        if (col > 0) {
-            offset += col - 1; /*the column start at 1*/
+    /**
+     * @return the cursor offset at realLine:column, -1 if invalid, note that real line start at 1, not 0
+     */
+    public int getCursorOffsetAt(int realLine, int column) {
+        if (getLayout() == null) {
+            return -1;
+        }
+        if (realLine <= 0 || realLine > getLineCount())
+            return -1;
+
+        int victualLine = getLayout().realLineToVirtualLine(realLine);
+        if (victualLine == -1)
+            return -1;
+
+        int offset = getLayout().getLineStart(victualLine);
+        if (column > 0) {
+            offset += column - 1; /*the column start at 1*/
+        }
+        if (offset > length()) {
+            return -1;
         }
         return offset;
     }
 
+    public int realLineToVirtualLine(int realLine) {
+        return getLayout().realLineToVirtualLine(realLine);
+    }
+
+
     /**
-     * Move cursor to line: column
+     * Move cursor to realLine: column
      *
-     * @param line - the line, if line not exist, doesn't work
-     * @param col  - current column, if col < 0, cursor is start at line
+     * @param realLine - the realLine, if realLine not exist, doesn't work, note that realLine start at 1
+     * @param column   - current column, if col < 0, cursor is start at realLine
      */
-    public void gotoLine(int line, int col) {
-        if (line <= 0 || line > getLineCount())
-            return;
-        int vLine = getLayout().realLineToVirtualLine(line);
-        if (vLine == -1)
-            return;
-        int offset = getLayout().getLineStart(vLine);
-        if (col > 0) {
-            offset += col - 1; /*the column start at 1*/
+    public void gotoLine(int realLine, int column) {
+        int offset = getCursorOffsetAt(realLine, column);
+        if (offset >= 0) {
+            setSelection(offset);
         }
-        setSelection(offset);
     }
 
     @Override
