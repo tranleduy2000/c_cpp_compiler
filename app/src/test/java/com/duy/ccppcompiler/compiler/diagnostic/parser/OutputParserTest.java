@@ -59,7 +59,7 @@ public class OutputParserTest extends TestCase {
             System.out.println(diagnostic);
         }
 
-        assertEquals(diagnostics.size(), 3);
+        assertEquals(diagnostics.size(), 4);
     }
 
 

@@ -18,6 +18,7 @@ package com.duy.ccppcompiler.compiler.diagnostic.suggestion;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 
@@ -161,6 +162,7 @@ public class DiagnosticSuggestion implements Parcelable, ISuggestion {
         return colEnd;
     }
 
+    @NonNull
     @Override
     public String getSuggestion() {
         return suggestion;

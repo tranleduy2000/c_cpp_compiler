@@ -45,7 +45,7 @@ public class DiagnosticContract {
         void onDiagnosticClick(android.view.View view, Diagnostic diagnostic);
 
         @MainThread
-        void onSuggestionClick(ISuggestion suggestion);
+        void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion);
 
         void showView();
 

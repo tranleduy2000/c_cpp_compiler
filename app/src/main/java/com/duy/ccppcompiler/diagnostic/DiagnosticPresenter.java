@@ -82,20 +82,28 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void onSuggestionClick(ISuggestion suggestion) {
+    public void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion) {
         File source = suggestion.getSourceFile();
         Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
         if (pair != null) {
             int index = pair.first;
-            EditorDelegate editorDelegate = pair.second;
-            if (editorDelegate.isChanged()) {
+            EditorDelegate delegate = pair.second;
+            if (delegate.isChanged()) {
                 return;
             }
 
             mTabManager.setCurrentTab(index);
-            editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
+            delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
 
-            editorDelegate.getEditText().getCursorOffsetAt(suggestion.getLineStart(), suggestion.getColStart());
+            int start = delegate.getEditText()
+                    .getCursorOffsetAt(suggestion.getLineStart(), suggestion.getColStart());
+            int end = delegate.getEditText()
+                    .getCursorOffsetAt(suggestion.getLineEnd(), suggestion.getColEnd());
+            if (start >= 0 && start <= end) {
+                delegate.getEditableText().replace(start, end, suggestion.getSuggestion());
+                delegate.getEditText().setSelection(start + suggestion.getSuggestion().length());
+            }
+            mView.remove(diagnostic);
         }
     }
 

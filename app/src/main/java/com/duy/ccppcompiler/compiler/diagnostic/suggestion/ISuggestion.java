@@ -17,6 +17,7 @@
 package com.duy.ccppcompiler.compiler.diagnostic.suggestion;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 
@@ -35,5 +36,6 @@ public interface ISuggestion extends Parcelable {
 
     int getColEnd();
 
+    @NonNull
     String getSuggestion();
 }

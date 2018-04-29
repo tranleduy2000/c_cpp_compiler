@@ -50,13 +50,13 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
         holder.btnFixIt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDiagnosticClickListener.onSuggestionClick(v, diagnostic.getSuggestion());
+                if (mDiagnosticClickListener != null) {
+                    mDiagnosticClickListener.onSuggestionClick(v, diagnostic, diagnostic.getSuggestion());
+                }
             }
         });
         Object source = diagnostic.getSourceFile();
-        if (source instanceof File) {
-            holder.txtFile.setText(((File) source).getName());
-        }
+        holder.txtFile.setText(((File) source).getName());
         holder.txtMessage.setText(diagnostic.getMessage(mContext));
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override

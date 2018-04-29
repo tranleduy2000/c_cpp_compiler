@@ -19,7 +19,7 @@
 package android.core.widget;
 
 import android.content.Context;
-import android.core.content.IUndoManager;
+import android.core.content.UndoManager;
 import android.core.text.Selection;
 import android.core.text.method.ArrowKeyMovementMethod;
 import android.core.text.method.MovementMethod;
@@ -38,7 +38,6 @@ import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 
-import com.duy.ide.editor.content.UndoRedoHelper;
 import com.jecelyin.common.utils.LimitedQueue;
 import com.jecelyin.editor.v2.Preferences;
 
@@ -112,7 +111,7 @@ public class EditAreaView extends BaseEditorView {
      */
     int mMotionCorrection;
     private OnEditorSizeChangedListener onEditorSizeChangedListener;
-    private IUndoManager undoManager;
+    private UndoManager undoManager;
     private EditorHelper editorHelper;
     private ScaleGestureDetector mScaleDetector;
     private LimitedQueue<Integer> mPositionHistoryList = new LimitedQueue<>(30);
@@ -282,8 +281,8 @@ public class EditAreaView extends BaseEditorView {
     }
 
     private void createUndoRedoManager() {
-        undoManager = new UndoRedoHelper(this);
-        //setUndoManager(undoManager, "undo");
+        undoManager = new UndoManager();
+        setUndoManager(undoManager, "undo");
     }
 
     public void redo() {
@@ -330,8 +329,17 @@ public class EditAreaView extends BaseEditorView {
         setSelection(getLayout().getLineStart(getLineCount() - 1));
     }
 
-    public void getCursorOffsetAt(int lineStart, int colStart) {
-
+    public int getCursorOffsetAt(int line, int col) {
+        if (line <= 0 || line > getLineCount())
+            return line;
+        int vLine = getLayout().realLineToVirtualLine(line);
+        if (vLine == -1)
+            return line;
+        int offset = getLayout().getLineStart(vLine);
+        if (col > 0) {
+            offset += col - 1; /*the column start at 1*/
+        }
+        return offset;
     }
 
     /**

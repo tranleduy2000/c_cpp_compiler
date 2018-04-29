@@ -26,7 +26,7 @@ import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
  */
 
 public interface DiagnosticClickListener {
-    public void onDiagnosisClick(Diagnostic diagnostic, View view);
+    void onDiagnosisClick(Diagnostic diagnostic, View view);
 
-    void onSuggestionClick(View v, ISuggestion suggestion);
+    void onSuggestionClick(View v, Diagnostic diagnostic, ISuggestion suggestion);
 }

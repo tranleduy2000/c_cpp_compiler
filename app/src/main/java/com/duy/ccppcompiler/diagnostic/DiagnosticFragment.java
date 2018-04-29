@@ -120,9 +120,9 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
-    public void onSuggestionClick(View v, ISuggestion suggestion) {
+    public void onSuggestionClick(View v, Diagnostic diagnostic, ISuggestion suggestion) {
         if (mPresenter != null) {
-            mPresenter.onSuggestionClick(suggestion);
+            mPresenter.onSuggestionClick(diagnostic, suggestion);
         }
     }
 }

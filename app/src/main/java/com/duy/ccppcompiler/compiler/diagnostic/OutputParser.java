@@ -45,7 +45,7 @@ public class OutputParser {
     //fix-it:"/storage/emulated/0/examples/simple/bit_print.c":{6:7-6:11}:"printf"
     public static final Pattern FIX_IT_PATTERN = Pattern.compile(
             "(fix-it):" +/*prefix*/
-                    "(.*):" +/*File path*/
+                    Pattern.quote("\"") + "(.*)" + Pattern.quote("\"") +":"+/*File path*/
                     "\\{([0-9]+):([0-9]+)-([0-9]+):([0-9]+)\\}:" + /*Index (line:col)-(line:col)*/
                     Pattern.quote("\"") + "(.*)" + Pattern.quote("\"")/*Message*/);
 
