@@ -54,10 +54,12 @@ public class OutputParserTest extends TestCase {
                 "D:\\Data\\Downloads\\c\\file.c:25:1: error: expected expression before '}' token\n" +
                 " }\n" +
                 " ^\n");
-        ArrayList<Diagnostic<? extends Diagnostic>> diagnostics = diagnosticsCollector.getDiagnostics();
-        for (Diagnostic<? extends Diagnostic> diagnostic : diagnostics) {
+        ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
+        for (Diagnostic diagnostic : diagnostics) {
             System.out.println(diagnostic);
         }
+
+        assertEquals(diagnostics.size(), 3);
     }
 
 
@@ -66,15 +68,43 @@ public class OutputParserTest extends TestCase {
         OutputParser outputParser = new OutputParser(diagnosticsCollector);
         outputParser.parse("/storage/emulated/0/examples/simple/bit_print.c:6:7: warning: implicit declaration of function 'pinf'; did you mean 'printf'?\n" +
                 "                  fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");
-        ArrayList<Diagnostic<? extends Diagnostic>> diagnostics = diagnosticsCollector.getDiagnostics();
-        for (Diagnostic<? extends Diagnostic> diagnostic : diagnostics) {
+        ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
+        for (Diagnostic diagnostic : diagnostics) {
             System.out.println(diagnostic);
         }
         assertEquals(diagnostics.size(), 1);
     }
 
+    public void testFixIt1() {
+        DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
+        OutputParser outputParser = new OutputParser(diagnosticsCollector);
+        outputParser.parse(" /storage/emulated/0/examples/simple/bit_print.c: In function 'main':\n" +
+                "                  /storage/emulated/0/examples/simple/bit_print.c:6:7: warning: implicit declaration of function 'pinf'; did you mean 'printf'?\n" +
+                "                  fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"\n" +
+                "                  /storage/emulated/0/examples/simple/bit_print.c:7:7: warning: implicit declaration of function 'sanf'; did you mean 'scanf'?\n" +
+                "                  fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{7:7-7:11}:\"scanf\"\n" +
+                "                  /storage/emulated/0/examples/simple/bit_print.c:13:7: error: 'temporaryVaiable' undeclared (first use in this function); did you mean 'temporaryVariable'?\n" +
+                "                  fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{13:7-13:23}:\"temporaryVariable\"\n");
+        ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
+        for (Diagnostic diagnostic : diagnostics) {
+            System.out.println(diagnostic);
+        }
+        assertEquals(diagnostics.size(), 3);
+        assertTrue(diagnostics.get(1).getSuggestion() != null);
+    }
+
     public void testFixIt2() {
-        Matcher matcher = OutputParser.FIX_IT_PATTERN.matcher("fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");
+        Matcher matcher = OutputParser.FIX_IT_PATTERN.matcher(
+                "fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");
         assertTrue(matcher.find());
     }
+
+    public void testFixIt3() {
+        Matcher matcher = OutputParser.FIX_IT_PATTERN.matcher(
+                "fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");
+        assertTrue(matcher.find());
+        assertEquals(matcher.group(), "fix-it:\"/storage/emulated/0/examples/simple/bit_print.c\":{6:7-6:11}:\"printf\"");
+    }
+
+
 }

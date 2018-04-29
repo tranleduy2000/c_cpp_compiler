@@ -18,6 +18,7 @@
 
 package android.core.view;
 
+import android.content.Context;
 import android.text.style.SuggestionSpan;
 import android.view.inputmethod.InputMethodManager;
 
@@ -25,32 +26,9 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.MethodReflection;
 
 
-/**
- * @author Jecelyin Peng <jecelyin@gmail.com>
- */
 public class InputMethodManagerCompat {
-    /**
-     * Private optimization: retrieve the global InputMethodManager instance,
-     * if it exists.
-     */
-    public static InputMethodManager peekInstance() {
-        try {
-            return (InputMethodManager) MethodReflection.getStaticMethod(InputMethodManager.class, "peekInstance", null, null);
-        } catch (Throwable e) {
-            DLog.e(e);
-            return null;
-        }
-//        return InputMethodManager.peekInstance();
-    }
-
-    public static boolean isCursorAnchorInfoEnabled(InputMethodManager imm) {
-        try {
-            return (Boolean) MethodReflection.callGet(imm, "isCursorAnchorInfoEnabled");
-        } catch (Throwable e) {
-            DLog.e(e);
-            return true;
-        }
-//        return imm.isCursorAnchorInfoEnabled();
+    public static InputMethodManager peekInstance(Context context) {
+        return (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     public static void notifySuggestionPicked(InputMethodManager imm, SuggestionSpan span, String originalString, int index) {

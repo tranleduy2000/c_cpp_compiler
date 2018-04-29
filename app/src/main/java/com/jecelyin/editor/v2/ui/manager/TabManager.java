@@ -237,7 +237,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     /**
      * Get current editor edit file
      *
-     * @return null if not found
+     * @return first is index, second is {@link EditorDelegate}, null if not found
      */
     @Nullable
     public Pair<Integer, EditorDelegate> getEditorDelegate(File file) {

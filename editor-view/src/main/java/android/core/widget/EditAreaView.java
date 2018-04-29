@@ -186,9 +186,6 @@ public class EditAreaView extends BaseEditorView {
     /**
      * Convenience for {@link Selection#selectAll}.
      */
-//    public void selectAll() {
-//        Selection.selectAll(getText());
-//    }
     public boolean selectAll() {
         return canSelectText() && selectAllText();
     }
@@ -212,44 +209,6 @@ public class EditAreaView extends BaseEditorView {
         }
     }
 
-//    @Override
-//    public void setEllipsize(TextUtils.TruncateAt ellipsis) {
-//        if (ellipsis == TextUtils.TruncateAt.MARQUEE) {
-//            throw new IllegalArgumentException("EditText cannot use the ellipsize mode "
-//                    + "TextUtils.TruncateAt.MARQUEE");
-//        }
-//        super.setEllipsize(ellipsis);
-//    }
-
-//    @Override
-//    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
-//        super.onInitializeAccessibilityEvent(event);
-//        event.setClassName(JecEditText.class.getName());
-//    }
-//
-//    @Override
-//    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
-//        super.onInitializeAccessibilityNodeInfo(info);
-//        info.setClassName(JecEditText.class.getName());
-//    }
-//
-//    @Override
-//    public boolean performAccessibilityAction(int action, Bundle arguments) {
-//        switch (action) {
-//            case AccessibilityNodeInfo.ACTION_SET_TEXT: {
-//                CharSequence text = (arguments != null) ? arguments.getCharSequence(
-//                        AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE) : null;
-//                setText(text);
-//                if (text != null && text.length() > 0) {
-//                    setSelection(text.length());
-//                }
-//                return true;
-//            }
-//            default: {
-//                return super.performAccessibilityAction(action, arguments);
-//            }
-//        }
-//    }
 
     public void setReadOnly(boolean readOnly) {
         if (readOnly) {
@@ -270,13 +229,17 @@ public class EditAreaView extends BaseEditorView {
     }
 
     public void hideSoftInput() {
-        InputMethodManager imm = InputMethodManagerCompat.peekInstance();
-        imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     public void showSoftInput() {
-        InputMethodManager imm = InputMethodManagerCompat.peekInstance();
-        imm.showSoftInput(this, InputMethodManager.SHOW_FORCED);
+        InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
+        if (imm != null) {
+            imm.showSoftInput(this, InputMethodManager.SHOW_FORCED);
+        }
     }
 
     private void init() {
@@ -365,6 +328,10 @@ public class EditAreaView extends BaseEditorView {
 
     public void gotoEnd() {
         setSelection(getLayout().getLineStart(getLineCount() - 1));
+    }
+
+    public void getCursorOffsetAt(int lineStart, int colStart) {
+
     }
 
     /**
@@ -767,6 +734,7 @@ public class EditAreaView extends BaseEditorView {
 
         return true;
     }
+
 
     public static interface OnEditorSizeChangedListener {
         void onEditorSizeChanged(int w, int h, int oldw, int oldh);

@@ -16,6 +16,8 @@
 
 package com.duy.ccppcompiler.diagnostic;
 
+import android.support.annotation.MainThread;
+
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 
@@ -39,8 +41,10 @@ public class DiagnosticContract {
     }
 
     public interface Presenter {
+        @MainThread
         void onDiagnosticClick(android.view.View view, Diagnostic diagnostic);
 
+        @MainThread
         void onSuggestionClick(ISuggestion suggestion);
 
         void showView();

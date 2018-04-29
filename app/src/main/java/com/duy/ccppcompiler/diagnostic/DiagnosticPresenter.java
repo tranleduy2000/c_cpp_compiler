@@ -58,34 +58,45 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     public void onDiagnosticClick(View view, Diagnostic diagnostic) {
         if (DLog.DEBUG)
             DLog.d(TAG, "onDiagnosticClick() called with: view = [" + view + "], diagnostic = [" + diagnostic + "]");
-        Object source = diagnostic.getSourceFile();
-        if (source instanceof File) {
-            File file = (File) source;
-            Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(file);
-            if (pair != null) {
-                int index = pair.first;
-                EditorDelegate editorDelegate = pair.second;
-                if (editorDelegate.isChanged()) {
-                    return;
-                }
-
-                mTabManager.setCurrentTab(index);
-                editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-
-                Command command = new Command(Command.CommandEnum.GOTO_LINE_COL);
-                command.args.putInt("line", (int) diagnostic.getLineNumber());
-                command.args.putInt("col", (int) diagnostic.getColumnNumber());
-                editorDelegate.doCommand(command);
-            } else {
-                mTabManager.newTab(file);
-                onDiagnosticClick(view, diagnostic);
+        File source = diagnostic.getSourceFile();
+        Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
+        if (pair != null) {
+            int index = pair.first;
+            EditorDelegate editorDelegate = pair.second;
+            if (editorDelegate.isChanged()) {
+                return;
             }
+
+            mTabManager.setCurrentTab(index);
+            editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
+
+            Command command = new Command(Command.CommandEnum.GOTO_LINE_COL);
+            command.args.putInt("line", (int) diagnostic.getLineNumber());
+            command.args.putInt("col", (int) diagnostic.getColumnNumber());
+            editorDelegate.doCommand(command);
+        } else {
+            mTabManager.newTab(source);
+            onDiagnosticClick(view, diagnostic);
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onSuggestionClick(ISuggestion suggestion) {
+        File source = suggestion.getSourceFile();
+        Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
+        if (pair != null) {
+            int index = pair.first;
+            EditorDelegate editorDelegate = pair.second;
+            if (editorDelegate.isChanged()) {
+                return;
+            }
 
+            mTabManager.setCurrentTab(index);
+            editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
+
+            editorDelegate.getEditText().getCursorOffsetAt(suggestion.getLineStart(), suggestion.getColStart());
+        }
     }
 
     @Override

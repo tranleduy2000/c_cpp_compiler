@@ -19,6 +19,7 @@ package com.duy.ccppcompiler.compiler.diagnostic.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
@@ -89,6 +90,7 @@ public class SimpleDiagnostic implements Diagnostic, Parcelable {
         return kind;
     }
 
+    @NonNull
     @Override
     public File getSourceFile() {
         return new File(filePath);

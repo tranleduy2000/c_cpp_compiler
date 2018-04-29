@@ -1058,7 +1058,7 @@ public class Editor {
                 ims.mSelectionModeChanged = false;
                 final ExtractedTextRequest req = ims.mExtractedTextRequest;
                 if (req != null) {
-                    InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+                    InputMethodManager imm = InputMethodManagerCompat.peekInstance(mTextView.getContext());
                     if (imm != null) {
                         if (BaseEditorView.DEBUG_EXTRACT) android.util.Log.v(BaseEditorView.LOG_TAG,
                                 "Retrieving extracted start=" + ims.mChangedStart +
@@ -1092,7 +1092,7 @@ public class Editor {
 
     private void sendUpdateSelection() {
         if (null != mInputMethodState && mInputMethodState.mBatchEditNesting <= 0) {
-            final InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+            final InputMethodManager imm = InputMethodManagerCompat.peekInstance(mTextView.getContext());
             if (null != imm) {
                 final int selectionStart = mTextView.getSelectionStart();
                 final int selectionEnd = mTextView.getSelectionEnd();
@@ -1118,7 +1118,7 @@ public class Editor {
 
         final InputMethodState ims = mInputMethodState;
         if (ims != null && ims.mBatchEditNesting == 0) {
-            InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+            InputMethodManager imm = InputMethodManagerCompat.peekInstance(mTextView.getContext());
             if (imm != null) {
                 if (imm.isActive(mTextView)) {
                     boolean reported = false;
@@ -1278,7 +1278,7 @@ public class Editor {
         final boolean selectionStarted = mSelectionActionMode != null || willExtract;
         if (selectionStarted && !mTextView.isTextSelectable() && mShowSoftInputOnFocus) {
             // Show the IME to be able to replace text, except when selecting non editable text.
-            final InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+            final InputMethodManager imm = InputMethodManagerCompat.peekInstance(mTextView.getContext());
             if (imm != null) {
                 imm.showSoftInput(mTextView, 0, null);
             }

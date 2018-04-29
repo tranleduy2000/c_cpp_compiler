@@ -105,14 +105,14 @@ public class DiagnosticSuggestion implements Parcelable, ISuggestion {
         if (getColStart() != that.getColStart()) return false;
         if (getLineEnd() != that.getLineEnd()) return false;
         if (getColEnd() != that.getColEnd()) return false;
-        if (getFilePath() != null ? !getFilePath().equals(that.getFilePath()) : that.getFilePath() != null)
+        if (getSourceFile() != null ? !getSourceFile().equals(that.getSourceFile()) : that.getSourceFile() != null)
             return false;
         return getSuggestion() != null ? getSuggestion().equals(that.getSuggestion()) : that.getSuggestion() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getFilePath() != null ? getFilePath().hashCode() : 0;
+        int result = getSourceFile() != null ? getSourceFile().hashCode() : 0;
         result = 31 * result + getLineStart();
         result = 31 * result + getColStart();
         result = 31 * result + getLineEnd();
@@ -137,7 +137,7 @@ public class DiagnosticSuggestion implements Parcelable, ISuggestion {
     }
 
     @Override
-    public File getFilePath() {
+    public File getSourceFile() {
         return new File(filePath);
     }
 

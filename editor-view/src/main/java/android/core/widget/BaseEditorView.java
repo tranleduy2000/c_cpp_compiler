@@ -696,7 +696,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         if (!enabled) {
             // Hide the soft input if the currently active TextView is disabled
-            InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+            InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
             if (imm != null && imm.isActive(this)) {
                 imm.hideSoftInputFromWindow(getWindowToken(), 0);
             }
@@ -706,7 +706,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         if (enabled) {
             // Make sure IME is updated with current editor info.
-            InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+            InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
             if (imm != null) imm.restartInput(this);
         }
 
@@ -779,6 +779,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
+    }
+
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -792,10 +796,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
-    }
-
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -939,7 +939,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             if (mEditor != null) mEditor.mInputType = EditorInfo.TYPE_NULL;
         }
 
-        InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+        InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
         if (imm != null) imm.restartInput(this);
     }
 
@@ -2468,7 +2468,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             Editable t = new SpannableStringBuilder(text);
             text = t;
             setFilters(t, mFilters);
-            InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+            InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
             if (imm != null) imm.restartInput(this);
         } else if (type == BufferType.SPANNABLE || mMovement != null) {
             text = mSpannableFactory.newSpannable(text);
@@ -2825,7 +2825,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             mText = removeSuggestionSpans(mText);
         }
 
-        InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+        InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
         if (imm != null) imm.restartInput(this);
     }
 
@@ -4096,7 +4096,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                     if (!hasOnClickListeners()) {
                         if (mMovement != null && mText instanceof Editable
                                 && mLayout != null && onCheckIsTextEditor()) {
-                            InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+                            InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
                             viewClicked(imm);
                             if (imm != null && getShowSoftInputOnFocus()) {
                                 imm.showSoftInput(this, 0);
@@ -4151,7 +4151,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                                     & KeyEvent.FLAG_EDITOR_ACTION) != 0) {
                                 // No target for next focus, but make sure the IME
                                 // if this came from it.
-                                InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+                                InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
                                 if (imm != null && imm.isActive(this)) {
                                     imm.hideSoftInputFromWindow(getWindowToken(), 0);
                                 }
@@ -5873,7 +5873,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
             if (touchIsFinished && (isTextEditable() || textIsSelectable)) {
                 // Show the IME, except when selecting in read-only text.
-                final InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+                final InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
                 viewClicked(imm);
                 if (!textIsSelectable && mEditor.mShowSoftInputOnFocus) {
                     handled |= imm != null && imm.showSoftInput(this, 0);
@@ -6248,7 +6248,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                         && mText instanceof Spannable && mLayout != null
                         && (isTextEditable() || isTextSelectable()) && isFocused()) {
                     // Show the IME, except when selecting in read-only text.
-                    final InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+                    final InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
                     viewClicked(imm);
                     if (!isTextSelectable() && mEditor.mShowSoftInputOnFocus && imm != null) {
                         handled |= imm.showSoftInput(this, 0);
@@ -6356,7 +6356,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * default implementation just checks with {@link InputMethodManager}.
      */
     public boolean isInputMethodTarget() {
-        InputMethodManager imm = InputMethodManagerCompat.peekInstance();
+        InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
         return imm != null && imm.isActive(this);
     }
 
@@ -6955,6 +6955,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         layoutContext.gutterBackgroundPaint.setColor(gutterBackground);
         layoutContext.whiteSpaceColor = invisibles;
     }
+
 
     public enum BufferType {
         NORMAL, SPANNABLE, EDITABLE,

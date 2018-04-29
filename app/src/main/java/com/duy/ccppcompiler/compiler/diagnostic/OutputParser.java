@@ -59,11 +59,11 @@ public class OutputParser {
     public void parse(String inputData) {
         try {
             StringReader stringReader = new StringReader(inputData);
-            LineNumberReader lineNumberReader = new LineNumberReader(stringReader);
+            LineNumberReader lineReader = new LineNumberReader(stringReader);
 
             String line;
-            while ((line = lineNumberReader.readLine()) != null) {
-                processLine(line, lineNumberReader.readLine());
+            while ((line = lineReader.readLine()) != null) {
+                processLine(lineReader, line, lineReader.readLine());
             }
 
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class OutputParser {
     }
 
     @SuppressWarnings("unchecked")
-    private void processLine(@NonNull String line, @Nullable String nextLine) {
+    private void processLine(LineNumberReader lineReader, @NonNull String line, @Nullable String nextLine) {
         try {
             line = line.trim();
             Matcher matcher = DIAGNOSTICS_PATTERN.matcher(line);
@@ -89,7 +89,7 @@ public class OutputParser {
                 diagnosticsCollector.report(diagnostic);
             } else {
                 if (nextLine != null) {
-                    processLine(nextLine, null);
+                    processLine(lineReader, nextLine, lineReader.readLine());
                 }
                 return;
             }
@@ -109,7 +109,7 @@ public class OutputParser {
                 ISuggestion suggestion = DiagnosticFactory.createSuggestion(filePath, lineStart, colStart, lineEnd, colEnd, message);
                 diagnostic.setSuggestion(suggestion);
             } else {
-                processLine(nextLine, null);
+                processLine(lineReader, nextLine, lineReader.readLine());
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -25,7 +25,7 @@ import java.io.File;
  */
 
 public interface ISuggestion extends Parcelable {
-    File getFilePath();
+    File getSourceFile();
 
     int getLineStart();
 

@@ -177,6 +177,10 @@ public class EditorDelegate implements TextWatcher {
         return mEditText.getText();
     }
 
+    public EditAreaView getEditText() {
+        return mEditText;
+    }
+
     public void setEditorView(EditorView editorView) {
         mContext = editorView.getContext();
         mEditorView = editorView;
