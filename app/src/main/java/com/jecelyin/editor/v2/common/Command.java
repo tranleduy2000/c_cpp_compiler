@@ -47,7 +47,7 @@ public class Command {
         SELECT_ALL,
         DUPLICATION,
         CONVERT_WRAP_CHAR,
-        GOTO_LINE_COL,
+        GOTO_INDEX,
         FIND,
         GOTO_TOP,
         GOTO_END,

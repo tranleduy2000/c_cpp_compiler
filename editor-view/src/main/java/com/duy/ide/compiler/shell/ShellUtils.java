@@ -134,6 +134,7 @@ public class ShellUtils {
         if (command == null || command.length() == 0) {
             return new ShellResult(result, null);
         }
+        long timeStart = System.currentTimeMillis();
 
         Process process = null;
         BufferedReader reader = null;
@@ -180,7 +181,10 @@ public class ShellUtils {
                 process.destroy();
             }
         }
-        return new ShellResult(result, message == null ? "" : message.toString());
+        long timeEnd = System.currentTimeMillis();
+        ShellResult shellResult = new ShellResult(result, message == null ? "" : message.toString());
+        shellResult.setTime(timeEnd - timeStart);
+        return shellResult;
     }
 
 

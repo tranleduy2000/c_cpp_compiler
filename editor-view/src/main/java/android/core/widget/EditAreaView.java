@@ -24,7 +24,9 @@ import android.core.text.Selection;
 import android.core.text.method.ArrowKeyMovementMethod;
 import android.core.text.method.MovementMethod;
 import android.core.view.InputMethodManagerCompat;
+import android.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
+import android.support.annotation.MainThread;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.method.KeyListener;
@@ -39,6 +41,7 @@ import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 
 import com.jecelyin.common.utils.LimitedQueue;
+import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Preferences;
 
 /**
@@ -330,27 +333,27 @@ public class EditAreaView extends BaseEditorView {
     }
 
     /**
-     * @return the cursor offset at realLine:column, -1 if invalid, note that real line start at 1, not 0
+     * @return The {@link EditorIndex}, null if not found index
      */
-    public int getCursorOffsetAt(int realLine, int column) {
+    public EditorIndex getCursorIndex(int realLine, int column) {
         if (getLayout() == null) {
-            return -1;
+            return null;
         }
         if (realLine <= 0 || realLine > getLineCount())
-            return -1;
+            return null;
 
-        int victualLine = getLayout().realLineToVirtualLine(realLine);
-        if (victualLine == -1)
-            return -1;
+        int virtualLine = getLayout().realLineToVirtualLine(realLine);
+        if (virtualLine == -1)
+            return null;
 
-        int offset = getLayout().getLineStart(victualLine);
+        int offset = getLayout().getLineStart(virtualLine);
         if (column > 0) {
             offset += column - 1; /*the column start at 1*/
         }
         if (offset > length()) {
-            return -1;
+            return null;
         }
-        return offset;
+        return new EditorIndex(virtualLine, column, offset);
     }
 
     public int realLineToVirtualLine(int realLine) {
@@ -364,11 +367,20 @@ public class EditAreaView extends BaseEditorView {
      * @param realLine - the realLine, if realLine not exist, doesn't work, note that realLine start at 1
      * @param column   - current column, if col < 0, cursor is start at realLine
      */
+    @MainThread
     public void gotoLine(int realLine, int column) {
-        int offset = getCursorOffsetAt(realLine, column);
-        if (offset >= 0) {
-            setSelection(offset);
+        EditorIndex index = getCursorIndex(realLine, column);
+        if (index != null) {
+            setSelection(index.offset);
+            scrollToLine(index.line);
         }
+    }
+
+    private void scrollToLine(int line) {
+        int lineCount = getLineCount();
+        int y = (int) (((float) line) / (float) lineCount) * getHeight();
+        y += SysUtils.dpAsPixels(getContext(), 200/*Padding bottom*/);
+        scrollTo(getScrollX(), y);
     }
 
     @Override

@@ -70,7 +70,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             mTabManager.setCurrentTab(index);
             editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
 
-            Command command = new Command(Command.CommandEnum.GOTO_LINE_COL);
+            Command command = new Command(Command.CommandEnum.GOTO_INDEX);
             command.args.putInt("line", (int) diagnostic.getLineNumber());
             command.args.putInt("col", (int) diagnostic.getColumnNumber());
             editorDelegate.doCommand(command);
@@ -84,27 +84,34 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Override
     public void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion) {
         File source = suggestion.getSourceFile();
+        EditorDelegate delegate = openEditor(source);
+        int start = delegate.getEditText()
+                .getCursorIndex(suggestion.getLineStart(), suggestion.getColStart()).offset;
+        int end = delegate.getEditText()
+                .getCursorIndex(suggestion.getLineEnd(), suggestion.getColEnd()).offset;
+        if (start >= 0 && start <= end) {
+            delegate.getEditableText().replace(start, end, suggestion.getMessage());
+            delegate.getEditText().setSelection(start + suggestion.getMessage().length());
+        }
+        mView.remove(diagnostic);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @MainThread
+    private EditorDelegate openEditor(File source) {
         Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
         if (pair != null) {
             int index = pair.first;
-            EditorDelegate delegate = pair.second;
-            if (delegate.isChanged()) {
-                return;
+            EditorDelegate editorDelegate = pair.second;
+            if (editorDelegate.isChanged()) {
+                return null;
             }
 
             mTabManager.setCurrentTab(index);
-            delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-
-            int start = delegate.getEditText()
-                    .getCursorOffsetAt(suggestion.getLineStart(), suggestion.getColStart());
-            int end = delegate.getEditText()
-                    .getCursorOffsetAt(suggestion.getLineEnd(), suggestion.getColEnd());
-            if (start >= 0 && start <= end) {
-                delegate.getEditableText().replace(start, end, suggestion.getMessage());
-                delegate.getEditText().setSelection(start + suggestion.getMessage().length());
-            }
-            mView.remove(diagnostic);
+            editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
+            return pair.second;
         }
+        return null;
     }
 
     @Override

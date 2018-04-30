@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duy.ide.compiler.shell.ShellResult;
+import com.jecelyin.common.utils.DLog;
 
 import java.io.File;
 
@@ -29,6 +30,7 @@ import java.io.File;
  */
 
 public class CompileTask extends AsyncTask<Void, Void, ShellResult> {
+    private static final String TAG = "CompileTask";
     @NonNull
     private INativeCompiler mCompiler;
     @NonNull
@@ -60,6 +62,8 @@ public class CompileTask extends AsyncTask<Void, Void, ShellResult> {
     @Override
     protected void onPostExecute(ShellResult shellResult) {
         super.onPostExecute(shellResult);
+        if (DLog.DEBUG)
+            DLog.d(TAG, "onPostExecute() called with: shellResult = [" + shellResult + "]");
         if (mCompileManager == null) {
             return;
         }

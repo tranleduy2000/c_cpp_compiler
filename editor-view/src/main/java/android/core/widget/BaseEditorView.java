@@ -1089,7 +1089,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Drawable if any.
      */
     public int getCompoundPaddingStart() {
-//        resolveDrawables();
         switch (getLayoutDirection()) {
             default:
             case LAYOUT_DIRECTION_LTR:
@@ -4613,12 +4612,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 width = boring.width;
             }
 
-//            final Drawables dr = mDrawables;
-//            if (dr != null) {
-//                width = Math.max(width, dr.mDrawableWidthTop);
-//                width = Math.max(width, dr.mDrawableWidthBottom);
-//            }
-
             if (mHint != null) {
                 int hintDes = -1;
                 int hintWidth;
@@ -4688,7 +4681,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                             width - getCompoundPaddingLeft() - getCompoundPaddingRight());
 
             final boolean widthChanged = (mHint == null) &&
-//                    (mEllipsize == null) &&
                     (want > mLayout.getWidth()) &&
                     (mLayout instanceof BoringLayout || (fromexisting && des >= 0 && des <= want));
 
@@ -4744,7 +4736,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private int getDesiredHeight() {
         return Math.max(
                 getDesiredHeight(mLayout, true),
-//                getDesiredHeight(mHintLayout, mEllipsize != null));
                 getDesiredHeight(mHintLayout, false));
     }
 
@@ -4757,12 +4748,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         int pad = getCompoundPaddingTop() + getCompoundPaddingBottom();
         int desired = layout.getLineTop(linecount);
 
-//        final Drawables dr = mDrawables;
-//        if (dr != null) {
-//            desired = Math.max(desired, dr.mDrawableHeightLeft);
-//            desired = Math.max(desired, dr.mDrawableHeightRight);
-//        }
-
         desired += pad;
 
         if (mMaxMode == LINES) {
@@ -4773,11 +4758,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             if (cap) {
                 if (linecount > mMaximum) {
                     desired = layout.getLineTop(mMaximum);
-
-//                    if (dr != null) {
-//                        desired = Math.max(desired, dr.mDrawableHeightLeft);
-//                        desired = Math.max(desired, dr.mDrawableHeightRight);
-//                    }
 
                     desired += pad;
                     linecount = mMaximum;

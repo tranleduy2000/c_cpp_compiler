@@ -51,21 +51,11 @@ import java.util.Arrays;
  * For text that will not change, use a {@link android.text.StaticLayout}.
  */
 public abstract class Layout {
+    public static final int PADDING = 920;
+
     public static final int DIR_LEFT_TO_RIGHT = 1;
     public static final int DIR_RIGHT_TO_LEFT = -1;
 
-//     static final EmojiFactory EMOJI_FACTORY = EmojiFactory.newAvailableInstance();
-//     static final int MIN_EMOJI, MAX_EMOJI;
-
-    //    static {
-//        if (EMOJI_FACTORY != null) {
-//            MIN_EMOJI = EMOJI_FACTORY.getMinimumAndroidPua();
-//            MAX_EMOJI = EMOJI_FACTORY.getMaximumAndroidPua();
-//        } else {
-//            MIN_EMOJI = -1;
-//            MAX_EMOJI = -1;
-//        }
-//    }
     static final int DIR_REQUEST_LTR = 1;
     static final int DIR_REQUEST_RTL = -1;
     static final int DIR_REQUEST_DEFAULT_LTR = 2;
@@ -684,7 +674,7 @@ public abstract class Layout {
      * Return the total height of this layout.
      */
     public int getHeight() {
-        return getLineTop(getLineCount()) + 920; //可以拉出底部空白处
+        return getLineTop(getLineCount()) + PADDING; //可以拉出底部空白处
     }
 
     /**
