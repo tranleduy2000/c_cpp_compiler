@@ -18,7 +18,6 @@ package org.gjt.sp.jedit.syntax;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.duy.ide.filemanager.file.AssetFile;
 import com.duy.ide.filemanager.file.IFileObject;
@@ -232,10 +231,6 @@ public class ModeProvider {
         };
         AssetFile file = new AssetFile(context.getAssets(), "syntax/" + mode.getFile());
         loadMode(mode, xmh, file);
-    }
-
-    protected void error(String file, Throwable e) {
-        DLog.log(Log.ERROR, this, e);
     }
 
 }

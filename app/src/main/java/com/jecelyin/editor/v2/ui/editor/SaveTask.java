@@ -74,7 +74,7 @@ class SaveTask {
      * @param encoding   - file encoding
      * @param background - <code>true</code> if using background thread
      */
-    void saveTo(@NonNull final File file, final String encoding, boolean background,
+    void saveTo(@NonNull final File file, final String encoding, final boolean background,
                 @Nullable final SaveListener listener) {
         if (DLog.DEBUG) {
             DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], background = [" + background + "], listener = [" + listener + "]");
@@ -89,11 +89,12 @@ class SaveTask {
             @Override
             public void onSuccess() {
                 mWriting.set(false);
-                if (mDocument.get() == null || mContext.get() == null || mEditorDelegate.get() == null) {
-                    return;
+                if (!background) {
+                    if (mDocument.get() == null || mContext.get() == null || mEditorDelegate.get() == null) {
+                        return;
+                    }
+                    mDocument.get().onSaveSuccess(file, encoding);
                 }
-
-                mDocument.get().onSaveSuccess(file, encoding);
                 if (listener != null) {
                     listener.onSaved();
                 }
@@ -103,8 +104,10 @@ class SaveTask {
             public void onError(Exception e) {
                 mWriting.set(false);
                 DLog.e(e);
-                if (mContext.get() != null) {
-                    UIUtils.alert(mContext.get(), e.getMessage());
+                if (!background) {
+                    if (mContext.get() != null) {
+                        UIUtils.alert(mContext.get(), e.getMessage());
+                    }
                 }
             }
         });

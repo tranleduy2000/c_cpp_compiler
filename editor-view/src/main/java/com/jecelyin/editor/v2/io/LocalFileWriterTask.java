@@ -86,10 +86,11 @@ public class LocalFileWriterTask extends AsyncTask<GetChars, Void, Exception> {
         if (fileWriteListener == null) {
             return;
         }
-        if (e == null)
+        if (e == null) {
             fileWriteListener.onSuccess();
-        else
+        } else {
             fileWriteListener.onError(e);
+        }
     }
 
     public interface FileWriteListener {
