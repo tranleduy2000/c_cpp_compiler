@@ -22,11 +22,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.duy.ide.editor.editor.R;
+import com.jecelyin.editor.v2.FullScreenActivity;
 
 
 /**
@@ -45,7 +45,7 @@ import com.duy.ide.editor.editor.R;
  * API Guide</a> for more information on developing a Settings UI.
  * <p/>
  */
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends FullScreenActivity {
 
     public static void startActivity(Activity activity, int requestCode) {
         activity.startActivityForResult(new Intent(activity, SettingsActivity.class), requestCode);

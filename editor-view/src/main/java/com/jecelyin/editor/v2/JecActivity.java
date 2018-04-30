@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.common.app;
+package com.jecelyin.editor.v2;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -26,8 +26,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import com.duy.ccppcompiler.R;
-import com.jecelyin.common.view.StatusBarUtil;
+import com.duy.ide.editor.editor.R;
+import com.jecelyin.editor.v2.utils.StatusBarUtil;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
