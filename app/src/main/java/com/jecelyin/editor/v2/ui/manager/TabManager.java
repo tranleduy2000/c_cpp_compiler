@@ -208,17 +208,17 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         }
     }
 
-    public void closeAllTab() {
+    public void onDestroy() {
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
-        mEditorFragmentPagerAdapter.clear();
-        mEditorFragmentPagerAdapter.removeAll(new TabCloseListener() {
-            @Override
-            public void onClose(String path, String encoding, int offset) {
-                DBHelper.getInstance(mActivity).updateRecentFile(path, encoding, offset);
-            }
-        });
+        ArrayList<EditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
+        for (EditorDelegate editorDelegate : allEditor) {
+            String path = editorDelegate.getPath();
+            String encoding = editorDelegate.getEncoding();
+            int offset = editorDelegate.getCursorOffset();
+            DBHelper.getInstance(mActivity).updateRecentFile(path, encoding, offset);
+        }
     }
 
     public EditorFragmentPagerAdapter getEditorPagerAdapter() {

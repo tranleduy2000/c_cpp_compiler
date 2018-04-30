@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2018 Mr Duy
  *
@@ -19,6 +18,7 @@ package com.duy.ccppcompiler.compiler;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
@@ -85,6 +85,7 @@ public class CompileManager implements ICompileManager {
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
         }
+        Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
 
         if (mDiagnosticPresenter != null) {

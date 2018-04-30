@@ -623,7 +623,7 @@ public class EditorActivity extends FullScreenActivity
             UIUtils.toast(getContext(), R.string.press_again_will_exit);
             mExitTime = System.currentTimeMillis();
         } else {
-            mTabManager.closeAllTab();
+            mTabManager.onDestroy();
             super.onBackPressed();
         }
     }
