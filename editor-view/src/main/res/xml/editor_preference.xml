@@ -64,10 +64,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/highlight_and_theme">
-        <CheckBoxPreference
-
-            android:key="pref_enable_highlight"
-            android:title="@string/enable_highlight" />
 
         <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
             android:inputType="number"

@@ -79,8 +79,6 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import org.gjt.sp.jedit.Catalog;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -170,11 +168,6 @@ public class EditorActivity extends FullScreenActivity
         switch (key) {
             case Preferences.KEY_KEEP_SCREEN_ON:
                 mToolbar.setKeepScreenOn(sharedPreferences.getBoolean(key, false));
-                break;
-            case Preferences.KEY_ENABLE_HIGHLIGHT:
-                Command command = new Command(Command.CommandEnum.HIGHLIGHT);
-                command.object = mPreferences.isHighlight() ? null : Catalog.DEFAULT_MODE_NAME;
-                doCommandForAllEditor(command);
                 break;
             case Preferences.KEY_SCREEN_ORIENTATION:
                 setScreenOrientation();

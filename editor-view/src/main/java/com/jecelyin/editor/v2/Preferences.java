@@ -49,7 +49,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public static final String KEY_TAB_SIZE = "pref_tab_size";
     public static final String KEY_SYMBOL = "pref_symbol";
     public static final String KEY_AUTO_CAPITALIZE = "pref_auto_capitalize";
-    public static final String KEY_ENABLE_HIGHLIGHT = "pref_enable_highlight";
     public static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
     public static final String KEY_THEME = "pref_current_theme";
     public static final String KEY_REMEMBER_LAST_OPENED_FILES = "pref_remember_last_opened_files";
@@ -108,7 +107,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_TAB_SIZE, 4);
         map.put(KEY_SYMBOL, VALUE_SYMBOL);
         map.put(KEY_AUTO_CAPITALIZE, false);
-        map.put(KEY_ENABLE_HIGHLIGHT, true);
         map.put(KEY_HIGHLIGHT_FILE_SIZE_LIMIT, 500);
         map.put(KEY_THEME, 0);
         map.put(KEY_REMEMBER_LAST_OPENED_FILES, true);
@@ -225,10 +223,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public void setTheme(int theme) {
         map.put(KEY_THEME, theme);
         pm.edit().putInt(KEY_THEME, theme).apply();
-    }
-
-    public boolean isHighlight() {
-        return (boolean) map.get(KEY_ENABLE_HIGHLIGHT);
     }
 
     public int getHighlightSizeLimit() {
