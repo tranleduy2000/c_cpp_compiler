@@ -159,7 +159,6 @@ public class EditorActivity extends FullScreenActivity
 
     private void bindPreferences() {
         mDrawerLayout.setKeepScreenOn(mPreferences.isKeepScreenOn());
-        mDrawerLayout.setDrawerLockMode(mPreferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mSymbolBarLayout.setVisibility(mPreferences.isReadOnly() ? View.GONE : View.VISIBLE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
     }
@@ -179,9 +178,6 @@ public class EditorActivity extends FullScreenActivity
                 break;
             case Preferences.KEY_SCREEN_ORIENTATION:
                 setScreenOrientation();
-                break;
-            case Preferences.KEY_PREF_ENABLE_DRAWERS:
-                mDrawerLayout.setDrawerLockMode(mPreferences.isEnabledDrawers() ? DrawerLayout.LOCK_MODE_UNDEFINED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 break;
             case Preferences.KEY_READ_ONLY:
                 mSymbolBarLayout.setVisibility(mPreferences.isReadOnly() ? View.GONE : View.VISIBLE);

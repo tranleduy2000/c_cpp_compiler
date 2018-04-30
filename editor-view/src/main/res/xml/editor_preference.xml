@@ -105,9 +105,6 @@
             android:key="pref_keep_screen_on"
             android:title="@string/keep_screen_on" />
 
-        <CheckBoxPreference
-            android:key="pref_enable_drawers"
-            android:title="@string/enable_drawers" />
 
     </PreferenceCategory>
 

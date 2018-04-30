@@ -58,7 +58,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public static final String KEY_KEEP_SCREEN_ON = "pref_keep_screen_on";
     public static final String KEY_TOOLBAR_ICONS = "pref_toolbar_icons";
     public static final String KEY_PREF_AUTO_CHECK_UPDATES = "pref_auto_check_updates";
-    public static final String KEY_PREF_ENABLE_DRAWERS = "pref_enable_drawers";
     public static final String KEY_LAST_OPEN_PATH = "last_open_path";
     public static final String KEY_READ_ONLY = "readonly_mode";
     public static final String KEY_SHOW_HIDDEN_FILES = "show_hidden_files";
@@ -118,7 +117,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_SCREEN_ORIENTATION, "auto");
         map.put(KEY_KEEP_SCREEN_ON, false);
         map.put(KEY_PREF_AUTO_CHECK_UPDATES, true);
-        map.put(KEY_PREF_ENABLE_DRAWERS, true);
 
         toolbarIcons = pm.getStringSet(KEY_TOOLBAR_ICONS, null);
         map.put(KEY_LAST_OPEN_PATH, Environment.getExternalStorageDirectory().getPath());
@@ -376,10 +374,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public void setLastTab(int index) {
         pm.edit().putInt(KEY_LAST_TAB, index).apply();
         map.put(KEY_LAST_TAB, index);
-    }
-
-    public boolean isEnabledDrawers() {
-        return (boolean) map.get(KEY_PREF_ENABLE_DRAWERS);
     }
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
