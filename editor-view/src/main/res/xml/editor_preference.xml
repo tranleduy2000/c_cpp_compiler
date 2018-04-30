@@ -12,27 +12,22 @@
             android:title="@string/cursor_width" />
 
         <CheckBoxPreference
-
             android:key="pref_touch_to_adjust_text_size"
             android:title="@string/touch_to_adjust_text_size" />
 
         <CheckBoxPreference
-
             android:key="pref_word_wrap"
             android:title="@string/word_wrap_in_editor" />
 
         <CheckBoxPreference
-
             android:key="pref_show_linenumber"
             android:title="@string/show_linenumber" />
 
         <CheckBoxPreference
-
             android:key="pref_show_whitespace"
             android:title="@string/show_whitespace" />
 
         <CheckBoxPreference
-
             android:key="pref_auto_indent"
             android:title="@string/auto_indent" />
 
@@ -80,11 +75,6 @@
             android:key="pref_remember_last_opened_files"
             android:summary="@string/remember_last_opened_files_summary"
             android:title="@string/remember_last_opened_files" />
-
-        <CheckBoxPreference
-            android:key="pref_keep_backup_file"
-            android:summary="@string/keep_backup_file_summary"
-            android:title="@string/keep_backup_file" />
 
         <com.jecelyin.editor.v2.preference.JecListPreference
             android:entries="@array/screen_orientation"
