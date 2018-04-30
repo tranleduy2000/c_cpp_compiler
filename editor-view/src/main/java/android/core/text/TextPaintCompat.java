@@ -65,7 +65,7 @@ public class TextPaintCompat {
         try {
             MethodReflection.callAny(tp, "setUnderlineText", new Class[]{int.class, float.class}, new Object[]{color, thickness});
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "setUnderlineText: ", e);
         }
     }
 
@@ -73,16 +73,16 @@ public class TextPaintCompat {
         try {
             return (int) MethodReflection.getField(tp, "underlineColor");
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "getUnderlineColor: ", e);
             return 0;
         }
     }
 
     public static float getUnderlineThickness(TextPaint tp) {
         try {
-            return (int) MethodReflection.getField(tp, "underlineThickness");
+            return (float) MethodReflection.getField(tp, "underlineThickness");
         } catch (Throwable e) {
-            if (DLog.DEBUG) DLog.w(TAG, "getUnderlineThickness: " + e.getMessage());
+            if (DLog.DEBUG) DLog.w(TAG, "getUnderlineThickness: ", e);
             return 0;
         }
     }
@@ -108,7 +108,7 @@ public class TextPaintCompat {
                 );
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "getTextRunAdvances: ", e);
             return 0;
         }
     }
@@ -122,19 +122,15 @@ public class TextPaintCompat {
                         new Class[]{CharSequence.class, int.class, int.class, int.class, int.class, boolean.class, float[].class, int.class},
                         new Object[]{text, start, end, contextStart, contextEnd, isRtl, advances, advancesIndex}
                 );
-//                return tp.getTextRunAdvances(text, start, end, contextStart, contextEnd, isRtl, advances, advancesIndex);
             } else { // 4.4 below
-                //public float getTextRunAdvances(String text, int start, int end, int contextStart,
-                //      int contextEnd, int flags, float[] advances, int advancesIndex)
                 return (float) MethodReflection.callAny(tp, "getTextRunAdvances",
                         new Class[]{CharSequence.class, int.class, int.class, int.class, int.class, int.class, float[].class, int.class},
                         new Object[]{text, start, end, contextStart, contextEnd, isRtl ? 1 : 0, advances, advancesIndex}
                 );
-//                return tp.getTextRunAdvances(text, start, end, contextStart, contextEnd, isRtl ? 1 : 0, advances, advancesIndex);
             }
 
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "getTextRunAdvances: ", e);
             return 0f;
         }
     }
@@ -147,7 +143,7 @@ public class TextPaintCompat {
                     new Object[]{text, contextStart, contextEnd, dir, offset, cursorOpt}
             );
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "getTextRunCursor: ", e);
             return 0;
         }
 //        return p.getTextRunCursor(text, contextStart, contextEnd, dir, offset, cursorOpt);
@@ -161,7 +157,7 @@ public class TextPaintCompat {
                     new Object[]{text, contextStart, contextLength, dir, offset, cursorOpt}
             );
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "getTextRunCursor: ", e);
             return 0;
         }
 //        return p.getTextRunCursor(text, contextStart, contextLength, dir, offset, cursorOpt);
