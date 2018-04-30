@@ -63,6 +63,6 @@ public class ErrorSpan extends CharacterStyle implements UpdateAppearance, Parce
 
     @Override
     public void updateDrawState(TextPaint paint) {
-        TextPaintCompat.setUnderlineText(paint, mColor, 5);
+        TextPaintCompat.setUnderlineText(paint, mColor, 4);
     }
 }
