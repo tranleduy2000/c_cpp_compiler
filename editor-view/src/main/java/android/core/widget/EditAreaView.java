@@ -41,7 +41,6 @@ import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 
 import com.jecelyin.common.utils.LimitedQueue;
-import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Preferences;
 
 /**
@@ -372,14 +371,16 @@ public class EditAreaView extends BaseEditorView {
         EditorIndex index = getCursorIndex(realLine, column);
         if (index != null) {
             setSelection(index.offset);
-            scrollToLine(index.line);
+            scrollToLine(index.line, true);
         }
     }
 
-    private void scrollToLine(int line) {
+    private void scrollToLine(int line, boolean center) {
         int lineCount = getLineCount();
         int y = (int) (((float) line) / (float) lineCount) * getHeight();
-        y += SysUtils.dpAsPixels(getContext(), 200/*Padding bottom*/);
+        if (center) {
+//            y += SysUtils.dpAsPixels(getContext(), 200/*Padding bottom*/);
+        }
         scrollTo(getScrollX(), y);
     }
 

@@ -77,7 +77,7 @@ class SaveTask {
     void saveTo(@NonNull final File file, final String encoding, final boolean background,
                 @Nullable final SaveListener listener) {
         if (DLog.DEBUG) {
-            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], background = [" + background + "], listener = [" + listener + "]");
+            DLog.d(TAG, "saveTo() called with: file = [" + file + "]");
         }
         if (mEditorDelegate.get() == null || mContext.get() == null) {
             return;
@@ -89,14 +89,14 @@ class SaveTask {
             @Override
             public void onSuccess() {
                 mWriting.set(false);
-                if (!background) {
+                if (background) {
                     if (mDocument.get() == null || mContext.get() == null || mEditorDelegate.get() == null) {
                         return;
                     }
                     mDocument.get().onSaveSuccess(file, encoding);
-                }
-                if (listener != null) {
-                    listener.onSaved();
+                    if (listener != null) {
+                        listener.onSaved();
+                    }
                 }
             }
 
@@ -104,7 +104,7 @@ class SaveTask {
             public void onError(Exception e) {
                 mWriting.set(false);
                 DLog.e(e);
-                if (!background) {
+                if (background) {
                     if (mContext.get() != null) {
                         UIUtils.alert(mContext.get(), e.getMessage());
                     }

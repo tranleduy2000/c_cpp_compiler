@@ -104,9 +104,12 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 return null;
             }
 
+            if (editorDelegate.isChanged()) {
+                return null;
+            }
             byte[] otherMd5 = editorDelegate.getDocument().getMd5();
-            if (md5 != null){
-                if (!Arrays.equals(md5, otherMd5)){
+            if (md5 != null) {
+                if (!Arrays.equals(md5, otherMd5)) {
                     return null;
                 }
             }
@@ -134,7 +137,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @MainThread
     @Override
     public void setDiagnostics(ArrayList<Diagnostic> diagnostics) {
-        this.mDiagnostics = diagnostics;
+        mDiagnostics = diagnostics;
+        mHashCode.clear();
         if (mView != null) {
             mView.show(diagnostics);
         }
