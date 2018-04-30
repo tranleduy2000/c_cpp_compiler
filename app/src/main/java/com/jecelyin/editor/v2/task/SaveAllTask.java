@@ -37,6 +37,14 @@ public class SaveAllTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        if (saveListener != null) {
+            saveListener.onPrepare();
+        }
+    }
+
+    @Override
     protected Void doInBackground(Void... voids) {
         EditorFragmentPagerAdapter editorPagerAdapter = editorActivity.getTabManager().getEditorPagerAdapter();
         for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {

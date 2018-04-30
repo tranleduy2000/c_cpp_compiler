@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.utils;
+package com.duy.ide.filemanager.file;
 
-import android.content.Context;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 
 /**
- * Created by Duy on 15-Apr-18.
+ * Created by Duy on 30-Apr-18.
  */
 
-public class StreamProviderFactory {
-    public static IStreamProvider create(Context context) {
-        return new StreamProviderImpl(context);
-    }
+public interface IFileObject {
+    InputStream openInputStream() throws IOException;
+
+    InputStream openOutputStream();
+
+    Writer openWriter();
+
+    Reader openReader() throws IOException;
 }

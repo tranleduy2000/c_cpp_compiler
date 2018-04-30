@@ -20,8 +20,8 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.ide.editor.utils.IStreamProvider;
-import com.duy.ide.editor.utils.StreamProviderFactory;
+import com.duy.ide.filemanager.file.AssetFile;
+import com.duy.ide.filemanager.file.IFileObject;
 import com.jecelyin.common.utils.DLog;
 
 import org.gjt.sp.jedit.Catalog;
@@ -177,11 +177,7 @@ public class ModeProvider {
         modes.put(name, mode);
     }
 
-    public void loadMode(Mode mode, XModeHandler xmh, IStreamProvider provider) {
-        String fileName = mode.getFile();
-
-        DLog.log(Log.DEBUG, this, "Loading edit mode " + fileName);
-
+    public void loadMode(Mode mode, XModeHandler xmh, IFileObject file) {
         XMLReader parser = null;
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
@@ -195,20 +191,10 @@ public class ModeProvider {
         }
         mode.setTokenMarker(xmh.getTokenMarker());
 
-        InputStream grammar;
-
+        InputStream grammar = null;
         try {
-            grammar = new BufferedInputStream(provider.getFileInputStream(fileName));
-        } catch (IOException e1) {
-            if (DLog.DEBUG) DLog.w(TAG, "loadMode: ", e1);
-            InputStream resource;
-            try {
-                resource = provider.getAssetInputStream("syntax/" + fileName);
-            } catch (IOException e) {
-                if (DLog.DEBUG) DLog.e(TAG, "loadMode: ", e);
-                return;
-            }
-            grammar = new BufferedInputStream(resource);
+            grammar = new BufferedInputStream(file.openInputStream());
+        } catch (IOException ignored) {
         }
 
         try {
@@ -244,7 +230,8 @@ public class ModeProvider {
                     return mode.getTokenMarker(getContext());
             }
         };
-        loadMode(mode, xmh, StreamProviderFactory.create(context));
+        AssetFile file = new AssetFile(context.getAssets(), "syntax/" + mode.getFile());
+        loadMode(mode, xmh, file);
     }
 
     protected void error(String file, Throwable e) {

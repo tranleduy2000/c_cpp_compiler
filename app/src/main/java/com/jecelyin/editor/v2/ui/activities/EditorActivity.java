@@ -39,7 +39,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.R;
@@ -454,8 +453,6 @@ public class EditorActivity extends FullScreenActivity
         SaveListener saveListener = new SaveListener() {
             @Override
             public void onPrepare() {
-                progressDialog.show();
-                Toast.makeText(EditorActivity.this, R.string.save_all, Toast.LENGTH_SHORT).show();
                 setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
             }
 
@@ -467,7 +464,7 @@ public class EditorActivity extends FullScreenActivity
                 File[] srcFiles = new File[1];
                 if (currentEditor != null) {
                     String path = currentEditor.getPath();
-                    currentEditor.getDocument().getMd5()
+                    currentEditor.getDocument().getMd5();
                     srcFiles[0] = new File(path);
                 }
                 CompilerFactory.CompileType compileType;
