@@ -105,8 +105,10 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             }
 
             byte[] otherMd5 = editorDelegate.getDocument().getMd5();
-            if (!Arrays.equals(md5, otherMd5)) {
-                return null;
+            if (md5 != null){
+                if (!Arrays.equals(md5, otherMd5)){
+                    return null;
+                }
             }
             mHashCode.put(source, otherMd5);
 
