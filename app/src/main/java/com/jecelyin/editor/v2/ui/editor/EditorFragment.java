@@ -85,9 +85,15 @@ public class EditorFragment extends Fragment {
     @Override
     public void onDestroyView() {
         if (mEditorDelegate != null) {
-            mEditorDelegate.setRemoved();
+            mEditorDelegate.save(true);
+            mEditorDelegate.onDestroy();
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

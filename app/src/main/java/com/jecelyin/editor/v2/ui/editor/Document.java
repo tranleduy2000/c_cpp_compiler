@@ -39,7 +39,6 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.highlight.HighlightInfo;
 import com.jecelyin.editor.v2.io.FileReader;
-import com.jecelyin.editor.v2.task.SaveTask;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.ColorSchemeLoader;
@@ -60,8 +59,6 @@ import java.util.HashMap;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class Document implements ReadFileListener, TextWatcher {
-    private static final String TAG = "Document";
-
     public static SyntaxStyle[] styles;
     private final EditorDelegate mEditorDelegate;
     private final Context mContext;
@@ -80,14 +77,13 @@ public class Document implements ReadFileListener, TextWatcher {
     @NonNull
     private File mFile;
 
-    public Document(Context context, EditorDelegate editorDelegate, @NonNull File currentFile) {
+    Document(Context context, EditorDelegate editorDelegate, @NonNull File currentFile) {
         mEditorDelegate = editorDelegate;
         mContext = context;
         mFile = currentFile;
         mPreferences = Preferences.getInstance(context);
         mBuffer = new Buffer(context);
         mSaveTask = new SaveTask(context, editorDelegate, this);
-
         editorDelegate.mEditText.addTextChangedListener(this);
     }
 
@@ -115,7 +111,7 @@ public class Document implements ReadFileListener, TextWatcher {
         }
     }
 
-    public void onSaveInstanceState(EditorDelegate.SavedState ss) {
+    void onSaveInstanceState(EditorDelegate.SavedState ss) {
         ss.modeName = mModeName;
         ss.lineNumber = mLineCount;
         ss.textMd5 = mSourceMD5;
@@ -124,7 +120,7 @@ public class Document implements ReadFileListener, TextWatcher {
         ss.file = mFile;
     }
 
-    public void onRestoreInstanceState(EditorDelegate.SavedState ss) {
+    void onRestoreInstanceState(EditorDelegate.SavedState ss) {
         if (ss.modeName != null) {
             setMode(ss.modeName);
         }
@@ -137,7 +133,7 @@ public class Document implements ReadFileListener, TextWatcher {
         mFile = ss.file;
     }
 
-    public void loadFile(File file, @Nullable String encodingName) {
+    void loadFile(File file, @Nullable String encodingName) {
         if (!file.isFile() || !file.exists()) {
             UIUtils.alert(mContext, mContext.getString(R.string.cannt_access_file, file.getPath()));
             return;
@@ -260,7 +256,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
     }
 
-    public void setMode(String name) {
+    void setMode(String name) {
         mModeName = name;
 
         mBuffer.setMode(Catalog.getModeByName(name), mContext);
@@ -269,20 +265,17 @@ public class Document implements ReadFileListener, TextWatcher {
         highlight(mEditorDelegate.getEditableText());
     }
 
-    public String getModeName() {
+    String getModeName() {
         return mModeName;
     }
 
-    public Buffer getBuffer() {
-        return mBuffer;
-    }
-
+    @NonNull
     public File getFile() {
         return mFile;
     }
 
     public String getPath() {
-        return mFile == null ? null : mFile.getPath();
+        return mFile.getPath();
     }
 
     public int getLineCount() {
@@ -293,33 +286,25 @@ public class Document implements ReadFileListener, TextWatcher {
         return mEncoding;
     }
 
-    public void save() {
-        save(false, null);
-    }
-
-    public void save(boolean isCluster, SaveListener listener) {
-        if (DLog.DEBUG) {
-            DLog.d(TAG, "save() called with: isCluster = [" + isCluster + "], listener = [" + listener + "]");
-        }
+    public void save(boolean inBackground, @Nullable SaveListener listener) {
         if (mSaveTask.isWriting()) {
             UIUtils.toast(mContext, R.string.writing);
             return;
         }
-        mSaveTask.save(isCluster, listener);
+        mSaveTask.save(inBackground, listener);
     }
 
     /**
-     * Write current content to new file and set current file to edit is new file
+     * Write current content to new file and set new file to edit
      *
      * @param file - file to write
-     * @param o
      */
     @WorkerThread
-    void saveTo(File file, String encoding, Object o) {
-        mSaveTask.saveTo(file, encoding, null);
+    void saveTo(File file, String encoding) {
+        mSaveTask.saveTo(file, encoding, true, null);
     }
 
-    public void onSaveSuccess(File newFile, String encoding) {
+    void onSaveSuccess(File newFile, String encoding) {
         mFile = newFile;
         mEncoding = encoding;
         mSourceMD5 = md5(mEditorDelegate.getText());

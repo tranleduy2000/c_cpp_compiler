@@ -20,14 +20,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.ide.filemanager.SaveListener;
-import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
-import com.jecelyin.editor.v2.ui.dialog.SaveConfirmDialog;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.editor.EditorFragment;
 import com.jecelyin.editor.v2.ui.editor.EditorPageDescriptor;
@@ -111,36 +106,12 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
         final String path = delegate.getPath();
 
         if (delegate.isChanged()) {
-            new SaveConfirmDialog(context, delegate.getTitle(), new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(MaterialDialog dialog, DialogAction which) {
-                    if (which == DialogAction.POSITIVE) {
-                        Command command = new Command(Command.CommandEnum.SAVE);
-                        command.object = new SaveListener() {
-                            @Override
-                            public void onSaved() {
-                                remove(position);
-                                if (listener != null)
-                                    listener.onClose(path, encoding, offset);
-                            }
-                        };
-                        context.doCommand(command);
-                    } else if (which == DialogAction.NEGATIVE) {
-                        remove(position);
-                        if (listener != null)
-                            listener.onClose(path, encoding, offset);
-                    } else {
-                        dialog.dismiss();
-                    }
-                }
-            }).show();
-            return false;
-        } else {
-            remove(position);
-            if (listener != null)
-                listener.onClose(path, encoding, offset);
-            return true;
+            delegate.save(true);
         }
+        remove(position);
+        if (listener != null)
+            listener.onClose(path, encoding, offset);
+        return true;
     }
 
 

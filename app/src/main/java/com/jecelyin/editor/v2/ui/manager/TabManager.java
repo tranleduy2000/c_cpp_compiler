@@ -28,7 +28,6 @@ import android.view.View;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
-import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
@@ -210,27 +209,22 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public boolean closeAllTabAndExitApp() {
-        EditorDelegate.setDisableAutoSave();
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
-
-        return mEditorFragmentPagerAdapter.removeAll(new TabCloseListener() {
+        mEditorFragmentPagerAdapter.removeAll(new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
                 DBHelper.getInstance(mActivity).updateRecentFile(path, encoding, offset);
-                int count = getTabCount();
-                if (count == 0) {
+                if (getTabCount() == 0) {
                     mActivity.finish();
-                } else {
-                    mEditorFragmentPagerAdapter.removeAll(this);
-                    mActivity.mEditorPager.setCurrentItem(0);
                 }
             }
         });
+        return false;
     }
 
-    public IEditorPagerAdapter getEditorPagerAdapter() {
+    public EditorFragmentPagerAdapter getEditorPagerAdapter() {
         return mEditorFragmentPagerAdapter;
     }
 

@@ -627,7 +627,9 @@ public class EditorActivity extends FullScreenActivity
             }
         }
         if (mSlidingUpPanelLayout != null) {
-            if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            SlidingUpPanelLayout.PanelState state = mSlidingUpPanelLayout.getPanelState();
+            if (state == SlidingUpPanelLayout.PanelState.EXPANDED
+                    || state == SlidingUpPanelLayout.PanelState.DRAGGING) {
                 mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 return;
             }

@@ -36,7 +36,6 @@ public class EditorView extends RelativeLayout {
     private static final String TAG = "EditorView";
     private EditAreaView mEditText;
     private ProgressBar mProgressView;
-    private boolean removed = false;
 
     public EditorView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -84,14 +83,6 @@ public class EditorView extends RelativeLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        removed = true;
     }
 
-    public boolean isRemoved() {
-        return removed;
-    }
-
-    public void setRemoved() {
-        this.removed = true;
-    }
 }

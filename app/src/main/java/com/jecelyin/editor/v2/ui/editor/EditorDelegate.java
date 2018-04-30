@@ -27,7 +27,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spanned;
@@ -42,7 +42,6 @@ import com.duy.ccppcompiler.R;
 import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
-import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.activities.EditorActivity;
@@ -64,19 +63,19 @@ import java.util.Locale;
 public class EditorDelegate implements TextWatcher {
     public final static String KEY_CLUSTER = "is_cluster";
     private static final String TAG = "EditorDelegate";
-    private static boolean disableAutoSave = false;
     EditAreaView mEditText;
     private Context mContext;
     private EditorView mEditorView;
 
     private Document mDocument;
+    @NonNull
     private SavedState savedState;
 
     private int mOrientation;
     private boolean loaded = true;
     private int findResultsKeywordColor;
 
-    public EditorDelegate(SavedState ss) {
+    public EditorDelegate(@NonNull SavedState ss) {
         savedState = ss;
     }
 
@@ -87,47 +86,9 @@ public class EditorDelegate implements TextWatcher {
         setCurrentFileToEdit(file);
     }
 
-    public static void setDisableAutoSave() {
-        disableAutoSave = true;
-    }
-
     private void setCurrentFileToEdit(File file) {
         savedState.file = file;
         savedState.title = savedState.file.getName();
-    }
-
-    private void init() {
-        //if initiated, return
-        if (mDocument != null) {
-            return;
-        }
-
-        TypedArray a = mContext.obtainStyledAttributes(new int[]{R.attr.findResultsKeyword});
-        findResultsKeywordColor = a.getColor(0, Color.BLACK);
-        a.recycle();
-
-        mDocument = new Document(mContext, this, savedState.file);
-        mEditText.setReadOnly(Preferences.getInstance(mContext).isReadOnly());
-        mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
-
-        if (savedState.editorState != null) {
-            mDocument.onRestoreInstanceState(savedState);
-            mEditText.onRestoreInstanceState(savedState.editorState);
-        } else {
-            mDocument.loadFile(savedState.file, savedState.encoding);
-        }
-
-        mEditText.addTextChangedListener(this);
-        noticeDocumentChanged();
-    }
-
-    public void setRemoved() {
-        if (mEditorView != null) {
-            mEditText.removeTextChangedListener(mDocument);
-            mEditText.removeTextChangedListener(this);
-            mEditorView.setRemoved();
-            mDocument = null;
-        }
     }
 
     void onLoadStart() {
@@ -155,7 +116,7 @@ public class EditorDelegate implements TextWatcher {
         return mContext;
     }
 
-    public EditorActivity getMainActivity() {
+    private EditorActivity getMainActivity() {
         return (EditorActivity) mContext;
     }
 
@@ -188,8 +149,31 @@ public class EditorDelegate implements TextWatcher {
         mEditorView = editorView;
         mEditText = editorView.getEditText();
         mOrientation = mContext.getResources().getConfiguration().orientation;
-        init();
+
+        TypedArray a = mContext.obtainStyledAttributes(new int[]{R.attr.findResultsKeyword});
+        findResultsKeywordColor = a.getColor(0, Color.BLACK);
+        a.recycle();
+
+        mDocument = new Document(mContext, this, savedState.file);
+        mEditText.setReadOnly(Preferences.getInstance(mContext).isReadOnly());
+        mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
+
+        if (savedState.editorState != null) {
+            mDocument.onRestoreInstanceState(savedState);
+            mEditText.onRestoreInstanceState(savedState.editorState);
+        } else {
+            mDocument.loadFile(savedState.file, savedState.encoding);
+        }
+
+        mEditText.addTextChangedListener(this);
+        noticeDocumentChanged();
     }
+
+    public void onDestroy() {
+        mEditText.removeTextChangedListener(mDocument);
+        mEditText.removeTextChangedListener(this);
+    }
+
 
     public CharSequence getSelectedText() {
         return mEditText.hasSelection() ? mEditText.getEditableText().subSequence(mEditText.getSelectionStart(), mEditText.getSelectionEnd()) : "";
@@ -213,7 +197,7 @@ public class EditorDelegate implements TextWatcher {
         return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s", changed, title, encode, fileMode, cursor);
     }
 
-    public void startSaveFileSelectorActivity() {
+    private void startSaveFileSelectorActivity() {
         if (mDocument != null) {
             getMainActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
         }
@@ -224,12 +208,16 @@ public class EditorDelegate implements TextWatcher {
      *
      * @param file - new file to write
      */
-    @WorkerThread
     public void saveTo(File file, String encoding) {
         if (mDocument != null) {
-            mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding, null);
+            mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding);
         }
     }
+
+    public void save(boolean background) {
+        mDocument.save(background, null);
+    }
+
 
     public void addHighlight(int start, int end) {
         mEditText.getText().setSpan(new BackgroundColorSpan(findResultsKeywordColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -413,10 +401,6 @@ public class EditorDelegate implements TextWatcher {
 
     private void reOpenWithEncoding(final String encoding) {
         final File file = mDocument.getFile();
-        if (file == null) {
-            UIUtils.toast(mContext, R.string.please_save_as_file_first);
-            return;
-        }
         if (mDocument.isChanged()) {
             new AlertDialog.Builder(mContext)
                     .setTitle(R.string.document_changed)
@@ -446,10 +430,7 @@ public class EditorDelegate implements TextWatcher {
      */
     @MainThread
     void noticeDocumentChanged() {
-        File file = mDocument.getFile();
-        if (file != null) {
-            savedState.title = file.getName();
-        }
+        savedState.title = mDocument.getFile().getName();
         noticeMenuChanged();
     }
 
@@ -474,19 +455,23 @@ public class EditorDelegate implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (loaded)
+        if (loaded) {
             noticeMenuChanged();
+        }
     }
 
+    @Nullable
     public String getLang() {
-        if (mDocument == null)
+        if (mDocument == null) {
             return null;
+        }
         return mDocument.getModeName();
     }
 
     private void convertSelectedText(int id) {
-        if (mEditText == null || !mEditText.hasSelection())
+        if (mEditText == null || !mEditText.hasSelection()) {
             return;
+        }
 
         int start = mEditText.getSelectionStart();
         int end = mEditText.getSelectionEnd();
@@ -504,29 +489,32 @@ public class EditorDelegate implements TextWatcher {
         getEditableText().replace(start, end, selectedText);
     }
 
-    public Parcelable onSaveInstanceState() {
-        SavedState ss = savedState;
+    Parcelable onSaveInstanceState() {
         if (mDocument != null) {
-            mDocument.onSaveInstanceState(ss);
+            mDocument.onSaveInstanceState(savedState);
         }
         if (mEditText != null) {
             mEditText.setFreezesText(true);
-            ss.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
+            savedState.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
         }
 
-        if (loaded && !disableAutoSave && mDocument != null && mDocument.getFile() != null) {
+        if (loaded && mDocument != null) {
             if (Preferences.getInstance(mContext).isAutoSave()) {
                 int newOrientation = mContext.getResources().getConfiguration().orientation;
                 if (mOrientation != newOrientation) {
                     DLog.d("current is screen orientation, discard auto save!");
                     mOrientation = newOrientation;
                 } else {
-                    mDocument.save();
+                    mDocument.save(true, null);
                 }
             }
         }
 
-        return ss;
+        return savedState;
+    }
+
+    public Document getDocument() {
+        return mDocument;
     }
 
     public static class SavedState implements Parcelable {
