@@ -52,7 +52,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public static final String KEY_ENABLE_HIGHLIGHT = "pref_enable_highlight";
     public static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
     public static final String KEY_THEME = "pref_current_theme";
-    public static final String KEY_AUTO_SAVE = "pref_auto_save";
     public static final String KEY_REMEMBER_LAST_OPENED_FILES = "pref_remember_last_opened_files";
     public static final String KEY_SCREEN_ORIENTATION = "pref_screen_orientation";
     public static final String KEY_KEEP_SCREEN_ON = "pref_keep_screen_on";
@@ -112,7 +111,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_ENABLE_HIGHLIGHT, true);
         map.put(KEY_HIGHLIGHT_FILE_SIZE_LIMIT, 500);
         map.put(KEY_THEME, 0);
-        map.put(KEY_AUTO_SAVE, true);
         map.put(KEY_REMEMBER_LAST_OPENED_FILES, true);
         map.put(KEY_SCREEN_ORIENTATION, "auto");
         map.put(KEY_KEEP_SCREEN_ON, false);

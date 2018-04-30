@@ -81,11 +81,6 @@
     <PreferenceCategory android:title="@string/other">
 
         <CheckBoxPreference
-
-            android:key="pref_auto_save"
-            android:title="@string/auto_save" />
-
-        <CheckBoxPreference
             android:key="pref_remember_last_opened_files"
             android:summary="@string/remember_last_opened_files_summary"
             android:title="@string/remember_last_opened_files" />
