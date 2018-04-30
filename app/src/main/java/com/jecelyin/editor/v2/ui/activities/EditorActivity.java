@@ -424,7 +424,7 @@ public class EditorActivity extends FullScreenActivity
         }
     }
 
-    private void createNewFile() {
+    public void createNewFile() {
         DialogNewFile
                 .create(this, new UIUtils.OnShowInputCallback() {
                     @Override

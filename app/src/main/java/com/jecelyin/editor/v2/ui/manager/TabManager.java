@@ -107,6 +107,10 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
             int lastTab = Preferences.getInstance(mActivity).getLastTab();
             setCurrentTab(lastTab);
+
+            if (descriptors.isEmpty()) {
+                mActivity.createNewFile();
+            }
         }
 
         mEditorFragmentPagerAdapter.registerDataSetObserver(new DataSetObserver() {
