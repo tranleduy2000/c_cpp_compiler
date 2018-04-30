@@ -76,6 +76,9 @@ class SaveTask {
      */
     void saveTo(@NonNull final File file, final String encoding, boolean background,
                 @Nullable final SaveListener listener) {
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], background = [" + background + "], listener = [" + listener + "]");
+        }
         if (mEditorDelegate.get() == null || mContext.get() == null) {
             return;
         }

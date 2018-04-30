@@ -55,13 +55,14 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
     }
 
     @Override
-    public boolean removeAll(TabCloseListener tabCloseListener) {
-        int position = getCount();
-        return position < 0 || removeEditor(position, tabCloseListener);
+    public void removeAll(TabCloseListener tabCloseListener) {
+        while (getCount() > 0) {
+            removeEditor(0, tabCloseListener);
+        }
     }
 
     @Override
-    public void newEditor(boolean notify, @NonNull File file, int offset, String encoding) {
+    public void newEditor(@NonNull File file, int offset, String encoding) {
         add(new EditorPageDescriptor(file, offset, encoding));
     }
 
@@ -94,26 +95,25 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
     }
 
     @Override
-    public boolean removeEditor(final int position, final TabCloseListener listener) {
+    public void removeEditor(final int position, final TabCloseListener listener) {
         EditorDelegate delegate = getEditorDelegateAt(position);
         if (delegate == null) {
             //not init
-            return false;
+            return;
         }
 
         final String encoding = delegate.getEncoding();
         final int offset = delegate.getCursorOffset();
         final String path = delegate.getPath();
-
-        if (delegate.isChanged()) {
-            delegate.save(true);
-        }
+        //no need save file, all file will be auto save when EditorFragment destroy
+        // if (delegate.isChanged()) {
+        //     delegate.save(true);
+        // }
         remove(position);
-        if (listener != null)
+        if (listener != null) {
             listener.onClose(path, encoding, offset);
-        return true;
+        }
     }
-
 
     public ArrayList<EditorDelegate> getAllEditor() {
         ArrayList<EditorDelegate> delegates = new ArrayList<>();

@@ -31,16 +31,16 @@ import java.io.File;
 public interface IEditorPagerAdapter {
     ClusterCommand makeClusterCommand();
 
-    boolean removeAll(TabCloseListener tabCloseListener);
+    void removeAll(TabCloseListener tabCloseListener);
 
-    void newEditor(boolean notify, @NonNull File file, int offset, String encoding);
+    void newEditor(@NonNull File file, int offset, String encoding);
 
     @Nullable
     EditorDelegate getCurrentEditorDelegate();
 
     TabAdapter.TabInfo[] getTabInfoList();
 
-    boolean removeEditor(int position, TabCloseListener listener);
+    void removeEditor(int position, TabCloseListener listener);
 
     @Nullable
     EditorDelegate getEditorDelegateAt(int index);

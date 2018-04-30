@@ -136,7 +136,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 return false;
             }
         }
-        mEditorFragmentPagerAdapter.newEditor(true, file, offset, encoding);
+        mEditorFragmentPagerAdapter.newEditor(file, offset, encoding);
         setCurrentTab(count);
         return true;
     }
@@ -208,20 +208,17 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         }
     }
 
-    public boolean closeAllTabAndExitApp() {
+    public void closeAllTab() {
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
+        mEditorFragmentPagerAdapter.clear();
         mEditorFragmentPagerAdapter.removeAll(new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
                 DBHelper.getInstance(mActivity).updateRecentFile(path, encoding, offset);
-                if (getTabCount() == 0) {
-                    mActivity.finish();
-                }
             }
         });
-        return false;
     }
 
     public EditorFragmentPagerAdapter getEditorPagerAdapter() {

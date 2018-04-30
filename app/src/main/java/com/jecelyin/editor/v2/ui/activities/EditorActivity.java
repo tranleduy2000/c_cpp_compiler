@@ -615,7 +615,6 @@ public class EditorActivity extends FullScreenActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         if (mDrawerLayout != null) {
             if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
                 mDrawerLayout.closeDrawer(Gravity.START);
@@ -639,7 +638,8 @@ public class EditorActivity extends FullScreenActivity
             UIUtils.toast(getContext(), R.string.press_again_will_exit);
             mExitTime = System.currentTimeMillis();
         } else {
-            mTabManager.closeAllTabAndExitApp();
+            mTabManager.closeAllTab();
+            super.onBackPressed();
         }
     }
 
