@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -73,8 +74,18 @@ public class ModeProvider {
      * @param name The edit mode
      * @since jEdit 4.3pre10
      */
+    @Nullable
     public Mode getMode(String name) {
-        return modes.get(name);
+        Mode mode = modes.get(name);
+        if (mode != null) {
+            return mode;
+        }
+        for (Map.Entry<String, Mode> entry : modes.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(name)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     /**
@@ -176,7 +187,7 @@ public class ModeProvider {
         modes.put(name, mode);
     }
 
-    public void loadMode(Mode mode, XModeHandler xmh, IFileObject file) {
+    public void loadMode(Mode mode, XModeHandler handler, IFileObject file) {
         XMLReader parser = null;
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
@@ -188,7 +199,7 @@ public class ModeProvider {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        mode.setTokenMarker(xmh.getTokenMarker());
+        mode.setTokenMarker(handler.getTokenMarker());
 
         InputStream grammar = null;
         try {
@@ -197,15 +208,14 @@ public class ModeProvider {
         }
 
         try {
-            InputSource isrc = new InputSource(grammar);
+            InputSource isrc = new InputSource(
+                    new BufferedInputStream(file.openInputStream()));
             isrc.setSystemId("jedit.jar");
-            parser.setContentHandler(xmh);
-            parser.setDTDHandler(xmh);
-            parser.setEntityResolver(xmh);
-            parser.setErrorHandler(xmh);
+            parser.setContentHandler(handler);
+            parser.setDTDHandler(handler);
+            parser.setEntityResolver(handler);
+            parser.setErrorHandler(handler);
             parser.parse(isrc);
-
-            mode.setProperties(xmh.getModeProperties());
         } catch (Throwable e) {
             if (DLog.DEBUG) DLog.e(TAG, "loadMode: ", e);
         } finally {
@@ -214,7 +224,7 @@ public class ModeProvider {
     }
 
     public void loadMode(Mode mode, Context context) {
-        XModeHandler xmh = new XModeHandler(mode.getName(), context) {
+        XModeHandler handler = new XModeHandler(mode.getName(), context) {
             @Override
             public void error(String what, Object subst) {
                 if (DLog.DEBUG) DLog.e(TAG, "error: ", subst);
@@ -229,12 +239,9 @@ public class ModeProvider {
                     return mode.getTokenMarker(getContext());
             }
         };
+
         AssetFile file = new AssetFile(context.getAssets(), "syntax/" + mode.getFile());
-        loadMode(mode, xmh, file);
-        if (mode.getFile().equals("cplusplus.xml")) {
-            file = new AssetFile(context.getAssets(), "syntax/c.xml");
-            loadMode(mode, xmh, file);
-        }
+        loadMode(mode, handler, file);
     }
 
 }

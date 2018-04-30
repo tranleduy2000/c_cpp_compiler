@@ -356,7 +356,8 @@ public class EditorActivity extends FullScreenActivity
                 createNewFile();
                 break;
             case R.id.action_open:
-                FileExplorerActivity.startPickFileActivity(this, null, RC_OPEN_FILE);
+                String path = SrcFileManager.getSourceDir(this).getPath();
+                FileExplorerActivity.startPickFileActivity(this, path, RC_OPEN_FILE);
                 break;
             case R.id.m_goto_line:
                 new GotoLineDialog(this).show();

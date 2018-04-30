@@ -29,11 +29,11 @@ import android.util.Log;
 import com.jecelyin.common.utils.DLog;
 
 import org.gjt.sp.jedit.Mode;
+import org.gjt.sp.jedit.util.XMLUtilities;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
@@ -88,11 +88,17 @@ public abstract class XModeHandler extends DefaultHandler {
 
     public InputSource resolveEntity(String publicId, String systemId) {
 //        return XMLUtilities.findEntity(systemId, "xmode.dtd", XModeHandler.class);
-        try {
-            return new InputSource(getContext().getAssets().open("xmode.dtd"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        String test = "xmode.dtd";
+        if (systemId != null && systemId.endsWith(test)) {
+            try {
+                return new InputSource(getContext().getAssets().open("xmode.dtd"));
+            } catch (Exception e) {
+                DLog.log(Log.ERROR, XMLUtilities.class,
+                        "Error while opening " + test + ':');
+                DLog.log(Log.ERROR, XMLUtilities.class, e);
+            }
         }
+
         return null;
     }
 
