@@ -290,7 +290,6 @@ public class EditorDelegate implements TextWatcher {
                 Preferences preferences = Preferences.getInstance(mContext);
                 boolean readOnly = preferences.isReadOnly();
                 mEditText.setReadOnly(readOnly);
-                ((EditorActivity) mContext).doNextCommand();
                 break;
             case SAVE:
                 if (!readonly)
@@ -320,7 +319,6 @@ public class EditorDelegate implements TextWatcher {
                     scope = mode.getName();
                 }
                 mDocument.setMode(scope);
-                ((EditorActivity) mContext).doNextCommand();
                 break;
             case INSERT_TEXT:
                 if (!readonly) {

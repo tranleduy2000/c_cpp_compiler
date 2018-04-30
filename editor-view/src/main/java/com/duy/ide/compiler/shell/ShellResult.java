@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.shell;
+package com.duy.ide.compiler.shell;
 
 import android.support.annotation.Nullable;
 

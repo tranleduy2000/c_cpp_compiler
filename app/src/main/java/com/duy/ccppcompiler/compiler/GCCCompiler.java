@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.nativecompiler;
+package com.duy.ccppcompiler.compiler;
 
 import android.content.Context;
 
-import com.duy.ccppcompiler.compiler.GCCConstants;
-import com.duy.ccppcompiler.compiler.INativeCompiler;
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
-import com.duy.ccppcompiler.compiler.shell.ShellUtils;
+import com.duy.ide.compiler.INativeCompiler;
+import com.duy.ide.compiler.shell.ShellResult;
+import com.duy.ide.compiler.shell.ShellUtils;
 
 import java.io.File;
 import java.util.ArrayList;

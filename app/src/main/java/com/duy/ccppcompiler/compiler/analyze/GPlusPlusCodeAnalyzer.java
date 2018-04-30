@@ -16,6 +16,8 @@
 
 package com.duy.ccppcompiler.compiler.analyze;
 
+import com.duy.ide.compiler.analyze.ICodeAnalysis;
+
 /**
  * Created by Duy on 25-Apr-18.
  */
