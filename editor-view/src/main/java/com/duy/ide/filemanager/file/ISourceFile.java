@@ -16,29 +16,21 @@
 
 package com.duy.ide.filemanager.file;
 
-import android.net.Uri;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.File;
 
 /**
  * Created by Duy on 30-Apr-18.
  */
 
-public interface IFileObject {
-    @Nullable
-    Uri toUri();
+public interface ISourceFile extends IFileObject {
+    @NonNull
+    byte[] md5();
 
-    InputStream openInputStream() throws IOException;
+    @NonNull
+    String getPath();
 
-    OutputStream openOutputStream() throws FileNotFoundException;
-
-    Writer openWriter() throws IOException;
-
-    Reader openReader() throws IOException;
+    @NonNull
+    File getFile();
 }

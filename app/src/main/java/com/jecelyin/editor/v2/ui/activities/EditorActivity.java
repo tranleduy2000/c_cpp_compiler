@@ -453,7 +453,6 @@ public class EditorActivity extends FullScreenActivity
                 File[] srcFiles = new File[1];
                 if (currentEditor != null) {
                     String path = currentEditor.getPath();
-                    currentEditor.getDocument().getMd5();
                     srcFiles[0] = new File(path);
                 }
                 CompilerFactory.CompileType compileType;

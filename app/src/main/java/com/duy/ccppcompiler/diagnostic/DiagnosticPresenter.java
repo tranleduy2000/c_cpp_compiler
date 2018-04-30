@@ -17,6 +17,7 @@
 package com.duy.ccppcompiler.diagnostic;
 
 import android.support.annotation.MainThread;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
@@ -31,6 +32,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Created by Duy on 28-Apr-18.
@@ -40,8 +43,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
     private final EditorActivity mActivity;
     private final TabManager mTabManager;
-    private ArrayList<Diagnostic> diagnostics;
+    private ArrayList<Diagnostic> mDiagnostics;
     private DiagnosticContract.View mView;
+    private HashMap<File, byte[]> mHashCode = new HashMap<>();
 
     public DiagnosticPresenter(DiagnosticContract.View view, EditorActivity activity, TabManager tabManager) {
         mActivity = activity;
@@ -57,48 +61,41 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Override
     public void onDiagnosticClick(View view, Diagnostic diagnostic) {
         if (DLog.DEBUG)
-            DLog.d(TAG, "onDiagnosticClick() called with: view = [" + view + "], diagnostic = [" + diagnostic + "]");
+            DLog.d(TAG, "onDiagnosticClick() called diagnostic = [" + diagnostic + "]");
         File source = diagnostic.getSourceFile();
-        Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
-        if (pair != null) {
-            int index = pair.first;
-            EditorDelegate editorDelegate = pair.second;
-            if (editorDelegate.isChanged()) {
-                return;
-            }
-
-            mTabManager.setCurrentTab(index);
-            editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-
+        EditorDelegate editorDelegate = moveToEditor(source, mHashCode.get(source));
+        if (editorDelegate != null) {
             Command command = new Command(Command.CommandEnum.GOTO_INDEX);
             command.args.putInt("line", (int) diagnostic.getLineNumber());
             command.args.putInt("col", (int) diagnostic.getColumnNumber());
             editorDelegate.doCommand(command);
-        } else {
-            mTabManager.newTab(source);
-            onDiagnosticClick(view, diagnostic);
         }
+
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion) {
         File source = suggestion.getSourceFile();
-        EditorDelegate delegate = openEditor(source);
-        int start = delegate.getEditText()
-                .getCursorIndex(suggestion.getLineStart(), suggestion.getColStart()).offset;
-        int end = delegate.getEditText()
-                .getCursorIndex(suggestion.getLineEnd(), suggestion.getColEnd()).offset;
-        if (start >= 0 && start <= end) {
-            delegate.getEditableText().replace(start, end, suggestion.getMessage());
-            delegate.getEditText().setSelection(start + suggestion.getMessage().length());
+        EditorDelegate delegate = moveToEditor(source, mHashCode.get(source));
+
+        if (delegate != null) {
+            int start = delegate.getEditText()
+                    .getCursorIndex(suggestion.getLineStart(), suggestion.getColStart()).offset;
+            int end = delegate.getEditText()
+                    .getCursorIndex(suggestion.getLineEnd(), suggestion.getColEnd()).offset;
+            if (start >= 0 && start <= end) {
+                delegate.getEditableText().replace(start, end, suggestion.getMessage());
+                delegate.getEditText().setSelection(start + suggestion.getMessage().length());
+            }
+            mView.remove(diagnostic);
         }
-        mView.remove(diagnostic);
     }
 
+    @Nullable
     @SuppressWarnings("ConstantConditions")
     @MainThread
-    private EditorDelegate openEditor(File source) {
+    private EditorDelegate moveToEditor(File source, byte[] md5) {
         Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
         if (pair != null) {
             int index = pair.first;
@@ -107,11 +104,19 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 return null;
             }
 
+            byte[] otherMd5 = editorDelegate.getDocument().getMd5();
+            if (!Arrays.equals(md5, otherMd5)) {
+                return null;
+            }
+            mHashCode.put(source, otherMd5);
+
             mTabManager.setCurrentTab(index);
             editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-            return pair.second;
+            return editorDelegate;
+        } else {
+            mTabManager.newTab(source);
+            return moveToEditor(source, md5);
         }
-        return null;
     }
 
     @Override
@@ -127,14 +132,18 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @MainThread
     @Override
     public void setDiagnostics(ArrayList<Diagnostic> diagnostics) {
-        this.diagnostics = diagnostics;
+        this.mDiagnostics = diagnostics;
         if (mView != null) {
             mView.show(diagnostics);
         }
+        highlightErrorCurrentEditor();
+    }
+
+    private void highlightErrorCurrentEditor() {
         EditorDelegate delegate = mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
         if (delegate != null) {
             delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-            for (Diagnostic diagnostic : diagnostics) {
+            for (Diagnostic diagnostic : mDiagnostics) {
                 File sourceFile = diagnostic.getSourceFile();
                 if (sourceFile.getPath().equals(delegate.getPath())) {
                     Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);

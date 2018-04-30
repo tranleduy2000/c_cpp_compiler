@@ -17,10 +17,12 @@
 package com.duy.ide.filemanager.file;
 
 import android.content.res.AssetManager;
+import android.net.Uri;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -38,12 +40,17 @@ public class AssetFile implements IFileObject {
     }
 
     @Override
+    public Uri toUri() {
+        return null;
+    }
+
+    @Override
     public InputStream openInputStream() throws IOException {
         return assetManager.open(path);
     }
 
     @Override
-    public InputStream openOutputStream() {
+    public OutputStream openOutputStream() {
         throw new UnsupportedOperationException();
     }
 
