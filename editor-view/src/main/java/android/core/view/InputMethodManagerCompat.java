@@ -46,13 +46,11 @@ public class InputMethodManagerCompat {
     }
 
     public static void registerSuggestionSpansForNotification(InputMethodManager imm, SuggestionSpan[] spans) {
-        //public void registerSuggestionSpansForNotification(SuggestionSpan[] spans)
         try {
             MethodReflection.callAny(imm, "registerSuggestionSpansForNotification", new Class[]{SuggestionSpan[].class}, new Object[]{spans});
         } catch (Throwable e) {
             DLog.e(e);
         }
-//        imm.registerSuggestionSpansForNotification(spans);
     }
 
     public static void setUpdateCursorAnchorInfoMode(InputMethodManager imm, int cursorUpdateMode) {

@@ -186,7 +186,7 @@ class EditableInputConnection extends BaseInputConnection {
             Spanned spanned = ((Spanned) text);
             SuggestionSpan[] spans = spanned.getSpans(0, text.length(), SuggestionSpan.class);
 //            mIMM.registerSuggestionSpansForNotification(spans);
-            InputMethodManagerCompat.registerSuggestionSpansForNotification(mIMM, spans);
+//            InputMethodManagerCompat.registerSuggestionSpansForNotification(mIMM, spans);
         }
 
         mTextView.resetErrorChangedFlag();
@@ -239,5 +239,10 @@ class EditableInputConnection extends BaseInputConnection {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean setComposingRegion(int start, int end) {
+        return super.setComposingRegion(start, end);
     }
 }
