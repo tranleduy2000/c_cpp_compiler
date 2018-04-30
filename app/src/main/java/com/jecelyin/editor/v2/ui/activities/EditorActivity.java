@@ -59,7 +59,6 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
 import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.task.ClusterCommand;
 import com.jecelyin.editor.v2.ui.dialog.ChangeThemeDialog;
 import com.jecelyin.editor.v2.ui.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.ui.dialog.GotoLineDialog;
@@ -107,7 +106,6 @@ public class EditorActivity extends FullScreenActivity
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
     private TabManager mTabManager;
     private Preferences mPreferences;
-    private ClusterCommand clusterCommand;
     private MenuManager mMenuManager;
     private long mExitTime;
     private DiagnosticPresenter mDiagnosticPresenter;
@@ -174,7 +172,7 @@ public class EditorActivity extends FullScreenActivity
             case Preferences.KEY_ENABLE_HIGHLIGHT:
                 Command command = new Command(Command.CommandEnum.HIGHLIGHT);
                 command.object = mPreferences.isHighlight() ? null : Catalog.DEFAULT_MODE_NAME;
-                doClusterCommand(command);
+                doCommandForAllEditor(command);
                 break;
             case Preferences.KEY_SCREEN_ORIENTATION:
                 setScreenOrientation();
@@ -416,7 +414,7 @@ public class EditorActivity extends FullScreenActivity
             case R.id.m_readonly:
                 boolean readOnly = !mPreferences.isReadOnly();
                 mPreferences.setReadOnly(readOnly);
-                doClusterCommand(new Command(Command.CommandEnum.READONLY_MODE));
+                doCommandForAllEditor(new Command(Command.CommandEnum.READONLY_MODE));
                 break;
             case R.id.m_encoding:
                 new CharsetsDialog(this).show();
@@ -502,25 +500,16 @@ public class EditorActivity extends FullScreenActivity
         doCommand(new Command(Command.CommandEnum.SHOW_SOFT_INPUT));
     }
 
-    public void doClusterCommand(Command command) {
-        clusterCommand = mTabManager.getEditorPagerAdapter().makeClusterCommand();
-        clusterCommand.setCommand(command);
-        clusterCommand.doNextCommand();
-    }
-
-    public void doNextCommand() {
-        if (clusterCommand == null)
-            return;
-        clusterCommand.doNextCommand();
+    public void doCommandForAllEditor(Command command) {
+        for (EditorDelegate editorDelegate : mTabManager.getEditorPagerAdapter().getAllEditor()) {
+            editorDelegate.doCommand(command);
+        }
     }
 
     public void doCommand(Command command) {
-        clusterCommand = null;
-
         EditorDelegate editorDelegate = getCurrentEditorDelegate();
         if (editorDelegate != null) {
             editorDelegate.doCommand(command);
-
             if (command.what == Command.CommandEnum.HIGHLIGHT) {
                 mToolbar.setTitle(editorDelegate.getToolbarText());
             }
