@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2018 Mr Duy
   ~
@@ -13,8 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#1F2933</color>
 </resources>
