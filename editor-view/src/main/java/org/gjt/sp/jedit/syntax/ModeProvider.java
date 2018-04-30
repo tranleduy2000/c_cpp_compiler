@@ -231,6 +231,10 @@ public class ModeProvider {
         };
         AssetFile file = new AssetFile(context.getAssets(), "syntax/" + mode.getFile());
         loadMode(mode, xmh, file);
+        if (mode.getFile().equals("cplusplus.xml")) {
+            file = new AssetFile(context.getAssets(), "syntax/c.xml");
+            loadMode(mode, xmh, file);
+        }
     }
 
 }

@@ -13,7 +13,6 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
 
-
         <activity
             android:name=".InstallActivity"
             android:configChanges="orientation|screenSize">
