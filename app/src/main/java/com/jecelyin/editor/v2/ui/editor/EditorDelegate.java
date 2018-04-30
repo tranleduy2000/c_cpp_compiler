@@ -435,7 +435,7 @@ public class EditorDelegate implements TextWatcher {
     @MainThread
     private void noticeMenuChanged() {
         EditorActivity editorActivity = (EditorActivity) this.mContext;
-        editorActivity.setMenuStatus(R.id.m_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        editorActivity.setMenuStatus(R.id.action_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.m_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.m_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         ((EditorActivity) mContext).getTabManager().onDocumentChanged();

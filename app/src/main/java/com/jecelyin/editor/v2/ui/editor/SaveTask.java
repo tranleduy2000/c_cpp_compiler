@@ -89,7 +89,7 @@ class SaveTask {
             @Override
             public void onSuccess() {
                 mWriting.set(false);
-                if (background) {
+                if (!background) {
                     if (mDocument.get() == null || mContext.get() == null || mEditorDelegate.get() == null) {
                         return;
                     }
@@ -104,7 +104,7 @@ class SaveTask {
             public void onError(Exception e) {
                 mWriting.set(false);
                 DLog.e(e);
-                if (background) {
+                if (!background) {
                     if (mContext.get() != null) {
                         UIUtils.alert(mContext.get(), e.getMessage());
                     }

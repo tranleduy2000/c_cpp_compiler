@@ -49,9 +49,7 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
-import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
-import com.jecelyin.common.app.ProgressDialog;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
@@ -61,7 +59,6 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
 import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.task.SaveAllTask;
 import com.jecelyin.editor.v2.ui.dialog.ChangeThemeDialog;
 import com.jecelyin.editor.v2.ui.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.ui.dialog.GotoLineDialog;
@@ -325,7 +322,7 @@ public class EditorActivity extends FullScreenActivity
     public void setMenuStatus(@IdRes int menuResId, int status) {
         MenuItem menuItem = mToolbar.getMenu().findItem(menuResId);
         if (menuItem == null) {
-            throw new RuntimeException("Can't find a menu item");
+            return;
         }
         Drawable icon = menuItem.getIcon();
         if (status == MenuDef.STATUS_DISABLED) {
@@ -353,10 +350,10 @@ public class EditorActivity extends FullScreenActivity
         closeMenu();
 
         switch (id) {
-            case R.id.m_new:
+            case R.id.action_new_file:
                 createNewFile();
                 break;
-            case R.id.m_open:
+            case R.id.action_open:
                 FileExplorerActivity.startPickFileActivity(this, null, RC_OPEN_FILE);
                 break;
             case R.id.m_goto_line:
@@ -437,41 +434,25 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void compileAndRun() {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.save_all));
-        SaveListener saveListener = new SaveListener() {
-            @Override
-            public void onPrepare() {
-                setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
-            }
+        saveAll(false);
+        EditorDelegate currentEditor = getCurrentEditorDelegate();
+        File[] srcFiles = new File[1];
+        if (currentEditor != null) {
+            String path = currentEditor.getPath();
+            srcFiles[0] = new File(path);
+        }
+        CompilerFactory.CompileType compileType;
+        if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
+            compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
+        } else {
+            compileType = CompilerFactory.CompileType.GCC;
+        }
+        INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
+        CompileManager compileManager = new CompileManager(EditorActivity.this);
+        compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
-            @Override
-            public void onSaved() {
-                progressDialog.dismiss();
-
-                EditorDelegate currentEditor = getCurrentEditorDelegate();
-                File[] srcFiles = new File[1];
-                if (currentEditor != null) {
-                    String path = currentEditor.getPath();
-                    srcFiles[0] = new File(path);
-                }
-                CompilerFactory.CompileType compileType;
-                if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
-                    compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
-                } else {
-                    compileType = CompilerFactory.CompileType.GCC;
-                }
-                INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
-                CompileManager compileManager = new CompileManager(EditorActivity.this);
-                compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
-
-                CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-                compileTask.execute();
-            }
-        };
-        //after save all task is compile task
-        SaveAllTask saveAllTask = new SaveAllTask(this, saveListener);
-        saveAllTask.execute();
+        CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
+        compileTask.execute();
     }
 
     @Override

@@ -46,7 +46,7 @@ public class MenuFactory {
         groups.put(MenuGroup.TOP, topList);
         Integer[] toolbarIcons = Preferences.getInstance(context).getToolbarIcons();
         if (toolbarIcons == null) {
-            toolbarIcons = new Integer[]{R.id.action_run, R.id.m_new, R.id.m_open, R.id.m_save, R.id.m_undo, R.id.m_redo};
+            toolbarIcons = new Integer[]{R.id.action_run, R.id.action_new_file, R.id.m_undo};
         }
 
         List<MenuItemInfo> items;
@@ -98,10 +98,11 @@ public class MenuFactory {
     }
 
     private void initAllMenuItem() {
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_run, Command.CommandEnum.NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_new, Command.CommandEnum.NONE, R.drawable.ic_add_white_24dp, R.string.new_file));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_open, Command.CommandEnum.OPEN, R.drawable.ic_folder_open_white_24dp, R.string.open));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save, Command.CommandEnum.SAVE, R.drawable.ic_save_white_24dp, R.string.save));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.TOP, R.id.action_run, Command.CommandEnum.NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
+
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_new_file, Command.CommandEnum.NONE, R.drawable.ic_add_white_24dp, R.string.new_file));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open, Command.CommandEnum.OPEN, R.drawable.ic_folder_open_white_24dp, R.string.open));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save, Command.CommandEnum.SAVE, R.drawable.ic_save_white_24dp, R.string.save));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_all, Command.CommandEnum.NONE, R.drawable.m_save_all, R.string.save_all));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, Command.CommandEnum.SAVE_AS, R.drawable.m_save_as, R.string.save_as));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, Command.CommandEnum.NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
@@ -120,7 +121,6 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_theme, Command.CommandEnum.THEME, R.drawable.ic_style_white_24dp, R.string.change_theme));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_fullscreen, Command.CommandEnum.FULL_SCREEN, R.drawable.ic_fullscreen_white_24dp, R.string.fullscreen_mode));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, Command.CommandEnum.DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW,  R.id.m_symbol,         Command.CommandEnum.NONE, R.drawable.m_symbol, R.string.symbol));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_readonly, Command.CommandEnum.READONLY_MODE, R.drawable.ic_remove_red_eye_white_24dp, R.string.read_only));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_highlight, Command.CommandEnum.NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_encoding, Command.CommandEnum.NONE, R.drawable.m_encoding, R.string.encoding));

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="m_new" type="id" />
-    <item name="m_open" type="id" />
-    <item name="m_save" type="id" />
+    <item name="action_new_file" type="id" />
+    <item name="action_open" type="id" />
+    <item name="action_save" type="id" />
     <item name="action_save_all" type="id" />
     <item name="m_save_as" type="id" />
     <item name="m_history" type="id" />
