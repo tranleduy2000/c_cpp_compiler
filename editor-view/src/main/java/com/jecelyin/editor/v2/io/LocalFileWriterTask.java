@@ -18,6 +18,8 @@ package com.jecelyin.editor.v2.io;
 
 import android.os.AsyncTask;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.GetChars;
 
 import java.io.BufferedWriter;
@@ -30,35 +32,37 @@ import java.io.OutputStreamWriter;
  */
 public class LocalFileWriterTask extends AsyncTask<GetChars, Void, Exception> {
     private final static int BUFFER_SIZE = 16 * 1024;
+    @NonNull
     private final String encoding;
+    @NonNull
     private final File file;
+    @Nullable
     private FileWriteListener fileWriteListener;
 
-    public LocalFileWriterTask(File file, String encoding) {
+    public LocalFileWriterTask(@NonNull File file, @NonNull String encoding) {
         this.file = file;
         this.encoding = encoding;
     }
 
-    public void write(GetChars text) {
-        execute(text);
-    }
-
-    public void setFileWriteListener(FileWriteListener fileWriteListener) {
+    public void setFileWriteListener(@Nullable FileWriteListener fileWriteListener) {
         this.fileWriteListener = fileWriteListener;
     }
 
     @Override
     protected Exception doInBackground(GetChars... params) {
-        GetChars text = params[0];
+        return writeToFile(params[0]);
+    }
+
+    public Exception writeToFile(GetChars content) {
         try {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding), BUFFER_SIZE);
             char[] buffer = new char[BUFFER_SIZE]; //16kb
-            int size = text.length();
+            int size = content.length();
             if (size > 0) {
                 int start = 0, end = BUFFER_SIZE;
                 for (; ; ) {
                     end = Math.min(end, size);
-                    text.getChars(start, end, buffer, 0);
+                    content.getChars(start, end, buffer, 0);
 
                     bw.write(buffer, 0, end - start);
                     start = end;
@@ -78,9 +82,10 @@ public class LocalFileWriterTask extends AsyncTask<GetChars, Void, Exception> {
     }
 
     @Override
-    protected void onPostExecute(Exception e) {
-        if (fileWriteListener == null)
+    public void onPostExecute(Exception e) {
+        if (fileWriteListener == null) {
             return;
+        }
         if (e == null)
             fileWriteListener.onSuccess();
         else

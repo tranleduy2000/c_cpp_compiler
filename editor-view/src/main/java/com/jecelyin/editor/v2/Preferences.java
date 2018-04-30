@@ -239,9 +239,9 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         return 1024 * (int) map.get(KEY_HIGHLIGHT_FILE_SIZE_LIMIT);
     }
 
+    //auto save is default
     public boolean isAutoSave() {
-//        return (boolean) map.get(KEY_AUTO_SAVE);
-        return false;
+        return true;
     }
 
     public boolean isKeepScreenOn() {

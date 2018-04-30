@@ -26,7 +26,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -36,7 +35,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +49,6 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
-import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -59,6 +56,7 @@ import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Preferences;
+import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
 import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.task.ClusterCommand;
@@ -83,6 +81,7 @@ import org.gjt.sp.jedit.Catalog;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,7 +95,6 @@ public class EditorActivity extends FullScreenActivity
 
     private static final int RC_OPEN_FILE = 1;
     private final static int RC_SAVE = 3;
-    private static final int RC_PERMISSION_STORAGE = 2;
     private static final int RC_SETTINGS = 5;
 
     public Toolbar mToolbar;
@@ -403,7 +401,7 @@ public class EditorActivity extends FullScreenActivity
                 break;
             case R.id.m_save_all:
                 UIUtils.toast(this, R.string.save_all);
-                saveAll(null);
+                saveAll(true);
                 break;
             case R.id.m_theme:
                 new ChangeThemeDialog(getContext()).show();
@@ -446,44 +444,34 @@ public class EditorActivity extends FullScreenActivity
         // TODO: 25-Apr-18 implement
     }
 
-    private void saveAll(@Nullable final SaveListener onSaveListener) {
-        Command command = new Command(Command.CommandEnum.SAVE);
-        command.args.putBoolean(EditorDelegate.KEY_CLUSTER, true);
-        command.object = new SaveListener() {
-            @Override
-            public void onSaved() {
-                if (clusterCommand != null && clusterCommand.hasNextCommand()) {
-                    doNextCommand();
-                } else {
-                    if (onSaveListener != null) {
-                        onSaveListener.onSaved();
-                    }
-                }
-            }
-        };
-        doClusterCommand(command);
+    public void saveAll(boolean inBackgroundThread) {
+        EditorFragmentPagerAdapter editorPagerAdapter = mTabManager.getEditorPagerAdapter();
+        ArrayList<EditorDelegate> allEditor = editorPagerAdapter.getAllEditor();
+        for (EditorDelegate editorDelegate : allEditor) {
+            editorDelegate.getDocument().save(inBackgroundThread, null);
+        }
     }
 
     private void compileAndRun() {
-        saveAll(new SaveListener() {
-            @Override
-            public void onSaved() {
-                EditorDelegate currentEditor = getCurrentEditorDelegate();
-                File[] srcFiles = new File[1];
-                if (currentEditor != null) {
-                    String path = currentEditor.getPath();
-                    srcFiles[0] = new File(path);
-                }
+        saveAll(false);
+        EditorDelegate currentEditor = getCurrentEditorDelegate();
+        File[] srcFiles = new File[1];
+        if (currentEditor != null) {
+            String path = currentEditor.getPath();
+            srcFiles[0] = new File(path);
+        }
+        CompilerFactory.CompileType compileType;
+        if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
+            compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
+        } else {
+            compileType = CompilerFactory.CompileType.GCC;
+        }
+        INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
+        CompileManager compileManager = new CompileManager(EditorActivity.this);
+        compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
-                CompilerFactory.CompileType compileType = CompilerFactory.CompileType.GCC;
-                INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
-                CompileManager compileManager = new CompileManager(EditorActivity.this);
-                compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
-
-                CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-                compileTask.execute();
-            }
-        });
+        CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
+        compileTask.execute();
     }
 
     @Override
@@ -624,28 +612,33 @@ public class EditorActivity extends FullScreenActivity
         return mTabManager;
     }
 
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            if (mDrawerLayout != null) {
-                if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-                    mDrawerLayout.closeDrawer(Gravity.START);
-                    return true;
-                }
-                if (mDrawerLayout.isDrawerOpen(Gravity.END)) {
-                    mDrawerLayout.closeDrawer(Gravity.END);
-                    return true;
-                }
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (mDrawerLayout != null) {
+            if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+                mDrawerLayout.closeDrawer(Gravity.START);
+                return;
             }
-            if ((System.currentTimeMillis() - mExitTime) > 2000) {
-                UIUtils.toast(getContext(), R.string.press_again_will_exit);
-                mExitTime = System.currentTimeMillis();
-                return true;
-            } else {
-                return mTabManager == null || mTabManager.closeAllTabAndExitApp();
+            if (mDrawerLayout.isDrawerOpen(Gravity.END)) {
+                mDrawerLayout.closeDrawer(Gravity.END);
+                return;
             }
         }
-        return super.onKeyDown(keyCode, event);
+        if (mSlidingUpPanelLayout != null) {
+            if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                return;
+            }
+        }
+
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            UIUtils.toast(getContext(), R.string.press_again_will_exit);
+            mExitTime = System.currentTimeMillis();
+        } else {
+            mTabManager.closeAllTabAndExitApp();
+        }
     }
 
     public String getCurrentLang() {
