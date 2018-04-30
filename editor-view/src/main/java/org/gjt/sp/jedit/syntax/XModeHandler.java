@@ -48,6 +48,7 @@ import java.util.regex.PatternSyntaxException;
  */
 public abstract class XModeHandler extends DefaultHandler {
 
+    private static final String TAG = "XModeHandler";
     /**
      * The token marker cannot be null.
      */
@@ -62,16 +63,13 @@ public abstract class XModeHandler extends DefaultHandler {
     private String propValue;
     private Hashtable<String, String> props;
     private Hashtable<String, String> modeProps;
-
     private ParserRuleSet rules;
-
     /**
      * A list of modes to be reloaded at the end, loaded through DELEGATEs
      * <p>
      * {see https://sourceforge.net/tracker/index.php?func=detail&aid=1742250&group_id=588&atid=100588}
      */
     private Vector<Mode> reloadModes;
-
     private Context context;
 
     public XModeHandler(String modeName, Context context) {
@@ -401,7 +399,6 @@ public abstract class XModeHandler extends DefaultHandler {
      */
     protected abstract TokenMarker getTokenMarker(String mode);
 
-
     private void addKeyword(String k, byte id) {
         if (keywords == null) return;
         keywords.add(k, id);
@@ -426,7 +423,6 @@ public abstract class XModeHandler extends DefaultHandler {
         return stateStack.pop();
     }
 
-
     /**
      * Finds the first element whose tag matches 'tagName',
      * searching backwards in the stack.
@@ -439,7 +435,6 @@ public abstract class XModeHandler extends DefaultHandler {
         }
         return null;
     }
-
 
     /**
      * Hold info about what tag was read and what attributes were
@@ -537,6 +532,7 @@ public abstract class XModeHandler extends DefaultHandler {
                 try {
                     termChar = Integer.parseInt(tmp);
                 } catch (NumberFormatException e) {
+                    if (DLog.DEBUG) DLog.e(TAG, "TagDecl: ", e);
                     error("termchar-invalid", tmp);
                     termChar = -1;
                 }

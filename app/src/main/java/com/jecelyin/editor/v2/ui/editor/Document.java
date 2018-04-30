@@ -212,7 +212,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
         mLineCount = mBuffer.getLineManager().getLineCount();
 
-        if (!true || editableText.length() > mPreferences.getHighlightSizeLimit())
+        if (editableText.length() > mPreferences.getHighlightSizeLimit())
             return;
 
         LineManager lineManager = mBuffer.getLineManager();
