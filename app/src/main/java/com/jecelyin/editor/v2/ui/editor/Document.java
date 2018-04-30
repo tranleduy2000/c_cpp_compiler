@@ -410,6 +410,10 @@ public class Document implements ReadFileListener, TextWatcher {
 
     }
 
+    public byte[] getMd5() {
+        return mSourceMD5;
+    }
+
     private final static class ReadFileTask extends AsyncTask<File, Void, SpannableStringBuilder> {
         private final ReadFileListener listener;
         private final FileReader fileReader;

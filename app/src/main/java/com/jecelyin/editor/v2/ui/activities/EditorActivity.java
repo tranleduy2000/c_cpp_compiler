@@ -52,6 +52,7 @@ import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
+import com.jecelyin.common.app.ProgressDialog;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
@@ -448,22 +449,25 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void compileAndRun() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.save_all));
         SaveListener saveListener = new SaveListener() {
             @Override
             public void onPrepare() {
+                progressDialog.show();
                 Toast.makeText(EditorActivity.this, R.string.save_all, Toast.LENGTH_SHORT).show();
-                setMenuStatus(R.id.action_save_all, MenuDef.STATUS_DISABLED);
                 setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
             }
 
             @Override
             public void onSaved() {
-                setMenuStatus(R.id.action_save_all, MenuDef.STATUS_NORMAL);
+                progressDialog.dismiss();
 
                 EditorDelegate currentEditor = getCurrentEditorDelegate();
                 File[] srcFiles = new File[1];
                 if (currentEditor != null) {
                     String path = currentEditor.getPath();
+                    currentEditor.getDocument().getMd5()
                     srcFiles[0] = new File(path);
                 }
                 CompilerFactory.CompileType compileType;
@@ -480,6 +484,7 @@ public class EditorActivity extends FullScreenActivity
                 compileTask.execute();
             }
         };
+        //after save all task is compile task
         SaveAllTask saveAllTask = new SaveAllTask(this, saveListener);
         saveAllTask.execute();
     }
