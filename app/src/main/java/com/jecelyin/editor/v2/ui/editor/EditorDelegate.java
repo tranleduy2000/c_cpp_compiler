@@ -346,8 +346,19 @@ public class EditorDelegate implements TextWatcher {
             case HIGHLIGHT_ERROR:
                 highlightError(command.args);
                 break;
+            case CLEAR_ERROR_SPAN:
+                clearErrorSpan();
+                break;
         }
         return true;
+    }
+
+    private void clearErrorSpan() {
+        Editable editableText = mEditText.getEditableText();
+        ErrorSpan[] spans = editableText.getSpans(0, mEditText.length(), ErrorSpan.class);
+        for (ErrorSpan span : spans) {
+            editableText.removeSpan(span);
+        }
     }
 
     /**
