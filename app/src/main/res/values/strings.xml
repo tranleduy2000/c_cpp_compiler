@@ -3,4 +3,5 @@
     <string name="installing_system">Installing system</string>
     <string name="title_compiling">Compiling…</string>
     <string name="title_activity_console">Console</string>
+    <string name="create_new_file">Create new file</string>
 </resources>

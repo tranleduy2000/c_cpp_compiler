@@ -19,15 +19,22 @@
 package com.jecelyin.common.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.duy.ide.editor.editor.R;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -74,8 +81,10 @@ public class UIUtils {
      * @see InputType#TYPE_MASK_VARIATION
      * @see InputType#TYPE_MASK_FLAGS
      */
-    public static void showInputDialog(Context context, @StringRes int titleRes, @StringRes int hintRes, CharSequence value, int inputType, OnShowInputCallback callback) {
-        showInputDialog(context, titleRes != 0 ? context.getString(titleRes) : null, hintRes != 0 ? context.getString(hintRes) : null, value, inputType, callback);
+    public static void showInputDialog(Context context, @StringRes int titleRes, @StringRes int hintRes,
+                                       CharSequence value, int inputType, OnShowInputCallback callback) {
+        showInputDialog(context, titleRes != 0 ? context.getString(titleRes) : null,
+                hintRes != 0 ? context.getString(hintRes) : null, value, inputType, callback);
     }
 
     public static void showInputDialog(Context context, CharSequence title, CharSequence hint, CharSequence value, int inputType, final OnShowInputCallback callback) {
@@ -86,7 +95,7 @@ public class UIUtils {
                 .input(hint, value, new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        if(callback != null) {
+                        if (callback != null) {
                             callback.onConfirm(input);
                         }
                     }
@@ -105,6 +114,7 @@ public class UIUtils {
     public static void showConfirmDialog(Context context, CharSequence message, final OnClickCallback callback) {
         showConfirmDialog(context, null, message, callback);
     }
+
     public static void showConfirmDialog(Context context, CharSequence title, CharSequence message, final OnClickCallback callback) {
         showConfirmDialog(context, title, message, callback, context.getString(android.R.string.ok), context.getString(android.R.string.cancel));
     }
@@ -122,7 +132,7 @@ public class UIUtils {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if(callback == null)
+                        if (callback == null)
                             return;
                         callback.onOkClick();
                     }
@@ -130,7 +140,7 @@ public class UIUtils {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if(callback == null)
+                        if (callback == null)
                             return;
                         callback.onCancelClick();
                     }
@@ -141,9 +151,12 @@ public class UIUtils {
         dlg.setCancelable(true);
     }
 
+
     public static abstract class OnClickCallback {
         public abstract void onOkClick();
-        public void onCancelClick() {}
+
+        public void onCancelClick() {
+        }
     }
 
     public static abstract class OnShowInputCallback {

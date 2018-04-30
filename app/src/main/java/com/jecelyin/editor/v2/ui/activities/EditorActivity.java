@@ -46,6 +46,8 @@ import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
+import com.duy.ccppcompiler.filemanager.SrcFileManager;
+import com.duy.ccppcompiler.ui.dialogs.DialogNewFile;
 import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
@@ -422,7 +424,18 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void createNewFile() {
-        // TODO: 25-Apr-18 implement
+        DialogNewFile
+                .create(this, new UIUtils.OnShowInputCallback() {
+                    @Override
+                    public void onConfirm(CharSequence input) {
+                        File srcDir = SrcFileManager.getSourceDir(EditorActivity.this);
+                        File file = new File(srcDir, input.toString());
+                        if (com.duy.utils.IOUtils.createNewFile(file)) {
+                            mTabManager.newTab(file);
+                        }
+                    }
+                })
+                .show();
     }
 
     public void saveAll(boolean inBackgroundThread) {
