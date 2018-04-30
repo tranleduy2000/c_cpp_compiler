@@ -39,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.R;
@@ -46,9 +47,10 @@ import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
-import com.duy.ide.compiler.CompileTask;
-import com.duy.ide.compiler.INativeCompiler;
+import com.duy.ccppcompiler.compiler.CompileTask;
+import com.duy.ccppcompiler.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -59,6 +61,7 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
 import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
 import com.jecelyin.editor.v2.common.Command;
+import com.jecelyin.editor.v2.task.SaveAllTask;
 import com.jecelyin.editor.v2.ui.dialog.ChangeThemeDialog;
 import com.jecelyin.editor.v2.ui.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.ui.dialog.GotoLineDialog;
@@ -397,7 +400,7 @@ public class EditorActivity extends FullScreenActivity
                 }, 200);
 
                 break;
-            case R.id.m_save_all:
+            case R.id.action_save_all:
                 UIUtils.toast(this, R.string.save_all);
                 saveAll(true);
                 break;
@@ -420,9 +423,7 @@ public class EditorActivity extends FullScreenActivity
                 new CharsetsDialog(this).show();
                 break;
             case R.id.action_run:
-                if (!isCompiling()) {
-                    compileAndRun();
-                }
+                compileAndRun();
                 break;
             case R.id.m_settings:
                 SettingsActivity.startActivity(this, RC_SETTINGS);
@@ -432,10 +433,6 @@ public class EditorActivity extends FullScreenActivity
                 if (commandEnum != Command.CommandEnum.NONE)
                     doCommand(new Command(commandEnum));
         }
-    }
-
-    private boolean isCompiling() {
-        return false;
     }
 
     private void createNewFile() {
@@ -451,25 +448,40 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void compileAndRun() {
-        saveAll(false);
-        EditorDelegate currentEditor = getCurrentEditorDelegate();
-        File[] srcFiles = new File[1];
-        if (currentEditor != null) {
-            String path = currentEditor.getPath();
-            srcFiles[0] = new File(path);
-        }
-        CompilerFactory.CompileType compileType;
-        if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
-            compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
-        } else {
-            compileType = CompilerFactory.CompileType.GCC;
-        }
-        INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
-        CompileManager compileManager = new CompileManager(EditorActivity.this);
-        compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+        SaveListener saveListener = new SaveListener() {
+            @Override
+            public void onPrepare() {
+                Toast.makeText(EditorActivity.this, R.string.save_all, Toast.LENGTH_SHORT).show();
+                setMenuStatus(R.id.action_save_all, MenuDef.STATUS_DISABLED);
+                setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
+            }
 
-        CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-        compileTask.execute();
+            @Override
+            public void onSaved() {
+                setMenuStatus(R.id.action_save_all, MenuDef.STATUS_NORMAL);
+
+                EditorDelegate currentEditor = getCurrentEditorDelegate();
+                File[] srcFiles = new File[1];
+                if (currentEditor != null) {
+                    String path = currentEditor.getPath();
+                    srcFiles[0] = new File(path);
+                }
+                CompilerFactory.CompileType compileType;
+                if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
+                    compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
+                } else {
+                    compileType = CompilerFactory.CompileType.GCC;
+                }
+                INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
+                CompileManager compileManager = new CompileManager(EditorActivity.this);
+                compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+
+                CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
+                compileTask.execute();
+            }
+        };
+        SaveAllTask saveAllTask = new SaveAllTask(this, saveListener);
+        saveAllTask.execute();
     }
 
     @Override

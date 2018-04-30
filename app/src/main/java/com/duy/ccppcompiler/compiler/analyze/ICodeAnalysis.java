@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.ide.compiler;
+package com.duy.ccppcompiler.compiler.analyze;
 
 /**
- * Created by Duy on 30-Apr-18.
+ * Created by Duy on 25-Apr-18.
  */
 
-public class Hash {
-    
+public interface ICodeAnalysis {
+    void analyze(String charSequence);
 }

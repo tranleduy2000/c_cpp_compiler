@@ -18,7 +18,8 @@ package com.duy.ccppcompiler.compiler;
 
 import android.content.Context;
 
-import com.duy.ide.compiler.INativeCompiler;
+import com.duy.ccppcompiler.compiler.nativecompiler.GCCCompiler;
+import com.duy.ccppcompiler.compiler.nativecompiler.GPlusPlusCompiler;
 
 /**
  * Created by Duy on 25-Apr-18.

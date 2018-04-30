@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.compiler.shell;
+package com.duy.ccppcompiler.compiler.shell;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

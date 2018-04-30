@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.ide.compiler;
-
-import android.support.annotation.MainThread;
-
-import com.duy.ide.compiler.shell.ShellResult;
+package com.duy.ccppcompiler.compiler;
 
 /**
- * Created by Duy on 25-Apr-18.
+ * Created by Duy on 30-Apr-18.
  */
 
-public interface ICompileManager {
-    @MainThread
-    void onNewMessage(CharSequence charSequence);
-
-    @MainThread
-    void onCompileSuccess(ShellResult shellResult);
-
-    @MainThread
-    void onCompileFailed(ShellResult shellResult);
-
-    @MainThread
-    void onPrepareCompile();
+public class Hash {
+    
 }
