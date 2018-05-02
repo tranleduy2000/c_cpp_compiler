@@ -72,6 +72,8 @@
         <service
             android:name=".console.services.TermuxService"
             android:exported="false" />
+
+        <activity android:name=".ui.examples.ExampleActivity" />
     </application>
 
 </manifest>
