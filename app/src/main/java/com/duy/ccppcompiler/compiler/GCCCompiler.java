@@ -66,7 +66,9 @@ public class GCCCompiler implements INativeCompiler {
         flags.add(new File(internalDir.getAbsolutePath(), GCCConstants.TEMP_BINARY_NAME).getAbsolutePath());
         flags.addAll(getUserFlags());
 
-        String TEMPEnv = new File(gccDir, GCCConstants.BUILD_DIR).getAbsolutePath();
+        File tmpDir = new File(gccDir, GCCConstants.BUILD_DIR);
+        tmpDir.mkdirs();
+        String TEMPEnv = tmpDir.getAbsolutePath();
         String PATHEnv =
                 internalDir.getAbsolutePath() + File.pathSeparator
                         + gccBinDir.getAbsolutePath() + File.pathSeparator

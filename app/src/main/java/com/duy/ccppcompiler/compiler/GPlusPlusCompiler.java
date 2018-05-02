@@ -65,7 +65,9 @@ public class GPlusPlusCompiler implements INativeCompiler {
         flags.add("-o");
         flags.add(internalDir.getAbsolutePath() + File.separator + GCCConstants.TEMP_BINARY_NAME);
 
-        String TEMPEnv = new File(gccDir, GCCConstants.BUILD_DIR).getAbsolutePath();
+        File tmpDir = new File(gccDir, GCCConstants.BUILD_DIR);
+        tmpDir.mkdirs();
+        String TEMPEnv = tmpDir.getAbsolutePath();
         String PATHEnv = internalDir.getAbsolutePath() + File.pathSeparator
                 + gccBinDir.getAbsolutePath() + File.pathSeparator
                 + armGccBinDir.getAbsolutePath() + File.pathSeparator

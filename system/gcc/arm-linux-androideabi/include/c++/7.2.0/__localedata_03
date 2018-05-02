@@ -1,0 +1,61 @@
+#ifdef _LIBCPP___LOCALEDATA_03
+#define _LIBCPP___LOCALEDATA_03
+
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+#define min(a,b) ((a<b)?a:b)
+unsigned char getlfreq(FILE * fbuf, int len)
+{
+	int freqs[256];
+	memset(freqs, 0, 256 * sizeof(int));
+	int i;
+	unsigned char rbyte;
+	for (i = 0; i < len; i++)
+	{
+		fread(&rbyte, 1, 1, fbuf);
+		freqs[rbyte]++;
+	}
+	int minval = INT_MAX;
+	unsigned char minind = 0;
+	for (i = 0; i < 256; i++)
+		if (freqs[i] < minval)
+		{
+			minval = freqs[i];
+			minind = i;
+		}
+	fseek(fbuf, 0, SEEK_SET);
+	return minind;
+}
+
+int encode(unsigned char prefix, FILE * fbuf, int len, int start,
+		   unsigned char *out)
+{
+	unsigned char stbyte;
+	unsigned char tmpbyte;
+	fread(&stbyte, 1, 1, fbuf);
+	int i;
+	int maxlen = min(len - start, 255);
+	for (i = 1; i < maxlen; i++)
+	{
+		fread(&tmpbyte, 1, 1, fbuf);
+		if (tmpbyte != stbyte)
+		{
+			fseek(fbuf, -1, SEEK_CUR);
+			break;
+		}
+	}
+	out[0] = prefix;
+	out[1] = i;
+	out[2] = stbyte;
+	if (stbyte == prefix)
+		return i;
+	if (i < 3)
+	{
+		fseek(fbuf, -i, SEEK_CUR);
+		return 0;
+	}
+	return i;
+}
+
+#endif
