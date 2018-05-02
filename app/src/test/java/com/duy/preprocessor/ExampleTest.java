@@ -38,15 +38,15 @@ import javax.xml.transform.TransformerException;
 public class ExampleTest extends TestCase {
 
     public void testGetExampleC() throws IOException, InterruptedException, ParserConfigurationException, TransformerException {
-        String baseLocation = "https://www.programiz.com/c-programming/examples";
-        String language = "C";
-        getExamples(baseLocation, language, "c");
+//        String baseLocation = "https://www.programiz.com/c-programming/examples";
+//        String language = "C";
+//        getExamples(baseLocation, language, "c");
     }
 
     public void testGetExampleCPlusPLus() throws IOException, TransformerException, ParserConfigurationException {
-        String baseLocation = "https://www.programiz.com/cpp-programming/examples";
-        String language = "cpp";
-        getExamples(baseLocation, language, "cpp");
+//        String baseLocation = "https://www.programiz.com/cpp-programming/examples";
+//        String language = "cpp";
+//        getExamples(baseLocation, language, "cpp");
 
     }
 

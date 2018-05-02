@@ -1,2 +1,323 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<examples>
+    <example>
+        <language>cpp</language>
+        <title>C++ "Hello, World!" Program</title>
+        <relative_path>/example/cpp/print-sentence.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Print Number Entered by User</title>
+        <relative_path>/example/cpp/read-print-integer.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Add Two Numbers</title>
+        <relative_path>/example/cpp/add-numbers.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find Quotient and Remainder</title>
+        <relative_path>/example/cpp/quotient-remainder.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find Size of int, float, double and char in Your System</title>
+        <relative_path>/example/cpp/sizeof-operator.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Swap Two Numbers</title>
+        <relative_path>/example/cpp/swapping.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Whether Number is Even or Odd</title>
+        <relative_path>/example/cpp/even-odd.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Whether a character is Vowel or Consonant.</title>
+        <relative_path>/example/cpp/vowel-consonant.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find Largest Number Among Three Numbers</title>
+        <relative_path>/example/cpp/largest-number-among-three.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find All Roots of a Quadratic Equation</title>
+        <relative_path>/example/cpp/quadratic-roots.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Calculate Sum of Natural Numbers</title>
+        <relative_path>/example/cpp/sum-natural-number.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Leap Year</title>
+        <relative_path>/example/cpp/leap-year.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find Factorial</title>
+        <relative_path>/example/cpp/factorial.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Generate Multiplication Table</title>
+        <relative_path>/example/cpp/multiplication-table.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Display Fibonacci Series</title>
+        <relative_path>/example/cpp/fibonacci-series.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find GCD</title>
+        <relative_path>/example/cpp/hcf-gcd.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find LCM</title>
+        <relative_path>/example/cpp/lcm.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Reverse a Number</title>
+        <relative_path>/example/cpp/reverse-number.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Calculate Power of a Number</title>
+        <relative_path>/example/cpp/power-number.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>Increment ++ and Decrement -- Operator Overloading in C++ Programming</title>
+        <relative_path>/example/cpp/increment-decrement-operator-overloading.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Subtract Complex Number Using Operator Overloading</title>
+        <relative_path>/example/cpp/binary-operator-overloading.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find ASCII Value of a Character</title>
+        <relative_path>/example/cpp/ASCII-value-character.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Multiply two Numbers</title>
+        <relative_path>/example/cpp/product-numbers.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Whether a Number is Palindrome or Not</title>
+        <relative_path>/example/cpp/palindrome-number.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Whether a Number is Prime or Not</title>
+        <relative_path>/example/cpp/prime-number.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Display Prime Numbers Between Two Intervals</title>
+        <relative_path>/example/cpp/prime-number-intervals.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Armstrong Number</title>
+        <relative_path>/example/cpp/check-armstrong-number.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Display Armstrong Number Between Two Intervals</title>
+        <relative_path>/example/cpp/armstrong-number-interval.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Display Factors of a Number</title>
+        <relative_path>/example/cpp/factors-number.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Programs To Create Pyramid and Pattern</title>
+        <relative_path>/example/cpp/pyramid-pattern.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Make a Simple Calculator to Add, Subtract, Multiply or Divide Using
+            switch...case
+        </title>
+        <relative_path>/example/cpp/calculator-switch-case.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Display Prime Numbers Between Two Intervals Using Functions</title>
+        <relative_path>/example/cpp/prime-interval-function.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Prime Number By Creating a Function</title>
+        <relative_path>/example/cpp/prime-function.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Check Whether a Number can be Express as Sum of Two Prime Numbers
+        </title>
+        <relative_path>/example/cpp/sum-prime-numbers.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ program to Find Sum of Natural Numbers using Recursion</title>
+        <relative_path>/example/cpp/natural-number-sum-recursion.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ program to Calculate Factorial of a Number Using Recursion</title>
+        <relative_path>/example/cpp/factorial-recursion.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find G.C.D Using Recursion</title>
+        <relative_path>/example/cpp/hcf-recursion.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Convert Binary Number to Decimal and vice-versa</title>
+        <relative_path>/example/cpp/binary-decimal-convert.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Convert Octal Number to Decimal and vice-versa</title>
+        <relative_path>/example/cpp/octal-decimal-convert.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Convert Binary Number to Octal and vice-versa</title>
+        <relative_path>/example/cpp/octal-binary-convert.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ program to Reverse a Sentence Using Recursion</title>
+        <relative_path>/example/cpp/reverse-sentence-recursion.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Calculate Power Using Recursion</title>
+        <relative_path>/example/cpp/power-recursion.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Calculate Average of Numbers Using Arrays</title>
+        <relative_path>/example/cpp/average-arrays.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find Largest Element of an Array</title>
+        <relative_path>/example/cpp/array-largest-element.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Calculate Standard Deviation</title>
+        <relative_path>/example/cpp/standard-deviation.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Add Two Matrix Using Multi-dimensional Arrays</title>
+        <relative_path>/example/cpp/add-matrix.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Multiply Two Matrix Using Multi-dimensional Arrays</title>
+        <relative_path>/example/cpp/matrix-multiplication.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find Transpose of a Matrix</title>
+        <relative_path>/example/cpp/matrix-transpose.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Multiply two Matrices by Passing Matrix to Function</title>
+        <relative_path>/example/cpp/matrix-multiplication-function.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Access Elements of an Array Using Pointer</title>
+        <relative_path>/example/cpp/access-array-pointer.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Swap Numbers in Cyclic Order Using Call by Reference</title>
+        <relative_path>/example/cpp/swapping-cyclic-order.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find the Frequency of Characters in a String</title>
+        <relative_path>/example/cpp/frequency-character.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find the Number of Vowels, Consonants, Digits and White Spaces in a
+            String
+        </title>
+        <relative_path>/example/cpp/vowel-consonant-frequency-string.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Remove all Characters in a String Except Alphabets.</title>
+        <relative_path>/example/cpp/remove-characters-string.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Find the Length of a String</title>
+        <relative_path>/example/cpp/string-length.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Concatenate Two Strings</title>
+        <relative_path>/example/cpp/concatenate-string.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Copy Strings</title>
+        <relative_path>/example/cpp/string-copy.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Sort Elements in Lexicographical Order (Dictionary Order)</title>
+        <relative_path>/example/cpp/lexicographical-order.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Store Information of a Student in a Structure</title>
+        <relative_path>/example/cpp/structure-store-information.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Add Two Distances (in inch-feet) System Using Structures</title>
+        <relative_path>/example/cpp/inch-feet-structure.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Add Complex Numbers by Passing Structure to a Function</title>
+        <relative_path>/example/cpp/complex-number-add.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Calculate Difference Between Two Time Period</title>
+        <relative_path>/example/cpp/time-structure.cpp</relative_path>
+    </example>
+    <example>
+        <language>cpp</language>
+        <title>C++ Program to Store and Display Information Using Structure</title>
+        <relative_path>/example/cpp/information-structure-array.cpp</relative_path>
+    </example>
+</examples>

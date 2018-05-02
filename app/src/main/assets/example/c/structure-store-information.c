@@ -1,15 +1,14 @@
 //C Program to Store Information of a Student Using Structure
 
 #include <stdio.h>
-struct student
-{
+
+struct student {
     char name[50];
     int roll;
     float marks;
 } s;
 
-int main()
-{
+int main() {
     printf("Enter information:\n");
 
     printf("Enter name: ");
@@ -27,7 +26,7 @@ int main()
     printf("Name: ");
     puts(s.name);
 
-    printf("Roll number: %d\n",s.roll);
+    printf("Roll number: %d\n", s.roll);
 
     printf("Marks: %.1f\n", s.marks);
 
