@@ -1,4 +1,6 @@
-//C++ Program to Add Two Distances (in inch-feet) System Using Structures
+// C++ Program to Add Two Distances (in inch-feet) System Using Structures
+
+// This program takes two distances (in inch-feet system), adds them and displays the result on the screen.
 
 #include <iostream>
 

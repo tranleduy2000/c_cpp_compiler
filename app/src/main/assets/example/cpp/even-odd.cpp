@@ -1,4 +1,6 @@
-//C++ Program to Check Whether Number is Even or Odd
+// C++ Program to Check Whether Number is Even or Odd
+
+// In this example, if...else statement is used to check whether a number entered by the user is even or odd.
 
 #include <iostream>
 

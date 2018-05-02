@@ -1,4 +1,6 @@
-//C Program to Find the Frequency of Characters in a String
+// C Program to Find the Frequency of Characters in a String
+
+// C program to check repetition of a character in a string entered by user with source code and output....
 
 #include <stdio.h>
 

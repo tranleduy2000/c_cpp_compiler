@@ -1,4 +1,6 @@
-//C Program to Multiply to Matrix Using Multi-dimensional Arrays
+// C Program to Multiply to Matrix Using Multi-dimensional Arrays
+
+// C program to multiply two matrix with source code, output and explanation....
 
 #include <stdio.h>
 

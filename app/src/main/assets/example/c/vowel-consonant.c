@@ -1,4 +1,6 @@
-//C Program to Check Whether a Character is Vowel or Consonant
+// C Program to Check Whether a Character is Vowel or Consonant
+
+// C programming source code to check whether a character entered by user is vowel or consonant with output and explanation...
 
 #include <stdio.h>
 

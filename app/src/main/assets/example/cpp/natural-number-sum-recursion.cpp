@@ -1,4 +1,6 @@
-//C++ program to Find Sum of Natural Numbers using Recursion
+// C++ program to Find Sum of Natural Numbers using Recursion
+
+// Example to find the sum of natural numbers by using a recursive function.
 
 #include<iostream>
 

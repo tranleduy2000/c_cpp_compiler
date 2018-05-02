@@ -1,4 +1,6 @@
-//C++ Program to Remove all Characters in a String Except Alphabets.
+// C++ Program to Remove all Characters in a String Except Alphabets.
+
+// You will learn to remove all characters from a string (string object and C-style string) in this example.
 
 #include <iostream>
 

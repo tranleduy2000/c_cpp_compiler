@@ -1,4 +1,6 @@
-//C Program to Find Transpose of a Matrix
+// C Program to Find Transpose of a Matrix
+
+// C programming source code to display the transpose of a matrix...
 
 #include <stdio.h>
 

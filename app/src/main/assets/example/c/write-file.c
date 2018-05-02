@@ -1,4 +1,6 @@
-//C Program to Write a Sentence to a File
+// C Program to Write a Sentence to a File
+
+// C program to write a sentence to a file with source code and explanation...
 
 #include <stdio.h>
 #include <stdlib.h>  /* For exit() function */

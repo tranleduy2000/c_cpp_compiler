@@ -1,4 +1,6 @@
-//C Program to Find GCD of two Numbers
+// C Program to Find GCD of two Numbers
+
+// This page contains different ways to finding hcf or gcd in C programming with output and explanation...
 
 #include <stdio.h>
 

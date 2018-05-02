@@ -1,4 +1,6 @@
-//C Program to Count Number of Digits in an Integer
+// C Program to Count Number of Digits in an Integer
+
+// C programming source code to count number of digits in an integer entered by an user with output and explanation...
 
 #include <stdio.h>
 

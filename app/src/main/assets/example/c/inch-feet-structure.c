@@ -1,4 +1,6 @@
-//C Program to Add Two Distances (in inch-feet) System Using Structures
+// C Program to Add Two Distances (in inch-feet) System Using Structures
+
+// C program to add two distances in inch-feet system using structures....
 
 #include <stdio.h>
 

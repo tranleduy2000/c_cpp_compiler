@@ -1,4 +1,6 @@
-//C Program to Store Information of a Student Using Structure
+// C Program to Store Information of a Student Using Structure
+
+// This program stores the information (name, roll and marks) of a student and displays it on the screen using structures.
 
 #include <stdio.h>
 

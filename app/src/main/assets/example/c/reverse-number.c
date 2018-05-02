@@ -1,4 +1,6 @@
-//C Program to Reverse a Number
+// C Program to Reverse a Number
+
+// C programming source code to reverse a number entered by user with output..
 
 #include <stdio.h>
 

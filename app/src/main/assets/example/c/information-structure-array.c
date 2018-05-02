@@ -1,4 +1,6 @@
-//C Program to Store Information of Students Using Structure
+// C Program to Store Information of Students Using Structure
+
+// C program to store information using structure for array of structures...
 
 #include <stdio.h>
 

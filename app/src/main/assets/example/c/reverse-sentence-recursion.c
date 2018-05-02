@@ -1,4 +1,6 @@
-//C program to Reverse a Sentence Using Recursion
+// C program to Reverse a Sentence Using Recursion
+
+// Source code to reverse the sentence entered by user using recursion in C programming. Strings are not used for solving this program...
 
 /* Example to reverse a sentence entered by user without using strings. */
 

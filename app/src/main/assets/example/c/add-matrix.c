@@ -1,4 +1,6 @@
-//C Program to Add Two Matrix Using Multi-dimensional Arrays
+// C Program to Add Two Matrix Using Multi-dimensional Arrays
+
+// C program to add two matrix entered by user with source code and output....
 
 #include <stdio.h>
 

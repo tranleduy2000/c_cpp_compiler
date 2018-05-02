@@ -1,4 +1,6 @@
-//C++ Program to Multiply two Matrices by Passing Matrix to Function
+// C++ Program to Multiply two Matrices by Passing Matrix to Function
+
+// In this example, you'll learn to multiply two matrices and display it using user defined function.
 
 #include <iostream>
 

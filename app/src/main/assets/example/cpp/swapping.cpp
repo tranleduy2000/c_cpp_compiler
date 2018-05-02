@@ -1,4 +1,6 @@
-//C++ Program to Swap Two Numbers
+// C++ Program to Swap Two Numbers
+
+// This example contains two different techniques to swap numbers in C programming. The first program uses temporary variable to swap numbers, whereas the second program doesn't use temporary variables.
 
 #include <iostream>
 

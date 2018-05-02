@@ -1,4 +1,6 @@
-//C++ Program to Add Two Numbers
+// C++ Program to Add Two Numbers
+
+// Source code to add two numbers using three variables and two variables in C++ programming..
 
 #include <iostream>
 

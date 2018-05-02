@@ -1,4 +1,6 @@
-//C++ Program to Find Size of int, float, double and char in Your System
+// C++ Program to Find Size of int, float, double and char in Your System
+
+// Source code to find the size of int, float, char etc in your system in C++ programming using sizeof operator..
 
 #include <iostream>
 

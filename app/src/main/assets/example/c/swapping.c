@@ -1,4 +1,6 @@
-//C Program to Swap Two Numbers
+// C Program to Swap Two Numbers
+
+// Program to swap two numbers in C programming with output...
 
 #include <stdio.h>
 

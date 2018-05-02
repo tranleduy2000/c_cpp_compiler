@@ -1,4 +1,6 @@
-//C Program to Display Factors of a Number
+// C Program to Display Factors of a Number
+
+// Example to find all the factors of an integer (entered by the user) using for loop and if statement in C programming.
 
 #include <stdio.h>
 

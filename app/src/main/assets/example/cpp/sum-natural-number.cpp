@@ -1,4 +1,6 @@
-//C++ Program to Calculate Sum of Natural Numbers
+// C++ Program to Calculate Sum of Natural Numbers
+
+// In this example, you'll learn to calculate the sum of natural numbers.
 
 #include <iostream>
 

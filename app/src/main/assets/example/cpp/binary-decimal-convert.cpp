@@ -1,4 +1,6 @@
-//C++ Program to Convert Binary Number to Decimal and vice-versa
+// C++ Program to Convert Binary Number to Decimal and vice-versa
+
+// In this example, you will learn to convert binary number to decimal, and decimal number to binary manually by creating user-defined functions.
 
 #include <iostream>
 #include <cmath>

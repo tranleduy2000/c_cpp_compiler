@@ -1,4 +1,6 @@
-//C++ Program to Find All Roots of a Quadratic Equation
+// C++ Program to Find All Roots of a Quadratic Equation
+
+// Source code to find all roots of a quadratic equation in C++ programming...
 
 #include <iostream>
 #include <cmath>

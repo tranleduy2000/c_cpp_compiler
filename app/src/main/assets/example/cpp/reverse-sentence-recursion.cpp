@@ -1,4 +1,6 @@
-//C++ program to Reverse a Sentence Using Recursion
+// C++ program to Reverse a Sentence Using Recursion
+
+// This program takes a sentence from user and reverses that sentence using recursion. This program does not use string to reverse the sentence or store the sentence.
 
 #include <iostream>
 

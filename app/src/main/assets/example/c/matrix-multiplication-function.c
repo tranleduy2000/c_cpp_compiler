@@ -1,4 +1,6 @@
-//C Program to Multiply two Matrices by Passing Matrix to a Function
+// C Program to Multiply two Matrices by Passing Matrix to a Function
+
+// C programming source code to multiply matrix by passing it to a function...
 
 #include <stdio.h>
 

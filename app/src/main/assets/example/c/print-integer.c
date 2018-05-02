@@ -1,4 +1,6 @@
-//C Program to Print an Integer (Entered by the User)
+// C Program to Print an Integer (Entered by the User)
+
+// Learn about how to print a integer entered by user in C programming with source code, output and explanation.
 
 #include <stdio.h>
 

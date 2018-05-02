@@ -1,4 +1,6 @@
-//C Program to Compute Quotient and Remainder
+// C Program to Compute Quotient and Remainder
+
+// C programming example to compute the remainder and quotient when dividend and divisor are entered by user with output and explanation...
 
 #include <stdio.h>
 

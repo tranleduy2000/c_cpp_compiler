@@ -1,4 +1,6 @@
-//C Program to Calculate Standard Deviation
+// C Program to Calculate Standard Deviation
+
+// C programming source code to compute standard deviation by passing elements of an array to function....
 
 #include <stdio.h>
 #include <math.h>

@@ -1,4 +1,6 @@
-//C Program to Demonstrate the Working of Keyword long
+// C Program to Demonstrate the Working of Keyword long
+
+// This page contains the tutorial on how long keyword is used in C programming with source code and example...
 
 #include <stdio.h>
 

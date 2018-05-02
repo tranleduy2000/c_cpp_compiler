@@ -1,4 +1,6 @@
-//C++ Program to Calculate Power Using Recursion
+// C++ Program to Calculate Power Using Recursion
+
+// This program calculates the power of a number using recursion where base and exponent is entered by the user.
 
 #include <iostream>
 

@@ -1,4 +1,6 @@
-//C++ Program to Print Number Entered by User
+// C++ Program to Print Number Entered by User
+
+// In this example, you'll learn to print the number entered by a user using C++ cout statement.
 
 #include <iostream>
 

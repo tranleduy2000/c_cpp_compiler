@@ -1,4 +1,6 @@
-//C++ Program to Add Complex Numbers by Passing Structure to a Function
+// C++ Program to Add Complex Numbers by Passing Structure to a Function
+
+// This program takes two complex numbers as structures and adds them with the use of functions.
 
 // Complex numbers are entered by the user
 

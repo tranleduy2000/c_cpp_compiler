@@ -1,4 +1,6 @@
-//C++ Program to Find LCM
+// C++ Program to Find LCM
+
+// Examples on different ways to calculate the LCM (Lowest Common Multiple) of two integers using loops and decision making statements.
 
 #include <iostream>
 

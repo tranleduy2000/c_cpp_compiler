@@ -1,4 +1,6 @@
-//C++ Program to Find the Frequency of Characters in a String
+// C++ Program to Find the Frequency of Characters in a String
+
+// In this example, frequency of occurrence of a character is checked for both (String object and C-style string).
 
 #include <iostream>
 

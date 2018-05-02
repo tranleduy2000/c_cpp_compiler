@@ -1,4 +1,6 @@
-//C++ Program to Find Largest Number Among Three Numbers
+// C++ Program to Find Largest Number Among Three Numbers
+
+// In this example, you'll learn to find the largest number among three numbers using if, if else and nested if else statements.
 
 #include <iostream>
 

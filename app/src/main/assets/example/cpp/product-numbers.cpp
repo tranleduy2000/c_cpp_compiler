@@ -1,4 +1,6 @@
-//C++ Program to Multiply two Numbers
+// C++ Program to Multiply two Numbers
+
+// In this program, user is asked to enter two numbers (floating point numbers). Then, the product of those two numbers is stored in a variable and displayed on the screen.
 
 #include <iostream>
 

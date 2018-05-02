@@ -1,4 +1,6 @@
-//C Program to Calculate Average Using Arrays
+// C Program to Calculate Average Using Arrays
+
+// C programming source code to calculate average using arrays....
 
 #include <stdio.h>
 

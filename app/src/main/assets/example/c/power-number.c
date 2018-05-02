@@ -1,4 +1,6 @@
-//C Program to Calculate the Power of a Number
+// C Program to Calculate the Power of a Number
+
+// C program to calculate the power of an integer with source code, example and explanation....
 
 #include <stdio.h>
 

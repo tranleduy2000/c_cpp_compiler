@@ -1,4 +1,6 @@
-//C++ Program to Check Leap Year
+// C++ Program to Check Leap Year
+
+// This program checks whether an year (integer) entered by the user is a leap year or not.
 
 #include <iostream>
 

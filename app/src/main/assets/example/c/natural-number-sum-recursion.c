@@ -1,4 +1,6 @@
-//C Program to Find the Sum of Natural Numbers using Recursion
+// C Program to Find the Sum of Natural Numbers using Recursion
+
+// Example to find the sum of natural numbers by using recursion.
 
 #include <stdio.h>
 

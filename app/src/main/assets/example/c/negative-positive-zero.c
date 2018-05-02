@@ -1,4 +1,6 @@
-//C Program to Check Whether a Number is Positive or Negative
+// C Program to Check Whether a Number is Positive or Negative
+
+// This C program checks whether a number entered by user is positive or negative or zero.
 
 #include <stdio.h>
 

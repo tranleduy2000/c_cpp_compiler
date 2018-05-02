@@ -1,4 +1,6 @@
-//C Program to Store Information Using Structures with Dynamically Memory Allocation
+// C Program to Store Information Using Structures with Dynamically Memory Allocation
+
+// C program to demonstrate the dynamic memory allocation of structures of n elements...
 
 #include <stdio.h>
 #include<stdlib.h>

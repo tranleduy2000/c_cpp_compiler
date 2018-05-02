@@ -1,4 +1,6 @@
-//C Program to Make a Simple Calculator Using switch...case
+// C Program to Make a Simple Calculator Using switch...case
+
+// Example to create a simple calculator to add, subtract, multiply and divide using switch and break statement.
 
 // Performs addition, subtraction, multiplication or division depending the input from user
 

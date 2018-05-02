@@ -1,4 +1,6 @@
-//C Program to Add Two Integers
+// C Program to Add Two Integers
+
+// This page contains example to add two integers in C programming language with output and explanation...
 
 #include <stdio.h>
 

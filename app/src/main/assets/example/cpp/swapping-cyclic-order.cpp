@@ -1,4 +1,6 @@
-//C++ Program to Swap Numbers in Cyclic Order Using Call by Reference
+// C++ Program to Swap Numbers in Cyclic Order Using Call by Reference
+
+// This program takes three integers from the user and swaps them in cyclic order using pointers.
 
 #include<iostream>
 

@@ -1,4 +1,6 @@
-//C++ Program to Find G.C.D Using Recursion
+// C++ Program to Find G.C.D Using Recursion
+
+// Example to find the GCD of two positive integers (entered by the user) using recursion in C programming.
 
 #include <iostream>
 

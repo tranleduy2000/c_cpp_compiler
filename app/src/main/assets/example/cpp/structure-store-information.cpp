@@ -1,4 +1,6 @@
-//C++ Program to Store Information of a Student in a Structure
+// C++ Program to Store Information of a Student in a Structure
+
+// This program stores the information (name, roll and marks entered by the user) of a student in a structure and displays it on the screen.
 
 #include <iostream>
 

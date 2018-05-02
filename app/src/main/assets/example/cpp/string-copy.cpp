@@ -1,4 +1,6 @@
-//C++ Program to Copy Strings
+// C++ Program to Copy Strings
+
+// In this example, you will learn to copy strings (both string objects and C-style strings).
 
 #include <iostream>
 

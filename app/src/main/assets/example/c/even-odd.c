@@ -1,4 +1,6 @@
-//C Program to Check Whether a Number is Even or Odd
+// C Program to Check Whether a Number is Even or Odd
+
+// Source Code in C programming to check whether a number entered by user is odd or even...
 
 #include <stdio.h>
 

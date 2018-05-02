@@ -1,4 +1,6 @@
-//C++ Program to Display Fibonacci Series
+// C++ Program to Display Fibonacci Series
+
+// Source code to display Fibonacci series up to n number of terms and up to certain number entered by user in C++ programming..
 
 #include <iostream>
 

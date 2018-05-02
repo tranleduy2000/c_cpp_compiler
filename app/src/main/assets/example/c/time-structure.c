@@ -1,4 +1,6 @@
-//C Program to Calculate Difference Between Two Time Periods
+// C Program to Calculate Difference Between Two Time Periods
+
+// C program to find difference of two time period using call by reference...
 
 #include <stdio.h>
 

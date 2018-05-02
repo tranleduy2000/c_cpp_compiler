@@ -1,4 +1,6 @@
-//C++ Program to Find Quotient and Remainder
+// C++ Program to Find Quotient and Remainder
+
+// In this example, you will learn to find the quotient and remainder of a given dividend and divisor.
 
 #include <iostream>
 

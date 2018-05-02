@@ -1,4 +1,6 @@
-//C Program to Check Whether a Number is Palindrome or Not
+// C Program to Check Whether a Number is Palindrome or Not
+
+// C programming source code to take an integer from user and check whether that number is palindrome or not...
 
 #include <stdio.h>
 

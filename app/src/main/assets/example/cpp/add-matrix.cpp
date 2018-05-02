@@ -1,4 +1,6 @@
-//C++ Program to Add Two Matrix Using Multi-dimensional Arrays
+// C++ Program to Add Two Matrix Using Multi-dimensional Arrays
+
+// This program takes two matrices of order r*c and stores it in two-dimensional array. Then, the program adds these two matrices and displays it on the screen.
 
 #include <iostream>
 

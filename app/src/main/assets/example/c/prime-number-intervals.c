@@ -1,4 +1,6 @@
-//C Program to Display Prime Numbers Between Two Intervals
+// C Program to Display Prime Numbers Between Two Intervals
+
+// C programming source code to display all prime numbers between two integers entered by user with output...
 
 #include <stdio.h>
 

@@ -1,4 +1,6 @@
-//C Program to Add Two Complex Numbers by Passing Structure to a Function
+// C Program to Add Two Complex Numbers by Passing Structure to a Function
+
+// C programming source code to add two complex numbers by passing it to a function....
 
 #include <stdio.h>
 

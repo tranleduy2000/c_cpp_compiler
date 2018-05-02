@@ -1,4 +1,6 @@
-//C++ Program to Concatenate Two Strings
+// C++ Program to Concatenate Two Strings
+
+// In this example, you will learn to concatenate (join) two strings (both string objects and C-style strings).
 
 #include <iostream>
 

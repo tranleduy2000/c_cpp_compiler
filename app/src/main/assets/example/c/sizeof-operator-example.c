@@ -1,4 +1,6 @@
-//C Program to Find the Size of int, float, double and char
+// C Program to Find the Size of int, float, double and char
+
+// This page contains example on computing the size of int, float, char and double of a system using sizeof operator in C programming...
 
 #include <stdio.h>
 

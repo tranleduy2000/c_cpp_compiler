@@ -1,4 +1,6 @@
-//C++ Program to Calculate Difference Between Two Time Period
+// C++ Program to Calculate Difference Between Two Time Period
+
+// 
 
 // Computes time difference of two time period
 // Time periods are entered by the user

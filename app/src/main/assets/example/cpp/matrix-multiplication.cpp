@@ -1,4 +1,6 @@
-//C++ Program to Multiply Two Matrix Using Multi-dimensional Arrays
+// C++ Program to Multiply Two Matrix Using Multi-dimensional Arrays
+
+// This program takes two matrices of order r1*c1 and r2*c2 respectively. Then, the program multiplies these two matrices (if possible) and displays it on the screen.
 
 #include <iostream>
 

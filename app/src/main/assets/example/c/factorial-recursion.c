@@ -1,4 +1,6 @@
-//C Program to Find Factorial of a Number Using Recursion
+// C Program to Find Factorial of a Number Using Recursion
+
+// Example to find the factorial of a non-negative integer (entered by the user) using recursion.
 
 #include <stdio.h>
 

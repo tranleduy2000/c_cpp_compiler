@@ -1,4 +1,6 @@
-//C Program Swap Numbers in Cyclic Order Using Call by Reference
+// C Program Swap Numbers in Cyclic Order Using Call by Reference
+
+// This program takes three three integer value from user and swap the numbers in cyclic order using call by reference technique....
 
 #include<stdio.h>
 

@@ -1,4 +1,6 @@
-//C Program to Calculate the Sum of Natural Numbers
+// C Program to Calculate the Sum of Natural Numbers
+
+// This page contains example to find sum of natural numbers in C programming with output...
 
 #include <stdio.h>
 

@@ -1,4 +1,6 @@
-//C++ Program to Convert Binary Number to Octal and vice-versa
+// C++ Program to Convert Binary Number to Octal and vice-versa
+
+// In this example, you will learn to convert binary number to octal, and octal number to binary manually by creating a user-defined function.
 
 #include <iostream>
 #include <cmath>

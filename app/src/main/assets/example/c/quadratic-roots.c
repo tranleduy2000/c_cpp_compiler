@@ -1,4 +1,6 @@
-//C Program to Find all Roots of a Quadratic Equation
+// C Program to Find all Roots of a Quadratic Equation
+
+// This page contains source code and example to find roots of a quadratic equation in C programming...
 
 #include <stdio.h>
 #include <math.h>

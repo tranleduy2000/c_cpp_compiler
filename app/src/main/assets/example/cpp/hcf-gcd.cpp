@@ -1,4 +1,6 @@
-//C++ Program to Find GCD
+// C++ Program to Find GCD
+
+// Examples on different ways to calculate GCD of two integers (for both positive and negative integers) using loops and decision making statements.
 
 #include <iostream>
 

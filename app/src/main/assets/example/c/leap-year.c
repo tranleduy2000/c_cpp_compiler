@@ -1,4 +1,6 @@
-//C Program to Check Leap Year
+// C Program to Check Leap Year
+
+// C programming example to check whether a year entered by user is a leap year or not...
 
 #include <stdio.h>
 

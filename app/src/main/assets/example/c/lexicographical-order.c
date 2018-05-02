@@ -1,4 +1,6 @@
-//C Program to Sort Elements in Lexicographical Order (Dictionary Order)
+// C Program to Sort Elements in Lexicographical Order (Dictionary Order)
+
+// C programming source code to sort words in dictionary order....
 
 #include<stdio.h>
 #include <string.h>

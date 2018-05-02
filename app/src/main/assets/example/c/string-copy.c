@@ -1,4 +1,6 @@
-//C Program to Copy String Without Using strcpy()
+// C Program to Copy String Without Using strcpy()
+
+// C programming source code to copy string manually without using strcpy() function...
 
 #include <stdio.h>
 

@@ -1,4 +1,6 @@
-//C Programming Code To Create Pyramid and Pattern
+// C Programming Code To Create Pyramid and Pattern
+
+// 
 
 #include <stdio.h>
 

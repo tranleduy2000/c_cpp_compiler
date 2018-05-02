@@ -1,4 +1,6 @@
-//C Program to Concatenate Two Strings
+// C Program to Concatenate Two Strings
+
+// C programming source code to concatenate string manually without using strcat( ) function...
 
 #include <stdio.h>
 

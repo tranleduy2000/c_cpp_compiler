@@ -1,4 +1,6 @@
-//C Program to Check Whether a Number can be Expressed as Sum of Two Prime Numbers
+// C Program to Check Whether a Number can be Expressed as Sum of Two Prime Numbers
+
+// Example to check if an integer (entered by the user) can be expressed as sum of two prime numbers of all possible combinations by making a function.
 
 #include <stdio.h>
 

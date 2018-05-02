@@ -1,4 +1,6 @@
-//C Program to Find Factorial of a Number
+// C Program to Find Factorial of a Number
+
+// C program to find factorial of an integer entered by user with example and explanation....
 
 #include <stdio.h>
 

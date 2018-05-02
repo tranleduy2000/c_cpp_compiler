@@ -1,4 +1,6 @@
-//C Program to Find LCM of two Numbers
+// C Program to Find LCM of two Numbers
+
+// This page contains source code, output and explanation to find LCM of two numbers in C programming. Learn more...
 
 #include <stdio.h>
 

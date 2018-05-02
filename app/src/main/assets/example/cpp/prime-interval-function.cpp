@@ -1,4 +1,6 @@
-//C++ Program to Display Prime Numbers Between Two Intervals Using Functions
+// C++ Program to Display Prime Numbers Between Two Intervals Using Functions
+
+// Example to print all prime numbers between two numbers (entered by the user) by making a user-defined function.
 
 #include <iostream>
 

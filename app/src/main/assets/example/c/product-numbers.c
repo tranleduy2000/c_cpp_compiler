@@ -1,4 +1,6 @@
-//C Program to Multiply two Floating Point Numbers
+// C Program to Multiply two Floating Point Numbers
+
+// This page contains example to multiply two floating point numbers in C programming language with output and explanation...
 
 #include <stdio.h>
 

@@ -1,4 +1,6 @@
-//C program to calculate the power using recursion
+// C program to calculate the power using recursion
+
+// Source code to calculate power of a number using recursion in C programming....
 
 #include <stdio.h>
 

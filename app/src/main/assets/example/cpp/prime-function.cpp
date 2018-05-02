@@ -1,4 +1,6 @@
-//C++ Program to Check Prime Number By Creating a Function
+// C++ Program to Check Prime Number By Creating a Function
+
+// You will learn to check whether a number entered by the user is prime or not by passing it to a user-defined function.
 
 #include <iostream>
 

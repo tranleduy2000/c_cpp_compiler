@@ -54,7 +54,6 @@ public class ExampleTest extends TestCase {
         StringBuilder xmlBuilder = new StringBuilder();
         xmlBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n").append("\n")
                 .append("<examples>").append("\n");
-        ;
         Document document = Jsoup.connect(baseLocation).get();
         Element table = document.getElementsByTag("table").first();
         Elements links = table.getElementsByTag("a");
@@ -88,27 +87,25 @@ public class ExampleTest extends TestCase {
         Element code = document.body()
                 .select("pre > code").first()
                 .getElementsByTag("code").first();
-        String codeStr = code.text();
-        codeStr = "//" + title + "\n\n" + codeStr;
-        System.out.println(codeStr);
+        StringBuilder codeBuilder = new StringBuilder();
+        codeBuilder.append("// ").append(title).append("\n\n");
+        codeBuilder.append("// ").append(desc.replace("\n", "\n// "));
+        codeBuilder.append("\n\n");
+        codeBuilder.append(code.text());
+        System.out.println(codeBuilder);
 
         File file = new File("./app/src/main/assets/example/" + language + "/" + link.substring(link.lastIndexOf("/")) + "." + ext);
         file.getParentFile().mkdirs();
         file.createNewFile();
         FileOutputStream fos = new FileOutputStream(file);
-        fos.write(codeStr.getBytes());
+        fos.write(codeBuilder.toString().getBytes());
 
         xmlBuilder.append("<example>").append("\n");
-        ;
         xmlBuilder.append("<language>").append(language).append("</language>").append("\n");
         xmlBuilder.append("<title>").append(title).append("</title>").append("\n");
-        ;
         xmlBuilder.append("<desc>").append(desc).append("</desc>").append("\n");
-        ;
         xmlBuilder.append("<relative_path>").append(file.getName()).append("</relative_path>").append("\n");
-        ;
         xmlBuilder.append("</example>").append("\n");
-        ;
     }
 
 }

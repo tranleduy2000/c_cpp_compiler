@@ -1,4 +1,6 @@
-//C++ Program to Generate Multiplication Table
+// C++ Program to Generate Multiplication Table
+
+// Example to generate the multiplication table of a number (entered by the user) using for loop.
 
 #include <iostream>
 

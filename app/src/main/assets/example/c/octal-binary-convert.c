@@ -1,4 +1,6 @@
-//C Program to Convert Binary Number to Octal and vice-versa
+// C Program to Convert Binary Number to Octal and vice-versa
+
+// C program to convert binary number entered by user to decimal and decimal number entered by user to binary....
 
 #include <stdio.h>
 #include <math.h>

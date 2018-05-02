@@ -1,4 +1,6 @@
-//C++ program to Calculate Factorial of a Number Using Recursion
+// C++ program to Calculate Factorial of a Number Using Recursion
+
+// Example to find factorial of a non-negative integer (entered by the user) using recursion.
 
 #include<iostream>
 

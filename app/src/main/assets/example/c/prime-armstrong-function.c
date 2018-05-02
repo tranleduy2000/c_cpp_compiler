@@ -1,4 +1,6 @@
-//C Program to Check Prime or Armstrong Number Using User-defined Function
+// C Program to Check Prime or Armstrong Number Using User-defined Function
+
+// Example to check whether an integer is a prime number or an Armstrong or both by creating two separate functions.
 
 #include <stdio.h>
 #include <math.h>

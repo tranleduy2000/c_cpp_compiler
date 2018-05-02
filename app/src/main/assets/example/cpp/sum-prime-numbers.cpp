@@ -1,4 +1,6 @@
-//C++ Program to Check Whether a Number can be Express as Sum of Two Prime Numbers
+// C++ Program to Check Whether a Number can be Express as Sum of Two Prime Numbers
+
+// Example to check if an integer (entered by the user) can be expressed as the sum of two prime numbers of all possible combinations with the use of functions.
 
 #include <iostream>
 

@@ -1,4 +1,6 @@
-//C Program to Read a Line From a File and Display it
+// C Program to Read a Line From a File and Display it
+
+// C programming source code to read the content of a file as a string and display that content.....
 
 #include <stdio.h>
 #include <stdlib.h> // For exit() function

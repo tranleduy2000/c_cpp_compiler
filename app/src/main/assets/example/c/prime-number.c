@@ -1,4 +1,6 @@
-//C Program to Check Whether a Number is Prime or Not
+// C Program to Check Whether a Number is Prime or Not
+
+// C program to check whether a number entered by user is prime number or not with output and explanation...
 
 #include <stdio.h>
 

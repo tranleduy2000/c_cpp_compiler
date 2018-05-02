@@ -1,4 +1,6 @@
-//C Program to Convert Octal Number to Decimal and vice-versa
+// C Program to Convert Octal Number to Decimal and vice-versa
+
+// C programming source code to convert octal number entered by user to decimal number and decimal number entered by user to octal number....
 
 #include <stdio.h>
 

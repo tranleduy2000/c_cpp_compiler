@@ -1,4 +1,6 @@
-//C++ Program to Display Prime Numbers Between Two Intervals
+// C++ Program to Display Prime Numbers Between Two Intervals
+
+// Example to print all prime numbers between two numbers (entered by the user) in C++ Programming. This problem is solved using nested for loop and if...else statement.
 
 #include <iostream>
 

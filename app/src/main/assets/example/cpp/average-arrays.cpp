@@ -1,4 +1,6 @@
-//C++ Program to Calculate Average of Numbers Using Arrays
+// C++ Program to Calculate Average of Numbers Using Arrays
+
+// This program takes n number of element from user (where, n is specified by user), stores data in an array and calculates the average of those numbers.
 
 #include <iostream>
 

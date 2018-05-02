@@ -1,4 +1,6 @@
-//C++ Program to Sort Elements in Lexicographical Order (Dictionary Order)
+// C++ Program to Sort Elements in Lexicographical Order (Dictionary Order)
+
+// This program sorts the 10 strings (entered by the user) in lexicographical order (dictionary order).
 
 #include <iostream>
 

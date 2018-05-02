@@ -1,4 +1,6 @@
-//C Program to Display Armstrong Number Between Two Intervals
+// C Program to Display Armstrong Number Between Two Intervals
+
+// Example to find all Armstrong numbers between two integers (entered by the user) using loops and if...else statement.
 
 #include <stdio.h>
 #include <math.h>

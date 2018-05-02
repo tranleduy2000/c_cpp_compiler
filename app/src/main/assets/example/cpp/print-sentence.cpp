@@ -1,4 +1,6 @@
-//C++ "Hello, World!" Program
+// C++ "Hello, World!" Program
+
+// Source code to display a sentence in C++ programming...
 
 #include <iostream>
 

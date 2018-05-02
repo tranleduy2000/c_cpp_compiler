@@ -1,4 +1,6 @@
-//C++ Program to Reverse a Number
+// C++ Program to Reverse a Number
+
+// Source code to reverse an positive integer entered by user in C++ Programming...
 
 #include <iostream>
 

@@ -1,4 +1,6 @@
-//C Program to Remove all Characters in a String Except Alphabet
+// C Program to Remove all Characters in a String Except Alphabet
+
+// C programming source code to remove all characters in a string except alphabet...
 
 #include<stdio.h>
 

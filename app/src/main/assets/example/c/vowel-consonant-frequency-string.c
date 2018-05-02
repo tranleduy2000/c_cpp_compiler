@@ -1,4 +1,6 @@
-//C program to count the number of vowels, consonants and so on
+// C program to count the number of vowels, consonants and so on
+
+// C programming example to calculate the total number of vowels, consonants, digits and white space characters in a strings entered by user....
 
 #include <stdio.h>
 

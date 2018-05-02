@@ -1,4 +1,6 @@
-//C++ Program to Convert Octal Number to Decimal and vice-versa
+// C++ Program to Convert Octal Number to Decimal and vice-versa
+
+// In this example, you will learn to convert octal number to decimal and decimal number to octal manually by creating a user-defined function.
 
 #include <iostream>
 #include <cmath>
