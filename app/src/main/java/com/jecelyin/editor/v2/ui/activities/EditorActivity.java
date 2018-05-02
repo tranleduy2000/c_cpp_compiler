@@ -48,6 +48,7 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.filemanager.SrcFileManager;
 import com.duy.ccppcompiler.ui.dialogs.DialogNewFile;
+import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.ide.compiler.CompileTask;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.filemanager.FileManager;
@@ -417,6 +418,14 @@ public class EditorActivity extends FullScreenActivity
             case R.id.m_settings:
                 SettingsActivity.startActivity(this, RC_SETTINGS);
                 break;
+
+            case R.id.action_c_example:
+                ExampleActivity.openExample(this, "c");
+                break;
+            case R.id.action_cpp_example:
+                ExampleActivity.openExample(this, "cpp");
+                break;
+
             default:
                 commandEnum = MenuFactory.getInstance(this).idToCommandEnum(id);
                 if (commandEnum != Command.CommandEnum.NONE)

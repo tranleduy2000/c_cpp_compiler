@@ -4,4 +4,6 @@
     <string name="title_compiling">Compiling…</string>
     <string name="title_activity_console">Console</string>
     <string name="create_new_file">Create new file</string>
+    <string name="title_menu_c_example">C examples</string>
+    <string name="title_menu_cpp_example">C++ examples</string>
 </resources>

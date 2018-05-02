@@ -107,6 +107,11 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, Command.CommandEnum.SAVE_AS, R.drawable.m_save_as, R.string.save_as));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, Command.CommandEnum.NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
 
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_c_example, Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_c_example));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_cpp_example, Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_cpp_example));
+
+
+
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_undo, Command.CommandEnum.UNDO, R.drawable.ic_undo_white_24dp, R.string.undo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_redo, Command.CommandEnum.REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_wrap, Command.CommandEnum.CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
