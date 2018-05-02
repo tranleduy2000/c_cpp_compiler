@@ -1,10 +1,10 @@
 //C++ Program to Make a Simple Calculator to Add, Subtract, Multiply or Divide Using switch...case
 
 # include <iostream>
-
 using namespace std;
 
-int main() {
+int main()
+{
     char op;
     float num1, num2;
 
@@ -14,21 +14,22 @@ int main() {
     cout << "Enter two operands: ";
     cin >> num1 >> num2;
 
-    switch (op) {
+    switch(op)
+    {
         case '+':
-            cout << num1 + num2;
+            cout << num1+num2;
             break;
 
         case '-':
-            cout << num1 - num2;
+            cout << num1-num2;
             break;
 
         case '*':
-            cout << num1 * num2;
+            cout << num1*num2;
             break;
 
         case '/':
-            cout << num1 / num2;
+            cout << num1/num2;
             break;
 
         default:

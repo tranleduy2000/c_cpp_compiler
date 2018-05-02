@@ -1,16 +1,16 @@
 //C Program to Print an Integer (Entered by the User)
 
 #include <stdio.h>
-
-int main() {
+int main()
+{
     int number;
 
     // printf() dislpays the formatted output 
-    printf("Enter an integer: ");
-
+    printf("Enter an integer: ");  
+    
     // scanf() reads the formatted input and stores them
-    scanf("%d", &number);
-
+    scanf("%d", &number);  
+    
     // printf() displays the formatted output
     printf("You entered: %d", number);
     return 0;

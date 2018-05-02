@@ -1,8 +1,8 @@
 //C Program to Demonstrate the Working of Keyword long
 
 #include <stdio.h>
-
-int main() {
+int main()
+{
     int a;
     long b;
     long long c;

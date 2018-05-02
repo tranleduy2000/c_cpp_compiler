@@ -1,29 +1,30 @@
 //Increment ++ and Decrement -- Operator Overloading in C++ Programming
 
 #include <iostream>
-
 using namespace std;
 
-class Check {
-private:
-    int i;
-public:
-    Check() : i(0) {}
-
-    void operator++() { ++i; }
-
-    void Display() { cout << "i=" << i << endl; }
+class Check
+{
+    private:
+       int i;
+    public:
+       Check(): i(0) {  }
+       void operator ++() 
+          { ++i; }
+       void Display() 
+          { cout << "i=" << i << endl; }
 };
 
-int main() {
+int main()
+{
     Check obj;
 
     // Displays the value of data member i for object obj
     obj.Display();
 
     // Invokes operator function void operator ++( )
-    ++obj;
-
+    ++obj; 
+  
     // Displays the value of data member i for object obj
     obj.Display();
 

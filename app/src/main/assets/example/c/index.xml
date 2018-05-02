@@ -1,365 +1,542 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <examples>
     <example>
         <language>C</language>
         <title>C "Hello, World!" Program</title>
-        <relative_path>/example/C/print-sentence.c</relative_path>
+        <desc>A "Hello, World!" is a program to display "Hello, World!" in most programming
+            languages including C.
+        </desc>
+        <relative_path>print-sentence.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Print an Integer (Entered by the User)</title>
-        <relative_path>/example/C/print-integer.c</relative_path>
+        <desc>Learn about how to print a integer entered by user in C programming with source code,
+            output and explanation.
+        </desc>
+        <relative_path>print-integer.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Add Two Integers</title>
-        <relative_path>/example/C/add-numbers.c</relative_path>
+        <desc>This page contains example to add two integers in C programming language with output
+            and explanation...
+        </desc>
+        <relative_path>add-numbers.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Multiply two Floating Point Numbers</title>
-        <relative_path>/example/C/product-numbers.c</relative_path>
+        <desc>This page contains example to multiply two floating point numbers in C programming
+            language with output and explanation...
+        </desc>
+        <relative_path>product-numbers.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find ASCII Value of a Character</title>
-        <relative_path>/example/C/ASCII-value-character.c</relative_path>
+        <desc>This page contains source code to display ASCII value of a character enter by
+            user...
+        </desc>
+        <relative_path>ASCII-value-character.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Compute Quotient and Remainder</title>
-        <relative_path>/example/C/remainder-quotient.c</relative_path>
+        <desc>C programming example to compute the remainder and quotient when dividend and divisor
+            are entered by user with output and explanation...
+        </desc>
+        <relative_path>remainder-quotient.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find the Size of int, float, double and char</title>
-        <relative_path>/example/C/sizeof-operator-example.c</relative_path>
+        <desc>This page contains example on computing the size of int, float, char and double of a
+            system using sizeof operator in C programming...
+        </desc>
+        <relative_path>sizeof-operator-example.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Demonstrate the Working of Keyword long</title>
-        <relative_path>/example/C/keyword-long.c</relative_path>
+        <desc>This page contains the tutorial on how long keyword is used in C programming with
+            source code and example...
+        </desc>
+        <relative_path>keyword-long.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Swap Two Numbers</title>
-        <relative_path>/example/C/swapping.c</relative_path>
+        <desc>Program to swap two numbers in C programming with output...</desc>
+        <relative_path>swapping.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Whether a Number is Even or Odd</title>
-        <relative_path>/example/C/even-odd.c</relative_path>
+        <desc>Source Code in C programming to check whether a number entered by user is odd or
+            even...
+        </desc>
+        <relative_path>even-odd.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Whether a Character is Vowel or Consonant</title>
-        <relative_path>/example/C/vowel-consonant.c</relative_path>
+        <desc>C programming source code to check whether a character entered by user is vowel or
+            consonant with output and explanation...
+        </desc>
+        <relative_path>vowel-consonant.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find the Largest Number Among Three Numbers</title>
-        <relative_path>/example/C/largest-number-three.c</relative_path>
+        <desc>Source codes to find the largest number among three numbers entered by user in C
+            programming with output...
+        </desc>
+        <relative_path>largest-number-three.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find all Roots of a Quadratic Equation</title>
-        <relative_path>/example/C/quadratic-roots.c</relative_path>
+        <desc>This page contains source code and example to find roots of a quadratic equation in C
+            programming...
+        </desc>
+        <relative_path>quadratic-roots.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Leap Year</title>
-        <relative_path>/example/C/leap-year.c</relative_path>
+        <desc>C programming example to check whether a year entered by user is a leap year or
+            not...
+        </desc>
+        <relative_path>leap-year.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Whether a Number is Positive or Negative</title>
-        <relative_path>/example/C/negative-positive-zero.c</relative_path>
+        <desc>This C program checks whether a number entered by user is positive or negative or
+            zero.
+        </desc>
+        <relative_path>negative-positive-zero.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Whether a Character is an Alphabet or not</title>
-        <relative_path>/example/C/alphabet.c</relative_path>
+        <desc>In this example, you will learn to check whether a character entered by the user is an
+            alphabet or not.
+        </desc>
+        <relative_path>alphabet.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Calculate the Sum of Natural Numbers</title>
-        <relative_path>/example/C/sum-natural-numbers.c</relative_path>
+        <desc>This page contains example to find sum of natural numbers in C programming with
+            output...
+        </desc>
+        <relative_path>sum-natural-numbers.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find Factorial of a Number</title>
-        <relative_path>/example/C/factorial.c</relative_path>
+        <desc>C program to find factorial of an integer entered by user with example and
+            explanation....
+        </desc>
+        <relative_path>factorial.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Generate Multiplication Table</title>
-        <relative_path>/example/C/multiplication-table.c</relative_path>
+        <desc>Example on how to generate the multiplication table of a number (entered by the user)
+            using for loop.
+        </desc>
+        <relative_path>multiplication-table.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Display Fibonacci Sequence</title>
-        <relative_path>/example/C/fibonacci-series.c</relative_path>
+        <desc>Example on how to display the Fibonacci sequence of first n numbers (entered by the
+            user) using loop. Also in different example, you learn to generate the Fibonacci
+            sequence up to a certain number.
+        </desc>
+        <relative_path>fibonacci-series.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find GCD of two Numbers</title>
-        <relative_path>/example/C/hcf-gcd.c</relative_path>
+        <desc>This page contains different ways to finding hcf or gcd in C programming with output
+            and explanation...
+        </desc>
+        <relative_path>hcf-gcd.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find LCM of two Numbers</title>
-        <relative_path>/example/C/lcm.c</relative_path>
+        <desc>This page contains source code, output and explanation to find LCM of two numbers in C
+            programming. Learn more...
+        </desc>
+        <relative_path>lcm.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Display Characters from A to Z Using Loop</title>
-        <relative_path>/example/C/display-alphabets.c</relative_path>
+        <desc>Source code to display character from A to Z using loops in C programming....</desc>
+        <relative_path>display-alphabets.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Count Number of Digits in an Integer</title>
-        <relative_path>/example/C/digits-count.c</relative_path>
+        <desc>C programming source code to count number of digits in an integer entered by an user
+            with output and explanation...
+        </desc>
+        <relative_path>digits-count.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Reverse a Number</title>
-        <relative_path>/example/C/reverse-number.c</relative_path>
+        <desc>C programming source code to reverse a number entered by user with output..</desc>
+        <relative_path>reverse-number.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Calculate the Power of a Number</title>
-        <relative_path>/example/C/power-number.c</relative_path>
+        <desc>C program to calculate the power of an integer with source code, example and
+            explanation....
+        </desc>
+        <relative_path>power-number.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Whether a Number is Palindrome or Not</title>
-        <relative_path>/example/C/palindrome-number.c</relative_path>
+        <desc>C programming source code to take an integer from user and check whether that number
+            is palindrome or not...
+        </desc>
+        <relative_path>palindrome-number.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Whether a Number is Prime or Not</title>
-        <relative_path>/example/C/prime-number.c</relative_path>
+        <desc>C program to check whether a number entered by user is prime number or not with output
+            and explanation...
+        </desc>
+        <relative_path>prime-number.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Display Prime Numbers Between Two Intervals</title>
-        <relative_path>/example/C/prime-number-intervals.c</relative_path>
+        <desc>C programming source code to display all prime numbers between two integers entered by
+            user with output...
+        </desc>
+        <relative_path>prime-number-intervals.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Armstrong Number</title>
-        <relative_path>/example/C/check-armstrong-number.c</relative_path>
+        <desc>Example to check whether an integer (entered by the user) is an Armstrong number or
+            not using while loop and if...else statement.
+        </desc>
+        <relative_path>check-armstrong-number.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Display Armstrong Number Between Two Intervals</title>
-        <relative_path>/example/C/armstrong-number-interval.c</relative_path>
+        <desc>Example to find all Armstrong numbers between two integers (entered by the user) using
+            loops and if...else statement.
+        </desc>
+        <relative_path>armstrong-number-interval.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Display Factors of a Number</title>
-        <relative_path>/example/C/factors-number.c</relative_path>
+        <desc>Example to find all the factors of an integer (entered by the user) using for loop and
+            if statement in C programming.
+        </desc>
+        <relative_path>factors-number.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Programming Code To Create Pyramid and Pattern</title>
-        <relative_path>/example/C/c-programming-pattern.c</relative_path>
+        <desc></desc>
+        <relative_path>c-programming-pattern.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Make a Simple Calculator Using switch...case</title>
-        <relative_path>/example/C/calculator-switch-case.c</relative_path>
+        <desc>Example to create a simple calculator to add, subtract, multiply and divide using
+            switch and break statement.
+        </desc>
+        <relative_path>calculator-switch-case.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Display Prime Numbers Between Intervals Using Function</title>
-        <relative_path>/example/C/prime-interval-function.c</relative_path>
+        <desc>Example to print all prime numbers between two numbers (entered by the user) by making
+            a user-defined function.
+        </desc>
+        <relative_path>prime-interval-function.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Prime or Armstrong Number Using User-defined Function</title>
-        <relative_path>/example/C/prime-armstrong-function.c</relative_path>
+        <desc>Example to check whether an integer is a prime number or an Armstrong or both by
+            creating two separate functions.
+        </desc>
+        <relative_path>prime-armstrong-function.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Check Whether a Number can be Expressed as Sum of Two Prime Numbers
         </title>
-        <relative_path>/example/C/sum-prime-numbers.c</relative_path>
+        <desc>Example to check if an integer (entered by the user) can be expressed as sum of two
+            prime numbers of all possible combinations by making a function.
+        </desc>
+        <relative_path>sum-prime-numbers.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find the Sum of Natural Numbers using Recursion</title>
-        <relative_path>/example/C/natural-number-sum-recursion.c</relative_path>
+        <desc>Example to find the sum of natural numbers by using recursion.</desc>
+        <relative_path>natural-number-sum-recursion.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find Factorial of a Number Using Recursion</title>
-        <relative_path>/example/C/factorial-recursion.c</relative_path>
+        <desc>Example to find the factorial of a non-negative integer (entered by the user) using
+            recursion.
+        </desc>
+        <relative_path>factorial-recursion.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find G.C.D Using Recursion</title>
-        <relative_path>/example/C/hcf-recursion.c</relative_path>
+        <desc>Example to find the GCD of two positive integers (entered by the user) using recursion
+            in C programming.
+        </desc>
+        <relative_path>hcf-recursion.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Convert Binary Number to Decimal and vice-versa</title>
-        <relative_path>/example/C/binary-decimal-convert.c</relative_path>
+        <desc>In this example, you will learn to convert binary number to decimal and decimal number
+            to binary manually by creating a user-defined function
+        </desc>
+        <relative_path>binary-decimal-convert.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Convert Octal Number to Decimal and vice-versa</title>
-        <relative_path>/example/C/octal-decimal-convert.c</relative_path>
+        <desc>C programming source code to convert octal number entered by user to decimal number
+            and decimal number entered by user to octal number....
+        </desc>
+        <relative_path>octal-decimal-convert.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Convert Binary Number to Octal and vice-versa</title>
-        <relative_path>/example/C/octal-binary-convert.c</relative_path>
+        <desc>C program to convert binary number entered by user to decimal and decimal number
+            entered by user to binary....
+        </desc>
+        <relative_path>octal-binary-convert.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C program to Reverse a Sentence Using Recursion</title>
-        <relative_path>/example/C/reverse-sentence-recursion.c</relative_path>
+        <desc>Source code to reverse the sentence entered by user using recursion in C programming.
+            Strings are not used for solving this program...
+        </desc>
+        <relative_path>reverse-sentence-recursion.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C program to calculate the power using recursion</title>
-        <relative_path>/example/C/power-recursion.c</relative_path>
+        <desc>Source code to calculate power of a number using recursion in C programming....</desc>
+        <relative_path>power-recursion.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Calculate Average Using Arrays</title>
-        <relative_path>/example/C/average-arrays.c</relative_path>
+        <desc>C programming source code to calculate average using arrays....</desc>
+        <relative_path>average-arrays.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find Largest Element of an Array</title>
-        <relative_path>/example/C/array-largest-element.c</relative_path>
+        <desc>C program to find the largest element of an array with source code, output and
+            explanation....
+        </desc>
+        <relative_path>array-largest-element.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Calculate Standard Deviation</title>
-        <relative_path>/example/C/standard-deviation.c</relative_path>
+        <desc>C programming source code to compute standard deviation by passing elements of an
+            array to function....
+        </desc>
+        <relative_path>standard-deviation.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Add Two Matrix Using Multi-dimensional Arrays</title>
-        <relative_path>/example/C/add-matrix.c</relative_path>
+        <desc>C program to add two matrix entered by user with source code and output....</desc>
+        <relative_path>add-matrix.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Multiply to Matrix Using Multi-dimensional Arrays</title>
-        <relative_path>/example/C/matrix-multiplication.c</relative_path>
+        <desc>C program to multiply two matrix with source code, output and explanation....</desc>
+        <relative_path>matrix-multiplication.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find Transpose of a Matrix</title>
-        <relative_path>/example/C/matrix-transpose.c</relative_path>
+        <desc>C programming source code to display the transpose of a matrix...</desc>
+        <relative_path>matrix-transpose.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Multiply two Matrices by Passing Matrix to a Function</title>
-        <relative_path>/example/C/matrix-multiplication-function.c</relative_path>
+        <desc>C programming source code to multiply matrix by passing it to a function...</desc>
+        <relative_path>matrix-multiplication-function.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Access Elements of an Array Using Pointer</title>
-        <relative_path>/example/C/access-array-pointer.c</relative_path>
+        <desc>This program declares the array of five element and the elements of that array are
+            accessed using pointer.
+        </desc>
+        <relative_path>access-array-pointer.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program Swap Numbers in Cyclic Order Using Call by Reference</title>
-        <relative_path>/example/C/swapping-cyclic-order.c</relative_path>
+        <desc>This program takes three three integer value from user and swap the numbers in cyclic
+            order using call by reference technique....
+        </desc>
+        <relative_path>swapping-cyclic-order.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find Largest Number Using Dynamic Memory Allocation</title>
-        <relative_path>/example/C/dynamic-memory-allocation-largest.c</relative_path>
+        <desc>C program to find largest element using dynamic memory allocation....</desc>
+        <relative_path>dynamic-memory-allocation-largest.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find the Frequency of Characters in a String</title>
-        <relative_path>/example/C/frequency-character.c</relative_path>
+        <desc>C program to check repetition of a character in a string entered by user with source
+            code and output....
+        </desc>
+        <relative_path>frequency-character.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C program to count the number of vowels, consonants and so on</title>
-        <relative_path>/example/C/vowel-consonant-frequency-string.c</relative_path>
+        <desc>C programming example to calculate the total number of vowels, consonants, digits and
+            white space characters in a strings entered by user....
+        </desc>
+        <relative_path>vowel-consonant-frequency-string.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Remove all Characters in a String Except Alphabet</title>
-        <relative_path>/example/C/remove-characters-string.c</relative_path>
+        <desc>C programming source code to remove all characters in a string except alphabet...
+        </desc>
+        <relative_path>remove-characters-string.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Find the Length of a String</title>
-        <relative_path>/example/C/string-length.c</relative_path>
+        <desc>C programming source code to calculate the length of a string without using strlen()
+            function....
+        </desc>
+        <relative_path>string-length.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Concatenate Two Strings</title>
-        <relative_path>/example/C/concatenate-string.c</relative_path>
+        <desc>C programming source code to concatenate string manually without using strcat( )
+            function...
+        </desc>
+        <relative_path>concatenate-string.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Copy String Without Using strcpy()</title>
-        <relative_path>/example/C/string-copy.c</relative_path>
+        <desc>C programming source code to copy string manually without using strcpy() function...
+        </desc>
+        <relative_path>string-copy.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Sort Elements in Lexicographical Order (Dictionary Order)</title>
-        <relative_path>/example/C/lexicographical-order.c</relative_path>
+        <desc>C programming source code to sort words in dictionary order....</desc>
+        <relative_path>lexicographical-order.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Store Information of a Student Using Structure</title>
-        <relative_path>/example/C/structure-store-information.c</relative_path>
+        <desc>This program stores the information (name, roll and marks) of a student and displays
+            it on the screen using structures.
+        </desc>
+        <relative_path>structure-store-information.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Add Two Distances (in inch-feet) System Using Structures</title>
-        <relative_path>/example/C/inch-feet-structure.c</relative_path>
+        <desc>C program to add two distances in inch-feet system using structures....</desc>
+        <relative_path>inch-feet-structure.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Add Two Complex Numbers by Passing Structure to a Function</title>
-        <relative_path>/example/C/complex-number-add.c</relative_path>
+        <desc>C programming source code to add two complex numbers by passing it to a function....
+        </desc>
+        <relative_path>complex-number-add.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Calculate Difference Between Two Time Periods</title>
-        <relative_path>/example/C/time-structure.c</relative_path>
+        <desc>C program to find difference of two time period using call by reference...</desc>
+        <relative_path>time-structure.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Store Information of Students Using Structure</title>
-        <relative_path>/example/C/information-structure-array.c</relative_path>
+        <desc>C program to store information using structure for array of structures...</desc>
+        <relative_path>information-structure-array.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Store Information Using Structures with Dynamically Memory Allocation
         </title>
-        <relative_path>/example/C/structure-dynamic-memory-allocation.c</relative_path>
+        <desc>C program to demonstrate the dynamic memory allocation of structures of n
+            elements...
+        </desc>
+        <relative_path>structure-dynamic-memory-allocation.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Write a Sentence to a File</title>
-        <relative_path>/example/C/write-file.c</relative_path>
+        <desc>C program to write a sentence to a file with source code and explanation...</desc>
+        <relative_path>write-file.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Read a Line From a File and Display it</title>
-        <relative_path>/example/C/read-file.c</relative_path>
+        <desc>C programming source code to read the content of a file as a string and display that
+            content.....
+        </desc>
+        <relative_path>read-file.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Program to Display its own Source Code as Output</title>
-        <relative_path>/example/C/source-code-output.c</relative_path>
+        <desc>C program to display its own source code as it output with explanation....</desc>
+        <relative_path>source-code-output.c</relative_path>
     </example>
     <example>
         <language>C</language>
         <title>C Programming Code To Create Pyramid and Pattern</title>
-        <relative_path>/example/C/pyramid-pattern.c</relative_path>
+        <desc></desc>
+        <relative_path>pyramid-pattern.c</relative_path>
     </example>
 </examples>

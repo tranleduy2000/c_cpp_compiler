@@ -1,21 +1,23 @@
 //C++ Program to Store and Display Information Using Structure
 
 #include <iostream>
-
 using namespace std;
 
-struct student {
+struct student
+{
     char name[50];
     int roll;
     float marks;
 } s[10];
 
-int main() {
+int main()
+{
     cout << "Enter information of students: " << endl;
 
     // storing information
-    for (int i = 0; i < 10; ++i) {
-        s[i].roll = i + 1;
+    for(int i = 0; i < 10; ++i)
+    {
+        s[i].roll = i+1;
         cout << "For roll number" << s[i].roll << "," << endl;
 
         cout << "Enter name: ";
@@ -30,8 +32,9 @@ int main() {
     cout << "Displaying Information: " << endl;
 
     // Displaying information
-    for (int i = 0; i < 10; ++i) {
-        cout << "\nRoll number: " << i + 1 << endl;
+    for(int i = 0; i < 10; ++i)
+    {
+        cout << "\nRoll number: " << i+1 << endl;
         cout << "Name: " << s[i].name << endl;
         cout << "Marks: " << s[i].marks << endl;
     }

@@ -1,12 +1,12 @@
 //C++ Program to Calculate Power Using Recursion
 
 #include <iostream>
-
 using namespace std;
 
 int calculatePower(int, int);
 
-int main() {
+int main()
+{
     int base, powerRaised, result;
 
     cout << "Enter base number: ";
@@ -21,9 +21,10 @@ int main() {
     return 0;
 }
 
-int calculatePower(int base, int powerRaised) {
+int calculatePower(int base, int powerRaised)
+{
     if (powerRaised != 1)
-        return (base * calculatePower(base, powerRaised - 1));
+        return (base*calculatePower(base, powerRaised-1));
     else
         return 1;
 }

@@ -1,12 +1,12 @@
 //C++ Program to Swap Numbers in Cyclic Order Using Call by Reference
 
 #include<iostream>
-
 using namespace std;
 
 void cyclicSwap(int *a, int *b, int *c);
 
-int main() {
+int main()
+{
     int a, b, c;
 
     cout << "Enter value of a, b and c respectively: ";
@@ -23,7 +23,8 @@ int main() {
     return 0;
 }
 
-void cyclicSwap(int *a, int *b, int *c) {
+void cyclicSwap(int *a, int *b, int *c)
+{
     int temp;
     temp = *b;
     *b = *a;

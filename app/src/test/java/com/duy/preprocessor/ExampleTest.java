@@ -38,22 +38,23 @@ import javax.xml.transform.TransformerException;
 public class ExampleTest extends TestCase {
 
     public void testGetExampleC() throws IOException, InterruptedException, ParserConfigurationException, TransformerException {
-//        String baseLocation = "https://www.programiz.com/c-programming/examples";
-//        String language = "C";
+        String baseLocation = "https://www.programiz.com/c-programming/examples";
+        String language = "C";
 //        getExamples(baseLocation, language, "c");
     }
 
     public void testGetExampleCPlusPLus() throws IOException, TransformerException, ParserConfigurationException {
-//        String baseLocation = "https://www.programiz.com/cpp-programming/examples";
-//        String language = "cpp";
+        String baseLocation = "https://www.programiz.com/cpp-programming/examples";
+        String language = "cpp";
 //        getExamples(baseLocation, language, "cpp");
 
     }
 
     private void getExamples(String baseLocation, String language, String ext) throws ParserConfigurationException, IOException, TransformerException {
         StringBuilder xmlBuilder = new StringBuilder();
-        xmlBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
-                .append("<examples>");
+        xmlBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n").append("\n")
+                .append("<examples>").append("\n");
+        ;
         Document document = Jsoup.connect(baseLocation).get();
         Element table = document.getElementsByTag("table").first();
         Elements links = table.getElementsByTag("a");
@@ -83,6 +84,7 @@ public class ExampleTest extends TestCase {
                 .referrer("http://www.google.com")
                 .get();
         String title = document.getElementsByTag("h1").text();
+        String desc = document.getElementsByAttributeValue("name", "description").attr("content");
         Element code = document.body()
                 .select("pre > code").first()
                 .getElementsByTag("code").first();
@@ -96,11 +98,17 @@ public class ExampleTest extends TestCase {
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(codeStr.getBytes());
 
-        xmlBuilder.append("<example>");
-        xmlBuilder.append("<language>").append(language).append("</language>");
-        xmlBuilder.append("<title>").append(title).append("</title>");
-        xmlBuilder.append("<relative_path>").append("/example/" + language + "/" + file.getName()).append("</relative_path>");
-        xmlBuilder.append("</example>");
+        xmlBuilder.append("<example>").append("\n");
+        ;
+        xmlBuilder.append("<language>").append(language).append("</language>").append("\n");
+        xmlBuilder.append("<title>").append(title).append("</title>").append("\n");
+        ;
+        xmlBuilder.append("<desc>").append(desc).append("</desc>").append("\n");
+        ;
+        xmlBuilder.append("<relative_path>").append(file.getName()).append("</relative_path>").append("\n");
+        ;
+        xmlBuilder.append("</example>").append("\n");
+        ;
     }
 
 }

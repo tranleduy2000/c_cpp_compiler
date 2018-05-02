@@ -1,10 +1,11 @@
 //C Program to Convert Octal Number to Decimal and vice-versa
 
 #include <stdio.h>
+#include <math.h>
 
 int convertDecimalToOctal(int decimalNumber);
-
-int main() {
+int main()
+{
     int decimalNumber;
 
     printf("Enter a decimal number: ");
@@ -15,10 +16,12 @@ int main() {
     return 0;
 }
 
-int convertDecimalToOctal(int decimalNumber) {
+int convertDecimalToOctal(int decimalNumber)
+{
     int octalNumber = 0, i = 1;
 
-    while (decimalNumber != 0) {
+    while (decimalNumber != 0)
+    {
         octalNumber += (decimalNumber % 8) * i;
         decimalNumber /= 8;
         i *= 10;
