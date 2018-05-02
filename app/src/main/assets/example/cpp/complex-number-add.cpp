@@ -3,18 +3,17 @@
 // Complex numbers are entered by the user
 
 #include <iostream>
+
 using namespace std;
 
-typedef struct complex
-{
+typedef struct complex {
     float real;
     float imag;
 } complexNumber;
 
 complexNumber addComplexNumbers(complex, complex);
 
-int main()
-{
+int main() {
     complexNumber n1, n2, temporaryNumber;
     char signOfImag;
 
@@ -27,17 +26,17 @@ int main()
     cin >> n2.real >> n2.imag;
 
     signOfImag = (temporaryNumber.imag > 0) ? '+' : '-';
-    temporaryNumber.imag = (temporaryNumber.imag > 0) ? temporaryNumber.imag : -temporaryNumber.imag; 
+    temporaryNumber.imag = (temporaryNumber.imag > 0) ? temporaryNumber.imag
+                                                      : -temporaryNumber.imag;
 
-    temporaryNumber = addComplexNumbers(n1, n2);    
-    cout << "Sum = "  << temporaryNumber.real << temporaryNumber.imag << "i";
+    temporaryNumber = addComplexNumbers(n1, n2);
+    cout << "Sum = " << temporaryNumber.real << temporaryNumber.imag << "i";
     return 0;
 }
 
-complexNumber addComplexNumbers(complex n1,complex n2)
-{
-      complex temp;
-      temp.real = n1.real+n2.real;
-      temp.imag = n1.imag+n2.imag;
-      return(temp);
+complexNumber addComplexNumbers(complex n1, complex n2) {
+    complex temp;
+    temp.real = n1.real + n2.real;
+    temp.imag = n1.imag + n2.imag;
+    return (temp);
 }

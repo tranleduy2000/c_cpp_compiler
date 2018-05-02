@@ -1,10 +1,10 @@
 //C Program to Add Two Integers
 
 #include <stdio.h>
-int main()
-{
+
+int main() {
     int firstNumber, secondNumber, sumOfTwoNumbers;
-    
+
     printf("Enter two integers: ");
 
     // Two integers entered by user is stored using scanf() function

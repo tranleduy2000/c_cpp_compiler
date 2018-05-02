@@ -1,8 +1,8 @@
 //C Program to Calculate the Power of a Number
 
 #include <stdio.h>
-int main()
-{
+
+int main() {
     int base, exponent;
 
     long long result = 1;
@@ -13,8 +13,7 @@ int main()
     printf("Enter an exponent: ");
     scanf("%d", &exponent);
 
-    while (exponent != 0)
-    {
+    while (exponent != 0) {
         result *= base;
         --exponent;
     }

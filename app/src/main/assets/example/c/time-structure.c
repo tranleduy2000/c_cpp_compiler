@@ -1,16 +1,16 @@
 //C Program to Calculate Difference Between Two Time Periods
 
 #include <stdio.h>
-struct TIME
-{
-  int seconds;
-  int minutes;
-  int hours;
+
+struct TIME {
+    int seconds;
+    int minutes;
+    int hours;
 };
+
 void differenceBetweenTimePeriod(struct TIME t1, struct TIME t2, struct TIME *diff);
 
-int main()
-{
+int main() {
     struct TIME startTime, stopTime, diff;
 
     printf("Enter start time: \n");
@@ -31,15 +31,14 @@ int main()
     return 0;
 }
 
-void differenceBetweenTimePeriod(struct TIME start, struct TIME stop, struct TIME *diff)
-{
-    if(stop.seconds > start.seconds){
+void differenceBetweenTimePeriod(struct TIME start, struct TIME stop, struct TIME *diff) {
+    if (stop.seconds > start.seconds) {
         --start.minutes;
         start.seconds += 60;
     }
 
     diff->seconds = start.seconds - stop.seconds;
-    if(stop.minutes > start.minutes){
+    if (stop.minutes > start.minutes) {
         --start.hours;
         start.minutes += 60;
     }

@@ -1,10 +1,10 @@
 //C++ Program to Calculate Power of a Number
 
 #include <iostream>
+
 using namespace std;
 
-int main() 
-{
+int main() {
     int exponent;
     float base, result = 1;
 
@@ -19,6 +19,6 @@ int main()
     }
 
     cout << result;
-    
+
     return 0;
 }

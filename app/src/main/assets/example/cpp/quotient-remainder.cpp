@@ -1,10 +1,10 @@
 //C++ Program to Find Quotient and Remainder
 
 #include <iostream>
+
 using namespace std;
 
-int main()
-{    
+int main() {
     int divisor, dividend, quotient, remainder;
 
     cout << "Enter dividend: ";

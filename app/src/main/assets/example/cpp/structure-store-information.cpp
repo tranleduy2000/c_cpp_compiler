@@ -1,17 +1,16 @@
 //C++ Program to Store Information of a Student in a Structure
 
 #include <iostream>
+
 using namespace std;
 
-struct student
-{
+struct student {
     char name[50];
     int roll;
     float marks;
 };
 
-int main() 
-{
+int main() {
     student s;
     cout << "Enter information," << endl;
     cout << "Enter name: ";
