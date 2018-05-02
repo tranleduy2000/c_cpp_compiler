@@ -1,3 +1,5 @@
+//C Program to Display Factors of a Number
+
 #include <stdio.h>
 int main()
 {

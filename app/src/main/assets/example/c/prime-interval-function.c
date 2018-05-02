@@ -1,3 +1,5 @@
+//C Program to Display Prime Numbers Between Intervals Using Function
+
 #include <stdio.h>
 
 int checkPrimeNumber(int n);

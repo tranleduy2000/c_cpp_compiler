@@ -1,3 +1,5 @@
+//C Programming Code To Create Pyramid and Pattern
+
 #include <stdio.h>
 int main()
 {

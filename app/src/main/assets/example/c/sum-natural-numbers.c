@@ -1,3 +1,5 @@
+//C Program to Calculate the Sum of Natural Numbers
+
 #include <stdio.h>
 int main()
 {

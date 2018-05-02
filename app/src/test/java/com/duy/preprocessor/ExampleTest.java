@@ -27,15 +27,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 
 /**
@@ -45,42 +38,46 @@ import javax.xml.transform.stream.StreamResult;
 public class ExampleTest extends TestCase {
 
     public void testGetExampleC() throws IOException, InterruptedException, ParserConfigurationException, TransformerException {
-
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        org.w3c.dom.Document doc = docBuilder.newDocument();
-        final org.w3c.dom.Element root = doc.createElement("examples");
-
         String baseLocation = "https://www.programiz.com/c-programming/examples";
+        String language = "C";
+        getExamples(baseLocation, language, "c");
+    }
+
+    public void testGetExampleCPlusPLus() throws IOException, TransformerException, ParserConfigurationException {
+        String baseLocation = "https://www.programiz.com/cpp-programming/examples";
+        String language = "cpp";
+        getExamples(baseLocation, language, "cpp");
+
+    }
+
+    private void getExamples(String baseLocation, String language, String ext) throws ParserConfigurationException, IOException, TransformerException {
+        StringBuilder xmlBuilder = new StringBuilder();
+        xmlBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<examples>");
         Document document = Jsoup.connect(baseLocation).get();
         Element table = document.getElementsByTag("table").first();
         Elements links = table.getElementsByTag("a");
-        String language = "C";
+
         for (Element child : links) {
             String link = child.attr("href");
             System.out.println(link);
             link = "https://www.programiz.com" + link;
             try {
-                parseExample(link, doc, root, language);
+                parseExample(link, xmlBuilder, language, ext);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        xmlBuilder.append("</examples>");
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-        DOMSource source = new DOMSource(doc);
         File f = new File("./app/src/main/assets/example/" + language + "/" + "index.xml");
         f.getParentFile().mkdirs();
         f.createNewFile();
-        StreamResult result = new StreamResult(f);
-        transformer.transform(source, result);
-        System.out.println("File saved!");
+        FileOutputStream fileOutputStream = new FileOutputStream(f);
+        fileOutputStream.write(xmlBuilder.toString().getBytes());
     }
 
-    private void parseExample(String link, org.w3c.dom.Document creator, org.w3c.dom.Element parent, String language) throws IOException {
+    private void parseExample(String link, StringBuilder xmlBuilder, String language, String ext) throws IOException {
         Document document = Jsoup.connect(link)
                 .userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
                 .referrer("http://www.google.com")
@@ -90,30 +87,20 @@ public class ExampleTest extends TestCase {
                 .select("pre > code").first()
                 .getElementsByTag("code").first();
         String codeStr = code.text();
+        codeStr = "//" + title + "\n\n" + codeStr;
         System.out.println(codeStr);
 
-        File file = new File("./app/src/main/assets/example/" + language + "/" + link.substring(link.lastIndexOf("/")) + ".c");
+        File file = new File("./app/src/main/assets/example/" + language + "/" + link.substring(link.lastIndexOf("/")) + "." + ext);
         file.getParentFile().mkdirs();
         file.createNewFile();
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(codeStr.getBytes());
 
-
-        org.w3c.dom.Element exampleNode = creator.createElement("example");
-        org.w3c.dom.Element languageNode = creator.createElement("language");
-        languageNode.appendChild(creator.createTextNode(language));
-        exampleNode.appendChild(languageNode);
-        org.w3c.dom.Element titleNode = creator.createElement("title");
-        titleNode.appendChild(creator.createTextNode(title));
-        exampleNode.appendChild(titleNode);
-        org.w3c.dom.Element relativePath = creator.createElement("relative_path");
-        relativePath.appendChild(creator.createTextNode("/example/" + language + "/" + file.getName()));
-        exampleNode.appendChild(relativePath);
-
-        parent.appendChild(exampleNode);
+        xmlBuilder.append("<example>");
+        xmlBuilder.append("<language>").append(language).append("</language>");
+        xmlBuilder.append("<title>").append(title).append("</title>");
+        xmlBuilder.append("<relative_path>").append("/example/" + language + "/" + file.getName()).append("</relative_path>");
+        xmlBuilder.append("</example>");
     }
 
-    public void testGetExampleCPlusPLus() {
-
-    }
 }

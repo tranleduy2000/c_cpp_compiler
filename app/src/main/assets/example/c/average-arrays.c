@@ -1,3 +1,5 @@
+//C Program to Calculate Average Using Arrays
+
 #include <stdio.h>
 
 int main()

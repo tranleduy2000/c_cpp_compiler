@@ -1,3 +1,5 @@
+//C Program to Calculate Difference Between Two Time Periods
+
 #include <stdio.h>
 struct TIME
 {

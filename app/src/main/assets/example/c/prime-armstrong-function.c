@@ -1,3 +1,5 @@
+//C Program to Check Prime or Armstrong Number Using User-defined Function
+
 #include <stdio.h>
 #include <math.h>
 

@@ -1,3 +1,5 @@
+//C Program to Store Information Using Structures with Dynamically Memory Allocation
+
 #include <stdio.h>
 #include<stdlib.h>
 

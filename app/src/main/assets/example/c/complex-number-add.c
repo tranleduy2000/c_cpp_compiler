@@ -1,3 +1,5 @@
+//C Program to Add Two Complex Numbers by Passing Structure to a Function
+
 #include <stdio.h>
 typedef struct complex
 {

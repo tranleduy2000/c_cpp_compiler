@@ -1,3 +1,5 @@
+//C Program to Find the Sum of Natural Numbers using Recursion
+
 #include <stdio.h>
 int addNumbers(int n);
 

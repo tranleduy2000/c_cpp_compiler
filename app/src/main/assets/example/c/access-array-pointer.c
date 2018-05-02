@@ -1,3 +1,5 @@
+//C Program to Access Elements of an Array Using Pointer
+
 #include <stdio.h>
 
 int main()

@@ -1,3 +1,5 @@
+//C Program to Store Information of a Student Using Structure
+
 #include <stdio.h>
 struct student
 {

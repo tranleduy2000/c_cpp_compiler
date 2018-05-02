@@ -1,3 +1,5 @@
+//C Program to Multiply two Matrices by Passing Matrix to a Function
+
 #include <stdio.h>
 
 void enterData(int firstMatrix[][10], int secondMatrix[][10], int rowFirst, int columnFirst, int rowSecond, int columnSecond);

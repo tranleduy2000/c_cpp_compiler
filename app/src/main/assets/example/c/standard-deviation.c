@@ -1,3 +1,5 @@
+//C Program to Calculate Standard Deviation
+
 #include <stdio.h>
 #include <math.h>
 

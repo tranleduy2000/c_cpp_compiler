@@ -1,3 +1,5 @@
+//C Program to Make a Simple Calculator Using switch...case
+
 // Performs addition, subtraction, multiplication or division depending the input from user
 
 # include <stdio.h>

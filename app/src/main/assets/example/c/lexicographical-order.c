@@ -1,3 +1,5 @@
+//C Program to Sort Elements in Lexicographical Order (Dictionary Order)
+
 #include<stdio.h>
 #include <string.h>
 

@@ -1,3 +1,5 @@
+//C Program to Write a Sentence to a File
+
 #include <stdio.h>
 #include <stdlib.h>  /* For exit() function */
 int main()

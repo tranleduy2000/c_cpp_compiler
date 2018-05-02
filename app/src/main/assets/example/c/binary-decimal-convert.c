@@ -1,3 +1,5 @@
+//C Program to Convert Binary Number to Decimal and vice-versa
+
 #include <stdio.h>
 #include <math.h>
 int convertBinaryToDecimal(long long n);

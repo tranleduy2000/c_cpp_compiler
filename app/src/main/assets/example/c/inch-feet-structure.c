@@ -1,3 +1,5 @@
+//C Program to Add Two Distances (in inch-feet) System Using Structures
+
 #include <stdio.h>
 
 struct Distance

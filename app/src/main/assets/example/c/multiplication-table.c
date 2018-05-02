@@ -1,3 +1,5 @@
+//C Program to Generate Multiplication Table
+
 #include <stdio.h>
 int main()
 {
