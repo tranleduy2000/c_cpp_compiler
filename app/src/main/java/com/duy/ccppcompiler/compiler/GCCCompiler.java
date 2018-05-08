@@ -18,6 +18,7 @@ package com.duy.ccppcompiler.compiler;
 
 import android.content.Context;
 
+import com.duy.common.DLog;
 import com.duy.ide.compiler.INativeCompiler;
 import com.duy.ide.compiler.shell.ShellResult;
 import com.duy.ide.compiler.shell.ShellUtils;
@@ -33,6 +34,7 @@ import java.util.Map;
  */
 
 public class GCCCompiler implements INativeCompiler {
+    private static final String TAG = "GCCCompiler";
     private Context mContext;
 
     public GCCCompiler(Context context) {
@@ -49,6 +51,7 @@ public class GCCCompiler implements INativeCompiler {
         final File libExecBinDir = new File(gccDir, "libexec/gcc/arm-linux-androideabi/" + GCCConstants.GCC_VERSION);
 
         String compilerPath = new File(gccBinDir, "arm-linux-androideabi-gcc").getAbsolutePath();
+        printBuildsOptions(compilerPath);
 
         List<String> flags = new ArrayList<>();
         for (File source : sourceFiles) {
@@ -83,6 +86,13 @@ public class GCCCompiler implements INativeCompiler {
         envMap.put("PATH", PATHEnv);
         envMap.put("TEMP", TEMPEnv);
         return ShellUtils.execCommand(compilerPath, flags, envMap);
+    }
+
+    public void printBuildsOptions(String path) {
+        ArrayList<String> args = new ArrayList<>();
+        args.add("-v");
+        ShellResult shellResult = ShellUtils.execCommand(path, args, new HashMap<String, String>());
+        if (DLog.DEBUG) DLog.w(TAG, "printBuildsOptions: " + shellResult);
     }
 
     private ArrayList<String> getUserFlags() {
