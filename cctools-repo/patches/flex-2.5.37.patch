@@ -1,0 +1,12 @@
+--- flex-2.5.37-orig/config.sub
++++ flex-2.5.37/config.sub
+@@ -1317,6 +1317,9 @@
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;

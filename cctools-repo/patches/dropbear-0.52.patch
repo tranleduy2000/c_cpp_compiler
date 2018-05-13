@@ -1,0 +1,684 @@
+diff -Nur dropbear-0.52-orig/cli-runopts.c dropbear-0.52/cli-runopts.c
+--- dropbear-0.52-orig/cli-runopts.c	2008-11-11 16:09:02.000000000 +0200
++++ dropbear-0.52/cli-runopts.c	2013-11-17 10:25:57.120171245 +0200
+@@ -557,7 +557,9 @@
+ 
+ 	pw = getpwuid(uid);
+ 	if (pw == NULL || pw->pw_name == NULL) {
+-		dropbear_exit("Unknown own user");
++//		dropbear_log(LOG_WARNING, "Unknown own user");
++		cli_opts.own_user = m_strdup("cctools");
++		return;
+ 	}
+ 
+ 	cli_opts.own_user = m_strdup(pw->pw_name);
+diff -Nur dropbear-0.52-orig/common-session.c dropbear-0.52/common-session.c
+--- dropbear-0.52-orig/common-session.c	2008-11-11 16:09:02.000000000 +0200
++++ dropbear-0.52/common-session.c	2013-11-23 19:37:23.816748600 +0200
+@@ -433,6 +433,7 @@
+ 		return ses.authstate.pw_shell;
+ 	}
+ }
++
+ void fill_passwd(const char* username) {
+ 	struct passwd *pw = NULL;
+ 	if (ses.authstate.pw_name)
+diff -Nur dropbear-0.52-orig/config.sub dropbear-0.52/config.sub
+--- dropbear-0.52-orig/config.sub	2008-11-11 16:09:02.000000000 +0200
++++ dropbear-0.52/config.sub	2013-11-17 10:25:57.120171245 +0200
+@@ -1252,6 +1252,9 @@
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-sunos5*)
+ 		os=`echo $os | sed -e 's|sunos5|solaris2|'`
+ 		;;
+diff -Nur dropbear-0.52-orig/loginrec.c dropbear-0.52/loginrec.c
+--- dropbear-0.52-orig/loginrec.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/loginrec.c	2013-11-17 10:25:57.120171245 +0200
+@@ -157,6 +157,7 @@
+ #include "loginrec.h"
+ #include "dbutil.h"
+ #include "atomicio.h"
++#include "session.h"
+ 
+ /**
+  ** prototypes for helper functions in this file
+@@ -275,11 +276,13 @@
+ 
+ 	if (username) {
+ 		strlcpy(li->username, username, sizeof(li->username));
+-		pw = getpwnam(li->username);
+-		if (pw == NULL)
+-			dropbear_exit("login_init_entry: Cannot find user \"%s\"",
+-					li->username);
+-		li->uid = pw->pw_uid;
++      pw = getpwnam(li->username);
++      if (pw == NULL)
++         li->uid = ses.authstate.pw_uid;   
++            //dropbear_exit("login_init_entry: Cannot find user \"%s\"",
++            //      li->username);
++      else
++         li->uid = pw->pw_uid;
+ 	}
+ 
+ 	if (hostname)
+@@ -329,9 +332,9 @@
+ {
+ #ifndef HAVE_CYGWIN
+ 	if ((int)geteuid() != 0) {
+-	  dropbear_log(LOG_WARNING,
+-			  "Attempt to write login records by non-root user (aborting)");
+-	  return 1;
++//	  dropbear_log(LOG_WARNING,
++//			  "Attempt to write login records by non-root user (aborting)");
++	  return 0;
+ 	}
+ #endif
+ 
+diff -Nur dropbear-0.52-orig/options.h dropbear-0.52/options.h
+--- dropbear-0.52-orig/options.h	2008-11-11 16:13:50.000000000 +0200
++++ dropbear-0.52/options.h	2013-11-17 10:25:57.120171245 +0200
+@@ -11,7 +11,7 @@
+  ******************************************************************/
+ 
+ #ifndef DROPBEAR_DEFPORT
+-#define DROPBEAR_DEFPORT "22"
++#define DROPBEAR_DEFPORT "2222"
+ #endif
+ 
+ #ifndef DROPBEAR_DEFADDRESS
+@@ -21,10 +21,10 @@
+ 
+ /* Default hostkey paths - these can be specified on the command line */
+ #ifndef DSS_PRIV_FILENAME
+-#define DSS_PRIV_FILENAME "/etc/dropbear/dropbear_dss_host_key"
++#define DSS_PRIV_FILENAME "/data/data/com.pdaxrom.cctools/root/cctools/etc/dropbear_dss_host_key"
+ #endif
+ #ifndef RSA_PRIV_FILENAME
+-#define RSA_PRIV_FILENAME "/etc/dropbear/dropbear_rsa_host_key"
++#define RSA_PRIV_FILENAME "/data/data/com.pdaxrom.cctools/root/cctools/etc/dropbear_rsa_host_key"
+ #endif
+ 
+ /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
+@@ -38,7 +38,7 @@
+  * Both of these flags can be defined at once, don't compile without at least
+  * one of them. */
+ #define NON_INETD_MODE
+-#define INETD_MODE
++//#define INETD_MODE
+ 
+ /* Setting this disables the fast exptmod bignum code. It saves ~5kB, but is
+  * perhaps 20% slower for pubkey operations (it is probably worth experimenting
+@@ -51,20 +51,20 @@
+ #define DROPBEAR_SMALL_CODE
+ 
+ /* Enable X11 Forwarding - server only */
+-#define ENABLE_X11FWD
++//#define ENABLE_X11FWD
+ 
+ /* Enable TCP Fowarding */
+ /* 'Local' is "-L" style (client listening port forwarded via server)
+  * 'Remote' is "-R" style (server listening port forwarded via client) */
+ 
+-#define ENABLE_CLI_LOCALTCPFWD
+-#define ENABLE_CLI_REMOTETCPFWD
++//#define ENABLE_CLI_LOCALTCPFWD
++//#define ENABLE_CLI_REMOTETCPFWD
+ 
+-#define ENABLE_SVR_LOCALTCPFWD
+-#define ENABLE_SVR_REMOTETCPFWD
++//#define ENABLE_SVR_LOCALTCPFWD
++//#define ENABLE_SVR_REMOTETCPFWD
+ 
+ /* Enable Authentication Agent Forwarding - server only for now */
+-#define ENABLE_AGENTFWD
++//#define ENABLE_AGENTFWD
+ 
+ 
+ /* Note: Both ENABLE_CLI_PROXYCMD and ENABLE_CLI_NETCAT must be set to
+@@ -85,9 +85,9 @@
+ #define DROPBEAR_AES128
+ #define DROPBEAR_3DES
+ #define DROPBEAR_AES256
+-#define DROPBEAR_BLOWFISH
+-#define DROPBEAR_TWOFISH256
+-#define DROPBEAR_TWOFISH128
++//#define DROPBEAR_BLOWFISH
++//#define DROPBEAR_TWOFISH256
++//#define DROPBEAR_TWOFISH128
+ 
+ /* Enable "Counter Mode" for ciphers. This is more secure than normal
+  * CBC mode against certain attacks. This adds around 1kB to binary 
+@@ -129,16 +129,16 @@
+ /* #define DSS_PROTOK */
+ 
+ /* Whether to do reverse DNS lookups. */
+-#define DO_HOST_LOOKUP
++//#define DO_HOST_LOOKUP
+ 
+ /* Whether to print the message of the day (MOTD). This doesn't add much code
+  * size */
+-#define DO_MOTD
++//#define DO_MOTD
+ 
+ /* The MOTD file path */
+-#ifndef MOTD_FILENAME
+-#define MOTD_FILENAME "/etc/motd"
+-#endif
++//#ifndef MOTD_FILENAME
++//#define MOTD_FILENAME "/etc/motd"
++//#endif
+ 
+ /* Authentication Types - at least one required.
+    RFC Draft requires pubkey auth, and recommends password */
+@@ -203,36 +203,36 @@
+ /* And then a global limit to avoid chewing memory if connections 
+  * come from many IPs */
+ #ifndef MAX_UNAUTH_CLIENTS
+-#define MAX_UNAUTH_CLIENTS 30
++#define MAX_UNAUTH_CLIENTS 10
+ #endif
+ 
+ /* Maximum number of failed authentication tries (server option) */
+ #ifndef MAX_AUTH_TRIES
+-#define MAX_AUTH_TRIES 10
++#define MAX_AUTH_TRIES 5
+ #endif
+ 
+ /* The default file to store the daemon's process ID, for shutdown
+    scripts etc. This can be overridden with the -P flag */
+ #ifndef DROPBEAR_PIDFILE
+-#define DROPBEAR_PIDFILE "/var/run/dropbear.pid"
++#define DROPBEAR_PIDFILE "/data/data/com.pdaxrom.cctools/root/dropbear.pid"
+ #endif
+ 
+ /* The command to invoke for xauth when using X11 forwarding.
+  * "-q" for quiet */
+-#ifndef XAUTH_COMMAND
+-#define XAUTH_COMMAND "/usr/X11R6/bin/xauth -q"
+-#endif
++//#ifndef XAUTH_COMMAND
++//#define XAUTH_COMMAND "/usr/X11R6/bin/xauth -q"
++//#endif
+ 
+ /* if you want to enable running an sftp server (such as the one included with
+  * OpenSSH), set the path below. If the path isn't defined, sftp will not
+  * be enabled */
+ #ifndef SFTPSERVER_PATH
+-#define SFTPSERVER_PATH "/usr/libexec/sftp-server"
++#define SFTPSERVER_PATH "/data/data/com.pdaxrom.cctools/root/cctools/libexec/sftp-server"
+ #endif
+ 
+ /* This is used by the scp binary when used as a client binary. If you're
+  * not using the Dropbear client, you'll need to change it */
+-#define _PATH_SSH_PROGRAM "/usr/bin/dbclient"
++#define _PATH_SSH_PROGRAM "/data/data/com.pdaxrom.cctools/root/cctools/bin/dbclient"
+ 
+ /* Whether to log commands executed by a client. This only logs the 
+  * (single) command sent to the server, not what a user did in a 
+@@ -263,7 +263,7 @@
+ #define DEFAULT_IDLE_TIMEOUT 0
+ 
+ /* The default path. This will often get replaced by the shell */
+-#define DEFAULT_PATH "/usr/bin:/bin"
++#define DEFAULT_PATH "/data/data/com.pdaxrom.cctools/root/cctools/sbin:/data/data/com.pdaxrom.cctools/root/cctools/bin:/system/sbin:/system/bin:/system/xbin"
+ 
+ /* Some other defines (that mostly should be left alone) are defined
+  * in sysoptions.h */
+diff -Nur dropbear-0.52-orig/runopts.h dropbear-0.52/runopts.h
+--- dropbear-0.52-orig/runopts.h	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/runopts.h	2013-11-23 20:25:56.136869338 +0200
+@@ -25,6 +25,7 @@
+ #ifndef _RUNOPTS_H_
+ #define _RUNOPTS_H_
+ 
++#include <pwd.h>
+ #include "includes.h"
+ #include "signkey.h"
+ #include "buffer.h"
+@@ -88,7 +89,17 @@
+ 	sign_key *hostkey;
+ 	buffer * banner;
+ 	char * pidfile;
+-
++   
++   int android_mode;
++   char *user_name;
++   char *passwd;
++   char *authkey;
++   uid_t uid;
++   gid_t gid;
++
++   char **original_environ;
++   char *original_shell;
++   char *original_home;
+ } svr_runopts;
+ 
+ extern svr_runopts svr_opts;
+diff -Nur dropbear-0.52-orig/scp.c dropbear-0.52/scp.c
+--- dropbear-0.52-orig/scp.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/scp.c	2013-11-17 10:25:57.124171245 +0200
+@@ -392,8 +392,8 @@
+ 	argc -= optind;
+ 	argv += optind;
+ 
+-	if ((pwd = getpwuid(userid = getuid())) == NULL)
+-		fatal("unknown user %u", (u_int) userid);
++//	if ((pwd = getpwuid(userid = getuid())) == NULL)
++//		fatal("unknown user %u", (u_int) userid);
+ 
+ 	if (!isatty(STDERR_FILENO))
+ 		showprogress = 0;
+@@ -506,7 +506,7 @@
+ 				host = cleanhostname(host);
+ 				suser = argv[i];
+ 				if (*suser == '\0')
+-					suser = pwd->pw_name;
++					suser = "cctools";
+ 				else if (!okname(suser))
+ 					continue;
+ 				addargs(&alist, "-l");
+@@ -574,7 +574,7 @@
+ 			*host++ = 0;
+ 			suser = argv[i];
+ 			if (*suser == '\0')
+-				suser = pwd->pw_name;
++				suser = "cctools";
+ 		}
+ 		host = cleanhostname(host);
+ 		len = strlen(src) + CMDNEEDS + 20;
+diff -Nur dropbear-0.52-orig/sshpty.c dropbear-0.52/sshpty.c
+--- dropbear-0.52-orig/sshpty.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/sshpty.c	2013-11-17 10:25:57.124171245 +0200
+@@ -249,12 +249,12 @@
+ {
+ 	if (chown(tty_name, (uid_t) 0, (gid_t) 0) < 0
+ 			&& (errno != ENOENT)) {
+-		dropbear_log(LOG_ERR,
++		dropbear_log(LOG_WARNING,
+ 				"chown %.100s 0 0 failed: %.100s", tty_name, strerror(errno));
+ 	}
+ 	if (chmod(tty_name, (mode_t) 0666) < 0
+ 			&& (errno != ENOENT)) {
+-		dropbear_log(LOG_ERR,
++		dropbear_log(LOG_WARNING,
+ 			"chmod %.100s 0666 failed: %.100s", tty_name, strerror(errno));
+ 	}
+ }
+@@ -384,14 +384,15 @@
+ 		if (chown(tty_name, pw->pw_uid, gid) < 0) {
+ 			if (errno == EROFS &&
+ 			    (st.st_uid == pw->pw_uid || st.st_uid == 0)) {
+-				dropbear_log(LOG_ERR,
++				dropbear_log(LOG_WARNING,
+ 					"chown(%.100s, %u, %u) failed: %.100s",
+ 						tty_name, (unsigned int)pw->pw_uid, (unsigned int)gid,
+ 						strerror(errno));
+ 			} else {
+-				dropbear_exit("chown(%.100s, %u, %u) failed: %.100s",
+-				    tty_name, (unsigned int)pw->pw_uid, (unsigned int)gid,
+-				    strerror(errno));
++				dropbear_log(LOG_WARNING,
++					"chown(%.100s, %u, %u) failed: %.100s",
++						tty_name, (unsigned int)pw->pw_uid, (unsigned int)gid,
++						strerror(errno));
+ 			}
+ 		}
+ 	}
+@@ -400,12 +401,13 @@
+ 		if (chmod(tty_name, mode) < 0) {
+ 			if (errno == EROFS &&
+ 			    (st.st_mode & (S_IRGRP | S_IROTH)) == 0) {
+-				dropbear_log(LOG_ERR,
++				dropbear_log(LOG_WARNING,
+ 					"chmod(%.100s, 0%o) failed: %.100s",
+ 					tty_name, mode, strerror(errno));
+ 			} else {
+-				dropbear_exit("chmod(%.100s, 0%o) failed: %.100s",
+-				    tty_name, mode, strerror(errno));
++				dropbear_log(LOG_WARNING,
++					"chmod(%.100s, 0%o) failed: %.100s",
++					tty_name, mode, strerror(errno));
+ 			}
+ 		}
+ 	}
+diff -Nur dropbear-0.52-orig/svr-auth.c dropbear-0.52/svr-auth.c
+--- dropbear-0.52-orig/svr-auth.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/svr-auth.c	2013-11-23 20:28:46.760876412 +0200
+@@ -164,7 +164,10 @@
+ 		if (methodlen == AUTH_METHOD_PASSWORD_LEN &&
+ 				strncmp(methodname, AUTH_METHOD_PASSWORD,
+ 					AUTH_METHOD_PASSWORD_LEN) == 0) {
+-			svr_auth_password();
++			if (svr_opts.android_mode)
++            svr_auth_android();
++         else
++            svr_auth_password();
+ 			goto out;
+ 		}
+ 	}
+@@ -203,7 +206,6 @@
+ 	m_free(methodname);
+ }
+ 
+-
+ /* Check that the username exists, has a non-empty password, and has a valid
+  * shell.
+  * returns DROPBEAR_SUCCESS on valid username, DROPBEAR_FAILURE on failure */
+@@ -215,7 +217,7 @@
+ 	if (userlen > MAX_USERNAME_LEN) {
+ 		return DROPBEAR_FAILURE;
+ 	}
+-
++   
+ 	/* new user or username has changed */
+ 	if (ses.authstate.username == NULL ||
+ 		strcmp(username, ses.authstate.username) != 0) {
+@@ -226,7 +228,21 @@
+ 				m_free(ses.authstate.username);
+ 			}
+ 			authclear();
+-			fill_passwd(username);
++         if (svr_opts.android_mode) {
++            ses.authstate.pw_uid = svr_opts.uid;
++            ses.authstate.pw_gid = svr_opts.gid;
++            if (svr_opts.user_name != NULL)
++               ses.authstate.pw_name = m_strdup(svr_opts.user_name);
++            else
++               ses.authstate.pw_name = m_strdup("nobody");
++            if (svr_opts.passwd != NULL)
++               ses.authstate.pw_passwd = m_strdup(svr_opts.passwd);
++            else
++               ses.authstate.pw_passwd = m_strdup("");
++            ses.authstate.pw_dir = m_strdup(svr_opts.original_home);
++            ses.authstate.pw_shell = m_strdup(svr_opts.original_shell);
++         } else
++            fill_passwd(username);
+ 			ses.authstate.username = m_strdup(username);
+ 	}
+ 
+@@ -265,6 +281,9 @@
+ 		/* empty shell in /etc/passwd means /bin/sh according to passwd(5) */
+ 		usershell = "/bin/sh";
+ 	}
++   
++   if (svr_opts.android_mode)
++      goto goodshell;      
+ 
+ 	/* check the shell is valid. If /etc/shells doesn't exist, getusershell()
+ 	 * should return some standard shells like "/bin/sh" and "/bin/csh" (this
+diff -Nur dropbear-0.52-orig/svr-authpasswd.c dropbear-0.52/svr-authpasswd.c
+--- dropbear-0.52-orig/svr-authpasswd.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/svr-authpasswd.c	2013-11-17 10:25:57.124171245 +0200
+@@ -29,9 +29,48 @@
+ #include "buffer.h"
+ #include "dbutil.h"
+ #include "auth.h"
++#include "runopts.h"
+ 
+ #ifdef ENABLE_SVR_PASSWORD_AUTH
+ 
++void svr_auth_android() {
++   char *password;
++   unsigned int passwordlen;
++   unsigned int changepw;
++
++ 	/* check if client wants to change password */
++	changepw = buf_getbool(ses.payload);
++	if (changepw) {
++		/* not implemented by this server */
++		send_msg_userauth_failure(0, 1);
++		return;
++	}
++
++	password = buf_getstring(ses.payload, &passwordlen);
++     
++   if (password[0] == '\0') {
++		dropbear_log(LOG_WARNING, "user '%s' has blank password, rejected",
++				ses.authstate.pw_name);
++		send_msg_userauth_failure(0, 1);
++		return;
++	}
++   
++   if (strcmp(password, svr_opts.passwd) == 0) {
++		/* successful authentication */
++		dropbear_log(LOG_NOTICE, 
++				"password auth succeeded for '%s' from %s",
++				ses.authstate.pw_name,
++				svr_ses.addrstring);
++		send_msg_userauth_success();
++	} else {
++		dropbear_log(LOG_WARNING,
++				"bad password attempt for '%s' from %s",
++				ses.authstate.pw_name,
++				svr_ses.addrstring);
++		send_msg_userauth_failure(0, 1);
++	}
++}
++
+ /* Process a password auth request, sending success or failure messages as
+  * appropriate */
+ void svr_auth_password() {
+diff -Nur dropbear-0.52-orig/svr-authpubkey.c dropbear-0.52/svr-authpubkey.c
+--- dropbear-0.52-orig/svr-authpubkey.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/svr-authpubkey.c	2013-11-17 10:25:57.124171245 +0200
+@@ -64,6 +64,7 @@
+ #include "ssh.h"
+ #include "packet.h"
+ #include "algo.h"
++#include "runopts.h"
+ 
+ #ifdef ENABLE_SVR_PUBKEY_AUTH
+ 
+@@ -204,19 +205,25 @@
+ 	}
+ 
+ 	/* check file permissions, also whether file exists */
+-	if (checkpubkeyperms() == DROPBEAR_FAILURE) {
++	if (!svr_opts.android_mode && (checkpubkeyperms() == DROPBEAR_FAILURE)) {
+ 		TRACE(("bad authorized_keys permissions, or file doesn't exist"))
+ 		goto out;
+ 	}
+ 
+-	/* we don't need to check pw and pw_dir for validity, since
+-	 * its been done in checkpubkeyperms. */
+-	len = strlen(ses.authstate.pw_dir);
+-	/* allocate max required pathname storage,
+-	 * = path + "/.ssh/authorized_keys" + '\0' = pathlen + 22 */
+-	filename = m_malloc(len + 22);
+-	snprintf(filename, len + 22, "%s/.ssh/authorized_keys", 
+-				ses.authstate.pw_dir);
++   /* we don't need to check pw and pw_dir for validity, since
++    * its been done in checkpubkeyperms. */
++	if (svr_opts.android_mode) {
++      if (svr_opts.authkey == NULL)
++         goto out;
++      filename = m_strdup(svr_opts.authkey);
++   } else {
++      len = strlen(ses.authstate.pw_dir);
++      /* allocate max required pathname storage,
++      * = path + "/.ssh/authorized_keys" + '\0' = pathlen + 22 */
++      filename = m_malloc(len + 22);
++      snprintf(filename, len + 22, "%s/.ssh/authorized_keys", 
++               ses.authstate.pw_dir);
++   }
+ 
+ 	/* open the file */
+ 	authfile = fopen(filename, "r");
+diff -Nur dropbear-0.52-orig/svr-chansession.c dropbear-0.52/svr-chansession.c
+--- dropbear-0.52-orig/svr-chansession.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/svr-chansession.c	2013-11-23 20:26:53.860871731 +0200
+@@ -555,10 +555,17 @@
+ 		dropbear_exit("out of memory"); /* TODO disconnect */
+ 	}
+ 
+-	pw = getpwnam(ses.authstate.pw_name);
++	if (svr_opts.android_mode) {
++      pw = malloc(sizeof(struct passwd));
++      pw->pw_uid = svr_opts.uid;
++      pw->pw_gid = svr_opts.gid;
++   } else
++      pw = getpwnam(ses.authstate.pw_name);
+ 	if (!pw)
+ 		dropbear_exit("getpwnam failed after succeeding previously");
+ 	pty_setowner(pw, chansess->tty);
++   if (svr_opts.android_mode)
++      free(pw);
+ 
+ 	/* Set up the rows/col counts */
+ 	sessionwinchange(chansess);
+@@ -869,16 +876,27 @@
+ 		 * differing groups won't be set (as with initgroups()). The solution
+ 		 * is for the sysadmin not to give out the UID twice */
+ 		if (getuid() != ses.authstate.pw_uid) {
+-			dropbear_exit("couldn't	change user as non-root");
++//			dropbear_log(LOG_WARNING, "couldn't	change user as non-root");
+ 		}
+ 	}
+ 
+ 	/* set env vars */
+ 	addnewvar("USER", ses.authstate.pw_name);
+ 	addnewvar("LOGNAME", ses.authstate.pw_name);
+-	addnewvar("HOME", ses.authstate.pw_dir);
+-	addnewvar("SHELL", get_user_shell());
+-	addnewvar("PATH", DEFAULT_PATH);
++	if (svr_opts.android_mode) {
++		int i;
++
++		for (i = 0; svr_opts.original_environ[i]; i++) {
++		    if (putenv(svr_opts.original_environ[i]) < 0) {
++			dropbear_exit("environ error");
++		    }
++		}
++	} else {
++		addnewvar("SHELL", get_user_shell());
++		addnewvar("HOME", ses.authstate.pw_dir);
++		addnewvar("PATH", DEFAULT_PATH);
++	}
++
+ 	if (chansess->term != NULL) {
+ 		addnewvar("TERM", chansess->term);
+ 	}
+diff -Nur dropbear-0.52-orig/svr-runopts.c dropbear-0.52/svr-runopts.c
+--- dropbear-0.52-orig/svr-runopts.c	2008-11-11 16:09:03.000000000 +0200
++++ dropbear-0.52/svr-runopts.c	2013-11-23 20:28:04.888874676 +0200
+@@ -31,6 +31,8 @@
+ 
+ svr_runopts svr_opts; /* GLOBAL */
+ 
++extern char **environ;
++
+ static void printhelp(const char * progname);
+ static void addportandaddress(char* spec);
+ 
+@@ -39,6 +41,12 @@
+ 	fprintf(stderr, "Dropbear sshd v%s\n"
+ 					"Usage: %s [options]\n"
+ 					"Options are:\n"
++               "-A Android Mode, specify a user explicitly\n"
++               "-N Android Mode, user name\n"
++               "-C Android Mode, password\n"
++               "-R Android Mode, public key file (authorized_keys)\n"               
++               "-U Android Mode, UID\n"
++               "-G Android Mode, GID\n"
+ 					"-b bannerfile	Display the contents of bannerfile"
+ 					" before user login\n"
+ 					"		(default: none)\n"
+@@ -102,6 +110,7 @@
+ 	unsigned int i;
+ 	char ** next = 0;
+ 	int nextisport = 0;
++   int nextisint = 0;
+ 	char* recv_window_arg = NULL;
+ 	char* keepalive_arg = NULL;
+ 	char* idle_timeout_arg = NULL;
+@@ -119,6 +128,12 @@
+ 	svr_opts.portcount = 0;
+ 	svr_opts.hostkey = NULL;
+ 	svr_opts.pidfile = DROPBEAR_PIDFILE;
++   svr_opts.android_mode = 0;
++   svr_opts.user_name = NULL;
++   svr_opts.passwd = NULL;
++   svr_opts.authkey = NULL;
++   svr_opts.uid = 0;
++   svr_opts.gid = 0;
+ #ifdef ENABLE_SVR_LOCALTCPFWD
+ 	svr_opts.nolocaltcp = 0;
+ #endif
+@@ -149,6 +164,13 @@
+ 			nextisport = 0;
+ 			continue;
+ 		}
++      
++      if (nextisint) {
++         *next = atoi(argv[i]);
++         nextisint = 0;
++         next = 0x00;
++         continue;
++      }
+ 	  
+ 		if (next) {
+ 			*next = argv[i];
+@@ -161,6 +183,26 @@
+ 
+ 		if (argv[i][0] == '-') {
+ 			switch (argv[i][1]) {
++            case 'A':
++               svr_opts.android_mode = 1;
++               break;
++            case 'N':
++               next = &svr_opts.user_name;
++               break;
++            case 'C':
++               next = &svr_opts.passwd;
++               break;
++            case 'R':
++               next = &svr_opts.authkey;
++               break;
++            case 'U':
++               next = &svr_opts.uid;
++               nextisint = 1;
++               break;
++            case 'G':
++               next = &svr_opts.gid;
++               nextisint = 1;
++               break;
+ 				case 'b':
+ 					next = &svr_opts.bannerfile;
+ 					break;
+@@ -253,6 +295,31 @@
+ 		}
+ 	}
+ 
++	if (svr_opts.android_mode) {
++		int i, j;
++		int size = 0;
++
++		while(environ[++size]);
++
++		svr_opts.original_environ = malloc(sizeof(char *) * (size + 1));
++		memset(svr_opts.original_environ, 0, sizeof(char *) * (size + 1));
++
++		for (i = 0, j = 0; environ[i]; i++) {
++			if (*environ[i] != '_') {
++				svr_opts.original_environ[j] = malloc(strlen(environ[i]) + 1);
++				strcpy(svr_opts.original_environ[j++], environ[i]);
++			}
++		}
++		svr_opts.original_shell = getenv("SHELL");
++		if (!svr_opts.original_shell) {
++			svr_opts.original_shell = "/system/bin/sh";
++		}
++		svr_opts.original_home = getenv("HOME");
++		if (!svr_opts.original_home) {
++			svr_opts.original_home = "/data";
++		}
++	}
++
+ 	/* Set up listening ports */
+ 	if (svr_opts.portcount == 0) {
+ 		svr_opts.ports[0] = m_strdup(DROPBEAR_DEFPORT);

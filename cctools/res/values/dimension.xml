@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="gutter_size">60px</dimen>
+    <dimen name="gutter_padding">5px</dimen>
+</resources>

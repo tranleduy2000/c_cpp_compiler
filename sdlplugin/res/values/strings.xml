@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CCTools SDL Plugin</string>
+    <string name="about_dialog">About</string>
+    <string name="about_dialog_text">CCTools SDL plugin version</string> 
+    <string name="about_dialog_text1">Install CCTools</string>
+	<string name="about_dialog_text2">to use this plugin.</string>
+	<string name="about_dialog_text3">Check SDL howto on</string>
+	<string name="update_devfiles">Updating SDL dev files</string>
+	<string name="update_checking">Checking installed components&#8230;</string>
+	<string name="update_install_headers">Installing SDL headers&#8230;</string>
+	<string name="update_install_libs">Installing SDL libraries&#8230;</string>
+	<string name="update_install_examples">Installing SDL examples&#8230;</string>
+	<string name="sdl_version">SDL2 version</string>
+	<string name="sdl_image_version">SDL2_image version</string>
+	<string name="sdl_mixer_version">SDL2_mixer version</string>
+	<string name="sdl_net_version">SDL2_net version</string>
+	<string name="sdl_ttf_version">SDL2_ttf version</string>
+</resources>

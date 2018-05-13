@@ -1,0 +1,44 @@
+--- nano-2.2.6/config.sub
++++ nano-2.2.6-new/config.sub
+@@ -1332,6 +1332,9 @@
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
++	-android*)
++		os-linux
++		;;
+ 	-sunos5*)
+ 		os=`echo $os | sed -e 's|sunos5|solaris2|'`
+ 		;;
+--- nano-2.2.6/src/files.c
++++ nano-2.2.6-new/src/files.c
+@@ -2238,7 +2238,11 @@
+ 	    tilde_dir[i] = '\0';
+ 
+ 	    do {
++#ifdef __BIONIC__
++		userdata = NULL;
++#else
+ 		userdata = getpwent();
++#endif
+ 	    } while (userdata != NULL && strcmp(userdata->pw_name,
+ 		tilde_dir + 1) != 0);
+ 	    endpwent();
+@@ -2341,6 +2345,7 @@
+ 
+     *num_matches = 0;
+ 
++#ifndef __BIONIC__
+     while ((userdata = getpwent()) != NULL) {
+ 	if (strncmp(userdata->pw_name, buf + 1, buf_len - 1) == 0) {
+ 	    /* Cool, found a match.  Add it to the list.  This makes a
+@@ -2361,8 +2366,8 @@
+ 	    ++(*num_matches);
+ 	}
+     }
++#endif
+     endpwent();
+-
+     return matches;
+ }
+ 

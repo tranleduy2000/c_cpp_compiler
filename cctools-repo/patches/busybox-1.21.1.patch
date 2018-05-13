@@ -1,0 +1,11 @@
+--- s/Makefile-orig	2012-11-21 01:05:24.223348369 +0700
++++ s/Makefile	2012-11-21 01:05:33.323348614 +0700
+@@ -290,7 +290,7 @@
+ 
+ AS		= $(CROSS_COMPILE)as
+ CC		= $(CROSS_COMPILE)gcc
+-LD		= $(CC) -nostdlib
++LD		= $(CC) -nostdlib $(EXTRA_LDFLAGS)
+ CPP		= $(CC) -E
+ AR		= $(CROSS_COMPILE)ar
+ NM		= $(CROSS_COMPILE)nm

@@ -1,0 +1,11 @@
+<resources>
+    <declare-styleable name="CodeEditor">
+        <attr name="gutterTextColor" format="color" />
+        <attr name="gutterLineColor" format="color" />
+        <attr name="drawLineNumbers" format="boolean"/>
+        <attr name="drawGutterLine" format="boolean"/>
+        <attr name="highlightText" format="boolean"/>
+        <attr name="gutterSize" format="dimension"/>
+        <attr name="gutterPadding" format="dimension"/>
+    </declare-styleable>
+</resources>

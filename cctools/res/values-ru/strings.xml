@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CCTools</string>
+
+    <string name="updating_caption">Установка</string>
+    <string name="removing_caption">Удаление</string>
+    <string name="establishing_handshake_message">Установка соединения.\nПожалуйста подождите</string>
+    <string name="wait_message">Пожалуйста, подождите...</string>
+    <string name="download_cctools">Загрузка инструментов</string>
+    <string name="received">Принято\u0020</string>
+    <string name="from">\u0020из\u0020</string>
+    <string name="bytes">\u0020байт(ов)</string>
+    <string name="download_file">Загрузка</string>
+    <string name="unpacking_file">Распаковка</string>
+    <string name="error_downloading">Ошибка загрузки, перезапустите менеджер пакетов и переустановить пакет</string>
+    <string name="bad_archive">Плохой или поврежденный файл, перезапустите менеджер пакетов и переустановите пакет</string>
+    <string name="sd_no_memory">Нет свободного места на карте памяти, нужно\u0020</string>
+    <string name="sd_no_memory2">. Удалите ненужные файлы и установите пакет</string>
+    <string name="cache_no_memory">Нет свободного места, нужно\u0020</string>
+    <string name="cache_no_memory1">, но\u0020</string>
+    <string name="cache_no_memory2">\u0020доступно. Удалите ненужные андроид приложения и установите пакет</string>
+
+    <string name="toolchain_selector">Быстрая установка</string>
+    <string name="toolchain_selectormsg">Выберите инструменты для быстрой установки. Другие пакеты можно установить позже из Дополнений.</string>
+
+    <string name="exit_dialog">Подтверждение выхода</string>
+    <string name="exit_dialog_text">Текст был изменен, но не сохранен. Продолжить?</string>
+    <string name="exit_dialog_yes">Да</string>
+    <string name="exit_dialog_no">Нет</string>
+
+    <string name="save_warn_dialog">Внимание!</string>
+    <string name="save_warn_text">Текст был изменен, но не сохранен. Продолжить?</string>
+
+    <string name="about_dialog">CCTools IDE</string>
+    <string name="about_dialog_text">C/C++ средства разработки\nВерсия</string>
+    <string name="about_dialog_text2">\nCopyright &#169; 2012-2013, Alexander Chukov</string>
+    <string name="about_dialog_show">Домашняя страница</string>
+
+    <string name="about_button">О программе</string>
+    <string name="prefs_button">Настройки</string>
+
+    <string name="preferences">Настройки</string>
+    <string name="pref_updater">Проверить обновления при запуске</string>
+    <string name="pref_toolbar">Панель инструментов</string>
+    <string name="pref_syntax">Подсветка синтаксиса</string>
+    <string name="pref_linenumbers">Нумерация строк</string>
+    <string name="pref_fontsize">Размер шрифта</string>
+    <string name="pref_dialog_fontsize">Размер шрифта</string>
+    <string name="pref_console_fontsize">Размер консольного шрифта</string>
+    <string name="pref_force_run">Быстрый запуск</string>
+    <string name="pref_ccopts">C опции</string>
+    <string name="pref_cxxopts">C++ опции</string>
+    <string name="pref_runargs">Выполнить без аргументов</string>
+    <string name="pref_codeeditor">Редактор кода</string>
+    <string name="pref_autopair">Закрывать парные символы</string>
+    <string name="pref_autoindent">Автоотступы</string>
+
+    <string name="exit_button">Выход</string>
+    <string name="selectFileOrFolder">Выберите файл или папку</string>
+    <string name="pathButton">Открыть</string>
+    <string name="unsupported_device">Версия этого устройства еще не поддерживается</string>
+    <string name="filebrowser_name">Файловый менеджер</string>
+    <string name="newButton">Новый</string>
+    <string name="closeButton">Закрыть</string>
+    <string name="saveButton">Сохранить</string>
+    <string name="saveAsButton">Сохранить как</string>
+    <string name="buildButton">Собрать</string>
+    <string name="playButton">Запустить</string>
+    <string name="logButton">Журнал сборки</string>
+    <string name="terminalButton">Терминал</string>
+    <string name="imgbuttdesc"></string>
+    <string name="menu_goto">Перейти</string>
+    <string name="menu_search">Поиск</string>
+    <string name="menu_undo">Отменить</string>
+    <string name="menu_redo">Повторить</string>
+
+    <string name="goto_line">Cтрока</string>
+    <string name="search_string">Строка для поиска</string>
+
+    <string name="projectButton">Проект</string>
+    <string name="project_new">Новый</string>
+    <string name="project_open">Открыть</string>
+    <string name="project_close">Закрыть</string>
+    <string name="project_import">Импортировать</string>
+    <string name="project_properties">Настройки</string>
+    
+	<string name="project_new_project">Новый проект</string>
+    <string name="project_new_project_message">Тип проекта</string>
+    
+    <string name="buildwindow_name">Собрать</string>
+    <string name="buildwindow_name_error">Неудачно</string>
+    <string name="buildwindow_name_done">Собрано</string>
+    <string name="button_continue">Продолжить</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="button_yes">Да</string>
+    <string name="button_no">Нет</string>
+    <string name="make_title">Make утилита</string>
+    <string name="make_args">Введите параметры</string>
+    <string name="gcc_title">Настройка компиляции</string>
+    <string name="gcc_args">Введите дополнительные аргументы</string>
+    <string name="gccbuildexe">Исполняемый файл</string>
+    <string name="gccnativeactivity">Native Activity</string>
+    <string name="gccrunexe">Запустить</string>
+    <string name="unknown_filetype">Неизвестный тип файла - нечего делать</string>
+    <string name="known_filetypes">Поддерживаются следующие типы файлов: .c .cpp .c++ .s .mk .mak Makefile makefile</string>
+    <string name="build_done">Готово</string>
+    <string name="build_finished">Завершено</string>
+    <string name="build_error">Код ошибки </string>
+    <string name="exe_dialog">Запуск программы</string>
+    <string name="exe_args">Аргументы командной строки</string>
+
+    <string name="log_empty">Журнал пуст</string>
+
+    <string name="console_name">Консоль</string>
+    <string name="console_executing">Выполняется</string>
+    <string name="console_finished">Завершено</string>
+    <string name="console_stopped">Прекращено</string>
+
+    <string name="new_file">Новый файл</string>
+    <string name="file_loaded">Файл загружен</string>
+    <string name="file_not_loaded">Не могу прочитать файл</string>
+    <string name="file_saved">Файл успешно сохранен</string>
+    <string name="file_not_saved">Не могу записать файл</string>
+
+    <string name="open_file">Открыть файл</string>
+    <string name="save_file">Сохранить файл</string>
+	<string name="select_folder">Выбор папки</string>
+    <string name="location">Путь</string>
+    <string name="cant_read_folder">папка не может быть прочитана!</string>
+    <string name="nnew">Новый</string>
+    <string name="select">Выбрать</string>
+    <string name="file_name">Имя файла:</string>
+    <string name="cancel">Отмена</string>
+    <string name="create">Сохранить</string>
+    <string name="no_data">Нет данных</string>
+    <color name="gray">#ffff0000</color>
+    <string name="err">Ошибка</string>
+    <string name="newDirectory">Новая папка</string>
+    <string name="create_new">Создать:</string>
+    <string name="cannot_create">Невозможно создать!</string>
+    <string name="homeDirectory">Домашняя директория</string>
+    <string name="sdDirectory">SD карта</string>
+
+    <string name="file_copy">Копировать</string>
+    <string name="file_cut">Вырезать</string>
+    <string name="file_paste">Вставить</string>
+    <string name="file_delete">Удалить</string>
+    
+    <string name="message_file_copy">Копирование</string>
+    <string name="message_file_move">Перемещение</string>
+    <string name="message_file_delete">Удаление</string>
+    
+    <string name="pkgmgrButton">Дополнения</string>
+    <string name="pkgmgr_name">Управление пакетами дополнений</string>
+    <string name="pkginstaller_name">Установка/Удаление дополнений</string>
+
+    <string name="pkg_repoupdatetask">Удаленный репозиторий</string>
+    <string name="pkg_repodownloading">Загружается список пакетов...</string>
+    <string name="pkg_repounavailable">Удаленный репозиторий временно не доступен. Пожалуйста, попробуйте позднее.</string>
+    <string name="pkg_packageforinstall">Используйте менеджер дополнений для установки пакета:\u0020</string>
+    <string name="pkg_prepareinstalltask">Обработка списка пакетов</string>
+    <string name="pkg_prepareinstall">Проверка зависимостей пакета...</string>
+    <string name="pkg_installpackagetask">Установка пакета</string>
+    <string name="pkg_installpackage">Устанавливается пакет</string>
+    <string name="pkg_uninstallpackagetask">Удаление пакета</string>
+    <string name="pkg_uninstallpackage">Удаляется пакет</string>
+    <string name="pkg_checkupdates">Проверка обновлений...</string>
+
+    <string name="pkg_name">Название</string>
+    <string name="pkg_version">Версия:\u0020</string>
+    <string name="pkg_description">Описание</string>
+    <string name="pkg_deps">Зависимости:\u0020</string>
+    <string name="pkg_file">Файл:\u0020</string>
+    <string name="pkg_filesize">Размер файла:\u0020</string>
+    <string name="pkg_size">Установленный размер:\u0020</string>
+
+    <string name="pkg_selected">Выбран\u0020</string>
+    <string name="pkg_selected1">Пакеты для установки:\u0020</string>
+    <string name="pkg_selected2">Будет загружено:\u0020</string>
+    <string name="pkg_selected3">Займет после установки:\u0020</string>
+    <string name="pkg_selectedforupdate">Обновление пакетов</string>
+    <string name="pkg_selectedforupdate1">Пакеты для обновления:\u0020</string>
+    <string name="pkg_alreadyinstalled">Этот пакет уже установлен</string>
+    <string name="pkg_install">Установить</string>
+    <string name="pkg_reinstall">Переустановить</string>
+    <string name="pkg_uninstall">Удалить</string>
+    <string name="pkg_status">Состояние: \u0020</string>
+    <string name="pkg_installed">Установлен</string>
+    <string name="pkg_notinstalled">Не установлен</string>
+    <string name="pkg_searchHint">Поиск пакета</string>
+
+    <string name="pkgMirrorsButton">Список репозиториев</string>
+    <string name="pkgUpdateButton">Проверить обновления</string>
+    
+	<string name="whatisnew">Что нового</string>
+</resources>

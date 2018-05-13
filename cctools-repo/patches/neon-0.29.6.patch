@@ -1,0 +1,12 @@
+--- s/config.sub-	2013-02-03 22:05:53.004618527 +0200
++++ s/config.sub	2013-02-03 22:06:12.064619037 +0200
+@@ -1332,6 +1332,9 @@
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-sunos5*)
+ 		os=`echo $os | sed -e 's|sunos5|solaris2|'`
+ 		;;

@@ -468,7 +468,7 @@ public class EditorActivity extends FullScreenActivity
         if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
             compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
         } else {
-            compileType = CompilerFactory.CompileType.GCC;
+            compileType = CompilerFactory.CompileType.GCC_810;
         }
         INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
         CompileManager compileManager = new CompileManager(EditorActivity.this);

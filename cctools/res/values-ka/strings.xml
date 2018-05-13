@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CCTools</string>
+
+    <string name="updating_caption">ინსტალაცია</string>
+    <string name="removing_caption">დეინსტალაცია</string>
+    <string name="establishing_handshake_message">კავშირის დამყარება.\nგთხოვთ დაელოდოთ</string>
+    <string name="wait_message">გთხოვთ დაელოდოთ...</string>
+    <string name="download_cctools">ინსტრუმენტების გადმოწერა</string>
+    <string name="received">მიღებულია\u0020</string>
+    <string name="from">\u0020სგან\u0020</string>
+    <string name="bytes">\u0020ბაიტი</string>
+    <string name="download_file">გადმოწერა</string>
+    <string name="unpacking_file">ამოაარქივება</string>
+    <string name="error_downloading">გადმოწერის შეცდომა, დაარესტარტეთ პაკეტების მენეჯერი და დააყენეთ თავიდან</string>
+    <string name="bad_archive">არასწორი ან დაზიანებული ფაილი, დაარესტარტეთ პაკეტების მენეჯერი და დააყენეთ თავიდან</string>
+    <string name="sd_no_memory">თავისუფალი ადგილი SD კარტაზე არასაკმარისია, საჭიროა\u0020</string>
+    <string name="sd_no_memory2">. წაშალეთ არასაჭირო ფაილები და თავიდან დააყენეთ პაკეტი</string>
+    <string name="cache_no_memory">თავისუფალი ადგილი არასაკმარისია, საჭიროა\u0020</string>
+    <string name="cache_no_memory1">, მაგრამ \u0020</string>
+    <string name="cache_no_memory2">\u0020მისაწვდომია. წაშალეთ არასაჭირო აპლიკაციები და თავიდან დააყენეთ პაკეტი</string>
+
+    <string name="toolchain_selector">სწრაფი ინსტალაცია</string>
+    <string name="toolchain_selectormsg">აირჩიეთ ინსტრუმენტები სწრაფი ინსტალაციისთვის. შემდგომში თქვენ შეგიძლიათ დააინსტალიროთ სხვა პაკეტები დანამატებში.</string>
+
+    <string name="exit_dialog">გამოსვლის დადასტურება</string>
+    <string name="exit_dialog_text">ტექსტი შეცვლილია, მაგრამ არ არის შენახული. გსურთ გამოსვლა?</string>
+    <string name="exit_dialog_yes">კი</string>
+    <string name="exit_dialog_no">არა</string>
+
+    <string name="save_warn_dialog">ყურადღება!</string>
+    <string name="save_warn_text">ტექსტი შეცვლილია, მაგრამ არ არის შენახული. გსურთ გაგრძელება?</string>
+
+    <string name="about_dialog">CCTools IDE</string>
+    <string name="about_dialog_text">C/C++ შემუშავების ინსტრუმენტები\nვერსია</string>
+    <string name="about_dialog_text2">\nCopyright &#169; 2013, Alexander Chukov</string>
+    <string name="about_dialog_show">პროგრამის ვებ-გვერდი</string>
+
+    <string name="about_button">პროგრამის შესახებ</string>
+    <string name="prefs_button">პარამეტრები</string>
+
+    <string name="preferences">პარამეტრები</string>
+    <string name="pref_updater">აპდეიტების შემოწმება გაშვების დროს</string>
+    <string name="pref_toolbar">პანელი</string>
+    <string name="pref_syntax">სინტაქსის შეფერადება</string>
+    <string name="pref_linenumbers">სტრიქონების ნომრები</string>
+    <string name="pref_fontsize">ფონტის ზომა</string>
+    <string name="pref_dialog_fontsize">ფონტის ზომა</string>
+    <string name="pref_console_fontsize">კონსოლის ფონტის ზომა</string>
+    <string name="pref_force_run">სწრაფი გაშვება</string>
+    <string name="pref_ccopts">C ოპციები</string>
+    <string name="pref_cxxopts">C++ ოპციები</string>
+    <string name="pref_runargs">გაშვება არგუმენტების გარეშე</string>
+    <string name="pref_codeeditor">კოდის რედაქტორი</string>
+    <string name="pref_autopair">ავტოპეირინგი</string>
+    <string name="pref_autoindent">ავტოინდენტი</string>
+
+    <string name="exit_button">გასვლა</string>
+    <string name="selectFileOrFolder">აირჩიეთ ფაილი ან დირექტორია</string>
+    <string name="pathButton">გახსნა</string>
+    <string name="unsupported_device">ამ მოწყობილობის ოპერაციული სისტემის ვერსიის მხარდაჭერა ჯერ არ არსებობს</string>
+    <string name="filebrowser_name">ფაილების ბრაუზერი</string>
+    <string name="newButton">ახალი</string>
+    <string name="saveButton">შენახვა</string>
+    <string name="saveAsButton">შენახვა სხვა სახელით</string>
+    <string name="buildButton">აწყობა</string>
+    <string name="playButton">გაშვება</string>
+    <string name="logButton">აწყობის ლოგი</string>
+    <string name="terminalButton">ტერმინალი</string>
+    <string name="imgbuttdesc"></string>
+    <string name="menu_goto">გადასვლა</string>
+    <string name="menu_search">ძიება</string>
+    <string name="menu_undo">გაუქმება</string>
+    <string name="menu_redo">განმეორება</string>
+
+    <string name="goto_line">სტრიქონი</string>
+    <string name="search_string">სტრიქონის ძიება</string>
+
+    <string name="buildwindow_name">აწყობა</string>
+    <string name="buildwindow_name_error">ჩავარდნილია</string>
+    <string name="buildwindow_name_done">დასრულებულია</string>
+    <string name="button_continue">გაგრძელება</string>
+    <string name="button_cancel">გაუქმება</string>
+    <string name="button_yes">კი</string>
+    <string name="button_no">არა</string>
+    <string name="make_title">Make პროგრამა</string>
+    <string name="make_args">შეიყვანეთ პარამეტრები</string>
+    <string name="gcc_title">სორს ფაილის კომპილაცია</string>
+    <string name="gcc_args">შეიყვანეთ არგუმენტები</string>
+    <string name="gccbuildexe">გაშვებადის შექმნა</string>
+    <string name="gccrunexe">გაშვება</string>
+    <string name="gccnativeactivity">Native Activity</string>
+    <string name="unknown_filetype">უცნობი ფაილის ტიპი</string>
+    <string name="known_filetypes">ცნობადი ფაილის ტიპები: .c .cpp .c++ .s .mk .mak Makefile makefile</string>
+    <string name="build_done">მძადაა</string>
+    <string name="build_finished">დასრულებულია</string>
+    <string name="build_error">შეცდომის კოდი </string>
+    <string name="exe_dialog">ფაილის გაშვება</string>
+    <string name="exe_args">ბრძანებების სტრიქონის არგუმენტები</string>
+
+    <string name="log_empty">ლოგი ცარიელია</string>
+
+    <string name="console_name">ტერმინალი</string>
+    <string name="console_executing">გაშვებულია</string>
+    <string name="console_finished">დასრულებულია</string>
+    <string name="console_stopped">შეწყვეტილია</string>
+
+    <string name="new_file">ახალი ფაილი</string>
+    <string name="file_loaded">ფაილი გადმოწერილია</string>
+    <string name="file_not_loaded">ფაილის წაკითხვა შეუძლებელია</string>
+    <string name="file_saved">ფაილი შენახულია</string>
+    <string name="file_not_saved">ფაილში ჩაწერა შეუძლებელია</string>
+
+    <string name="open_file">ფაილის გახსნა</string>
+    <string name="save_file">ფაილის შენახვა</string>
+    <string name="location">ადგილმდებარეობა</string>
+    <string name="cant_read_folder">დირექტორიის წაკითხვა შეუძლებელია!</string>
+    <string name="nnew">ახალი</string>
+    <string name="select">არჩევა</string>
+    <string name="file_name">ფაილის სახელი:</string>
+    <string name="cancel">გაუქმება</string>
+    <string name="create">შენახვა</string>
+    <string name="no_data">მონაცემები არ არსებობს</string>
+    <color name="gray">#ffff0000</color>
+    <string name="err">შეცდომა</string>
+    <string name="newDirectory">ახალი დირექტორია</string>
+    <string name="create_new">შექმნა:</string>
+    <string name="cannot_create">შექმნა შეუძლებელია!</string>
+
+    <string name="pkgmgrButton">დანამატები</string>
+    <string name="pkgmgr_name">დანამატების მენეჯერი</string>
+    <string name="pkginstaller_name">დანამატების ინსტალაცია/დეინსტალაცია</string>
+
+    <string name="pkg_repoupdatetask">გარე რეპოზიტორი</string>
+    <string name="pkg_repodownloading">პაკეტების სიის გადმოწერა...</string>
+    <string name="pkg_prepareinstalltask">პაკეტების სიის დამუშავება</string>
+    <string name="pkg_prepareinstall">პაკეტის დამოკიდებულებების შემოწმება...</string>
+    <string name="pkg_installpackagetask">პაკეტის ინსტალაცია</string>
+    <string name="pkg_installpackage">პაკეტის ინსტალაცია</string>
+    <string name="pkg_uninstallpackagetask">პაკეტის დეინსტალაცია</string>
+    <string name="pkg_uninstallpackage">პაკეტის დეინსტალაცია</string>
+    <string name="pkg_checkupdates">აპდეიტების შემოწმება...</string>
+
+    <string name="pkg_name">დასახელება</string>
+    <string name="pkg_version">ვერსია:\u0020</string>
+    <string name="pkg_description">აღწერა</string>
+    <string name="pkg_deps">დამოკიდებულია:\u0020</string>
+    <string name="pkg_file">ფაილი:\u0020</string>
+    <string name="pkg_filesize"> ფაილის ზომა:\u0020</string>
+    <string name="pkg_size"> დაინსტალირებული ზომა:\u0020</string>
+
+    <string name="pkg_selected">არჩეულია \u0020</string>
+    <string name="pkg_selected1">დასაინსტალირებელი ზომა:\u0020</string>
+    <string name="pkg_selected2">გადმოსაწერი ზომა:\u0020</string>
+    <string name="pkg_selected3">ინსტალირებული ზომა:\u0020</string>
+    <string name="pkg_selectedforupdate">პაკეტების აპდეიტი</string>
+    <string name="pkg_selectedforupdate1">დასააპდეიტებელი პაკეტები:\u0020</string>
+    <string name="pkg_alreadyinstalled">ეს პაკეტი უკვე ინსტალირებულია</string>
+    <string name="pkg_install">ინსტალაცია</string>
+    <string name="pkg_reinstall">რეინსტალაცია</string>
+    <string name="pkg_uninstall">დეინსტალაცია</string>
+    <string name="pkg_status">სტატუსი: \u0020</string>
+    <string name="pkg_installed">ინსტალირებულია</string>
+    <string name="pkg_notinstalled">არ არის ინსტალირებული</string>
+    <string name="pkg_searchHint">პაკეტების ძიება</string>
+
+    <string name="pkgUpdateButton">აპდეიტების შემოწმება</string>
+</resources>

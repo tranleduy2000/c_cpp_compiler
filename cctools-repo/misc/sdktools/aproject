@@ -1,0 +1,466 @@
+#!/system/bin/sh
+
+TOPDIR=$PWD
+
+if [ "$TOPDIR" = "" ]; then
+    TOPDIR="."
+fi
+
+TOPDIR=`realpath $TOPDIR`
+
+error() {
+    echo "ERROR: $@"
+    exit 1
+}
+
+usage_create() {
+    echo
+    echo "Options for create:"
+    echo "-n --name                    - Project name. [required]"
+    echo "-t --target                  - Target ID of the new project."
+    echo "-p --path                    - The new project's directory. [required]"
+    echo "-k --package                 - Android package name. [required]"
+    echo "-a --activity                - Name of the default Activity that is created."
+    echo "                               [required for application project]"
+    echo "-N --appname                 - Application name. [application project only]"
+    echo
+    
+    exit 1
+}
+
+usage() {
+    echo
+    echo "Usage:"
+    echo "create project [options]     - Creates a new Android project."
+    echo "create lib-project [options] - Creates a new Android library project."
+    echo "build [debug]                - Build a project."
+    echo "build relese                 - Build a release project."
+    echo "clean                        - Clean a project files."
+
+    usage_create
+}
+
+if [ "$1" = "create" ]; then
+    PROJECT_LIBRARY=
+    if [ "$2" = "lib-project" ]; then
+	PROJECT_LIBRARY="yes"
+    elif [ ! "$2" = "project" ]; then
+	usage
+    fi
+
+    shift 2
+
+    USE_GUIBOX=
+    O=`getopt -n aproject -l path:,package:,activity:,name:,appname:,target:,gui -o p:k:a:n:N:t:g -- "$@"` || exit 1
+    eval set -- "$O"
+    while true; do
+	case "$1" in
+	-p|--path)
+	    PROJECT_PATH="$2"; shift 2;;
+	-k|--package)
+	    PROJECT_PACKAGE="$2"; shift 2;;
+	-a|--activity)
+	    PROJECT_ACTIVITY="$2";shift 2;;
+	-n|--name)
+	    PROJECT_NAME="$2"; shift 2;;
+	-N|--appname)
+	    PROJECT_APPNAME="$2"; shift 2;;
+	-t|--target)
+	    PROJECT_TARGET="$2"; shift 2;;
+	-g|--gui)
+	    USE_GUIBOX=yes; shift;;
+	--)
+	    shift; break;;
+	*)
+	    echo Error; exit 1;;
+	esac
+    done
+
+    if [ ! "$@" = "" ]; then
+	echo "aproject: unrecognized options: $@"
+	usage_create
+    fi
+
+    if [ "$PROJECT_PATH" = "" -o "$PROJECT_PACKAGE" = "" -o "$PROJECT_NAME" = "" ]; then
+	if [ "$USE_GUIBOX" = "yes" ]; then
+	    adialog --msgbox --title "Error!" --message "Cannot create a project" --text "Check project path, package or name."
+	    exit 1
+	else
+	    usage_create
+	fi
+    fi
+
+    if [ "$PROJECT_LIBRARY" = "" -a "$PROJECT_ACTIVITY" = "" ]; then
+	if [ "$USE_GUIBOX" = "yes" ]; then
+	    adialog --msgbox --title "Error!" --message "Cannot create a project" --text "Empty activity name."
+	    exit 1
+	else
+	    usage_create
+	fi
+    fi
+
+    if [ "$PROJECT_APPNAME" = "" ]; then
+	PROJECT_APPNAME=$PROJECT_NAME
+    fi
+
+    if [ "$PROJECT_TARGET" = "" ]; then
+	ANDROID_SDK_VER=`getprop ro.build.version.sdk`
+    else
+	ANDROID_SDK_VER=$PROJECT_TARGET
+    fi
+    ANDROID_SDK=${CCTOOLSDIR}/sdk/android-${ANDROID_SDK_VER}
+
+    if [ ! -d $ANDROID_SDK ]; then
+	#
+	# FIXME: get available version from sdk directory
+	#
+	ANDROID_SDK_VER="19"
+	ANDROID_SDK=${CCTOOLSDIR}/sdk/android-${ANDROID_SDK_VER}
+    fi
+
+    if [ ! -d $ANDROID_SDK ]; then
+	if [ "$USE_GUIBOX" = "yes" ]; then
+	    adialog --msgbox --title "Error!" --message "Cannot create a project" --text "No SDK Android-${ANDROID_SDK_VER} found."
+	    exit 1
+	else
+	    echo "ERROR: No SDK Android-${ANDROID_SDK_VER} found!"
+	    exit 1
+	fi
+    fi
+
+    p="${PROJECT_PATH}/${PROJECT_NAME}"
+    p1="${p}/src/`echo $PROJECT_PACKAGE | tr '.' '/'`"
+
+    for d in drawable-hdpi drawable-ldpi drawable-mdpi drawable-xhdpi drawable-xxhdpi layout menu values xml; do
+	mkdir -p ${p}/res/$d
+    done
+
+    mkdir -p $p1
+    cp -f ${ANDROID_SDK}/template/AndroidManifest.template ${p}/AndroidManifest.xml
+    cp -f ${ANDROID_SDK}/template/layout.template          ${p}/res/layout/main.xml
+    cp -f ${ANDROID_SDK}/template/strings.template         ${p}/res/values/strings.xml
+    cp -f ${ANDROID_SDK}/template/ic_launcher_ldpi.png     ${p}/res/drawable-ldpi/ic_launcher.png
+    cp -f ${ANDROID_SDK}/template/ic_launcher_mdpi.png     ${p}/res/drawable-mdpi/ic_launcher.png
+    cp -f ${ANDROID_SDK}/template/ic_launcher_hdpi.png     ${p}/res/drawable-hdpi/ic_launcher.png
+
+    if [ "$PROJECT_LIBRARY" = "yes" ]; then
+    cp -f ${ANDROID_SDK}/template/java_file.template       ${p1}/${PROJECT_NAME}.java
+    sed -i -e "s|PACKAGE|$PROJECT_PACKAGE|" \
+           -e "s|ACTIVITY_ENTRY_NAME|$PROJECT_NAME|" \
+           -e "s|ACTIVITY_CLASS_NAME|$PROJECT_NAME|" \
+           -e "s|ICON|android:icon=\"@drawable/ic_launcher\"|" ${p}/AndroidManifest.xml ${p1}/${PROJECT_NAME}.java
+    else
+    cp -f ${ANDROID_SDK}/template/java_file.template       ${p1}/${PROJECT_ACTIVITY}.java
+    sed -i -e "s|PACKAGE|$PROJECT_PACKAGE|" \
+           -e "s|ACTIVITY_ENTRY_NAME|$PROJECT_ACTIVITY|" \
+           -e "s|ACTIVITY_CLASS_NAME|$PROJECT_ACTIVITY|" \
+           -e "s|ICON|android:icon=\"@drawable/ic_launcher\"|" ${p}/AndroidManifest.xml ${p1}/${PROJECT_ACTIVITY}.java
+    fi
+
+    sed -i -e "s|PACKAGE|$PROJECT_PACKAGE|" \
+           -e "s|ACTIVITY_ENTRY_NAME|$PROJECT_APPNAME|" \
+           -e "s|ACTIVITY_CLASS_NAME|$PROJECT_APPNAME|" \
+           -e "s|ICON|android:icon=\"@drawable/ic_launcher\"|" ${p}/res/layout/main.xml ${p}/res/values/strings.xml
+
+    sed -i -e "s|<application|<uses-sdk android:minSdkVersion=\"5\" android:targetSdkVersion=\"$ANDROID_SDK_VER\" />\n    <application|" ${p}/AndroidManifest.xml
+
+cat > ${p}/project.properties << EOF
+# This file is automatically generated by aproject.
+
+target=android-${ANDROID_SDK_VER}
+EOF
+
+    if [ "$PROJECT_LIBRARY" = "yes" ]; then
+
+	echo "android.library=true" >> ${p}/project.properties
+
+    fi
+
+    if [ "$USE_GUIBOX" = "yes" ]; then
+	adialog --msgbox --title "Congratulation!" --message "New project created!" --text "Project path is ${p}."
+    fi
+    exit 0
+fi
+
+get_ext_libdirs() {
+    for f in project.properties default.properties; do
+	if [ -e ${TOPDIR}/$f ]; then
+	    cat ${TOPDIR}/$f | grep android.library.reference | cut -f2 -d=
+	    break
+	fi
+    done
+}
+
+is_library() {
+    for f in project.properties default.properties; do
+	if [ -e ${TOPDIR}/$f ]; then
+	    cat ${TOPDIR}/$f | grep android.library | head -n1 | cut -f2 -d=
+	    break
+	fi
+    done
+}
+
+check_android_manifest() {
+    if [ ! -f AndroidManifest.xml ]; then
+	echo "Not android project directory!"
+	exit 1
+    fi
+}
+
+PROJECTNAME=`aproject-helper AppName 2>/dev/null`
+if [ "$PROJECTNAME" = "" ]; then
+    PROJECTNAME=`basename $TOPDIR`
+fi
+
+APROJECT_BIN=`realpath $0`
+
+VERBOSE_JAVAC=
+VERBOSE_JAR=
+VERBOSE_DEX=
+VERBOSE_APKBUILDER=
+VERBOSE_AAPT=
+
+if [ "$1" = "-v" ]; then
+    VERBOSE_JAVAC="-verbose"
+    VERBOSE_JAR="v"
+    VERBOSE_DEX="--verbose"
+    VERBOSE_APKBUILDER="-v"
+    VERBOSE_AAPT="-v"
+    shift
+fi
+
+if [ "$1" = "clean" ]; then
+    check_android_manifest
+    echo "Cleaning $PROJECTNAME"
+    rm -rf bin gen
+    for d in `get_ext_libdirs`; do
+	cd $d && $APROJECT_BIN $VERBOSE_AAPT clean
+	cd $TOPDIR
+    done
+    exit 0
+fi
+
+if [ ! "$1" = "build" ]; then
+    usage
+fi
+
+shift
+
+check_android_manifest
+
+for d in `get_ext_libdirs`; do
+    cd $d
+    $APROJECT_BIN $VERBOSE_AAPT build $@ || error "external library"
+    cd $TOPDIR
+done
+
+echo "Build $PROJECTNAME"
+
+PROJECT_RELEASE="no"
+if [ "$1" = "release" ]; then
+    PROJECT_RELEASE="yes"
+fi
+
+mkdir -p bin/classes gen
+mkdir -p bin/res
+
+cp -f AndroidManifest.xml bin/
+
+ANDROID_SDK_VER=`aproject-helper TargetSDK`
+if [ "$ANDROID_SDK_VER" = "" ]; then
+    ANDROID_SDK_VER=`aproject-helper MinSDK`
+fi
+
+if [ "$ANDROID_SDK_VER" = "" ]; then
+    echo "WARNING: No SDK version found in AndroidManifest.xml!"
+    ANDROID_SDK_VER=`getprop ro.build.version.sdk`
+    echo "WARNING: Use OS defined version $ANDROID_SDK_VER"
+fi
+
+ANDROID_SDK=${CCTOOLSDIR}/sdk/android-${ANDROID_SDK_VER}
+
+if [ ! -d $ANDROID_SDK ]; then
+    echo "ERROR: No SDK Android-${ANDROID_SDK_VER} found!"
+    exit 1
+fi
+
+find_libs_for_aapt() {
+    local d=
+    for d in $@; do
+	test -d $d && find $d -name "*.jar" -type f -exec printf "-I {} " \;
+    done
+}
+
+find_aidl_for_aidl() {
+    local d=
+    for d in $@; do
+	test -d $d && find $d -name "*.aidl" -type f -exec printf "-p{} " \;
+    done
+}
+
+find_libs_for_javac() {
+    local d=
+    local x=
+    for d in $@; do
+	test -d $d && find $d -name "*.jar" -type f -exec printf "{}:" \;
+    done
+}
+
+find_libs_for_dex() {
+    local d=
+    local x=
+    for d in $@; do
+	test -d $d && find $d -name "*.jar" -type f -exec printf "{} " \;
+    done
+}
+
+get_ext_resources() {
+    local d
+    for d in $@; do
+	printf "-S ${d}/bin/res -S ${d}/res "
+    done
+}
+
+find_ext_libs_for_javac() {
+    local d
+    for d in $@; do
+	find_libs_for_javac ${d}/bin ${d}/libs
+    done
+}
+
+find_ext_libs_for_dex() {
+    local d
+    for d in $@; do
+	find_libs_for_dex ${d}/bin ${d}/libs
+    done
+}
+
+ACTIVITIES=`aproject-helper Activities`
+EXT_LIBDIRS=`get_ext_libdirs`
+
+if [ "$PROJECT_RELEASE" = "yes" ]; then
+    aproject-helper BuildConfig release
+else
+    aproject-helper BuildConfig debug
+fi
+
+if [ ! "$EXT_LIBDIRS" = "" ]; then
+    AAPT_OVERLAY="--auto-add-overlay"
+fi
+
+echo "Starting aapt..."
+
+if [ "$IS_LIBRARY" = "true" -o "$ACTIVITIES" = "" ]; then
+    aapt p \
+	--non-constant-id \
+	-f $VERBOSE_AAPT \
+	-m \
+	--output-text-symbols ${TOPDIR}/bin \
+	${AAPT_OVERLAY} \
+	-M ${TOPDIR}/bin/AndroidManifest.xml \
+	-F ${TOPDIR}/bin/resources.res \
+	-S ${TOPDIR}/bin/res \
+	-S ${TOPDIR}/res \
+	`get_ext_resources $EXT_LIBDIRS`\
+	`find_libs_for_aapt $ANDROID_SDK libs $ANDROID_LIBS` \
+	-J ${TOPDIR}/gen \
+	--generate-dependencies \
+	 || error "aapt"
+else
+    aapt p \
+	-f $VERBOSE_AAPT \
+	-m \
+	--output-text-symbols ${TOPDIR}/bin \
+	${AAPT_OVERLAY} \
+	-M ${TOPDIR}/bin/AndroidManifest.xml \
+	-F ${TOPDIR}/bin/resources.res \
+	-S ${TOPDIR}/bin/res \
+	-S ${TOPDIR}/res \
+	`get_ext_resources $EXT_LIBDIRS`\
+	`find_libs_for_aapt $ANDROID_SDK libs $ANDROID_LIBS` \
+	-J ${TOPDIR}/gen \
+	--generate-dependencies \
+	 || error "aapt"
+fi
+
+echo "Starting aidl..."
+
+find . -name "*.aidl" -exec aidl -Isrc `find_aidl_for_aidl $ANDROID_SDK $ANDROID_AIDL` -ogen {} \;
+
+echo "Starting javac..."
+
+javac $VERBOSE_JAVAC \
+    -d ${TOPDIR}/bin/classes \
+    -classpath ${TOPDIR}/bin/classes:`find_ext_libs_for_javac $EXT_LIBDIRS`:`find_libs_for_javac $ANDROID_SDK libs $ANDROID_LIBS` \
+    -sourcepath ${TOPDIR}/src:${TOPDIR}/gen \
+    -target 1.5 \
+    -bootclasspath ${ANDROID_SDK}/android.jar \
+    -encoding UTF-8 \
+    -source 1.5 \
+    `find src -name "*.java"` \
+    `find gen -name "*.java"` \
+    || error "javac"
+
+IS_LIBRARY=`is_library`
+
+if [ "$IS_LIBRARY" = "true" -o "$ACTIVITIES" = "" ]; then
+
+    echo "Build library..."
+
+    jar c${VERBOSE_JAR}f bin/${PROJECTNAME}.jar -C bin/classes .
+else
+
+    mkdir -p ${TOPDIR}/bin/dexedLibs
+    DEX_LIBS=
+    DEXED_LIBS=
+    for f in `find_ext_libs_for_dex $EXT_LIBDIRS` `find_libs_for_dex libs`; do
+	for v in $DEX_LIBS; do
+	    if cmp -s $f $v; then
+		f=""
+		break
+	    fi
+	done
+	if [ ! "$f" = "" ]; then
+	    DEX_LIBS="$DEX_LIBS $f"
+	    fname=`basename $f`
+	    
+	    echo "Pre-dexing library ${fname}..."
+	    
+	    dx --dex \
+		$VERBOSE_DEX \
+		--output ${TOPDIR}/bin/dexedLibs/${fname} \
+		$f \
+		|| error "dx"
+	    DEXED_LIBS="$DEXED_LIBS ${TOPDIR}/bin/dexedLibs/${fname}"
+	fi
+    done
+
+    echo "Starting dx..."
+
+    dx --dex \
+	$VERBOSE_DEX \
+	--no-strict \
+	--output=bin/${PROJECTNAME}.dex \
+	`find bin/classes -maxdepth 1 -not -path "bin/classes"` \
+	$DEXED_LIBS \
+	|| error "dx"
+
+    NATIVE_LIBS=
+    if [ -d libs ]; then
+	NATIVE_LIBS="-nf libs"
+    fi
+
+    echo "Starting apkbuilder..."
+
+    apkbuilder bin/${PROJECTNAME}.apk \
+	$VERBOSE_APKBUILDER \
+	-u \
+	-z ./bin/resources.res \
+	-f ./bin/${PROJECTNAME}.dex \
+	$NATIVE_LIBS \
+	|| error "apkbuilder"
+
+    echo "Starting apksigner..."
+
+    apksigner bin/${PROJECTNAME}.apk bin/${PROJECTNAME}-signed.apk || error "apksigner"
+fi

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CCTools</string>
+
+    <string name="updating_caption">Установка</string>
+    <string name="removing_caption">Видалення</string>
+    <string name="establishing_handshake_message">Установка з\'єднання.\nБудь ласка, зачекайте</string>
+    <string name="wait_message">Будь ласка, зачекайте...</string>
+    <string name="download_cctools">Завантаження інструментів</string>
+    <string name="received">Отримано</string>
+    <string name="from"> від </string>
+    <string name="bytes"> байта(ів)</string>
+    <string name="download_file"> Завантаження</string>
+    <string name="unpacking_file"> Розпакування</string>
+    <string name="error_downloading">Помилка при завантаженні файлу, перезапустіть менеджер пакетів та перевстановіть пакет</string>
+    <string name="bad_archive">Помилковий або пошкоджений файл, перезапустіть менеджер пакетів та перевстановіть пакет</string>
+    <string name="sd_no_memory">Немає вільного місця на карті пам\'яті, необхідні</string>
+    <string name="sd_no_memory2">MB. Видаліть непотрібні файли, запустіть менеджер пакетів та встановіть пакет знову</string>
+    <string name="cache_no_memory">Немає вільного місця, необхідні</string>
+    <string name="cache_no_memory1">MB, але </string>
+    <string name="cache_no_memory2">MB доступні. Видаліть непотрібні файлі, запустіть менеджер пакетів та встановіть пакет знову</string>
+
+    <string name="toolchain_selector">Швидка установка</string>
+    <string name="toolchain_selectormsg">Оберіть інструменти для швідкої установці. Інші пакети можна встановити пізніше з Доповнень.</string>
+
+    <string name="exit_dialog">Підтвердіть вихід</string>
+    <string name="exit_dialog_text">Текст був змінений, але не збережений. Продовжити?</string>
+    <string name="exit_dialog_yes">Так</string>
+    <string name="exit_dialog_no">Ні</string>
+
+    <string name="save_warn_dialog">Увага!</string>
+    <string name="save_warn_text">Текст був змінений, але не збережений. Продовжити?</string>
+
+    <string name="about_dialog">CCTools IDE</string>
+    <string name="about_dialog_text">C/C++ інструменти розробки\nВерсiя</string>
+    <string name="about_dialog_text2">\nCopyright &#169; 2012-2013, Alexander Chukov</string>
+    <string name="about_dialog_show">Домашня сторінка</string>
+
+    <string name="about_button">Про програму</string>
+    <string name="prefs_button">Налаштування</string>
+
+    <string name="preferences">Налаштування</string>
+    <string name="pref_updater">Перевірити оновлення під час запуска</string>
+    <string name="pref_toolbar">Панель інструментів</string>
+    <string name="pref_syntax">Підсвічування синтаксису</string>
+    <string name="pref_linenumbers">Нумерація рядків</string>	
+    <string name="pref_fontsize">Розмір шрифту</string>
+    <string name="pref_dialog_fontsize">розмір шрифту</string>
+    <string name="pref_console_fontsize">Розмір шрифту консолі</string>
+    <string name="pref_force_run">Швидкий запуск</string>
+    <string name="pref_ccopts">С опціі</string>
+    <string name="pref_cxxopts">С++ опціі</string>
+    <string name="pref_runargs">Виконати без аргументів</string>
+    <string name="pref_codeeditor">Редактор коду</string>
+    <string name="pref_autopair">Зачиняти парні сімволи</string>
+    <string name="pref_autoindent">Автовідступи</string>
+
+    <string name="exit_button">Вихід</string>
+    <string name="selectFileOrFolder">Оберіть файл або папку</string>
+    <string name="pathButton">Відкрити</string>
+    <string name="unsupported_device">Цей пристрій ще не підтрімується</string>
+    <string name="filebrowser_name">Файловий менеджер</string>
+    <string name="newButton">Новий</string>
+    <string name="saveButton">Зберегти</string>
+    <string name="saveAsButton">Зберегти як</string>
+    <string name="buildButton">Зібрати</string>
+    <string name="playButton">Запусити</string>
+    <string name="logButton">Журнал збірки</string>
+    <string name="terminalButton">Термінал</string>
+    <string name="imgbuttdesc"></string>
+    <string name="menu_goto">Перейти</string>
+    <string name="menu_search">Пошук</string>
+    <string name="menu_undo">Відмінити</string>
+    <string name="menu_redo">Повторити</string>
+
+    <string name="goto_line">Рядок</string>
+    <string name="search_string">Введіть рядок пошуку</string>
+
+    <string name="buildwindow_name">Зібрати</string>
+    <string name="buildwindow_name_error">Не вдалося</string>
+    <string name="buildwindow_name_done">Завершення</string>
+    <string name="button_continue">Продовження</string>
+    <string name="button_cancel">Відмінити</string>
+    <string name="button_yes">Так</string>
+    <string name="button_no">Ні</string>
+    <string name="make_title">Make утиліта</string>
+    <string name="make_args">Введіть параметри</string>
+    <string name="gcc_title">Налаштування компіляції</string>
+    <string name="gcc_args">Введіть аргументи</string>
+    <string name="gccbuildexe">Зробити виконуваним</string>
+    <string name="gccnativeactivity">Native Activity</string>
+    <string name="gccrunexe">Виконувати</string>
+    <string name="unknown_filetype">Невідомий тип файлу - нічого не виконувати</string>
+    <string name="known_filetypes">Підтримуються наступні формати файлів: .c .cpp .c++ .s .mk .mak Makefile makefile</string>
+    <string name="build_done">Зроблено</string>
+    <string name="build_finished">Завершено</string>
+    <string name="build_error">Код помилки </string>
+    <string name="exe_dialog">Запуск програми</string>
+    <string name="exe_args">Аргументи командного рядку</string>
+
+    <string name="log_empty">Журнал порожній</string>
+
+    <string name="console_name">Термінал</string>
+    <string name="console_executing">Виконування операції</string>
+    <string name="console_finished">Завершено</string>
+    <string name="console_stopped">Припинено</string>
+
+    <string name="new_file">Новий файл</string>
+    <string name="file_loaded">Файл успішно завантажен</string>
+    <string name="file_not_loaded">Не вдається прочитати файл</string>
+    <string name="file_saved">Файл успішно збережен</string>
+    <string name="file_not_saved">Неможливо записати файл</string>
+
+    <string name="open_file">Відкрити файл</string>
+    <string name="save_file">Зберегти файл</string>
+    <string name="location">Шлях файлу</string>
+    <string name="cant_read_folder">Папка не може бути прочитана!</string>
+    <string name="nnew">Новий</string>
+    <string name="select">Виберіть</string>
+    <string name="file_name">Назва файлу:</string>
+    <string name="cancel">Вихід</string>
+    <string name="create">Зберегти</string>
+    <string name="no_data">Немає даних </string>
+    <color name="gray">#ffff0000</color>
+    <string name="err">Помилка</string>
+    <string name="newDirectory">Нова папка</string>
+    <string name="create_new">Створити:</string>
+    <string name="cannot_create">Неможливо створити!</string>
+
+    <string name="pkgmgrButton">Доповнення</string>
+    <string name="pkgmgr_name">Управління пакетами доповнень</string>
+    <string name="pkginstaller_name">Установка/відалення доповнень</string>
+
+    <string name="pkg_repoupdatetask">Віддалений репозіторій</string>
+    <string name="pkg_repodownloading">Завантажується список пакетів...</string>
+    <string name="pkg_prepareinstalltask">Обробка спіска пакетів</string>
+    <string name="pkg_prepareinstall">Перевірка залежностей пакету...</string>
+    <string name="pkg_installpackagetask">Установка пакету</string>
+    <string name="pkg_installpackage">Пакет встановлюється</string>
+    <string name="pkg_uninstallpackagetask">Видалення пакету</string>
+    <string name="pkg_uninstallpackage">Пакет видаляється</string>
+    <string name="pkg_checkupdates">Перевірка оновлень...</string>
+
+    <string name="pkg_name">Назва</string>
+    <string name="pkg_version">Версія:\u0020</string>
+    <string name="pkg_description">Опис</string>
+    <string name="pkg_deps">Залежності:\u0020</string>
+    <string name="pkg_file">Файл:\u0020</string>
+    <string name="pkg_filesize">Розмір файлу:\u0020</string>
+    <string name="pkg_size">Встановлений розмір:\u0020</string>
+
+    <string name="pkg_selected">Обран\u0020</string>
+    <string name="pkg_selected1">Пакети для установки:\u0020</string>
+    <string name="pkg_selected2">Будє завантажено:\u0020</string>
+    <string name="pkg_selected3">Займе після установки:\u0020</string>
+    <string name="pkg_selectedforupdate">Оновлення пакетів</string>
+    <string name="pkg_selectedforupdate1">Пакети для оновлення:\u0020</string>
+    <string name="pkg_alreadyinstalled">Цей пакет вже установлений</string>
+    <string name="pkg_install">Встановити</string>
+    <string name="pkg_reinstall">Перевстановити</string>
+    <string name="pkg_uninstall">Видалить</string>
+    <string name="pkg_status">Стан: \u0020</string>
+    <string name="pkg_installed">Встановлений</string>
+    <string name="pkg_notinstalled">Не встановлений</string>
+    <string name="pkg_searchHint">Пошук пакету</string>
+
+    <string name="pkgUpdateButton">Перевірити оновлення</string>
+</resources>

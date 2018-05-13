@@ -1,0 +1,23 @@
+--- s/src/lib_package.c.original	2012-11-30 18:18:39.285051093 +0700
++++ s/src/lib_package.c	2012-11-30 18:33:05.209020477 +0700
+@@ -589,8 +589,18 @@
+   lua_getfield(L, LUA_REGISTRYINDEX, "LUA_NOENV");
+   noenv = lua_toboolean(L, -1);
+   lua_pop(L, 1);
+-  setpath(L, "path", LUA_PATH, LUA_PATH_DEFAULT, noenv);
+-  setpath(L, "cpath", LUA_CPATH, LUA_CPATH_DEFAULT, noenv);
++  if (getenv("CCTOOLSDIR")) {
++    static char lua_path[2048];
++    static char lua_cpath[2048];
++    char *base = getenv("CCTOOLSDIR");
++    snprintf(lua_path,  sizeof(lua_path)  - 1, "./?.lua;%s/share/luajit-2.0.0/?.lua;%s/share/lua/5.1/?.lua;%s/share/lua/5.1/?/init.lua", base, base, base);
++    snprintf(lua_cpath, sizeof(lua_cpath) - 1, "./?.so;%s/lib/lua/5.1/?.so;%s/lib/lua/5.1/loadall.so", base, base);
++    setpath(L, "path",  LUA_PATH,  lua_path,  noenv);
++    setpath(L, "cpath", LUA_CPATH, lua_cpath, noenv);
++  } else {
++    setpath(L, "path",  LUA_PATH,  LUA_PATH_DEFAULT,  noenv);
++    setpath(L, "cpath", LUA_CPATH, LUA_CPATH_DEFAULT, noenv);
++  }
+   lua_pushliteral(L, LUA_PATH_CONFIG);
+   lua_setfield(L, -2, "config");
+   luaL_findtable(L, LUA_REGISTRYINDEX, "_LOADED", 16);

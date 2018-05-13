@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+        <HorizontalScrollView
+            android:id="@+id/toolButtonsBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="horizontal"  >
+            <LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:scrollbars="horizontal" > 
+                
+            	<ImageButton
+                    android:id="@+id/undoButton"
+                    android:src="@drawable/edit_undo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/menu_undo" />
+            	<ImageButton
+                    android:id="@+id/redoButton"
+                    android:src="@drawable/edit_redo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/menu_redo" />
+                <ImageButton
+                    android:id="@+id/newButton"
+                    android:src="@drawable/document_new"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/newButton" />
+            	<ImageButton
+                    android:id="@+id/pathButton"
+                    android:src="@drawable/document_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/pathButton" />
+            	<ImageButton
+                    android:id="@+id/saveButton"
+                    android:src="@drawable/document_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/saveButton" />
+            	<ImageButton
+                    android:id="@+id/saveAsButton"
+                    android:src="@drawable/document_save_as"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/saveAsButton" />
+            	<ImageButton
+                    android:id="@+id/playButton"
+                    android:src="@drawable/play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/playButton" />
+            	<ImageButton
+                    android:id="@+id/buildButton"
+                    android:src="@drawable/build"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/buildButton" />
+				<ImageButton
+                    android:id="@+id/logButton"
+                    android:src="@drawable/logviewer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/logButton" />
+				<ImageButton
+                    android:id="@+id/terminalButton"
+                    android:src="@drawable/gnome_terminal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/imgbuttdesc"
+                    android:text="@string/terminalButton" />
+					
+			</LinearLayout>
+    	</HorizontalScrollView>
+
+	<ViewFlipper 
+		android:id="@+id/flipper"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+<!--
+		<com.pdaxrom.editor.CodeEditor
+        	xmlns:app="http://schemas.android.com/apk/res/com.pdaxrom.cctools"
+
+	    	android:id="@+id/codeEditor"
+	    	android:layout_width="fill_parent"
+	    	android:layout_height="fill_parent"
+	    	android:gravity="top"
+	    	android:inputType="textMultiLine|textNoSuggestions"
+	    	android:typeface="monospace"
+	    	android:textSize="12sp"
+	    	android:text=""
+
+        	android:background="@android:color/black"
+        	android:textColor="@android:color/white"
+
+        	app:gutterTextColor="@color/grey"
+        	app:gutterLineColor="@color/grey"
+        	app:drawLineNumbers="true"
+        	app:drawGutterLine="true"
+        	app:gutterSize="@dimen/gutter_size"
+        	app:gutterPadding="@dimen/gutter_padding"
+        	app:highlightText="true"/>
+-->	    
+	</ViewFlipper>            
+	    
+</LinearLayout>

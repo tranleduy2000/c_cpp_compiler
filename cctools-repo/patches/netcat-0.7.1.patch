@@ -1,0 +1,13 @@
+diff -Nur netcat-0.7.1-orig/config.sub netcat-0.7.1/config.sub
+--- netcat-0.7.1-orig/config.sub	2004-01-12 02:46:30.000000000 +0600
++++ netcat-0.7.1/config.sub	2013-03-18 19:06:13.575786866 +0700
+@@ -1167,6 +1167,9 @@
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-sunos5*)
+ 		os=`echo $os | sed -e 's|sunos5|solaris2|'`
+ 		;;

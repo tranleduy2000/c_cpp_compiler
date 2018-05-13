@@ -90,7 +90,7 @@ public class InstallActivity extends AppCompatActivity {
             extracted = false;
         }
         if (!extracted) {
-            mExtractDataTask = new InstallGcc440(this, new ExtractCallback() {
+            mExtractDataTask = new InstallGcc810(this, new ExtractCallback() {
                 @Override
                 public void onNewMessage(CharSequence message) {
                     mTxtMessage.append(message);

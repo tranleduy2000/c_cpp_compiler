@@ -16,6 +16,8 @@
 
 package com.duy.ide.compiler.shell;
 
+import com.jecelyin.common.utils.DLog;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,11 +32,12 @@ public class ShellUtils {
     private static final String COMMAND_SH = "sh";
     private static final String COMMAND_EXIT = "exit\n";
     private static final String COMMAND_LINE_END = "\n";
+    private static final String TAG = "ShellUtils";
+
 
     private ShellUtils() {
         throw new AssertionError();
     }
-
 
     public static boolean checkRootPermission() {
         return execCommand(true, false).resultCode == 0;
@@ -52,16 +55,13 @@ public class ShellUtils {
         return execCommand(commands, isRoot, true);
     }
 
-
     private static ShellResult execCommand(boolean isRoot, boolean isNeedResultMsg) {
         return execCommand(new String[]{"echo root"}, isRoot, isNeedResultMsg);
     }
 
-
     public static ShellResult execCommand(List<String> commands, boolean isRoot, boolean isNeedResultMsg) {
         return execCommand(commands == null ? null : commands.toArray(new String[]{}), isRoot, isNeedResultMsg);
     }
-
 
     private static ShellResult execCommand(String[] commands, boolean isRoot, boolean isNeedResultMsg) {
         int result = -1;
@@ -164,7 +164,7 @@ public class ShellUtils {
                 message.append("\n");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.e(TAG, "execCommand: ", e);
             if (message != null) {
                 message.append(e.toString());
             }
@@ -174,7 +174,7 @@ public class ShellUtils {
                     reader.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                if (DLog.DEBUG) DLog.e(TAG, "execCommand: ", e);
             }
 
             if (process != null) {
@@ -186,6 +186,5 @@ public class ShellUtils {
         shellResult.setTime(timeEnd - timeStart);
         return shellResult;
     }
-
 
 }

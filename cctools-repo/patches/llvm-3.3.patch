@@ -1,0 +1,95 @@
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.3/clang/lib/Driver/ToolChains.cpp llvm-3.3/clang/lib/Driver/ToolChains.cpp
+--- /home/sash/Work/android/ndk-source/llvm-3.3/clang/lib/Driver/ToolChains.cpp	2013-10-22 15:38:12.796713026 +0700
++++ llvm-3.3/clang/lib/Driver/ToolChains.cpp	2013-10-31 21:00:05.044128117 +0700
+@@ -2465,10 +2465,17 @@
+   if (!getDriver().SysRoot.empty())
+     return getDriver().SysRoot;
+ 
++  std::string Path =
++    (GCCInstallation.getParentLibPath() +
++     "/../" + GCCInstallation.getTriple().str()).str();
++
++  if (llvm::sys::fs::exists(Path))
++    return Path;
++
+   if (!GCCInstallation.isValid() || !isMipsArch(getTriple().getArch()))
+     return std::string();
+ 
+-  std::string Path =
++  Path =
+     (GCCInstallation.getInstallPath() +
+      "/../../../../" + GCCInstallation.getTriple().str() + "/libc").str();
+   appendMipsTargetSuffix(Path, getTriple().getArch(), Args);
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.3/clang/lib/Driver/Tools.cpp llvm-3.3/clang/lib/Driver/Tools.cpp
+--- /home/sash/Work/android/ndk-source/llvm-3.3/clang/lib/Driver/Tools.cpp	2013-10-22 15:38:12.800713026 +0700
++++ llvm-3.3/clang/lib/Driver/Tools.cpp	2013-10-31 22:04:45.008288971 +0700
+@@ -6281,13 +6281,15 @@
+ 
+         // FIXME: Exclude this for platforms whith libgomp that doesn't require
+         // librt. Most modern Linux platfroms require it, but some may not.
+-        CmdArgs.push_back("-lrt");
++        if (!isAndroid)
++          CmdArgs.push_back("-lrt");
+       }
+ 
+       AddLibgcc(ToolChain.getTriple(), D, CmdArgs, Args);
+ 
+-      if (Args.hasArg(options::OPT_pthread) ||
+-          Args.hasArg(options::OPT_pthreads) || OpenMP)
++      if ((Args.hasArg(options::OPT_pthread) ||
++          Args.hasArg(options::OPT_pthreads) || OpenMP) &&
++          !isAndroid)
+         CmdArgs.push_back("-lpthread");
+ 
+       CmdArgs.push_back("-lc");
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.3/clang/Makefile llvm-3.3/clang/Makefile
+--- /home/sash/Work/android/ndk-source/llvm-3.3/clang/Makefile	2013-10-22 15:38:12.580713017 +0700
++++ llvm-3.3/clang/Makefile	2013-10-31 19:35:24.007917469 +0700
+@@ -14,7 +14,7 @@
+ 
+ IS_TOP_LEVEL := 1
+ CLANG_LEVEL := .
+-DIRS := utils/TableGen include lib tools runtime docs unittests
++DIRS := utils/TableGen include lib tools runtime docs
+ 
+ PARALLEL_DIRS :=
+ 
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.3/clang/tools/libclang/CIndexer.cpp llvm-3.3/clang/tools/libclang/CIndexer.cpp
+--- /home/sash/Work/android/ndk-source/llvm-3.3/clang/tools/libclang/CIndexer.cpp	2013-10-22 15:38:15.332713131 +0700
++++ llvm-3.3/clang/tools/libclang/CIndexer.cpp	2013-10-31 19:35:24.007917469 +0700
+@@ -69,6 +69,7 @@
+   llvm::sys::Path LibClangPath(path);
+   LibClangPath.eraseComponent();
+ #else
++#ifndef __BIONIC__
+   // This silly cast below avoids a C++ warning.
+   Dl_info info;
+   if (dladdr((void *)(uintptr_t)clang_createTranslationUnit, &info) == 0)
+@@ -78,6 +79,16 @@
+   
+   // We now have the CIndex directory, locate clang relative to it.
+   LibClangPath.eraseComponent();
++#else
++  char *clangLib = getenv("CCTOOLS_CLANG_LIB");
++
++  if (!clangLib)
++    llvm_unreachable("Call to getenv(\"CCTOOLS_CLANG_LIB\") failed");
++
++  llvm::sys::Path LibClangPath(clangLib);
++
++  LibClangPath.eraseComponent();
++#endif
+ #endif
+   
+   LibClangPath.appendComponent("clang");
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.3/llvm/utils/unittest/Makefile llvm-3.3/llvm/utils/unittest/Makefile
+--- /home/sash/Work/android/ndk-source/llvm-3.3/llvm/utils/unittest/Makefile	2013-10-22 15:38:25.896713569 +0700
++++ llvm-3.3/llvm/utils/unittest/Makefile	2013-10-31 19:35:24.007917469 +0700
+@@ -8,6 +8,6 @@
+ ##===----------------------------------------------------------------------===##
+ 
+ LEVEL = ../..
+-PARALLEL_DIRS = googletest UnitTestMain
++PARALLEL_DIRS =
+ 
+ include $(LEVEL)/Makefile.common

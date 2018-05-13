@@ -1,0 +1,3 @@
+Lua examples originally placed on the Learning Lua page: http://icculus.org/~theoddone33/lua/
+
+To execute those examples, please install additional package LuaJIT.

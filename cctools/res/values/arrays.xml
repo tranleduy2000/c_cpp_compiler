@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_fontsize_preference">
+        <item>8 pt</item>
+        <item>9 pt</item>
+        <item>10 pt</item>
+        <item>12 pt</item>
+        <item>14 pt</item>
+        <item>16 pt</item>
+        <item>20 pt</item>
+    </string-array>
+
+    <!-- Do not localize entryvalues -->
+    <string-array name="entryvalues_fontsize_preference">
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+        <item>20</item>
+    </string-array>
+    
+    <string-array name="toolchain_selector">
+        <item>Clang C/C++</item>
+        <item>GNU C/C++</item>
+        <item>GNU Fortran</item>
+        <item>AVR C/C++ (crosscompiler)</item>
+        <item>MinGW W64 (crosscompiler)</item>
+        <item>Lua JIT</item>
+	</string-array>
+</resources>

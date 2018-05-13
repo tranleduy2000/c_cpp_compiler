@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/home_folder"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/folder_home"
+        android:title="@string/homeDirectory" />
+
+    <item android:id="@+id/sd_folder"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/media_memory_sd"
+        android:title="@string/sdDirectory" />
+    
+    <item android:id="@+id/new_folder"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/folder_new"
+        android:title="@string/newDirectory" />
+</menu>

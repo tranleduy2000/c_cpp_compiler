@@ -1,0 +1,124 @@
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.4/clang/lib/Driver/ToolChains.cpp llvm-3.4/clang/lib/Driver/ToolChains.cpp
+--- /home/sash/Work/android/ndk-source/llvm-3.4/clang/lib/Driver/ToolChains.cpp	2014-03-07 14:41:08.161280919 +0700
++++ llvm-3.4/clang/lib/Driver/ToolChains.cpp	2014-03-07 17:29:46.940855379 +0700
+@@ -2662,6 +2662,13 @@
+   if (!getDriver().SysRoot.empty())
+     return getDriver().SysRoot;
+ 
++  std::string Path =
++    (GCCInstallation.getParentLibPath() +
++     "/../" + GCCInstallation.getTriple().str()).str();
++
++  if (llvm::sys::fs::exists(Path))
++    return Path;
++
+   if (!GCCInstallation.isValid() || !isMipsArch(getTriple().getArch()))
+     return std::string();
+ 
+@@ -2673,7 +2680,7 @@
+   const StringRef TripleStr = GCCInstallation.getTriple().str();
+   const StringRef MIPSABIDirSuffix = GCCInstallation.getMIPSABIDirSuffix();
+ 
+-  std::string Path = (InstallDir + "/../../../../" + TripleStr + "/libc" +
++  Path = (InstallDir + "/../../../../" + TripleStr + "/libc" +
+                       MIPSABIDirSuffix).str();
+ 
+   if (llvm::sys::fs::exists(Path))
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.4/clang/lib/Driver/Tools.cpp llvm-3.4/clang/lib/Driver/Tools.cpp
+--- /home/sash/Work/android/ndk-source/llvm-3.4/clang/lib/Driver/Tools.cpp	2014-03-07 14:41:08.165280919 +0700
++++ llvm-3.4/clang/lib/Driver/Tools.cpp	2014-03-07 17:29:46.948855379 +0700
+@@ -6765,13 +6765,15 @@
+ 
+         // FIXME: Exclude this for platforms whith libgomp that doesn't require
+         // librt. Most modern Linux platfroms require it, but some may not.
+-        CmdArgs.push_back("-lrt");
++        if (!isAndroid)
++          CmdArgs.push_back("-lrt");
+       }
+ 
+       AddLibgcc(ToolChain.getTriple(), D, CmdArgs, Args);
+ 
+-      if (Args.hasArg(options::OPT_pthread) ||
+-          Args.hasArg(options::OPT_pthreads) || OpenMP)
++      if ((Args.hasArg(options::OPT_pthread) ||
++          Args.hasArg(options::OPT_pthreads) || OpenMP) &&
++          !isAndroid)
+         CmdArgs.push_back("-lpthread");
+ 
+       CmdArgs.push_back("-lc");
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.4/clang/Makefile llvm-3.4/clang/Makefile
+--- /home/sash/Work/android/ndk-source/llvm-3.4/clang/Makefile	2014-03-07 14:41:08.041280924 +0700
++++ llvm-3.4/clang/Makefile	2014-03-07 17:29:46.952855379 +0700
+@@ -14,7 +14,7 @@
+ 
+ IS_TOP_LEVEL := 1
+ CLANG_LEVEL := .
+-DIRS := utils/TableGen include lib tools runtime docs unittests
++DIRS := utils/TableGen include lib tools runtime docs
+ 
+ PARALLEL_DIRS :=
+ 
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.4/clang/tools/libclang/CIndexer.cpp llvm-3.4/clang/tools/libclang/CIndexer.cpp
+--- /home/sash/Work/android/ndk-source/llvm-3.4/clang/tools/libclang/CIndexer.cpp	2014-03-07 14:41:08.497280905 +0700
++++ llvm-3.4/clang/tools/libclang/CIndexer.cpp	2014-03-07 17:29:46.952855379 +0700
+@@ -70,6 +70,7 @@
+ 
+   LibClangPath += llvm::sys::path::parent_path(path);
+ #else
++#ifndef __BIONIC__
+   // This silly cast below avoids a C++ warning.
+   Dl_info info;
+   if (dladdr((void *)(uintptr_t)clang_createTranslationUnit, &info) == 0)
+@@ -77,6 +78,14 @@
+ 
+   // We now have the CIndex directory, locate clang relative to it.
+   LibClangPath += llvm::sys::path::parent_path(info.dli_fname);
++#else
++  char *clangLib = getenv("CCTOOLS_CLANG_LIB");
++
++  if (!clangLib)
++    llvm_unreachable("Call to getenv(\"CCTOOLS_CLANG_LIB\") failed");
++
++  LibClangPath += llvm::sys::path::parent_path(clangLib);
++#endif
+ #endif
+ 
+   llvm::sys::path::append(LibClangPath, "clang", CLANG_VERSION_STRING);
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.4/llvm/lib/Support/Unix/Path.inc llvm-3.4/llvm/lib/Support/Unix/Path.inc
+--- /home/sash/Work/android/ndk-source/llvm-3.4/llvm/lib/Support/Unix/Path.inc	2014-03-07 14:41:09.001280883 +0700
++++ llvm-3.4/llvm/lib/Support/Unix/Path.inc	2014-03-07 18:10:49.172751832 +0700
+@@ -523,6 +523,10 @@
+   return fillStatus(StatRet, Status, Result);
+ }
+ 
++#ifdef __BIONIC__
++#include <sys/syscall.h>
++#endif
++
+ error_code setLastModificationAndAccessTime(int FD, TimeValue Time) {
+ #if defined(HAVE_FUTIMENS)
+   timespec Times[2];
+@@ -536,6 +540,12 @@
+   Times[0].tv_usec = 0;
+   Times[1] = Times[0];
+   if (::futimes(FD, Times))
++#elif defined(__BIONIC__)
++  timeval Times[2];
++  Times[0].tv_sec = Time.toPosixTime();
++  Times[0].tv_usec = 0;
++  Times[1] = Times[0];
++  if (syscall(__NR_utimensat, FD, NULL, Times, 0))
+ #else
+ #error Missing futimes() and futimens()
+ #endif
+diff -Nur /home/sash/Work/android/ndk-source/llvm-3.4/llvm/utils/unittest/Makefile llvm-3.4/llvm/utils/unittest/Makefile
+--- /home/sash/Work/android/ndk-source/llvm-3.4/llvm/utils/unittest/Makefile	2014-03-07 14:41:10.929280802 +0700
++++ llvm-3.4/llvm/utils/unittest/Makefile	2014-03-07 17:29:46.952855379 +0700
+@@ -8,6 +8,6 @@
+ ##===----------------------------------------------------------------------===##
+ 
+ LEVEL = ../..
+-PARALLEL_DIRS = googletest UnitTestMain
++PARALLEL_DIRS =
+ 
+ include $(LEVEL)/Makefile.common

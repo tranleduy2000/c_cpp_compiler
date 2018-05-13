@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CCTools</string>
+
+    <string name="updating_caption">Installation</string>
+    <string name="removing_caption">Uninstallation</string>
+    <string name="establishing_handshake_message">Establishing handshake.\nPlease wait</string>
+    <string name="wait_message">Please wait...</string>
+    <string name="download_cctools">Downloading native tools</string>
+    <string name="received">Received\u0020</string>
+    <string name="from">\u0020from\u0020</string>
+    <string name="bytes">\u0020bytes</string>
+    <string name="download_file">Download</string>
+    <string name="unpacking_file">Unpacking</string>
+    <string name="error_downloading">Error downloading file, restart package manager and reinstall package</string>
+    <string name="bad_archive">Bad or corrupted package file, restart package manager and reinstall package</string>
+    <string name="sd_no_memory">No free space on SD card, need\u0020</string>
+    <string name="sd_no_memory2">. Remove unnecessary files and install package again</string>
+    <string name="cache_no_memory">No free space, need\u0020</string>
+    <string name="cache_no_memory1">, but\u0020</string>
+    <string name="cache_no_memory2">\u0020available. Remove unnecessary android applications and install package again</string>
+
+    <string name="toolchain_selector">Quick install</string>
+    <string name="toolchain_selectormsg">Select toolchains for quick installation. Later you can install other additional packages from Add-ons.</string>
+
+    <string name="exit_dialog">Confirm exit</string>
+    <string name="exit_dialog_text">Text has been modified, but not saved. Are you sure you want to exit?</string>
+    <string name="exit_dialog_yes">Yes</string>
+    <string name="exit_dialog_no">No</string>
+
+    <string name="save_warn_dialog">Warning!</string>
+    <string name="save_warn_text">Text has been modified, but not saved. Continue?</string>
+
+    <string name="about_dialog">CCTools IDE</string>
+    <string name="about_dialog_text">C/C++ on-board development tools\nVersion</string>
+    <string name="about_dialog_text2">\nCopyright &#169; 2012-2013, Alexander Chukov</string>
+    <string name="about_dialog_show">Home page</string>
+
+    <string name="about_button">About</string>
+    <string name="prefs_button">Settings</string>
+
+    <string name="preferences">Settings</string>
+    <string name="pref_updater">Check for available updates at startup</string>
+    <string name="pref_toolbar">Toolbar</string>
+    <string name="pref_syntax">Syntax highlighting</string>
+    <string name="pref_linenumbers">Line numbers</string>
+    <string name="pref_fontsize">Font size</string>
+    <string name="pref_dialog_fontsize">Font size</string>
+    <string name="pref_console_fontsize">Console font size</string>
+    <string name="pref_force_run">Quick run</string>
+    <string name="pref_ccopts">C options</string>
+    <string name="pref_cxxopts">C++ options</string>
+    <string name="pref_runargs">Execute without args</string>
+    <string name="pref_codeeditor">Code editor</string>
+    <string name="pref_autopair">Autopair</string>
+    <string name="pref_autoindent">Autoindent</string>
+
+    <string name="exit_button">Quit</string>
+    <string name="selectFileOrFolder">Select file or folder</string>
+    <string name="pathButton">Open</string>
+    <string name="unsupported_device">This device is not supported yet</string>
+    <string name="filebrowser_name">Filebrowser</string>
+    <string name="newButton">New</string>
+    <string name="closeButton">Close</string>
+    <string name="saveButton">Save</string>
+    <string name="saveAsButton">Save as</string>
+    <string name="buildButton">Build</string>
+    <string name="playButton">Run</string>
+    <string name="logButton">Build log</string>
+    <string name="terminalButton">Terminal</string>
+    <string name="imgbuttdesc"></string>
+    <string name="menu_goto">Goto</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_undo">Undo</string>
+    <string name="menu_redo">Redo</string>
+
+    <string name="goto_line">Line</string>
+    <string name="search_string">Search string</string>
+
+    <string name="projectButton">Project</string>
+    <string name="project_new">New</string>
+    <string name="project_open">Open</string>
+    <string name="project_close">Close</string>
+    <string name="project_import">Import</string>
+    <string name="project_properties">Properties</string>
+    
+    <string name="project_new_project">New project</string>
+    <string name="project_new_project_message">Select project type</string>
+    
+    <string name="buildwindow_name">Build</string>
+    <string name="buildwindow_name_error">Failed</string>
+    <string name="buildwindow_name_done">Finished</string>
+    <string name="button_continue">Continue</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="make_title">Make utility</string>
+    <string name="make_args">Enter parameters</string>
+    <string name="gcc_title">Compile source file</string>
+    <string name="gcc_args">Enter arguments</string>
+    <string name="gccbuildexe">Build executable</string>
+    <string name="gccrunexe">Run</string>
+    <string name="gccnativeactivity">Native Activity</string>
+    <string name="unknown_filetype">Unknown file type - nothing to do</string>
+    <string name="known_filetypes">Supported following types of files: .c .cpp .c++ .s .mk .mak Makefile makefile</string>
+    <string name="build_done">Done</string>
+    <string name="build_finished">Finished</string>
+    <string name="build_error">Error code </string>
+    <string name="exe_dialog">Execute file</string>
+    <string name="exe_args">Command line arguments</string>
+
+    <string name="log_empty">Empty log</string>
+
+    <string name="console_name">Terminal</string>
+    <string name="console_executing">Running</string>
+    <string name="console_finished">Finished</string>
+    <string name="console_stopped">Terminated</string>
+
+    <string name="new_file">New file</string>
+    <string name="file_loaded">File successfully downloaded</string>
+    <string name="file_not_loaded">Can not read file</string>
+    <string name="file_saved">File successfully saved</string>
+    <string name="file_not_saved">Can not write file</string>
+
+    <string name="open_file">Open file</string>
+    <string name="save_file">Save file</string>
+    <string name="select_folder">Select folder</string>
+    <string name="location">Location</string>
+    <string name="cant_read_folder">folder can\'t be read!</string>
+    <string name="nnew">New</string>
+    <string name="select">Select</string>
+    <string name="file_name">File name:</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Save</string>
+    <string name="no_data">No Data</string>
+    <color name="gray">#ffff0000</color>
+    <string name="err">Error</string>
+    <string name="newDirectory">New folder</string>
+    <string name="create_new">Create:</string>
+    <string name="cannot_create">Cannot create!</string>
+    <string name="homeDirectory">Home directory</string>
+    <string name="sdDirectory">SD card</string>
+    
+    <string name="file_copy">Copy</string>
+    <string name="file_cut">Cut</string>
+    <string name="file_paste">Paste</string>
+    <string name="file_delete">Delete</string>
+    
+    <string name="message_file_copy">Copying</string>
+    <string name="message_file_move">Moving</string>
+    <string name="message_file_delete">Deleting</string>
+
+    <string name="pkgmgrButton">Add-ons</string>
+    <string name="pkgmgr_name">Add-ons manager</string>
+    <string name="pkginstaller_name">Add/Remove add-ons</string>
+
+    <string name="pkg_repoupdatetask">Remote repository</string>
+    <string name="pkg_repodownloading">Downloading list of packages...</string>
+    <string name="pkg_repounavailable">Remote repository is unavailable at the moment. Please try again later.</string>
+    <string name="pkg_packageforinstall">Use Addons manager to install package:\u0020</string>
+    <string name="pkg_prepareinstalltask">Package list processing</string>
+    <string name="pkg_prepareinstall">Checking the package dependencies...</string>
+    <string name="pkg_installpackagetask">Installing package</string>
+    <string name="pkg_installpackage">Installing package</string>
+    <string name="pkg_uninstallpackagetask">Uninstalling package</string>
+    <string name="pkg_uninstallpackage">Uninstalling package</string>
+    <string name="pkg_checkupdates">Checking for updates...</string>
+
+    <string name="pkg_name">Name</string>
+    <string name="pkg_version">Version:\u0020</string>
+    <string name="pkg_description">Description</string>
+    <string name="pkg_deps">Depends:\u0020</string>
+    <string name="pkg_file">File:\u0020</string>
+    <string name="pkg_filesize"> File size:\u0020</string>
+    <string name="pkg_size"> Installed size:\u0020</string>
+
+    <string name="pkg_selected">Selected\u0020</string>
+    <string name="pkg_selected1">Packages to install:\u0020</string>
+    <string name="pkg_selected2">Download size:\u0020</string>
+    <string name="pkg_selected3">Installed size:\u0020</string>
+    <string name="pkg_selectedforupdate">Updating packages</string>
+    <string name="pkg_selectedforupdate1">Packages to update:\u0020</string>
+    <string name="pkg_alreadyinstalled">This package already installed</string>
+    <string name="pkg_install">Install</string>
+    <string name="pkg_reinstall">Reinstall</string>
+    <string name="pkg_uninstall">Uninstall</string>
+    <string name="pkg_status">Status: \u0020</string>
+    <string name="pkg_installed">Installed</string>
+    <string name="pkg_notinstalled">Not installed</string>
+    <string name="pkg_searchHint">Search package</string>
+
+    <string name="pkgMirrorsButton">Repos list</string>
+    <string name="pkgUpdateButton">Check updates</string>
+    
+    <string name="whatisnew">What\'s new</string>
+</resources>

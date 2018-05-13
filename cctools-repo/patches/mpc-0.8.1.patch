@@ -1,0 +1,12 @@
+diff -Nur mpc-0.8.1-original/config.sub mpc-0.8.1/config.sub
+--- mpc-0.8.1-original/config.sub	2009-03-19 23:45:05.000000000 +0600
++++ mpc-0.8.1/config.sub	2012-07-05 23:25:22.758060299 +0700
+@@ -120,7 +120,7 @@
+ # Here we must recognize all the valid KERNEL-OS combinations.
+ maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
+ case $maybe_os in
+-  nto-qnx* | linux-gnu* | linux-dietlibc | linux-newlib* | linux-uclibc* | \
++  nto-qnx* | linux-gnu* | linux-dietlibc | linux-newlib* | linux-uclibc* | linux-* | \
+   uclinux-uclibc* | uclinux-gnu* | kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* | \
+   storm-chaos* | os2-emx* | rtmk-nova*)
+     os=-$maybe_os

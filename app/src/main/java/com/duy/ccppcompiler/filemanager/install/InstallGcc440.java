@@ -20,7 +20,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
-import com.duy.ccppcompiler.compiler.GCCConstants;
 import com.duy.common.DLog;
 import com.duy.utils.ExtractCallback;
 import com.duy.utils.IOUtils;
@@ -47,7 +46,7 @@ class InstallGcc440 extends AsyncTask<Void, CharSequence, Boolean> {
         if (DLog.DEBUG) DLog.d(TAG, "doInBackground() called with: voids = [" + voids + "]");
         try {
             final File internalDir = mContext.getFilesDir();
-            final File gccDir = new File(internalDir, GCCConstants.GCC_DIR_NAME);
+            final File gccDir = new File(internalDir, "android-gcc-4.4.0");
             if (gccDir.exists()) {
                 publishProgress("Delete old file");
                 IOUtils.delete(gccDir);

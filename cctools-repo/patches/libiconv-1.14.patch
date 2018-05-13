@@ -1,0 +1,26 @@
+diff -Nur libiconv-1.14.orig/build-aux/config.sub libiconv-1.14/build-aux/config.sub
+--- libiconv-1.14.orig/build-aux/config.sub	2009-06-21 18:17:33.000000000 +0700
++++ libiconv-1.14/build-aux/config.sub	2013-10-26 02:46:32.844392792 +0700
+@@ -1309,6 +1309,9 @@
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
+diff -Nur libiconv-1.14.orig/libcharset/build-aux/config.sub libiconv-1.14/libcharset/build-aux/config.sub
+--- libiconv-1.14.orig/libcharset/build-aux/config.sub	2009-06-21 18:17:33.000000000 +0700
++++ libiconv-1.14/libcharset/build-aux/config.sub	2013-10-26 02:47:41.488389905 +0700
+@@ -1241,6 +1241,9 @@
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;

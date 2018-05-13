@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/item_mirrors"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/pkgmgr"
+        android:title="@string/pkgMirrorsButton"/>
+
+    <item android:id="@+id/item_update"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/stock_refresh"
+        android:title="@string/pkgUpdateButton" />
+</menu>

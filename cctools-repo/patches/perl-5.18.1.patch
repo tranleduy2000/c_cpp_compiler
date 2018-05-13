@@ -1,0 +1,62 @@
+--- s/cpan/ExtUtils-MakeMaker/lib/ExtUtils/MM_Unix.pm.original
++++ s/cpan/ExtUtils-MakeMaker/lib/ExtUtils/MM_Unix.pm
+@@ -942,6 +942,8 @@
+         } elsif ($Config{'lddlflags'} =~ /-R/) {
+             $libs .= ' -L$(PERL_INC) -R$(INSTALLARCHLIB)/CORE -R$(PERL_ARCHLIB)/CORE -lperl';
+         }
++    } elsif ($Config{'useshrplib'} eq 'true') {
++        $libs .= ' -L$(PERL_INC) -lperl';
+     }
+ 
+     my $ld_run_path_shell = "";
+--- /data/data/com.pdaxrom.cctools/root/cctools/home/perl-5.18.1/Configure
++++ s/Configure
+@@ -1347,7 +1347,7 @@
+ 
+ : general looking path for locating libraries
+ glibpth="/lib /usr/lib $xlibpth"
+-glibpth="$glibpth /usr/ccs/lib /usr/ucblib /usr/local/lib"
++glibpth="$glibpth /usr/ccs/lib /usr/ucblib /usr/local/lib /system/lib"
+ test -f /usr/shlib/libc.so && glibpth="/usr/shlib $glibpth"
+ test -f /shlib/libc.so     && glibpth="/shlib $glibpth"
+ test -d /usr/lib64         && glibpth="$glibpth /lib64 /usr/lib64 /usr/local/lib64"
+@@ -4717,7 +4717,7 @@
+ : Set private lib path
+ case "$plibpth" in
+ '') if ./mips; then
+-		plibpth="$incpath/usr/lib /usr/local/lib /usr/ccs/lib"
++		plibpth="$incpath/usr/lib /usr/local/lib /usr/ccs/lib /system/lib"
+ 	fi;;
+ esac
+ case "$libpth" in
+--- /dev/null
++++ s/configure_bionic.sh
+@@ -0,0 +1,2 @@
++ash ./Configure -Uafs -Ud_csh -Duseshrplib -Uusethreads -Ui_db -Ui_gdbm -Ui_ndbm -Ui_dbm -Ui_sdbm -Duseopcode -Dman1dir=none -Dman3dir=none -Dsiteman1=none -Dsiteman3=none -Dvendorman1=none -Dvendorman3=none -des -Accflags=-DNO_LOCALE -Uinstallusrbinperl -Dprefix=$CCTOOLSDIR
++
+--- s/dist/Cwd/Cwd.pm.original
++++ s/dist/Cwd/Cwd.pm
+@@ -334,6 +334,7 @@
+ foreach my $try ('/bin/pwd',
+ 		 '/usr/bin/pwd',
+ 		 '/QOpenSys/bin/pwd', # OS/400 PASE.
++		 '/data/data/com.pdaxrom.cctools/root/cctools/bin/pwd',
+ 		) {
+ 
+     if( -x $try ) {
+--- s/ext/Errno/Errno_pm.PL.original
++++ s/ext/Errno/Errno_pm.PL
+@@ -138,9 +138,10 @@
+ 	     ) {
+ 	# Some Linuxes have weird errno.hs which generate
+ 	# no #file or #line directives
+-	my $linux_errno_h = -e '/usr/include/errno.h' ?
+-	    '/usr/include/errno.h' : '/usr/local/include/errno.h';
+-	$file{$linux_errno_h} = 1;
++	my $dep = `echo "#include <errno.h>" | gcc -E -M -`;
++	if ($dep =~ /(\S+errno\.h)/) {
++	     $file{$1} = 1;
++	}
+     } elsif ($^O eq 'haiku') {
+ 	# hidden in a special place
+ 	$file{'/boot/develop/headers/posix/errno.h'} = 1;

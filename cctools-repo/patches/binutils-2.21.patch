@@ -1,0 +1,18 @@
+diff -Nur /home/vmware/misc/ndk-sash/src/android-ndk-src-2012-06-30+445d63b/binutils/binutils-2.21/libiberty/getpagesize.c binutils-2.21/libiberty/getpagesize.c
+--- /home/vmware/misc/ndk-sash/src/android-ndk-src-2012-06-30+445d63b/binutils/binutils-2.21/libiberty/getpagesize.c	2012-07-05 03:27:46.000000000 +0700
++++ binutils-2.21/libiberty/getpagesize.c	2012-07-05 03:48:35.536254573 +0700
+@@ -60,12 +60,13 @@
+ # endif /* PAGESIZE */
+ #endif /* GNU_OUR_PAGESIZE */
+ 
++#if 0
+ int
+ getpagesize (void)
+ {
+   return (GNU_OUR_PAGESIZE);
+ }
+-
++#endif
+ #else /* VMS */
+ 
+ #if 0	/* older distributions of gcc-vms are missing <syidef.h> */

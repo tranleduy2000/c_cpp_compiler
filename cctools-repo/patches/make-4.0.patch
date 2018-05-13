@@ -1,0 +1,15 @@
+diff -Nur make-4.0/job.c make-4.0-new/job.c
+--- make-4.0/job.c	2013-10-06 02:12:24.000000000 +0300
++++ make-4.0-new/job.c	2013-11-24 02:24:55.113762293 +0200
+@@ -67,6 +67,11 @@
+ char default_shell[] = "";
+ int batch_mode_shell = 0;
+ 
++#elif defined (__BIONIC__)
++
++char default_shell[] = "/system/bin/sh";
++int batch_mode_shell = 0;
++
+ #else
+ 
+ char default_shell[] = "/bin/sh";

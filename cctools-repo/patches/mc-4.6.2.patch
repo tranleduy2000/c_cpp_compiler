@@ -1,0 +1,253 @@
+diff -Nur mc-4.6.2-orig/slang/slsignal.c mc-4.6.2/slang/slsignal.c
+--- mc-4.6.2-orig/slang/slsignal.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/slang/slsignal.c	2013-12-28 18:27:41.370483078 +0200
+@@ -241,7 +241,11 @@
+ 	(void) sigprocmask (SIG_SETMASK, &save_mask, NULL);
+ # endif
+ 
++#ifdef __BIONIC__
++	execl ("/system/bin/sh", "sh", "-c", cmd, NULL);
++#else
+ 	execl ("/bin/sh", "sh", "-c", cmd, NULL);
++#endif
+ 	_exit (127);
+      }
+    else
+diff -Nur mc-4.6.2-orig/slang/slutty.c mc-4.6.2/slang/slutty.c
+--- mc-4.6.2-orig/slang/slutty.c	2013-10-26 10:43:33.000000000 +0300
++++ mc-4.6.2/slang/slutty.c	2013-12-28 18:27:41.370483078 +0200
+@@ -76,7 +76,7 @@
+ int SLang_TT_Baud_Rate;
+ 
+ #ifdef HAVE_TERMIOS_H
+-# if !defined(HAVE_TCGETATTR) || !defined(HAVE_TCSETATTR)
++# if (!defined(HAVE_TCGETATTR) || !defined(HAVE_TCSETATTR)) && !defined(__BIONIC__)
+ #   undef HAVE_TERMIOS_H
+ # endif
+ #endif
+diff -Nur mc-4.6.2-orig/src/cons.handler.c mc-4.6.2/src/cons.handler.c
+--- mc-4.6.2-orig/src/cons.handler.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/src/cons.handler.c	2013-12-28 18:27:41.370483078 +0200
+@@ -131,7 +131,9 @@
+ 	    /* Close the extra pipe ends */
+ 	    close (pipefd1[1]);
+ 	    close (pipefd2[0]);
++#ifndef __BIONIC__
+ 	    tty_name = ttyname (0);
++#endif
+ 	    /* Bind the pipe 0 to the standard input */
+ 	    close (0);
+ 	    dup (pipefd1[0]);
+@@ -143,11 +145,13 @@
+ 	    /* Bind standard error to /dev/null */
+ 	    close (2);
+ 	    open ("/dev/null", O_WRONLY);
++#ifndef __BIONIC__
+ 	    if (tty_name) {
+ 		/* Exec the console save/restore handler */
+ 		mc_conssaver = mhl_str_dir_plus_file (SAVERDIR, "cons.saver");
+ 		execl (mc_conssaver, "cons.saver", tty_name, (char *) NULL);
+ 	    }
++#endif
+ 	    /* Console is not a tty or execl() failed */
+ 	    console_flag = 0;
+ 	    write (1, &console_flag, 1);
+diff -Nur mc-4.6.2-orig/src/ext.c mc-4.6.2/src/ext.c
+--- mc-4.6.2-orig/src/ext.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/src/ext.c	2013-12-28 18:27:41.370483078 +0200
+@@ -107,7 +107,11 @@
+ 	return;
+     }
+     cmd_file = fdopen (cmd_file_fd, "w");
++#ifdef __BIONIC__
++    fputs ("#! /system/bin/sh\n", cmd_file);
++#else
+     fputs ("#! /bin/sh\n", cmd_file);
++#endif
+ 
+     prompt[0] = 0;
+     for (; *data && *data != '\n'; data++) {
+@@ -222,7 +226,11 @@
+ 	/* Set executable flag on the command file ... */
+ 	chmod (file_name, S_IRWXU);
+ 	/* ... but don't rely on it - run /bin/sh explicitly */
++#ifdef __BIONIC__
++	cmd = g_strconcat ("/system/bin/sh ", file_name, (char *) NULL);
++#else
+ 	cmd = g_strconcat ("/bin/sh ", file_name, (char *) NULL);
++#endif
+     }
+ 
+     if (run_view) {
+diff -Nur mc-4.6.2-orig/src/main.c mc-4.6.2/src/main.c
+--- mc-4.6.2-orig/src/main.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/src/main.c	2013-12-28 19:02:23.502395515 +0200
+@@ -1775,7 +1775,11 @@
+            shell = g_strdup (pwd->pw_shell);
+     }
+     if (!shell || !*shell)
++#ifdef __BIONIC__
++	shell = "/system/bin/sh";
++#else
+ 	shell = "/bin/sh";
++#endif
+ 
+     /* This is the directory, where MC was installed, on Unix this is DATADIR */
+     /* and can be overriden by the MC_DATADIR environment variable */
+@@ -2137,6 +2141,12 @@
+     if (!home_dir) {
+ 	/* mc_home was computed by OS_Setup */
+ 	home_dir = mc_home;
++    } else {
++	char *dname = mhl_str_dir_plus_file (home_dir, ".mc");
++	struct stat st;
++	if (stat(dname, &st) == -1 && errno == ENOENT) {
++	    mkdir(dname, 0755);
++	}
+     }
+ 
+     vfs_init ();
+diff -Nur mc-4.6.2-orig/src/pipethrough.c mc-4.6.2/src/pipethrough.c
+--- mc-4.6.2-orig/src/pipethrough.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/src/pipethrough.c	2013-12-28 18:27:41.370483078 +0200
+@@ -271,7 +271,11 @@
+ {
+ 	const char *shell = getenv("SHELL");
+ 	if (shell == NULL) {
++#ifdef __BIONIC__
++		shell = "/system/bin/sh";
++#else
+ 		shell = "/bin/sh";
++#endif
+ 	}
+ 
+ 	if (close(STDIN_FILENO) == -1
+diff -Nur mc-4.6.2-orig/src/subshell.c mc-4.6.2/src/subshell.c
+--- mc-4.6.2-orig/src/subshell.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/src/subshell.c	2013-12-28 18:27:41.370483078 +0200
+@@ -127,7 +127,7 @@
+ static char subshell_cwd[MC_MAXPATHLEN+1];  /* One extra char for final '\n' */
+ 
+ /* Subshell type (gleaned from the SHELL environment variable, if available) */
+-static enum {BASH, TCSH, ZSH} subshell_type;
++static enum {BASH, TCSH, ZSH, ASH} subshell_type;
+ 
+ /* Flag to indicate whether the subshell is ready for next command */
+ static int subshell_ready;
+@@ -251,6 +251,7 @@
+ 	/* TODO: Find a way to pass initfile to TCSH and ZSH */
+     case TCSH:
+     case ZSH:
++    case ASH:
+ 	break;
+ 
+     default:
+@@ -289,6 +290,10 @@
+ 	execl (shell, "tcsh", (char *) NULL);
+ 	break;
+ 
++    case ASH:
++	execl (shell, "ash", (char *) NULL);
++	break;
++
+     case ZSH:
+ 	/* Use -g to exclude cmds beginning with space from history
+ 	 * and -Z to use the line editor on non-interactive term */
+@@ -388,6 +393,8 @@
+ 	    subshell_type = TCSH;
+ 	else if (strstr (shell, "/bash") || getenv ("BASH"))
+ 	    subshell_type = BASH;
++	else if (strstr(shell, "/ash"))
++	    subshell_type = ASH;
+ 	else {
+ 	    use_subshell = FALSE;
+ 	    return;
+@@ -473,6 +480,12 @@
+ 		    subshell_pipe[WRITE]);
+ 	break;
+ 
++    case ASH:
++	g_snprintf (precmd, sizeof (precmd),
++		    "precmd(){ pwd>&%d;kill -STOP $$; }; PRECMD=precmd; PS1='$(eval $PRECMD)$ '\n",
++		    subshell_pipe[WRITE]);
++	break;
++
+     case ZSH:
+ 	g_snprintf (precmd, sizeof (precmd),
+ 		    " precmd(){ pwd>&%d;kill -STOP $$ }\n",
+@@ -1032,7 +1045,7 @@
+ 
+ /* pty opening functions */
+ 
+-#ifdef HAVE_GRANTPT
++#if defined(HAVE_GRANTPT) || defined(__BIONIC__)
+ 
+ /* System V version of pty_open_master */
+ 
+@@ -1064,6 +1077,7 @@
+ 	close (pty_master);
+ 	return -1;
+     }
++
+     strcpy (pty_name, slave_name);
+     return pty_master;
+ }
+diff -Nur mc-4.6.2-orig/src/user.c mc-4.6.2/src/user.c
+--- mc-4.6.2-orig/src/user.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/src/user.c	2013-12-28 18:27:41.370483078 +0200
+@@ -588,7 +588,11 @@
+ 	return;
+     }
+     cmd_file = fdopen (cmd_file_fd, "w");
++#ifdef __BIONIC__
++    fputs ("#! /system/bin/sh\n", cmd_file);
++#else
+     fputs ("#! /bin/sh\n", cmd_file);
++#endif
+     commands++;
+     
+     for (col = 0; *commands; commands++){
+@@ -663,7 +667,11 @@
+     } else {
+ 	/* execute the command indirectly to allow execution even
+ 	 * on no-exec filesystems. */
++#ifdef __BIONIC__
++	char *cmd = g_strconcat("/system/bin/sh ", file_name, (char *)NULL);
++#else
+ 	char *cmd = g_strconcat("/bin/sh ", file_name, (char *)NULL);
++#endif
+ 	shell_execute (cmd, EXECUTE_HIDE);
+ 	g_free(cmd);
+     }
+diff -Nur mc-4.6.2-orig/src/utilunix.c mc-4.6.2/src/utilunix.c
+--- mc-4.6.2-orig/src/utilunix.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/src/utilunix.c	2013-12-28 18:27:41.370483078 +0200
+@@ -268,11 +268,13 @@
+ 	/* Sanity check for existing directory */
+ 	if (!S_ISDIR (st.st_mode))
+ 	    error = _("%s is not a directory\n");
++#ifndef __BIONIC__
+ 	else if (st.st_uid != getuid ())
+ 	    error = _("Directory %s is not owned by you\n");
+ 	else if (((st.st_mode & 0777) != 0700)
+ 		 && (chmod (buffer, 0700) != 0))
+ 	    error = _("Cannot set correct permissions for directory %s\n");
++#endif
+     } else {
+ 	/* Need to create directory */
+ 	if (mkdir (buffer, S_IRWXU) != 0) {
+diff -Nur mc-4.6.2-orig/vfs/sfs.c mc-4.6.2/vfs/sfs.c
+--- mc-4.6.2-orig/vfs/sfs.c	2009-02-01 21:30:21.000000000 +0200
++++ mc-4.6.2/vfs/sfs.c	2013-12-28 18:27:41.370483078 +0200
+@@ -148,7 +148,11 @@
+ 
+     g_free (pqname);
+     open_error_pipe ();
++#ifdef __BIONIC__
++    if (my_system (EXECUTE_AS_SHELL, "/system/bin/sh", pad)) {
++#else
+     if (my_system (EXECUTE_AS_SHELL, "/bin/sh", pad)) {
++#endif
+ 	close_error_pipe (1, NULL);
+ 	return -1;
+     }

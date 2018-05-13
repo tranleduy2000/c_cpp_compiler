@@ -1,0 +1,119 @@
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/bfd/configure binutils-2.23/bfd/configure
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/bfd/configure	2013-10-22 15:36:50.440709612 +0700
++++ binutils-2.23/bfd/configure	2013-10-22 18:22:10.829120887 +0700
+@@ -13841,7 +13841,7 @@
+ COREFLAG=
+ CORE_HEADER=
+ TRAD_HEADER=
+-if test "${target}" = "${host}"; then
++if false ; then
+   case "${host}" in
+   alpha*-*-freebsd* | alpha*-*-kfreebsd*-gnu | alpha*-*-*vms*)
+ 	COREFILE=''
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/bfd/Makefile.am binutils-2.23/bfd/Makefile.am
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/bfd/Makefile.am	2013-10-22 15:36:50.408709610 +0700
++++ binutils-2.23/bfd/Makefile.am	2013-10-22 18:22:10.833120888 +0700
+@@ -9,7 +9,7 @@
+ INCDIR = $(srcdir)/../include
+ CSEARCH = -I. -I$(srcdir) -I$(INCDIR)
+ 
+-SUBDIRS = doc po
++SUBDIRS =  po
+ 
+ bfddocdir = doc
+ 
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/bfd/Makefile.in binutils-2.23/bfd/Makefile.in
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/bfd/Makefile.in	2013-10-22 15:36:50.408709610 +0700
++++ binutils-2.23/bfd/Makefile.in	2013-10-22 18:27:31.689134189 +0700
+@@ -324,7 +324,7 @@
+ RELEASE = y
+ INCDIR = $(srcdir)/../include
+ CSEARCH = -I. -I$(srcdir) -I$(INCDIR)
+-SUBDIRS = doc po
++SUBDIRS =  po
+ bfddocdir = doc
+ libbfd_la_LDFLAGS = $(am__append_1) -release `cat libtool-soversion` \
+ 	@SHARED_LDFLAGS@ $(am__empty)
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/binutils/Makefile.am binutils-2.23/binutils/Makefile.am
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/binutils/Makefile.am	2013-10-22 15:36:50.648709620 +0700
++++ binutils-2.23/binutils/Makefile.am	2013-10-22 18:22:10.833120888 +0700
+@@ -3,7 +3,7 @@
+ AUTOMAKE_OPTIONS = dejagnu no-dist foreign
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+ 
+-SUBDIRS = doc po
++SUBDIRS =  po
+ 
+ tooldir = $(exec_prefix)/$(target_alias)
+ 
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/binutils/Makefile.in binutils-2.23/binutils/Makefile.in
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/binutils/Makefile.in	2013-10-22 15:36:50.652709620 +0700
++++ binutils-2.23/binutils/Makefile.in	2013-10-22 18:27:31.889134198 +0700
+@@ -406,7 +406,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = dejagnu no-dist foreign
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = doc po
++SUBDIRS =  po
+ tooldir = $(exec_prefix)/$(target_alias)
+ 
+ # Automake 1.10+ disables lex and yacc output file regeneration if
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/gas/Makefile.am binutils-2.23/gas/Makefile.am
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/gas/Makefile.am	2013-10-22 15:36:50.852709629 +0700
++++ binutils-2.23/gas/Makefile.am	2013-10-22 18:22:10.837120888 +0700
+@@ -3,7 +3,7 @@
+ AUTOMAKE_OPTIONS = 1.11 dejagnu foreign no-dist
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+ 
+-SUBDIRS = doc po
++SUBDIRS =  po
+ 
+ tooldir = $(exec_prefix)/$(target_alias)
+ 
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/gas/Makefile.in binutils-2.23/gas/Makefile.in
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/gas/Makefile.in	2013-10-22 15:36:50.852709629 +0700
++++ binutils-2.23/gas/Makefile.in	2013-10-22 18:27:31.665134188 +0700
+@@ -282,7 +282,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.11 dejagnu foreign no-dist
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = doc po
++SUBDIRS =  po
+ tooldir = $(exec_prefix)/$(target_alias)
+ 
+ # Automake 1.10+ disables lex and yacc output file regeneration if
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/gas/read.c binutils-2.23/gas/read.c
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/gas/read.c	2013-10-22 15:36:51.048709637 +0700
++++ binutils-2.23/gas/read.c	2013-10-22 18:22:10.837120888 +0700
+@@ -1641,11 +1641,13 @@
+ 	}
+       *name = 0;
+ 
++#ifndef __BIONIC__
+       /* Since quoted symbol names can contain non-ASCII characters,
+ 	 check the string and warn if it cannot be recognised by the
+ 	 current character set.  */
+       if (mbstowcs (NULL, name, len) == (size_t) -1)
+ 	as_warn (_("symbol name not recognised in the current locale"));
++#endif
+     }
+   else if (is_name_beginner (c) || c == '\001')
+     {
+diff -Nur /home/sash/Work/android/ndk-source/binutils/binutils-2.23/libiberty/getpagesize.c binutils-2.23/libiberty/getpagesize.c
+--- /home/sash/Work/android/ndk-source/binutils/binutils-2.23/libiberty/getpagesize.c	2013-10-22 15:36:52.044709678 +0700
++++ binutils-2.23/libiberty/getpagesize.c	2013-10-22 18:22:10.837120888 +0700
+@@ -60,12 +60,13 @@
+ # endif /* PAGESIZE */
+ #endif /* GNU_OUR_PAGESIZE */
+ 
++#ifndef __BIONIC__
+ int
+ getpagesize (void)
+ {
+   return (GNU_OUR_PAGESIZE);
+ }
+-
++#endif
+ #else /* VMS */
+ 
+ #if 0	/* older distributions of gcc-vms are missing <syidef.h> */

@@ -1,0 +1,53 @@
+--- s/libiberty/getpagesize.c-	2013-03-04 13:09:39.150764341 +0700
++++ s/libiberty/getpagesize.c	2013-03-04 13:09:51.750764678 +0700
+@@ -60,11 +60,13 @@
+ # endif /* PAGESIZE */
+ #endif /* GNU_OUR_PAGESIZE */
+ 
++#ifndef __BIONIC__
+ int
+ getpagesize (void)
+ {
+   return (GNU_OUR_PAGESIZE);
+ }
++#endif
+ 
+ #else /* VMS */
+ 
+diff -rc gcc.org/Makefile.in gcc/Makefile.in
+*** s/gcc/Makefile.in	2012-03-22 20:30:07.000000000 +0100
+--- s/gcc/Makefile.in	2012-03-22 20:28:34.000000000 +0100
+***************
+*** 1712,1718 ****
+  all.internal: start.encap rest.encap doc
+  # This is what to compile if making a cross-compiler.
+  all.cross: native gcc-cross$(exeext) cpp$(exeext) specs \
+! 	libgcc-support lang.all.cross doc @GENINSRC@ srcextra
+  # This is what must be made before installing GCC and converting libraries.
+  start.encap: native xgcc$(exeext) cpp$(exeext) specs \
+  	libgcc-support lang.start.encap @GENINSRC@ srcextra
+--- 1712,1718 ----
+  all.internal: start.encap rest.encap doc
+  # This is what to compile if making a cross-compiler.
+  all.cross: native gcc-cross$(exeext) cpp$(exeext) specs \
+! 	libgcc-support lang.all.cross @GENINSRC@ srcextra
+  # This is what must be made before installing GCC and converting libraries.
+  start.encap: native xgcc$(exeext) cpp$(exeext) specs \
+  	libgcc-support lang.start.encap @GENINSRC@ srcextra
+***************
+*** 4486,4492 ****
+  # Install the driver last so that the window when things are
+  # broken is small.
+  install: install-common $(INSTALL_HEADERS) \
+!     install-cpp install-man install-info install-@POSUB@ \
+      install-driver install-lto-wrapper install-gcc-ar
+  
+  ifeq ($(enable_plugin),yes)
+--- 4486,4492 ----
+  # Install the driver last so that the window when things are
+  # broken is small.
+  install: install-common $(INSTALL_HEADERS) \
+!     install-cpp install-man install-@POSUB@ \
+      install-driver install-lto-wrapper install-gcc-ar
+  
+  ifeq ($(enable_plugin),yes)

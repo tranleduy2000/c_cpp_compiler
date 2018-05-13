@@ -1,0 +1,21 @@
+--- s/configure.orig	2013-01-18 17:32:55.961724652 +0200
++++ s/configure	2013-01-18 17:34:12.149723471 +0200
+@@ -20963,7 +20963,7 @@
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mmap that can map /dev/zero" >&5
+ $as_echo_n "checking for mmap that can map /dev/zero... " >&6; }
+     if test "$cross_compiling" = yes; then :
+-  ac_cv_file__dev_zero=no
++  true
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -22186,8 +22186,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for type of return code from strerror_r" >&5
+ $as_echo_n "checking for type of return code from strerror_r... " >&6; }
+ if test "$cross_compiling" = yes; then :
+-
+-    ac_cv_strerror_r_rc_int=no
++true
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */

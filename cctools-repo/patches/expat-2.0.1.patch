@@ -1,0 +1,12 @@
+--- s/conftools/config.sub-	2012-07-12 17:44:19.969429395 +0700
++++ s/conftools/config.sub	2012-07-12 17:46:18.322016266 +0700
+@@ -1249,6 +1249,9 @@
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-sunos5*)
+ 		os=`echo $os | sed -e 's|sunos5|solaris2|'`
+ 		;;

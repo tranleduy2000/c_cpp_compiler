@@ -1,0 +1,202 @@
+diff -Nur glib-2.24.2/config.sub glib-2.24.2-new/config.sub
+--- glib-2.24.2/config.sub	2009-12-11 01:28:54.000000000 +0600
++++ glib-2.24.2-new/config.sub	2013-10-26 14:05:28.959432891 +0700
+@@ -1329,6 +1329,9 @@
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
+diff -Nur glib-2.24.2/configure glib-2.24.2-new/configure
+--- glib-2.24.2/configure	2010-08-09 01:50:04.000000000 +0700
++++ glib-2.24.2-new/configure	2013-10-26 14:13:02.271413827 +0700
+@@ -8745,7 +8745,7 @@
+ 
+ done
+ 
+-    if test $ac_cv_header_locale_h = yes; then
++    if false; then
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LC_MESSAGES" >&5
+ $as_echo_n "checking for LC_MESSAGES... " >&6; }
+ if test "${am_cv_val_LC_MESSAGES+set}" = set; then :
+@@ -8778,7 +8778,7 @@
+ 
+     fi
+   fi
+-     USE_NLS=yes
++     USE_NLS=no
+ 
+ 
+     gt_cv_have_gettext=no
+@@ -9438,7 +9438,7 @@
+ 
+ 
+ if test "$gt_cv_have_gettext" != "yes" ; then
+-  as_fn_error "
++  echo "
+ *** You must have either have gettext support in your C library, or use the
+ *** GNU gettext library. (http://www.gnu.org/software/gettext/gettext.html
+ " "$LINENO" 5
+diff -Nur glib-2.24.2/gio/glocalfileinfo.c glib-2.24.2-new/gio/glocalfileinfo.c
+--- glib-2.24.2/gio/glocalfileinfo.c	2010-08-08 21:47:15.000000000 +0700
++++ glib-2.24.2-new/gio/glocalfileinfo.c	2013-10-26 14:05:28.959432891 +0700
+@@ -1102,6 +1102,7 @@
+       if (pwbufp->pw_name != NULL && pwbufp->pw_name[0] != 0)
+ 	data->user_name = convert_pwd_string_to_utf8 (pwbufp->pw_name);
+ 
++#ifndef __BIONIC__
+       gecos = pwbufp->pw_gecos;
+ 
+       if (gecos)
+@@ -1111,6 +1112,7 @@
+ 	    *comma = 0;
+ 	  data->real_name = convert_pwd_string_to_utf8 (gecos);
+ 	}
++#endif
+     }
+ 
+   /* Default fallbacks */
+diff -Nur glib-2.24.2/gio/gresolver.c glib-2.24.2-new/gio/gresolver.c
+--- glib-2.24.2/gio/gresolver.c	2010-08-08 21:47:15.000000000 +0700
++++ glib-2.24.2-new/gio/gresolver.c	2013-10-26 14:05:28.959432891 +0700
+@@ -792,7 +792,24 @@
+   return g_strdup (name);
+ }
+ 
+-#if defined(G_OS_UNIX)
++#if defined(__BIONIC__)
++GList *
++_g_resolver_targets_from_res_query (const gchar      *rrname,
++                                    guchar           *answer,
++                                    gint              len,
++                                    gint              herr,
++                                    GError          **error)
++{
++  GResolverError errnum;
++  const gchar *format;
++
++  errnum = G_RESOLVER_ERROR_TEMPORARY_FAILURE;
++  format = _("Temporarily unable to resolve '%s'");
++
++  g_set_error (error, G_RESOLVER_ERROR, errnum, format, rrname);
++  return NULL;
++}
++#elif defined(G_OS_UNIX)
+ /* Private method to process a res_query response into GSrvTargets */
+ GList *
+ _g_resolver_targets_from_res_query (const gchar      *rrname,
+diff -Nur glib-2.24.2/gio/gthreadedresolver.c glib-2.24.2-new/gio/gthreadedresolver.c
+--- glib-2.24.2/gio/gthreadedresolver.c	2010-08-08 21:47:15.000000000 +0700
++++ glib-2.24.2-new/gio/gthreadedresolver.c	2013-10-26 14:05:28.963432891 +0700
+@@ -526,7 +526,9 @@
+   DNS_RECORD *results;
+ #endif
+ 
+-#if defined(G_OS_UNIX)
++#if defined(__BIONIC__)
++  // Not implemented yet
++#elif defined(G_OS_UNIX)
+   len = res_query (req->u.service.rrname, C_IN, T_SRV, answer, sizeof (answer));
+   herr = h_errno;
+   req->u.service.targets = _g_resolver_targets_from_res_query (req->u.service.rrname, answer, len, herr, error);
+diff -Nur glib-2.24.2/gio/gunixresolver.c glib-2.24.2-new/gio/gunixresolver.c
+--- glib-2.24.2/gio/gunixresolver.c	2010-08-08 21:47:15.000000000 +0700
++++ glib-2.24.2-new/gio/gunixresolver.c	2013-10-26 14:05:28.963432891 +0700
+@@ -477,10 +477,12 @@
+   GUnixResolverRequest *req;
+   _g_asyncns_query_t *qy;
+ 
++#ifndef __BIONIC__
+   qy = _g_asyncns_res_query (gur->asyncns, rrname, C_IN, T_SRV);
+   req = resolve_async (gur, qy, lookup_service_process, lookup_service_free,
+                        cancellable, callback, user_data, lookup_service_async);
+   req->u.service.service = g_strdup (rrname);
++#endif
+ }
+ 
+ static GList *
+diff -Nur glib-2.24.2/gio/libasyncns/asyncns.c glib-2.24.2-new/gio/libasyncns/asyncns.c
+--- glib-2.24.2/gio/libasyncns/asyncns.c	2010-04-08 13:10:50.000000000 +0700
++++ glib-2.24.2-new/gio/libasyncns/asyncns.c	2013-10-26 14:05:28.963432891 +0700
+@@ -595,6 +595,7 @@
+                                        errno, h_errno);
+         }
+ 
++#ifndef __BIONIC__
+         case REQUEST_RES_QUERY:
+         case REQUEST_RES_SEARCH: {
+             int ret;
+@@ -614,7 +615,7 @@
+ 
+             return send_res_reply(out_fd, req->id, (unsigned char *) answer, ret, errno, h_errno);
+         }
+-
++#endif
+         case REQUEST_TERMINATE:
+             /* Quit */
+             return -1;
+diff -Nur glib-2.24.2/glib/gstrfuncs.c glib-2.24.2-new/glib/gstrfuncs.c
+--- glib-2.24.2/glib/gstrfuncs.c	2010-08-08 21:47:15.000000000 +0700
++++ glib-2.24.2-new/glib/gstrfuncs.c	2013-10-26 14:05:28.963432891 +0700
+@@ -428,8 +428,12 @@
+ 
+   fail_pos = NULL;
+ 
++#ifdef __BIONIC__
++  decimal_point = ".";
++#else
+   locale_data = localeconv ();
+   decimal_point = locale_data->decimal_point;
++#endif
+   decimal_point_len = strlen (decimal_point);
+ 
+   g_assert (decimal_point_len != 0);
+@@ -643,8 +647,12 @@
+       
+   _g_snprintf (buffer, buf_len, format, d);
+ 
++#ifdef __BIONIC__
++  decimal_point = ".";
++#else
+   locale_data = localeconv ();
+   decimal_point = locale_data->decimal_point;
++#endif
+   decimal_point_len = strlen (decimal_point);
+ 
+   g_assert (decimal_point_len != 0);
+diff -Nur glib-2.24.2/glib/gutils.c glib-2.24.2-new/glib/gutils.c
+--- glib-2.24.2/glib/gutils.c	2010-08-08 21:47:15.000000000 +0700
++++ glib-2.24.2-new/glib/gutils.c	2013-10-26 14:05:28.963432891 +0700
+@@ -1681,14 +1681,19 @@
+     
+     if (!pw)
+       {
++#ifdef __BIONIC__
++	pw = getpwuid (getuid ());
++#else
+ 	setpwent ();
+ 	pw = getpwuid (getuid ());
+ 	endpwent ();
++#endif
+       }
+     if (pw)
+       {
+ 	g_user_name = g_strdup (pw->pw_name);
+ 
++#ifndef __BIONIC__
+ 	if (pw->pw_gecos && *pw->pw_gecos != '\0') 
+ 	  {
+ 	    gchar **gecos_fields;
+@@ -1702,7 +1707,7 @@
+ 	    g_strfreev (gecos_fields);
+ 	    g_strfreev (name_parts);
+ 	  }
+-
++#endif
+ 	if (!g_home_dir)
+ 	  g_home_dir = g_strdup (pw->pw_dir);
+       }

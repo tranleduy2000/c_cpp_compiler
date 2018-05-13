@@ -1,0 +1,130 @@
+--- s/libiberty/getpagesize.c-	2012-07-12 17:53:30.012156883 +0700
++++ s/libiberty/getpagesize.c	2012-07-12 17:53:45.584234119 +0700
+@@ -60,12 +60,13 @@
+ # endif /* PAGESIZE */
+ #endif /* GNU_OUR_PAGESIZE */
+ 
++#if 0
+ int
+ getpagesize (void)
+ {
+   return (GNU_OUR_PAGESIZE);
+ }
+-
++#endif
+ #else /* VMS */
+ 
+ #if 0	/* older distributions of gcc-vms are missing <syidef.h> */
+--- s/gdb/gdbserver/gdb_proc_service.h-	2012-07-13 01:38:02.059459288 +0700
++++ s/gdb/gdbserver/gdb_proc_service.h	2012-07-13 01:40:38.612235587 +0700
+@@ -50,9 +50,11 @@
+   PS_NOFREGS			/* FPU register set not available.  */
+ } ps_err_e;
+ 
++#ifndef __MIPSEL__
+ #ifndef HAVE_LWPID_T
+ typedef unsigned int lwpid_t;
+ #endif
++#endif
+ 
+ #ifndef HAVE_PSADDR_T
+ typedef void *psaddr_t;
+--- s/gdb/Makefile.in-	2013-03-04 19:37:14.995387110 +0700
++++ s/gdb/Makefile.in	2013-03-04 19:37:20.311387257 +0700
+@@ -173,8 +173,8 @@
+ GDB_DATADIR = @GDB_DATADIR@
+ 
+ # Helper code from gnulib.
+-LIBGNU = gnulib/libgnu.a
+-INCGNU = -I$(srcdir)/gnulib -Ignulib
++#LIBGNU = gnulib/libgnu.a
++#INCGNU = -I$(srcdir)/gnulib -Ignulib
+ 
+ # Generated headers in the gnulib directory.  These must be listed
+ # so that they are generated before other files are compiled.
+--- s/gdb/ser-unix.c-	2013-03-04 19:39:20.647390475 +0700
++++ s/gdb/ser-unix.c	2013-03-04 19:39:58.303391485 +0700
+@@ -308,7 +308,9 @@
+ hardwire_drain_output (struct serial *scb)
+ {
+ #ifdef HAVE_TERMIOS
++# ifndef __BIONIC__
+   return tcdrain (scb->fd);
++# endif
+ #endif
+ 
+ #ifdef HAVE_TERMIO
+--- s/readline/complete.c-	2013-03-04 19:40:58.299393095 +0700
++++ s/readline/complete.c	2013-03-04 19:41:50.367394488 +0700
+@@ -1860,7 +1860,9 @@
+ 
+       username = savestring (&text[first_char_loc]);
+       namelen = strlen (username);
++#ifndef __BIONIC__
+       setpwent ();
++#endif
+     }
+ 
+ #if defined (HAVE_GETPWENT)
+--- s/gdb/mips-linux-nat.c-	2013-03-04 23:10:17.777803421 +0700
++++ s/gdb/mips-linux-nat.c	2013-03-04 23:09:49.285802658 +0700
+@@ -31,9 +31,13 @@
+ #include "target-descriptions.h"
+ 
+ #include "gdb_proc_service.h"
++
+ #include "gregset.h"
+ 
++#ifndef __BIONIC__
+ #include <sgidefs.h>
++#endif
++
+ #include <sys/ptrace.h>
+ 
+ #include "features/mips-linux.c"
+@@ -626,7 +630,7 @@
+   if (force || watch_readback_valid == 0)
+     {
+       tid = ptid_get_lwp (inferior_ptid);
+-      if (ptrace (PTRACE_GET_WATCH_REGS, tid, &watch_readback) == -1)
++      if (ptrace (PTRACE_GET_WATCH_REGS, tid, &watch_readback, NULL) == -1)
+ 	{
+ 	  watch_readback_valid = -1;
+ 	  return 0;
+@@ -877,7 +881,7 @@
+   ALL_LWPS (lp, ptid)
+     {
+       tid = ptid_get_lwp (ptid);
+-      if (ptrace (PTRACE_SET_WATCH_REGS, tid, &watch_mirror) == -1)
++      if (ptrace (PTRACE_SET_WATCH_REGS, tid, &watch_mirror, NULL) == -1)
+ 	perror_with_name (_("Couldn't write debug register"));
+     }
+   return 0;
+@@ -895,7 +899,7 @@
+     return;
+ 
+   tid = ptid_get_lwp (ptid);
+-  if (ptrace (PTRACE_SET_WATCH_REGS, tid, &watch_mirror) == -1)
++  if (ptrace (PTRACE_SET_WATCH_REGS, tid, &watch_mirror, NULL) == -1)
+     perror_with_name (_("Couldn't write debug register"));
+ }
+ 
+--- s/gdb/gregset.h-	2013-03-04 23:12:13.529806520 +0700
++++ s/gdb/gregset.h	2013-03-04 23:11:25.469805234 +0700
+@@ -20,6 +20,16 @@
+ #ifndef GREGSET_H
+ #define GREGSET_H
+ 
++#ifdef __BIONIC__
++#define ELF_NGREG 45
++#define ELF_NFPREG 33
++/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
++typedef unsigned long elf_greg_t;
++typedef elf_greg_t elf_gregset_t[ELF_NGREG];
++typedef double elf_fpreg_t;
++typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
++#endif
++
+ #ifndef GDB_GREGSET_T
+ #define GDB_GREGSET_T gregset_t
+ #endif

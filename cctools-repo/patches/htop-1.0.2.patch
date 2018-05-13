@@ -1,0 +1,26 @@
+--- s/config.sub-orig	2011-08-27 03:18:38.000000000 +0700
++++ s/config.sub	2012-11-20 20:54:26.990945149 +0700
+@@ -1304,6 +1304,9 @@
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-sunos5*)
+ 		os=`echo $os | sed -e 's|sunos5|solaris2|'`
+ 		;;
+--- s/Process.c-orig	2012-11-20 21:09:09.186968774 +0700
++++ s/Process.c	2012-11-20 21:15:02.746978242 +0700
+@@ -32,6 +32,11 @@
+ #include <hwloc/linux.h>
+ #endif
+ 
++#ifdef __BIONIC__
++#define SYS_ioprio_get __NR_ioprio_get
++#define SYS_ioprio_set __NR_ioprio_set
++#endif
++
+ // This works only with glibc 2.1+. On earlier versions
+ // the behavior is similar to have a hardcoded page size.
+ #ifndef PAGE_SIZE

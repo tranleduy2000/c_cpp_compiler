@@ -1,0 +1,34 @@
+--- s/mpn/arm/udiv.asm-	2013-08-13 22:58:48.493952292 +0300
++++ s/mpn/arm/udiv.asm	2013-08-13 22:59:17.521953069 +0300
+@@ -48,7 +48,7 @@
+ 	teq	r12, #0
+ 	bne	L(oop)
+ 
+-	str	n1, [ rem_ptr ]		C store remainder
++	str	n1, [rem_ptr]		C store remainder
+ 	adc	r0, n0, n0		C quotient: add last carry from divstep
+ 	mov	pc, lr
+ 
+@@ -87,7 +87,7 @@
+ 	addcs	n0, n0, #1		C adjust quotient
+ 
+ L(_even_divisor):
+-	str	n1, [ rem_ptr ]		C store remainder
++	str	n1, [rem_ptr]		C store remainder
+ 	mov	r0, n0			C quotient
+ 	ldmfd	sp!, { r8, pc }
+ EPILOGUE(mpn_udiv_qrnnd)
+--- s/cxx/ismpf.cc-	2013-08-13 23:34:35.834009796 +0300
++++ s/cxx/ismpf.cc	2013-08-13 23:35:06.054010605 +0300
+@@ -45,7 +45,11 @@
+   bool ok = false;
+ 
+   // C decimal point, as expected by mpf_set_str
++#ifdef __BIONIC__
++  const char *lconv_point = ".";
++#else
+   const char *lconv_point = localeconv()->decimal_point;
++#endif
+ 
+   // C++ decimal point
+ #if HAVE_STD__LOCALE

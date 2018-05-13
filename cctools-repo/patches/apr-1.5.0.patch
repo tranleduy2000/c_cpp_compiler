@@ -1,0 +1,37 @@
+diff -Nur apr-1.5.0-original/configure apr-1.5.0/configure
+--- apr-1.5.0-original/configure	2013-11-13 18:14:28.000000000 +0200
++++ apr-1.5.0/configure	2013-12-28 19:32:30.834319509 +0200
+@@ -20979,7 +20979,7 @@
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mmap that can map /dev/zero" >&5
+ $as_echo_n "checking for mmap that can map /dev/zero... " >&6; }
+     if test "$cross_compiling" = yes; then :
+-  ac_cv_file__dev_zero=no
++  true
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -22201,8 +22201,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for type of return code from strerror_r" >&5
+ $as_echo_n "checking for type of return code from strerror_r... " >&6; }
+ if test "$cross_compiling" = yes; then :
+-
+-    ac_cv_strerror_r_rc_int=no
++true
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+diff -Nur apr-1.5.0-original/Makefile.in apr-1.5.0/Makefile.in
+--- apr-1.5.0-original/Makefile.in	2013-10-29 20:37:29.000000000 +0200
++++ apr-1.5.0/Makefile.in	2013-12-28 19:35:52.594311024 +0200
+@@ -129,9 +129,8 @@
+ etags:
+ 	etags `find . -name '*.[ch]'`
+ 
+-OBJECTS_gen_test_char = tools/gen_test_char.lo $(LOCAL_LIBS)
+-tools/gen_test_char@EXEEXT@: $(OBJECTS_gen_test_char)
+-	$(LINK_PROG) $(OBJECTS_gen_test_char) $(ALL_LIBS)
++tools/gen_test_char@EXEEXT@:
++	gcc tools/gen_test_char.c -o $@
+ 
+ include/private/apr_escape_test_char.h: tools/gen_test_char@EXEEXT@
+ 	tools/gen_test_char@EXEEXT@ > $@

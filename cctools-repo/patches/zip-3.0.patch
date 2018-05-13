@@ -1,0 +1,11 @@
+--- s/unix/configure-	2013-12-08 12:42:53.345437966 +0200
++++ s/unix/configure	2013-12-08 12:42:58.089437766 +0200
+@@ -482,7 +482,7 @@
+ else
+ # have wide char support
+   echo -- have wchar_t - enabling Unicode support
+-  CFLAGS="${CFLAGS} -DUNICODE_SUPPORT"
++  CFLAGS="${CFLAGS}"
+   OCRCU8="crc32_.o ${OCRCU8}"
+   OCRCTB=""
+ fi

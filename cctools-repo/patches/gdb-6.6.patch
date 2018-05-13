@@ -1,0 +1,60 @@
+--- s/libiberty/getpagesize.c-	2012-07-12 17:53:30.012156883 +0700
++++ s/libiberty/getpagesize.c	2012-07-12 17:53:45.584234119 +0700
+@@ -60,12 +60,13 @@
+ # endif /* PAGESIZE */
+ #endif /* GNU_OUR_PAGESIZE */
+ 
++#if 0
+ int
+ getpagesize (void)
+ {
+   return (GNU_OUR_PAGESIZE);
+ }
+-
++#endif
+ #else /* VMS */
+ 
+ #if 0	/* older distributions of gcc-vms are missing <syidef.h> */
+--- s/gdb/ser-unix.c-	2012-07-13 00:01:05.234615211 +0700
++++ s/gdb/ser-unix.c	2012-07-13 00:01:16.778672454 +0700
+@@ -281,9 +281,11 @@
+ static int
+ hardwire_drain_output (struct serial *scb)
+ {
++#if 0
+ #ifdef HAVE_TERMIOS
+   return tcdrain (scb->fd);
+ #endif
++#endif
+ 
+ #ifdef HAVE_TERMIO
+   return ioctl (scb->fd, TCSBRK, 1);
+--- s/readline/complete.c-	2012-07-13 00:03:22.955298128 +0700
++++ s/readline/complete.c	2012-07-13 00:03:29.995333040 +0700
+@@ -1843,7 +1843,7 @@
+      const char *text;
+      int state;
+ {
+-#if defined (__WIN32__) || defined (__OPENNT)
++#if 1
+   return (char *)NULL;
+ #else /* !__WIN32__ && !__OPENNT) */
+   static char *username = (char *)NULL;
+--- s/gdb/gdbserver/gdb_proc_service.h-	2012-07-13 03:17:53.225167878 +0700
++++ s/gdb/gdbserver/gdb_proc_service.h	2012-07-13 03:18:02.361213173 +0700
+@@ -51,6 +51,7 @@
+   PS_NOFREGS			/* FPU register set not available.  */
+ } ps_err_e;
+ 
++#if !defined( __MIPSEL__ ) && !defined(__i386)
+ #ifndef HAVE_LWPID_T
+ typedef unsigned int lwpid_t;
+ #endif
+@@ -58,6 +59,7 @@
+ #ifndef HAVE_PSADDR_T
+ typedef unsigned long psaddr_t;
+ #endif
++#endif
+ 
+ #ifndef HAVE_PRGREGSET_T
+ typedef elf_gregset_t prgregset_t;

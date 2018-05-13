@@ -1,0 +1,11 @@
+--- vim74/src/mbyte.c
++++ vim74-new/src/mbyte.c
+@@ -700,7 +700,7 @@
+ 	     * API */
+ 	    n = IsDBCSLeadByteEx(enc_dbcs, (BYTE)i) ? 2 : 1;
+ #else
+-# if defined(MACOS) || defined(__amigaos4__)
++# if defined(MACOS) || defined(__amigaos4__) || defined(__BIONIC__)
+ 	    /*
+ 	     * if mblen() is not available, character which MSB is turned on
+ 	     * are treated as leading byte character. (note : This assumption

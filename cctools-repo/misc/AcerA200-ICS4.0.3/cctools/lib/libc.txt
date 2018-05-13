@@ -1,0 +1,42 @@
+FIRMWARE Acer_A200_AV041.RV07RC08_AV041.RV10RC02_WW_GEN1
+
+Fixed __cxa_finalize bug in Acer Iconia A200 libc, according to
+http://code.metager.de/source/xref/android/4.2/bionic/libc/stdlib/atexit.c
+it must be
+
+#if ANDROID
+144                        /* it looks like we should always call the function
+145                         * with an argument, even if dso is not NULL. Otherwise
+146                         * static destructors will not be called properly on
+147                         * the ARM.
+148                         */
+149                        (*fn.fn_ptr.cxa_func)(fn.fn_arg);
+150#else /* !ANDROID */
+151			if (dso != NULL)
+152				(*fn.fn_ptr.cxa_func)(fn.fn_arg);
+153			else
+154				(*fn.fn_ptr.std_func)();
+155#endif /* !ANDROID */
+156
+
+Line 151 = '1f074 b11f cbz r7, 1f07e' replaced with 'nop'.
+
+1ab1ea4c895534dafc2e8767500dddbd  libc.so
+--- libc-orig.lst	2013-11-06 05:40:43.552614894 +0700
++++ libc.lst	2013-11-06 05:39:45.852612501 +0700
+@@ -1,5 +1,5 @@
+ 
+-lib/libc.so:     формат файла elf32-littlearm
++libc.so:     формат файла elf32-littlearm
+ 
+ 
+ Дизассемблирование раздела .plt:
+@@ -27425,7 +27425,7 @@
+    1f06c:	4628      	mov	r0, r5
+    1f06e:	2201      	movs	r2, #1
+    1f070:	f7ed eb12 	blx	c698 <mprotect>
+-   1f074:	b11f      	cbz	r7, 1f07e <__cxa_finalize+0x96>
++   1f074:	bf00      	nop
+    1f076:	4650      	mov	r0, sl
+    1f078:	9903      	ldr	r1, [sp, #12]
+    1f07a:	4788      	blx	r1

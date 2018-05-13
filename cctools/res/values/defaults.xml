@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <!-- Don't localize these default values -->
+   <string name="pref_fontsize_default">12</string>
+   <string name="pref_console_fontsize_default">12</string>
+</resources>

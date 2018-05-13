@@ -1,0 +1,13 @@
+diff -Nur fastjar-0.98-orig/config.sub fastjar-0.98/config.sub
+--- fastjar-0.98-orig/config.sub	2008-10-16 15:15:15.000000000 +0700
++++ fastjar-0.98/config.sub	2014-02-10 16:52:55.692139819 +0700
+@@ -1231,6 +1231,9 @@
+ 	-gnu/linux*)
+ 		os=`echo $os | sed -e 's|gnu/linux|linux-gnu|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	# First accept the basic system types.
+ 	# The portable systems comes first.
+ 	# Each alternative MUST END IN A *, to match a version number.

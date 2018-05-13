@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CCTools SDL плагин</string>
+    <string name="about_dialog">CCTools SDL плагин</string>
+    <string name="about_dialog_text">CCTools SDL плагин версия</string> 
+    <string name="about_dialog_text1">Установите CCTools</string>
+	<string name="about_dialog_text2">для использования этого плагина.</string>
+	<string name="about_dialog_text3">Ознакомтесь с SDL howto на</string>
+	<string name="update_devfiles">Обновление файлов разработки</string>
+	<string name="update_checking">Проверка установленных компонентов&#8230;</string>
+	<string name="update_install_headers">Установка заголовков&#8230;</string>
+	<string name="update_install_libs">Установка библиотек&#8230;</string>
+	<string name="update_install_examples">Установка примеров использования&#8230;</string>
+	<string name="sdl_version">SDL2 версия</string>
+	<string name="sdl_image_version">SDL2_image версия</string>
+	<string name="sdl_mixer_version">SDL2_mixer версия</string>
+	<string name="sdl_net_version">SDL2_net версия</string>
+	<string name="sdl_ttf_version">SDL2_ttf версия</string>
+</resources>

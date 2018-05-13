@@ -1,0 +1,11 @@
+--- fpc/rtl/linux/mipsel/prt0.as-orig	2012-11-23 12:49:40.397486216 +0700
++++ fpc/rtl/linux/mipsel/prt0.as	2012-11-23 12:49:56.977486662 +0700
+@@ -67,7 +67,7 @@
+         addiu   $a2,$a0,1
+         sll     $a2,$a2,0x2
+         addu    $a2,$a2,$a1
+-        lui     $a3,$hi(operatingsystem_parameter_envp)
++        lui     $a3,%hi(operatingsystem_parameter_envp)
+         jal     PASCALMAIN
+         sw      $a2,%lo(operatingsystem_parameter_envp)($a3)
+         nop
