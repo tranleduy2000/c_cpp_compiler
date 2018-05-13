@@ -1,12 +1,12 @@
 package com.pdaxrom.cctools;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +37,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlexiDialogActivity extends Activity {
+public class FlexiDialogActivity extends AppCompatActivity {
     protected static final String PKGS_LISTS_DIR = "/installed/";
     private final static String TAG = "FlexiDialog";
     private final static int REQUEST_DIALOG_FILE_SELECTOR = 1000;

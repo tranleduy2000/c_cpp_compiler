@@ -19,6 +19,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.pdaxrom.cctools"

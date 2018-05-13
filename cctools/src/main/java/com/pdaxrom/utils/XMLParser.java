@@ -71,7 +71,7 @@ public class XMLParser {
     /**
      * Getting XML from file
      *
-     * @param file path string
+     * @param filePath path string
      */
     public String getXmlFromFile(String filePath) {
         File f = new File(filePath);
@@ -97,7 +97,7 @@ public class XMLParser {
     /**
      * Getting XML DOM element
      *
-     * @param XML string
+     * @param xml string
      */
     public Document getDomElement(String xml) {
         Document doc = null;

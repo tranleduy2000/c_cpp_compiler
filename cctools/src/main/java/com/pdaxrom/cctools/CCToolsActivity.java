@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
@@ -24,6 +25,8 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -39,10 +42,6 @@ import android.widget.TextView.BufferType;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.pdaxrom.editor.CodeEditor;
 import com.pdaxrom.editor.CodeEditorInterface;
 import com.pdaxrom.pkgmanager.PkgManagerActivity;
@@ -150,7 +149,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
         //TODO:
         editors = new ArrayList<CodeEditor>();
-        flipper = (ViewFlipper) findViewById(R.id.flipper);
+        flipper = findViewById(R.id.flipper);
 
         int tabsLoaded = loadTabs();
 
@@ -176,76 +175,76 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
  */
         showInfoAndCheckToolchain();
 
-        newButton = (ImageButton) findViewById(R.id.newButton);
+        newButton = findViewById(R.id.newButton);
         newButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 //warnSaveDialog(WARN_SAVE_AND_NEW);
                 newFile();
             }
         });
-        openButton = (ImageButton) findViewById(R.id.pathButton);
+        openButton = findViewById(R.id.pathButton);
         openButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 warnSaveDialog(WARN_SAVE_AND_LOAD);
             }
         });
-        saveButton = (ImageButton) findViewById(R.id.saveButton);
+        saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 saveFile();
             }
         });
 
-        saveAsButton = (ImageButton) findViewById(R.id.saveAsButton);
+        saveAsButton = findViewById(R.id.saveAsButton);
         saveAsButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 saveAsFile();
             }
         });
 
-        playButton = (ImageButton) findViewById(R.id.playButton);
+        playButton = findViewById(R.id.playButton);
         playButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 warnSaveDialog(WARN_SAVE_AND_BUILD_FORCE);
             }
         });
 
-        buildButton = (ImageButton) findViewById(R.id.buildButton);
+        buildButton = findViewById(R.id.buildButton);
         buildButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 warnSaveDialog(WARN_SAVE_AND_BUILD);
             }
         });
 
-        logButton = (ImageButton) findViewById(R.id.logButton);
+        logButton = findViewById(R.id.logButton);
         logButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 showLog();
             }
         });
 
-        terminalButton = (ImageButton) findViewById(R.id.terminalButton);
+        terminalButton = findViewById(R.id.terminalButton);
         terminalButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 runTerminal();
             }
         });
 
-        undoButton = (ImageButton) findViewById(R.id.undoButton);
+        undoButton = findViewById(R.id.undoButton);
         undoButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 codeEditor.undo();
             }
         });
 
-        redoButton = (ImageButton) findViewById(R.id.redoButton);
+        redoButton = findViewById(R.id.redoButton);
         redoButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 codeEditor.redo();
             }
         });
 
-        buttBar = (View) findViewById(R.id.toolButtonsBar);
+        buttBar = findViewById(R.id.toolButtonsBar);
 
         dialogServiceThread = dialogService(13527);
         serviceStartStop(SERVICE_START);
@@ -368,14 +367,12 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         //TODO:
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            menu.add(0, TEXT_UNDO, 0, getString(R.string.menu_undo)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-            menu.add(0, TEXT_REDO, 0, getString(R.string.menu_redo)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-            menu.add(0, TEXT_GOTO, 0, getString(R.string.menu_goto)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-            menu.add(0, TEXT_FIND, 0, getString(R.string.menu_search)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        }
+        menu.add(0, TEXT_UNDO, 0, getString(R.string.menu_undo)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        menu.add(0, TEXT_REDO, 0, getString(R.string.menu_redo)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        menu.add(0, TEXT_GOTO, 0, getString(R.string.menu_goto)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        menu.add(0, TEXT_FIND, 0, getString(R.string.menu_search)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         return true;
     }
 
@@ -441,15 +438,15 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         return true;
     }
 
-    public void onTabSelected(Tab tab, FragmentTransaction ft) {
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         flipper.setDisplayedChild(tab.getPosition());
-        codeEditor = (CodeEditor) flipper.getChildAt(tab.getPosition()).findViewById(R.id.codeEditor);
+        codeEditor = flipper.getChildAt(tab.getPosition()).findViewById(R.id.codeEditor);
     }
 
-    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
     }
 
-    public void onTabReselected(Tab tab, FragmentTransaction ft) {
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
     }
 
     public void textHasChanged(boolean hasChanged) {
@@ -522,7 +519,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
             editor.putInt("CurrentTab", flipper.getDisplayedChild());
         }
         for (int i = 0; i < flipper.getChildCount(); i++) {
-            CodeEditor ce = ((CodeEditor) flipper.getChildAt(i).findViewById(R.id.codeEditor));
+            CodeEditor ce = flipper.getChildAt(i).findViewById(R.id.codeEditor);
             String fileName = ce.getFileName();
             if (fileName == null) {
                 fileName = "";
@@ -536,7 +533,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
     private boolean findAndShowEditorTab(String filename) {
         for (int i = 0; i < flipper.getChildCount(); i++) {
-            CodeEditor e = (CodeEditor) flipper.getChildAt(i).findViewById(R.id.codeEditor);
+            CodeEditor e = flipper.getChildAt(i).findViewById(R.id.codeEditor);
             String name = e.getFileName();
             if (name != null && name.equals(filename)) {
                 getSupportActionBar().setSelectedNavigationItem(i);
@@ -549,7 +546,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     private void addEditorTab() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         flipper.addView(inflater.inflate(R.layout.editor, null));
-        codeEditor = (CodeEditor) flipper.getChildAt(flipper.getChildCount() - 1).findViewById(R.id.codeEditor);
+        codeEditor = flipper.getChildAt(flipper.getChildCount() - 1).findViewById(R.id.codeEditor);
         updateEditorPrefs(mPrefs, codeEditor);
         codeEditor.setCodeEditorInterface(this);
         editors.add(codeEditor);
@@ -1019,11 +1016,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         FilenameFilter filter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 String lowercaseName = name.toLowerCase();
-                if (lowercaseName.endsWith(".xml")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return lowercaseName.endsWith(".xml");
             }
         };
 

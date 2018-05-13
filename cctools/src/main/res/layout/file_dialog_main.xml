@@ -105,7 +105,7 @@
             android:textSize="23dp" />
 
         <ListView
-            android:id="@android:id/list"
+            android:id="@+id/list_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 

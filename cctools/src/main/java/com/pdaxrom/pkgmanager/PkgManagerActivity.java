@@ -15,7 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -24,10 +27,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
 import com.pdaxrom.cctools.R;
 import com.pdaxrom.utils.Utils;
 
@@ -67,11 +66,11 @@ public class PkgManagerActivity extends AppCompatActivity {
             -1, -1, -1, 3, 4, 5, 5, 5, 8, 9, 9, 9, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
     final int sdk2ndk_mips[] = {
-			/*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
+            /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
             -1, -1, -1, -1, -1, -1, -1, -1, -1, 9, 9, -1, -1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
     final int sdk2ndk_x86[] = {
-			/*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
+            /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
             -1, -1, -1, -1, -1, -1, -1, -1, -1, 9, 9, -1, -1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
     String errorString = null;
@@ -129,7 +128,7 @@ public class PkgManagerActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.pkgmgr_main);
 
-            inputSearch = (ClearableEditText) findViewById(R.id.inputSearch);
+            inputSearch = findViewById(R.id.inputSearch);
 
             (new DownloadRepoTask()).execute(getReposList());
         }
@@ -199,9 +198,13 @@ public class PkgManagerActivity extends AppCompatActivity {
         Log.i(TAG, "Position " + lastPosition);
     }
 
+    private ListView getListView() {
+        return findViewById(R.id.list_view);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.pkgmanager_menu, menu);
+        getMenuInflater().inflate(R.menu.pkgmanager_menu, menu);
         return true;
     }
 
@@ -330,7 +333,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                         R.id.pkg_size,
                         R.id.pkg_status});
 
-        setListAdapter(adapter);
+        getListView().setAdapter(adapter);
 
         if (lastPosition > 0 && lastPosition < repo.size()) {
             this.getListView().setSelection(lastPosition);

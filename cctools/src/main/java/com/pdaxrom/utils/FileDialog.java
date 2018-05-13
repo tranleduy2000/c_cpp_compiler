@@ -5,10 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -18,13 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import com.pdaxrom.cctools.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
-public class FileDialog extends AppCompatActivity {
+public class FileDialog extends AppCompatActivity implements AdapterView.OnItemClickListener {
     public static final String START_PATH = "START_PATH";
     public static final String FORMAT_FILTER = "FORMAT_FILTER";
     public static final String RESULT_PATH = "RESULT_PATH";
@@ -84,20 +88,17 @@ public class FileDialog extends AppCompatActivity {
 
         setContentView(R.layout.file_dialog_main);
 
-        myPath = (TextView) findViewById(R.id.path);
+        myPath = findViewById(R.id.path);
         myPath.setSelected(true);
-        //myPath.setEllipsize(TruncateAt.MARQUEE);
-        //myPath.setSingleLine(true);
 
-        mFileName = (EditText) findViewById(R.id.fdEditTextFile);
+        mFileName = findViewById(R.id.fdEditTextFile);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        }
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        getListView().setOnItemClickListener(this);
 
         inputManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
-        selectButton = (Button) findViewById(R.id.fdButtonSelect);
+        selectButton = findViewById(R.id.fdButtonSelect);
         selectButton.setEnabled(false);
         selectButton.setOnClickListener(new OnClickListener() {
 
@@ -114,8 +115,8 @@ public class FileDialog extends AppCompatActivity {
 
         formatFilter = getIntent().getStringArrayExtra(FORMAT_FILTER);
 
-        layoutSelect = (LinearLayout) findViewById(R.id.fdLinearLayoutSelect);
-        layoutCreate = (LinearLayout) findViewById(R.id.fdLinearLayoutCreate);
+        layoutSelect = findViewById(R.id.fdLinearLayoutSelect);
+        layoutCreate = findViewById(R.id.fdLinearLayoutCreate);
 
         if (selectionMode == SelectionMode.MODE_OPEN) {
             setTitle(getString(R.string.open_file));
@@ -128,7 +129,7 @@ public class FileDialog extends AppCompatActivity {
             layoutCreate.setVisibility(View.GONE);
         }
 
-        final Button cancelButton = (Button) findViewById(R.id.fdButtonCancel);
+        final Button cancelButton = findViewById(R.id.fdButtonCancel);
         cancelButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
@@ -137,7 +138,7 @@ public class FileDialog extends AppCompatActivity {
 
         });
 
-        final Button cancelButton1 = (Button) findViewById(R.id.fdButtonCancel1);
+        final Button cancelButton1 = findViewById(R.id.fdButtonCancel1);
         cancelButton1.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
@@ -147,7 +148,7 @@ public class FileDialog extends AppCompatActivity {
         });
 
 
-        final Button createButton = (Button) findViewById(R.id.fdButtonCreate);
+        final Button createButton = findViewById(R.id.fdButtonCreate);
         createButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
@@ -181,9 +182,13 @@ public class FileDialog extends AppCompatActivity {
         getDir(startPath);
     }
 
+    private AbsListView getListView() {
+        return findViewById(R.id.list_view);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.file_dialog_menu, menu);
+        getMenuInflater().inflate(R.menu.file_dialog_menu, menu);
         return true;
     }
 
@@ -361,6 +366,10 @@ public class FileDialog extends AppCompatActivity {
 
     }
 
+    private void setListAdapter(ListAdapter adapter) {
+        getListView().setAdapter(adapter);
+    }
+
     private void addItem(String fileName, int imageId) {
         HashMap<String, Object> item = new HashMap<String, Object>();
         item.put(ITEM_KEY, fileName);
@@ -370,49 +379,9 @@ public class FileDialog extends AppCompatActivity {
 
     protected void onLongListItemClick(View v, int pos, long id) {
         Log.i(TAG, "onLongListItemClick id=" + id);
-        mMode = startActionMode(new FileActionMode());
+        mMode = startSupportActionMode(new FileActionMode());
     }
 
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-
-        File file = new File(path.get(position));
-
-        hideKeyboard(v);
-        selectButton.setEnabled(false);
-
-        if (file.isDirectory()) {
-            if (file.canRead()) {
-                if (mMode != null) {
-                    selectedFile = file;
-                    mFileName.setText(file.getName());
-                } else {
-                    lastPositions.put(currentPath, position);
-                    getDir(path.get(position));
-                    if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
-                        selectedFile = file;
-                        mFileName.setText(file.getName());
-                        selectButton.setEnabled(true);
-                    }
-                }
-            } else {
-                new AlertDialog.Builder(this).setIcon(R.drawable.ic_launcher)
-                        .setTitle("[" + file.getName() + "] " + getText(R.string.cant_read_folder))
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        }).show();
-            }
-        } else if (selectionMode != SelectionMode.MODE_SELECT_DIR) {
-            selectedFile = file;
-            mFileName.setText(file.getName());
-            if (mMode == null) {
-                selectButton.setEnabled(true);
-            }
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -458,6 +427,47 @@ public class FileDialog extends AppCompatActivity {
         return R.drawable.application_octet_stream;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
+        File file = new File(path.get(position));
+
+        hideKeyboard(v);
+        selectButton.setEnabled(false);
+
+        if (file.isDirectory()) {
+            if (file.canRead()) {
+                if (mMode != null) {
+                    selectedFile = file;
+                    mFileName.setText(file.getName());
+                } else {
+                    lastPositions.put(currentPath, position);
+                    getDir(path.get(position));
+                    if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
+                        selectedFile = file;
+                        mFileName.setText(file.getName());
+                        selectButton.setEnabled(true);
+                    }
+                }
+            } else {
+                new AlertDialog.Builder(this).setIcon(R.drawable.ic_launcher)
+                        .setTitle("[" + file.getName() + "] " + getText(R.string.cant_read_folder))
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).show();
+            }
+        } else if (selectionMode != SelectionMode.MODE_SELECT_DIR) {
+            selectedFile = file;
+            mFileName.setText(file.getName());
+            if (mMode == null) {
+                selectButton.setEnabled(true);
+            }
+        }
+    }
+
     private final class FileActionMode implements ActionMode.Callback {
         private List<String> getSelectedFiles() {
             List<String> files = new ArrayList<String>();
@@ -466,10 +476,10 @@ public class FileDialog extends AppCompatActivity {
             for (int i = 0; i < checked.size(); i++) {
                 if (checked.valueAt(i)) {
                     HashMap<String, Object> item = (HashMap<String, Object>) getListView().getAdapter().getItem(checked.keyAt(i));
-                    if (((String) item.get(ITEM_KEY)).equals("..")) {
+                    if (item.get(ITEM_KEY).equals("..")) {
                         continue;
                     }
-                    files.add(currentPath + "/" + (String) item.get(ITEM_KEY));
+                    files.add(currentPath + "/" + item.get(ITEM_KEY));
                 }
             }
 
@@ -503,7 +513,7 @@ public class FileDialog extends AppCompatActivity {
         }
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            getSupportMenuInflater().inflate(R.menu.file_action_menu, menu);
+            getMenuInflater().inflate(R.menu.file_action_menu, menu);
             if (actionOp == 0) {
                 menu.findItem(R.id.file_paste).setVisible(false);
             }
