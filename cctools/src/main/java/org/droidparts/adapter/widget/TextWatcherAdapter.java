@@ -6,31 +6,30 @@ import android.widget.EditText;
 
 public class TextWatcherAdapter implements TextWatcher {
 
-	public interface TextWatcherListener {
+    private final EditText view;
+    private final TextWatcherListener listener;
+    public TextWatcherAdapter(EditText editText, TextWatcherListener listener) {
+        this.view = editText;
+        this.listener = listener;
+    }
 
-		void onTextChanged(EditText view, String text);
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        listener.onTextChanged(view, s.toString());
+    }
 
-	}
+    public void beforeTextChanged(CharSequence s, int start, int count,
+                                  int after) {
+        // pass
+    }
 
-	private final EditText view;
-	private final TextWatcherListener listener;
+    public void afterTextChanged(Editable s) {
+        // pass
+    }
 
-	public TextWatcherAdapter(EditText editText, TextWatcherListener listener) {
-		this.view = editText;
-		this.listener = listener;
-	}
+    public interface TextWatcherListener {
 
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		listener.onTextChanged(view, s.toString());
-	}
+        void onTextChanged(EditText view, String text);
 
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
-		// pass
-	}
-
-	public void afterTextChanged(Editable s) {
-		// pass
-	}
+    }
 
 }

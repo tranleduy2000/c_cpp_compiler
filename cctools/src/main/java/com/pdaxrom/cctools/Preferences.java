@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-	protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getPreferenceManager().setSharedPreferencesName(CCToolsActivity.SHARED_PREFS_NAME);
         // Load the preferences from an XML resource
@@ -14,15 +14,15 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
 
     }
 
-	protected void onResume() {
+    protected void onResume() {
         super.onResume();
     }
 
     protected void onDestroy() {
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);    
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         super.onDestroy();
     }
 
-	public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
-	}
+    public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
+    }
 }
