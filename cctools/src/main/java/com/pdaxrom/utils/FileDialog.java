@@ -8,10 +8,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -23,12 +26,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.pdaxrom.cctools.R;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
-public class FileDialog extends SherlockListActivity {
+public class FileDialog extends AppCompatActivity {
     public static final String START_PATH = "START_PATH";
     public static final String FORMAT_FILTER = "FORMAT_FILTER";
     public static final String RESULT_PATH = "RESULT_PATH";

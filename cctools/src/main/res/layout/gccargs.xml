@@ -1,20 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-	<ScrollView
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="horizontal"  >
+        android:scrollbars="horizontal">
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:scrollbars="horizontal" >
+            android:scrollbars="horizontal">
 
-			<TextView
+            <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -25,8 +25,8 @@
                 android:id="@+id/gccargs"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:ems="10" >
+                android:ems="10"
+                android:inputType="text">
 
                 <requestFocus />
             </EditText>
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/gccnativeactivity" />
-            
+
             <CheckBox
                 android:id="@+id/gccbuildexe"
                 android:layout_width="match_parent"
@@ -48,6 +48,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/gccrunexe" />
-		</LinearLayout>
-	</ScrollView>            
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

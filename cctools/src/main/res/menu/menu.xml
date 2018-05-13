@@ -1,69 +1,86 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/item_new"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_new"
         android:icon="@drawable/document_new"
+        android:showAsAction="ifRoom"
         android:title="@string/newButton" />
-    <item android:id="@+id/item_open"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_open"
         android:icon="@drawable/document_open"
+        android:showAsAction="ifRoom"
         android:title="@string/pathButton" />
-    <item android:id="@+id/item_save"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_save"
         android:icon="@drawable/document_save"
+        android:showAsAction="ifRoom"
         android:title="@string/saveButton" />
-    <item android:id="@+id/item_saveas"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_saveas"
         android:icon="@drawable/document_save_as"
+        android:showAsAction="ifRoom"
         android:title="@string/saveAsButton" />
-    <item android:id="@+id/item_close"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_close"
         android:icon="@drawable/document_close"
-        android:title="@string/closeButton"/>
-    <item android:id="@+id/item_run"
         android:showAsAction="ifRoom"
+        android:title="@string/closeButton" />
+    <item
+        android:id="@+id/item_run"
         android:icon="@drawable/play"
+        android:showAsAction="ifRoom"
         android:title="@string/playButton" />
-    <item android:id="@+id/item_build"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_build"
         android:icon="@drawable/build"
-        android:title="@string/buildButton" />
-    <item android:id="@+id/item_buildlog"
         android:showAsAction="ifRoom"
+        android:title="@string/buildButton" />
+    <item
+        android:id="@+id/item_buildlog"
         android:icon="@drawable/logviewer"
+        android:showAsAction="ifRoom"
         android:title="@string/logButton" />
-    <item android:id="@+id/item_project"
+    <item
+        android:id="@+id/item_project"
         android:title="@string/projectButton">
         <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    		<item android:id="@+id/project_new"
-        		android:title="@string/project_new" />
+            <item
+                android:id="@+id/project_new"
+                android:title="@string/project_new" />
 
-    		<item android:id="@+id/project_open"
-        		android:title="@string/project_open" />
-    
-    		<item android:id="@+id/project_close"
-        		android:title="@string/project_close" />
+            <item
+                android:id="@+id/project_open"
+                android:title="@string/project_open" />
 
-<!--    		<item android:id="@+id/project_import"
-        		android:title="@string/project_import" /> -->
+            <item
+                android:id="@+id/project_close"
+                android:title="@string/project_close" />
 
-    		<item android:id="@+id/project_properties"
-        		android:title="@string/project_properties" />
-		</menu>
+            <!--    		<item android:id="@+id/project_import"
+                            android:title="@string/project_import" /> -->
+
+            <item
+                android:id="@+id/project_properties"
+                android:title="@string/project_properties" />
+        </menu>
     </item>
-    <item android:id="@+id/item_terminal"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_terminal"
         android:icon="@drawable/gnome_terminal"
+        android:showAsAction="ifRoom"
         android:title="@string/terminalButton" />
-    <item android:id="@+id/item_pkgmgr"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/item_pkgmgr"
         android:icon="@drawable/pkgmgr"
+        android:showAsAction="ifRoom"
         android:title="@string/pkgmgrButton" />
-    <item android:id="@+id/prefs"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/prefs"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/prefs_button" />
-    <item android:id="@+id/about"
         android:showAsAction="ifRoom"
+        android:title="@string/prefs_button" />
+    <item
+        android:id="@+id/about"
         android:icon="@android:drawable/ic_menu_info_details"
+        android:showAsAction="ifRoom"
         android:title="@string/about_button" />
 </menu>

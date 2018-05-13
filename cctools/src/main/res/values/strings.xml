@@ -83,10 +83,10 @@
     <string name="project_close">Close</string>
     <string name="project_import">Import</string>
     <string name="project_properties">Properties</string>
-    
+
     <string name="project_new_project">New project</string>
     <string name="project_new_project_message">Select project type</string>
-    
+
     <string name="buildwindow_name">Build</string>
     <string name="buildwindow_name_error">Failed</string>
     <string name="buildwindow_name_done">Finished</string>
@@ -140,12 +140,12 @@
     <string name="cannot_create">Cannot create!</string>
     <string name="homeDirectory">Home directory</string>
     <string name="sdDirectory">SD card</string>
-    
+
     <string name="file_copy">Copy</string>
     <string name="file_cut">Cut</string>
     <string name="file_paste">Paste</string>
     <string name="file_delete">Delete</string>
-    
+
     <string name="message_file_copy">Copying</string>
     <string name="message_file_move">Moving</string>
     <string name="message_file_delete">Deleting</string>
@@ -191,6 +191,6 @@
 
     <string name="pkgMirrorsButton">Repos list</string>
     <string name="pkgUpdateButton">Check updates</string>
-    
+
     <string name="whatisnew">What\'s new</string>
 </resources>

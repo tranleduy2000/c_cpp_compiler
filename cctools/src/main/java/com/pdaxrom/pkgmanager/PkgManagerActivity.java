@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -47,7 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PkgManagerActivity extends SherlockListActivity {
+public class PkgManagerActivity extends AppCompatActivity {
     public static final String INTENT_CMD = "command";
     public static final String INTENT_DATA = "data";
     //private static final String URL = "http://sashz-laptop/cctools/packages/" + Build.CPU_ABI;

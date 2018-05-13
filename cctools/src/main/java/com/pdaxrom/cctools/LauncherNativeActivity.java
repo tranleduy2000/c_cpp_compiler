@@ -1,9 +1,9 @@
 package com.pdaxrom.cctools;
 
-import android.app.Activity;
 import android.app.NativeActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.pdaxrom.utils.Utils;
@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class LauncherNativeActivity extends Activity {
+public class LauncherNativeActivity extends AppCompatActivity {
     private final static String TAG = "LauncherNativeActivity";
 
     public void onCreate(Bundle savedInstanceState) {

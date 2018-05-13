@@ -1,46 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-  	<CheckBoxPreference
-  	    android:key="updater"
-  	    android:title="@string/pref_updater"
-  	    android:defaultValue="true"/>
     <CheckBoxPreference
-		android:key="showToolBar"
-		android:title="@string/pref_toolbar"
-		android:defaultValue="true" />
-	<CheckBoxPreference
-		android:key="drawLineNumbers"
-		android:title="@string/pref_linenumbers"
-		android:defaultValue="true" />
-	<ListPreference
-     	android:key="fontsize"
-      	android:defaultValue="@string/pref_fontsize_default"
-      	android:title="@string/pref_fontsize"
-       	android:entries="@array/entries_fontsize_preference"
-       	android:entryValues="@array/entryvalues_fontsize_preference"
-       	android:dialogTitle="@string/pref_dialog_fontsize" />
-	<CheckBoxPreference
-		android:key="syntax"
-		android:title="@string/pref_syntax"
-		android:defaultValue="true"
-		/>
-  	<CheckBoxPreference android:key="autopair" android:title="@string/pref_autopair" android:defaultValue="true"/>
-  	<CheckBoxPreference android:key="autoindent" android:title="@string/pref_autoindent" android:defaultValue="true"/>
-  	<ListPreference
-     	android:key="console_fontsize"
-      	android:defaultValue="@string/pref_console_fontsize_default"
-      	android:title="@string/pref_console_fontsize"
-       	android:entries="@array/entries_fontsize_preference"
-       	android:entryValues="@array/entryvalues_fontsize_preference"
-       	android:dialogTitle="@string/pref_dialog_fontsize" />
-  	<PreferenceCategory android:title="@string/pref_force_run">
-  		<EditTextPreference android:title="@string/pref_ccopts" android:key="force_ccopts"/>
-  		<EditTextPreference android:title="@string/pref_cxxopts" android:key="force_cxxopts"/>
-  		<CheckBoxPreference android:title="@string/gccnativeactivity" android:key="force_native_activity" android:defaultValue="false" />
-  		<CheckBoxPreference android:title="@string/pref_runargs" android:key="force_run" android:defaultValue="true"/>
-  		
-  	</PreferenceCategory>
-  	
+        android:defaultValue="true"
+        android:key="updater"
+        android:title="@string/pref_updater" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showToolBar"
+        android:title="@string/pref_toolbar" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="drawLineNumbers"
+        android:title="@string/pref_linenumbers" />
+    <ListPreference
+        android:defaultValue="@string/pref_fontsize_default"
+        android:dialogTitle="@string/pref_dialog_fontsize"
+        android:entries="@array/entries_fontsize_preference"
+        android:entryValues="@array/entryvalues_fontsize_preference"
+        android:key="fontsize"
+        android:title="@string/pref_fontsize" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="syntax"
+        android:title="@string/pref_syntax" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="autopair"
+        android:title="@string/pref_autopair" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="autoindent"
+        android:title="@string/pref_autoindent" />
+    <ListPreference
+        android:defaultValue="@string/pref_console_fontsize_default"
+        android:dialogTitle="@string/pref_dialog_fontsize"
+        android:entries="@array/entries_fontsize_preference"
+        android:entryValues="@array/entryvalues_fontsize_preference"
+        android:key="console_fontsize"
+        android:title="@string/pref_console_fontsize" />
+    <PreferenceCategory android:title="@string/pref_force_run">
+        <EditTextPreference
+            android:key="force_ccopts"
+            android:title="@string/pref_ccopts" />
+        <EditTextPreference
+            android:key="force_cxxopts"
+            android:title="@string/pref_cxxopts" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="force_native_activity"
+            android:title="@string/gccnativeactivity" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="force_run"
+            android:title="@string/pref_runargs" />
+
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

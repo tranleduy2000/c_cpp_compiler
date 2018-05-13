@@ -43,7 +43,7 @@
     <string name="pref_updater">Перевірити оновлення під час запуска</string>
     <string name="pref_toolbar">Панель інструментів</string>
     <string name="pref_syntax">Підсвічування синтаксису</string>
-    <string name="pref_linenumbers">Нумерація рядків</string>	
+    <string name="pref_linenumbers">Нумерація рядків</string>
     <string name="pref_fontsize">Розмір шрифту</string>
     <string name="pref_dialog_fontsize">розмір шрифту</string>
     <string name="pref_console_fontsize">Розмір шрифту консолі</string>

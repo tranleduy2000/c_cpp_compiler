@@ -20,7 +20,7 @@
         <item>16</item>
         <item>20</item>
     </string-array>
-    
+
     <string-array name="toolchain_selector">
         <item>Clang C/C++</item>
         <item>GNU C/C++</item>
@@ -28,5 +28,5 @@
         <item>AVR C/C++ (crosscompiler)</item>
         <item>MinGW W64 (crosscompiler)</item>
         <item>Lua JIT</item>
-	</string-array>
+    </string-array>
 </resources>

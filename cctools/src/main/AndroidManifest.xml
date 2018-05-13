@@ -1,69 +1,94 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pdaxrom.cctools"
-    android:versionCode="19"
-    android:versionName="1.18" >
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2018 Mr Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 
-    <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="5" />
-    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<!--    <uses-permission android:name="android.permission.READ_LOGS"/> -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.pdaxrom.cctools">
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:theme="@style/Theme.Sherlock"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat">
         <activity
             android:name=".CCToolsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-			<intent-filter>
+
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.EDIT" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="text/*" />
-			</intent-filter>
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
         </activity>
-        <activity android:name="TermActivity"
-            	  android:label="@string/console_name"
-            	  android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            	  android:windowSoftInputMode="adjustResize" />
-        <activity android:name="BuildActivity"
-            	  android:label="@string/buildwindow_name"
-            	  android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            	  android:windowSoftInputMode="adjustResize" />
-        <activity android:name="com.pdaxrom.utils.FileDialog"
-            	  android:label="@string/filebrowser_name"
-            	  android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
-   		<activity android:name="Preferences" android:label="@string/preferences" />
+        <activity
+            android:name="TermActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/console_name"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="BuildActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/buildwindow_name"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.pdaxrom.utils.FileDialog"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/filebrowser_name" />
+        <activity
+            android:name="Preferences"
+            android:label="@string/preferences" />
         <activity android:name="LauncherNativeActivity">
-			<intent-filter>
-			    <action android:name="com.pdaXrom.cctools.action.RUN" />
+            <intent-filter>
+                <action android:name="com.pdaXrom.cctools.action.RUN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>   		
+            </intent-filter>
+        </activity>
         <activity android:name="LauncherConsoleActivity">
-			<intent-filter>
-			    <action android:name="com.pdaXrom.cctools.action.RUN" />
+            <intent-filter>
+                <action android:name="com.pdaXrom.cctools.action.RUN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>   		
+            </intent-filter>
+        </activity>
         <activity android:name="android.app.NativeActivity">
-			<meta-data android:name="android.app.lib_name" android:value="native-loader" />
-		</activity>   		
-        <activity android:name="com.pdaxrom.pkgmanager.PkgManagerActivity"
-            	  android:label="@string/pkgmgr_name"
-            	  android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
-        <activity android:name="com.pdaxrom.cctools.DialogWindow"
-            	  android:label="@string/app_name"
-            	  android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            	  android:theme="@style/Theme.Transparent" />
-	</application>
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="native-loader" />
+        </activity>
+        <activity
+            android:name="com.pdaxrom.pkgmanager.PkgManagerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/pkgmgr_name" />
+        <activity
+            android:name="com.pdaxrom.cctools.DialogWindow"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Transparent" />
+    </application>
 </manifest>

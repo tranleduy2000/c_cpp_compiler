@@ -1,21 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/file_cut"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/file_cut"
         android:icon="@drawable/edit_cut"
+        android:showAsAction="ifRoom"
         android:title="@string/file_cut" />
 
-    <item android:id="@+id/file_copy"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/file_copy"
         android:icon="@drawable/edit_copy"
-        android:title="@string/file_copy" />
-    
-    <item android:id="@+id/file_paste"
         android:showAsAction="ifRoom"
+        android:title="@string/file_copy" />
+
+    <item
+        android:id="@+id/file_paste"
         android:icon="@drawable/edit_paste"
+        android:showAsAction="ifRoom"
         android:title="@string/file_paste" />
 
-    <item android:id="@+id/file_delete"
-        android:showAsAction="ifRoom"
+    <item
+        android:id="@+id/file_delete"
         android:icon="@drawable/edit_delete"
+        android:showAsAction="ifRoom"
         android:title="@string/file_delete" />
 </menu>

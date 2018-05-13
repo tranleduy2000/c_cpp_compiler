@@ -1,11 +1,11 @@
 package com.pdaxrom.cctools;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.pdaxrom.term.ShellTermSession;
@@ -13,7 +13,7 @@ import com.pdaxrom.term.TermView;
 
 import java.io.File;
 
-public class TermActivity extends Activity {
+public class TermActivity extends AppCompatActivity {
     private final static String TAG = "cctools-terminal";
 
     private TermView mTermView;

@@ -1,11 +1,11 @@
 package com.pdaxrom.cctools;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class DialogWindow extends Activity {
+public class DialogWindow extends AppCompatActivity {
     private final static String TAG = "cctools-DialogWindow";
     private final Context context = this;
     private final Handler handler = new Handler();

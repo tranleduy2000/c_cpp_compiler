@@ -83,10 +83,10 @@
     <string name="project_close">Закрыть</string>
     <string name="project_import">Импортировать</string>
     <string name="project_properties">Настройки</string>
-    
-	<string name="project_new_project">Новый проект</string>
+
+    <string name="project_new_project">Новый проект</string>
     <string name="project_new_project_message">Тип проекта</string>
-    
+
     <string name="buildwindow_name">Собрать</string>
     <string name="buildwindow_name_error">Неудачно</string>
     <string name="buildwindow_name_done">Собрано</string>
@@ -124,7 +124,7 @@
 
     <string name="open_file">Открыть файл</string>
     <string name="save_file">Сохранить файл</string>
-	<string name="select_folder">Выбор папки</string>
+    <string name="select_folder">Выбор папки</string>
     <string name="location">Путь</string>
     <string name="cant_read_folder">папка не может быть прочитана!</string>
     <string name="nnew">Новый</string>
@@ -145,11 +145,11 @@
     <string name="file_cut">Вырезать</string>
     <string name="file_paste">Вставить</string>
     <string name="file_delete">Удалить</string>
-    
+
     <string name="message_file_copy">Копирование</string>
     <string name="message_file_move">Перемещение</string>
     <string name="message_file_delete">Удаление</string>
-    
+
     <string name="pkgmgrButton">Дополнения</string>
     <string name="pkgmgr_name">Управление пакетами дополнений</string>
     <string name="pkginstaller_name">Установка/Удаление дополнений</string>
@@ -191,6 +191,6 @@
 
     <string name="pkgMirrorsButton">Список репозиториев</string>
     <string name="pkgUpdateButton">Проверить обновления</string>
-    
-	<string name="whatisnew">Что нового</string>
+
+    <string name="whatisnew">Что нового</string>
 </resources>
