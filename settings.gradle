@@ -1,2 +1,3 @@
 include ':app', ':style', ':terminal-emulator', ':terminal-view', ':editor-view',
-        ':sdlplugin', ':cctools', ':cctools/libraries/apkbuilder', ':cctools/libraries/emulatorview'
+        ':sdlplugin', ':cctools', ':cctools/libraries/apkbuilder', ':cctools/libraries/emulatorview',
+        ':cctools/libraries/actionbarsherlock'

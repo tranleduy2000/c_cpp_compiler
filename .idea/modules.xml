@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/CCppCompiler.iml" filepath="$PROJECT_DIR$/CCppCompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cctools/cctools.iml" filepath="$PROJECT_DIR$/cctools/cctools.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cctools/libraries/actionbarsherlock/cctools_libraries_actionbarsherlock.iml" filepath="$PROJECT_DIR$/cctools/libraries/actionbarsherlock/cctools_libraries_actionbarsherlock.iml" />
       <module fileurl="file://$PROJECT_DIR$/cctools/libraries/apkbuilder/cctools_libraries_apkbuilder.iml" filepath="$PROJECT_DIR$/cctools/libraries/apkbuilder/cctools_libraries_apkbuilder.iml" />
       <module fileurl="file://$PROJECT_DIR$/cctools/libraries/emulatorview/cctools_libraries_emulatorview.iml" filepath="$PROJECT_DIR$/cctools/libraries/emulatorview/cctools_libraries_emulatorview.iml" />
       <module fileurl="file://$PROJECT_DIR$/editor-view/editor-view.iml" filepath="$PROJECT_DIR$/editor-view/editor-view.iml" />
