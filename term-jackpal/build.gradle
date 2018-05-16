@@ -24,6 +24,6 @@ android {
 }
 
 dependencies {
-    compile project(':emulatorview')
-    compile project(':term-jackpal:libtermexec')
+    implementation project(':emulatorview')
+    implementation project(':term-jackpal:libtermexec')
 }
