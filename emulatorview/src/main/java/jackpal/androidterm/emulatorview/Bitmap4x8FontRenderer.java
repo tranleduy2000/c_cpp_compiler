@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,6 @@
 
 package jackpal.androidterm.emulatorview;
 
-import jackpal.androidterm.emulatorview.compat.AndroidCompat;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +25,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+
+import jackpal.androidterm.emulatorview.compat.AndroidCompat;
 
 
 class Bitmap4x8FontRenderer extends BaseTextRenderer {
@@ -61,7 +62,8 @@ class Bitmap4x8FontRenderer extends BaseTextRenderer {
 
     public void drawTextRun(Canvas canvas, float x, float y,
             int lineOffset, int runWidth, char[] text, int index, int count,
-            boolean cursor, int textStyle) {
+            boolean selectionStyle, int textStyle,
+            int cursorOffset, int cursorIndex, int cursorIncr, int cursorWidth, int cursorMode) {
         int foreColor = TextStyle.decodeForeColor(textStyle);
         int backColor = TextStyle.decodeBackColor(textStyle);
         int effect = TextStyle.decodeEffect(textStyle);
@@ -74,14 +76,19 @@ class Bitmap4x8FontRenderer extends BaseTextRenderer {
             backColor = temp;
         }
 
-        boolean bold = ((effect & (TextStyle.fxBold | TextStyle.fxBlink)) != 0);
+        boolean bold = ((effect & TextStyle.fxBold) != 0);
         if (bold && foreColor < 8) {
             // In 16-color mode, bold also implies bright foreground colors
             foreColor += 8;
         }
+        boolean blink = ((effect & TextStyle.fxBlink) != 0);
+        if (blink && backColor < 8) {
+            // In 16-color mode, blink also implies bright background colors
+            backColor += 8;
+        }
 
-        if (cursor) {
-            backColor = TextStyle.ciCursor;
+        if (selectionStyle) {
+            backColor = TextStyle.ciCursorBackground;
         }
 
         boolean invisible = (effect & TextStyle.fxInvisible) != 0;
@@ -90,6 +97,17 @@ class Bitmap4x8FontRenderer extends BaseTextRenderer {
             foreColor = backColor;
         }
 
+        drawTextRunHelper(canvas, x, y, lineOffset, text, index, count, foreColor, backColor);
+
+        // The cursor is too small to show the cursor mode.
+        if (lineOffset <= cursorOffset && cursorOffset < (lineOffset + count)) {
+          drawTextRunHelper(canvas, x, y, cursorOffset, text, cursorOffset-lineOffset, 1,
+                  TextStyle.ciCursorForeground, TextStyle.ciCursorBackground);
+        }
+    }
+
+    private void drawTextRunHelper(Canvas canvas, float x, float y, int lineOffset, char[] text,
+            int index, int count, int foreColor, int backColor) {
         setColorMatrix(mPalette[foreColor], mPalette[backColor]);
         int destX = (int) x + kCharacterWidth * lineOffset;
         int destY = (int) y;

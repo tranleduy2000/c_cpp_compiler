@@ -22,6 +22,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.util.Locale;
 
 import android.util.Log;
 
@@ -33,6 +34,10 @@ import android.util.Log;
  * video, color) alternate screen cursor key and keypad escape sequences.
  */
 class TerminalEmulator {
+    public void setKeyListener(TermKeyListener l) {
+        mKeyListener = l;
+    }
+    private TermKeyListener mKeyListener;
     /**
      * The cursor row. Numbered 0..mRows-1.
      */
@@ -56,7 +61,9 @@ class TerminalEmulator {
     /**
      * Stores the characters that appear on the screen of the emulated terminal.
      */
-    private Screen mScreen;
+    private TranscriptScreen mMainBuffer;
+    private TranscriptScreen mAltBuffer;
+    private TranscriptScreen mScreen;
 
     /**
      * The terminal session this emulator is bound to.
@@ -201,6 +208,12 @@ class TerminalEmulator {
      */
     private static final int K_WRAPAROUND_MODE_MASK = 1 << 7;
 
+    /**
+     * This mask indicates that the cursor should be shown. DECTCEM
+     */
+
+    private static final int K_SHOW_CURSOR_MASK = 1 << 25;
+
     /** This mask is the subset of DecSet bits that are saved / restored by
      * the DECSC / DECRC commands
      */
@@ -221,6 +234,11 @@ class TerminalEmulator {
      */
     private int mSavedDecFlags;
 
+    /**
+     * The current DECSET mouse tracking mode, zero for no mouse tracking.
+     */
+    private int mMouseTrackingMode;
+
     // Modes set with Set Mode / Reset Mode
 
     /**
@@ -228,13 +246,6 @@ class TerminalEmulator {
      * mode new characters are inserted, pushing existing text to the right.
      */
     private boolean mInsertMode;
-
-    /**
-     * Automatic newline mode. Configures whether pressing return on the
-     * keyboard automatically generates a return as well. Not currently
-     * implemented.
-     */
-    private boolean mAutomaticNewlineMode;
 
     /**
      * An array of tab stops. mTabStop[i] is true if there is a tab stop set for
@@ -398,9 +409,11 @@ class TerminalEmulator {
      * @param rows the number of rows to emulate
      * @param scheme the default color scheme of this emulator
      */
-    public TerminalEmulator(TermSession session, Screen screen, int columns, int rows, ColorScheme scheme) {
+    public TerminalEmulator(TermSession session, TranscriptScreen screen, int columns, int rows, ColorScheme scheme) {
         mSession = session;
-        mScreen = screen;
+        mMainBuffer = screen;
+        mScreen = mMainBuffer;
+        mAltBuffer = new TranscriptScreen(columns, rows, rows, scheme);
         mRows = rows;
         mColumns = columns;
         mTabStop = new boolean[mColumns];
@@ -416,6 +429,10 @@ class TerminalEmulator {
         reset();
     }
 
+    public TranscriptScreen getScreen() {
+        return mScreen;
+    }
+
     public void updateSize(int columns, int rows) {
         if (mRows == rows && mColumns == columns) {
             return;
@@ -428,9 +445,17 @@ class TerminalEmulator {
             throw new IllegalArgumentException("rows:" + rows);
         }
 
+        TranscriptScreen screen = mScreen;
+        TranscriptScreen altScreen;
+        if (screen != mMainBuffer) {
+            altScreen = mMainBuffer;
+        } else {
+            altScreen = mAltBuffer;
+        }
+
         // Try to resize the screen without getting the transcript
         int[] cursor = { mCursorCol, mCursorRow };
-        boolean fastResize = mScreen.fastResize(columns, rows, cursor);
+        boolean fastResize = screen.fastResize(columns, rows, cursor);
 
         GrowableIntArray cursorColor = null;
         String charAtCursor = null;
@@ -442,13 +467,25 @@ class TerminalEmulator {
              * This is an epic hack that lets us restore the cursor later...
              */
             cursorColor = new GrowableIntArray(1);
-            charAtCursor = mScreen.getSelectedText(cursorColor, mCursorCol, mCursorRow, mCursorCol, mCursorRow);
-            mScreen.set(mCursorCol, mCursorRow, 27, 0);
+            charAtCursor = screen.getSelectedText(cursorColor, mCursorCol, mCursorRow, mCursorCol, mCursorRow);
+            screen.set(mCursorCol, mCursorRow, 27, 0);
 
             colors = new GrowableIntArray(1024);
-            transcriptText = mScreen.getTranscriptText(colors);
+            transcriptText = screen.getTranscriptText(colors);
+            screen.resize(columns, rows, getStyle());
+        }
 
-            mScreen.resize(columns, rows, getStyle());
+        boolean altFastResize = true;
+        GrowableIntArray altColors = null;
+        String altTranscriptText = null;
+        if (altScreen != null) {
+            altFastResize = altScreen.fastResize(columns, rows, null);
+
+            if (!altFastResize) {
+                altColors = new GrowableIntArray(1024);
+                altTranscriptText = altScreen.getTranscriptText(altColors);
+                altScreen.resize(columns, rows, getStyle());
+            }
         }
 
         if (mRows != rows) {
@@ -463,6 +500,41 @@ class TerminalEmulator {
             mTabStop = new boolean[mColumns];
             int toTransfer = Math.min(oldColumns, columns);
             System.arraycopy(oldTabStop, 0, mTabStop, 0, toTransfer);
+        }
+
+        if (!altFastResize) {
+            boolean wasAboutToAutoWrap = mAboutToAutoWrap;
+
+            // Restore the contents of the inactive screen's buffer
+            mScreen = altScreen;
+            mCursorRow = 0;
+            mCursorCol = 0;
+            mAboutToAutoWrap = false;
+
+            int end = altTranscriptText.length()-1;
+            /* Unlike for the main transcript below, don't trim off trailing
+             * newlines -- the alternate transcript lacks a cursor marking, so
+             * we might introduce an unwanted vertical shift in the screen
+             * contents this way */
+            char c, cLow;
+            int colorOffset = 0;
+            for (int i = 0; i <= end; i++) {
+                c = altTranscriptText.charAt(i);
+                int style = altColors.at(i-colorOffset);
+                if (Character.isHighSurrogate(c)) {
+                    cLow = altTranscriptText.charAt(++i);
+                    emit(Character.toCodePoint(c, cLow), style);
+                    ++colorOffset;
+                } else if (c == '\n') {
+                    setCursorCol(0);
+                    doLinefeed();
+                } else {
+                    emit(c, style);
+                }
+            }
+
+            mScreen = screen;
+            mAboutToAutoWrap = wasAboutToAutoWrap;
         }
 
         if (fastResize) {
@@ -507,7 +579,7 @@ class TerminalEmulator {
                    is the place to restore the cursor to */
                 newCursorRow = mCursorRow;
                 newCursorCol = mCursorCol;
-                newCursorTranscriptPos = mScreen.getActiveRows();
+                newCursorTranscriptPos = screen.getActiveRows();
                 if (charAtCursor != null && charAtCursor.length() > 0) {
                     // Emit the real character that was in this spot
                     int encodedCursorColor = cursorColor.at(0);
@@ -525,7 +597,7 @@ class TerminalEmulator {
 
             /* Adjust for any scrolling between the time we marked the cursor
                location and now */
-            int scrollCount = mScreen.getActiveRows() - newCursorTranscriptPos;
+            int scrollCount = screen.getActiveRows() - newCursorTranscriptPos;
             if (scrollCount > 0 && scrollCount <= newCursorRow) {
                 mCursorRow -= scrollCount;
             } else if (scrollCount > newCursorRow) {
@@ -558,8 +630,21 @@ class TerminalEmulator {
         return (mDecFlags & K_REVERSE_VIDEO_MASK) != 0;
     }
 
+    public final boolean getShowCursor() {
+        return (mDecFlags & K_SHOW_CURSOR_MASK) != 0;
+    }
+
     public final boolean getKeypadApplicationMode() {
         return mbKeypadApplicationMode;
+    }
+
+    /**
+     * Get the current DECSET mouse tracking mode, zero for no mouse tracking.
+     *
+     * @return the current DECSET mouse tracking mode.
+     */
+    public final int getMouseTrackingMode() {
+        return mMouseTrackingMode;
     }
 
     private void setDefaultTabStops() {
@@ -576,17 +661,12 @@ class TerminalEmulator {
      * @param length the number of bytes in the array to process
      */
     public void append(byte[] buffer, int base, int length) {
+        if (EmulatorDebug.LOG_CHARACTERS_FLAG) {
+            Log.d(EmulatorDebug.LOG_TAG, "In: '" + EmulatorDebug.bytesToString(buffer, base, length) + "'");
+        }
         for (int i = 0; i < length; i++) {
             byte b = buffer[base + i];
             try {
-                if (EmulatorDebug.LOG_CHARACTERS_FLAG) {
-                    char printableB = (char) b;
-                    if (b < 32 || b > 126) {
-                        printableB = ' ';
-                    }
-                    Log.w(EmulatorDebug.LOG_TAG, "'" + Character.toString(printableB)
-                            + "' (" + Integer.toString(b) + ")");
-                }
                 process(b);
                 mProcessedCharCount++;
             } catch (Exception e) {
@@ -743,7 +823,11 @@ class TerminalEmulator {
                 mUTF8ToFollow = 0;
                 mUTF8ByteBuffer.clear();
                 emit(UNICODE_REPLACEMENT_CHAR);
-                return true;
+
+                /* The Unicode standard (section 3.9, definition D93) requires
+                 * that we now attempt to process this byte as though it were
+                 * the beginning of another possibly-valid sequence */
+                return handleUTF8Sequence(b);
             }
 
             mUTF8ByteBuffer.put(b);
@@ -833,14 +917,44 @@ class TerminalEmulator {
     }
 
     private void doEscLSBQuest(byte b) {
-        int mask = getDecFlagsMask(getArg0(0));
+        int arg = getArg0(0);
+        int mask = getDecFlagsMask(arg);
+        int oldFlags = mDecFlags;
         switch (b) {
         case 'h': // Esc [ ? Pn h - DECSET
             mDecFlags |= mask;
+            switch (arg) {
+            case 1:
+                mKeyListener.setCursorKeysApplicationMode(true);
+                break;
+            case 47:
+            case 1047:
+            case 1049:
+                if (mAltBuffer != null) {
+                    mScreen = mAltBuffer;
+                }
+                break;
+            }
+            if (arg >= 1000 && arg <= 1003) {
+                mMouseTrackingMode = arg;
+            }
             break;
 
         case 'l': // Esc [ ? Pn l - DECRST
             mDecFlags &= ~mask;
+            switch (arg) {
+            case 1:
+                mKeyListener.setCursorKeysApplicationMode(false);
+                break;
+            case 47:
+            case 1047:
+            case 1049:
+                mScreen = mMainBuffer;
+                break;
+            }
+            if (arg >= 1000 && arg <= 1003) {
+                mMouseTrackingMode = 0;
+            }
             break;
 
         case 'r': // Esc [ ? Pn r - restore
@@ -856,23 +970,26 @@ class TerminalEmulator {
             break;
         }
 
+        int newlySetFlags = (~oldFlags) & mDecFlags;
+        int changedFlags = oldFlags ^ mDecFlags;
+
         // 132 column mode
-        if ((mask & K_132_COLUMN_MODE_MASK) != 0) {
-            // We don't actually set 132 cols, but we do want the
+        if ((changedFlags & K_132_COLUMN_MODE_MASK) != 0) {
+            // We don't actually set/reset 132 cols, but we do want the
             // side effect of clearing the screen and homing the cursor.
             blockClear(0, 0, mColumns, mRows);
             setCursorRowCol(0, 0);
         }
 
         // origin mode
-        if ((mask & K_ORIGIN_MODE_MASK) != 0) {
+        if ((newlySetFlags & K_ORIGIN_MODE_MASK) != 0) {
             // Home the cursor.
             setCursorPosition(0, 0);
         }
     }
 
     private int getDecFlagsMask(int argument) {
-        if (argument >= 1 && argument <= 9) {
+        if (argument >= 1 && argument <= 32) {
             return (1 << argument);
         }
 
@@ -1221,6 +1338,28 @@ class TerminalEmulator {
             selectGraphicRendition();
             break;
 
+        case 'n': // Esc [ Pn n - ECMA-48 Status Report Commands
+            //sendDeviceAttributes()
+            switch (getArg0(0)) {
+            case 5: // Device status report (DSR):
+                    // Answer is ESC [ 0 n (Terminal OK).
+                byte[] dsr = { (byte) 27, (byte) '[', (byte) '0', (byte) 'n' };
+                mSession.write(dsr, 0, dsr.length);
+                break;
+
+            case 6: // Cursor position report (CPR):
+                    // Answer is ESC [ y ; x R, where x,y is
+                    // the cursor location.
+                byte[] cpr = String.format(Locale.US, "\033[%d;%dR",
+                                 mCursorRow + 1, mCursorCol + 1).getBytes();
+                mSession.write(cpr, 0, cpr.length);
+                break;
+
+            default:
+                break;
+            }
+            break;
+
         case 'r': // Esc [ Pn ; Pn r - set top and bottom margins
         {
             // The top margin defaults to 1, the bottom margin
@@ -1429,10 +1568,6 @@ class TerminalEmulator {
         switch (modeBit) {
         case 4:
             mInsertMode = newValue;
-            break;
-
-        case 20:
-            mAutomaticNewlineMode = newValue;
             break;
 
         default:
@@ -1706,6 +1841,10 @@ class TerminalEmulator {
 
         if (autoWrap) {
             mAboutToAutoWrap = (mCursorCol == mColumns - 1);
+
+            //Force line-wrap flag to trigger even for lines being typed
+            if(mAboutToAutoWrap)
+                mScreen.setLineWrap(mCursorRow);
         }
 
         mCursorCol = Math.min(mCursorCol + width, mColumns - 1);
@@ -1799,9 +1938,9 @@ class TerminalEmulator {
         if (DEFAULT_TO_AUTOWRAP_ENABLED) {
             mDecFlags |= K_WRAPAROUND_MODE_MASK;
         }
+        mDecFlags |= K_SHOW_CURSOR_MASK;
         mSavedDecFlags = 0;
         mInsertMode = false;
-        mAutomaticNewlineMode = false;
         mTopMargin = 0;
         mBottomMargin = mRows;
         mAboutToAutoWrap = false;
@@ -1853,9 +1992,20 @@ class TerminalEmulator {
     public void setColorScheme(ColorScheme scheme) {
         mDefaultForeColor = TextStyle.ciForeground;
         mDefaultBackColor = TextStyle.ciBackground;
+        mMainBuffer.setColorScheme(scheme);
+        if (mAltBuffer != null) {
+            mAltBuffer.setColorScheme(scheme);
+        }
     }
 
     public String getSelectedText(int x1, int y1, int x2, int y2) {
         return mScreen.getSelectedText(x1, y1, x2, y2);
+    }
+
+    public void finish() {
+        if (mAltBuffer != null) {
+            mAltBuffer.finish();
+            mAltBuffer = null;
+        }
     }
 }

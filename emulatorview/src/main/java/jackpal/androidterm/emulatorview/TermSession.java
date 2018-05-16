@@ -56,6 +56,12 @@ import android.os.Message;
  * and closes the attached I/O streams.
  */
 public class TermSession {
+    public void setKeyListener(TermKeyListener l) {
+        mKeyListener = l;
+    }
+
+    private TermKeyListener mKeyListener;
+
     private ColorScheme mColorScheme = BaseTextRenderer.defaultColorScheme;
     private UpdateCallback mNotify;
 
@@ -87,6 +93,7 @@ public class TermSession {
     private static final int NEW_INPUT = 1;
     private static final int NEW_OUTPUT = 2;
     private static final int FINISH = 3;
+    private static final int EOF = 4;
 
     /**
      * Callback to be invoked when a {@link TermSession} finishes.
@@ -112,6 +119,13 @@ public class TermSession {
             }
             if (msg.what == NEW_INPUT) {
                 readFromProcess();
+            } else if (msg.what == EOF) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onProcessExit();
+                    }
+                });
             }
         }
     };
@@ -119,6 +133,10 @@ public class TermSession {
     private UpdateCallback mTitleChangedListener;
 
     public TermSession() {
+        this(false);
+    }
+
+    public TermSession(final boolean exitOnEOF) {
         mWriteCharBuffer = CharBuffer.allocate(2);
         mWriteByteBuffer = ByteBuffer.allocate(4);
         mUTF8Encoder = Charset.forName("UTF-8").newEncoder();
@@ -137,15 +155,23 @@ public class TermSession {
                         int read = mTermIn.read(mBuffer);
                         if (read == -1) {
                             // EOF -- process exited
-                            return;
+                            break;
                         }
-                        mByteQueue.write(mBuffer, 0, read);
-                        mMsgHandler.sendMessage(
-                                mMsgHandler.obtainMessage(NEW_INPUT));
+                        int offset = 0;
+                        while (read > 0) {
+                            int written = mByteQueue.write(mBuffer,
+                                    offset, read);
+                            offset += written;
+                            read -= written;
+                            mMsgHandler.sendMessage(
+                                    mMsgHandler.obtainMessage(NEW_INPUT));
+                        }
                     }
                 } catch (IOException e) {
                 } catch (InterruptedException e) {
                 }
+
+                if (exitOnEOF) mMsgHandler.sendMessage(mMsgHandler.obtainMessage(EOF));
             }
         };
         mReaderThread.setName("TermSession input reader");
@@ -195,11 +221,17 @@ public class TermSession {
                     // Ignore exception
                     // We don't really care if the receiver isn't listening.
                     // We just make a best effort to answer the query.
+                    e.printStackTrace();
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         };
         mWriterThread.setName("TermSession output writer");
+    }
+
+    protected void onProcessExit() {
+        finish();
     }
 
     /**
@@ -212,6 +244,7 @@ public class TermSession {
         mTranscriptScreen = new TranscriptScreen(columns, TRANSCRIPT_ROWS, rows, mColorScheme);
         mEmulator = new TerminalEmulator(this, mTranscriptScreen, columns, rows, mColorScheme);
         mEmulator.setDefaultUTF8Mode(mDefaultUTF8Mode);
+        mEmulator.setKeyListener(mKeyListener);
 
         mIsRunning = true;
         mReaderThread.start();
@@ -236,10 +269,14 @@ public class TermSession {
      */
     public void write(byte[] data, int offset, int count) {
         try {
-            mWriteQueue.write(data, offset, count);
+            while (count > 0) {
+                int written = mWriteQueue.write(data, offset, count);
+                offset += written;
+                count -= written;
+                notifyNewOutput();
+            }
         } catch (InterruptedException e) {
         }
-        notifyNewOutput();
     }
 
     /**
@@ -274,8 +311,16 @@ public class TermSession {
      * @param codePoint The Unicode code point to write to the terminal.
      */
     public void write(int codePoint) {
-        CharBuffer charBuf = mWriteCharBuffer;
         ByteBuffer byteBuf = mWriteByteBuffer;
+        if (codePoint < 128) {
+            // Fast path for ASCII characters
+            byte[] buf = byteBuf.array();
+            buf[0] = (byte) codePoint;
+            write(buf, 0, 1);
+            return;
+        }
+
+        CharBuffer charBuf = mWriteCharBuffer;
         CharsetEncoder encoder = mUTF8Encoder;
 
         charBuf.clear();
@@ -396,8 +441,6 @@ public class TermSession {
     /**
      * Notify the UpdateCallback registered for title changes, if any, that the
      * terminal session's title has changed.
-     *
-     * @param title The terminal's new title.
      */
     protected void notifyTitleChanged() {
         UpdateCallback listener = mTitleChangedListener;
@@ -500,7 +543,6 @@ public class TermSession {
             return;
         }
         mEmulator.setColorScheme(scheme);
-        mTranscriptScreen.setColorScheme(scheme);
     }
 
     /**
@@ -572,6 +614,7 @@ public class TermSession {
      */
     public void finish() {
         mIsRunning = false;
+        mEmulator.finish();
         if (mTranscriptScreen != null) {
             mTranscriptScreen.finish();
         }
