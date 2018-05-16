@@ -61,7 +61,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':apkbuilder')
-    implementation project(':emulatorview')
+    implementation project(':term-jackpal')
 
     implementation "com.android.support:appcompat-v7:$androidSupportVersion"
     implementation "com.android.support:support-v4:$androidSupportVersion"
