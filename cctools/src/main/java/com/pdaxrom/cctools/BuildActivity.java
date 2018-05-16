@@ -67,7 +67,7 @@ public class BuildActivity extends Activity {
         setContentView(R.layout.build);
 
         systemShell = new String("SHELL=" + SYSTEM_SHELL);
-        buildLog = (TextView) findViewById(R.id.buildLog);
+        buildLog = findViewById(R.id.buildLog);
         cmdThread = (Thread) getLastNonConfigurationInstance();
         fileName = getIntent().getExtras().getString("filename");
         cctoolsDir = getIntent().getExtras().getString("cctoolsdir");
@@ -238,13 +238,13 @@ public class BuildActivity extends Activity {
         }
         //View view = getActivity().getLayoutInflater().inflate(R.layout.gccargs, null);
         final View view = LayoutInflater.from(this).inflate(R.layout.gccargs, null);
-        final EditText cb_edit = (EditText) view.findViewById(R.id.gccargs);
-        final CheckBox cb_link = (CheckBox) view.findViewById(R.id.gccbuildexe);
-        final CheckBox cb_native = (CheckBox) view.findViewById(R.id.gccnativeactivity);
-        final CheckBox cb_run = (CheckBox) view.findViewById(R.id.gccrunexe);
+        final EditText cb_edit = view.findViewById(R.id.gccargs);
+        final CheckBox cb_link = view.findViewById(R.id.gccbuildexe);
+        final CheckBox cb_native = view.findViewById(R.id.gccnativeactivity);
+        final CheckBox cb_run = view.findViewById(R.id.gccrunexe);
 
         if (Build.VERSION.SDK_INT < 9)
-            ((CheckBox) view.findViewById(R.id.gccnativeactivity)).setEnabled(false);
+            view.findViewById(R.id.gccnativeactivity).setEnabled(false);
 
         cb_run.setEnabled(false);
         cb_link.setOnCheckedChangeListener(new OnCheckedChangeListener() {

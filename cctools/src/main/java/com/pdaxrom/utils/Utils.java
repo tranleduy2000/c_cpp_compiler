@@ -10,21 +10,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class Utils {
+    private static final String TAG = "Utils";
+
     static {
-        final String[] libpaths = {
-                "/data/data/com.pdaxrom.cctools/lib/libmyutils.so",
-        };
-        boolean found = false;
-        for (String libpath : libpaths) {
-            if ((new File(libpath)).exists()) {
-                //System.out.println(TAG + " Found library " + libpath);
-                System.load(libpath);
-                found = true;
-            }
-        }
-        if (!found) {
-            System.loadLibrary("myutils");
-        }
+        System.loadLibrary("myutils");
     }
 
     public native static int chmod(String file, int attr);

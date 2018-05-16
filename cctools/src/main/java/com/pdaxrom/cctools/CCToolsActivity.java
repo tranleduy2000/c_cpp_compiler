@@ -121,14 +121,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     private int showFileLine;
     private int showFilePos;
 
-    //FIXME
-    /*
-    protected void onSaveInstanceState(Bundle saveState) {
-    	super.onSaveInstanceState(saveState);
-    	saveState.putString("filename", fileName);
-    	saveState.putBoolean("hasChanged", codeEditor.hasChanged());
-    }
-	*/
     private Thread dialogServiceThread;
     private ServerSocket dialogServerSocket;
     private int toolchainPackageToInstall = 0;
@@ -147,8 +139,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
         mPrefs = getSharedPreferences(SHARED_PREFS_NAME, 0);
 
-        //TODO:
-        editors = new ArrayList<CodeEditor>();
+        editors = new ArrayList<>();
         flipper = findViewById(R.id.flipper);
 
         int tabsLoaded = loadTabs();
@@ -157,22 +148,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
             newFile();
         }
 
-/*
-        if (savedInstanceState != null) {
-        	fileName = savedInstanceState.getString("filename");
-
-        	if (fileName.contentEquals("") || fileName == null) {
-        		newTitle(getString(R.string.new_file));
-        	} else {
-        		newTitle(fileName);
-        	}
-        } else {
-        	showInfoAndCheckToolchain();
-
-			newTitle(getString(R.string.new_file));
-			fileName = "";
-        }
- */
         showInfoAndCheckToolchain();
 
         newButton = findViewById(R.id.newButton);
@@ -335,7 +310,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        //TODO:
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             menu.add(0, TEXT_GOTO, 0, getString(R.string.menu_goto));
             menu.add(0, TEXT_FIND, 0, getString(R.string.menu_search));
@@ -368,7 +342,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        //TODO:
         menu.add(0, TEXT_UNDO, 0, getString(R.string.menu_undo)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         menu.add(0, TEXT_REDO, 0, getString(R.string.menu_redo)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         menu.add(0, TEXT_GOTO, 0, getString(R.string.menu_goto)).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
@@ -656,12 +629,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void build(boolean force) {
-//TODO: add force save options to preferences?
-//		if (codeEditor.hasChanged() && codeEditor.getText().length() > 0) {
-//			buildAfterSave = true;
-//			forceTmpVal = force;
-//			saveFile();
-//		} else
         if (codeEditor.getFileName() == null || codeEditor.getFileName().equals("")) {
             buildAfterLoad = true;
             forceTmpVal = force;
@@ -1007,7 +974,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         startActivity(myIntent);
     }
 
-    //TODO: new project
     private void newProject() {
         final Spinner spinner = new Spinner(this);
         List<String> list = new ArrayList<String>();

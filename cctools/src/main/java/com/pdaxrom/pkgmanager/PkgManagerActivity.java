@@ -48,21 +48,22 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PkgManagerActivity extends AppCompatActivity {
+
     public static final String INTENT_CMD = "command";
     public static final String INTENT_DATA = "data";
-    //private static final String URL = "http://sashz-laptop/cctools/packages/" + Build.CPU_ABI;
-    //private static final String URL = "http://192.168.0.106/cctools/packages/" + Build.CPU_ABI;
     public static final String INTENT_RETURN = "return";
     public static final String CMD_INSTALL = "install";
     public static final String CMD_UNINSTALL = "uninstall";
     public static final String CMD_UPDATE = "update";
+
     private static final String TAG = "PkgMgrActivity";
-    private static final String URL = "http://mirror.cctools.info/packages";
+    private static final String URL = "http://cctools.info/packages-pie";
     private static final String PKGS_LISTS_DIR = "/installed/";
+
     private static boolean fCheckedUpdatesAtStartup = false;
     final Handler handler = new Handler();
     final int sdk2ndk_arm[] = {
-            /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  */
+            /*   1   2   3   4   5   6   7   8   9  10  a11  12  13  14  15  16  17  18  19  20  21  22  23  */
             -1, -1, -1, 3, 4, 5, 5, 5, 8, 9, 9, 9, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
     final int sdk2ndk_mips[] = {
@@ -100,6 +101,7 @@ public class PkgManagerActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.pkgmgr_main);
 
         setupDirs();
         setupVersion();
@@ -126,7 +128,6 @@ public class PkgManagerActivity extends AppCompatActivity {
 
             return;
         } else {
-            setContentView(R.layout.pkgmgr_main);
 
             inputSearch = findViewById(R.id.inputSearch);
 
@@ -434,6 +435,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                     throw new RuntimeException("Partially downloaded file!");
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 temp.delete();
                 Log.i(TAG, "Error downloading file " + file);
                 errorString = getString(R.string.error_downloading) + " (" + file + ")";
@@ -476,6 +478,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                 throw new RuntimeException("bad archive");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             temp.delete();
             Log.i(TAG, "Corrupted archive, restart application and try install again");
             errorString = getString(R.string.bad_archive) + " (" + file + ")";
@@ -555,6 +558,8 @@ public class PkgManagerActivity extends AppCompatActivity {
                             postinstList.add(packageInfo.getName());
                         }
                     } catch (IOException e) {
+                        e.printStackTrace();
+
                         Log.e(TAG, "Copy " + infoFile + " file failed " + e);
                     }
                     (new File(toolchainDir + "/" + infoFile)).delete();
@@ -570,6 +575,8 @@ public class PkgManagerActivity extends AppCompatActivity {
                         new File(sdCardDir + "/Examples"));
                 Utils.deleteDirectory(new File(toolchainDir + "/cctools/Examples"));
             } catch (IOException e) {
+                e.printStackTrace();
+
                 Log.e(TAG, "Can't copy examples directory " + e);
             }
         }
@@ -621,6 +628,8 @@ public class PkgManagerActivity extends AppCompatActivity {
                 in.close();
                 (new File(logFile)).delete();
             } catch (Exception e) {
+                e.printStackTrace();
+
                 Log.e(TAG, "Error during remove files " + e);
             }
             updateProgress(100);
@@ -651,12 +660,14 @@ public class PkgManagerActivity extends AppCompatActivity {
                 }
                 in.close();
             } catch (Exception e) {
+                e.printStackTrace();
+
                 Log.e(TAG, "Read repos list: " + e);
             }
         }
 
         if (list == null) {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             list.add(URL);
         }
         return list;
@@ -683,6 +694,8 @@ public class PkgManagerActivity extends AppCompatActivity {
                             fos.write(ed.getText().toString().getBytes());
                             fos.close();
                         } catch (Exception e) {
+                            e.printStackTrace();
+
                             Log.e(TAG, "Write repos list (" + reposListFile + "): " + e);
                         }
                     }
@@ -727,6 +740,8 @@ public class PkgManagerActivity extends AppCompatActivity {
             Process p = Runtime.getRuntime().exec(cmdline, envp);
             p.waitFor();
         } catch (Exception e) {
+            e.printStackTrace();
+
             Log.i(TAG, "Exec exception " + e);
         }
     }
@@ -769,6 +784,8 @@ public class PkgManagerActivity extends AppCompatActivity {
             in.close();
             Utils.waitFor(pId[0]);
         } catch (Exception e) {
+            e.printStackTrace();
+
             Log.e(TAG, "exception " + e);
         }
         return ret;
