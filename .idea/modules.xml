@@ -8,8 +8,10 @@
       <module fileurl="file://$PROJECT_DIR$/cctools/cctools.iml" filepath="$PROJECT_DIR$/cctools/cctools.iml" />
       <module fileurl="file://$PROJECT_DIR$/editor-view/editor-view.iml" filepath="$PROJECT_DIR$/editor-view/editor-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/emulatorview/emulatorview.iml" filepath="$PROJECT_DIR$/emulatorview/emulatorview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/term-jackpal/libtermexec/libtermexec.iml" filepath="$PROJECT_DIR$/term-jackpal/libtermexec/libtermexec.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdlplugin/sdlplugin.iml" filepath="$PROJECT_DIR$/sdlplugin/sdlplugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/style/style.iml" filepath="$PROJECT_DIR$/style/style.iml" />
+      <module fileurl="file://$PROJECT_DIR$/term-jackpal/term-jackpal.iml" filepath="$PROJECT_DIR$/term-jackpal/term-jackpal.iml" />
       <module fileurl="file://$PROJECT_DIR$/terminal-emulator/terminal-emulator.iml" filepath="$PROJECT_DIR$/terminal-emulator/terminal-emulator.iml" />
       <module fileurl="file://$PROJECT_DIR$/terminal-view/terminal-view.iml" filepath="$PROJECT_DIR$/terminal-view/terminal-view.iml" />
     </modules>
