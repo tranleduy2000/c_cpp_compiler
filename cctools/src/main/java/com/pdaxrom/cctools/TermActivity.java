@@ -1,5 +1,6 @@
 package com.pdaxrom.cctools;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,6 +29,7 @@ public class TermActivity extends AppCompatActivity {
 
     private Handler handler = new Handler();
 
+    @SuppressLint("HandlerLeak")
     private final Handler mMsgHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -42,7 +44,7 @@ public class TermActivity extends AppCompatActivity {
         }
     };
 
-
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.term);
@@ -87,7 +89,6 @@ public class TermActivity extends AppCompatActivity {
         if (isRunning) {
             Log.i(TAG, "kill process group");
             mSession.hangup();
-        } else {
         }
     }
 

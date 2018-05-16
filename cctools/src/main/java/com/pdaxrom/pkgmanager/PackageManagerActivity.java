@@ -209,7 +209,7 @@ public class PackageManagerActivity extends AppCompatActivity {
         sdCardDir = EnvironmentPath.getSdCardDir();
         backupDir = EnvironmentPath.getSdCardBackupDir();
         String tmpDir = EnvironmentPath.getSdCardTmpDir();
-        toolchainDir = EnvironmentPath.getToolchainsDir(this) + "/root";
+        toolchainDir = EnvironmentPath.getToolchainsDir(this);
         String serviceDir = EnvironmentPath.getServiceDir(this);
         String homeDir = EnvironmentPath.getHomeDir(this);
 
@@ -602,11 +602,13 @@ public class PackageManagerActivity extends AppCompatActivity {
     }
 
     private class DownloadRepoTask extends AsyncTask<List<String>, Void, List<PackageInfo>> {
+        @Override
         protected void onPreExecute() {
             super.onPreExecute();
             showProgress(R.string.pkg_repoupdatetask, R.string.pkg_repodownloading);
         }
 
+        @Override
         protected List<PackageInfo> doInBackground(List<String>... params) {
             packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + INSTALLED_PACKAGE_DIR));
             updateProgress(30);
@@ -619,6 +621,7 @@ public class PackageManagerActivity extends AppCompatActivity {
             return RepoUtils.checkingForUpdates(packagesLists);
         }
 
+        @Override
         protected void onPostExecute(List<PackageInfo> result) {
             updateProgress(100);
             if (packagesLists.getAvailablePackages() != null && activityCmd == null) {

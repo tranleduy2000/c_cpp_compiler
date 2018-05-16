@@ -43,7 +43,7 @@ public class InstallPackageInfo {
     private void installPackageInfo(PackagesLists packagesLists, String pkg, List<PackageInfo> list) {
         this.pkg = pkg;
         if (list == null) {
-            this.list = new ArrayList<PackageInfo>();
+            this.list = new ArrayList<>();
         } else {
             this.list = list;
         }

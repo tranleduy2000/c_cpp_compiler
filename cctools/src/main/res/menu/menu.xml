@@ -56,9 +56,6 @@
                 android:id="@+id/project_close"
                 android:title="@string/project_close" />
 
-            <!--    		<item android:id="@+id/project_import"
-                            android:title="@string/project_import" /> -->
-
             <item
                 android:id="@+id/project_properties"
                 android:title="@string/project_properties" />
@@ -73,7 +70,7 @@
         android:id="@+id/item_pkgmgr"
         android:icon="@drawable/pkgmgr"
         android:title="@string/pkgmgrButton"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/prefs"
         android:icon="@android:drawable/ic_menu_preferences"
