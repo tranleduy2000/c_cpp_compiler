@@ -1,23 +1,40 @@
 package org.libsdl.app;
 
-import java.io.File;
-import java.util.Arrays;
-
-import com.pdaxrom.cctools.sdlplugin.Utils;
-
-import android.app.*;
-import android.content.*;
-import android.view.*;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.Display;
+import android.view.InputDevice;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsoluteLayout;
-import android.os.*;
-import android.util.Log;
-import android.graphics.*;
-import android.media.*;
-import android.hardware.*;
+
+import com.pdaxrom.cctools.sdlplugin.Utils;
+
+import java.io.File;
+import java.util.Arrays;
 
 
 /**
@@ -25,8 +42,6 @@ import android.hardware.*;
 */
 public class SDLActivity extends Activity {
     private static final String TAG = "CCTools SDLActivity";
-    
-    private static final String CCTOOLS_URL="https://play.google.com/store/apps/details?id=com.pdaxrom.cctools";
 
     // Keep track of the paused state
     public static boolean mIsPaused = false, mIsSurfaceReady = false, mHasFocus = true;

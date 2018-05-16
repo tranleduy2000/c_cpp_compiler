@@ -77,17 +77,17 @@ public class InstallPackageInfo {
     }
 
     public String getPackagesStrings() {
-        String packages = "";
+        StringBuilder packages = new StringBuilder();
         boolean isFirstAdded = false;
         for (PackageInfo pkg : list) {
             if (isFirstAdded) {
-                packages += " " + pkg.getName();
+                packages.append(" ").append(pkg.getName());
             } else {
-                packages += pkg.getName();
+                packages.append(pkg.getName());
             }
             isFirstAdded = true;
         }
-        return packages;
+        return packages.toString();
     }
 
     private void getDepends(PackagesLists packagesLists, String packageWithVariants, List<PackageInfo> list) {
@@ -141,6 +141,5 @@ public class InstallPackageInfo {
                 break;
             }
         }
-        return;
     }
 }
