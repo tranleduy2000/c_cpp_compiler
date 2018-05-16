@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018 Mr Duy
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -104,30 +103,44 @@
             android:name="RunScript"
             android:excludeFromRecents="true"
             android:permission="jackpal.androidterm.permission.RUN_SCRIPT">
+
             <intent-filter>
                 <action android:name="jackpal.androidterm.RUN_SCRIPT" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
         </activity>
+
         <activity
             android:name="RunShortcut"
             android:excludeFromRecents="true">
+
             <intent-filter>
+
                 <action android:name="jackpal.androidterm.RUN_SHORTCUT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
+
         </activity>
+
         <activity
             android:name="TermPreferences"
             android:label="@string/preferences" />
+
         <activity
             android:name="WindowList"
             android:label="@string/window_list" />
 
         <service android:name="TermService">
+
             <intent-filter>
+
                 <action android:name="jackpal.androidterm.action.START_TERM.v1" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
         </service>
 
@@ -137,11 +150,17 @@
             android:label="@string/activity_shortcut_create"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
+
             </intent-filter>
+
             <intent-filter>
+
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
             </intent-filter>
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
