@@ -3,25 +3,18 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    <!-- Main ListView
-         Always give id value as list(@+id/list_view)
-    -->
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
-    <!-- Editext for Search -->
+
     <org.droidparts.widget.ClearableEditText
         android:id="@+id/inputSearch"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/pkg_searchHint"
-        android:inputType="textVisiblePassword" />
+        android:inputType="textVisiblePassword"
+        android:padding="8dp" />
 
     <ListView
         android:id="@+id/list_view"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

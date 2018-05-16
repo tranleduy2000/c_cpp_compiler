@@ -12,9 +12,10 @@ import com.pdaxrom.term.ShellTermSession;
 import com.pdaxrom.term.TermView;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class TermActivity extends AppCompatActivity {
-    private final static String TAG = "cctools-terminal";
+    private static final String TAG = "TermActivity";
 
     private TermView mTermView;
     private ShellTermSession mSession;
@@ -27,7 +28,7 @@ public class TermActivity extends AppCompatActivity {
 
     private Handler handler = new Handler();
 
-    private Handler mMsgHandler = new Handler() {
+    private final Handler mMsgHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (!isRunning) {
@@ -41,7 +42,6 @@ public class TermActivity extends AppCompatActivity {
         }
     };
 
-//	MyThread exeThread;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,15 +56,12 @@ public class TermActivity extends AppCompatActivity {
 
         SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
 
-        mTermView = (TermView) findViewById(R.id.emulatorView);
+        mTermView = findViewById(R.id.emulatorView);
         mSession = createShellTermSession();
         mTermView.attachSession(mSession);
         mTermView.setDensity(getResources().getDisplayMetrics());
         mTermView.setTextSize(Integer.valueOf(mPrefs.getString("console_fontsize", "12")));
-//        mEmulatorView.setControlKeyCode(KeyEvent.KEYCODE_CTRL_LEFT);
 
-//		exeThread = new MyThread();
-//		exeThread.start();
     }
 
     protected void onResume() {
@@ -80,18 +77,6 @@ public class TermActivity extends AppCompatActivity {
     }
 
     protected void onDestroy() {
-        /*
-        if (exeThread != null && exeThread.isAlive()) {
-    		Log.i(TAG, "kill process group");
-    		mSession.hangup();
-    		try {
-				exeThread.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-    	 */
         if (mSession != null) {
             mSession.finish();
         }
@@ -103,7 +88,6 @@ public class TermActivity extends AppCompatActivity {
             Log.i(TAG, "kill process group");
             mSession.hangup();
         } else {
-            super.onBackPressed(); // this will actually finish the Activity
         }
     }
 
@@ -117,16 +101,6 @@ public class TermActivity extends AppCompatActivity {
         handler.post(proc);
     }
 
-    /*
-        public class MyThread extends Thread {
-            public void run() {
-                Log.i(TAG, "Waiting for hangup session");
-                int result = Utils.waitFor(mSession.getPid());
-                Log.i(TAG, "Subprocess exited: " + result);
-                showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_finished));
-            }
-        }
-     */
     private ShellTermSession createShellTermSession() {
         cmdline = cmdline.replaceAll("\\s+", " ");
         Log.i(TAG, "Shell sesion for " + cmdline + "\n");
@@ -148,7 +122,7 @@ public class TermActivity extends AppCompatActivity {
         String[] argv = cmdline.split("\\s+");
 
         Log.i(TAG, "argv " + argv[0]);
-        Log.i(TAG, "envp " + envp);
+        Log.i(TAG, "envp " + Arrays.toString(envp));
 
         isRunning = true;
 

@@ -1,44 +1,45 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/item_new"
         android:icon="@drawable/document_new"
-        android:showAsAction="ifRoom"
-        android:title="@string/newButton" />
+        android:title="@string/newButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_open"
         android:icon="@drawable/document_open"
-        android:showAsAction="ifRoom"
-        android:title="@string/pathButton" />
+        android:title="@string/pathButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_save"
         android:icon="@drawable/document_save"
-        android:showAsAction="ifRoom"
-        android:title="@string/saveButton" />
+        android:title="@string/saveButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_saveas"
         android:icon="@drawable/document_save_as"
-        android:showAsAction="ifRoom"
-        android:title="@string/saveAsButton" />
+        android:title="@string/saveAsButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_close"
         android:icon="@drawable/document_close"
-        android:showAsAction="ifRoom"
-        android:title="@string/closeButton" />
+        android:title="@string/closeButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_run"
         android:icon="@drawable/play"
-        android:showAsAction="ifRoom"
-        android:title="@string/playButton" />
+        android:title="@string/playButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_build"
         android:icon="@drawable/build"
-        android:showAsAction="ifRoom"
-        android:title="@string/buildButton" />
+        android:title="@string/buildButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_buildlog"
         android:icon="@drawable/logviewer"
-        android:showAsAction="ifRoom"
-        android:title="@string/logButton" />
+        android:title="@string/logButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_project"
         android:title="@string/projectButton">
@@ -66,21 +67,21 @@
     <item
         android:id="@+id/item_terminal"
         android:icon="@drawable/gnome_terminal"
-        android:showAsAction="ifRoom"
-        android:title="@string/terminalButton" />
+        android:title="@string/terminalButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_pkgmgr"
         android:icon="@drawable/pkgmgr"
-        android:showAsAction="ifRoom"
-        android:title="@string/pkgmgrButton" />
+        android:title="@string/pkgmgrButton"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/prefs"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:showAsAction="ifRoom"
-        android:title="@string/prefs_button" />
+        android:title="@string/prefs_button"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/about"
         android:icon="@android:drawable/ic_menu_info_details"
-        android:showAsAction="ifRoom"
-        android:title="@string/about_button" />
+        android:title="@string/about_button"
+        app:showAsAction="ifRoom" />
 </menu>

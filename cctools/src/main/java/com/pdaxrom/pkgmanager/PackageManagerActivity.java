@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -47,6 +46,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.pdaxrom.pkgmanager.EnvironmentPath.INSTALLED_PACKAGE_DIR;
+
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class PackageManagerActivity extends AppCompatActivity {
     public static final String EXTRA_CMD = "command";
@@ -57,7 +58,6 @@ public class PackageManagerActivity extends AppCompatActivity {
     public static final String ACTION_UPDATE = "update";
 
     private static final String TAG = "PkgMgrActivity";
-    private static final String PACKAGE_LISTS_DIR = "/installed/";
 
     private static boolean fCheckedUpdatesAtStartup = false;
     final Handler handler = new Handler();
@@ -82,45 +82,39 @@ public class PackageManagerActivity extends AppCompatActivity {
     private String activityData = null;
     // Last list position
     private int lastPosition = 0;
-    private ListView lv;
-    private ClearableEditText inputSearch;
+    private ListView listView;
     private String sdCardDir;
-    private String filesDir;
-    private String tmpDir;
+    private String backupDir;
     private String toolchainDir;
-    private String serviceDir;
-    private String homeDir;
     private ProgressDialog progressDialog;
+
     private int ndkVersion;
     private int sdkVersion;
     private String ndkArch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (getIntent().getExtras() != null) {
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-        }
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pkgmgr_main);
+        setContentView(R.layout.activity_package);
 
         setupDirs();
         setupVersion();
 
         activityCmd = null;
         activityData = null;
+        ClearableEditText inputSearch;
         if (getIntent().getExtras() != null) {
             String cmd = getIntent().getExtras().getString(EXTRA_CMD);
 
             Log.i(TAG, "External command " + cmd);
 
-            if (cmd.equals(ACTION_UPDATE)) {
+            if (ACTION_UPDATE.equals(cmd)) {
                 activityCmd = cmd;
                 fCheckedUpdatesAtStartup = false;
-            } else if (cmd.equals(ACTION_INSTALL)) {
+            } else if (ACTION_INSTALL.equals(cmd)) {
                 activityCmd = cmd;
                 activityData = getIntent().getExtras().getString(EXTRA_DATA);
-            } else if (cmd.equals(ACTION_UNINSTALL)) {
+            } else if (ACTION_UNINSTALL.equals(cmd)) {
                 activityCmd = cmd;
                 activityData = getIntent().getExtras().getString(EXTRA_DATA);
             }
@@ -136,16 +130,16 @@ public class PackageManagerActivity extends AppCompatActivity {
         }
 
         // selecting single ListView item
-        lv = getListView();
+        listView = getListView();
         // listening to single listitem click
-        lv.setOnItemClickListener(new OnItemClickListener() {
+        listView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // getting values from selected ListItem
                 final String name = ((TextView) view.findViewById(R.id.pkg_name)).getText().toString();
 
-                String toolchainDir = getCacheDir().getParentFile().getAbsolutePath() + "/root";
-                String logFile = toolchainDir + PACKAGE_LISTS_DIR + name + ".list";
+                String toolchainDir = EnvironmentPath.getToolchainsDir(PackageManagerActivity.this);
+                String logFile = toolchainDir + INSTALLED_PACKAGE_DIR + name + ".list";
 
                 if ((new File(logFile)).exists()) {
                     Builder dialog = new AlertDialog.Builder(context)
@@ -165,30 +159,22 @@ public class PackageManagerActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //
-        // text filter
-        //
-        lv.setTextFilterEnabled(true);
-
+        listView.setTextFilterEnabled(true);
         inputSearch.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                // TODO Auto-generated method stub
-
-            }
-
+            @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
                 if (start > 0) {
-                    lv.setFilterText(s.toString());
+                    listView.setFilterText(s.toString());
                 } else {
-                    lv.clearTextFilter();
+                    listView.clearTextFilter();
                 }
             }
         });
@@ -224,12 +210,12 @@ public class PackageManagerActivity extends AppCompatActivity {
     }
 
     private void setupDirs() {
-        sdCardDir = Environment.getExternalStorageDirectory().getPath() + "/CCTools";
-        filesDir = sdCardDir + "/backup";
-        tmpDir = sdCardDir + "/tmp";
-        toolchainDir = getCacheDir().getParentFile().getAbsolutePath() + "/root";
-        serviceDir = toolchainDir + "/cctools/services";
-        homeDir = toolchainDir + "/cctools/home";
+        sdCardDir = EnvironmentPath.getSdCardDir();
+        backupDir = EnvironmentPath.getSdCardBackupDir();
+        String tmpDir = EnvironmentPath.getSdCardTmpDir();
+        toolchainDir = EnvironmentPath.getToolchainsDir(this) + "/root";
+        String serviceDir = EnvironmentPath.getServiceDir(this);
+        String homeDir = EnvironmentPath.getHomeDir(this);
 
         if (!(new File(sdCardDir)).exists()) {
             (new File(sdCardDir)).mkdir();
@@ -237,8 +223,8 @@ public class PackageManagerActivity extends AppCompatActivity {
         if (!(new File(tmpDir)).exists()) {
             (new File(tmpDir)).mkdir();
         }
-        if (!(new File(filesDir)).exists()) {
-            (new File(filesDir)).mkdir();
+        if (!(new File(backupDir)).exists()) {
+            (new File(backupDir)).mkdir();
         }
         if (!(new File(toolchainDir)).exists()) {
             (new File(toolchainDir)).mkdir();
@@ -298,7 +284,7 @@ public class PackageManagerActivity extends AppCompatActivity {
             map.put(RepoUtils.KEY_FILE, info.getFile());
 
             String toolchainDir = getCacheDir().getParentFile().getAbsolutePath() + "/root";
-            String logFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/"
+            String logFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
                     + info.getName() + ".list";
 
             if ((new File(logFile)).exists()) {
@@ -382,111 +368,6 @@ public class PackageManagerActivity extends AppCompatActivity {
         });
     }
 
-    private boolean downloadAndUnpack(String file, String from, String to, String log) {
-        updateProgress(getString(R.string.download_file) + " " + file + "...");
-
-        errorString = null;
-
-        File temp = new File(filesDir + "/" + file);
-        if (!temp.exists()) {
-            try {
-                int totalread = 0;
-                Log.i(TAG, "Downloading file " + from + "/" + file);
-                URL url = new URL(from + "/" + file);
-                URLConnection cn = url.openConnection();
-                cn.setReadTimeout(3 * 60 * 1000); // timeout 3 minutes
-                cn.connect();
-                int file_size = cn.getContentLength();
-                StatFs stat = new StatFs(filesDir);
-                int sdAvailSize = stat.getAvailableBlocks();// * stat.getBlockSize();
-                Log.i(TAG, "File size " + file_size);
-                Log.i(TAG, "Available on SD (in blocks " + stat.getBlockSize() + ") " + sdAvailSize);
-                int need_mem = file_size / stat.getBlockSize();
-                if (sdAvailSize < need_mem) {
-                    temp.delete();
-                    errorString = getString(R.string.sd_no_memory) +
-                            " " + Utils.humanReadableByteCount(need_mem, false) +
-                            " " + getString(R.string.sd_no_memory2);
-                    return false;
-                }
-                InputStream stream = cn.getInputStream();
-                if (stream == null) {
-                    throw new RuntimeException("stream is null");
-                }
-                Log.i(TAG, "File is " + temp.getAbsolutePath());
-                FileOutputStream out = new FileOutputStream(temp);
-                byte buf[] = new byte[128 * 1024];
-                do {
-                    int numread = stream.read(buf);
-                    if (numread <= 0) {
-                        break;
-                    }
-                    out.write(buf, 0, numread);
-                    totalread += numread;
-                    updateProgress(getString(R.string.received) + " " + totalread + " " + getString(R.string.from) + " " + file_size + " " + getString(R.string.bytes));
-                    if (file_size > 20 * 1024 * 1024) {
-                        updateProgress(totalread / (file_size / 100));
-                    } else {
-                        updateProgress(totalread * 100 / file_size);
-                    }
-                } while (true);
-                stream.close();
-                out.close();
-                if (totalread != file_size) {
-                    throw new RuntimeException("Partially downloaded file!");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                temp.delete();
-                Log.i(TAG, "Error downloading file " + file);
-                errorString = getString(R.string.error_downloading) + " (" + file + ")";
-                return false;
-            }
-        } else
-            Log.i(TAG, "Use file " + temp.getAbsolutePath());
-
-        updateProgress(100);
-
-        String tempPath = temp.getAbsolutePath();
-        updateProgress(getString(R.string.unpacking_file) + " " + file + "...");
-        Log.i(TAG, "Unpack file " + tempPath + " to " + to);
-        String logFile = log;
-        try {
-            int need_mem = Utils.unzippedSize(tempPath);
-            if (need_mem < 0) {
-                throw new RuntimeException("bad archive");
-            }
-            StatFs stat = new StatFs(to);
-            double cacheAvailSize = stat.getAvailableBlocks();
-            Log.i(TAG, "Unzipped size " + need_mem);
-            Log.i(TAG, "Available (blocks) " + cacheAvailSize + "(" + stat.getBlockSize() + ")");
-            cacheAvailSize *= stat.getBlockSize();
-            if (cacheAvailSize < need_mem) {
-                errorString = getString(R.string.cache_no_memory) +
-                        Utils.humanReadableByteCount(need_mem, false) +
-                        getString(R.string.cache_no_memory1) +
-                        Utils.humanReadableByteCount((int) cacheAvailSize, false) +
-                        getString(R.string.cache_no_memory2);
-                return false;
-            }
-            if (logFile == null) {
-                logFile = toolchainDir + PACKAGE_LISTS_DIR + file + ".list";
-            }
-            if (Utils.unzip(tempPath, to, logFile) != 0) {
-                if ((new File(logFile)).exists()) {
-                    (new File(logFile)).delete();
-                }
-                throw new RuntimeException("bad archive");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            temp.delete();
-            Log.i(TAG, "Corrupted archive, restart application and try install again");
-            errorString = getString(R.string.bad_archive) + " (" + file + ")";
-            return false;
-        }
-        return true;
-    }
 
     private void showError(String message) {
         new AlertDialog.Builder(context)
@@ -506,100 +387,13 @@ public class PackageManagerActivity extends AppCompatActivity {
                 .show();
     }
 
-    private boolean installPackage(InstallPackageInfo info) {
-        List<String> postinstList = new ArrayList<>();
-        for (PackageInfo packageInfo : info.getPackagesList()) {
-            if ((new File(toolchainDir + "/" + PACKAGE_LISTS_DIR + "/"
-                    + packageInfo.getName() + ".pkgdesc")).exists()) {
-                PackageInfo oldPackage = RepoUtils.getPackageByName(packagesLists.getInstalledPackages(),
-                        packageInfo.getName());
-                if (packageInfo.getVersion().equals(oldPackage.getVersion())) {
-                    Log.i(TAG, "Package " + packageInfo.getName() + " already installed.");
-                    continue;
-                } else {
-                    uninstallPackage(packageInfo.getName());
-                    if ((new File(filesDir + "/" + oldPackage.getFile())).exists()) {
-                        (new File(filesDir + "/" + oldPackage.getFile())).delete();
-                    }
-                }
-            }
-
-            if (RepoUtils.isContainsPackage(packagesLists.getInstalledPackages(), packageInfo.getReplaces())) {
-                Log.i(TAG, "Replace package " + packageInfo.getReplaces());
-                PackageInfo oldPackage = RepoUtils.getPackageByName(packagesLists.getInstalledPackages(),
-                        packageInfo.getReplaces());
-                uninstallPackage(oldPackage.getName());
-                if ((new File(filesDir + "/" + oldPackage.getFile())).exists()) {
-                    (new File(filesDir + "/" + oldPackage.getFile())).delete();
-                }
-            }
-
-            updateProgressTitle(getString(R.string.pkg_installpackagetask) + " " + packageInfo.getName());
-
-            Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFile());
-            if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), toolchainDir,
-                    toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + packageInfo.getName() + ".list")) {
-                if (errorString != null) {
-                    errorString += "\u0020" + info.getName();
-                }
-                return false;
-            }
-            updateProgress(getString(R.string.wait_message));
-            // Move package info files from root directory
-            String[] infoFiles = {"pkgdesc", "postinst", "prerm"};
-            for (String infoFile : infoFiles) {
-                if ((new File(toolchainDir + "/" + infoFile)).exists()) {
-                    String infoFilePath = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/"
-                            + packageInfo.getName() + "." + infoFile;
-                    Log.i(TAG, "Copy file to " + infoFilePath);
-                    try {
-                        Utils.copyDirectory(new File(toolchainDir + "/" + infoFile),
-                                new File(infoFilePath));
-                        if (infoFile.equals("postinst")) {
-                            postinstList.add(packageInfo.getName());
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-
-                        Log.e(TAG, "Copy " + infoFile + " file failed " + e);
-                    }
-                    (new File(toolchainDir + "/" + infoFile)).delete();
-                }
-            }
-        }
-
-        // Move Examples to sd card
-        if ((new File(toolchainDir + "/cctools/Examples")).exists()) {
-            try {
-                Log.i(TAG, "Move Examples to SD card");
-                Utils.copyDirectory(new File(toolchainDir + "/cctools/Examples"),
-                        new File(sdCardDir + "/Examples"));
-                Utils.deleteDirectory(new File(toolchainDir + "/cctools/Examples"));
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                Log.e(TAG, "Can't copy examples directory " + e);
-            }
-        }
-
-        //Execute postinst scripts
-        for (String name : postinstList) {
-            String postinstFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".postinst";
-            Log.i(TAG, "Execute postinst file " + postinstFile);
-            Utils.chmod(postinstFile, 0x1ed);
-            system(postinstFile);
-            (new File(postinstFile)).delete();
-        }
-
-        return true;
-    }
 
     private boolean uninstallPackage(String name) {
         if (name != null) {
             updateProgressTitle(getString(R.string.pkg_uninstallpackagetask) + " " + name);
             updateProgress(getString(R.string.wait_message));
             updateProgress(0);
-            String prermFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".prerm";
+            String prermFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".prerm";
             if ((new File(prermFile)).exists()) {
                 Log.i(TAG, "Execute prerm script " + prermFile);
                 Utils.chmod(prermFile, 0x1ed);
@@ -607,11 +401,11 @@ public class PackageManagerActivity extends AppCompatActivity {
                 (new File(prermFile)).delete();
             }
             updateProgress(25);
-            String descFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".pkgdesc";
+            String descFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".pkgdesc";
             if ((new File(descFile)).exists()) {
                 (new File(descFile)).delete();
             }
-            String logFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".list";
+            String logFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".list";
             if (!(new File(logFile)).exists()) {
                 updateProgress(100);
                 return false;
@@ -654,7 +448,7 @@ public class PackageManagerActivity extends AppCompatActivity {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     if (list == null) {
-                        list = new ArrayList<String>();
+                        list = new ArrayList<>();
                     }
                     line = line.trim();
                     if (line.length() > 0) {
@@ -818,7 +612,7 @@ public class PackageManagerActivity extends AppCompatActivity {
         }
 
         protected List<PackageInfo> doInBackground(List<String>... params) {
-            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + PACKAGE_LISTS_DIR));
+            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + INSTALLED_PACKAGE_DIR));
             updateProgress(30);
             packagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
             updateProgress(60);
@@ -901,7 +695,11 @@ public class PackageManagerActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Prepare for downloading a package
+     */
     private class PrepareToInstallTask extends AsyncTask<String, Void, InstallPackageInfo> {
+        @Override
         protected void onPreExecute() {
             super.onPreExecute();
             showProgress(R.string.pkg_prepareinstalltask, R.string.pkg_prepareinstall);
@@ -910,7 +708,7 @@ public class PackageManagerActivity extends AppCompatActivity {
         @Override
         protected InstallPackageInfo doInBackground(String... params) {
             // Update installed packages list
-            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + PACKAGE_LISTS_DIR));
+            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + INSTALLED_PACKAGE_DIR));
             return new InstallPackageInfo(packagesLists, params[0]);
         }
 
@@ -945,16 +743,216 @@ public class PackageManagerActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Download an install package and all dependencies
+     */
     private class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Void, Boolean> {
+        @Override
         protected void onPreExecute() {
             super.onPreExecute();
             showProgress(R.string.pkg_installpackagetask, R.string.pkg_installpackage);
         }
 
+        @Override
         protected Boolean doInBackground(InstallPackageInfo... params) {
             return installPackage(params[0]);
         }
 
+        private boolean installPackage(InstallPackageInfo info) {
+            List<String> postinstList = new ArrayList<>();
+            for (PackageInfo packageInfo : info.getPackagesList()) {
+                if ((new File(toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
+                        + packageInfo.getName() + ".pkgdesc")).exists()) {
+                    PackageInfo oldPackage = RepoUtils.getPackageByName(packagesLists.getInstalledPackages(),
+                            packageInfo.getName());
+                    if (packageInfo.getVersion().equals(oldPackage.getVersion())) {
+                        Log.i(TAG, "Package " + packageInfo.getName() + " already installed.");
+                        continue;
+                    } else {
+                        uninstallPackage(packageInfo.getName());
+                        if ((new File(backupDir, oldPackage.getFile())).exists()) {
+                            (new File(backupDir, oldPackage.getFile())).delete();
+                        }
+                    }
+                }
+
+                if (RepoUtils.isContainsPackage(packagesLists.getInstalledPackages(), packageInfo.getReplaces())) {
+                    Log.i(TAG, "Replace package " + packageInfo.getReplaces());
+                    PackageInfo oldPackage = RepoUtils.getPackageByName(packagesLists.getInstalledPackages(),
+                            packageInfo.getReplaces());
+                    uninstallPackage(oldPackage.getName());
+                    if ((new File(backupDir, oldPackage.getFile())).exists()) {
+                        (new File(backupDir, oldPackage.getFile())).delete();
+                    }
+                }
+
+                updateProgressTitle(getString(R.string.pkg_installpackagetask) + " " + packageInfo.getName());
+
+                Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFile());
+                if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), toolchainDir,
+                        toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + packageInfo.getName() + ".list")) {
+                    if (errorString != null) {
+                        errorString += "\u0020" + info.getName();
+                    }
+                    return false;
+                }
+                updateProgress(getString(R.string.wait_message));
+                // Move package info files from root directory
+                String[] infoFiles = {"pkgdesc", "postinst", "prerm"};
+                for (String infoFile : infoFiles) {
+                    if ((new File(toolchainDir + "/" + infoFile)).exists()) {
+                        String infoFilePath = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
+                                + packageInfo.getName() + "." + infoFile;
+                        Log.i(TAG, "Copy file to " + infoFilePath);
+                        try {
+                            Utils.copyDirectory(new File(toolchainDir + "/" + infoFile),
+                                    new File(infoFilePath));
+                            if (infoFile.equals("postinst")) {
+                                postinstList.add(packageInfo.getName());
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+
+                            Log.e(TAG, "Copy " + infoFile + " file failed " + e);
+                        }
+                        (new File(toolchainDir + "/" + infoFile)).delete();
+                    }
+                }
+            }
+
+            // Move Examples to sd card
+            if ((new File(toolchainDir + "/cctools/Examples")).exists()) {
+                try {
+                    Log.i(TAG, "Move Examples to SD card");
+                    Utils.copyDirectory(new File(toolchainDir + "/cctools/Examples"),
+                            new File(sdCardDir + "/Examples"));
+                    Utils.deleteDirectory(new File(toolchainDir + "/cctools/Examples"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                    Log.e(TAG, "Can't copy examples directory " + e);
+                }
+            }
+
+            //Execute postinst scripts
+            for (String name : postinstList) {
+                String postinstFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".postinst";
+                Log.i(TAG, "Execute postinst file " + postinstFile);
+                Utils.chmod(postinstFile, 0x1ed);
+                system(postinstFile);
+                (new File(postinstFile)).delete();
+            }
+
+            return true;
+        }
+
+        private boolean downloadAndUnpack(String file, String from, String to, String log) {
+            updateProgress(getString(R.string.download_file) + " " + file + "...");
+
+            errorString = null;
+
+            File temp = new File(backupDir + "/" + file);
+            if (!temp.exists()) {
+                try {
+                    int totalread = 0;
+                    Log.i(TAG, "Downloading file " + from + "/" + file);
+                    URL url = new URL(from + "/" + file);
+                    URLConnection cn = url.openConnection();
+                    cn.setReadTimeout(3 * 60 * 1000); // timeout 3 minutes
+                    cn.connect();
+                    int file_size = cn.getContentLength();
+                    StatFs stat = new StatFs(backupDir);
+                    int sdAvailSize = stat.getAvailableBlocks();// * stat.getBlockSize();
+                    Log.i(TAG, "File size " + file_size);
+                    Log.i(TAG, "Available on SD (in blocks " + stat.getBlockSize() + ") " + sdAvailSize);
+                    int need_mem = file_size / stat.getBlockSize();
+                    if (sdAvailSize < need_mem) {
+                        temp.delete();
+                        errorString = getString(R.string.sd_no_memory) +
+                                " " + Utils.humanReadableByteCount(need_mem, false) +
+                                " " + getString(R.string.sd_no_memory2);
+                        return false;
+                    }
+                    InputStream stream = cn.getInputStream();
+                    if (stream == null) {
+                        throw new RuntimeException("stream is null");
+                    }
+                    Log.i(TAG, "File is " + temp.getAbsolutePath());
+                    FileOutputStream out = new FileOutputStream(temp);
+                    byte buf[] = new byte[128 * 1024];
+                    do {
+                        int numread = stream.read(buf);
+                        if (numread <= 0) {
+                            break;
+                        }
+                        out.write(buf, 0, numread);
+                        totalread += numread;
+                        updateProgress(getString(R.string.received) + " " + totalread + " " + getString(R.string.from) + " " + file_size + " " + getString(R.string.bytes));
+                        if (file_size > 20 * 1024 * 1024) {
+                            updateProgress(totalread / (file_size / 100));
+                        } else {
+                            updateProgress(totalread * 100 / file_size);
+                        }
+                    } while (true);
+                    stream.close();
+                    out.close();
+                    if (totalread != file_size) {
+                        throw new RuntimeException("Partially downloaded file!");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    temp.delete();
+                    Log.i(TAG, "Error downloading file " + file);
+                    errorString = getString(R.string.error_downloading) + " (" + file + ")";
+                    return false;
+                }
+            } else
+                Log.i(TAG, "Use file " + temp.getAbsolutePath());
+
+            updateProgress(100);
+
+            String tempPath = temp.getAbsolutePath();
+            updateProgress(getString(R.string.unpacking_file) + " " + file + "...");
+            Log.i(TAG, "Unpack file " + tempPath + " to " + to);
+            String logFile = log;
+            try {
+                int need_mem = Utils.unzippedSize(tempPath);
+                if (need_mem < 0) {
+                    throw new RuntimeException("bad archive");
+                }
+                StatFs stat = new StatFs(to);
+                double cacheAvailSize = stat.getAvailableBlocks();
+                Log.i(TAG, "Unzipped size " + need_mem);
+                Log.i(TAG, "Available (blocks) " + cacheAvailSize + "(" + stat.getBlockSize() + ")");
+                cacheAvailSize *= stat.getBlockSize();
+                if (cacheAvailSize < need_mem) {
+                    errorString = getString(R.string.cache_no_memory) +
+                            Utils.humanReadableByteCount(need_mem, false) +
+                            getString(R.string.cache_no_memory1) +
+                            Utils.humanReadableByteCount((int) cacheAvailSize, false) +
+                            getString(R.string.cache_no_memory2);
+                    return false;
+                }
+                if (logFile == null) {
+                    logFile = toolchainDir + INSTALLED_PACKAGE_DIR + file + ".list";
+                }
+                if (Utils.unzip(tempPath, to, logFile) != 0) {
+                    if ((new File(logFile)).exists()) {
+                        (new File(logFile)).delete();
+                    }
+                    throw new RuntimeException("bad archive");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                temp.delete();
+                Log.i(TAG, "Corrupted archive, restart application and try install again");
+                errorString = getString(R.string.bad_archive) + " (" + file + ")";
+                return false;
+            }
+            return true;
+        }
+
+        @Override
         protected void onPostExecute(Boolean result) {
             hideProgress();
             if (result) {
@@ -968,11 +966,14 @@ public class PackageManagerActivity extends AppCompatActivity {
                 showError(errorString);
                 return;
             }
-            lastPosition = lv.getFirstVisiblePosition();
+            lastPosition = listView.getFirstVisiblePosition();
             showPackages(packagesLists.getAvailablePackages());
         }
     }
 
+    /**
+     * Uninstall list of packages
+     */
     private class UninstallPackagesTask extends AsyncTask<String, Void, Boolean> {
         protected void onPreExecute() {
             super.onPreExecute();
@@ -990,7 +991,7 @@ public class PackageManagerActivity extends AppCompatActivity {
                 finish();
                 return;
             }
-            lastPosition = lv.getFirstVisiblePosition();
+            lastPosition = listView.getFirstVisiblePosition();
             showPackages(packagesLists.getAvailablePackages());
         }
     }
