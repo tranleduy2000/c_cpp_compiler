@@ -44,7 +44,7 @@ import android.widget.ViewFlipper;
 
 import com.pdaxrom.editor.CodeEditor;
 import com.pdaxrom.editor.CodeEditorInterface;
-import com.pdaxrom.pkgmanager.PkgManagerActivity;
+import com.pdaxrom.pkgmanager.PackageManagerActivity;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.LogItem;
 import com.pdaxrom.utils.SelectionMode;
@@ -762,7 +762,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void packageManager() {
-        Intent intent = new Intent(CCToolsActivity.this, PkgManagerActivity.class);
+        Intent intent = new Intent(CCToolsActivity.this, PackageManagerActivity.class);
         startActivity(intent);
     }
 
@@ -1127,8 +1127,8 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
             installToolchainPackage();
         } else {
             if (mPrefs.getBoolean("updater", true)) {
-                Intent intent = new Intent(this, PkgManagerActivity.class);
-                intent.putExtra(PkgManagerActivity.INTENT_CMD, PkgManagerActivity.CMD_UPDATE);
+                Intent intent = new Intent(this, PackageManagerActivity.class);
+                intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_UPDATE);
                 startActivity(intent);
             }
         }
@@ -1170,9 +1170,9 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 .setView(spinner)
                 .setPositiveButton(getText(R.string.pkg_install), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(context, PkgManagerActivity.class);
-                        intent.putExtra(PkgManagerActivity.INTENT_CMD, PkgManagerActivity.CMD_INSTALL);
-                        intent.putExtra(PkgManagerActivity.INTENT_DATA, toolchainPackage[toolchainPackageToInstall]);
+                        Intent intent = new Intent(context, PackageManagerActivity.class);
+                        intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
+                        intent.putExtra(PackageManagerActivity.EXTRA_DATA, toolchainPackage[toolchainPackageToInstall]);
                         startActivity(intent);
                     }
                 })

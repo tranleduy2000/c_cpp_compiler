@@ -5,7 +5,7 @@ import java.util.List;
 
 public class InstallPackageInfo {
     private static final String TAG = "InstallPackageInfo";
-    private static boolean _debug = false;
+    private static boolean debug = false;
 
     private String pkg = null;
     private List<PackageInfo> list = null;
@@ -13,7 +13,7 @@ public class InstallPackageInfo {
     private int downloadSize = 0;
 
     InstallPackageInfo() {
-        list = new ArrayList<PackageInfo>();
+        list = new ArrayList<>();
     }
 
     InstallPackageInfo(PackagesLists packagesLists, String pkg) {
@@ -25,7 +25,7 @@ public class InstallPackageInfo {
     }
 
     public static void enableDebug(boolean debug) {
-        _debug = debug;
+        InstallPackageInfo.debug = debug;
     }
 
     public void addPackage(PackagesLists packagesLists, String pkg) {
@@ -92,12 +92,12 @@ public class InstallPackageInfo {
 
     private void getDepends(PackagesLists packagesLists, String packageWithVariants, List<PackageInfo> list) {
         String[] packageVariants = packageWithVariants.replace('|', ' ').split("\\s+");
-        if (_debug) {
+        if (debug) {
             System.out.println(TAG + " packageVariants = " + packageWithVariants.replace('|', ' '));
         }
         String firstPackage = packageVariants[0];
         for (String packageVariant : packageVariants) {
-            if (_debug) {
+            if (debug) {
                 System.out.println(TAG + " packageVariant = " + packageVariant);
             }
             if (RepoUtils.isContainsPackage(list, packageVariant)) {
@@ -112,13 +112,13 @@ public class InstallPackageInfo {
         for (PackageInfo info : packagesLists.getAvailablePackages()) {
             if (firstPackage.equals(info.getName())) {
                 String deps = info.getDepends();
-                if (_debug) {
+                if (debug) {
                     System.out.println(TAG + " package deps = " + deps);
                 }
                 if (deps != null && !deps.equals("")) {
                     deps = deps.replaceAll("\\s+", " ");
                     for (String dep : deps.split("\\s+")) {
-                        if (_debug) {
+                        if (debug) {
                             System.out.println(TAG + " check package = " + dep);
                         }
                         getDepends(packagesLists, dep, list);
@@ -128,14 +128,14 @@ public class InstallPackageInfo {
                         packagesLists.getInstalledPackages(), firstPackage);
                 if (installedPackage != null) {
                     if (installedPackage.getVersion().equals(info.getVersion())) {
-                        if (_debug) {
+                        if (debug) {
                             System.out.println(TAG + " the same version, skip package = " + firstPackage);
                         }
                         break;
                     }
                 }
                 list.add(info);
-                if (_debug) {
+                if (debug) {
                     System.out.println(TAG + " add package = " + firstPackage);
                 }
                 break;

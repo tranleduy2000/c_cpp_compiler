@@ -17,32 +17,29 @@ import java.util.List;
 
 public class RepoUtils {
     // XML node keys
-    static public final String KEY_PACKAGE = "package"; // parent node
-    static public final String KEY_NAME = "name";
-    static public final String KEY_FILE = "file";
-    static public final String KEY_SIZE = "size";
-    static public final String KEY_FILESIZE = "filesize";
-    static public final String KEY_VERSION = "version";
-    static public final String KEY_DESC = "description";
-    static public final String KEY_DEPENDS = "depends";
-    static public final String KEY_ARCH = "arch";
-    static public final String KEY_REPLACES = "replaces";
-    static public final String KEY_STATUS = "status";
+    public static final String KEY_PACKAGE = "package"; // parent node
+    public static final String KEY_NAME = "name";
+    public static final String KEY_FILE = "file";
+    public static final String KEY_SIZE = "size";
+    public static final String KEY_FILESIZE = "filesize";
+    public static final String KEY_VERSION = "version";
+    public static final String KEY_DESC = "description";
+    public static final String KEY_DEPENDS = "depends";
+    public static final String KEY_ARCH = "arch";
+    public static final String KEY_REPLACES = "replaces";
+    public static final String KEY_STATUS = "status";
+
     private static final String TAG = "RepoUtils";
-    private static String _buildAbi;
-    private static String _ndkArch;
-    private static int _ndkVersion;
+    private static String buildAbi;
+    private static String ndkArch;
+    private static int ndkVersion;
 
-    private static boolean _debug = false;
-
-    public static void enableDebug(boolean debug) {
-        _debug = debug;
-    }
+    private static boolean DEBUG = false;
 
     public static void setVersion(String buildAbi, String ndkArch, int ndkVersion) {
-        _buildAbi = buildAbi;
-        _ndkArch = ndkArch;
-        _ndkVersion = ndkVersion;
+        RepoUtils.buildAbi = buildAbi;
+        RepoUtils.ndkArch = ndkArch;
+        RepoUtils.ndkVersion = ndkVersion;
     }
 
     public static List<PackageInfo> getRepoFromUrl(String url) {
@@ -52,7 +49,7 @@ public class RepoUtils {
     public static List<PackageInfo> getRepoFromUrl(List<String> urls) {
         List<PackageInfo> list = null;
         for (String url : urls) {
-            url = url + "/" + _buildAbi;
+            url = url + "/" + buildAbi;
             list = parseRepoXml(list, getRepoXmlFromUrl(url), url); // getting DOM element
         }
         return list;
@@ -94,7 +91,7 @@ public class RepoUtils {
             };
 
             for (String filePath : dir.list(filter)) {
-                if (_debug) {
+                if (DEBUG) {
                     System.out.println(TAG + " Read file " + filePath);
                 }
                 File f = new File(path + "/" + filePath);
@@ -111,7 +108,7 @@ public class RepoUtils {
                 }
             }
             sb.append("</repo>");
-            if (_debug) {
+            if (DEBUG) {
                 System.out.println(TAG + " installed xml = " + replaceMacro(sb.toString()));
             }
             return replaceMacro(sb.toString());
@@ -166,14 +163,14 @@ public class RepoUtils {
             }
             NodeList nl = doc.getElementsByTagName(KEY_PACKAGE);
             if (list == null) {
-                list = new ArrayList<PackageInfo>();
+                list = new ArrayList<>();
             }
 
             for (int i = 0; i < nl.getLength(); i++) {
                 Element e = (Element) nl.item(i);
                 int size;
                 int filesize;
-                if (_debug) {
+                if (DEBUG) {
                     System.out.println(TAG + " pkg [ " + parser.getValue(e, KEY_NAME) + " ][ " + parser.getValue(e, KEY_SIZE) + "]");
                 }
                 if (parser.getValue(e, KEY_SIZE).length() > 0) {
@@ -188,7 +185,7 @@ public class RepoUtils {
                     filesize = size;
                 }
                 if (isContainsPackage(list, parser.getValue(e, KEY_NAME), parser.getValue(e, KEY_VERSION))) {
-                    if (_debug) {
+                    if (DEBUG) {
                         System.out.println(TAG + "skip exists pkg" + parser.getValue(e, KEY_NAME));
                     }
                     continue;
@@ -205,7 +202,7 @@ public class RepoUtils {
                         parser.getValue(e, KEY_REPLACES),
                         url);
                 list.add(packageInfo);
-                if (_debug) {
+                if (DEBUG) {
                     System.out.println(TAG + " added pkg = " + packageInfo.getName());
                 }
             }
@@ -215,9 +212,9 @@ public class RepoUtils {
 
     private static String replaceMacro(String str) {
         if (str != null) {
-            str = str.replaceAll("\\$\\{HOSTARCH\\}", _ndkArch);
-            str = str.replaceAll("\\$\\{HOSTNDKARCH\\}", _ndkArch);
-            str = str.replaceAll("\\$\\{HOSTNDKVERSION\\}", String.valueOf(_ndkVersion));
+            str = str.replaceAll("\\$\\{HOSTARCH\\}", ndkArch);
+            str = str.replaceAll("\\$\\{HOSTNDKARCH\\}", ndkArch);
+            str = str.replaceAll("\\$\\{HOSTNDKVERSION\\}", String.valueOf(ndkVersion));
         }
         return str;
     }

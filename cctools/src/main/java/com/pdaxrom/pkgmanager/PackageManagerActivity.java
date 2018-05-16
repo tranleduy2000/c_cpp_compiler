@@ -47,21 +47,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PkgManagerActivity extends AppCompatActivity {
-
-    public static final String INTENT_CMD = "command";
-    public static final String INTENT_DATA = "data";
-    public static final String INTENT_RETURN = "return";
-    public static final String CMD_INSTALL = "install";
-    public static final String CMD_UNINSTALL = "uninstall";
-    public static final String CMD_UPDATE = "update";
+@SuppressWarnings("ResultOfMethodCallIgnored")
+public class PackageManagerActivity extends AppCompatActivity {
+    public static final String EXTRA_CMD = "command";
+    public static final String EXTRA_DATA = "data";
+    public static final String EXTRA_RETURN = "return";
+    public static final String ACTION_INSTALL = "install";
+    public static final String ACTION_UNINSTALL = "uninstall";
+    public static final String ACTION_UPDATE = "update";
 
     private static final String TAG = "PkgMgrActivity";
-    private static final String URL = "http://cctools.info/packages-pie";
-    private static final String PKGS_LISTS_DIR = "/installed/";
+    private static final String PACKAGE_LISTS_DIR = "/installed/";
 
     private static boolean fCheckedUpdatesAtStartup = false;
     final Handler handler = new Handler();
+
     final int sdk2ndk_arm[] = {
             /*   1   2   3   4   5   6   7   8   9  10  a11  12  13  14  15  16  17  18  19  20  21  22  23  */
             -1, -1, -1, 3, 4, 5, 5, 5, 8, 9, 9, 9, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
@@ -74,6 +74,7 @@ public class PkgManagerActivity extends AppCompatActivity {
             /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
             -1, -1, -1, -1, -1, -1, -1, -1, -1, 9, 9, -1, -1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
+
     String errorString = null;
     private Context context = this;
     private PackagesLists packagesLists = new PackagesLists();
@@ -109,19 +110,19 @@ public class PkgManagerActivity extends AppCompatActivity {
         activityCmd = null;
         activityData = null;
         if (getIntent().getExtras() != null) {
-            String cmd = getIntent().getExtras().getString(INTENT_CMD);
+            String cmd = getIntent().getExtras().getString(EXTRA_CMD);
 
             Log.i(TAG, "External command " + cmd);
 
-            if (cmd.equals(CMD_UPDATE)) {
+            if (cmd.equals(ACTION_UPDATE)) {
                 activityCmd = cmd;
                 fCheckedUpdatesAtStartup = false;
-            } else if (cmd.equals(CMD_INSTALL)) {
+            } else if (cmd.equals(ACTION_INSTALL)) {
                 activityCmd = cmd;
-                activityData = getIntent().getExtras().getString(INTENT_DATA);
-            } else if (cmd.equals(CMD_UNINSTALL)) {
+                activityData = getIntent().getExtras().getString(EXTRA_DATA);
+            } else if (cmd.equals(ACTION_UNINSTALL)) {
                 activityCmd = cmd;
-                activityData = getIntent().getExtras().getString(INTENT_DATA);
+                activityData = getIntent().getExtras().getString(EXTRA_DATA);
             }
 
             (new DownloadRepoTask()).execute(getReposList());
@@ -144,7 +145,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                 final String name = ((TextView) view.findViewById(R.id.pkg_name)).getText().toString();
 
                 String toolchainDir = getCacheDir().getParentFile().getAbsolutePath() + "/root";
-                String logFile = toolchainDir + PKGS_LISTS_DIR + name + ".list";
+                String logFile = toolchainDir + PACKAGE_LISTS_DIR + name + ".list";
 
                 if ((new File(logFile)).exists()) {
                     Builder dialog = new AlertDialog.Builder(context)
@@ -281,7 +282,7 @@ public class PkgManagerActivity extends AppCompatActivity {
     }
 
     void showPackages(List<PackageInfo> repo) {
-        ArrayList<HashMap<String, String>> menuItems = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> menuItems = new ArrayList<>();
 
         for (PackageInfo info : repo) {
             // creating new HashMap
@@ -297,7 +298,7 @@ public class PkgManagerActivity extends AppCompatActivity {
             map.put(RepoUtils.KEY_FILE, info.getFile());
 
             String toolchainDir = getCacheDir().getParentFile().getAbsolutePath() + "/root";
-            String logFile = toolchainDir + "/" + PKGS_LISTS_DIR + "/"
+            String logFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/"
                     + info.getName() + ".list";
 
             if ((new File(logFile)).exists()) {
@@ -469,7 +470,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                 return false;
             }
             if (logFile == null) {
-                logFile = toolchainDir + PKGS_LISTS_DIR + file + ".list";
+                logFile = toolchainDir + PACKAGE_LISTS_DIR + file + ".list";
             }
             if (Utils.unzip(tempPath, to, logFile) != 0) {
                 if ((new File(logFile)).exists()) {
@@ -506,9 +507,9 @@ public class PkgManagerActivity extends AppCompatActivity {
     }
 
     private boolean installPackage(InstallPackageInfo info) {
-        List<String> postinstList = new ArrayList<String>();
+        List<String> postinstList = new ArrayList<>();
         for (PackageInfo packageInfo : info.getPackagesList()) {
-            if ((new File(toolchainDir + "/" + PKGS_LISTS_DIR + "/"
+            if ((new File(toolchainDir + "/" + PACKAGE_LISTS_DIR + "/"
                     + packageInfo.getName() + ".pkgdesc")).exists()) {
                 PackageInfo oldPackage = RepoUtils.getPackageByName(packagesLists.getInstalledPackages(),
                         packageInfo.getName());
@@ -537,7 +538,7 @@ public class PkgManagerActivity extends AppCompatActivity {
 
             Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFile());
             if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), toolchainDir,
-                    toolchainDir + "/" + PKGS_LISTS_DIR + "/" + packageInfo.getName() + ".list")) {
+                    toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + packageInfo.getName() + ".list")) {
                 if (errorString != null) {
                     errorString += "\u0020" + info.getName();
                 }
@@ -548,7 +549,7 @@ public class PkgManagerActivity extends AppCompatActivity {
             String[] infoFiles = {"pkgdesc", "postinst", "prerm"};
             for (String infoFile : infoFiles) {
                 if ((new File(toolchainDir + "/" + infoFile)).exists()) {
-                    String infoFilePath = toolchainDir + "/" + PKGS_LISTS_DIR + "/"
+                    String infoFilePath = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/"
                             + packageInfo.getName() + "." + infoFile;
                     Log.i(TAG, "Copy file to " + infoFilePath);
                     try {
@@ -583,7 +584,7 @@ public class PkgManagerActivity extends AppCompatActivity {
 
         //Execute postinst scripts
         for (String name : postinstList) {
-            String postinstFile = toolchainDir + "/" + PKGS_LISTS_DIR + "/" + name + ".postinst";
+            String postinstFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".postinst";
             Log.i(TAG, "Execute postinst file " + postinstFile);
             Utils.chmod(postinstFile, 0x1ed);
             system(postinstFile);
@@ -598,7 +599,7 @@ public class PkgManagerActivity extends AppCompatActivity {
             updateProgressTitle(getString(R.string.pkg_uninstallpackagetask) + " " + name);
             updateProgress(getString(R.string.wait_message));
             updateProgress(0);
-            String prermFile = toolchainDir + "/" + PKGS_LISTS_DIR + "/" + name + ".prerm";
+            String prermFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".prerm";
             if ((new File(prermFile)).exists()) {
                 Log.i(TAG, "Execute prerm script " + prermFile);
                 Utils.chmod(prermFile, 0x1ed);
@@ -606,11 +607,11 @@ public class PkgManagerActivity extends AppCompatActivity {
                 (new File(prermFile)).delete();
             }
             updateProgress(25);
-            String descFile = toolchainDir + "/" + PKGS_LISTS_DIR + "/" + name + ".pkgdesc";
+            String descFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".pkgdesc";
             if ((new File(descFile)).exists()) {
                 (new File(descFile)).delete();
             }
-            String logFile = toolchainDir + "/" + PKGS_LISTS_DIR + "/" + name + ".list";
+            String logFile = toolchainDir + "/" + PACKAGE_LISTS_DIR + "/" + name + ".list";
             if (!(new File(logFile)).exists()) {
                 updateProgress(100);
                 return false;
@@ -638,6 +639,11 @@ public class PkgManagerActivity extends AppCompatActivity {
     }
 
     private List<String> getReposList() {
+        String packageUrl = "http://cctools.info/packages";
+        if (Build.VERSION.SDK_INT >= 21) {
+            packageUrl += "-pie";
+        }
+
         List<String> list = null;
         String reposListFile = toolchainDir + "/cctools/etc/repos.list";
         if (new File(reposListFile).exists()) {
@@ -668,7 +674,7 @@ public class PkgManagerActivity extends AppCompatActivity {
 
         if (list == null) {
             list = new ArrayList<>();
-            list.add(URL);
+            list.add(packageUrl);
         }
         return list;
     }
@@ -812,7 +818,7 @@ public class PkgManagerActivity extends AppCompatActivity {
         }
 
         protected List<PackageInfo> doInBackground(List<String>... params) {
-            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + PKGS_LISTS_DIR));
+            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + PACKAGE_LISTS_DIR));
             updateProgress(30);
             packagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
             updateProgress(60);
@@ -835,7 +841,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                 return;
             }
 
-            if (activityCmd != null && activityCmd.equals(CMD_INSTALL)) {
+            if (activityCmd != null && activityCmd.equals(ACTION_INSTALL)) {
                 if (packagesLists.getAvailablePackages() != null) {
                     (new PrepareToInstallTask()).execute(activityData);
                 } else {
@@ -847,7 +853,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                 return;
             }
 
-            if (activityCmd != null && activityCmd.equals(CMD_UNINSTALL)) {
+            if (activityCmd != null && activityCmd.equals(ACTION_UNINSTALL)) {
                 (new UninstallPackagesTask()).execute(activityData);
                 return;
             }
@@ -873,7 +879,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                             .setCancelable(false)
                             .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if (activityCmd != null && activityCmd.equals(CMD_UPDATE)) {
+                                    if (activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
                                         setResult(RESULT_CANCELED);
                                         finish();
                                     }
@@ -888,7 +894,7 @@ public class PkgManagerActivity extends AppCompatActivity {
                     dialog.show();
                 }
             }
-            if (result == null && activityCmd != null && activityCmd.equals(CMD_UPDATE)) {
+            if (result == null && activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
                 setResult(RESULT_OK);
                 finish();
             }
@@ -904,7 +910,7 @@ public class PkgManagerActivity extends AppCompatActivity {
         @Override
         protected InstallPackageInfo doInBackground(String... params) {
             // Update installed packages list
-            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + PKGS_LISTS_DIR));
+            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + PACKAGE_LISTS_DIR));
             return new InstallPackageInfo(packagesLists, params[0]);
         }
 
@@ -953,7 +959,7 @@ public class PkgManagerActivity extends AppCompatActivity {
             hideProgress();
             if (result) {
                 if (activityCmd != null &&
-                        (activityCmd.equals(CMD_UPDATE) || activityCmd.equals(CMD_INSTALL))) {
+                        (activityCmd.equals(ACTION_UPDATE) || activityCmd.equals(ACTION_INSTALL))) {
                     setResult(RESULT_OK);
                     finish();
                     return;
@@ -979,7 +985,7 @@ public class PkgManagerActivity extends AppCompatActivity {
 
         protected void onPostExecute(Boolean result) {
             hideProgress();
-            if (activityCmd != null && activityCmd.equals(CMD_UNINSTALL)) {
+            if (activityCmd != null && activityCmd.equals(ACTION_UNINSTALL)) {
                 setResult(RESULT_OK);
                 finish();
                 return;

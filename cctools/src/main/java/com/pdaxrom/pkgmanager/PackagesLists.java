@@ -1,33 +1,39 @@
 package com.pdaxrom.pkgmanager;
 
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
 class PackagesLists {
+    @Nullable
     private List<PackageInfo> availablePackages = null;
+    @Nullable
     private List<PackageInfo> installedPackages = null;
 
     PackagesLists() {
 
     }
 
-    PackagesLists(List<PackageInfo> availablePackages, List<PackageInfo> installedPackages) {
+    PackagesLists(@Nullable List<PackageInfo> availablePackages, @Nullable List<PackageInfo> installedPackages) {
         this.availablePackages = availablePackages;
         this.installedPackages = installedPackages;
     }
 
-    public List<PackageInfo> getInstalledPackages() {
+    @Nullable
+    List<PackageInfo> getInstalledPackages() {
         return installedPackages;
     }
 
-    public void setInstalledPackages(List<PackageInfo> installedPackages) {
+    void setInstalledPackages(@Nullable List<PackageInfo> installedPackages) {
         this.installedPackages = installedPackages;
     }
 
-    public List<PackageInfo> getAvailablePackages() {
+    @Nullable
+    List<PackageInfo> getAvailablePackages() {
         return availablePackages;
     }
 
-    public void setAvailablePackages(List<PackageInfo> availablePackages) {
+    void setAvailablePackages(@Nullable List<PackageInfo> availablePackages) {
         this.availablePackages = availablePackages;
     }
 }

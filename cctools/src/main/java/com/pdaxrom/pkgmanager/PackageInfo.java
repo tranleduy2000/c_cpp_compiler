@@ -1,6 +1,6 @@
 package com.pdaxrom.pkgmanager;
 
-public class PackageInfo {
+class PackageInfo {
     private String name;
     private String file;
     private int size;
