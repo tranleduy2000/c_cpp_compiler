@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2012 Steven Luo
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,6 +22,14 @@ import java.io.File;
  * Compatibility class for java.io.File
  */
 public class FileCompat {
+    public static boolean canExecute(File file) {
+        if (AndroidCompat.SDK < 9) {
+            return Api8OrEarlier.canExecute(file);
+        } else {
+            return Api9OrLater.canExecute(file);
+        }
+    }
+
     private static class Api9OrLater {
         public static boolean canExecute(File file) {
             return file.canExecute();
@@ -38,13 +46,5 @@ public class FileCompat {
         }
 
         private static native boolean testExecute(String pathname);
-    }
-
-    public static boolean canExecute(File file) {
-        if (AndroidCompat.SDK < 9) {
-            return Api8OrEarlier.canExecute(file);
-        } else {
-            return Api9OrLater.canExecute(file);
-        }
     }
 }

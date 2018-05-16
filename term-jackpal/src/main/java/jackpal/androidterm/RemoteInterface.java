@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2012 Steven Luo
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,10 +15,6 @@
  */
 
 package jackpal.androidterm;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -31,8 +27,11 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import jackpal.androidterm.emulatorview.TermSession;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
+import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.util.SessionList;
 import jackpal.androidterm.util.TermSettings;
 
@@ -59,6 +58,25 @@ public class RemoteInterface extends Activity {
             mTermService = null;
         }
     };
+
+    /**
+     * Quote a string so it can be used as a parameter in bash and similar shells.
+     */
+    public static String quoteForBash(String s) {
+        StringBuilder builder = new StringBuilder();
+        String specialChars = "\"\\$`!";
+        builder.append('"');
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            char c = s.charAt(i);
+            if (specialChars.indexOf(c) >= 0) {
+                builder.append('\\');
+            }
+            builder.append(c);
+        }
+        builder.append('"');
+        return builder.toString();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,25 +144,6 @@ public class RemoteInterface extends Activity {
         }
 
         finish();
-    }
-
-    /**
-     *  Quote a string so it can be used as a parameter in bash and similar shells.
-     */
-    public static String quoteForBash(String s) {
-        StringBuilder builder = new StringBuilder();
-        String specialChars = "\"\\$`!";
-        builder.append('"');
-        int length = s.length();
-        for (int i = 0; i < length; i++) {
-            char c = s.charAt(i);
-            if (specialChars.indexOf(c) >= 0) {
-                builder.append('\\');
-            }
-            builder.append(c);
-        }
-        builder.append('"');
-        return builder.toString();
     }
 
     protected String openNewWindow(String iInitialCommand) {

@@ -144,52 +144,5 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name="jackpal.androidterm.shortcuts.AddShortcut"
-            android:configChanges="orientation|keyboard|keyboardHidden"
-            android:label="@string/activity_shortcut_create"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-
-            <intent-filter>
-
-                <action android:name="android.intent.action.MAIN" />
-
-            </intent-filter>
-
-            <intent-filter>
-
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-
-            </intent-filter>
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/*" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="jackpal.androidterm.shortcuts.FSNavigator"
-            android:configChanges="orientation|keyboardHidden"
-            android:exported="true"
-            android:label="@string/addshortcut_button_find_command"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.OPENABLE" />
-
-                <data android:mimeType="*/*" />
-            </intent-filter>
-        </activity>
-
-        <meta-data
-            android:name="com.sec.android.support.multiwindow"
-            android:value="true"></meta-data>
     </application>
 </manifest>

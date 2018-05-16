@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,14 +16,15 @@
 
 package jackpal.androidterm;
 
-import jackpal.androidterm.compat.ActionBarCompat;
-import jackpal.androidterm.compat.ActivityCompat;
-import jackpal.androidterm.compat.AndroidCompat;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.view.MenuItem;
+
+import jackpal.androidterm.compat.ActionBarCompat;
+import jackpal.androidterm.compat.ActivityCompat;
+import jackpal.androidterm.compat.AndroidCompat;
 
 public class TermPreferences extends PreferenceActivity {
     private static final String ACTIONBAR_KEY = "actionbar";
@@ -39,11 +40,11 @@ public class TermPreferences extends PreferenceActivity {
         // Remove the action bar pref on older platforms without an action bar
         if (AndroidCompat.SDK < 11) {
             Preference actionBarPref = findPreference(ACTIONBAR_KEY);
-             PreferenceCategory screenCategory =
+            PreferenceCategory screenCategory =
                     (PreferenceCategory) findPreference(CATEGORY_SCREEN_KEY);
-             if ((actionBarPref != null) && (screenCategory != null)) {
-                 screenCategory.removePreference(actionBarPref);
-             }
+            if ((actionBarPref != null) && (screenCategory != null)) {
+                screenCategory.removePreference(actionBarPref);
+            }
         }
 
         // Display up indicator on action bar home button
@@ -58,12 +59,12 @@ public class TermPreferences extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case ActionBarCompat.ID_HOME:
-            // Action bar home button selected
-            finish();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case ActionBarCompat.ID_HOME:
+                // Action bar home button selected
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

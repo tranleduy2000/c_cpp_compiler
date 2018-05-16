@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2011 Steven Luo
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,10 +35,6 @@ public abstract class ActionBarCompat {
     // Provides android.R.id.home from API 11 and up
     public static final int ID_HOME = 0x0102002c;
 
-    public interface OnNavigationListener {
-        public abstract boolean onNavigationItemSelected(int position, long id);
-    }
-
     public static ActionBarCompat wrap(Object actionBar) {
         if (actionBar != null) {
             if (AndroidCompat.SDK >= 11) {
@@ -49,21 +45,40 @@ public abstract class ActionBarCompat {
     }
 
     public abstract int getDisplayOptions();
-    public abstract int getHeight();
-    public abstract int getNavigationItemCount();
-    public abstract int getNavigationMode();
-    public abstract int getSelectedNavigationIndex();
-    public abstract CharSequence getTitle();
-    public abstract void hide();
-    public abstract boolean isShowing();
+
     public abstract void setDisplayOptions(int options);
-    public abstract void setDisplayOptions(int options, int mask);
-    public abstract void setListNavigationCallbacks(SpinnerAdapter adapter, OnNavigationListener callback);
+
+    public abstract int getHeight();
+
+    public abstract int getNavigationItemCount();
+
+    public abstract int getNavigationMode();
+
     public abstract void setNavigationMode(int mode);
-    public abstract void setSelectedNavigationItem(int position);
-    public abstract void setTitle(int resId);
+
+    public abstract int getSelectedNavigationIndex();
+
+    public abstract CharSequence getTitle();
+
     public abstract void setTitle(CharSequence title);
+
+    public abstract void hide();
+
+    public abstract boolean isShowing();
+
+    public abstract void setDisplayOptions(int options, int mask);
+
+    public abstract void setListNavigationCallbacks(SpinnerAdapter adapter, OnNavigationListener callback);
+
+    public abstract void setSelectedNavigationItem(int position);
+
+    public abstract void setTitle(int resId);
+
     public abstract void show();
+
+    public interface OnNavigationListener {
+        public abstract boolean onNavigationItemSelected(int position, long id);
+    }
 }
 
 class ActionBarApi11OrLater extends ActionBarCompat {
@@ -86,6 +101,10 @@ class ActionBarApi11OrLater extends ActionBarCompat {
         return bar.getDisplayOptions();
     }
 
+    public void setDisplayOptions(int options) {
+        bar.setDisplayOptions(options);
+    }
+
     public int getHeight() {
         return bar.getHeight();
     }
@@ -98,12 +117,20 @@ class ActionBarApi11OrLater extends ActionBarCompat {
         return bar.getNavigationMode();
     }
 
+    public void setNavigationMode(int mode) {
+        bar.setNavigationMode(mode);
+    }
+
     public int getSelectedNavigationIndex() {
         return bar.getSelectedNavigationIndex();
     }
 
     public CharSequence getTitle() {
         return bar.getTitle();
+    }
+
+    public void setTitle(CharSequence title) {
+        bar.setTitle(title);
     }
 
     public void hide() {
@@ -114,10 +141,6 @@ class ActionBarApi11OrLater extends ActionBarCompat {
         return bar.isShowing();
     }
 
-    public void setDisplayOptions(int options) {
-        bar.setDisplayOptions(options);
-    }
-
     public void setDisplayOptions(int options, int mask) {
         bar.setDisplayOptions(options, mask);
     }
@@ -126,20 +149,12 @@ class ActionBarApi11OrLater extends ActionBarCompat {
         bar.setListNavigationCallbacks(adapter, wrapOnNavigationCallback(callback));
     }
 
-    public void setNavigationMode(int mode) {
-        bar.setNavigationMode(mode);
-    }
-
     public void setSelectedNavigationItem(int position) {
         bar.setSelectedNavigationItem(position);
     }
 
     public void setTitle(int resId) {
         bar.setTitle(resId);
-    }
-
-    public void setTitle(CharSequence title) {
-        bar.setTitle(title);
     }
 
     public void show() {

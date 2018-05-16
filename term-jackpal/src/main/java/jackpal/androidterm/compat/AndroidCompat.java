@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Mr Duy
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jackpal.androidterm.compat;
 
 /**
@@ -7,7 +23,7 @@ package jackpal.androidterm.compat;
  * are unavailable on older platforms in subclasses which are only ever
  * accessed on platforms where they are available, we can preserve
  * compatibility with older platforms without resorting to reflection.
- *
+ * <p>
  * See http://developer.android.com/resources/articles/backward-compatibility.html
  * and http://android-developers.blogspot.com/2010/07/how-to-have-your-cupcake-and-eat-it-too.html
  * for further discussion of this technique.

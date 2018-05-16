@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2012 Steven Luo
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,6 @@ package jackpal.androidterm;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 /*
  * New procedure for launching a command in ATE.
@@ -47,27 +46,26 @@ public final class RunScript extends RemoteInterface {
             /* Someone with the appropriate permissions has asked us to
                run a script */
             String handle = myIntent.getStringExtra(EXTRA_WINDOW_HANDLE);
-            String command=null;
+            String command = null;
             /*
              * First look in Intent.data for the path; if not there, revert to
              * the EXTRA_INITIAL_COMMAND location.
              */
-            Uri uri=myIntent.getData();
-            if(uri!=null) // scheme[path][arguments]
+            Uri uri = myIntent.getData();
+            if (uri != null) // scheme[path][arguments]
             {
-              String s=uri.getScheme();
-              if(s!=null && s.toLowerCase().equals("file"))
-              {
-                command=uri.getPath();
-                // Allow for the command to be contained within the arguments string.
-                if(command==null) command="";
-                if(!command.equals("")) command=quoteForBash(command);
-                // Append any arguments.
-                if(null!=(s=uri.getFragment())) command+=" "+s;
-              }
+                String s = uri.getScheme();
+                if (s != null && s.toLowerCase().equals("file")) {
+                    command = uri.getPath();
+                    // Allow for the command to be contained within the arguments string.
+                    if (command == null) command = "";
+                    if (!command.equals("")) command = quoteForBash(command);
+                    // Append any arguments.
+                    if (null != (s = uri.getFragment())) command += " " + s;
+                }
             }
             // If Intent.data not used then fall back to old method.
-            if(command==null) command=myIntent.getStringExtra(EXTRA_INITIAL_COMMAND);
+            if (command == null) command = myIntent.getStringExtra(EXTRA_INITIAL_COMMAND);
             if (handle != null) {
                 // Target the request at an existing window if open
                 handle = appendToWindow(handle, command);

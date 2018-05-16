@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2011 Steven Luo
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,16 +22,6 @@ import android.app.Activity;
  * Compatibility class for android.app.Activity
  */
 public class ActivityCompat {
-    private static class Api11OrLater {
-        public static void invalidateOptionsMenu(Activity activity) {
-            activity.invalidateOptionsMenu();
-        }
-
-        public static Object getActionBar(Activity activity) {
-            return activity.getActionBar();
-        }
-    }
-
     public static void invalidateOptionsMenu(Activity activity) {
         if (AndroidCompat.SDK >= 11) {
             Api11OrLater.invalidateOptionsMenu(activity);
@@ -43,5 +33,15 @@ public class ActivityCompat {
             return null;
         }
         return ActionBarCompat.wrap(Api11OrLater.getActionBar(activity));
+    }
+
+    private static class Api11OrLater {
+        public static void invalidateOptionsMenu(Activity activity) {
+            activity.invalidateOptionsMenu();
+        }
+
+        public static Object getActionBar(Activity activity) {
+            return activity.getActionBar();
+        }
     }
 }

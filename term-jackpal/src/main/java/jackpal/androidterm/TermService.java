@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,47 +16,43 @@
 
 package jackpal.androidterm;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.*;
-import android.content.Intent;
+import android.os.Binder;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.ParcelFileDescriptor;
+import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.app.Notification;
-import android.app.PendingIntent;
-
-import jackpal.androidterm.emulatorview.TermSession;
-
-import jackpal.androidterm.compat.ServiceForegroundCompat;
-import jackpal.androidterm.libtermexec.v1.*;
-import jackpal.androidterm.util.SessionList;
-import jackpal.androidterm.util.TermSettings;
 
 import java.util.UUID;
 
-public class TermService extends Service implements TermSession.FinishCallback
-{
+import jackpal.androidterm.compat.ServiceForegroundCompat;
+import jackpal.androidterm.emulatorview.TermSession;
+import jackpal.androidterm.libtermexec.v1.ITerminal;
+import jackpal.androidterm.util.SessionList;
+import jackpal.androidterm.util.TermSettings;
+
+public class TermService extends Service implements TermSession.FinishCallback {
     /* Parallels the value of START_STICKY on API Level >= 5 */
     private static final int COMPAT_START_STICKY = 1;
 
     private static final int RUNNING_NOTIFICATION = 1;
-    private ServiceForegroundCompat compat;
-
-    private SessionList mTermSessions;
-
-    public class TSBinder extends Binder {
-        TermService getService() {
-            Log.i("TermService", "Activity binding to service");
-            return TermService.this;
-        }
-    }
     private final IBinder mTSBinder = new TSBinder();
+    private ServiceForegroundCompat compat;
+    private SessionList mTermSessions;
 
     @Override
     public void onStart(Intent intent, int flags) {
@@ -128,6 +124,13 @@ public class TermService extends Service implements TermSession.FinishCallback
         mTermSessions.remove(session);
     }
 
+    public class TSBinder extends Binder {
+        TermService getService() {
+            Log.i("TermService", "Activity binding to service");
+            return TermService.this;
+        }
+    }
+
     private final class RBinder extends ITerminal.Stub {
         @Override
         public IntentSender startSession(final ParcelFileDescriptor pseudoTerminalMultiplexerFd,
@@ -149,7 +152,7 @@ public class TermService extends Service implements TermSession.FinishCallback
             if (pkgs == null || pkgs.length == 0)
                 return null;
 
-            for (String packageName:pkgs) {
+            for (String packageName : pkgs) {
                 try {
                     final PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
 
@@ -191,7 +194,8 @@ public class TermService extends Service implements TermSession.FinishCallback
 
                         return result.getIntentSender();
                     }
-                } catch (PackageManager.NameNotFoundException ignore) {}
+                } catch (PackageManager.NameNotFoundException ignore) {
+                }
             }
 
             return null;

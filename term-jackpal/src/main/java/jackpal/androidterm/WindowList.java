@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2011 Steven Luo
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,37 +39,6 @@ public class WindowList extends ListActivity {
     private SessionList sessions;
     private WindowListAdapter mWindowListAdapter;
     private TermService mTermService;
-
-    /**
-     * View which isn't automatically in the pressed state if its parent is
-     * pressed.  This allows the window's entry to be pressed without the close
-     * button being triggered.
-     * Idea and code shamelessly borrowed from the Android browser's tabs list.
-     *
-     * Used by layout xml.
-     */
-    public static class CloseButton extends ImageView {
-        public CloseButton(Context context) {
-            super(context);
-        }
-
-        public CloseButton(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        public CloseButton(Context context, AttributeSet attrs, int style) {
-            super(context, attrs, style);
-        }
-
-        @Override
-        public void setPressed(boolean pressed) {
-            if (pressed && ((View) getParent()).isPressed()) {
-                return;
-            }
-            super.setPressed(pressed);
-        }
-    }
-
     private ServiceConnection mTSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             TermService.TSBinder binder = (TermService.TSBinder) service;
@@ -144,7 +113,7 @@ public class WindowList extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent data = new Intent();
-        data.putExtra(Term.EXTRA_WINDOW_ID, position-1);
+        data.putExtra(Term.EXTRA_WINDOW_ID, position - 1);
         setResult(RESULT_OK, data);
         finish();
     }
@@ -152,12 +121,42 @@ public class WindowList extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case ActionBarCompat.ID_HOME:
-            // Action bar home button selected
-            finish();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case ActionBarCompat.ID_HOME:
+                // Action bar home button selected
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * View which isn't automatically in the pressed state if its parent is
+     * pressed.  This allows the window's entry to be pressed without the close
+     * button being triggered.
+     * Idea and code shamelessly borrowed from the Android browser's tabs list.
+     * <p>
+     * Used by layout xml.
+     */
+    public static class CloseButton extends ImageView {
+        public CloseButton(Context context) {
+            super(context);
+        }
+
+        public CloseButton(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public CloseButton(Context context, AttributeSet attrs, int style) {
+            super(context, attrs, style);
+        }
+
+        @Override
+        public void setPressed(boolean pressed) {
+            if (pressed && ((View) getParent()).isPressed()) {
+                return;
+            }
+            super.setPressed(pressed);
         }
     }
 }
