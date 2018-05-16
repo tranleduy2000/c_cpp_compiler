@@ -33,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -51,7 +52,6 @@ import com.pdaxrom.utils.SelectionMode;
 import com.pdaxrom.utils.Utils;
 import com.pdaxrom.utils.XMLParser;
 
-import org.droidparts.widget.ClearableEditText;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -131,7 +131,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
@@ -916,7 +916,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void gotoDialog() {
-        final ClearableEditText input = new ClearableEditText(context);
+        final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setSingleLine(true);
         new AlertDialog.Builder(context)
@@ -940,7 +940,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void searchDialog() {
-        final ClearableEditText input = new ClearableEditText(context);
+        final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setSingleLine(true);
         input.setText(codeEditor.getLastSearchText());

@@ -15,6 +15,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:textSize="12sp"
-            android:typeface="monospace"></TextView>
+            android:typeface="monospace" />
     </ScrollView>
 </RelativeLayout>

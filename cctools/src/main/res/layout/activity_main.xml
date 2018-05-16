@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <HorizontalScrollView
@@ -15,83 +15,93 @@
             android:layout_height="wrap_content"
             android:scrollbars="horizontal">
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/undoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/edit_undo"
                 android:text="@string/menu_undo" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/redoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/edit_redo"
                 android:text="@string/menu_redo" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/newButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/document_new"
                 android:text="@string/newButton" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/pathButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/document_open"
                 android:text="@string/pathButton" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/saveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/document_save"
                 android:text="@string/saveButton" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/saveAsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/document_save_as"
                 android:text="@string/saveAsButton" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/playButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/play"
                 android:text="@string/playButton" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/buildButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/build"
                 android:text="@string/buildButton" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/logButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/logviewer"
                 android:text="@string/logButton" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/terminalButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
+                android:scaleType="centerInside"
                 android:src="@drawable/gnome_terminal"
                 android:text="@string/terminalButton" />
 
@@ -100,32 +110,7 @@
 
     <ViewFlipper
         android:id="@+id/flipper"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <!--
-                <com.pdaxrom.editor.CodeEditor
-                    xmlns:app="http://schemas.android.com/apk/res/com.pdaxrom.cctools"
-
-                    android:id="@+id/codeEditor"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="top"
-                    android:inputType="textMultiLine|textNoSuggestions"
-                    android:typeface="monospace"
-                    android:textSize="12sp"
-                    android:text=""
-
-                    android:background="@android:color/black"
-                    android:textColor="@android:color/white"
-
-                    app:gutterTextColor="@color/grey"
-                    app:gutterLineColor="@color/grey"
-                    app:drawLineNumbers="true"
-                    app:drawGutterLine="true"
-                    app:gutterSize="@dimen/gutter_size"
-                    app:gutterPadding="@dimen/gutter_padding"
-                    app:highlightText="true"/>
-        -->
-    </ViewFlipper>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

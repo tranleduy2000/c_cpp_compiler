@@ -1,19 +1,20 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/home_folder"
         android:icon="@drawable/folder_home"
-        android:showAsAction="ifRoom"
-        android:title="@string/homeDirectory" />
+        android:title="@string/homeDirectory"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/sd_folder"
         android:icon="@drawable/media_memory_sd"
-        android:showAsAction="ifRoom"
-        android:title="@string/sdDirectory" />
+        android:title="@string/sdDirectory"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/new_folder"
         android:icon="@drawable/folder_new"
-        android:showAsAction="ifRoom"
-        android:title="@string/newDirectory" />
+        android:title="@string/newDirectory"
+        app:showAsAction="ifRoom" />
 </menu>

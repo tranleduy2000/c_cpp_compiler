@@ -29,8 +29,6 @@ import android.widget.TextView;
 import com.pdaxrom.cctools.R;
 import com.pdaxrom.utils.Utils;
 
-import org.droidparts.widget.ClearableEditText;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -102,7 +100,7 @@ public class PackageManagerActivity extends AppCompatActivity {
 
         activityCmd = null;
         activityData = null;
-        ClearableEditText inputSearch;
+        EditText inputSearch;
         if (getIntent().getExtras() != null) {
             String cmd = getIntent().getExtras().getString(EXTRA_CMD);
 
@@ -123,9 +121,7 @@ public class PackageManagerActivity extends AppCompatActivity {
 
             return;
         } else {
-
             inputSearch = findViewById(R.id.inputSearch);
-
             (new DownloadRepoTask()).execute(getReposList());
         }
 
@@ -301,7 +297,7 @@ public class PackageManagerActivity extends AppCompatActivity {
         ListAdapter adapter = new SimpleAdapter(
                 this,
                 menuItems,
-                R.layout.pkgmgr_list_package,
+                R.layout.list_item_package,
                 new String[]{
                         RepoUtils.KEY_NAME,
                         RepoUtils.KEY_VERSION,

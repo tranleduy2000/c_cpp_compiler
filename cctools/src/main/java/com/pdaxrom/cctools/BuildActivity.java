@@ -64,7 +64,7 @@ public class BuildActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.build);
+        setContentView(R.layout.activity_build);
 
         systemShell = new String("SHELL=" + SYSTEM_SHELL);
         buildLog = findViewById(R.id.buildLog);
@@ -237,7 +237,7 @@ public class BuildActivity extends Activity {
             return;
         }
         //View view = getActivity().getLayoutInflater().inflate(R.layout.gccargs, null);
-        final View view = LayoutInflater.from(this).inflate(R.layout.gccargs, null);
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_gcc_args, null);
         final EditText cb_edit = view.findViewById(R.id.gccargs);
         final CheckBox cb_link = view.findViewById(R.id.gccbuildexe);
         final CheckBox cb_native = view.findViewById(R.id.gccnativeactivity);
