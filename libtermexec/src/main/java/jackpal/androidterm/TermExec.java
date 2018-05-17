@@ -1,12 +1,18 @@
 package jackpal.androidterm;
 
 import android.annotation.TargetApi;
-import android.os.*;
+import android.os.Build;
+import android.os.Looper;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
-import java.io.FileDescriptor;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility methods for creating and managing a subprocess. This class differs from
@@ -102,20 +108,7 @@ public class TermExec {
     {
         final int integerFd;
 
-        if (Build.VERSION.SDK_INT >= 12)
-            integerFd = FdHelperHoneycomb.getFd(masterFd);
-        else {
-            try {
-                if (descriptorField == null) {
-                    descriptorField = FileDescriptor.class.getDeclaredField("descriptor");
-                    descriptorField.setAccessible(true);
-                }
-
-                integerFd = descriptorField.getInt(masterFd.getFileDescriptor());
-            } catch (Exception e) {
-                throw new IOException("Unable to obtain file descriptor on this OS version: " + e.getMessage());
-            }
-        }
+        integerFd = FdHelperHoneycomb.getFd(masterFd);
 
         return createSubprocessInternal(cmd, args, envVars, integerFd);
     }

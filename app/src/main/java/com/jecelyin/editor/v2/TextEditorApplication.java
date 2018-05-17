@@ -18,24 +18,24 @@
 
 package com.jecelyin.editor.v2;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class TextEditorApplication extends Application  {
+public class TextEditorApplication extends MultiDexApplication {
     private static Context context;
+
+    public static Context getContext() {
+        return context;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-    }
-
-
-    public static Context getContext() {
-        return context;
+        System.out.println(System.getenv());
     }
 
 }
