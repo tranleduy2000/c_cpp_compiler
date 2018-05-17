@@ -21,8 +21,8 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
 import com.duy.common.DLog;
-import com.duy.ide.compiler.shell.ShellResult;
-import com.duy.ide.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.utils.ExtractCallback;
 import com.duy.utils.IOUtils;
 import com.duy.utils.ZipExtractor;

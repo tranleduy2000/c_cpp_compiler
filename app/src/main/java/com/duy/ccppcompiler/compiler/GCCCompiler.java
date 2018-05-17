@@ -19,9 +19,8 @@ package com.duy.ccppcompiler.compiler;
 import android.content.Context;
 
 import com.duy.common.DLog;
-import com.duy.ide.compiler.INativeCompiler;
-import com.duy.ide.compiler.shell.ShellResult;
-import com.duy.ide.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 
 import java.io.File;
 import java.util.ArrayList;

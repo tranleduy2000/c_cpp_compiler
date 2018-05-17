@@ -14,12 +14,26 @@
  * limitations under the License.
  */
 
-package com.duy.ide.compiler.analyze;
+package com.duy.ccppcompiler.compiler;
+
+import android.support.annotation.MainThread;
+
+import com.duy.ccppcompiler.compiler.shell.ShellResult;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public interface ICodeAnalysis {
-    void analyze(String charSequence);
+public interface ICompileManager {
+    @MainThread
+    void onNewMessage(CharSequence charSequence);
+
+    @MainThread
+    void onCompileSuccess(ShellResult shellResult);
+
+    @MainThread
+    void onCompileFailed(ShellResult shellResult);
+
+    @MainThread
+    void onPrepareCompile();
 }

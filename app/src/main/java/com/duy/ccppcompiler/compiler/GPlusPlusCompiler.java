@@ -18,9 +18,8 @@ package com.duy.ccppcompiler.compiler;
 
 import android.content.Context;
 
-import com.duy.ide.compiler.INativeCompiler;
-import com.duy.ide.compiler.shell.ShellResult;
-import com.duy.ide.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class GPlusPlusCompiler implements INativeCompiler {
         final File gccBinDir = new File(gccDir, "bin");
         final File armGccBinDir = new File(gccDir, "arm-linux-androideabi" + File.separator + "bin");
 
-        String exec = "g++";
+        String exec = "g++-4.9";
 
         List<String> flags = new ArrayList<>();
         for (File sourceFile : sourceFiles) {

@@ -18,8 +18,6 @@ package com.duy.ccppcompiler.compiler;
 
 import android.content.Context;
 
-import com.duy.ide.compiler.INativeCompiler;
-
 /**
  * Created by Duy on 25-Apr-18.
  */

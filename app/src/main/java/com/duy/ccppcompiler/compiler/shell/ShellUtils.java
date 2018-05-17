@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.compiler.shell;
+package com.duy.ccppcompiler.compiler.shell;
 
 import com.jecelyin.common.utils.DLog;
 
@@ -141,11 +141,9 @@ public class ShellUtils {
         StringBuilder message = null;
         try {
             ProcessBuilder builder = new ProcessBuilder(command);
+            builder.command().addAll(args);
 
-            List<String> argsList = builder.command();
-            argsList.addAll(args);
-
-            builder.redirectErrorStream(true);//合并输入流和错误流
+            builder.redirectErrorStream(true);
 
             Map<String, String> map = builder.environment();
             //map.clear();

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.ide.compiler;
+package com.duy.ccppcompiler.compiler;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.duy.ide.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.ShellResult;
 import com.jecelyin.common.utils.DLog;
 
 import java.io.File;

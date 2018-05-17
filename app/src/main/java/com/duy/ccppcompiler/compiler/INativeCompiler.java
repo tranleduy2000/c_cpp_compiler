@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package com.duy.ide.compiler;
+package com.duy.ccppcompiler.compiler;
 
-import com.duy.ide.compiler.shell.ShellResult;
+import android.support.annotation.WorkerThread;
+
+import com.duy.ccppcompiler.compiler.shell.ShellResult;
+
+import java.io.File;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public interface ICompileListener {
-    void onCompileResult(ShellResult result);
+public interface INativeCompiler {
+    @WorkerThread
+    ShellResult compile(File[] sourceFiles);
 }
