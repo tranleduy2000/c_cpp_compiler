@@ -82,11 +82,13 @@ public class TermActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @Override
     public void onBackPressed() {
         if (isRunning) {
             Log.i(TAG, "kill process group");
             mSession.hangup();
         }
+        super.onBackPressed();
     }
 
 
@@ -104,7 +106,7 @@ public class TermActivity extends AppCompatActivity {
         Log.i(TAG, "Shell sesion for " + cmdline + "\n");
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
+                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:" + System.getenv("PATH"),
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
                 "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",

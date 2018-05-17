@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ccppcompiler.compiler.shell;
+
+import android.support.annotation.WorkerThread;
 
 /**
- * Created by Duy on 30-Apr-18.
+ * Created by Duy on 17-May-18.
  */
 
-public class Hash {
-    
+public class ExecUtils {
+
+    @WorkerThread
+    public ShellResult exec(String command) {
+        return null;
+    }
 }

@@ -1,6 +1,5 @@
 package com.pdaxrom.cctools;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,13 +35,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class BuildActivity extends Activity {
+public class BuildActivity extends AppCompatActivity {
     private static final String TAG = "BuildActivity";
 
     private static final String PREFS_NAME = "GCCArgsFile";
-    private static final String SYSTEM_SHELL = "/system/bin/sh";
 
-    public static ArrayList<LogItem> errorsList = new ArrayList<LogItem>();
+    public static ArrayList<LogItem> errorsList = new ArrayList<>();
     private TextView mLogView;
     private String mFileName;
     private String mCCToolsDir;
@@ -71,14 +70,13 @@ public class BuildActivity extends Activity {
         mLogView = findViewById(R.id.buildLog);
         Intent intent = getIntent();
 
-        final String systemShell = "SHELL=" + SYSTEM_SHELL;
-        mCmdThread = (Thread) getLastNonConfigurationInstance();
+        final String systemShell = "SHELL=/system/bin/sh";
         mFileName = intent.getStringExtra(BuildConstants.EXTRA_FILE_NAME);
         mCCToolsDir = intent.getStringExtra(BuildConstants.EXTRA_CCTOOLS_DIR);
         mWorkDir = new File(mFileName).getParentFile().toString();
         mForceBuild = intent.getBooleanExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
         mForceRun = false;
-        mTmpExeDir = EnvironmentPath.getTmpExeDir(this);
+        mTmpExeDir = EnvironmentPath.getTmpDir(this);
 
         mTmpDir = intent.getStringExtra(BuildConstants.EXTRA_TMP_DIR);
         runme_ca = mTmpDir + "/runme_ca";
@@ -123,13 +121,13 @@ public class BuildActivity extends Activity {
                     return;
 
                 } else if (ext.contentEquals(".c") || ext.contentEquals(".s") || ext.endsWith(".m")) {
-                    mCommand = "gcc " + fileName;
+                    mCommand = "gcc-4.9 " + fileName;
                     if (mForceBuild) {
                         mCommand += " " + mPrefs.getString("force_ccopts", "");
                     }
 
                 } else if (ext.contentEquals(".c++") || ext.contentEquals(".cpp") || ext.endsWith(".mm")) {
-                    mCommand = "g++ " + fileName;
+                    mCommand = "g++-4.9 " + fileName;
                     if (mForceBuild) {
                         mCommand += " " + mPrefs.getString("force_cxxopts", "");
                     }
@@ -162,10 +160,6 @@ public class BuildActivity extends Activity {
         output(getString(R.string.known_filetypes) + "\n");
     }
 
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mCmdThread;
-    }
 
     @Override
     protected void onDestroy() {
@@ -454,7 +448,11 @@ public class BuildActivity extends Activity {
                                         errorsList.get(idx).getPos() == Integer.parseInt(m.group(3))) {
                                     errorsList.get(idx).setMessage(errorsList.get(idx).getMessage() + " " + m.group(5));
                                 } else {
-                                    LogItem item = new LogItem(m.group(4), m.group(1), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), m.group(5));
+                                    LogItem item = new LogItem(
+                                            m.group(4),
+                                            m.group(1),
+                                            Integer.parseInt(m.group(2)),
+                                            Integer.parseInt(m.group(3)), m.group(5));
                                     errorsList.add(item);
                                 }
 

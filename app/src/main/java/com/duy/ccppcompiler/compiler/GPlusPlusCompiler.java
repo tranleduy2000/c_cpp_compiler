@@ -20,6 +20,7 @@ import android.content.Context;
 
 import com.duy.ccppcompiler.compiler.shell.ShellResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
+import com.pdaxrom.packagemanager.EnvironmentPath;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,12 +44,7 @@ public class GPlusPlusCompiler implements INativeCompiler {
         File internalDir = mContext.getFilesDir();
         File gccDir = new File(internalDir, "gcc");
 
-        final String sysPath = System.getenv("PATH");
-        final File gccBinDir = new File(gccDir, "bin");
-        final File armGccBinDir = new File(gccDir, "arm-linux-androideabi" + File.separator + "bin");
-
         String exec = "g++-4.9";
-
         List<String> flags = new ArrayList<>();
         for (File sourceFile : sourceFiles) {
             flags.add(sourceFile.getAbsolutePath());
@@ -67,16 +63,14 @@ public class GPlusPlusCompiler implements INativeCompiler {
         File tmpDir = new File(gccDir, GCCConstants.BUILD_DIR);
         tmpDir.mkdirs();
         String TEMPEnv = tmpDir.getAbsolutePath();
-        String PATHEnv = internalDir.getAbsolutePath() + File.pathSeparator
-                + gccBinDir.getAbsolutePath() + File.pathSeparator
-                + armGccBinDir.getAbsolutePath() + File.pathSeparator
-                + sysPath;
-
 
         Map<String, String> envMap = new HashMap<>();
-        envMap.put("PATH", PATHEnv);
         envMap.put("TEMP", TEMPEnv);
-
+        String[] envp = EnvironmentPath.buildEnv(mContext);
+        for (String s : envp) {
+            String[] split = s.split("=");
+            envMap.put(split[0], split[1]);
+        }
         return ShellUtils.execCommand(exec, flags, envMap);
 
     }

@@ -16,7 +16,6 @@
 
 package com.pdaxrom.packagemanager;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -79,7 +78,7 @@ public class EnvironmentPath {
     /**
      * @return temp directory for execute file
      */
-    public static String getTmpExeDir(Context context) {
+    public static String getTmpDir(Context context) {
         File file = new File(EnvironmentPath.getToolchainsDir(context), "tmp");
         return mkdirIfNotExist(file);
     }
@@ -135,7 +134,7 @@ public class EnvironmentPath {
      * ANDROID_ROOT=/system
      * LD_LIBRARY_PATH=/vendor/lib:/system/lib
      */
-    public static String[] buildEnv(Activity context) {
+    public static String[] buildEnv(Context context) {
         final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         TermSettings settings = new TermSettings(context.getResources(), mPrefs);
 
@@ -153,7 +152,7 @@ public class EnvironmentPath {
         }
 
         return new String[]{
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
+                "TMPDIR=" + getToolchainsDir(context) + "/tmpdir",
                 "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
                 "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
                 "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
@@ -201,7 +200,7 @@ public class EnvironmentPath {
         return "/system/bin/sh";
     }
 
-    protected static String getEnv(Activity context, String cctoolsDir, String variable) {
+    protected static String getEnv(Context context, String cctoolsDir, String variable) {
         String ret = null;
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),

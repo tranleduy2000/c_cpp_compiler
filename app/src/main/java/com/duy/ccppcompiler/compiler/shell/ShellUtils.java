@@ -130,6 +130,8 @@ public class ShellUtils {
     }
 
     public static ShellResult execCommand(String command, List<String> args, Map<String, String> env) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "execCommand() called with: command = [" + command + "], args = [" + args + "], env = [" + env + "]");
         int result = -1;
         if (command == null || command.length() == 0) {
             return new ShellResult(result, null);

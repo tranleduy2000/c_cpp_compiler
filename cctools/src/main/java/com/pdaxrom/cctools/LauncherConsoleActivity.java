@@ -18,7 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class LauncherConsoleActivity extends AppCompatActivity {
-    private final static String TAG = "cctools-LauncherConsoleActivity";
+    private final static String TAG = "LauncherConsoleActivity";
     private Context context = this;
     private String outFile;
     private String workDir;
