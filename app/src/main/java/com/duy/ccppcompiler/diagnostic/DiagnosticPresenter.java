@@ -25,7 +25,7 @@ import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 import com.duy.common.DLog;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.manager.TabManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;

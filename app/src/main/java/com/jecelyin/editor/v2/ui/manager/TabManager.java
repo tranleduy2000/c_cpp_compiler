@@ -30,7 +30,7 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.editor.EditorPageDescriptor;
 import com.jecelyin.editor.v2.utils.DBHelper;

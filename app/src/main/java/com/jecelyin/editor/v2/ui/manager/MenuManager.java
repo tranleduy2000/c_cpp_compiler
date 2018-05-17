@@ -23,7 +23,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.common.utils.DrawableUtils;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.adapter.MainMenuAdapter;

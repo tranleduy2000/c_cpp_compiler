@@ -44,7 +44,7 @@ import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.ui.dialog.FinderDialog;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;

@@ -21,7 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.jecelyin.editor.v2.common.TabCloseListener;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.editor.EditorFragment;
 import com.jecelyin.editor.v2.ui.editor.EditorPageDescriptor;

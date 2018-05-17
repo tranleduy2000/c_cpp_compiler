@@ -28,7 +28,7 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;
 import com.duy.ide.compiler.ICompileManager;
 import com.duy.ide.compiler.shell.ShellResult;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 
 import java.io.File;

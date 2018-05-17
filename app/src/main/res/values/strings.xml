@@ -6,4 +6,5 @@
     <string name="create_new_file">Create new file</string>
     <string name="title_menu_c_example">C examples</string>
     <string name="title_menu_cpp_example">C++ examples</string>
+    <string name="title_menu_adds_on">Install adds on</string>
 </resources>

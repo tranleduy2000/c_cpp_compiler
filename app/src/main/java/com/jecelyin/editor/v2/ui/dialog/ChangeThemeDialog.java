@@ -26,7 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.Document;
 
 /**

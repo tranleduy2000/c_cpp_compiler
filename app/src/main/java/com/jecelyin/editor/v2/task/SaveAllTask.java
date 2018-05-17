@@ -20,7 +20,7 @@ import android.os.AsyncTask;
 
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
-import com.jecelyin.editor.v2.ui.activities.EditorActivity;
+import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 
 /**

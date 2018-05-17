@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.ui.activities;
+package com.duy.editor;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +47,7 @@ import com.duy.ccppcompiler.compiler.CompilerFactory;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.filemanager.SrcFileManager;
+import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.ui.dialogs.DialogNewFile;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.ide.compiler.CompileTask;
@@ -424,6 +425,9 @@ public class EditorActivity extends FullScreenActivity
                 break;
             case R.id.action_cpp_example:
                 ExampleActivity.openExample(this, "cpp");
+                break;
+            case R.id.action_install_add_on:
+                startActivity(new Intent(this, PackageManagerActivity.class));
                 break;
 
             default:
