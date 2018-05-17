@@ -113,7 +113,7 @@ public class WindowList extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent data = new Intent();
-        data.putExtra(Term.EXTRA_WINDOW_ID, position - 1);
+        data.putExtra(TermActivity.EXTRA_WINDOW_ID, position - 1);
         setResult(RESULT_OK, data);
         finish();
     }

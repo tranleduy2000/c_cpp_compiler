@@ -9,21 +9,19 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.term.ShellTermSession;
-import com.pdaxrom.term.TermView;
 
 import java.io.File;
 import java.util.Arrays;
 
+import jackpal.androidterm.emulatorview.EmulatorView;
+
 public class TermActivity extends AppCompatActivity {
     private static final String TAG = "TermActivity";
 
-    private TermView mTermView;
+    private EmulatorView mTermView;
     private ShellTermSession mSession;
-    private String fileName;
-    private String cmdline;
-    private String workdir;
-    private String cctoolsDir;
 
     private boolean isRunning = false;
 
@@ -49,17 +47,16 @@ public class TermActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.term);
 
-        fileName = getIntent().getStringExtra("filename");
-        workdir = getIntent().getStringExtra("workdir");
-        cctoolsDir = getIntent().getStringExtra("cctoolsdir");
-        cmdline = fileName;
+        String fileName = getIntent().getStringExtra("filename");
+        String workdir = getIntent().getStringExtra("workdir");
+        String cctoolsDir = getIntent().getStringExtra("cctoolsdir");
 
         showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_executing));
 
         SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
 
         mTermView = findViewById(R.id.emulatorView);
-        mSession = createShellTermSession();
+        mSession = createShellTermSession(fileName, cctoolsDir, workdir);
         mTermView.attachSession(mSession);
         mTermView.setDensity(getResources().getDisplayMetrics());
         mTermView.setTextSize(Integer.valueOf(mPrefs.getString("console_fontsize", "12")));
@@ -102,9 +99,10 @@ public class TermActivity extends AppCompatActivity {
         handler.post(proc);
     }
 
-    private ShellTermSession createShellTermSession() {
+    private ShellTermSession createShellTermSession(String cmdline, String cctoolsDir, String workdir) {
         cmdline = cmdline.replaceAll("\\s+", " ");
         Log.i(TAG, "Shell sesion for " + cmdline + "\n");
+        String homeDir = EnvironmentPath.getHomeDir(this);
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
                 "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
@@ -115,7 +113,7 @@ public class TermActivity extends AppCompatActivity {
                 "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + getPackageResourcePath(),
                 "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-                "HOME=" + cctoolsDir + "/home",
+                "HOME=" + homeDir,
                 "SHELL=" + getShell(cctoolsDir),
                 "TERM=xterm",
                 "PS1=$ ",
@@ -126,7 +124,6 @@ public class TermActivity extends AppCompatActivity {
         Log.i(TAG, "envp " + Arrays.toString(envp));
 
         isRunning = true;
-
         return new ShellTermSession(argv, envp, workdir, mMsgHandler);
     }
 

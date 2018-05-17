@@ -83,7 +83,7 @@
                 android:value="native-loader" />
         </activity>
         <activity
-            android:name="com.pdaxrom.pkgmanager.PackageManagerActivity"
+            android:name="com.pdaxrom.packagemanager.PackageManagerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/pkgmgr_name" />
         <activity

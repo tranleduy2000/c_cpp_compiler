@@ -11,7 +11,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
@@ -21,8 +20,6 @@ import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,7 +42,8 @@ import android.widget.ViewFlipper;
 
 import com.pdaxrom.editor.CodeEditor;
 import com.pdaxrom.editor.CodeEditorInterface;
-import com.pdaxrom.pkgmanager.PackageManagerActivity;
+import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.LogItem;
 import com.pdaxrom.utils.SelectionMode;
@@ -71,6 +69,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.pdaxrom.cctools.BuildConstants.EXEC_FILE;
+import static com.pdaxrom.cctools.BuildConstants.TMP_DIR;
 
 public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.TabListener, OnSharedPreferenceChangeListener, CodeEditorInterface {
     public static final String SHARED_PREFS_NAME = "cctoolsSettings";
@@ -102,16 +103,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     private String buildBaseDir; // Project base directory
     private boolean buildAfterSave = false;
     private boolean buildAfterLoad = false;
-    private ImageButton newButton;
-    private ImageButton openButton;
-    private ImageButton playButton;
-    private ImageButton buildButton;
-    private ImageButton logButton;
-    private ImageButton terminalButton;
-    private ImageButton saveButton;
-    private ImageButton saveAsButton;
-    private ImageButton undoButton;
-    private ImageButton redoButton;
     private View buttBar;
     private ViewFlipper flipper;
     private List<CodeEditor> editors = null;
@@ -133,9 +124,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mPrefs = getSharedPreferences(SHARED_PREFS_NAME, 0);
 
@@ -150,69 +138,70 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
         showInfoAndCheckToolchain();
 
-        newButton = findViewById(R.id.newButton);
+        ImageButton newButton = findViewById(R.id.newButton);
         newButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 //warnSaveDialog(WARN_SAVE_AND_NEW);
                 newFile();
             }
         });
-        openButton = findViewById(R.id.pathButton);
+        ImageButton openButton = findViewById(R.id.pathButton);
         openButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 warnSaveDialog(WARN_SAVE_AND_LOAD);
             }
         });
-        saveButton = findViewById(R.id.saveButton);
+        ImageButton saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 saveFile();
             }
         });
 
-        saveAsButton = findViewById(R.id.saveAsButton);
+        ImageButton saveAsButton = findViewById(R.id.saveAsButton);
         saveAsButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 saveAsFile();
             }
         });
 
-        playButton = findViewById(R.id.playButton);
+        ImageButton playButton = findViewById(R.id.playButton);
         playButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 warnSaveDialog(WARN_SAVE_AND_BUILD_FORCE);
             }
         });
 
-        buildButton = findViewById(R.id.buildButton);
+        ImageButton buildButton = findViewById(R.id.buildButton);
         buildButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 warnSaveDialog(WARN_SAVE_AND_BUILD);
             }
         });
 
-        logButton = findViewById(R.id.logButton);
+
+        ImageButton logButton = findViewById(R.id.logButton);
         logButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 showLog();
             }
         });
 
-        terminalButton = findViewById(R.id.terminalButton);
+        ImageButton terminalButton = findViewById(R.id.terminalButton);
         terminalButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 runTerminal();
             }
         });
 
-        undoButton = findViewById(R.id.undoButton);
+        ImageButton undoButton = findViewById(R.id.undoButton);
         undoButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 codeEditor.undo();
             }
         });
 
-        redoButton = findViewById(R.id.redoButton);
+        ImageButton redoButton = findViewById(R.id.redoButton);
         redoButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 codeEditor.redo();
@@ -261,6 +250,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         editor.setAutoIndent(prefs.getBoolean("autoindent", true));
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         Log.i(TAG, "onSharedPreferenceChanged()");
         for (CodeEditor editor : editors) {
@@ -273,6 +263,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         }
     }
 
+    @Override
     protected void onDestroy() {
         saveTabs();
         serviceStartStop(SERVICE_STOP);
@@ -309,15 +300,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         }
     }
 
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            menu.add(0, TEXT_GOTO, 0, getString(R.string.menu_goto));
-            menu.add(0, TEXT_FIND, 0, getString(R.string.menu_search));
-            menu.add(0, TEXT_UNDO, 0, getString(R.string.menu_undo));
-            menu.add(0, TEXT_REDO, 0, getString(R.string.menu_redo));
-        }
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
 
     public boolean onContextItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
@@ -352,7 +334,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_new:
-                //warnSaveDialog(WARN_SAVE_AND_NEW);
                 newFile();
                 break;
             case R.id.item_open:
@@ -411,6 +392,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         return true;
     }
 
+    @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         flipper.setDisplayedChild(tab.getPosition());
         codeEditor = flipper.getChildAt(tab.getPosition()).findViewById(R.id.codeEditor);
@@ -422,19 +404,18 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
     }
 
+    @Override
     public void textHasChanged(boolean hasChanged) {
         if (getSupportActionBar().getSelectedTab().getText() == null) {
             return;
         }
         String title = getSupportActionBar().getSelectedTab().getText().toString();
-        if (title != null) {
-            if (!hasChanged && title.startsWith("*")) {
-                title = title.substring(1);
-            } else if (hasChanged && !title.startsWith("*")) {
-                title = "*" + title;
-            }
-            getSupportActionBar().getSelectedTab().setText(title);
+        if (!hasChanged && title.startsWith("*")) {
+            title = title.substring(1);
+        } else if (hasChanged && !title.startsWith("*")) {
+            title = "*" + title;
         }
+        getSupportActionBar().getSelectedTab().setText(title);
     }
 
     private String getPrefString(String key) {
@@ -446,7 +427,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     private int loadTabs() {
@@ -501,7 +482,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
             }
             editor.putString("TabN" + i, fileName);
         }
-        editor.commit();
+        editor.apply();
     }
 
     private boolean findAndShowEditorTab(String filename) {
@@ -618,7 +599,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         SharedPreferences settings = getSharedPreferences(SHARED_PREFS_FILES_EDITPOS, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(ce.getFileName(), ce.getSelectionStart());
-        editor.commit();
+        editor.apply();
     }
 
     private void loadFileEditPos(CodeEditor ce) {
@@ -647,8 +628,8 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 String ext = infile.substring(infile.lastIndexOf("."));
                 if (ext.contentEquals(".sh")) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
-                    intent.putExtra("executable_file", fileName);
-                    intent.putExtra("cctoolsdir", getToolchainDir() + "/cctools");
+                    intent.putExtra(EXEC_FILE, fileName);
+                    intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
                     SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
                     if (force) {
                         intent.putExtra("force", mPrefs.getBoolean("force_run", false));
@@ -660,9 +641,9 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 }
                 if (ext.contentEquals(".lua") && (new File(getToolchainDir() + "/cctools/bin/luajit")).exists()) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
-                    intent.putExtra("executable_file", getToolchainDir() + "/cctools/bin/luajit " + fileName);
-                    intent.putExtra("cctoolsdir", getToolchainDir() + "/cctools");
-                    intent.putExtra("workdir", (new File(fileName)).getParentFile().getAbsolutePath());
+                    intent.putExtra(EXEC_FILE, getToolchainDir() + "/cctools/bin/luajit " + fileName);
+                    intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
+                    intent.putExtra(BuildConstants.WORK_DIR, (new File(fileName)).getParentFile().getAbsolutePath());
                     SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
                     if (force) {
                         intent.putExtra("force", mPrefs.getBoolean("force_run", true));
@@ -675,9 +656,9 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 if ((ext.equals(".pl") || ext.equals(".pm")) &&
                         (new File(getToolchainDir() + "/cctools/bin/perl")).exists()) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
-                    intent.putExtra("executable_file", getToolchainDir() + "/cctools/bin/perl " + fileName);
-                    intent.putExtra("cctoolsdir", getToolchainDir() + "/cctools");
-                    intent.putExtra("workdir", (new File(fileName)).getParentFile().getAbsolutePath());
+                    intent.putExtra(EXEC_FILE, getToolchainDir() + "/cctools/bin/perl " + fileName);
+                    intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
+                    intent.putExtra(BuildConstants.WORK_DIR, (new File(fileName)).getParentFile().getAbsolutePath());
                     SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
                     if (force) {
                         intent.putExtra("force", mPrefs.getBoolean("force_run", true));
@@ -689,9 +670,9 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 }
             }
             Intent intent = new Intent(CCToolsActivity.this, BuildActivity.class);
-            intent.putExtra("filename", fileName);
-            intent.putExtra("cctoolsdir", getToolchainDir() + "/cctools");
-            intent.putExtra("tmpdir", getTempDir());
+            intent.putExtra(BuildConstants.FILE_NAME, fileName);
+            intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
+            intent.putExtra(TMP_DIR, getTempDir());
             intent.putExtra("force", force);
             startActivity(intent);
         }
@@ -963,14 +944,14 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
     private void runTerminal() {
         Intent myIntent = new Intent(this, TermActivity.class);
-        myIntent.putExtra("filename", "-" + getShell());
-        myIntent.putExtra("cctoolsdir", getToolchainDir() + "/cctools");
-        String workDir = getToolchainDir() + "/cctools/home";
+        myIntent.putExtra(BuildConstants.FILE_NAME, "-" + getShell());
+        myIntent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
+        String workDir = EnvironmentPath.getHomeDir(this);
         String fileName = codeEditor.getFileName();
         if (fileName != null && (new File(fileName)).exists()) {
             workDir = (new File(fileName)).getParentFile().getAbsolutePath();
         }
-        myIntent.putExtra("workdir", workDir);
+        myIntent.putExtra(BuildConstants.WORK_DIR, workDir);
         startActivity(myIntent);
     }
 

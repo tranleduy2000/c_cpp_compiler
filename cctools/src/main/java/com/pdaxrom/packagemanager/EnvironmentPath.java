@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pdaxrom.pkgmanager;
+package com.pdaxrom.packagemanager;
 
 import android.content.Context;
 import android.os.Environment;

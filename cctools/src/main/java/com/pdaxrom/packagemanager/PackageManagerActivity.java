@@ -1,4 +1,4 @@
-package com.pdaxrom.pkgmanager;
+package com.pdaxrom.packagemanager;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.pdaxrom.pkgmanager.EnvironmentPath.INSTALLED_PACKAGE_DIR;
+import static com.pdaxrom.packagemanager.EnvironmentPath.INSTALLED_PACKAGE_DIR;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class PackageManagerActivity extends AppCompatActivity {
@@ -55,24 +55,22 @@ public class PackageManagerActivity extends AppCompatActivity {
     public static final String ACTION_UNINSTALL = "uninstall";
     public static final String ACTION_UPDATE = "update";
 
-    private static final String TAG = "PkgMgrActivity";
-
-    private static boolean fCheckedUpdatesAtStartup = false;
-    final Handler handler = new Handler();
-
-    final int sdk2ndk_arm[] = {
+    public static final int SDK_2_NDK_ARM[] = {
             /*   1   2   3   4   5   6   7   8   9  10  a11  12  13  14  15  16  17  18  19  20  21  22  23  */
             -1, -1, -1, 3, 4, 5, 5, 5, 8, 9, 9, 9, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
-    final int sdk2ndk_mips[] = {
+    public static final int SDK_2_NDK_MIPS[] = {
             /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
             -1, -1, -1, -1, -1, -1, -1, -1, -1, 9, 9, -1, -1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
-    final int sdk2ndk_x86[] = {
+    public static final int SDK_2_NDK_X_86[] = {
             /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
             -1, -1, -1, -1, -1, -1, -1, -1, -1, 9, 9, -1, -1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
     };
 
+    private static final String TAG = "PkgMgrActivity";
+    private static boolean fCheckedUpdatesAtStartup = false;
+    final Handler handler = new Handler();
     String errorString = null;
     private Context context = this;
     private PackagesLists packagesLists = new PackagesLists();
@@ -239,24 +237,24 @@ public class PackageManagerActivity extends AppCompatActivity {
         ndkArch = "all";
         if (Build.CPU_ABI.startsWith("arm")) {
             ndkArch = "armel";
-            if (sdk2ndk_arm.length > sdkVersion) {
-                ndkVersion = sdk2ndk_arm[sdkVersion];
+            if (SDK_2_NDK_ARM.length > sdkVersion) {
+                ndkVersion = SDK_2_NDK_ARM[sdkVersion];
             } else {
-                ndkVersion = sdk2ndk_arm[sdk2ndk_arm.length - 1];
+                ndkVersion = SDK_2_NDK_ARM[SDK_2_NDK_ARM.length - 1];
             }
         } else if (Build.CPU_ABI.startsWith("mips")) {
             ndkArch = "mipsel";
-            if (sdk2ndk_mips.length > sdkVersion) {
-                ndkVersion = sdk2ndk_mips[sdkVersion];
+            if (SDK_2_NDK_MIPS.length > sdkVersion) {
+                ndkVersion = SDK_2_NDK_MIPS[sdkVersion];
             } else {
-                ndkVersion = sdk2ndk_mips[sdk2ndk_mips.length - 1];
+                ndkVersion = SDK_2_NDK_MIPS[SDK_2_NDK_MIPS.length - 1];
             }
         } else {
             ndkArch = "i686";
-            if (sdk2ndk_x86.length > sdkVersion) {
-                ndkVersion = sdk2ndk_x86[sdkVersion];
+            if (SDK_2_NDK_X_86.length > sdkVersion) {
+                ndkVersion = SDK_2_NDK_X_86[sdkVersion];
             } else {
-                ndkVersion = sdk2ndk_x86[sdk2ndk_x86.length - 1];
+                ndkVersion = SDK_2_NDK_X_86[SDK_2_NDK_X_86.length - 1];
             }
         }
 

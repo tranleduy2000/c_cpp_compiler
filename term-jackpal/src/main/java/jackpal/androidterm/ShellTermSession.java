@@ -16,6 +16,7 @@
 
 package jackpal.androidterm;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
@@ -39,6 +40,7 @@ public class ShellTermSession extends GenericTermSession {
     private int mProcId;
     private Thread mWatcherThread;
     private String mInitialCommand;
+    @SuppressLint("HandlerLeak")
     private Handler mMsgHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

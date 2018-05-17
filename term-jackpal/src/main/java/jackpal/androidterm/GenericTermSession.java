@@ -35,8 +35,6 @@ import jackpal.androidterm.util.TermSettings;
  * and the I/O streams used to talk to the process.
  */
 class GenericTermSession extends TermSession {
-    public static final int PROCESS_EXIT_FINISHES_SESSION = 0;
-    public static final int PROCESS_EXIT_DISPLAYS_MESSAGE = 1;
     //** Set to true to force into 80 x 24 for testing with vttest. */
     private static final boolean VTTEST_MODE = false;
     private static Field descriptorField;

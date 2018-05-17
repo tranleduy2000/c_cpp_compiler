@@ -120,6 +120,7 @@ public class InstallActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 mTxtMessage.append("Error: " + e.getMessage());
+                                openEditor();
                             }
                         });
                     }

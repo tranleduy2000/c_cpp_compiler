@@ -18,19 +18,7 @@ public class ShellTermSession extends TermSession {
     private FileDescriptor mFd;
     private Thread mWatcherThread;
 
-    /*
-        private Handler mMsgHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (!isRunning()) {
-                    return;
-                }
-                if (msg.what == PROCESS_EXITED) {
-                    onProcessExit((Integer) msg.obj);
-                }
-            }
-        };
-     */
+
     private Handler mMsgHandler;
 
     private UpdateCallback mUTF8ModeNotify = new UpdateCallback() {

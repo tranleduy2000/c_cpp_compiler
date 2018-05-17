@@ -1,4 +1,4 @@
-package com.pdaxrom.pkgmanager;
+package com.pdaxrom.packagemanager;
 
 import java.util.ArrayList;
 import java.util.List;

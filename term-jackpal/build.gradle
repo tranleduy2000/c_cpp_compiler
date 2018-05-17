@@ -21,9 +21,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
 }
 
 dependencies {
-    implementation project(':term-jackpal:emulatorview')
-    implementation project(':term-jackpal:libtermexec')
+    api project(':emulatorview')
+    api project(':libtermexec')
 }

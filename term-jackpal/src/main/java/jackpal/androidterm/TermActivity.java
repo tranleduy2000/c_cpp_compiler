@@ -19,7 +19,6 @@ package jackpal.androidterm;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,13 +31,10 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -80,7 +76,7 @@ import jackpal.androidterm.util.TermSettings;
  * A terminal emulator activity.
  */
 
-public class Term extends Activity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+public class TermActivity extends Activity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
     /**
@@ -94,12 +90,6 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
     private final static int SEND_FN_KEY_ID = 4;
     // Available on API 12 and later
     private static final int WIFI_MODE_FULL_HIGH_PERF = 3;
-    private static final String ACTION_PATH_BROADCAST = "jackpal.androidterm.broadcast.APPEND_TO_PATH";
-    private static final String ACTION_PATH_PREPEND_BROADCAST = "jackpal.androidterm.broadcast.PREPEND_TO_PATH";
-    private static final String PERMISSION_PATH_BROADCAST = "jackpal.androidterm.permission.APPEND_TO_PATH";
-    private static final String PERMISSION_PATH_PREPEND_BROADCAST = "jackpal.androidterm.permission.PREPEND_TO_PATH";
-    // Available on API 12 and later
-    private static final int FLAG_INCLUDE_STOPPED_PACKAGES = 0x20;
     /**
      * The ViewFlipper which holds the collection of EmulatorView widgets.
      */
@@ -110,11 +100,7 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
     private boolean mStopServiceOnFinish = false;
     private Intent TSIntent;
     private int onResumeSelectWindow = -1;
-    private ComponentName mPrivateAlias;
-    private PowerManager.WakeLock mWakeLock;
-    private WifiManager.WifiLock mWifiLock;
     private boolean mBackKeyPressed;
-    private int mPendingPathBroadcasts = 0;
     private TermService mTermService;
     private ActionBarCompat mActionBar;
     private int mActionBarMode = TermSettings.ACTION_BAR_MODE_NONE;
@@ -195,31 +181,13 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
             return true;
         }
     };
-    private BroadcastReceiver mPathReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String path = makePathFromBundle(getResultExtras(false));
-            if (intent.getAction().equals(ACTION_PATH_PREPEND_BROADCAST)) {
-                mSettings.setPrependPath(path);
-            } else {
-                mSettings.setAppendPath(path);
-            }
-            mPendingPathBroadcasts--;
-
-            if (mPendingPathBroadcasts <= 0 && mTermService != null) {
-                populateViewFlipper();
-                populateWindowList();
-            }
-        }
-    };
     private ServiceConnection mTSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             Log.i(TermDebug.LOG_TAG, "Bound to TermService");
             TermService.TSBinder binder = (TermService.TSBinder) service;
             mTermService = binder.getService();
-            if (mPendingPathBroadcasts <= 0) {
-                populateViewFlipper();
-                populateWindowList();
-            }
+            populateViewFlipper();
+            populateWindowList();
         }
 
         public void onServiceDisconnected(ComponentName arg0) {
@@ -247,26 +215,12 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
 
         Log.v(TermDebug.LOG_TAG, "onCreate");
 
-        mPrivateAlias = new ComponentName(this, RemoteInterface.PRIVACT_ACTIVITY_ALIAS);
-
         if (icicle == null)
             onNewIntent(getIntent());
 
         final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettings = new TermSettings(getResources(), mPrefs);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-
-        Intent broadcast = new Intent(ACTION_PATH_BROADCAST);
-        if (AndroidCompat.SDK >= 12) {
-            broadcast.addFlags(FLAG_INCLUDE_STOPPED_PACKAGES);
-        }
-        mPendingPathBroadcasts++;
-        sendOrderedBroadcast(broadcast, PERMISSION_PATH_BROADCAST, mPathReceiver, null, RESULT_OK, null, null);
-
-        broadcast = new Intent(broadcast);
-        broadcast.setAction(ACTION_PATH_PREPEND_BROADCAST);
-        mPendingPathBroadcasts++;
-        sendOrderedBroadcast(broadcast, PERMISSION_PATH_PREPEND_BROADCAST, mPathReceiver, null, RESULT_OK, null, null);
 
         TSIntent = new Intent(this, TermService.class);
         startService(TSIntent);
@@ -289,16 +243,7 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
         }
 
         setContentView(R.layout.term_activity);
-        mViewFlipper = (TermViewFlipper) findViewById(VIEW_FLIPPER);
-
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TermDebug.LOG_TAG);
-        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        int wifiLockMode = WifiManager.WIFI_MODE_FULL;
-        if (AndroidCompat.SDK >= 12) {
-            wifiLockMode = WIFI_MODE_FULL_HIGH_PERF;
-        }
-        mWifiLock = wm.createWifiLock(wifiLockMode, TermDebug.LOG_TAG);
+        mViewFlipper = findViewById(VIEW_FLIPPER);
 
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
         if (actionBar != null) {
@@ -410,12 +355,6 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
         }
         mTermService = null;
         mTSConnection = null;
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
-        }
-        if (mWifiLock.isHeld()) {
-            mWifiLock.release();
-        }
     }
 
     private void restart() {
@@ -599,16 +538,10 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
             Toast toast = Toast.makeText(this, R.string.reset_toast_notification, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-        } else if (id == R.id.menu_send_email) {
-            doEmailTranscript();
         } else if (id == R.id.menu_special_keys) {
             doDocumentKeys();
         } else if (id == R.id.menu_toggle_soft_keyboard) {
             doToggleSoftKeyboard();
-        } else if (id == R.id.menu_toggle_wakelock) {
-            doToggleWakeLock();
-        } else if (id == R.id.menu_toggle_wifilock) {
-            doToggleWifiLock();
         } else if (id == R.id.action_help) {
             Intent openHelp = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(getString(R.string.help_url)));
@@ -704,49 +637,6 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
         }
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
-            // Don't repeat action if intent comes from history
-            return;
-        }
-
-        String action = intent.getAction();
-        if (TextUtils.isEmpty(action) || !mPrivateAlias.equals(intent.getComponent())) {
-            return;
-        }
-
-        // huge number simply opens new window
-        // TODO: add a way to restrict max number of windows per caller (possibly via reusing BoundSession)
-        switch (action) {
-            case RemoteInterface.PRIVACT_OPEN_NEW_WINDOW:
-                onResumeSelectWindow = Integer.MAX_VALUE;
-                break;
-            case RemoteInterface.PRIVACT_SWITCH_WINDOW:
-                int target = intent.getIntExtra(RemoteInterface.PRIVEXTRA_TARGET_WINDOW, -1);
-                if (target >= 0) {
-                    onResumeSelectWindow = target;
-                }
-                break;
-        }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem wakeLockItem = menu.findItem(R.id.menu_toggle_wakelock);
-        MenuItem wifiLockItem = menu.findItem(R.id.menu_toggle_wifilock);
-        if (mWakeLock.isHeld()) {
-            wakeLockItem.setTitle(R.string.disable_wakelock);
-        } else {
-            wakeLockItem.setTitle(R.string.enable_wakelock);
-        }
-        if (mWifiLock.isHeld()) {
-            wifiLockItem.setTitle(R.string.disable_wifilock);
-        } else {
-            wifiLockItem.setTitle(R.string.enable_wifilock);
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -868,10 +758,7 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
     private boolean canPaste() {
         ClipboardManagerCompat clip = ClipboardManagerCompatFactory
                 .getManager(getApplicationContext());
-        if (clip.hasText()) {
-            return true;
-        }
-        return false;
+        return clip.hasText();
     }
 
     private void doPreferences() {
@@ -977,23 +864,6 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
 
     }
 
-    private void doToggleWakeLock() {
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
-        } else {
-            mWakeLock.acquire();
-        }
-        ActivityCompat.invalidateOptionsMenu(this);
-    }
-
-    private void doToggleWifiLock() {
-        if (mWifiLock.isHeld()) {
-            mWifiLock.release();
-        } else {
-            mWifiLock.acquire();
-        }
-        ActivityCompat.invalidateOptionsMenu(this);
-    }
 
     private void doToggleActionBar() {
         ActionBarCompat bar = mActionBar;
@@ -1058,13 +928,13 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView label = new TextView(Term.this);
+            TextView label = new TextView(TermActivity.this);
             String title = getSessionTitle(position, getString(R.string.window_title, position + 1));
             label.setText(title);
             if (AndroidCompat.SDK >= 13) {
-                label.setTextAppearance(Term.this, TextAppearance_Holo_Widget_ActionBar_Title);
+                label.setTextAppearance(TermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
             } else {
-                label.setTextAppearance(Term.this, android.R.style.TextAppearance_Medium);
+                label.setTextAppearance(TermActivity.this, android.R.style.TextAppearance_Medium);
             }
             return label;
         }

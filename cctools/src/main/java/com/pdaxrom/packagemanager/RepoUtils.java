@@ -1,4 +1,4 @@
-package com.pdaxrom.pkgmanager;
+package com.pdaxrom.packagemanager;
 
 import com.pdaxrom.utils.XMLParser;
 

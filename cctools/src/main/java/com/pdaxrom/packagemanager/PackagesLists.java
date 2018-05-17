@@ -1,4 +1,4 @@
-package com.pdaxrom.pkgmanager;
+package com.pdaxrom.packagemanager;
 
 import android.support.annotation.Nullable;
 
