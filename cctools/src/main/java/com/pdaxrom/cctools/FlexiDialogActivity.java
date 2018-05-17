@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.SelectionMode;
-import com.pdaxrom.utils.Utils;
 import com.pdaxrom.utils.XMLParser;
 
 import org.w3c.dom.Document;
@@ -28,10 +27,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -250,8 +246,6 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
 
     /**
      * Execute a shell command
-     *
-     * @param argv
      */
     protected void system(String[] argv) {
         system(argv, true);
@@ -259,40 +253,11 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
 
     /**
      * Execute a shell command
-     *
-     * @param argv
-     * @param waitForFinish
      */
-    protected void system(String[] argv, boolean waitForFinish) {
-        String cctoolsDir = toolchainDir + "/cctools";
-        String bootClassPath = getEnv(cctoolsDir, "BOOTCLASSPATH");
-        if (bootClassPath == null) {
-            bootClassPath = Utils.getBootClassPath();
-        }
-        if (bootClassPath == null) {
-            bootClassPath = "/system/framework/core.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar";
-        }
-        String[] envp = {
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
-                "ANDROID_ASSETS=/system/app",
-                "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
-                "ANDROID_PROPERTY_WORKSPACE=" + getEnv(cctoolsDir, "ANDROID_PROPERTY_WORKSPACE"),
-                "ANDROID_ROOT=/system",
-                "BOOTCLASSPATH=" + bootClassPath,
-                "CCTOOLSDIR=" + cctoolsDir,
-                "CCTOOLSRES=" + getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-                "HOME=" + cctoolsDir + "/home",
-                "SHELL=" + getShell(),
-                "TERM=xterm",
-                "PS1=$ ",
-                "SDDIR=" + sdHomeDir,
-                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
-        };
+    protected void system(String[] cmdarray, boolean waitForFinish) {
         try {
-            Process p = Runtime.getRuntime().exec(argv, envp);
+            String[] envp = EnvironmentPath.buildEnv(this);
+            Process p = Runtime.getRuntime().exec(cmdarray, envp);
             if (waitForFinish) {
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(p.getErrorStream()));
@@ -320,53 +285,6 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.e(TAG, "create cp.env " + e);
         }
-    }
-
-    protected String getEnv(String baseDir, String variable) {
-        String ret = null;
-        String[] envp = {
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + baseDir + "/bin:" + baseDir + "/sbin:"+System.getenv("PATH"),
-                "ANDROID_ASSETS=/system/app",
-                "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + baseDir + "/var/dalvik",
-                "ANDROID_ROOT=/system",
-                "CCTOOLSDIR=" + baseDir,
-                "CCTOOLSRES=" + getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + baseDir + "/lib",
-                "HOME=" + baseDir + "/home",
-                "SHELL=" + getShell(),
-                "TERM=xterm",
-                "PS1=$ ",
-                "SDDIR=" + sdHomeDir,
-                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
-        };
-        String[] argv = {"/system/bin/sh", "-c", "set"};
-        int[] pId = new int[1];
-        FileDescriptor fd = Utils.createSubProcess(baseDir, argv[0], argv, envp, pId);
-        FileInputStream fis = new FileInputStream(fd);
-        DataInputStream in = new DataInputStream(fis);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String line = "";
-        try {
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith(variable + "=")) {
-                    if (line.indexOf("=") != -1) {
-                        ret = line.substring(line.indexOf("=") + 1);
-                        break;
-                    }
-                }
-            }
-            in.close();
-            Utils.waitFor(pId[0]);
-        } catch (Exception e) {
-            Log.e(TAG, "exception " + e);
-        }
-        return ret;
-    }
-
-    protected String getShell() {
-        return "/system/bin/sh";
     }
 
     public class NamedView {

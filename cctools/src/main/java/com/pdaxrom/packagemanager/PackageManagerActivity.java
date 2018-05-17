@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import android.support.annotation.MainThread;
@@ -40,7 +39,6 @@ import com.pdaxrom.utils.Utils;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -496,105 +494,15 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private void system(String cmdline) {
-        String cctoolsDir = new File(mToolchainDir, "cctools").getAbsolutePath();
-        String javaBootClassPath = getEnv(cctoolsDir, "BOOTCLASSPATH");
-        if (javaBootClassPath == null) {
-            javaBootClassPath = Utils.getBootClassPath();
-        }
-
-        if (javaBootClassPath == null) {
-            javaBootClassPath = "/system/framework/core.jar:" +
-                    "/system/framework/ext.jar:/system/framework/framework.jar:" +
-                    "/system/framework/android.policy.jar:" +
-                    "/system/framework/services.jar";
-        }
-
-        final String[] envp = {
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
-                "ANDROID_ASSETS=/system/app",
-                "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
-                "ANDROID_PROPERTY_WORKSPACE=" + getEnv(cctoolsDir, "ANDROID_PROPERTY_WORKSPACE"),
-                "ANDROID_ROOT=/system",
-                "BOOTCLASSPATH=" + javaBootClassPath,
-                "CCTOOLSDIR=" + cctoolsDir,
-                "CCTOOLSRES=" + getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-                "HOME=" + EnvironmentPath.getHomeDir(this),
-                "SHELL=" + getShell(),
-                "TERM=xterm",
-                "PS1=$ ",
-                "SDDIR=" + mSdCardDir,
-                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
-        };
         try {
-            Log.i(TAG, "exec cmd " + cmdline + ", cctoolsdir " + cctoolsDir);
+            final String[] envp = EnvironmentPath.buildEnv(this);
+            Log.i(TAG, "exec cmd " + cmdline + ", cctoolsdir " + EnvironmentPath.getCCtoolsDir(this));
             Process p = Runtime.getRuntime().exec(cmdline, envp);
             p.waitFor();
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(TAG, "Exec exception " + e);
         }
-    }
-
-    private String getEnv(String cctoolsDir, String variable) {
-        String ret = null;
-        String[] envp = {
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
-                "ANDROID_ASSETS=/system/app",
-                "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
-                "ANDROID_ROOT=/system",
-                "CCTOOLSDIR=" + cctoolsDir,
-                "CCTOOLSRES=" + getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib",
-                "HOME=" + cctoolsDir + "/home",
-                "SHELL=" + getShell(),
-                "TERM=xterm",
-                "PS1=$ ",
-                "SDDIR=" + mSdCardDir,
-                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
-        };
-        String[] argv = {"/system/bin/sh", "-c", "set"};
-        int[] pId = new int[1];
-        FileDescriptor fd = Utils.createSubProcess(cctoolsDir, argv[0], argv, envp, pId);
-        FileInputStream fis = new FileInputStream(fd);
-        DataInputStream in = new DataInputStream(fis);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String line = "";
-        try {
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith(variable + "=")) {
-                    if (line.contains("=")) {
-                        ret = line.substring(line.indexOf("=") + 1);
-                        break;
-                    }
-                }
-            }
-            in.close();
-            Utils.waitFor(pId[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            Log.e(TAG, "exception " + e);
-        }
-        return ret;
-    }
-
-    private String getShell() {
-        String[] shellList = {
-                mToolchainDir + "/cctools/bin/bash",
-                mToolchainDir + "/cctools/bin/ash",
-        };
-
-        for (String shell : shellList) {
-            if ((new File(shell)).exists()) {
-                return shell;
-            }
-        }
-        return "/system/bin/sh";
     }
 
     @SuppressLint("StaticFieldLeak")

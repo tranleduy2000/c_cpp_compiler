@@ -89,11 +89,13 @@ public class BuildActivity extends Activity {
         if ((new File(runme_na)).exists()) {
             (new File(runme_na)).delete();
         }
-        DLog.w(TAG, "shell " + systemShell);
-        DLog.w(TAG, "filename " + mFileName);
-        DLog.w(TAG, "cctoolspath " + mCCToolsDir);
-        DLog.w(TAG, "workdir " + mWorkDir);
-        DLog.w(TAG, "tmpexedir " + mTmpExeDir);
+        DLog.d(TAG, "--------------------------------------");
+        DLog.d(TAG, "shell " + systemShell);
+        DLog.d(TAG, "filename " + mFileName);
+        DLog.d(TAG, "cctoolspath " + mCCToolsDir);
+        DLog.d(TAG, "workdir " + mWorkDir);
+        DLog.d(TAG, "tmpexedir " + mTmpExeDir);
+        DLog.d(TAG, "--------------------------------------");
 
         SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
         mLogView.setTextSize(Float.valueOf(mPrefs.getString("fontsize", "12")));
@@ -376,21 +378,22 @@ public class BuildActivity extends Activity {
         public void run() {
             try {
                 showProgress(true);
-                Log.i(TAG, "execute " + mCommand + "\n");
+                if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + mCommand);
+                String systemLdPath = System.getenv("LD_LIBRARY_PATH") != null ? ":" + System.getenv("LD_LIBRARY_PATH") : "";
                 final String[] envp = {
                         "PWD=" + mWorkDir,
                         "TMPDIR=" + mTmpDir,
                         "PATH=" + mCCToolsDir + "/bin:" + mCCToolsDir + "/sbin:" + System.getenv("PATH"),
                         "ANDROID_ASSETS=/system/app",
                         "ANDROID_BOOTLOGO=1",
-                        "ANDROID_DATA=" + mCCToolsDir + "/var/dalvik",
+                        "ANDROID_DATA=" + mCCToolsDir + "/var/dalvik:" + System.getenv("ANDROID_DATA"),
                         "ANDROID_ROOT=/system",
-                        "CCTOOLSDIR=" + getCacheDir().getParentFile().getAbsolutePath() + "/root" + "/cctools",
+                        "CCTOOLSDIR=" + EnvironmentPath.getCCtoolsDir(BuildActivity.this),
                         "CCTOOLSRES=" + getPackageResourcePath(),
-                        "LD_LIBRARY_PATH=" + mCCToolsDir + "/lib:/system/lib:/vendor/lib",
+                        "LD_LIBRARY_PATH=" + mCCToolsDir + "/lib" + systemLdPath,
                         "HOME=" + EnvironmentPath.getHomeDir(BuildActivity.this),
                         "TMPEXEDIR=" + mTmpExeDir,
-                        "PS1=''"
+                        "PS1=$ "
                 };
                 String shell = "/system/bin/sh";
                 shell = shell.replaceAll("\\s+", " ");
@@ -476,7 +479,7 @@ public class BuildActivity extends Activity {
                             } else {
                                 output(errstr + "\n");
                             }
-                            Log.i(TAG, errstr);
+                            if (DLog.DEBUG) DLog.d(TAG, "errstr = " + errstr);
                         } while (execThread.isAlive());
                         if (mExitCode != 0) {
                             output(getString(R.string.build_error) + " " + mExitCode + "\n");

@@ -70,6 +70,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import jackpal.androidterm.MultiTermActivity;
+
 public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.TabListener, OnSharedPreferenceChangeListener, CodeEditorInterface {
     public static final String SHARED_PREFS_NAME = "cctoolsSettings";
     private static final String SHARED_PREFS_FILES_EDITPOS = "FilesPosition";
@@ -926,16 +928,9 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void runTerminal() {
-        Intent myIntent = new Intent(this, TermActivity.class);
-        myIntent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + getShell());
-        myIntent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
-        String workDir = EnvironmentPath.getHomeDir(this);
-        String fileName = codeEditor.getFilePath();
-        if (fileName != null && (new File(fileName)).exists()) {
-            workDir = (new File(fileName)).getParentFile().getAbsolutePath();
-        }
-        myIntent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
-        startActivity(myIntent);
+        Intent intent = new Intent(this, MultiTermActivity.class);
+        intent.putExtra("envp", EnvironmentPath.buildEnv(this));
+        startActivity(intent);
     }
 
     private void newProject() {

@@ -191,29 +191,10 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     private Handler mHandler = new Handler();
 
     protected static TermSession createTermSession(Activity context, TermSettings settings, String initialCommand) throws IOException {
-        //custom shell
-        String cctoolsDir = context.getIntent().getStringExtra("cctoolsdir");
-        String homeDir = context.getIntent().getStringExtra("homedir");
-        String systemLDPath = System.getenv("LD_LIBRARY_PATH");
-        String[] envp = {
-                "TERM=" + settings.getTermType(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:" + System.getenv("PATH"),
-                "HOME=" + homeDir,
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "ANDROID_ASSETS=/system/app",
-                "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik:" + System.getenv("ANDROID_DATA"),
-                "ANDROID_ROOT=/system",
-                "CCTOOLSDIR=" + cctoolsDir,
-                "CCTOOLSRES=" + context.getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib" + (systemLDPath != null ? ":" + systemLDPath : ""),
-                "PS1=$"
-        };
-
+        String[] envp = context.getIntent().getStringArrayExtra("envp");
         GenericTermSession session = new ShellTermSession(settings, initialCommand, envp);
         // XXX We should really be able to fetch this from within TermSession
         session.setProcessExitMessage(context.getString(R.string.process_exit_message));
-
         return session;
     }
 

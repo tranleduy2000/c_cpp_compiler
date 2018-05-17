@@ -16,10 +16,23 @@
 
 package com.pdaxrom.packagemanager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
+import com.pdaxrom.utils.Utils;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import jackpal.androidterm.util.TermSettings;
 
 /**
  * Created by Duy on 16-May-18.
@@ -28,6 +41,7 @@ import java.io.File;
 public class EnvironmentPath {
     public static final String APPLICATION_DIR_NAME = "CCtools";
     public static final String INSTALLED_PACKAGE_DIR = "/installed/";
+    private static final String TAG = "EnvironmentPath";
 
     /**
      * Internal storage
@@ -70,7 +84,6 @@ public class EnvironmentPath {
         return mkdirIfNotExist(file);
     }
 
-
     /**
      * External storage
      */
@@ -93,7 +106,6 @@ public class EnvironmentPath {
         return mkdirIfNotExist(new File(getSdCardHomeDir(), "src"));
     }
 
-
     private static String mkdirIfNotExist(String path) {
         File file = new File(path);
         return mkdirIfNotExist(file);
@@ -106,4 +118,129 @@ public class EnvironmentPath {
         return file.getAbsolutePath();
     }
 
+    /**
+     * ANDROID_SOCKET_zygote=9
+     * EMULATED_STORAGE_SOURCE=/mnt/shell/emulated
+     * ANDROID_STORAGE=/storage
+     * ANDROID_BOOTLOGO=1
+     * EXTERNAL_STORAGE=/storage/emulated/legacy
+     * ANDROID_ASSETS=/system/app
+     * ASEC_MOUNTPOINT=/mnt/asec
+     * PATH=/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
+     * LOOP_MOUNTPOINT=/mnt/obb
+     * BOOTCLASSPATH=/system/framework/core.jar:/system/framework/conscrypt.jar:/system/framework/okhttp.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/mms-common.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/webviewchromium.jar
+     * EMULATED_STORAGE_TARGET=/storage/emulated
+     * ANDROID_DATA=/data
+     * ANDROID_PROPERTY_WORKSPACE=8,0
+     * ANDROID_ROOT=/system
+     * LD_LIBRARY_PATH=/vendor/lib:/system/lib
+     */
+    public static String[] buildEnv(Activity context) {
+        final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        TermSettings settings = new TermSettings(context.getResources(), mPrefs);
+
+        String cctoolsDir = getCCtoolsDir(context);
+        String bootClassPath = getEnv("BOOTCLASSPATH", null);
+        if (bootClassPath == null) {
+            bootClassPath = Utils.getBootClassPath();
+        }
+        if (bootClassPath == null) {
+            bootClassPath = "/system/framework/core.jar:" +
+                    "/system/framework/ext.jar:" +
+                    "/system/framework/framework.jar:" +
+                    "/system/framework/android.policy.jar:" +
+                    "/system/framework/services.jar";
+        }
+
+        return new String[]{
+                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
+                "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
+                "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
+                "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
+                "ANDROID_DATA=" + joinPath(cctoolsDir + "/var/dalvik", getEnv("ANDROID_DATA", null)),
+                "ANDROID_ROOT=" + getEnv("ANDROID_ROOT", "/system"),
+                "ANDROID_PROPERTY_WORKSPACE=" + getEnv(context, cctoolsDir, "ANDROID_PROPERTY_WORKSPACE"),
+
+                "BOOTCLASSPATH=" + bootClassPath,
+                "CCTOOLSDIR=" + cctoolsDir,
+                "CCTOOLSRES=" + context.getPackageResourcePath(),
+                "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
+                "HOME=" + getHomeDir(context),
+                "SHELL=" + getShell(),
+                "TERM=" + settings.getTermType(),
+                "PS1=$ ",
+                "SDDIR=" + getSdCardHomeDir(),
+                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
+        };
+    }
+
+    private static String getEnv(String name, String defValue) {
+        String value = System.getenv(name);
+        if (value != null) {
+            return value;
+        } else {
+            return defValue;
+        }
+    }
+
+    private static String joinPath(String... paths) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < paths.length; i++) {
+            String path = paths[i];
+            if (path != null && !path.isEmpty()) {
+                if (sb.length() != 0) {
+                    sb.append(File.pathSeparator);
+                }
+                sb.append(path);
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String getShell() {
+        return "/system/bin/sh";
+    }
+
+    protected static String getEnv(Activity context, String cctoolsDir, String variable) {
+        String ret = null;
+        String[] envp = {
+                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
+                "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
+                "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
+                "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
+                "ANDROID_DATA=" + joinPath(cctoolsDir + "/var/dalvik", getEnv("ANDROID_DATA", null)),
+                "ANDROID_ROOT=" + getEnv("ANDROID_ROOT", "/system"),
+                "CCTOOLSDIR=" + cctoolsDir,
+                "CCTOOLSRES=" + context.getPackageResourcePath(),
+                "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
+                "HOME=" + getHomeDir(context),
+                "SHELL=" + getShell(),
+                "TERM=xterm",
+                "PS1=$ ",
+                "SDDIR=" + getSdCardHomeDir(),
+                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
+        };
+        String[] argv = {"/system/bin/sh", "-c", "set"};
+        int[] pId = new int[1];
+        FileDescriptor fd = Utils.createSubProcess(cctoolsDir, argv[0], argv, envp, pId);
+        FileInputStream fis = new FileInputStream(fd);
+        DataInputStream in = new DataInputStream(fis);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith(variable + "=")) {
+                    if (line.contains("=")) {
+                        ret = line.substring(line.indexOf("=") + 1);
+                        break;
+                    }
+                }
+            }
+            in.close();
+            Utils.waitFor(pId[0]);
+        } catch (Exception e) {
+            Log.e(TAG, "exception " + e);
+        }
+        return ret;
+    }
 }

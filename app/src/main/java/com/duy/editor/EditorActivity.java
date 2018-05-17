@@ -78,8 +78,6 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
-import com.pdaxrom.cctools.BuildActivity;
-import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -448,16 +446,8 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void openTerminal() {
-        String workDir = EnvironmentPath.getHomeDir(this);
-        String fileName = getCurrentEditorDelegate().getPath();
-        if (fileName != null && new File(fileName).exists()) {
-            workDir = (new File(fileName)).getParentFile().getAbsolutePath();
-        }
-
         Intent intent = new Intent(this, MultiTermActivity.class);
-        intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
-        intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
-        intent.putExtra(BuildConstants.EXTRA_HOME_DIR, EnvironmentPath.getHomeDir(this));
+        intent.putExtra("envp", EnvironmentPath.buildEnv(this));
         startActivity(intent);
     }
 
@@ -507,15 +497,15 @@ public class EditorActivity extends FullScreenActivity
         compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
         CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-        //compileTask.execute();
+        compileTask.execute();
 
-        File file = srcFiles[0];
-        Intent intent = new Intent(this, BuildActivity.class);
-        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
-        intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
-        intent.putExtra(BuildConstants.EXTRA_TMP_DIR, EnvironmentPath.getSdCardTmpDir());
-        intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
-        startActivity(intent);
+//        File file = srcFiles[0];
+//        Intent intent = new Intent(this, BuildActivity.class);
+//        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
+//        intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
+//        intent.putExtra(BuildConstants.EXTRA_TMP_DIR, EnvironmentPath.getSdCardTmpDir());
+//        intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
+//        startActivity(intent);
     }
 
     @Override

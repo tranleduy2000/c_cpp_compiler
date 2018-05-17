@@ -1,5 +1,7 @@
 package com.pdaxrom.utils;
 
+import android.support.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -96,6 +98,7 @@ public class Utils {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    @Nullable
     public static String getBootClassPath() {
         String classPath = null;
         File dir = new File("/system/framework");
@@ -103,21 +106,15 @@ public class Utils {
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     String lowercaseName = name.toLowerCase();
-                    if (lowercaseName.endsWith(".jar")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return lowercaseName.endsWith(".jar");
                 }
             };
 
-            boolean first = true;
-
-            for (String file : dir.list(filter)) {
-                if (!first) {
+            String[] list = dir.list(filter);
+            for (int i = 0; i < list.length; i++) {
+                String file = list[i];
+                if (i != 0) {
                     classPath += ":";
-                } else {
-                    classPath = "";
                 }
                 classPath += "/system/framework/" + file;
             }
