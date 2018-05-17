@@ -21,9 +21,10 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.compilers.GCCConstants;
 import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
 import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.duy.ccppcompiler.console.ConsoleActivity;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;
@@ -63,7 +64,7 @@ public class CompileManager implements ICompileManager {
     }
 
     @Override
-    public void onCompileSuccess(ShellResult shellResult) {
+    public void onCompileSuccess(CompileResult compileResult) {
         finishCompile();
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
@@ -81,18 +82,18 @@ public class CompileManager implements ICompileManager {
     }
 
     @Override
-    public void onCompileFailed(ShellResult shellResult) {
+    public void onCompileFailed(CompileResult compileResult) {
         finishCompile();
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
         }
         Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();
-        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + shellResult.getMessage());
+        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + compileResult.getMessage());
 
         if (mDiagnosticPresenter != null) {
             DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
             OutputParser parser = new OutputParser(diagnosticsCollector);
-            parser.parse(shellResult.getMessage());
+            parser.parse(compileResult.getMessage());
             ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
             mDiagnosticPresenter.setDiagnostics(diagnostics);
             mDiagnosticPresenter.showView();

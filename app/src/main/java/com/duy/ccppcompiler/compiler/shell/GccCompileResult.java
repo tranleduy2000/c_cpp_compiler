@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ccppcompiler.compiler.shell;
 
-import android.support.annotation.WorkerThread;
-
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
-
-import java.io.File;
+import android.support.annotation.Nullable;
 
 /**
- * Created by Duy on 25-Apr-18.
+ * Created by Duy on 18-May-18.
  */
 
-public interface INativeCompiler {
-    @WorkerThread
-    ShellResult compile(File[] sourceFiles) ;
+public class GccCompileResult extends CompileResult {
+    private String binaryFile;
+
+    public GccCompileResult(int resultCode) {
+        super(resultCode);
+    }
+
+    public GccCompileResult(int resultCode, @Nullable String message) {
+        super(resultCode, message);
+    }
+
+    public String getBinaryFile() {
+        return binaryFile;
+    }
+
+    public void setBinaryFile(String binaryFile) {
+        this.binaryFile = binaryFile;
+    }
 }

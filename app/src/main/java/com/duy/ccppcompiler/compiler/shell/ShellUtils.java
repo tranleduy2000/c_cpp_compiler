@@ -40,33 +40,33 @@ public class ShellUtils {
     }
 
     public static boolean checkRootPermission() {
-        return execCommand(true, false).resultCode == 0;
+        return execCommand(true, false).getResultCode() == 0;
     }
 
-    public static ShellResult execCommand(String command) {
+    public static CompileResult execCommand(String command) {
         return execCommand(new String[]{command}, false, true);
     }
 
-    public static ShellResult execCommand(List<String> commands, boolean isRoot) {
+    public static CompileResult execCommand(List<String> commands, boolean isRoot) {
         return execCommand(commands == null ? null : commands.toArray(new String[]{}), isRoot, true);
     }
 
-    public static ShellResult execCommand(String[] commands, boolean isRoot) {
+    public static CompileResult execCommand(String[] commands, boolean isRoot) {
         return execCommand(commands, isRoot, true);
     }
 
-    private static ShellResult execCommand(boolean isRoot, boolean isNeedResultMsg) {
+    private static CompileResult execCommand(boolean isRoot, boolean isNeedResultMsg) {
         return execCommand(new String[]{"echo root"}, isRoot, isNeedResultMsg);
     }
 
-    public static ShellResult execCommand(List<String> commands, boolean isRoot, boolean isNeedResultMsg) {
+    public static CompileResult execCommand(List<String> commands, boolean isRoot, boolean isNeedResultMsg) {
         return execCommand(commands == null ? null : commands.toArray(new String[]{}), isRoot, isNeedResultMsg);
     }
 
-    private static ShellResult execCommand(String[] commands, boolean isRoot, boolean isNeedResultMsg) {
+    private static CompileResult execCommand(String[] commands, boolean isRoot, boolean isNeedResultMsg) {
         int result = -1;
         if (commands == null || commands.length == 0) {
-            return new ShellResult(result, null);
+            return new CompileResult(result, null);
         }
 
         Process process = null;
@@ -126,15 +126,15 @@ public class ShellUtils {
                 process.destroy();
             }
         }
-        return new ShellResult(result, msg == null ? null : msg.toString());
+        return new CompileResult(result, msg == null ? null : msg.toString());
     }
 
-    public static ShellResult execCommand(String command, List<String> args, Map<String, String> env) {
+    public static CompileResult execCommand(String command, List<String> args, Map<String, String> env) {
         if (DLog.DEBUG)
             DLog.d(TAG, "execCommand() called with: command = [" + command + "], args = [" + args + "], env = [" + env + "]");
         int result = -1;
         if (command == null || command.length() == 0) {
-            return new ShellResult(result, null);
+            return new CompileResult(result, null);
         }
         long timeStart = System.currentTimeMillis();
 
@@ -182,9 +182,9 @@ public class ShellUtils {
             }
         }
         long timeEnd = System.currentTimeMillis();
-        ShellResult shellResult = new ShellResult(result, message == null ? "" : message.toString());
-        shellResult.setTime(timeEnd - timeStart);
-        return shellResult;
+        CompileResult compileResult = new CompileResult(result, message == null ? "" : message.toString());
+        compileResult.setTime(timeEnd - timeStart);
+        return compileResult;
     }
 
 }

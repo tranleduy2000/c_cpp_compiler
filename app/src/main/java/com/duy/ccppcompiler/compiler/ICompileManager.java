@@ -18,7 +18,7 @@ package com.duy.ccppcompiler.compiler;
 
 import android.support.annotation.MainThread;
 
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -29,10 +29,10 @@ public interface ICompileManager {
     void onNewMessage(CharSequence charSequence);
 
     @MainThread
-    void onCompileSuccess(ShellResult shellResult);
+    void onCompileSuccess(CompileResult compileResult);
 
     @MainThread
-    void onCompileFailed(ShellResult shellResult);
+    void onCompileFailed(CompileResult compileResult);
 
     @MainThread
     void onPrepareCompile();

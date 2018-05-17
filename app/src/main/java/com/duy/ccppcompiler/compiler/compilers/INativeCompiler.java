@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.shell;
+package com.duy.ccppcompiler.compiler.compilers;
 
 import android.support.annotation.WorkerThread;
 
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
+
+import java.io.File;
+
 /**
- * Created by Duy on 17-May-18.
+ * Created by Duy on 25-Apr-18.
  */
 
-public class ExecUtils {
-
+public interface INativeCompiler {
     @WorkerThread
-    public CompileResult exec(String command) {
-        return null;
-    }
+    CompileResult compile(File[] sourceFiles) ;
 }

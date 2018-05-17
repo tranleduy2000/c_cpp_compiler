@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.utils.Utils;
@@ -43,8 +43,8 @@ public abstract class NativeCompilerImpl implements INativeCompiler {
     private int mExitCode;
 
     @NonNull
-    protected ShellResult execCommand(Context context, String mWorkDir, String mTmpDir,
-                                      @NonNull String mTmpExeDir, @NonNull String mCommand) {
+    protected CompileResult execCommand(Context context, String mWorkDir, String mTmpDir,
+                                        @NonNull String mTmpExeDir, @NonNull String mCommand) {
         if (DLog.DEBUG) DLog.d(TAG, "mWorkDir = " + mWorkDir);
         if (DLog.DEBUG) DLog.d(TAG, "mTmpDir = " + mTmpDir);
         if (DLog.DEBUG) DLog.d(TAG, "mTmpExeDir = " + mTmpExeDir);
@@ -109,16 +109,16 @@ public abstract class NativeCompilerImpl implements INativeCompiler {
                 outputStream.close();
                 processOut.close();
 
-                ShellResult shellResult = new ShellResult(mExitCode, message.toString());
+                CompileResult compileResult = new CompileResult(mExitCode, message.toString());
                 long time = System.currentTimeMillis() - startTime;
-                shellResult.setTime(time);
-                return shellResult;
+                compileResult.setTime(time);
+                return compileResult;
             }
         } catch (Exception ie) {
             ie.printStackTrace();
-            return new ShellResult(-1, ie.getMessage());
+            return new CompileResult(-1, ie.getMessage());
         }
-        return new ShellResult(-1, "");
+        return new CompileResult(-1, "");
     }
 
     public void destroy() {

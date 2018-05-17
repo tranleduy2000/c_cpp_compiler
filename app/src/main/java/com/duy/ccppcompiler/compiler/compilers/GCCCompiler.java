@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
 
+import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
     }
 
     @Override
-    public ShellResult compile(File[] sourceFiles) {
+    public CompileResult compile(File[] sourceFiles) {
         File fileToBeCompiled = sourceFiles[0];
         String command = buildCommand(sourceFiles);
         String mWorkDir = fileToBeCompiled.getParent();

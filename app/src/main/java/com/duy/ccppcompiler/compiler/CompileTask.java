@@ -20,7 +20,8 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.jecelyin.common.utils.DLog;
 
 import java.io.File;
@@ -29,7 +30,7 @@ import java.io.File;
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompileTask extends AsyncTask<Void, Void, ShellResult> {
+public class CompileTask extends AsyncTask<Void, Void, CompileResult> {
     private static final String TAG = "CompileTask";
     @NonNull
     private INativeCompiler mCompiler;
@@ -55,22 +56,22 @@ public class CompileTask extends AsyncTask<Void, Void, ShellResult> {
     }
 
     @Override
-    protected ShellResult doInBackground(Void... voids) {
+    protected CompileResult doInBackground(Void... voids) {
         return mCompiler.compile(mFiles);
     }
 
     @Override
-    protected void onPostExecute(ShellResult shellResult) {
-        super.onPostExecute(shellResult);
+    protected void onPostExecute(CompileResult compileResult) {
+        super.onPostExecute(compileResult);
         if (DLog.DEBUG)
-            DLog.d(TAG, "onPostExecute() called with: shellResult = [" + shellResult + "]");
+            DLog.d(TAG, "onPostExecute() called with: shellResult = [" + compileResult + "]");
         if (mCompileManager == null) {
             return;
         }
-        if (shellResult.getResultCode() == 0) {
-            mCompileManager.onCompileSuccess(shellResult);
+        if (compileResult.getResultCode() == 0) {
+            mCompileManager.onCompileSuccess(compileResult);
         } else {
-            mCompileManager.onCompileFailed(shellResult);
+            mCompileManager.onCompileFailed(compileResult);
         }
     }
 }

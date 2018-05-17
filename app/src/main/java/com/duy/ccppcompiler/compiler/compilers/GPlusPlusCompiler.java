@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
 
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 
@@ -40,7 +40,7 @@ public class GPlusPlusCompiler implements INativeCompiler {
     }
 
     @Override
-    public ShellResult compile(File[] sourceFiles) {
+    public CompileResult compile(File[] sourceFiles) {
         File internalDir = mContext.getFilesDir();
         File gccDir = new File(internalDir, "gcc");
 
