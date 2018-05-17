@@ -61,6 +61,8 @@ import java.util.List;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class FileListPagerFragment extends JecFragment implements SwipeRefreshLayout.OnRefreshListener, OnItemClickListener, FileExplorerView, ExplorerContext, SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String EXTRA_PATH = "path";
+
     private FileListItemAdapter adapter;
     private JecFile path;
     private FileExplorerFragmentBinding binding;
@@ -71,7 +73,7 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
     public static FileListPagerFragment newFragment(JecFile path) {
         FileListPagerFragment f = new FileListPagerFragment();
         Bundle b = new Bundle();
-        b.putParcelable("path", path);
+        b.putParcelable(EXTRA_PATH, path);
         f.setArguments(b);
         return f;
     }
@@ -79,13 +81,13 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        path = getArguments().getParcelable("path");
+        path = getArguments().getParcelable(EXTRA_PATH);
         binding = DataBindingUtil.inflate(inflater, R.layout.file_explorer_fragment, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         action = new FileExplorerAction(getContext(), this, ((FileExplorerActivity) getActivity()).getFileClipboard(), this);
         adapter = new FileListItemAdapter();
         adapter.setOnCheckedChangeListener(action);
