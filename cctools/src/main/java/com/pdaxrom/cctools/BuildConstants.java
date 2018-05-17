@@ -25,6 +25,7 @@ public class BuildConstants {
     @Deprecated
     public static final String EXTRA_CCTOOLS_DIR = "cctoolsdir";
     public static final String EXTRA_FILE_NAME = "filename";
+    @Deprecated
     public static final String EXTRA_TMP_DIR = "tmpdir";
     public static final String EXTRA_WORK_DIR = "workdir";
     public static final String EXTRA_HOME_DIR = "homedir";

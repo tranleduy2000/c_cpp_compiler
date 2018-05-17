@@ -20,6 +20,7 @@ import android.content.Context;
 
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.ShellResult;
+import com.pdaxrom.packagemanager.EnvironmentPath;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,20 +29,24 @@ import java.util.ArrayList;
  * Created by Duy on 25-Apr-18.
  */
 
-public class GCCCompiler implements INativeCompiler {
+public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
     private static final String TAG = "GCCCompiler";
     private Context mContext;
-    private ICompileSetting compileSetting;
+    private ICompileSetting mSetting;
 
     public GCCCompiler(Context context, ICompileSetting compileSetting) {
-        this.mContext = context;
+        mContext = context;
+        mSetting = compileSetting;
     }
 
     @Override
-    public ShellResult compile(File[] sourceFiles) {
+    public ShellResult compile(File[] sourceFiles) throws Exception {
+        File fileToBeCompiled = sourceFiles[0];
         String command = buildCommand(sourceFiles);
-
-        return null;
+        String mWorkDir = fileToBeCompiled.getParent();
+        String mTmpExeDir = EnvironmentPath.getTmpExeDir(mContext);
+        String mTmpDir = EnvironmentPath.getSdCardTmpDir();
+        return execCommand(mContext, mWorkDir, mTmpDir, mTmpExeDir, command);
     }
 
 
@@ -77,7 +82,7 @@ public class GCCCompiler implements INativeCompiler {
             builder.addFlags(sourceFile.getAbsolutePath());
         }
         String outFile = fileName.substring(0, fileName.lastIndexOf("."));
-        builder.addFlags(compileSetting.getCFlags());
+        builder.addFlags(mSetting.getCFlags());
         builder.addFlags("-o", outFile);
 
         builder.addFlags("-pie");

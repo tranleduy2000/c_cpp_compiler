@@ -653,7 +653,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
             Intent intent = new Intent(this, BuildActivity.class);
             intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
-            intent.putExtra(BuildConstants.EXTRA_TMP_DIR, EnvironmentPath.getSdCardTmpDir());
             intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force);
             startActivity(intent);
         }

@@ -56,7 +56,12 @@ public class CompileTask extends AsyncTask<Void, Void, ShellResult> {
 
     @Override
     protected ShellResult doInBackground(Void... voids) {
-        return mCompiler.compile(mFiles);
+        try {
+            return mCompiler.compile(mFiles);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

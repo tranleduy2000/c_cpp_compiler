@@ -68,8 +68,7 @@ public class BuildActivity extends AppCompatActivity {
         mWorkDir = new File(mFilePath).getParentFile().toString();
         mForceRun = false;
         mTmpExeDir = EnvironmentPath.getTmpExeDir(this);
-
-        mTmpDir = intent.getStringExtra(BuildConstants.EXTRA_TMP_DIR);
+        mTmpDir = EnvironmentPath.getSdCardTmpDir();
         runme_ca = mTmpDir + "/runme_ca";
         runme_na = mTmpDir + "/runme_na";
         deleteIfExist(new File(runme_ca));
