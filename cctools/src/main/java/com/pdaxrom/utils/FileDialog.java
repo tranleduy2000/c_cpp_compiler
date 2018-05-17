@@ -194,36 +194,36 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.home_folder:
-                if (currentPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-                    sdDirectory = currentPath;
+        int i = item.getItemId();
+        if (i == R.id.home_folder) {
+            if (currentPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
+                sdDirectory = currentPath;
+            }
+            if (!currentPath.startsWith(getCacheDir().getParentFile().getAbsolutePath())) {
+                getDir(homeDirectory);
+                if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
+                    selectedFile = new File(currentPath);
+                    mFileName.setText(selectedFile.getName());
+                    selectButton.setEnabled(true);
                 }
-                if (!currentPath.startsWith(getCacheDir().getParentFile().getAbsolutePath())) {
-                    getDir(homeDirectory);
-                    if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
-                        selectedFile = new File(currentPath);
-                        mFileName.setText(selectedFile.getName());
-                        selectButton.setEnabled(true);
-                    }
+            }
+
+        } else if (i == R.id.sd_folder) {
+            if (currentPath.startsWith(getCacheDir().getParentFile().getAbsolutePath())) {
+                homeDirectory = currentPath;
+            }
+            if (!currentPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
+                getDir(sdDirectory);
+                if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
+                    selectedFile = new File(currentPath);
+                    mFileName.setText(selectedFile.getName());
+                    selectButton.setEnabled(true);
                 }
-                break;
-            case R.id.sd_folder:
-                if (currentPath.startsWith(getCacheDir().getParentFile().getAbsolutePath())) {
-                    homeDirectory = currentPath;
-                }
-                if (!currentPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-                    getDir(sdDirectory);
-                    if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
-                        selectedFile = new File(currentPath);
-                        mFileName.setText(selectedFile.getName());
-                        selectButton.setEnabled(true);
-                    }
-                }
-                break;
-            case R.id.new_folder:
-                newDir();
-                break;
+            }
+
+        } else if (i == R.id.new_folder) {
+            newDir();
+
         }
         return true;
     }
@@ -487,26 +487,25 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
         }
 
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.file_delete:
-                    List<String> files = getSelectedFiles();
-                    if (files.size() > 0) {
-                        actionOp = item.getItemId();
-                        new ActionFiles().execute(files);
-                    }
-                    break;
-                case R.id.file_copy:
-                case R.id.file_cut:
-                    actionFiles = getSelectedFiles();
-                    if (actionFiles.size() > 0) {
-                        actionOp = item.getItemId();
-                    }
-                    break;
-                case R.id.file_paste:
-                    if (actionOp == R.id.file_copy || actionOp == R.id.file_cut) {
-                        new ActionFiles().execute(actionFiles);
-                    }
-                    break;
+            int i = item.getItemId();
+            if (i == R.id.file_delete) {
+                List<String> files = getSelectedFiles();
+                if (files.size() > 0) {
+                    actionOp = item.getItemId();
+                    new ActionFiles().execute(files);
+                }
+
+            } else if (i == R.id.file_copy || i == R.id.file_cut) {
+                actionFiles = getSelectedFiles();
+                if (actionFiles.size() > 0) {
+                    actionOp = item.getItemId();
+                }
+
+            } else if (i == R.id.file_paste) {
+                if (actionOp == R.id.file_copy || actionOp == R.id.file_cut) {
+                    new ActionFiles().execute(actionFiles);
+                }
+
             }
             mode.finish();
             return true;
@@ -545,16 +544,15 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
         protected void onProgressUpdate(String... value) {
             super.onProgressUpdate(value);
             String message = "";
-            switch (actionOp) {
-                case R.id.file_copy:
-                    message = getString(R.string.message_file_copy);
-                    break;
-                case R.id.file_cut:
-                    message = getString(R.string.message_file_move);
-                    break;
-                case R.id.file_delete:
-                    message = getString(R.string.message_file_delete);
-                    break;
+            if (actionOp == R.id.file_copy) {
+                message = getString(R.string.message_file_copy);
+
+            } else if (actionOp == R.id.file_cut) {
+                message = getString(R.string.message_file_move);
+
+            } else if (actionOp == R.id.file_delete) {
+                message = getString(R.string.message_file_delete);
+
             }
             progressDialog.setMessage(message + " " + (new File(value[0])).getName());
             progressDialog.setProgress(Integer.parseInt(value[1]));

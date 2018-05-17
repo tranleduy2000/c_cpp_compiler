@@ -6,10 +6,8 @@ import android.text.style.ForegroundColorSpan;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-//import android.util.Log;
 
 public class SyntaxHighLighting {
-//	private final static String TAG = "cctools-syntaxhighlighting";
 
     public final int COLOR_BLACK = 0xff000000;
     public final int COLOR_RED = 0xffff0000;

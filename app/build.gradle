@@ -54,9 +54,10 @@ dependencies {
     api project(':editor-view')
     api project(':terminal-emulator')
     api project(':terminal-view')
+    api project(':cctools')
 
-    implementation 'com.google.firebase:firebase-core:15.0.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
+    implementation 'com.google.firebase:firebase-core:15.0.2'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
 
     testImplementation 'org.jsoup:jsoup:1.11.2'
 }

@@ -191,14 +191,14 @@ public class PackageManagerActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_update:
-                fCheckedUpdatesAtStartup = false;
-                (new DownloadRepoTask()).execute(getReposList());
-                break;
-            case R.id.item_mirrors:
-                editReposList();
-                break;
+        int i = item.getItemId();
+        if (i == R.id.item_update) {
+            fCheckedUpdatesAtStartup = false;
+            (new DownloadRepoTask()).execute(getReposList());
+
+        } else if (i == R.id.item_mirrors) {
+            editReposList();
+
         }
         return true;
     }

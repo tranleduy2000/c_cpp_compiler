@@ -332,62 +332,60 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_new:
-                newFile();
-                break;
-            case R.id.item_open:
-                warnSaveDialog(WARN_SAVE_AND_LOAD);
-                break;
-            case R.id.item_save:
-                saveFile();
-                break;
-            case R.id.item_saveas:
-                saveAsFile();
-                break;
-            case R.id.item_close:
-                warnSaveDialog(WARN_SAVE_AND_CLOSE);
-                break;
-            case R.id.item_run:
-                warnSaveDialog(WARN_SAVE_AND_BUILD_FORCE);
-                break;
-            case R.id.item_build:
-                warnSaveDialog(WARN_SAVE_AND_BUILD);
-                break;
-            case R.id.item_buildlog:
-                showLog();
-                break;
-            case R.id.item_terminal:
-                runTerminal();
-                break;
-            case R.id.item_pkgmgr:
-                packageManager();
-                break;
-            case R.id.prefs:
-                startActivity(new Intent(this, Preferences.class));
-                break;
-            case R.id.about:
-                aboutDialog();
-                break;
-            case TEXT_GOTO:
-                gotoDialog();
-                break;
-            case TEXT_FIND:
-                searchDialog();
-                break;
-            case TEXT_UNDO:
-                codeEditor.undo();
-                break;
-            case TEXT_REDO:
-                codeEditor.redo();
-                break;
-            case R.id.project_new:
-                newProject();
-                break;
-            case R.id.project_open:
-                break;
-            case R.id.project_close:
-                break;
+        int i = item.getItemId();
+        if (i == R.id.item_new) {
+            newFile();
+
+        } else if (i == R.id.item_open) {
+            warnSaveDialog(WARN_SAVE_AND_LOAD);
+
+        } else if (i == R.id.item_save) {
+            saveFile();
+
+        } else if (i == R.id.item_saveas) {
+            saveAsFile();
+
+        } else if (i == R.id.item_close) {
+            warnSaveDialog(WARN_SAVE_AND_CLOSE);
+
+        } else if (i == R.id.item_run) {
+            warnSaveDialog(WARN_SAVE_AND_BUILD_FORCE);
+
+        } else if (i == R.id.item_build) {
+            warnSaveDialog(WARN_SAVE_AND_BUILD);
+
+        } else if (i == R.id.item_buildlog) {
+            showLog();
+
+        } else if (i == R.id.item_terminal) {
+            runTerminal();
+
+        } else if (i == R.id.item_pkgmgr) {
+            packageManager();
+
+        } else if (i == R.id.prefs) {
+            startActivity(new Intent(this, Preferences.class));
+
+        } else if (i == R.id.about) {
+            aboutDialog();
+
+        } else if (i == TEXT_GOTO) {
+            gotoDialog();
+
+        } else if (i == TEXT_FIND) {
+            searchDialog();
+
+        } else if (i == TEXT_UNDO) {
+            codeEditor.undo();
+
+        } else if (i == TEXT_REDO) {
+            codeEditor.redo();
+
+        } else if (i == R.id.project_new) {
+            newProject();
+
+        } else if (i == R.id.project_open) {
+        } else if (i == R.id.project_close) {
         }
         return true;
     }

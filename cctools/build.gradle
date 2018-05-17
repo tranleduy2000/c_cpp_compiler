@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -22,7 +22,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "com.pdaxrom.ctools"
+//        applicationId "com.pdaxrom.ctools"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
@@ -60,11 +60,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(':apkbuilder')
-    implementation project(':term-jackpal')
+    api project(':apkbuilder')
+    api project(':term-jackpal')
+    api project(':style')
 
-    implementation "com.android.support:appcompat-v7:$androidSupportVersion"
-    implementation "com.android.support:support-v4:$androidSupportVersion"
-    implementation "com.android.support:support-annotations:$androidSupportVersion"
-    implementation "com.android.support:design:$androidSupportVersion"
+    api "com.android.support:appcompat-v7:$androidSupportVersion"
+    api "com.android.support:support-v4:$androidSupportVersion"
+    api "com.android.support:support-annotations:$androidSupportVersion"
+    api "com.android.support:design:$androidSupportVersion"
 }
