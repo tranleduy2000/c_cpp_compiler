@@ -58,8 +58,8 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
 
         sdHomeDir = EnvironmentPath.getSdCardHomeDir();
         tmpDir = EnvironmentPath.getSdCardTmpDir();
-         EnvironmentPath.getSdCardBackupDir();
         toolchainDir = EnvironmentPath.getToolchainsDir(this);
+        EnvironmentPath.getSdCardBackupDir();
         EnvironmentPath.getDalvikCacheDir(context);
         EnvironmentPath.getInstalledPackageDir(context);
         updateClassPathEnv();

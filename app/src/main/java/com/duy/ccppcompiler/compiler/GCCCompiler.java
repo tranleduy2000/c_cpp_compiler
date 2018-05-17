@@ -33,11 +33,11 @@ import java.util.Map;
  * Created by Duy on 25-Apr-18.
  */
 
-public class GCC720Compiler implements INativeCompiler {
+public class GCCCompiler implements INativeCompiler {
     private static final String TAG = "GCCCompiler";
     private Context mContext;
 
-    public GCC720Compiler(Context context) {
+    public GCCCompiler(Context context) {
         this.mContext = context;
     }
 

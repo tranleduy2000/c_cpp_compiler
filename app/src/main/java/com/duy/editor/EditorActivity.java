@@ -77,6 +77,7 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
+import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -358,8 +359,7 @@ public class EditorActivity extends FullScreenActivity
                 createNewFile();
                 break;
             case R.id.action_open:
-                String path = SrcFileManager.getSourceDir(this).getPath();
-                FileExplorerActivity.startPickFileActivity(this, path, RC_OPEN_FILE);
+                FileExplorerActivity.startPickFileActivity(this, EnvironmentPath.getSdCardSourceDir(), RC_OPEN_FILE);
                 break;
             case R.id.m_goto_line:
                 new GotoLineDialog(this).show();
@@ -472,7 +472,7 @@ public class EditorActivity extends FullScreenActivity
         if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
             compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
         } else {
-            compileType = CompilerFactory.CompileType.GCC_810;
+            compileType = CompilerFactory.CompileType.GCC;
         }
         INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
         CompileManager compileManager = new CompileManager(EditorActivity.this);

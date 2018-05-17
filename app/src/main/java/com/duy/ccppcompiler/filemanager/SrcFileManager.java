@@ -30,11 +30,10 @@ public class SrcFileManager {
     public static File getSourceDir(Context context) {
         String appStoragePath = SysUtils.getAppStoragePath(context);
         File file = new File(appStoragePath, "src");
-        if (file.isDirectory()) {
-            if (file.mkdirs()) {
-                return file;
-            }
+        if (!file.exists()) {
+            file.mkdirs();
         }
-        return new File(context.getFilesDir(), "src");
+        return file;
+
     }
 }

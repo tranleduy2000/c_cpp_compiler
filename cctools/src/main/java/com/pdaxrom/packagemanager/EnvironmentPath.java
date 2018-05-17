@@ -58,12 +58,11 @@ public class EnvironmentPath {
     }
 
 
-
     /**
      * External storage
      */
     public static String getSdCardHomeDir() {
-        String path = Environment.getExternalStorageDirectory().getPath() + "/" + APPLICATION_DIR_NAME;
+        File path = new File(Environment.getExternalStorageDirectory().getPath(), APPLICATION_DIR_NAME);
         return mkdirIfNotExist(path);
     }
 
@@ -76,6 +75,11 @@ public class EnvironmentPath {
         String path = getSdCardHomeDir() + "/tmp";
         return mkdirIfNotExist(path);
     }
+
+    public static String getSdCardSourceDir() {
+        return mkdirIfNotExist(new File(getSdCardHomeDir(), "src"));
+    }
+
 
     private static String mkdirIfNotExist(String path) {
         File file = new File(path);
