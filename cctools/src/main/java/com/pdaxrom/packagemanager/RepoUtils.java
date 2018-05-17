@@ -1,5 +1,8 @@
 package com.pdaxrom.packagemanager;
 
+import android.support.annotation.NonNull;
+
+import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.XMLParser;
 
 import org.w3c.dom.Document;
@@ -42,12 +45,9 @@ public class RepoUtils {
         RepoUtils.ndkVersion = ndkVersion;
     }
 
-    public static List<PackageInfo> getRepoFromUrl(String url) {
-        return parseRepoXml(null, getRepoXmlFromUrl(url), url); // getting DOM element
-    }
-
+    @NonNull
     public static List<PackageInfo> getRepoFromUrl(List<String> urls) {
-        List<PackageInfo> list = null;
+        List<PackageInfo> list = new ArrayList<>();
         for (String url : urls) {
             url = url + "/" + buildAbi;
             list = parseRepoXml(list, getRepoXmlFromUrl(url), url); // getting DOM element
@@ -55,16 +55,9 @@ public class RepoUtils {
         return list;
     }
 
+    @NonNull
     public static List<PackageInfo> getRepoFromDir(String path) {
-        return parseRepoXml(null, getRepoXmlFromDir(path), path);
-    }
-
-    public static List<PackageInfo> getRepoFromDir(List<String> paths) {
-        List<PackageInfo> list = null;
-        for (String path : paths) {
-            list = parseRepoXml(list, getRepoXmlFromDir(path), path);
-        }
-        return list;
+        return parseRepoXml(new ArrayList<PackageInfo>(), getRepoXmlFromDir(path), path);
     }
 
     public static String getRepoXmlFromUrl(String url) {
@@ -82,11 +75,7 @@ public class RepoUtils {
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     String lowercaseName = name.toLowerCase();
-                    if (lowercaseName.endsWith(".pkgdesc")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return lowercaseName.endsWith(".pkgdesc");
                 }
             };
 
@@ -117,6 +106,8 @@ public class RepoUtils {
     }
 
     public static boolean isContainsPackage(List<PackageInfo> repo, String pkg) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "isContainsPackage() called with: repo = [" + repo + "], pkg = [" + pkg + "]");
         for (PackageInfo packageInfo : repo) {
             if (packageInfo.getName().equals(pkg)) {
                 return true;
