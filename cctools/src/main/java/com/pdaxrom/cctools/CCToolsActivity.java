@@ -122,7 +122,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_cctools);
 
 
         mPrefs = getSharedPreferences(SHARED_PREFS_NAME, 0);
@@ -364,7 +364,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
             packageManager();
 
         } else if (i == R.id.prefs) {
-            startActivity(new Intent(this, Preferences.class));
+            startActivity(new Intent(this, CCtoolsPreferences.class));
 
         } else if (i == R.id.about) {
             aboutDialog();

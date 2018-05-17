@@ -35,7 +35,7 @@ public class TermPreferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.cctools_preferences);
 
         // Remove the action bar pref on older platforms without an action bar
         if (AndroidCompat.SDK < 11) {

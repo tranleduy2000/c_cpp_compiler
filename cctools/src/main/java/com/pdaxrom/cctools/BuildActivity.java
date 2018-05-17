@@ -64,7 +64,7 @@ public class BuildActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.activity_build);
+        setContentView(R.layout.activity_cctools_build);
 
         systemShell = new String("SHELL=" + SYSTEM_SHELL);
         buildLog = findViewById(R.id.buildLog);

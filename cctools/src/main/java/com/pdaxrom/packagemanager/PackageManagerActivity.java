@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,6 +25,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.cctools.R;
 import com.pdaxrom.utils.Utils;
 
@@ -47,7 +47,7 @@ import java.util.List;
 import static com.pdaxrom.packagemanager.EnvironmentPath.INSTALLED_PACKAGE_DIR;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class PackageManagerActivity extends AppCompatActivity {
+public class PackageManagerActivity extends FullScreenActivity {
     public static final String EXTRA_CMD = "command";
     public static final String EXTRA_DATA = "data";
     public static final String EXTRA_RETURN = "return";
@@ -84,14 +84,12 @@ public class PackageManagerActivity extends AppCompatActivity {
     private String toolchainDir;
     private ProgressDialog progressDialog;
 
-    private int ndkVersion;
-    private int sdkVersion;
-    private String ndkArch;
+    private DownloadRepoTask mDownloadRepoTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package);
+        setContentView(R.layout.activity_package_manager);
 
         setupDirs();
         setupVersion();
@@ -115,12 +113,13 @@ public class PackageManagerActivity extends AppCompatActivity {
                 activityData = getIntent().getExtras().getString(EXTRA_DATA);
             }
 
-            (new DownloadRepoTask()).execute(getReposList());
-
+            mDownloadRepoTask = new DownloadRepoTask();
+            mDownloadRepoTask.execute(getReposList());
             return;
         } else {
             inputSearch = findViewById(R.id.inputSearch);
-            (new DownloadRepoTask()).execute(getReposList());
+            mDownloadRepoTask = new DownloadRepoTask();
+            mDownloadRepoTask.execute(getReposList());
         }
 
         // selecting single ListView item
@@ -232,9 +231,9 @@ public class PackageManagerActivity extends AppCompatActivity {
     }
 
     private void setupVersion() {
-        sdkVersion = Build.VERSION.SDK_INT;
-        ndkVersion = -1;
-        ndkArch = "all";
+        int sdkVersion = Build.VERSION.SDK_INT;
+        int ndkVersion;
+        String ndkArch;
         if (Build.CPU_ABI.startsWith("arm")) {
             ndkArch = "armel";
             if (SDK_2_NDK_ARM.length > sdkVersion) {
@@ -607,7 +606,7 @@ public class PackageManagerActivity extends AppCompatActivity {
         }
 
         @Override
-        protected List<PackageInfo> doInBackground(List<String>... params) {
+        protected List<PackageInfo> doInBackground(List<String>[] params) {
             packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + INSTALLED_PACKAGE_DIR));
             updateProgress(30);
             packagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
@@ -621,73 +620,75 @@ public class PackageManagerActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<PackageInfo> result) {
-            updateProgress(100);
-            if (packagesLists.getAvailablePackages() != null && activityCmd == null) {
-                Log.i(TAG, "Downloaded repo with " + packagesLists.getAvailablePackages().size() + " packages.");
-                showPackages(packagesLists.getAvailablePackages());
-            }
-            hideProgress();
-            if (packagesLists.getAvailablePackages() == null && activityCmd == null) {
-                showError(getString(R.string.pkg_repounavailable));
-                return;
-            }
-
-            if (activityCmd != null && activityCmd.equals(ACTION_INSTALL)) {
-                if (packagesLists.getAvailablePackages() != null) {
-                    (new PrepareToInstallTask()).execute(activityData);
-                } else {
-                    showError(getString(R.string.pkg_repounavailable) +
-                            "\n" +
-                            getString(R.string.pkg_packageforinstall) +
-                            activityData);
+            if (!isCancelled()) {
+                updateProgress(100);
+                if (packagesLists.getAvailablePackages() != null && activityCmd == null) {
+                    Log.i(TAG, "Downloaded repo with " + packagesLists.getAvailablePackages().size() + " packages.");
+                    showPackages(packagesLists.getAvailablePackages());
                 }
-                return;
-            }
+                hideProgress();
+                if (packagesLists.getAvailablePackages() == null && activityCmd == null) {
+                    showError(getString(R.string.pkg_repounavailable));
+                    return;
+                }
 
-            if (activityCmd != null && activityCmd.equals(ACTION_UNINSTALL)) {
-                (new UninstallPackagesTask()).execute(activityData);
-                return;
-            }
-
-            if (!fCheckedUpdatesAtStartup) {
-                fCheckedUpdatesAtStartup = true;
-                if (result != null) {
-                    final InstallPackageInfo updateInfo = new InstallPackageInfo();
-                    for (PackageInfo pkg : result) {
-                        updateInfo.addPackage(packagesLists, pkg.getName());
+                if (activityCmd != null && activityCmd.equals(ACTION_INSTALL)) {
+                    if (packagesLists.getAvailablePackages() != null) {
+                        (new PrepareToInstallTask()).execute(activityData);
+                    } else {
+                        showError(getString(R.string.pkg_repounavailable) +
+                                "\n" +
+                                getString(R.string.pkg_packageforinstall) +
+                                activityData);
                     }
-                    Log.i(TAG, "update list = " + updateInfo.getPackagesStrings());
-                    Builder dialog = new AlertDialog.Builder(context)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle(getString(R.string.pkg_selectedforupdate))
-                            .setMessage(getString(R.string.pkg_selectedforupdate1) + updateInfo.getPackagesStrings()
-                                    + "\n\n"
-                                    + getString(R.string.pkg_selected2)
-                                    + Utils.humanReadableByteCount(updateInfo.getDownloadSize(), false)
-                                    + "\u0020"
-                                    + getString(R.string.pkg_selected3)
-                                    + Utils.humanReadableByteCount(updateInfo.getInstallSize(), false))
-                            .setCancelable(false)
-                            .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
-                                        setResult(RESULT_CANCELED);
-                                        finish();
-                                    }
-                                }
-                            })
-                            .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Log.i(TAG, "Get install packages = " + updateInfo.getPackagesStrings());
-                                    (new InstallPackagesTask()).execute(updateInfo);
-                                }
-                            });
-                    dialog.show();
+                    return;
                 }
-            }
-            if (result == null && activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
-                setResult(RESULT_OK);
-                finish();
+
+                if (activityCmd != null && activityCmd.equals(ACTION_UNINSTALL)) {
+                    (new UninstallPackagesTask()).execute(activityData);
+                    return;
+                }
+
+                if (!fCheckedUpdatesAtStartup) {
+                    fCheckedUpdatesAtStartup = true;
+                    if (result != null) {
+                        final InstallPackageInfo updateInfo = new InstallPackageInfo();
+                        for (PackageInfo pkg : result) {
+                            updateInfo.addPackage(packagesLists, pkg.getName());
+                        }
+                        Log.i(TAG, "update list = " + updateInfo.getPackagesStrings());
+                        Builder dialog = new AlertDialog.Builder(context)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle(getString(R.string.pkg_selectedforupdate))
+                                .setMessage(getString(R.string.pkg_selectedforupdate1) + updateInfo.getPackagesStrings()
+                                        + "\n\n"
+                                        + getString(R.string.pkg_selected2)
+                                        + Utils.humanReadableByteCount(updateInfo.getDownloadSize(), false)
+                                        + "\u0020"
+                                        + getString(R.string.pkg_selected3)
+                                        + Utils.humanReadableByteCount(updateInfo.getInstallSize(), false))
+                                .setCancelable(false)
+                                .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
+                                            setResult(RESULT_CANCELED);
+                                            finish();
+                                        }
+                                    }
+                                })
+                                .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.i(TAG, "Get install packages = " + updateInfo.getPackagesStrings());
+                                        (new InstallPackagesTask()).execute(updateInfo);
+                                    }
+                                });
+                        dialog.show();
+                    }
+                }
+                if (result == null && activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
+                    setResult(RESULT_OK);
+                    finish();
+                }
             }
         }
     }

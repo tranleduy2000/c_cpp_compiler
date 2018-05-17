@@ -62,7 +62,7 @@ dependencies {
 
     api project(':apkbuilder')
     api project(':term-jackpal')
-    api project(':style')
+    api project(':editor-view')
 
     api "com.android.support:appcompat-v7:$androidSupportVersion"
     api "com.android.support:support-v4:$androidSupportVersion"

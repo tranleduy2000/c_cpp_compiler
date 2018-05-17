@@ -4,12 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class CCtoolsPreferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getPreferenceManager().setSharedPreferencesName(CCToolsActivity.SHARED_PREFS_NAME);
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.cctools_preferences);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
     }

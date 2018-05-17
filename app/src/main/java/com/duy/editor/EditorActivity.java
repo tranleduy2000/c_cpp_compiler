@@ -47,7 +47,6 @@ import com.duy.ccppcompiler.compiler.CompilerFactory;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.filemanager.SrcFileManager;
-import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.ui.dialogs.DialogNewFile;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.ide.compiler.CompileTask;
@@ -78,6 +77,7 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
+import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -118,7 +118,7 @@ public class EditorActivity extends FullScreenActivity
         mPreferences = Preferences.getInstance(this);
         MenuManager.init(this);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_cctools);
 
         mToolbar = findViewById(R.id.toolbar);
         mEditorPager = findViewById(R.id.view_pager);
