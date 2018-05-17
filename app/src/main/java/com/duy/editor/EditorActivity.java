@@ -41,6 +41,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerFactory;
@@ -359,8 +360,9 @@ public class EditorActivity extends FullScreenActivity
                 createNewFile();
                 break;
             case R.id.action_open:
-                String sdCardSourceDir = EnvironmentPath.getSdCardSourceDir();
-                FileExplorerActivity.startPickFileActivity(this, sdCardSourceDir, sdCardSourceDir, RC_OPEN_FILE);
+                String sourceDir = EnvironmentPath.getSdCardSourceDir();
+                String homeDir = BuildConfig.DEBUG ? EnvironmentPath.getToolchainsDir(this) : sourceDir;
+                FileExplorerActivity.startPickFileActivity(this, sourceDir, homeDir, RC_OPEN_FILE);
                 break;
             case R.id.m_goto_line:
                 new GotoLineDialog(this).show();

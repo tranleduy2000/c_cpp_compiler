@@ -49,7 +49,6 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
 
     private String toolchainDir;
     private String sdHomeDir;
-    private String tmpDir;
     private String serviceDir;
 
     @Override
@@ -57,21 +56,17 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         sdHomeDir = EnvironmentPath.getSdCardHomeDir();
-        tmpDir = EnvironmentPath.getSdCardTmpDir();
         toolchainDir = EnvironmentPath.getToolchainsDir(this);
+        serviceDir = EnvironmentPath.getServiceDir(this);
+        EnvironmentPath.getSdCardTmpDir();
         EnvironmentPath.getSdCardBackupDir();
         EnvironmentPath.getDalvikCacheDir(context);
         EnvironmentPath.getInstalledPackageDir(context);
         updateClassPathEnv();
-        serviceDir = EnvironmentPath.getServiceDir(this);
     }
 
     protected String getToolchainDir() {
         return toolchainDir;
-    }
-
-    protected String getTempDir() {
-        return tmpDir;
     }
 
     protected String getSDHomeDir() {

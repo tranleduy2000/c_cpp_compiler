@@ -70,9 +70,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.pdaxrom.cctools.BuildConstants.EXEC_FILE;
-import static com.pdaxrom.cctools.BuildConstants.TMP_DIR;
-
 public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.TabListener, OnSharedPreferenceChangeListener, CodeEditorInterface {
     public static final String SHARED_PREFS_NAME = "cctoolsSettings";
     private static final String SHARED_PREFS_FILES_EDITPOS = "FilesPosition";
@@ -384,8 +381,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         } else if (i == R.id.project_new) {
             newProject();
 
-        } else if (i == R.id.project_open) {
-        } else if (i == R.id.project_close) {
         }
         return true;
     }
@@ -472,7 +467,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         }
         for (int i = 0; i < flipper.getChildCount(); i++) {
             CodeEditor ce = flipper.getChildAt(i).findViewById(R.id.codeEditor);
-            String fileName = ce.getFileName();
+            String fileName = ce.getFilePath();
             if (fileName == null) {
                 fileName = "";
             } else {
@@ -486,7 +481,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     private boolean findAndShowEditorTab(String filename) {
         for (int i = 0; i < flipper.getChildCount(); i++) {
             CodeEditor e = flipper.getChildAt(i).findViewById(R.id.codeEditor);
-            String name = e.getFileName();
+            String name = e.getFilePath();
             if (name != null && name.equals(filename)) {
                 getSupportActionBar().setSelectedNavigationItem(i);
                 return true;
@@ -536,7 +531,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     private void loadFile() {
         Intent intent = new Intent(getBaseContext(), FileDialog.class);
         String dir = getLastOpenedDir();
-        String fileName = codeEditor.getFileName();
+        String fileName = codeEditor.getFilePath();
         if (fileName != null && new File(fileName).getParentFile().exists()) {
             dir = (new File(fileName)).getParent();
         }
@@ -550,7 +545,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void saveFile() {
-        String fileName = codeEditor.getFileName();
+        String fileName = codeEditor.getFilePath();
         if (fileName == null || fileName.equals("")) {
             String dir = getLastOpenedDir();
             if (fileName != null && new File(dir).getParentFile().exists()) {
@@ -581,7 +576,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     private void saveAsFile() {
         Intent intent = new Intent(getBaseContext(), FileDialog.class);
         String dir = getLastOpenedDir();
-        String fileName = codeEditor.getFileName();
+        String fileName = codeEditor.getFilePath();
         if (fileName != null && new File(fileName).getParentFile().exists()) {
             dir = (new File(fileName)).getParent();
         }
@@ -596,82 +591,72 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     private void saveFileEditPos(CodeEditor ce) {
         SharedPreferences settings = getSharedPreferences(SHARED_PREFS_FILES_EDITPOS, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(ce.getFileName(), ce.getSelectionStart());
+        editor.putInt(ce.getFilePath(), ce.getSelectionStart());
         editor.apply();
     }
 
     private void loadFileEditPos(CodeEditor ce) {
         SharedPreferences settings = getSharedPreferences(SHARED_PREFS_FILES_EDITPOS, 0);
-        if (ce.getText().toString().length() >= settings.getInt(ce.getFileName(), 0)) {
-            ce.setSelection(settings.getInt(ce.getFileName(), 0));
+        if (ce.getText().toString().length() >= settings.getInt(ce.getFilePath(), 0)) {
+            ce.setSelection(settings.getInt(ce.getFilePath(), 0));
         }
     }
 
     private void build(boolean force) {
-        if (codeEditor.getFileName() == null || codeEditor.getFileName().equals("")) {
+        if (codeEditor.getFilePath() == null || codeEditor.getFilePath().equals("")) {
             buildAfterLoad = true;
             forceTmpVal = force;
             loadFile();
-        } else
+        } else {
             buildFile(force);
+        }
     }
 
     private void buildFile(boolean force) {
-        String fileName = codeEditor.getFileName();
-        Log.i(TAG, "build activity " + fileName);
-        if ((new File(fileName)).exists()) {
-            buildBaseDir = (new File(fileName)).getParentFile().getAbsolutePath();
-            String infile = (new File(fileName)).getName();
-            if (infile.lastIndexOf(".") != -1) {
-                String ext = infile.substring(infile.lastIndexOf("."));
+        File file = new File(codeEditor.getFilePath());
+        Log.i(TAG, "build activity " + file);
+        if (file.exists()) {
+            buildBaseDir = file.getParentFile().getAbsolutePath();
+            String fileName = file.getName();
+            SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
+
+            if (fileName.lastIndexOf(".") != -1) {
+                String ext = fileName.substring(fileName.lastIndexOf("."));
                 if (ext.contentEquals(".sh")) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
-                    intent.putExtra(EXEC_FILE, fileName);
-                    intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
-                    SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
-                    if (force) {
-                        intent.putExtra("force", mPrefs.getBoolean("force_run", false));
-                    } else {
-                        intent.putExtra("force", false);
-                    }
+                    intent.putExtra(BuildConstants.EXTRA_EXEC_FILE, file.getAbsoluteFile());
+                    intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
+                    intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force && mPrefs.getBoolean("force_run", false));
                     startActivity(intent);
                     return;
                 }
-                if (ext.contentEquals(".lua") && (new File(getToolchainDir() + "/cctools/bin/luajit")).exists()) {
+
+                if (ext.contentEquals(".lua") && new File(getToolchainDir(), "cctools/bin/luajit").exists()) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
-                    intent.putExtra(EXEC_FILE, getToolchainDir() + "/cctools/bin/luajit " + fileName);
-                    intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
-                    intent.putExtra(BuildConstants.WORK_DIR, (new File(fileName)).getParentFile().getAbsolutePath());
-                    SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
-                    if (force) {
-                        intent.putExtra("force", mPrefs.getBoolean("force_run", true));
-                    } else {
-                        intent.putExtra("force", false);
-                    }
+                    intent.putExtra(BuildConstants.EXTRA_EXEC_FILE, getToolchainDir() + "/cctools/bin/luajit " + file.getAbsoluteFile());
+                    intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
+                    intent.putExtra(BuildConstants.EXTRA_WORK_DIR, file.getParentFile().getAbsolutePath());
+                    intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force && mPrefs.getBoolean("force_run", false));
                     startActivity(intent);
                     return;
                 }
-                if ((ext.equals(".pl") || ext.equals(".pm")) &&
-                        (new File(getToolchainDir() + "/cctools/bin/perl")).exists()) {
+
+                if ((ext.equals(".pl") || ext.equals(".pm")) && new File(getToolchainDir() + "/cctools/bin/perl").exists()) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
-                    intent.putExtra(EXEC_FILE, getToolchainDir() + "/cctools/bin/perl " + fileName);
-                    intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
-                    intent.putExtra(BuildConstants.WORK_DIR, (new File(fileName)).getParentFile().getAbsolutePath());
-                    SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
-                    if (force) {
-                        intent.putExtra("force", mPrefs.getBoolean("force_run", true));
-                    } else {
-                        intent.putExtra("force", false);
-                    }
+                    intent.putExtra(BuildConstants.EXTRA_EXEC_FILE, getToolchainDir() + "/cctools/bin/perl " + file.getAbsoluteFile());
+                    intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
+                    intent.putExtra(BuildConstants.EXTRA_WORK_DIR, file.getParentFile().getAbsolutePath());
+                    intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force && mPrefs.getBoolean("force_run", false));
                     startActivity(intent);
                     return;
                 }
             }
-            Intent intent = new Intent(CCToolsActivity.this, BuildActivity.class);
-            intent.putExtra(BuildConstants.FILE_NAME, fileName);
-            intent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
-            intent.putExtra(TMP_DIR, getTempDir());
-            intent.putExtra("force", force);
+
+            Intent intent = new Intent(this, BuildActivity.class);
+            intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsoluteFile());
+            intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
+            intent.putExtra(BuildConstants.EXTRA_TMP_DIR, EnvironmentPath.getSdCardTmpDir());
+            intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force);
             startActivity(intent);
         }
     }
@@ -720,7 +705,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                     name = buildBaseDir + "/" + name;
                 }
 
-                if (!(new File(codeEditor.getFileName())).getAbsolutePath().contentEquals((new File(name)).getAbsolutePath())) {
+                if (!(new File(codeEditor.getFilePath())).getAbsolutePath().contentEquals((new File(name)).getAbsolutePath())) {
                     alertDialog.cancel();
                     showFileName = name;
                     showFileLine = line;
@@ -942,14 +927,14 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
     private void runTerminal() {
         Intent myIntent = new Intent(this, TermActivity.class);
-        myIntent.putExtra(BuildConstants.FILE_NAME, "-" + getShell());
-        myIntent.putExtra(BuildConstants.CCTOOLS_DIR, getToolchainDir() + "/cctools");
+        myIntent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + getShell());
+        myIntent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
         String workDir = EnvironmentPath.getHomeDir(this);
-        String fileName = codeEditor.getFileName();
+        String fileName = codeEditor.getFilePath();
         if (fileName != null && (new File(fileName)).exists()) {
             workDir = (new File(fileName)).getParentFile().getAbsolutePath();
         }
-        myIntent.putExtra(BuildConstants.WORK_DIR, workDir);
+        myIntent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
         startActivity(myIntent);
     }
 

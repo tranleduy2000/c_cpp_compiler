@@ -21,9 +21,10 @@ package com.pdaxrom.cctools;
  */
 
 public class BuildConstants {
-    public static final String EXEC_FILE = "executable_file";
-    public static final String CCTOOLS_DIR = "cctoolsdir";
-    public static final String FILE_NAME = "filename";
-    public static final String TMP_DIR = "tmpdir";
-    public static final String WORK_DIR = "workdir";
+    public static final String EXTRA_EXEC_FILE = "executable_file";
+    public static final String EXTRA_CCTOOLS_DIR = "cctoolsdir";
+    public static final String EXTRA_FILE_NAME = "filename";
+    public static final String EXTRA_TMP_DIR = "tmpdir";
+    public static final String EXTRA_WORK_DIR = "workdir";
+    public static final String EXTRA_FORCE_BUILD = "force";
 }

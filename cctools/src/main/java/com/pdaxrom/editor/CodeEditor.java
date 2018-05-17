@@ -497,7 +497,7 @@ public class CodeEditor extends EditText {
         return false;
     }
 
-    public String getFileName() {
+    public String getFilePath() {
         return m_FileName;
     }
 

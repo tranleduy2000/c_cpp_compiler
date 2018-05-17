@@ -33,7 +33,12 @@ public class EnvironmentPath {
      * Internal storage
      */
     public static String getToolchainsDir(Context context) {
-        String path = new File(context.getCacheDir().getParentFile(), "root").getPath();
+        File path = new File(context.getCacheDir().getParentFile(), "root");
+        return mkdirIfNotExist(path);
+    }
+
+    public static String getCCtoolsDir(Context c) {
+        File path = new File(getToolchainsDir(c), "cctools");
         return mkdirIfNotExist(path);
     }
 

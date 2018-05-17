@@ -39,7 +39,6 @@ public class BuildActivity extends Activity {
     private static final String PREFS_NAME = "GCCArgsFile";
     private static final String SYSTEM_SHELL = "/system/bin/sh";
     public static ArrayList<LogItem> errorsList = new ArrayList<LogItem>();
-    private String systemShell;
     private TextView buildLog;
     private String fileName;
     private String cctoolsDir;
@@ -62,19 +61,20 @@ public class BuildActivity extends Activity {
     private String runme_na;
     private Handler handler = new Handler();
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_cctools_build);
 
-        systemShell = new String("SHELL=" + SYSTEM_SHELL);
+        String systemShell = "SHELL=" + SYSTEM_SHELL;
         buildLog = findViewById(R.id.buildLog);
         cmdThread = (Thread) getLastNonConfigurationInstance();
-        fileName = getIntent().getExtras().getString("filename");
-        cctoolsDir = getIntent().getExtras().getString("cctoolsdir");
+        fileName = getIntent().getExtras().getString(BuildConstants.EXTRA_FILE_NAME);
+        cctoolsDir = getIntent().getExtras().getString(BuildConstants.EXTRA_CCTOOLS_DIR);
         workDir = (new File(fileName)).getParentFile().toString();
-        tmpDir = getIntent().getExtras().getString("tmpdir");
-        forceBuild = getIntent().getExtras().getBoolean("force", false);
+        tmpDir = getIntent().getExtras().getString(BuildConstants.EXTRA_TMP_DIR);
+        forceBuild = getIntent().getExtras().getBoolean(BuildConstants.EXTRA_FORCE_BUILD, false);
         forceRun = false;
         tmpExeDir = getCacheDir().getParentFile().getAbsolutePath() + "/root" + "/tmp";
         if (!(new File(tmpExeDir)).exists()) {
@@ -103,11 +103,12 @@ public class BuildActivity extends Activity {
 
         showTitle(getString(R.string.buildwindow_name) + " - " + fileName);
 
-        String infile = (new File(fileName)).getName();
+        String infile = new File(fileName).getName();
         if (infile.contentEquals("Makefile") || infile.contentEquals("makefile")) {
-            cmdline = "make" + " " + systemShell;
+            cmdline = "make " + systemShell;
             argsDialog(getString(R.string.make_title), getString(R.string.make_args));
             return;
+
         } else {
             int dotPos = infile.lastIndexOf(".");
             if (dotPos != -1) {
@@ -116,36 +117,35 @@ public class BuildActivity extends Activity {
                 String ext = infile.substring(dotPos);
                 outFile = infile.substring(0, dotPos);
                 Log.i(TAG, "extension [" + ext + "]");
+
                 if (ext.contentEquals(".mk") || ext.contentEquals(".mak")) {
                     cmdline = "make -f " + infile + " " + systemShell;
                     argsDialog(getString(R.string.make_title), getString(R.string.make_args));
                     return;
-                } else if (ext.contentEquals(".c") || ext.contentEquals(".s") ||
-                        ext.endsWith(".m")) {
+
+                } else if (ext.contentEquals(".c") || ext.contentEquals(".s") || ext.endsWith(".m")) {
                     cmdline = "gcc " + infile;
                     if (forceBuild) {
                         cmdline += " " + mPrefs.getString("force_ccopts", "");
                     }
-                } else if (ext.contentEquals(".c++") || ext.contentEquals(".cpp") ||
-                        ext.endsWith(".mm")) {
+
+                } else if (ext.contentEquals(".c++") || ext.contentEquals(".cpp") || ext.endsWith(".mm")) {
                     cmdline = "g++ " + infile;
                     if (forceBuild) {
                         cmdline += " " + mPrefs.getString("force_cxxopts", "");
                     }
+
                 } else if ((ext.contentEquals(".f") || ext.contentEquals(".f90") ||
                         ext.contentEquals(".f95") || ext.contentEquals(".f03")) &&
-                        (new File(cctoolsDir + "/bin/f77")).exists()) {
+                        new File(cctoolsDir, "/bin/f77").exists()) {
                     cmdline = "f77 " + infile;
                     if (forceBuild) {
                         cmdline += " " + mPrefs.getString("force_ccopts", "");
                     }
-                } else if ((new File(cctoolsDir + "/bin/javac")).exists() &&
-                        ext.contentEquals(".java")) {
+
+                } else if (ext.contentEquals(".java") && (new File(cctoolsDir,"bin/javac")).exists()) {
                     cmdline = "javac-single " + outFile;
                     execJava = true;
-//            		if (forceBuild) {
-//            			cmdline += " " + mPrefs.getString("force_ccopts", "");
-//            		}
                 }
 
                 if (ext.equals(".m") || ext.equals(".mm")) {
@@ -373,6 +373,7 @@ public class BuildActivity extends Activity {
     }
 
     public class MyThread extends Thread {
+        @Override
         public void run() {
             try {
                 show_progress(true);
@@ -528,12 +529,12 @@ public class BuildActivity extends Activity {
                 } else {
                     Intent i = new Intent(BuildActivity.this, LauncherConsoleActivity.class);
                     if (execJava) {
-                        i.putExtra("executable_file", cctoolsDir + "/bin/java -cp " + workDir + "/" + outFile + " " + javaClass);
+                        i.putExtra(BuildConstants.EXTRA_EXEC_FILE, cctoolsDir + "/bin/java -cp " + workDir + "/" + outFile + " " + javaClass);
                     } else {
-                        i.putExtra("executable_file", workDir + "/" + outFile);
+                        i.putExtra(BuildConstants.EXTRA_EXEC_FILE, workDir + "/" + outFile);
                     }
-                    i.putExtra("cctoolsdir", cctoolsDir);
-                    i.putExtra("force", forceRun);
+                    i.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, cctoolsDir);
+                    i.putExtra(BuildConstants.EXTRA_FORCE_BUILD, forceRun);
                     startActivity(i);
                 }
             }
