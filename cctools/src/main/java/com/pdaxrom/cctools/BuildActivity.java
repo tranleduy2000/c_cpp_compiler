@@ -237,12 +237,7 @@ public class BuildActivity extends AppCompatActivity {
         public void run() {
             try {
                 showProgress(true);
-                String[] workingEnv = {
-                        "PWD=" + mWorkDir,
-                        "TMPDIR=" + mTmpDir,
-                        "TEMP=" + mTmpDir,
-                        "TMPEXEDIR=" + mTmpExeDir,
-                };
+                String[] workingEnv = {"PWD=" + mWorkDir, "TMPDIR=" + mTmpDir, "TEMP=" + mTmpDir, "TMPEXEDIR=" + mTmpExeDir,};
                 String[] defaultEnv = EnvironmentPath.buildEnv(context);
                 workingEnv = EnvironmentPath.join(workingEnv, defaultEnv);
 
@@ -318,9 +313,9 @@ public class BuildActivity extends AppCompatActivity {
 
             if (mRunExe && (new File(mWorkDir + "/" + mOutFile).exists()) && mExitCode == 0) {
                 if (mBuildNativeActivity) {
-                    Intent i = new Intent(BuildActivity.this, LauncherNativeActivity.class);
-                    i.putExtra("activity_file", mWorkDir + "/" + mOutFile);
-                    startActivity(i);
+                    Intent intent = new Intent(BuildActivity.this, LauncherNativeActivity.class);
+                    intent.putExtra("activity_file", mWorkDir + "/" + mOutFile);
+                    startActivity(intent);
                 } else {
                     Intent intent = new Intent(BuildActivity.this, LauncherConsoleActivity.class);
                     if (mExecJava) {

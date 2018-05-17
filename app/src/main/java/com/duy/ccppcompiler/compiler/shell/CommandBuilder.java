@@ -16,6 +16,8 @@
 
 package com.duy.ccppcompiler.compiler.shell;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,14 +42,17 @@ public class CommandBuilder {
         this.flags.addAll(flags);
     }
 
+    @NonNull
     public String buildCommand() {
         StringBuilder sb = new StringBuilder();
         sb.append(exec).append(" ");
         for (int i = 0; i < flags.size(); i++) {
             String flag = flags.get(i);
-            sb.append(flag);
-            if (i != flags.size() - 1) {
-                sb.append(" ");
+            if (flag != null && !flag.isEmpty()) {
+                sb.append(flag);
+                if (i != flags.size() - 1) {
+                    sb.append(" ");
+                }
             }
         }
         return sb.toString();

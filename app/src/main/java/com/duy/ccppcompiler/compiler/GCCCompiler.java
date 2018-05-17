@@ -23,7 +23,6 @@ import com.duy.ccppcompiler.compiler.shell.ShellResult;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -40,7 +39,7 @@ public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
     }
 
     @Override
-    public ShellResult compile(File[] sourceFiles) throws Exception {
+    public ShellResult compile(File[] sourceFiles) {
         File fileToBeCompiled = sourceFiles[0];
         String command = buildCommand(sourceFiles);
         String mWorkDir = fileToBeCompiled.getParent();
@@ -50,28 +49,6 @@ public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
     }
 
 
-    private ArrayList<String> getCompileOutputFlags() {
-        ArrayList<String> flags = new ArrayList<>();
-        // Emit fix-it hints in a machine-parseable format, suitable for consumption by IDEs.
-        // For each fix-it, a line will be printed after the relevant diagnostic, starting with the
-        // string “fix-it:”. For example:
-        // fix-it:"test.c":{45:3-45:21}:"gtk_widget_show_all"
-        flags.add("-fdiagnostics-parseable-fixits");
-
-        // By default, each diagnostic emitted includes text indicating the command-line option that
-        // directly controls the diagnostic (if such an option is known to the diagnostic machinery).
-        // Specifying the -fno-diagnostics-show-option flag suppresses that behavior.
-        flags.add("-fno-diagnostics-show-option");
-
-        // By default, each diagnostic emitted includes the original source line and a caret ‘^’
-        // indicating the column. This option suppresses this information. The source line is
-        // truncated to n characters, if the -fmessage-length=n option is given. When the output is
-        // done to the terminal, the width is limited to the width given by the COLUMNS environment
-        // variable or, if not set, to the terminal width.
-        flags.add("-fno-diagnostics-show-caret");
-
-        return flags;
-    }
 
     private String buildCommand(File[] sourceFiles) {
         File file = sourceFiles[0];
@@ -91,10 +68,26 @@ public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
         builder.addFlags("-ldl");
         builder.addFlags("-lm");//math
         builder.addFlags("-llog");
-        builder.addFlags("-lncurses");
+        //builder.addFlags("-lncurses");
         builder.addFlags("-Og");
 
-        builder.addFlags(getCompileOutputFlags());
+        // Emit fix-it hints in a machine-parseable format, suitable for consumption by IDEs.
+        // For each fix-it, a line will be printed after the relevant diagnostic, starting with the
+        // string “fix-it:”. For example:
+        // fix-it:"test.c":{45:3-45:21}:"gtk_widget_show_all"
+        // builder.add("-fdiagnostics-parseable-fixits");
+
+        // By default, each diagnostic emitted includes text indicating the command-line option that
+        // directly controls the diagnostic (if such an option is known to the diagnostic machinery).
+        // Specifying the -fno-diagnostics-show-option flag suppresses that behavior.
+        builder.addFlags("-fno-diagnostics-show-option");
+
+        // By default, each diagnostic emitted includes the original source line and a caret ‘^’
+        // indicating the column. This option suppresses this information. The source line is
+        // truncated to n characters, if the -fmessage-length=n option is given. When the output is
+        // done to the terminal, the width is limited to the width given by the COLUMNS environment
+        // variable or, if not set, to the terminal width.
+        builder.addFlags("-fno-diagnostics-show-caret");
 
         return builder.buildCommand();
     }

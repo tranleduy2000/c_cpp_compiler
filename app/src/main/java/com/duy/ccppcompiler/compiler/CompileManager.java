@@ -23,10 +23,10 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
 import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
+import com.duy.ccppcompiler.compiler.shell.ShellResult;
 import com.duy.ccppcompiler.console.ConsoleActivity;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;
-import com.duy.ccppcompiler.compiler.shell.ShellResult;
 import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 
@@ -52,6 +52,8 @@ public class CompileManager implements ICompileManager {
     public void onPrepareCompile() {
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
         mCompileDialog.setTitle(R.string.title_compiling);
+        mCompileDialog.setCancelable(false);
+        mCompileDialog.setCanceledOnTouchOutside(false);
         mCompileDialog.show();
     }
 

@@ -16,7 +16,6 @@
 
 package com.duy.ccppcompiler.compiler;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.duy.ccppcompiler.compiler.shell.ShellResult;
@@ -29,6 +28,5 @@ import java.io.File;
 
 public interface INativeCompiler {
     @WorkerThread
-    @NonNull
-    ShellResult compile(File[] sourceFiles) throws Exception;
+    ShellResult compile(File[] sourceFiles) ;
 }

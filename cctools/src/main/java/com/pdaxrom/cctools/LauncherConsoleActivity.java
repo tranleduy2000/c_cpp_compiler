@@ -31,29 +31,30 @@ public class LauncherConsoleActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String activityFile = getIntent().getExtras().getString(BuildConstants.EXTRA_EXEC_FILE);
+        String execFile = getIntent().getExtras().getString(BuildConstants.EXTRA_EXEC_FILE);
         forceRun = getIntent().getExtras().getBoolean(BuildConstants.EXTRA_FORCE_BUILD, false);
 
-        if (activityFile != null) {
-            if ((new File(activityFile)).exists()) {
-                Log.i(TAG, "console executable file " + activityFile);
-                outFile = (new File(activityFile)).getName();
-                workDir = (new File(activityFile)).getParentFile().getAbsolutePath();
-                String tmpExeDir = EnvironmentPath.getTmpExeDir(context);
-                if (copyFile(activityFile, tmpExeDir + "/" + outFile)) {
-                    Utils.chmod(tmpExeDir + "/" + outFile, 0x1ed); //S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH
-                    cmd = tmpExeDir + "/" + outFile;
-                    return;
-                }
-            } else {
-                outFile = "";
-                Log.i(TAG, "Trying to execute cmdline " + activityFile);
-                workDir = getIntent().getExtras().getString(BuildConstants.EXTRA_WORK_DIR);
-                cmd = activityFile;
-                return;
-            }
+        if (execFile == null) {
+            finish();
+            return;
         }
-        finish();
+
+        if (new File(execFile).exists()) {
+            Log.i(TAG, "console executable file " + execFile);
+            outFile = (new File(execFile)).getName();
+            workDir = (new File(execFile)).getParentFile().getAbsolutePath();
+            String tmpExeDir = EnvironmentPath.getTmpExeDir(context);
+            if (copyFile(execFile, tmpExeDir + "/" + outFile)) {
+                Utils.chmod(tmpExeDir + "/" + outFile, 0x1ed); //S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH
+                cmd = tmpExeDir + "/" + outFile;
+            }
+        } else {
+            outFile = "";
+            Log.i(TAG, "Trying to execute cmdline " + execFile);
+            workDir = getIntent().getExtras().getString(BuildConstants.EXTRA_WORK_DIR);
+            cmd = execFile;
+        }
+
     }
 
     @Override
