@@ -102,10 +102,9 @@ public class TermActivity extends AppCompatActivity {
     private ShellTermSession createShellTermSession(String cmdline, String cctoolsDir, String workdir) {
         cmdline = cmdline.replaceAll("\\s+", " ");
         Log.i(TAG, "Shell sesion for " + cmdline + "\n");
-        String homeDir = EnvironmentPath.getHomeDir(this);
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
+                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
                 "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
@@ -113,7 +112,7 @@ public class TermActivity extends AppCompatActivity {
                 "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + getPackageResourcePath(),
                 "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-                "HOME=" + homeDir,
+                "HOME=" + EnvironmentPath.getHomeDir(this),
                 "SHELL=" + getShell(cctoolsDir),
                 "TERM=xterm",
                 "PS1=$ ",

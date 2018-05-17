@@ -380,7 +380,7 @@ public class BuildActivity extends Activity {
                 final String[] envp = {
                         "PWD=" + mWorkDir,
                         "TMPDIR=" + mTmpDir,
-                        "PATH=" + mCCToolsDir + "/bin:" + mCCToolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
+                        "PATH=" + mCCToolsDir + "/bin:" + mCCToolsDir + "/sbin:" + System.getenv("PATH"),
                         "ANDROID_ASSETS=/system/app",
                         "ANDROID_BOOTLOGO=1",
                         "ANDROID_DATA=" + mCCToolsDir + "/var/dalvik",

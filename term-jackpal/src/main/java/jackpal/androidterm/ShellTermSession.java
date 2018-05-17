@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -53,11 +54,11 @@ public class ShellTermSession extends GenericTermSession {
         }
     };
 
-    public ShellTermSession(TermSettings settings, String initialCommand) throws IOException {
+    public ShellTermSession(TermSettings settings, String initialCommand, @Nullable String[] env) throws IOException {
         super(ParcelFileDescriptor.open(new File("/dev/ptmx"), ParcelFileDescriptor.MODE_READ_WRITE),
                 settings, false);
 
-        initializeSession();
+        initializeSession(env);
 
         setTermOut(new ParcelFileDescriptor.AutoCloseOutputStream(mTermFd));
         setTermIn(new ParcelFileDescriptor.AutoCloseInputStream(mTermFd));
@@ -76,32 +77,32 @@ public class ShellTermSession extends GenericTermSession {
         mWatcherThread.setName("Process watcher");
     }
 
-    private void initializeSession() throws IOException {
+    private void initializeSession(@Nullable String[] initEnv) throws IOException {
         TermSettings settings = mSettings;
+        if (initEnv == null) {
+            String path = System.getenv("PATH");
+            if (settings.doPathExtensions()) {
+                String appendPath = settings.getAppendPath();
+                if (appendPath != null && appendPath.length() > 0) {
+                    path = path + ":" + appendPath;
+                }
 
-        String path = System.getenv("PATH");
-        if (settings.doPathExtensions()) {
-            String appendPath = settings.getAppendPath();
-            if (appendPath != null && appendPath.length() > 0) {
-                path = path + ":" + appendPath;
-            }
-
-            if (settings.allowPathPrepend()) {
-                String prependPath = settings.getPrependPath();
-                if (prependPath != null && prependPath.length() > 0) {
-                    path = prependPath + ":" + path;
+                if (settings.allowPathPrepend()) {
+                    String prependPath = settings.getPrependPath();
+                    if (prependPath != null && prependPath.length() > 0) {
+                        path = prependPath + ":" + path;
+                    }
                 }
             }
+            if (settings.verifyPath()) {
+                path = checkPath(path);
+            }
+            initEnv = new String[3];
+            initEnv[0] = "TERM=" + settings.getTermType();
+            initEnv[1] = "PATH=" + path;
+            initEnv[2] = "HOME=" + settings.getHomePath();
         }
-        if (settings.verifyPath()) {
-            path = checkPath(path);
-        }
-        String[] env = new String[3];
-        env[0] = "TERM=" + settings.getTermType();
-        env[1] = "PATH=" + path;
-        env[2] = "HOME=" + settings.getHomePath();
-
-        mProcId = createSubprocess(settings.getShell(), env);
+        mProcId = createSubprocess(settings.getShell(), initEnv);
     }
 
     private String checkPath(String path) {

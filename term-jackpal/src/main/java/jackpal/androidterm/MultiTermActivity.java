@@ -16,6 +16,7 @@
 
 package jackpal.androidterm;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -30,8 +31,8 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -63,7 +64,6 @@ import java.util.Locale;
 
 import jackpal.androidterm.compat.ActionBarCompat;
 import jackpal.androidterm.compat.ActivityCompat;
-import jackpal.androidterm.compat.AndroidCompat;
 import jackpal.androidterm.compat.MenuItemCompat;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -81,10 +81,6 @@ import jackpal.androidterm.util.TermSettings;
 public class MultiTermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
-    /**
-     * The name of the ViewFlipper in the resources.
-     */
-    private static final int VIEW_FLIPPER = R.id.view_flipper;
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
     private final static int PASTE_ID = 2;
@@ -99,7 +95,6 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     private boolean mAlreadyStarted = false;
     private Intent TSIntent;
     private int onResumeSelectWindow = -1;
-    private boolean mBackKeyPressed;
     private TermService mTermService;
     private ActionBarCompat mActionBar;
     private int mActionBarMode = TermSettings.ACTION_BAR_MODE_NONE;
@@ -195,8 +190,26 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     };
     private Handler mHandler = new Handler();
 
-    protected static TermSession createTermSession(Context context, TermSettings settings, String initialCommand) throws IOException {
-        GenericTermSession session = new ShellTermSession(settings, initialCommand);
+    protected static TermSession createTermSession(Activity context, TermSettings settings, String initialCommand) throws IOException {
+        //custom shell
+        String cctoolsDir = context.getIntent().getStringExtra("cctoolsdir");
+        String homeDir = context.getIntent().getStringExtra("homedir");
+        String[] envp = {
+                "TERM=" + settings.getTermType(),
+                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:" + System.getenv("PATH"),
+                "HOME=" + homeDir,
+                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
+                "ANDROID_ASSETS=/system/app",
+                "ANDROID_BOOTLOGO=1",
+                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
+                "ANDROID_ROOT=/system",
+                "CCTOOLSDIR=" + cctoolsDir,
+                "CCTOOLSRES=" + context.getPackageResourcePath(),
+//                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
+//                "PS1=$",
+        };
+
+        GenericTermSession session = new ShellTermSession(settings, initialCommand, envp);
         // XXX We should really be able to fetch this from within TermSession
         session.setProcessExitMessage(context.getString(R.string.process_exit_message));
 
@@ -226,7 +239,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         TSIntent = new Intent(this, TermService.class);
         startService(TSIntent);
         mActionBarMode = mSettings.actionBarMode();
-        mViewFlipper = findViewById(VIEW_FLIPPER);
+        mViewFlipper = findViewById(R.id.view_flipper);
 
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
         if (actionBar != null) {
@@ -399,7 +412,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             WindowManager.LayoutParams params = win.getAttributes();
             final int FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
             int desiredFlag = mSettings.showStatusBar() ? 0 : FULLSCREEN;
-            if (desiredFlag != (params.flags & FULLSCREEN) || (Build.VERSION.SDK_INT >= 11 && mActionBarMode != mSettings.actionBarMode())) {
+            if (desiredFlag != (params.flags & FULLSCREEN) || mActionBarMode != mSettings.actionBarMode()) {
                 if (mAlreadyStarted) {
                     // Can't switch to/from fullscreen after
                     // starting the activity.
@@ -809,14 +822,15 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         String[] keyNames = r.getStringArray(arrayId);
         String keyName = keyNames[keyId];
         String template = r.getString(enabledId);
-        String result = template.replaceAll(regex, keyName);
-        return result;
+        return template.replaceAll(regex, keyName);
     }
 
     private void doToggleSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
 
     }
 
@@ -836,7 +850,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     private void doUIToggle(int x, int y, int width, int height) {
         switch (mActionBarMode) {
             case TermSettings.ACTION_BAR_MODE_NONE:
-                if (Build.VERSION.SDK_INT >= 11 && (mHaveFullHwKeyboard || y < height / 2)) {
+                if (mHaveFullHwKeyboard || y < height / 2) {
                     openOptionsMenu();
                     return;
                 } else {
@@ -887,11 +901,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             TextView label = new TextView(MultiTermActivity.this);
             String title = getSessionTitle(position, getString(R.string.window_title, position + 1));
             label.setText(title);
-            if (Build.VERSION.SDK_INT >= 13) {
-                label.setTextAppearance(MultiTermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
-            } else {
-                label.setTextAppearance(MultiTermActivity.this, android.R.style.TextAppearance_Medium);
-            }
+            label.setTextAppearance(MultiTermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
             return label;
         }
 

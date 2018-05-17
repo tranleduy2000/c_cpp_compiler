@@ -274,7 +274,7 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
         }
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
+                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
                 "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
@@ -326,7 +326,7 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
         String ret = null;
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + baseDir + "/bin:" + baseDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
+                "PATH=" + baseDir + "/bin:" + baseDir + "/sbin:"+System.getenv("PATH"),
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
                 "ANDROID_DATA=" + baseDir + "/var/dalvik",
@@ -366,16 +366,6 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
     }
 
     protected String getShell() {
-        String[] shellList = {
-                toolchainDir + "/cctools/bin/bash",
-                toolchainDir + "/cctools/bin/ash",
-        };
-
-        for (String shell : shellList) {
-            if ((new File(shell)).exists()) {
-                return shell;
-            }
-        }
         return "/system/bin/sh";
     }
 

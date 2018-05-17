@@ -167,11 +167,13 @@
             android:defaultValue="@bool/pref_verify_path_default"
             android:key="verify_path"
             android:summary="@string/summary_verify_path_preference"
-            android:title="@string/title_verify_path_preference" />
+            android:title="@string/title_verify_path_preference"
+            android:visibility="gone" />
         <!-- the home_path default is set dynamically in Term.onResume() -->
         <EditTextPreference
             android:key="home_path"
             android:summary="@string/summary_home_path_preference"
-            android:title="@string/title_home_path_preference" />
+            android:title="@string/title_home_path_preference"
+            android:visibility="gone" />
     </PreferenceCategory>
 </PreferenceScreen>

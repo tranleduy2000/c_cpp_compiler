@@ -511,7 +511,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         final String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
+                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
                 "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
@@ -542,7 +542,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         String ret = null;
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
+                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:"+System.getenv("PATH"),
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
                 "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
