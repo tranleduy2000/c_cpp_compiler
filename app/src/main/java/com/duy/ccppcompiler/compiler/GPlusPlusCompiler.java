@@ -48,7 +48,7 @@ public class GPlusPlusCompiler implements INativeCompiler {
         final File gccBinDir = new File(gccDir, "bin");
         final File armGccBinDir = new File(gccDir, "arm-linux-androideabi" + File.separator + "bin");
 
-        String compilerPath = new File(gccBinDir, "arm-linux-androideabi-g++").getAbsolutePath();
+        String exec = "g++";
 
         List<String> flags = new ArrayList<>();
         for (File sourceFile : sourceFiles) {
@@ -78,7 +78,7 @@ public class GPlusPlusCompiler implements INativeCompiler {
         envMap.put("PATH", PATHEnv);
         envMap.put("TEMP", TEMPEnv);
 
-        return ShellUtils.execCommand(compilerPath, flags, envMap);
+        return ShellUtils.execCommand(exec, flags, envMap);
 
     }
 }

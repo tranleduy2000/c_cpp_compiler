@@ -32,9 +32,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.ccppcompiler.databinding.ActivityFileExplorerBinding;
 import com.duy.ccppcompiler.R;
-import com.jecelyin.android.file_explorer.adapter.FileListPagerAdapter;
+import com.duy.ccppcompiler.databinding.ActivityFileExplorerBinding;
 import com.jecelyin.android.file_explorer.io.JecFile;
 import com.jecelyin.android.file_explorer.io.LocalFile;
 import com.jecelyin.android.file_explorer.listener.OnClipboardDataChangedListener;
@@ -54,27 +53,36 @@ import java.util.SortedMap;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class FileExplorerActivity extends FullScreenActivity implements View.OnClickListener, OnClipboardDataChangedListener {
+    public static final String EXTRA_HOME_PATH = "home_path";
+    public static final String EXTRA_INIT_PATH = "dest_file";
+    public static final String EXTRA_MODE = "mode";
+
     private static final int MODE_PICK_FILE = 1;
     private static final int MODE_PICK_PATH = 2;
+    private FileListPagerFragment mFileListPagerFragment;
     private ActivityFileExplorerBinding binding;
-    private FileListPagerAdapter adapter;
-    private int mode;
+    private int mMode;
     private String fileEncoding = null;
-    private String lastPath;
+    private String mLastPath;
+    private String mHomePath;
     private FileClipboard fileClipboard;
     private MenuItem pasteMenu;
 
-    public static void startPickFileActivity(Activity activity, String destFile, int requestCode) {
+    public static void startPickFileActivity(Activity activity,
+                                             @Nullable String destFile,
+                                             @Nullable String homePath,
+                                             int requestCode) {
         Intent it = new Intent(activity, FileExplorerActivity.class);
-        it.putExtra("mode", MODE_PICK_FILE);
-        it.putExtra("dest_file", destFile);
+        it.putExtra(EXTRA_MODE, MODE_PICK_FILE);
+        it.putExtra(EXTRA_INIT_PATH, destFile);
+        it.putExtra(EXTRA_HOME_PATH, homePath);
         activity.startActivityForResult(it, requestCode);
     }
 
     public static void startPickPathActivity(Activity activity, String destFile, String encoding, int requestCode) {
         Intent it = new Intent(activity, FileExplorerActivity.class);
-        it.putExtra("mode", MODE_PICK_PATH);
-        it.putExtra("dest_file", destFile);
+        it.putExtra(EXTRA_MODE, MODE_PICK_PATH);
+        it.putExtra(EXTRA_INIT_PATH, destFile);
         it.putExtra("encoding", encoding);
         activity.startActivityForResult(it, requestCode);
     }
@@ -84,10 +92,6 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         return it.getStringExtra("file");
     }
 
-    /**
-     * @param it
-     * @return null时为自动检测
-     */
     @Nullable
     public static String getFileEncoding(Intent it) {
         return it.getStringExtra("encoding");
@@ -104,50 +108,59 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_file_explorer);
 
-        Intent it = getIntent();
-        mode = it.getIntExtra("mode", MODE_PICK_FILE);
+        Intent intent = getIntent();
+        mMode = intent.getIntExtra(EXTRA_MODE, MODE_PICK_FILE);
+        mHomePath = intent.getStringExtra(EXTRA_HOME_PATH);
+        if (TextUtils.isEmpty(mHomePath)) {
+            mHomePath = Environment.getExternalStorageDirectory().getPath();
+        }
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(mode == MODE_PICK_FILE ? R.string.open_file : R.string.save_file);
+        getSupportActionBar().setTitle(mMode == MODE_PICK_FILE ? R.string.open_file : R.string.save_file);
 
-        lastPath = Preferences.getInstance(this).getLastOpenPath();
-        if (TextUtils.isEmpty(lastPath)) {
-            lastPath = Environment.getExternalStorageDirectory().getPath();
+        mLastPath = Preferences.getInstance(this).getLastOpenPath();
+        if (TextUtils.isEmpty(mLastPath)) {
+            mLastPath = Environment.getExternalStorageDirectory().getPath();
         }
 
-        String destPath = it.getStringExtra("dest_file");
+        String initPath = intent.getStringExtra(EXTRA_INIT_PATH);
 
-        if (!TextUtils.isEmpty(destPath)) {
-            File dest = new File(destPath);
-            lastPath = dest.isFile() ? dest.getParent() : dest.getPath();
+        if (!TextUtils.isEmpty(initPath)) {
+            File dest = new File(initPath);
+            mLastPath = dest.isFile() ? dest.getParent() : dest.getPath();
             binding.filenameEditText.setText(dest.getName());
         } else {
             binding.filenameEditText.setText(getString(R.string.untitled_file_name));
         }
 
-        initPager();
+        initFileView();
         binding.saveBtn.setOnClickListener(this);
         binding.fileEncodingTextView.setOnClickListener(this);
 
-        String encoding = it.getStringExtra("encoding");
+        String encoding = intent.getStringExtra("encoding");
         fileEncoding = encoding;
         if (TextUtils.isEmpty(encoding)) {
             encoding = getString(R.string.auto_detection_encoding);
         }
         binding.fileEncodingTextView.setText(encoding);
 
-        binding.filenameLayout.setVisibility(mode == MODE_PICK_FILE ? View.GONE : View.VISIBLE);
+        binding.filenameLayout.setVisibility(mMode == MODE_PICK_FILE ? View.GONE : View.VISIBLE);
 
         getFileClipboard().setOnClipboardDataChangedListener(this);
     }
 
-    private void initPager() {
-        adapter = new FileListPagerAdapter(getSupportFragmentManager());
-
-        JecFile path = new LocalFile(lastPath);
-        adapter.addPath(path);
-        binding.viewPager.setAdapter(adapter);
+    private void initFileView() {
+        JecFile path = new LocalFile(mLastPath);
+        mFileListPagerFragment = (FileListPagerFragment) getSupportFragmentManager()
+                .findFragmentByTag(FileListPagerFragment.class.getName());
+        if (mFileListPagerFragment == null) {
+            mFileListPagerFragment = FileListPagerFragment.newFragment(path);
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, mFileListPagerFragment, FileListPagerFragment.class.getName())
+                .commit();
     }
 
     @Override
@@ -198,13 +211,16 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         } else if (id == R.id.sort_by_type_menu) {
             item.setChecked(true);
             preferences.setFileSortType(FileListSorter.SORT_TYPE);
+        } else if (id == R.id.action_goto_home) {
+            LocalFile home = new LocalFile(mHomePath);
+            mFileListPagerFragment.switchToPath(home);
         }
         return super.onOptionsItemSelected(item);
     }
 
     boolean onSelectFile(JecFile file) {
         if (file.isFile()) {
-            if (mode == MODE_PICK_FILE) {
+            if (mMode == MODE_PICK_FILE) {
                 Intent it = new Intent();
                 it.putExtra("file", file.getPath());
                 it.putExtra("encoding", fileEncoding);
@@ -216,7 +232,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
 
             return true;
         } else if (file.isDirectory()) {
-            lastPath = file.getPath();
+            mLastPath = file.getPath();
         }
 
         return false;
@@ -272,12 +288,12 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
             binding.filenameEditText.setError(getString(R.string.illegal_filename));
             return;
         }
-        if (TextUtils.isEmpty(lastPath)) {
+        if (TextUtils.isEmpty(mLastPath)) {
             binding.filenameEditText.setError(getString(R.string.unknown_path));
             return;
         }
 
-        File f = new File(lastPath);
+        File f = new File(mLastPath);
         if (f.isFile()) {
             f = f.getParentFile();
         }

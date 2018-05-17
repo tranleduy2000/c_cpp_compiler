@@ -19,43 +19,50 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/add_folder_menu"
-        android:title="@string/create_folder"
-        android:icon="@drawable/ic_add_folder"
+        android:id="@+id/action_goto_home"
+        android:icon="@drawable/baseline_home_24"
+        android:title="Home"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/add_folder_menu"
+        android:icon="@drawable/ic_add_folder"
+        android:title="@string/create_folder"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/paste_menu"
-        android:visible="false"
         android:title="@string/paste"
+        android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/show_hidden_files_menu"
         android:checkable="true"
         android:checked="false"
-        app:showAsAction="never"
-        android:title="@string/show_hidden_files" />
+        android:title="@string/show_hidden_files"
+        app:showAsAction="never" />
     <group
         android:id="@+id/sort_group_menu"
         android:checkableBehavior="single">
         <item
             android:id="@+id/sort_by_name_menu"
-            android:title="@string/sort_by_name"
             android:checked="true"
-            app:showAsAction="never"/>
+            android:title="@string/sort_by_name"
+            app:showAsAction="never" />
         <item
             android:id="@+id/sort_by_datetime_menu"
-            android:title="@string/sort_by_datetime"
             android:checked="false"
-            app:showAsAction="never"/>
+            android:title="@string/sort_by_datetime"
+            app:showAsAction="never" />
         <item
             android:id="@+id/sort_by_size_menu"
-            android:title="@string/sort_by_size"
             android:checked="false"
-            app:showAsAction="never"/>
+            android:title="@string/sort_by_size"
+            app:showAsAction="never" />
         <item
             android:id="@+id/sort_by_type_menu"
-            android:title="@string/sort_by_type"
             android:checked="false"
-            app:showAsAction="never"/>
+            android:title="@string/sort_by_type"
+            app:showAsAction="never" />
     </group>
 </menu>

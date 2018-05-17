@@ -20,8 +20,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -33,9 +33,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.duy.ccppcompiler.databinding.FileExplorerFragmentBinding;
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.databinding.FileExplorerFragmentBinding;
 import com.jecelyin.android.file_explorer.adapter.FileListItemAdapter;
 import com.jecelyin.android.file_explorer.adapter.PathButtonAdapter;
 import com.jecelyin.android.file_explorer.io.JecFile;
@@ -64,11 +65,10 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
     private JecFile path;
     private FileExplorerFragmentBinding binding;
     private PathButtonAdapter pathAdapter;
-    private boolean isRoot;
     private ScanFilesTask task;
     private FileExplorerAction action;
 
-    public static Fragment newFragment(JecFile path) {
+    public static FileListPagerFragment newFragment(JecFile path) {
         FileListPagerFragment f = new FileListPagerFragment();
         Bundle b = new Bundle();
         b.putParcelable("path", path);
@@ -78,8 +78,8 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        path = (JecFile) getArguments().getParcelable("path");
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        path = getArguments().getParcelable("path");
         binding = DataBindingUtil.inflate(inflater, R.layout.file_explorer_fragment, container, false);
         return binding.getRoot();
     }
@@ -153,7 +153,6 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
         view.post(new Runnable() {
             @Override
             public void run() {
-                isRoot = false;
                 onRefresh();
             }
         });
@@ -256,11 +255,15 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
         return false;
     }
 
-    private void switchToPath(JecFile file) {
-        path = file;
-        pathAdapter.setPath(file);
-        Preferences.getInstance(getContext()).setLastOpenPath(file.getPath());
-        onRefresh();
+    public void switchToPath(JecFile file) {
+        if (file.canRead()) {
+            path = file;
+            pathAdapter.setPath(file);
+            Preferences.getInstance(getContext()).setLastOpenPath(file.getPath());
+            onRefresh();
+        } else {
+            Toast.makeText(getContext(), R.string.cant_read_folder, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -293,15 +296,15 @@ public class FileListPagerFragment extends JecFragment implements SwipeRefreshLa
         onRefresh();
     }
 
-    private static interface UpdateRootInfo {
-        public void onUpdate(JecFile path);
+    private interface UpdateRootInfo {
+        void onUpdate(JecFile path);
     }
 
     private static class ScanFilesTask extends JecAsyncTask<Void, Void, JecFile[]> {
         private final UpdateRootInfo updateRootInfo;
         private final Context context;
-        private JecFile path;
         private final boolean isRoot = false;
+        private JecFile path;
 
         private ScanFilesTask(Context context, JecFile path, UpdateRootInfo updateRootInfo) {
             this.context = context.getApplicationContext();

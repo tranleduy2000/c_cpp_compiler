@@ -359,7 +359,8 @@ public class EditorActivity extends FullScreenActivity
                 createNewFile();
                 break;
             case R.id.action_open:
-                FileExplorerActivity.startPickFileActivity(this, EnvironmentPath.getSdCardSourceDir(), RC_OPEN_FILE);
+                String sdCardSourceDir = EnvironmentPath.getSdCardSourceDir();
+                FileExplorerActivity.startPickFileActivity(this, sdCardSourceDir, sdCardSourceDir, RC_OPEN_FILE);
                 break;
             case R.id.m_goto_line:
                 new GotoLineDialog(this).show();
