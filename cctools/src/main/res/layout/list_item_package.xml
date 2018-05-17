@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?selectableItemBackground"
+    android:foreground="?selectableItemBackground"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -17,8 +17,7 @@
             android:id="@+id/pkg_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="2dip"
-            android:paddingTop="4dp"
+            android:paddingBottom="2dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
             android:textStyle="bold"
             tools:text="autoconf" />
@@ -41,16 +40,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:text="asdasdsad"
                 android:textColor="?android:textColorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="1.0" />
         </LinearLayout>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/pkg_desciption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="2dip"
+            android:paddingBottom="2dp"
             android:textColor="?android:textColorPrimary" />
 
         <LinearLayout

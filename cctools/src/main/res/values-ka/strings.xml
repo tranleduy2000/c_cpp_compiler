@@ -131,14 +131,14 @@
     <string name="pkgmgr_name">დანამატების მენეჯერი</string>
     <string name="pkginstaller_name">დანამატების ინსტალაცია/დეინსტალაცია</string>
 
-    <string name="pkg_repoupdatetask">გარე რეპოზიტორი</string>
-    <string name="pkg_repodownloading">პაკეტების სიის გადმოწერა...</string>
+    <string name="title_repo_update">გარე რეპოზიტორი</string>
+    <string name="message_package_downloading">პაკეტების სიის გადმოწერა...</string>
     <string name="pkg_prepareinstalltask">პაკეტების სიის დამუშავება</string>
     <string name="pkg_prepareinstall">პაკეტის დამოკიდებულებების შემოწმება...</string>
     <string name="pkg_installpackagetask">პაკეტის ინსტალაცია</string>
     <string name="pkg_installpackage">პაკეტის ინსტალაცია</string>
-    <string name="pkg_uninstallpackagetask">პაკეტის დეინსტალაცია</string>
-    <string name="pkg_uninstallpackage">პაკეტის დეინსტალაცია</string>
+    <string name="title_package_uninstall">პაკეტის დეინსტალაცია</string>
+    <string name="message_package_uninstall">პაკეტის დეინსტალაცია</string>
     <string name="pkg_checkupdates">აპდეიტების შემოწმება...</string>
 
     <string name="pkg_name">დასახელება</string>

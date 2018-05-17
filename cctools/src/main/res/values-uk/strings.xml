@@ -131,14 +131,14 @@
     <string name="pkgmgr_name">Управління пакетами доповнень</string>
     <string name="pkginstaller_name">Установка/відалення доповнень</string>
 
-    <string name="pkg_repoupdatetask">Віддалений репозіторій</string>
-    <string name="pkg_repodownloading">Завантажується список пакетів...</string>
+    <string name="title_repo_update">Віддалений репозіторій</string>
+    <string name="message_package_downloading">Завантажується список пакетів...</string>
     <string name="pkg_prepareinstalltask">Обробка спіска пакетів</string>
     <string name="pkg_prepareinstall">Перевірка залежностей пакету...</string>
     <string name="pkg_installpackagetask">Установка пакету</string>
     <string name="pkg_installpackage">Пакет встановлюється</string>
-    <string name="pkg_uninstallpackagetask">Видалення пакету</string>
-    <string name="pkg_uninstallpackage">Пакет видаляється</string>
+    <string name="title_package_uninstall">Видалення пакету</string>
+    <string name="message_package_uninstall">Пакет видаляється</string>
     <string name="pkg_checkupdates">Перевірка оновлень...</string>
 
     <string name="pkg_name">Назва</string>

@@ -19,6 +19,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.utils.LogItem;
 import com.pdaxrom.utils.Utils;
 
@@ -376,8 +377,7 @@ public class BuildActivity extends Activity {
             try {
                 show_progress(true);
                 Log.i(TAG, "execute " + cmdline + "\n");
-//    			output(cmdline + "\n");
-                String[] envp = {
+                final String[] envp = {
                         "PWD=" + workDir,
                         "TMPDIR=" + tmpDir,
                         "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
@@ -388,7 +388,7 @@ public class BuildActivity extends Activity {
                         "CCTOOLSDIR=" + getCacheDir().getParentFile().getAbsolutePath() + "/root" + "/cctools",
                         "CCTOOLSRES=" + getPackageResourcePath(),
                         "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-                        "HOME=" + cctoolsDir + "/home",
+                        "HOME=" + EnvironmentPath.getHomeDir(BuildActivity.this),
                         "TMPEXEDIR=" + tmpExeDir,
                         "PS1=''"
                 };

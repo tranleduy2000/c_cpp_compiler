@@ -1,6 +1,7 @@
 package com.pdaxrom.packagemanager;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.XMLParser;
@@ -126,6 +127,7 @@ public class RepoUtils {
         return false;
     }
 
+    @Nullable
     public static PackageInfo getPackageByName(List<PackageInfo> repo, String pkg) {
         for (PackageInfo packageInfo : repo) {
             if (packageInfo.getName().equals(pkg)) {
@@ -219,7 +221,7 @@ public class RepoUtils {
                 if (installedPkg.getName().equals(pkg.getName())) {
                     if (!installedPkg.getVersion().equals(pkg.getVersion())) {
                         if (list == null) {
-                            list = new ArrayList<PackageInfo>();
+                            list = new ArrayList<>();
                         }
                         list.add(pkg);
                     }

@@ -1,5 +1,6 @@
 package com.pdaxrom.packagemanager;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
@@ -11,8 +12,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +31,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.cctools.R;
@@ -48,12 +52,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.pdaxrom.packagemanager.EnvironmentPath.INSTALLED_PACKAGE_DIR;
-
+@SuppressWarnings("unchecked")
 public class PackageManagerActivity extends FullScreenActivity {
     public static final String EXTRA_CMD = "command";
     public static final String EXTRA_DATA = "data";
-    public static final String EXTRA_RETURN = "return";
     public static final String ACTION_INSTALL = "install";
     public static final String ACTION_UNINSTALL = "uninstall";
     public static final String ACTION_UPDATE = "update";
@@ -78,7 +80,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     private Context context = this;
     @NonNull
     private PackagesLists mPackagesLists = new PackagesLists();
-    private String mActivityCmd = null;
+    private String mAction = null;
     private String mActivityData = null;
     // Last list position
     private int mLastPosition = 0;
@@ -102,7 +104,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         mListView = getListView();
         mListView.requestFocus();
 
-        mActivityCmd = null;
+        mAction = null;
         mActivityData = null;
         if (getIntent().getExtras() != null) {
             String cmd = getIntent().getExtras().getString(EXTRA_CMD);
@@ -110,12 +112,12 @@ public class PackageManagerActivity extends FullScreenActivity {
             Log.i(TAG, "External command " + cmd);
 
             if (ACTION_UPDATE.equals(cmd)) {
-                mActivityCmd = cmd;
+                mAction = cmd;
             } else if (ACTION_INSTALL.equals(cmd)) {
-                mActivityCmd = cmd;
+                mAction = cmd;
                 mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
             } else if (ACTION_UNINSTALL.equals(cmd)) {
-                mActivityCmd = cmd;
+                mAction = cmd;
                 mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
             }
 
@@ -154,7 +156,6 @@ public class PackageManagerActivity extends FullScreenActivity {
                 File logFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".list");
                 if (logFile.exists()) {
                     new AlertDialog.Builder(context)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle(getString(R.string.pkg_selected) + name)
                             .setMessage(getString(R.string.pkg_alreadyinstalled))
                             .setCancelable(false)
@@ -259,15 +260,12 @@ public class PackageManagerActivity extends FullScreenActivity {
             map.put(RepoUtils.KEY_VERSION, info.getVersion());
             map.put(RepoUtils.KEY_DESC, info.getDescription());
             map.put(RepoUtils.KEY_DEPENDS, info.getDepends());
-            map.put(RepoUtils.KEY_FILESIZE, String.valueOf(info.getFileSize()));
-            map.put(RepoUtils.KEY_SIZE, String.valueOf(info.getSize()));
+            map.put(RepoUtils.KEY_FILESIZE, Utils.humanReadableByteCount(info.getFileSize(), false));
+            map.put(RepoUtils.KEY_SIZE, Utils.humanReadableByteCount(info.getSize(), false));
             map.put(RepoUtils.KEY_FILE, info.getFile());
 
-            String toolchainDir = getCacheDir().getParentFile().getAbsolutePath() + "/root";
-            String logFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
-                    + info.getName() + ".list";
-
-            if ((new File(logFile)).exists()) {
+            File logFile = new File(EnvironmentPath.getInstalledPackageDir(this), info.getName() + ".list");
+            if (logFile.exists()) {
                 map.put(RepoUtils.KEY_STATUS, getString(R.string.pkg_installed));
             } else {
                 map.put(RepoUtils.KEY_STATUS, getString(R.string.pkg_notinstalled));
@@ -324,6 +322,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         }
     }
 
+    @MainThread
     private void updateProgress(final int progress) {
         mHandler.post(new Runnable() {
             public void run() {
@@ -332,6 +331,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         });
     }
 
+    @WorkerThread
     private void updateProgress(final String progress) {
         mHandler.post(new Runnable() {
             public void run() {
@@ -340,6 +340,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         });
     }
 
+    @WorkerThread
     private void updateProgressTitle(final String out) {
         mHandler.post(new Runnable() {
             public void run() {
@@ -348,63 +349,76 @@ public class PackageManagerActivity extends FullScreenActivity {
         });
     }
 
-
+    @UiThread
     private void showError(String message) {
         new AlertDialog.Builder(context)
                 .setTitle(R.string.pkgmgr_name)
                 .setMessage(message)
                 .setNeutralButton(getText(R.string.button_continue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mActivityCmd != null) {
+                        if (mAction != null) {
                             setResult(RESULT_CANCELED);
                             finish();
-                            return;
                         }
                     }
                 })
                 .setCancelable(false)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.baseline_error_black_24)
                 .show();
     }
 
-
+    /**
+     * Uninstall a package and all dependencies
+     *
+     * @param name - name of package
+     * @return {@code true} if uninstall success
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean uninstallPackage(String name) {
         if (name != null) {
-            updateProgressTitle(getString(R.string.pkg_uninstallpackagetask) + " " + name);
+            //update UI
+            updateProgressTitle(getString(R.string.title_package_uninstall) + " " + name);
             updateProgress(getString(R.string.wait_message));
             updateProgress(0);
-            String prermFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".prerm";
+
+            //delete file
+            String prermFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".prerm").getAbsolutePath();
             if ((new File(prermFile)).exists()) {
                 Log.i(TAG, "Execute prerm script " + prermFile);
                 Utils.chmod(prermFile, 0x1ed);
                 system(prermFile);
-                (new File(prermFile)).delete();
+                new File(prermFile).delete();
             }
             updateProgress(25);
-            String descFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".pkgdesc";
+            String descFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".pkgdesc").getAbsolutePath();
             if ((new File(descFile)).exists()) {
-                (new File(descFile)).delete();
+                new File(descFile).delete();
             }
-            String logFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".list";
+
+
+            //remove package in list installed
+            String logFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".list").getAbsolutePath();
             if (!(new File(logFile)).exists()) {
                 updateProgress(100);
                 return false;
             }
+
             updateProgress(50);
+
+            // TODO: 17-May-18 Do not remove dependencies package because other package need this package
             try {
                 FileInputStream fin = new FileInputStream(logFile);
                 DataInputStream in = new DataInputStream(fin);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     Log.i(TAG, "Delete file: " + line);
-                    (new File(mToolchainDir + "/" + line)).delete();
+                    new File(mToolchainDir, line).delete();
                 }
                 in.close();
-                (new File(logFile)).delete();
+                new File(logFile).delete();
             } catch (Exception e) {
                 e.printStackTrace();
-
                 Log.e(TAG, "Error during remove files " + e);
             }
             updateProgress(100);
@@ -419,8 +433,8 @@ public class PackageManagerActivity extends FullScreenActivity {
         }
 
         List<String> list = null;
-        String reposListFile = mToolchainDir + "/cctools/etc/repos.list";
-        if (new File(reposListFile).exists()) {
+        File reposListFile = new File(EnvironmentPath.getToolchainsDir(this), "cctools/etc/repos.list");
+        if (reposListFile.exists()) {
             try {
                 FileInputStream fin = new FileInputStream(reposListFile);
                 DataInputStream in = new DataInputStream(fin);
@@ -451,6 +465,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         return list;
     }
 
+    @MainThread
     private void editReposList() {
         final EditText ed = new EditText(this);
         ed.setSingleLine(false);
@@ -481,15 +496,20 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private void system(String cmdline) {
-        String cctoolsDir = mToolchainDir + "/cctools";
-        String bootClassPath = getEnv(cctoolsDir, "BOOTCLASSPATH");
-        if (bootClassPath == null) {
-            bootClassPath = Utils.getBootClassPath();
+        String cctoolsDir = new File(mToolchainDir, "cctools").getAbsolutePath();
+        String javaBootClassPath = getEnv(cctoolsDir, "BOOTCLASSPATH");
+        if (javaBootClassPath == null) {
+            javaBootClassPath = Utils.getBootClassPath();
         }
-        if (bootClassPath == null) {
-            bootClassPath = "/system/framework/core.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar";
+
+        if (javaBootClassPath == null) {
+            javaBootClassPath = "/system/framework/core.jar:" +
+                    "/system/framework/ext.jar:/system/framework/framework.jar:" +
+                    "/system/framework/android.policy.jar:" +
+                    "/system/framework/services.jar";
         }
-        String[] envp = {
+
+        final String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
                 "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
                 "ANDROID_ASSETS=/system/app",
@@ -497,7 +517,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
                 "ANDROID_PROPERTY_WORKSPACE=" + getEnv(cctoolsDir, "ANDROID_PROPERTY_WORKSPACE"),
                 "ANDROID_ROOT=/system",
-                "BOOTCLASSPATH=" + bootClassPath,
+                "BOOTCLASSPATH=" + javaBootClassPath,
                 "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + getPackageResourcePath(),
                 "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
@@ -514,24 +534,23 @@ public class PackageManagerActivity extends FullScreenActivity {
             p.waitFor();
         } catch (Exception e) {
             e.printStackTrace();
-
             Log.i(TAG, "Exec exception " + e);
         }
     }
 
-    private String getEnv(String baseDir, String variable) {
+    private String getEnv(String cctoolsDir, String variable) {
         String ret = null;
         String[] envp = {
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + baseDir + "/bin:" + baseDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
+                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin",
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + baseDir + "/var/dalvik",
+                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
                 "ANDROID_ROOT=/system",
-                "CCTOOLSDIR=" + baseDir,
+                "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + baseDir + "/lib",
-                "HOME=" + baseDir + "/home",
+                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib",
+                "HOME=" + cctoolsDir + "/home",
                 "SHELL=" + getShell(),
                 "TERM=xterm",
                 "PS1=$ ",
@@ -540,7 +559,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         };
         String[] argv = {"/system/bin/sh", "-c", "set"};
         int[] pId = new int[1];
-        FileDescriptor fd = Utils.createSubProcess(baseDir, argv[0], argv, envp, pId);
+        FileDescriptor fd = Utils.createSubProcess(cctoolsDir, argv[0], argv, envp, pId);
         FileInputStream fis = new FileInputStream(fd);
         DataInputStream in = new DataInputStream(fis);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -578,94 +597,91 @@ public class PackageManagerActivity extends FullScreenActivity {
         return "/system/bin/sh";
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class DownloadRepoTask extends AsyncTask<List<String>, Void, List<PackageInfo>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgress(R.string.pkg_repoupdatetask, R.string.pkg_repodownloading);
+            showProgress(R.string.title_repo_update, R.string.message_package_downloading);
         }
 
         @Override
         protected List<PackageInfo> doInBackground(List<String>[] params) {
-            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(mToolchainDir + "/" + INSTALLED_PACKAGE_DIR));
+            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(EnvironmentPath.getInstalledPackageDir(context)));
             updateProgress(30);
             mPackagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
             updateProgress(60);
-            if (mPackagesLists.getAvailablePackages().isEmpty() ||
-                    mPackagesLists.getInstalledPackages().isEmpty()) {
+
+            if (mPackagesLists.getAvailablePackages().isEmpty() || mPackagesLists.getInstalledPackages().isEmpty()) {
                 return null;
             }
             return RepoUtils.checkingForUpdates(mPackagesLists);
         }
 
         @Override
-        protected void onPostExecute(List<PackageInfo> result) {
-            if (!isCancelled()) {
-                updateProgress(100);
-                if (!mPackagesLists.getAvailablePackages().isEmpty() && mActivityCmd == null) {
-                    Log.i(TAG, "Downloaded repo with " + mPackagesLists.getAvailablePackages().size() + " packages.");
-                    showPackages(mPackagesLists.getAvailablePackages());
-                }
-                hideProgress();
-                if (mPackagesLists.getAvailablePackages().isEmpty() && mActivityCmd == null) {
-                    showError(getString(R.string.message_package_repo_unavailable));
-                    return;
-                }
+        protected void onPostExecute(List<PackageInfo> needUpdatePackages) {
+            updateProgress(100);
+            if (!mPackagesLists.getAvailablePackages().isEmpty() && mAction == null) {
+                DLog.i(TAG, "Downloaded repo with " + mPackagesLists.getAvailablePackages().size() + " packages.");
+                showPackages(mPackagesLists.getAvailablePackages());
+            }
 
-                if (mActivityCmd != null && mActivityCmd.equals(ACTION_INSTALL)) {
-                    if (!mPackagesLists.getAvailablePackages().isEmpty()) {
-                        (new PrepareToInstallTask()).execute(mActivityData);
-                    } else {
-                        showError(getString(R.string.message_package_repo_unavailable) +
-                                "\n" +
-                                getString(R.string.message_package_for_install) +
-                                mActivityData);
-                    }
-                    return;
-                }
+            hideProgress();
+            if (mPackagesLists.getAvailablePackages().isEmpty() && mAction == null) {
+                showError(getString(R.string.message_package_repo_unavailable));
+                return;
+            }
 
-                if (mActivityCmd != null && mActivityCmd.equals(ACTION_UNINSTALL)) {
-                    (new UninstallPackagesTask()).execute(mActivityData);
-                    return;
+            if (ACTION_INSTALL.equals(mAction)) {
+                if (!mPackagesLists.getAvailablePackages().isEmpty()) {
+                    new PrepareToInstallTask().execute(mActivityData);
+                } else {
+                    showError(getString(R.string.message_package_repo_unavailable) + "\n" +
+                            getString(R.string.message_package_for_install) +
+                            mActivityData);
                 }
+                return;
+            } else if (ACTION_UNINSTALL.equals(mAction)) {
+                new UninstallPackagesTask().execute(mActivityData);
+                return;
+            }
 
-                if (result != null) {
-                    final InstallPackageInfo updateInfo = new InstallPackageInfo();
-                    for (PackageInfo pkg : result) {
-                        updateInfo.addPackage(mPackagesLists, pkg.getName());
-                    }
-                    Log.i(TAG, "update list = " + updateInfo.getPackagesStrings());
-                    Builder dialog = new Builder(context)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle(getString(R.string.pkg_selectedforupdate))
-                            .setMessage(getString(R.string.pkg_selectedforupdate1) + updateInfo.getPackagesStrings()
-                                    + "\n\n"
-                                    + getString(R.string.pkg_selected2)
-                                    + Utils.humanReadableByteCount(updateInfo.getDownloadSize(), false)
-                                    + "\u0020"
-                                    + getString(R.string.pkg_selected3)
-                                    + Utils.humanReadableByteCount(updateInfo.getInstallSize(), false))
-                            .setCancelable(false)
-                            .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (mActivityCmd != null && mActivityCmd.equals(ACTION_UPDATE)) {
-                                        setResult(RESULT_CANCELED);
-                                        finish();
-                                    }
+            if (needUpdatePackages != null) {
+                final InstallPackageInfo updateInfo = new InstallPackageInfo();
+                for (PackageInfo pkg : needUpdatePackages) {
+                    updateInfo.addPackage(mPackagesLists, pkg.getName());
+                }
+                Log.i(TAG, "update list = " + updateInfo.getPackagesStrings());
+                Builder dialog = new Builder(context)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(getString(R.string.pkg_selectedforupdate))
+                        .setMessage(getString(R.string.pkg_selectedforupdate1) + updateInfo.getPackagesStrings()
+                                + "\n\n"
+                                + getString(R.string.pkg_selected2)
+                                + Utils.humanReadableByteCount(updateInfo.getDownloadSize(), false)
+                                + "\u0020"
+                                + getString(R.string.pkg_selected3)
+                                + Utils.humanReadableByteCount(updateInfo.getInstallSize(), false))
+                        .setCancelable(false)
+                        .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (mAction != null && mAction.equals(ACTION_UPDATE)) {
+                                    setResult(RESULT_CANCELED);
+                                    finish();
                                 }
-                            })
-                            .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Log.i(TAG, "Get install packages = " + updateInfo.getPackagesStrings());
-                                    (new InstallPackagesTask()).execute(updateInfo);
-                                }
-                            });
-                    dialog.show();
-                }
-                if (result == null && mActivityCmd != null && mActivityCmd.equals(ACTION_UPDATE)) {
-                    setResult(RESULT_OK);
-                    finish();
-                }
+                            }
+                        })
+                        .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.i(TAG, "Get install packages = " + updateInfo.getPackagesStrings());
+                                (new InstallPackagesTask()).execute(updateInfo);
+                            }
+                        });
+                dialog.show();
+            }
+            if (needUpdatePackages == null && mAction != null && mAction.equals(ACTION_UPDATE)) {
+                setResult(RESULT_OK);
+                finish();
             }
         }
     }
@@ -673,6 +689,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     /**
      * Prepare for downloading a package
      */
+    @SuppressLint("StaticFieldLeak")
     private class PrepareToInstallTask extends AsyncTask<String, Void, InstallPackageInfo> {
         @Override
         protected void onPreExecute() {
@@ -683,10 +700,11 @@ public class PackageManagerActivity extends FullScreenActivity {
         @Override
         protected InstallPackageInfo doInBackground(String... params) {
             // Update installed packages list
-            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(mToolchainDir + "/" + INSTALLED_PACKAGE_DIR));
+            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(EnvironmentPath.getInstalledPackageDir(context)));
             return new InstallPackageInfo(mPackagesLists, params[0]);
         }
 
+        @Override
         protected void onPostExecute(final InstallPackageInfo info) {
             hideProgress();
             Builder dialog = new AlertDialog.Builder(context)
@@ -702,7 +720,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                     .setCancelable(false)
                     .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            if (mActivityCmd != null) {
+                            if (mAction != null) {
                                 setResult(RESULT_CANCELED);
                                 finish();
                             }
@@ -711,7 +729,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                     .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Log.i(TAG, "Get install packages = " + info.getPackagesStrings());
-                            (new InstallPackagesTask()).execute(info);
+                            new InstallPackagesTask().execute(info);
                         }
                     });
             dialog.show();
@@ -721,6 +739,8 @@ public class PackageManagerActivity extends FullScreenActivity {
     /**
      * Download an install package and all dependencies
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("StaticFieldLeak")
     private class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Void, Boolean> {
         @Override
         protected void onPreExecute() {
@@ -730,23 +750,23 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         @Override
         protected Boolean doInBackground(InstallPackageInfo... params) {
-            return installPackage(params[0]);
-        }
-
-        private boolean installPackage(InstallPackageInfo info) {
+            InstallPackageInfo info = params[0];
             List<String> postinstList = new ArrayList<>();
             for (PackageInfo packageInfo : info.getPackagesList()) {
-                if ((new File(mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
-                        + packageInfo.getName() + ".pkgdesc")).exists()) {
-                    PackageInfo oldPackage = RepoUtils.getPackageByName(mPackagesLists.getInstalledPackages(),
-                            packageInfo.getName());
-                    if (packageInfo.getVersion().equals(oldPackage.getVersion())) {
+
+                File packageDesc = new File(EnvironmentPath.getInstalledPackageDir(context), packageInfo.getName() + ".pkgdesc");
+                if (packageDesc.exists()) {
+                    PackageInfo oldPackage = RepoUtils.getPackageByName(mPackagesLists.getInstalledPackages(), packageInfo.getName());
+                    if (oldPackage != null && packageInfo.getVersion().equals(oldPackage.getVersion())) {
                         Log.i(TAG, "Package " + packageInfo.getName() + " already installed.");
                         continue;
                     } else {
                         uninstallPackage(packageInfo.getName());
-                        if ((new File(mBackupDir, oldPackage.getFile())).exists()) {
-                            (new File(mBackupDir, oldPackage.getFile())).delete();
+                        if (oldPackage != null) {
+                            File oldPackageFile = new File(mBackupDir, oldPackage.getFile());
+                            if (oldPackageFile.exists()) {
+                                oldPackageFile.delete();
+                            }
                         }
                     }
                 }
@@ -755,173 +775,189 @@ public class PackageManagerActivity extends FullScreenActivity {
                     Log.i(TAG, "Replace package " + packageInfo.getReplaces());
                     PackageInfo oldPackage = RepoUtils.getPackageByName(mPackagesLists.getInstalledPackages(),
                             packageInfo.getReplaces());
-                    uninstallPackage(oldPackage.getName());
-                    if ((new File(mBackupDir, oldPackage.getFile())).exists()) {
-                        (new File(mBackupDir, oldPackage.getFile())).delete();
+                    if (oldPackage != null) {
+                        uninstallPackage(oldPackage.getName());
+                        File oldPackageFile = new File(mBackupDir, oldPackage.getFile());
+                        if (oldPackageFile.exists()) {
+                            oldPackageFile.delete();
+                        }
                     }
+
                 }
 
                 updateProgressTitle(getString(R.string.pkg_installpackagetask) + " " + packageInfo.getName());
 
                 Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFile());
-                if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), mToolchainDir,
-                        mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + packageInfo.getName() + ".list")) {
+                File logFile = new File(EnvironmentPath.getInstalledPackageDir(context), packageInfo.getName() + ".list");
+                if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), mToolchainDir, logFile.getAbsolutePath())) {
                     if (errorString != null) {
                         errorString += "\u0020" + info.getName();
                     }
                     return false;
                 }
+
                 updateProgress(getString(R.string.wait_message));
+
                 // Move package info files from root directory
                 String[] infoFiles = {"pkgdesc", "postinst", "prerm"};
                 for (String infoFile : infoFiles) {
-                    if ((new File(mToolchainDir + "/" + infoFile)).exists()) {
-                        String infoFilePath = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
-                                + packageInfo.getName() + "." + infoFile;
+                    if ((new File(mToolchainDir, infoFile)).exists()) {
+                        String infoFilePath = new File(EnvironmentPath.getInstalledPackageDir(context),
+                                packageInfo.getName() + "." + infoFile).getAbsolutePath();
                         Log.i(TAG, "Copy file to " + infoFilePath);
                         try {
-                            Utils.copyDirectory(new File(mToolchainDir + "/" + infoFile),
-                                    new File(infoFilePath));
+                            Utils.copyDirectory(new File(mToolchainDir, infoFile), new File(infoFilePath));
                             if (infoFile.equals("postinst")) {
                                 postinstList.add(packageInfo.getName());
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-
                             Log.e(TAG, "Copy " + infoFile + " file failed " + e);
                         }
-                        (new File(mToolchainDir + "/" + infoFile)).delete();
+                        new File(mToolchainDir, infoFile).delete();
                     }
                 }
             }
 
             // Move Examples to sd card
-            if ((new File(mToolchainDir + "/cctools/Examples")).exists()) {
+            if (new File(mToolchainDir, "/cctools/Examples").exists()) {
                 try {
                     Log.i(TAG, "Move Examples to SD card");
-                    Utils.copyDirectory(new File(mToolchainDir + "/cctools/Examples"),
-                            new File(mSdCardDir + "/Examples"));
-                    Utils.deleteDirectory(new File(mToolchainDir + "/cctools/Examples"));
+                    Utils.copyDirectory(new File(mToolchainDir, "/cctools/Examples"), new File(mSdCardDir, "/Examples"));
+                    Utils.deleteDirectory(new File(mToolchainDir, "/cctools/Examples"));
                 } catch (IOException e) {
                     e.printStackTrace();
-
                     Log.e(TAG, "Can't copy examples directory " + e);
                 }
             }
 
             //Execute postinst scripts
             for (String name : postinstList) {
-                String postinstFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".postinst";
+                File postinstFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".postinst");
                 Log.i(TAG, "Execute postinst file " + postinstFile);
-                Utils.chmod(postinstFile, 0x1ed);
-                system(postinstFile);
-                (new File(postinstFile)).delete();
+                Utils.chmod(postinstFile.getAbsolutePath(), 0x1ed/*0755*/);
+                system(postinstFile.getAbsolutePath());
+                postinstFile.delete();
             }
 
             return true;
         }
 
-        private boolean downloadAndUnpack(String file, String from, String to, String log) {
-            updateProgress(getString(R.string.download_file) + " " + file + "...");
+        private boolean downloadAndUnpack(@NonNull final String fileName, @NonNull final String fromUrl,
+                                          @NonNull final String toPath, final String log) {
+            updateProgress(getString(R.string.download_file) + " " + fileName + "...");
 
             errorString = null;
 
-            File temp = new File(mBackupDir + "/" + file);
+            //download file from url
+            File temp = new File(mBackupDir, fileName);
             if (!temp.exists()) {
                 try {
-                    int totalread = 0;
-                    Log.i(TAG, "Downloading file " + from + "/" + file);
-                    URL url = new URL(from + "/" + file);
+                    int totalRead = 0;
+                    Log.i(TAG, "Downloading file " + fromUrl + "/" + fileName);
+
+                    URL url = new URL(fromUrl + "/" + fileName);
                     URLConnection cn = url.openConnection();
                     cn.setReadTimeout(3 * 60 * 1000); // timeout 3 minutes
                     cn.connect();
-                    int file_size = cn.getContentLength();
+
+                    int fileSize = cn.getContentLength();
                     StatFs stat = new StatFs(mBackupDir);
                     int sdAvailSize = stat.getAvailableBlocks();// * stat.getBlockSize();
-                    Log.i(TAG, "File size " + file_size);
+                    Log.i(TAG, "File size " + fileSize);
                     Log.i(TAG, "Available on SD (in blocks " + stat.getBlockSize() + ") " + sdAvailSize);
-                    int need_mem = file_size / stat.getBlockSize();
-                    if (sdAvailSize < need_mem) {
+
+                    int needMem = fileSize / stat.getBlockSize();
+                    if (sdAvailSize < needMem) {
                         temp.delete();
                         errorString = getString(R.string.sd_no_memory) +
-                                " " + Utils.humanReadableByteCount(need_mem, false) +
+                                " " + Utils.humanReadableByteCount(needMem, false) +
                                 " " + getString(R.string.sd_no_memory2);
                         return false;
                     }
-                    InputStream stream = cn.getInputStream();
-                    if (stream == null) {
+
+                    InputStream inputStream = cn.getInputStream();
+                    if (inputStream == null) {
                         throw new RuntimeException("stream is null");
                     }
+
                     Log.i(TAG, "File is " + temp.getAbsolutePath());
                     FileOutputStream out = new FileOutputStream(temp);
                     byte buf[] = new byte[128 * 1024];
                     do {
-                        int numread = stream.read(buf);
-                        if (numread <= 0) {
+                        int numRead = inputStream.read(buf);
+                        if (numRead <= 0) {
                             break;
                         }
-                        out.write(buf, 0, numread);
-                        totalread += numread;
-                        updateProgress(getString(R.string.received) + " " + totalread + " " + getString(R.string.from) + " " + file_size + " " + getString(R.string.bytes));
-                        if (file_size > 20 * 1024 * 1024) {
-                            updateProgress(totalread / (file_size / 100));
+                        out.write(buf, 0, numRead);
+                        totalRead += numRead;
+                        updateProgress(getString(R.string.received) + " " + totalRead + " " + getString(R.string.from) + " " + fileSize + " " + getString(R.string.bytes));
+                        if (fileSize > 20 * 1024 * 1024) {
+                            updateProgress(totalRead / (fileSize / 100));
                         } else {
-                            updateProgress(totalread * 100 / file_size);
+                            updateProgress(totalRead * 100 / fileSize);
                         }
                     } while (true);
-                    stream.close();
+
+                    inputStream.close();
                     out.close();
-                    if (totalread != file_size) {
+                    if (totalRead != fileSize) {
                         throw new RuntimeException("Partially downloaded file!");
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     temp.delete();
-                    Log.i(TAG, "Error downloading file " + file);
-                    errorString = getString(R.string.error_downloading) + " (" + file + ")";
+                    Log.i(TAG, "Error downloading file " + fileName);
+                    errorString = getString(R.string.error_downloading) + " (" + fileName + ")";
                     return false;
                 }
-            } else
+            } else {
                 Log.i(TAG, "Use file " + temp.getAbsolutePath());
+            }
 
             updateProgress(100);
 
+            //unpack file
             String tempPath = temp.getAbsolutePath();
-            updateProgress(getString(R.string.unpacking_file) + " " + file + "...");
-            Log.i(TAG, "Unpack file " + tempPath + " to " + to);
+            updateProgress(getString(R.string.unpacking_file) + " " + fileName + "...");
+            Log.i(TAG, "Unpack file " + tempPath + " to " + toPath);
+
             String logFile = log;
             try {
-                int need_mem = Utils.unzippedSize(tempPath);
-                if (need_mem < 0) {
+                int needMem = Utils.unzippedSize(tempPath);
+                if (needMem < 0) {
                     throw new RuntimeException("bad archive");
                 }
-                StatFs stat = new StatFs(to);
+                StatFs stat = new StatFs(toPath);
                 double cacheAvailSize = stat.getAvailableBlocks();
-                Log.i(TAG, "Unzipped size " + need_mem);
+                Log.i(TAG, "Unzipped size " + needMem);
                 Log.i(TAG, "Available (blocks) " + cacheAvailSize + "(" + stat.getBlockSize() + ")");
                 cacheAvailSize *= stat.getBlockSize();
-                if (cacheAvailSize < need_mem) {
+                if (cacheAvailSize < needMem) {
                     errorString = getString(R.string.cache_no_memory) +
-                            Utils.humanReadableByteCount(need_mem, false) +
+                            Utils.humanReadableByteCount(needMem, false) +
                             getString(R.string.cache_no_memory1) +
                             Utils.humanReadableByteCount((int) cacheAvailSize, false) +
                             getString(R.string.cache_no_memory2);
                     return false;
                 }
+
                 if (logFile == null) {
-                    logFile = mToolchainDir + INSTALLED_PACKAGE_DIR + file + ".list";
+                    logFile = new File(EnvironmentPath.getInstalledPackageDir(context), fileName + ".list").getAbsolutePath();
                 }
-                if (Utils.unzip(tempPath, to, logFile) != 0) {
-                    if ((new File(logFile)).exists()) {
-                        (new File(logFile)).delete();
+                if (Utils.unzip(tempPath, toPath, logFile) != 0) {
+                    if (new File(logFile).exists()) {
+                        new File(logFile).delete();
                     }
                     throw new RuntimeException("bad archive");
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 temp.delete();
                 Log.i(TAG, "Corrupted archive, restart application and try install again");
-                errorString = getString(R.string.bad_archive) + " (" + file + ")";
+                errorString = getString(R.string.bad_archive) + " (" + fileName + ")";
                 return false;
             }
             return true;
@@ -931,8 +967,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         protected void onPostExecute(Boolean result) {
             hideProgress();
             if (result) {
-                if (mActivityCmd != null &&
-                        (mActivityCmd.equals(ACTION_UPDATE) || mActivityCmd.equals(ACTION_INSTALL))) {
+                if (ACTION_UPDATE.equals(mAction) || ACTION_INSTALL.equals(mAction)) {
                     setResult(RESULT_OK);
                     finish();
                     return;
@@ -949,19 +984,21 @@ public class PackageManagerActivity extends FullScreenActivity {
     /**
      * Uninstall list of packages
      */
+    @SuppressLint("StaticFieldLeak")
     private class UninstallPackagesTask extends AsyncTask<String, Void, Boolean> {
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgress(R.string.pkg_uninstallpackagetask, R.string.pkg_uninstallpackage);
+            showProgress(R.string.title_package_uninstall, R.string.message_package_uninstall);
         }
 
+        @Override
         protected Boolean doInBackground(String... params) {
             return uninstallPackage(params[0]);
         }
 
         protected void onPostExecute(Boolean result) {
             hideProgress();
-            if (mActivityCmd != null && mActivityCmd.equals(ACTION_UNINSTALL)) {
+            if (ACTION_UNINSTALL.equals(mAction)) {
                 setResult(RESULT_OK);
                 finish();
                 return;

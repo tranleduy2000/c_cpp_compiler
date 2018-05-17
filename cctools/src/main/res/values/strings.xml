@@ -154,16 +154,16 @@
     <string name="pkgmgr_name">Add-ons manager</string>
     <string name="pkginstaller_name">Add/Remove add-ons</string>
 
-    <string name="pkg_repoupdatetask">Remote repository</string>
-    <string name="pkg_repodownloading">Downloading list of packages...</string>
+    <string name="title_repo_update">Remote repository</string>
+    <string name="message_package_downloading">Downloading list of packages...</string>
     <string name="message_package_repo_unavailable">Remote repository is unavailable at the moment. Please try again later.</string>
     <string name="message_package_for_install">Use Addons manager to install package:\u0020</string>
     <string name="pkg_prepareinstalltask">Package list processing</string>
     <string name="pkg_prepareinstall">Checking the package dependencies...</string>
     <string name="pkg_installpackagetask">Installing package</string>
     <string name="pkg_installpackage">Installing package</string>
-    <string name="pkg_uninstallpackagetask">Uninstalling package</string>
-    <string name="pkg_uninstallpackage">Uninstalling package</string>
+    <string name="title_package_uninstall">Uninstalling package</string>
+    <string name="message_package_uninstall">Uninstalling package</string>
     <string name="pkg_checkupdates">Checking for updates...</string>
 
     <string name="pkg_name">Name</string>

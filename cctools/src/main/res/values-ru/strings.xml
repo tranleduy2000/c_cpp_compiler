@@ -154,16 +154,16 @@
     <string name="pkgmgr_name">Управление пакетами дополнений</string>
     <string name="pkginstaller_name">Установка/Удаление дополнений</string>
 
-    <string name="pkg_repoupdatetask">Удаленный репозиторий</string>
-    <string name="pkg_repodownloading">Загружается список пакетов...</string>
+    <string name="title_repo_update">Удаленный репозиторий</string>
+    <string name="message_package_downloading">Загружается список пакетов...</string>
     <string name="message_package_repo_unavailable">Удаленный репозиторий временно не доступен. Пожалуйста, попробуйте позднее.</string>
     <string name="message_package_for_install">Используйте менеджер дополнений для установки пакета:\u0020</string>
     <string name="pkg_prepareinstalltask">Обработка списка пакетов</string>
     <string name="pkg_prepareinstall">Проверка зависимостей пакета...</string>
     <string name="pkg_installpackagetask">Установка пакета</string>
     <string name="pkg_installpackage">Устанавливается пакет</string>
-    <string name="pkg_uninstallpackagetask">Удаление пакета</string>
-    <string name="pkg_uninstallpackage">Удаляется пакет</string>
+    <string name="title_package_uninstall">Удаление пакета</string>
+    <string name="message_package_uninstall">Удаляется пакет</string>
     <string name="pkg_checkupdates">Проверка обновлений...</string>
 
     <string name="pkg_name">Название</string>
