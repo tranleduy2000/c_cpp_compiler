@@ -521,7 +521,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + getPackageResourcePath(),
                 "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-                "HOME=" + cctoolsDir + "/home",
+                "HOME=" + EnvironmentPath.getHomeDir(this),
                 "SHELL=" + getShell(),
                 "TERM=xterm",
                 "PS1=$ ",
@@ -568,7 +568,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         try {
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(variable + "=")) {
-                    if (line.indexOf("=") != -1) {
+                    if (line.contains("=")) {
                         ret = line.substring(line.indexOf("=") + 1);
                         break;
                     }

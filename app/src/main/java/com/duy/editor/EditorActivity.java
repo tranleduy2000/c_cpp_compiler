@@ -118,7 +118,7 @@ public class EditorActivity extends FullScreenActivity
         mPreferences = Preferences.getInstance(this);
         MenuManager.init(this);
 
-        setContentView(R.layout.activity_cctools);
+        setContentView(R.layout.activity_main);
 
         mToolbar = findViewById(R.id.toolbar);
         mEditorPager = findViewById(R.id.view_pager);
