@@ -19,15 +19,23 @@
 package com.jecelyin.common.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.duy.ide.editor.editor.R;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -81,31 +89,46 @@ public class UIUtils {
     }
 
     /**
-     * @param context   android context
-     * @param title     dialog title
-     * @param hint      edittext hint
-     * @param value     init value for edit text
-     * @param callback  result callback
+     * @param context  android context
+     * @param title    dialog title
+     * @param hint     edittext hint
+     * @param value    init value for edit text
+     * @param callback result callback
      */
-    public static void showInputDialog(Context context, CharSequence title, CharSequence hint,
-                                       CharSequence value, int inputType, final OnShowInputCallback callback) {
-        MaterialDialog.Builder dialog = new MaterialDialog.Builder(context)
-                .title(title)
-                .positiveText(android.R.string.ok)
-                .negativeText(android.R.string.cancel)
-                .input(hint, value, new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        if (callback != null) {
-                            callback.onConfirm(input);
-                        }
-                    }
-                })
-                .inputType(inputType == 0 ? EditorInfo.TYPE_CLASS_TEXT : inputType);
-
-        MaterialDialog dlg = dialog.show();
-        dlg.setCanceledOnTouchOutside(false);
-        dlg.setCancelable(true);
+    public static void showInputDialog(Context context, CharSequence title,
+                                       @Nullable CharSequence hint,
+                                       @Nullable CharSequence value, int inputType,
+                                       @Nullable final OnShowInputCallback callback) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_input, null);
+        builder.setView(view);
+        final EditText editText = view.findViewById(R.id.edit_input);
+        editText.setInputType(inputType == 0 ? EditorInfo.TYPE_CLASS_TEXT : inputType);
+        if (value != null) {
+            editText.setText(value);
+            editText.setSelection(value.length());
+        }
+        if (hint != null) {
+            TextInputLayout inputLayout = view.findViewById(R.id.hint);
+            inputLayout.setHint(hint);
+        }
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (callback != null) {
+                    callback.onConfirm(editText.getText());
+                }
+            }
+        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.show();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
     }
 
     public static void showConfirmDialog(Context context, @StringRes int messageRes, final OnClickCallback callback) {
