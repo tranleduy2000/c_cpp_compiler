@@ -199,7 +199,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         } else if (i == R.id.action_repo_mirrors) {
             editReposList();
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupDirs() {
