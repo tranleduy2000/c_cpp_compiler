@@ -156,8 +156,8 @@
 
     <string name="pkg_repoupdatetask">Удаленный репозиторий</string>
     <string name="pkg_repodownloading">Загружается список пакетов...</string>
-    <string name="pkg_repounavailable">Удаленный репозиторий временно не доступен. Пожалуйста, попробуйте позднее.</string>
-    <string name="pkg_packageforinstall">Используйте менеджер дополнений для установки пакета:\u0020</string>
+    <string name="message_package_repo_unavailable">Удаленный репозиторий временно не доступен. Пожалуйста, попробуйте позднее.</string>
+    <string name="message_package_for_install">Используйте менеджер дополнений для установки пакета:\u0020</string>
     <string name="pkg_prepareinstalltask">Обработка списка пакетов</string>
     <string name="pkg_prepareinstall">Проверка зависимостей пакета...</string>
     <string name="pkg_installpackagetask">Установка пакета</string>
@@ -189,7 +189,7 @@
     <string name="pkg_notinstalled">Не установлен</string>
     <string name="pkg_searchHint">Поиск пакета</string>
 
-    <string name="pkgMirrorsButton">Список репозиториев</string>
+    <string name="title_repo_list">Список репозиториев</string>
     <string name="pkgUpdateButton">Проверить обновления</string>
 
     <string name="whatisnew">Что нового</string>

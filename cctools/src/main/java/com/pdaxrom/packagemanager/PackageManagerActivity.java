@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +28,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.cctools.R;
 import com.pdaxrom.utils.Utils;
@@ -184,19 +186,18 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.pkgmanager_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_package_manager, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == R.id.item_update) {
+        if (i == R.id.action_update) {
             (new DownloadRepoTask()).execute(getReposList());
 
-        } else if (i == R.id.item_mirrors) {
+        } else if (i == R.id.action_repo_mirrors) {
             editReposList();
-
         }
         return true;
     }
@@ -204,12 +205,17 @@ public class PackageManagerActivity extends FullScreenActivity {
     private void setupDirs() {
         mSdCardDir = EnvironmentPath.getSdCardHomeDir();
         mBackupDir = EnvironmentPath.getSdCardBackupDir();
-        EnvironmentPath.getSdCardTmpDir();
         mToolchainDir = EnvironmentPath.getToolchainsDir(this);
+
+        //create of not exist
+        EnvironmentPath.getSdCardTmpDir();
         EnvironmentPath.getServiceDir(this);
         EnvironmentPath.getHomeDir(this);
     }
 
+    /**
+     * Define sdk and ndk for current device
+     */
     private void setupVersion() {
         int sdkVersion = Build.VERSION.SDK_INT;
         int ndkVersion;
@@ -240,7 +246,8 @@ public class PackageManagerActivity extends FullScreenActivity {
         RepoUtils.setVersion(Build.CPU_ABI, ndkArch, ndkVersion);
     }
 
-    void showPackages(List<PackageInfo> repo) {
+    @UiThread
+    private void showPackages(List<PackageInfo> repo) {
         ArrayList<HashMap<String, String>> menuItems = new ArrayList<>();
 
         for (PackageInfo info : repo) {
@@ -406,9 +413,9 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private List<String> getReposList() {
-        String packageUrl = "http://cctools.info/packages";
+        String defaultUrl = "http://cctools.info/packages";
         if (Build.VERSION.SDK_INT >= 21) {
-            packageUrl += "-pie";
+            defaultUrl += "-pie";
         }
 
         List<String> list = null;
@@ -418,7 +425,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 FileInputStream fin = new FileInputStream(reposListFile);
                 DataInputStream in = new DataInputStream(fin);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     if (list == null) {
                         list = new ArrayList<>();
@@ -434,14 +441,12 @@ public class PackageManagerActivity extends FullScreenActivity {
                 in.close();
             } catch (Exception e) {
                 e.printStackTrace();
-
-                Log.e(TAG, "Read repos list: " + e);
             }
         }
 
         if (list == null) {
             list = new ArrayList<>();
-            list.add(packageUrl);
+            list.add(defaultUrl);
         }
         return list;
     }
@@ -450,34 +455,29 @@ public class PackageManagerActivity extends FullScreenActivity {
         final EditText ed = new EditText(this);
         ed.setSingleLine(false);
         List<String> list = getReposList();
-        for (String url : list) {
-            if (ed.getText().toString().length() > 0) {
-                ed.setText(ed.getText().toString() + "\n");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            String url = list.get(i);
+            sb.append(url);
+            if (i != list.size() - 1) {
+                sb.append("\n");
             }
-            ed.setText(ed.getText().toString() + url);
         }
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.pkgMirrorsButton))
-                .setView(ed)
-                .setPositiveButton(getString(R.string.button_continue), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+
+        UIUtils.showInputDialog(this, getString(R.string.title_repo_list), "", sb.toString(),
+                0, new UIUtils.OnShowInputCallback() {
+                    @Override
+                    public void onConfirm(CharSequence input) {
                         String reposListFile = mToolchainDir + "/cctools/etc/repos.list";
                         try {
                             FileOutputStream fos = new FileOutputStream(reposListFile);
-                            fos.write(ed.getText().toString().getBytes());
+                            fos.write(input.toString().getBytes());
                             fos.close();
                         } catch (Exception e) {
                             e.printStackTrace();
-
-                            Log.e(TAG, "Write repos list (" + reposListFile + "): " + e);
                         }
                     }
-                })
-                .setNegativeButton(getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .show();
+                });
     }
 
     private void system(String cmdline) {
@@ -591,8 +591,8 @@ public class PackageManagerActivity extends FullScreenActivity {
             updateProgress(30);
             mPackagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
             updateProgress(60);
-            if (mPackagesLists.getAvailablePackages() == null ||
-                    mPackagesLists.getInstalledPackages() == null) {
+            if (mPackagesLists.getAvailablePackages().isEmpty() ||
+                    mPackagesLists.getInstalledPackages().isEmpty()) {
                 return null;
             }
             return RepoUtils.checkingForUpdates(mPackagesLists);
@@ -602,23 +602,23 @@ public class PackageManagerActivity extends FullScreenActivity {
         protected void onPostExecute(List<PackageInfo> result) {
             if (!isCancelled()) {
                 updateProgress(100);
-                if (mPackagesLists.getAvailablePackages() != null && mActivityCmd == null) {
+                if (!mPackagesLists.getAvailablePackages().isEmpty() && mActivityCmd == null) {
                     Log.i(TAG, "Downloaded repo with " + mPackagesLists.getAvailablePackages().size() + " packages.");
                     showPackages(mPackagesLists.getAvailablePackages());
                 }
                 hideProgress();
-                if (mPackagesLists.getAvailablePackages() == null && mActivityCmd == null) {
-                    showError(getString(R.string.pkg_repounavailable));
+                if (mPackagesLists.getAvailablePackages().isEmpty() && mActivityCmd == null) {
+                    showError(getString(R.string.message_package_repo_unavailable));
                     return;
                 }
 
                 if (mActivityCmd != null && mActivityCmd.equals(ACTION_INSTALL)) {
-                    if (mPackagesLists.getAvailablePackages() != null) {
+                    if (!mPackagesLists.getAvailablePackages().isEmpty()) {
                         (new PrepareToInstallTask()).execute(mActivityData);
                     } else {
-                        showError(getString(R.string.pkg_repounavailable) +
+                        showError(getString(R.string.message_package_repo_unavailable) +
                                 "\n" +
-                                getString(R.string.pkg_packageforinstall) +
+                                getString(R.string.message_package_for_install) +
                                 mActivityData);
                     }
                     return;

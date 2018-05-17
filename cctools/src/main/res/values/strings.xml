@@ -156,8 +156,8 @@
 
     <string name="pkg_repoupdatetask">Remote repository</string>
     <string name="pkg_repodownloading">Downloading list of packages...</string>
-    <string name="pkg_repounavailable">Remote repository is unavailable at the moment. Please try again later.</string>
-    <string name="pkg_packageforinstall">Use Addons manager to install package:\u0020</string>
+    <string name="message_package_repo_unavailable">Remote repository is unavailable at the moment. Please try again later.</string>
+    <string name="message_package_for_install">Use Addons manager to install package:\u0020</string>
     <string name="pkg_prepareinstalltask">Package list processing</string>
     <string name="pkg_prepareinstall">Checking the package dependencies...</string>
     <string name="pkg_installpackagetask">Installing package</string>
@@ -189,7 +189,7 @@
     <string name="pkg_notinstalled">Not installed</string>
     <string name="pkg_searchHint">Search package</string>
 
-    <string name="pkgMirrorsButton">Repos list</string>
+    <string name="title_repo_list">Repos list</string>
     <string name="pkgUpdateButton">Check updates</string>
 
     <string name="whatisnew">What\'s new</string>

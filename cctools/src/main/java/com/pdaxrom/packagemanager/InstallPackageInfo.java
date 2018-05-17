@@ -8,20 +8,20 @@ public class InstallPackageInfo {
     private static boolean debug = false;
 
     private String pkg = null;
-    private List<PackageInfo> list = null;
-    private int installSize = 0;
-    private int downloadSize = 0;
+    private List<PackageInfo> packages = null;
+    private int mInstallSize = 0;
+    private int mDownloadSize = 0;
 
     InstallPackageInfo() {
-        list = new ArrayList<>();
+        packages = new ArrayList<>();
     }
 
     InstallPackageInfo(PackagesLists packagesLists, String pkg) {
         installPackageInfo(packagesLists, pkg, null);
     }
 
-    InstallPackageInfo(PackagesLists packagesLists, String pkg, List<PackageInfo> list) {
-        installPackageInfo(packagesLists, pkg, list);
+    InstallPackageInfo(PackagesLists packagesLists, String pkg, List<PackageInfo> packages) {
+        installPackageInfo(packagesLists, pkg, packages);
     }
 
     public static void enableDebug(boolean debug) {
@@ -35,7 +35,7 @@ public class InstallPackageInfo {
             } else {
                 this.pkg += " " + pkg;
             }
-            getDepends(packagesLists, pkg, list);
+            getDepends(packagesLists, pkg, packages);
             calculateSizes();
         }
     }
@@ -43,11 +43,11 @@ public class InstallPackageInfo {
     private void installPackageInfo(PackagesLists packagesLists, String pkg, List<PackageInfo> list) {
         this.pkg = pkg;
         if (list == null) {
-            this.list = new ArrayList<>();
+            this.packages = new ArrayList<>();
         } else {
-            this.list = list;
+            this.packages = list;
         }
-        getDepends(packagesLists, this.pkg, this.list);
+        getDepends(packagesLists, this.pkg, this.packages);
         calculateSizes();
     }
 
@@ -56,30 +56,30 @@ public class InstallPackageInfo {
     }
 
     public void calculateSizes() {
-        installSize = 0;
-        downloadSize = 0;
-        for (PackageInfo pkg : list) {
-            installSize += pkg.getSize();
-            downloadSize += pkg.getFileSize();
+        mInstallSize = 0;
+        mDownloadSize = 0;
+        for (PackageInfo pkg : packages) {
+            mInstallSize += pkg.getSize();
+            mDownloadSize += pkg.getFileSize();
         }
     }
 
     public int getDownloadSize() {
-        return downloadSize;
+        return mDownloadSize;
     }
 
     public int getInstallSize() {
-        return installSize;
+        return mInstallSize;
     }
 
     public List<PackageInfo> getPackagesList() {
-        return list;
+        return packages;
     }
 
     public String getPackagesStrings() {
         StringBuilder packages = new StringBuilder();
         boolean isFirstAdded = false;
-        for (PackageInfo pkg : list) {
+        for (PackageInfo pkg : this.packages) {
             if (isFirstAdded) {
                 packages.append(" ").append(pkg.getName());
             } else {

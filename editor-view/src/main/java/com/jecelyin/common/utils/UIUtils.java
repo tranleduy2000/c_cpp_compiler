@@ -19,22 +19,15 @@
 package com.jecelyin.common.utils;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.duy.ide.editor.editor.R;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -87,7 +80,15 @@ public class UIUtils {
                 hintRes != 0 ? context.getString(hintRes) : null, value, inputType, callback);
     }
 
-    public static void showInputDialog(Context context, CharSequence title, CharSequence hint, CharSequence value, int inputType, final OnShowInputCallback callback) {
+    /**
+     * @param context   android context
+     * @param title     dialog title
+     * @param hint      edittext hint
+     * @param value     init value for edit text
+     * @param callback  result callback
+     */
+    public static void showInputDialog(Context context, CharSequence title, CharSequence hint,
+                                       CharSequence value, int inputType, final OnShowInputCallback callback) {
         MaterialDialog.Builder dialog = new MaterialDialog.Builder(context)
                 .title(title)
                 .positiveText(android.R.string.ok)
