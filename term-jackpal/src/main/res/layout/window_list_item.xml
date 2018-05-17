@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /* Copyright 2007, The Android Open Source Project
 ** Copyright 2011 Steven Luo
 **
@@ -18,30 +17,37 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="horizontal">
-    <TextView android:id="@+id/window_list_label"
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/window_list_label"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="15dp"
         android:maxLines="1"
+        android:padding="15dp"
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    <View android:id="@+id/window_list_separator"
-        android:background="#ff313431"
+
+    <View
+        android:id="@+id/window_list_separator"
         android:layout_width="1dp"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp" />
-    <view class="jackpal.androidterm.WindowList$CloseButton" android:id="@+id/window_list_close"
+        android:background="#ff313431" />
+
+    <view
+        android:id="@+id/window_list_close"
+        class="jackpal.androidterm.WindowList$CloseButton"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/close_background"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:background="@drawable/close_background"
-        android:src="@drawable/btn_close_window"
-        android:scaleType="center" />
+        android:scaleType="center"
+        android:src="@drawable/btn_close_window" />
 </LinearLayout>

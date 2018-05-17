@@ -225,13 +225,12 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.term_activity);
+        setContentView(R.layout.activity_terminal);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        Log.v(TermDebug.LOG_TAG, "onCreate");
-
-        if (icicle == null)
+        if (icicle == null) {
             onNewIntent(getIntent());
+        }
 
         final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettings = new TermSettings(getResources(), mPrefs);
@@ -506,7 +505,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_terminal, menu);
         MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_new_window), MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
         MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_close_window), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         return true;

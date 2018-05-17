@@ -26,6 +26,7 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:actionBarStyle">@style/Widget.ActionBarOverlay</item>
     </style>
+
     <style name="Widget.ActionBarOverlay" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">#a0000000</item>
     </style>

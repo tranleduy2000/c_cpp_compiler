@@ -33,7 +33,7 @@ public class TermPreferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.term_preferences);
+        addPreferencesFromResource(R.xml.preferences_terminal);
 
         // Display up indicator on action bar home button
         if (AndroidCompat.V11ToV20) {
