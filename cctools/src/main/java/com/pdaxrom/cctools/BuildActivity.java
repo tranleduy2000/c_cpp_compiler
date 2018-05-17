@@ -22,6 +22,8 @@ import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.utils.Utils;
 
+import org.gjt.sp.jedit.Catalog;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -37,7 +39,7 @@ public class BuildActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "GCCArgsFile";
 
     private TextView mLogView;
-    private String mFileName;
+    private String mFilePath;
     private String mCCToolsDir;
     private String mCommand;
     private Thread mCmdThread;
@@ -66,36 +68,26 @@ public class BuildActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         final String systemShell = "SHELL=/system/bin/sh";
-        mFileName = intent.getStringExtra(BuildConstants.EXTRA_FILE_NAME);
-        mCCToolsDir = intent.getStringExtra(BuildConstants.EXTRA_CCTOOLS_DIR);
-        mWorkDir = new File(mFileName).getParentFile().toString();
+        mFilePath = intent.getStringExtra(BuildConstants.EXTRA_FILE_NAME);
         mForceBuild = intent.getBooleanExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
+        mCCToolsDir = EnvironmentPath.getCCtoolsDir(this);
+
+        mWorkDir = new File(mFilePath).getParentFile().toString();
         mForceRun = false;
         mTmpExeDir = EnvironmentPath.getTmpDir(this);
 
         mTmpDir = intent.getStringExtra(BuildConstants.EXTRA_TMP_DIR);
         runme_ca = mTmpDir + "/runme_ca";
         runme_na = mTmpDir + "/runme_na";
-        if ((new File(runme_ca)).exists()) {
-            (new File(runme_ca)).delete();
-        }
-        if ((new File(runme_na)).exists()) {
-            (new File(runme_na)).delete();
-        }
-        DLog.d(TAG, "--------------------------------------");
-        DLog.d(TAG, "shell " + systemShell);
-        DLog.d(TAG, "filename " + mFileName);
-        DLog.d(TAG, "cctoolspath " + mCCToolsDir);
-        DLog.d(TAG, "workdir " + mWorkDir);
-        DLog.d(TAG, "tmpexedir " + mTmpExeDir);
-        DLog.d(TAG, "--------------------------------------");
+        deleteIfExist(new File(runme_ca));
+        deleteIfExist(new File(runme_na));
 
         SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
         mLogView.setTextSize(Float.valueOf(mPrefs.getString("fontsize", "12")));
 
-        showTitle(getString(R.string.buildwindow_name) + " - " + mFileName);
+        showTitle(getString(R.string.buildwindow_name) + " - " + mFilePath);
 
-        String fileName = new File(mFileName).getName();
+        String fileName = new File(mFilePath).getName();
         if (fileName.contentEquals("Makefile") || fileName.contentEquals("makefile")) {
             mCommand = "make " + systemShell;
             argsDialog(getString(R.string.make_title), getString(R.string.make_args));
@@ -115,13 +107,13 @@ public class BuildActivity extends AppCompatActivity {
                     argsDialog(getString(R.string.make_title), getString(R.string.make_args));
                     return;
 
-                } else if (ext.contentEquals(".c") || ext.contentEquals(".s") || ext.endsWith(".m")) {
+                } else if (Catalog.getModeByName("C").acceptFile(mFilePath, fileName)) {
                     mCommand = "gcc-4.9 " + fileName;
                     if (mForceBuild) {
                         mCommand += " " + mPrefs.getString("force_ccopts", "");
                     }
 
-                } else if (ext.contentEquals(".c++") || ext.contentEquals(".cpp") || ext.endsWith(".mm")) {
+                } else if (Catalog.getModeByName("C++").acceptFile(mFilePath, fileName)) {
                     mCommand = "g++-4.9 " + fileName;
                     if (mForceBuild) {
                         mCommand += " " + mPrefs.getString("force_cxxopts", "");
@@ -135,7 +127,8 @@ public class BuildActivity extends AppCompatActivity {
                         mCommand += " " + mPrefs.getString("force_ccopts", "");
                     }
 
-                } else if (ext.contentEquals(".java") && (new File(mCCToolsDir, "bin/javac")).exists()) {
+                } else if (Catalog.getModeByName("Java").acceptFile(mFilePath, fileName)
+                        && (new File(mCCToolsDir, "bin/javac")).exists()) {
                     mCommand = "javac-single " + mOutFile;
                     mExecJava = true;
                 }
@@ -153,6 +146,12 @@ public class BuildActivity extends AppCompatActivity {
         Log.i(TAG, "Unknown filetype, nothing to do");
         output(getString(R.string.unknown_filetype) + "\n");
         output(getString(R.string.known_filetypes) + "\n");
+    }
+
+    private void deleteIfExist(File file) {
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
 
@@ -402,6 +401,7 @@ public class BuildActivity extends AppCompatActivity {
                             }
                         };
                         execThread.start();
+
                         outputStream.write("export PS1=''\n".getBytes());
                         mCommand = "exec " + mCommand + "\n";
                         outputStream.write(mCommand.getBytes());
@@ -410,11 +410,12 @@ public class BuildActivity extends AppCompatActivity {
                             output(errstr + "\n");
                             if (DLog.DEBUG) DLog.w(TAG, "stdout: " + errstr);
                         } while (execThread.isAlive());
+
                         if (mExitCode != 0) {
                             output(getString(R.string.build_error) + " " + mExitCode + "\n");
-                            showTitle(getString(R.string.buildwindow_name_error) + " - " + mFileName);
+                            showTitle(getString(R.string.buildwindow_name_error) + " - " + mFilePath);
                         } else
-                            showTitle(getString(R.string.buildwindow_name_done) + " - " + mFileName);
+                            showTitle(getString(R.string.buildwindow_name_done) + " - " + mFilePath);
 
                         Log.e(TAG, "process exit code " + mExitCode);
                         outputStream.close();

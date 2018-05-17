@@ -627,7 +627,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 if (ext.contentEquals(".sh")) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
                     intent.putExtra(BuildConstants.EXTRA_EXEC_FILE, file.getAbsolutePath());
-                    intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
                     intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force && mPrefs.getBoolean("force_run", false));
                     startActivity(intent);
                     return;
@@ -636,7 +635,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 if (ext.contentEquals(".lua") && new File(getToolchainDir(), "cctools/bin/luajit").exists()) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
                     intent.putExtra(BuildConstants.EXTRA_EXEC_FILE, getToolchainDir() + "/cctools/bin/luajit " + file.getAbsolutePath());
-                    intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
                     intent.putExtra(BuildConstants.EXTRA_WORK_DIR, file.getParentFile().getAbsolutePath());
                     intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force && mPrefs.getBoolean("force_run", false));
                     startActivity(intent);
@@ -646,7 +644,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 if ((ext.equals(".pl") || ext.equals(".pm")) && new File(getToolchainDir() + "/cctools/bin/perl").exists()) {
                     Intent intent = new Intent(CCToolsActivity.this, LauncherConsoleActivity.class);
                     intent.putExtra(BuildConstants.EXTRA_EXEC_FILE, getToolchainDir() + "/cctools/bin/perl " + file.getAbsolutePath());
-                    intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
                     intent.putExtra(BuildConstants.EXTRA_WORK_DIR, file.getParentFile().getAbsolutePath());
                     intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force && mPrefs.getBoolean("force_run", false));
                     startActivity(intent);
@@ -656,7 +653,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
             Intent intent = new Intent(this, BuildActivity.class);
             intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
-            intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
             intent.putExtra(BuildConstants.EXTRA_TMP_DIR, EnvironmentPath.getSdCardTmpDir());
             intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, force);
             startActivity(intent);

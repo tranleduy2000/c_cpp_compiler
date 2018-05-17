@@ -3,7 +3,6 @@ package com.pdaxrom.cctools;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -49,32 +48,30 @@ public class TermActivity extends AppCompatActivity {
 
         String fileName = getIntent().getStringExtra(BuildConstants.EXTRA_FILE_NAME);
         String workdir = getIntent().getStringExtra(BuildConstants.EXTRA_WORK_DIR);
-        String cctoolsDir = getIntent().getStringExtra(BuildConstants.EXTRA_CCTOOLS_DIR);
 
         showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_executing));
 
         SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
 
         mTermView = findViewById(R.id.emulatorView);
-        mSession = createShellTermSession(fileName, cctoolsDir, workdir);
+        mSession = createShellTermSession(fileName, workdir);
         mTermView.attachSession(mSession);
         mTermView.setDensity(getResources().getDisplayMetrics());
         mTermView.setTextSize(Integer.valueOf(mPrefs.getString("console_fontsize", "12")));
 
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
-
         mTermView.onResume();
     }
-
+    @Override
     protected void onPause() {
         mTermView.onPause();
-
         super.onPause();
     }
-
+    @Override
     protected void onDestroy() {
         if (mSession != null) {
             mSession.finish();
@@ -101,29 +98,13 @@ public class TermActivity extends AppCompatActivity {
         handler.post(proc);
     }
 
-    private ShellTermSession createShellTermSession(String cmdline, String cctoolsDir, String workdir) {
+    private ShellTermSession createShellTermSession(String cmdline, String workdir) {
         cmdline = cmdline.replaceAll("\\s+", " ");
         Log.i(TAG, "Shell sesion for " + cmdline + "\n");
-        String[] envp = {
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
-                "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:" + System.getenv("PATH"),
-                "ANDROID_ASSETS=/system/app",
-                "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
-                "ANDROID_ROOT=/system",
-                "CCTOOLSDIR=" + cctoolsDir,
-                "CCTOOLSRES=" + getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-                "HOME=" + EnvironmentPath.getHomeDir(this),
-                "SHELL=" + getShell(cctoolsDir),
-                "TERM=xterm",
-                "PS1=$ ",
-        };
+        String[] envp = EnvironmentPath.buildEnv(this);
         String[] argv = cmdline.split("\\s+");
-
         Log.i(TAG, "argv " + argv[0]);
         Log.i(TAG, "envp " + Arrays.toString(envp));
-
         isRunning = true;
         return new ShellTermSession(argv, envp, workdir, mMsgHandler);
     }
