@@ -46,11 +46,13 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
     private static final int ITEM_TYPE_GROUP = 1;
     private final List<MenuItemInfo> menuItems;
     private final LayoutInflater inflater;
+    private Context mContext;
     private MenuItem.OnMenuItemClickListener menuItemClickListener;
     private MenuManager mMenuManager;
 
     public MainMenuAdapter(Context context) {
         inflater = LayoutInflater.from(context);
+        this.mContext = context;
 
         MenuFactory menuFactory = MenuFactory.getInstance(context);
         MenuGroup[] groups = MenuGroup.values();
@@ -89,7 +91,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
         if (holder instanceof ItemViewHolder) {
             final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.mTextView.setText(item.getTitleResId());
-            Drawable icon = MenuManager.makeMenuNormalIcon(itemViewHolder.itemView.getResources(), item.getIconResId());
+            Drawable icon = MenuManager.makeMenuNormalIcon(mContext, item.getIconResId());
             itemViewHolder.mTextView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
             itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

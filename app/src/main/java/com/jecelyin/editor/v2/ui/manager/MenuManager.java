@@ -19,13 +19,13 @@
 package com.jecelyin.editor.v2.ui.manager;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 
+import com.duy.ccppcompiler.R;
 import com.duy.editor.EditorActivity;
 import com.jecelyin.common.utils.DrawableUtils;
-import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
 
 /**
@@ -43,7 +43,6 @@ public class MenuManager {
         adapter.setMenuItemClickListener(editorActivity);
     }
 
-    @SuppressWarnings("ResourceType")
     public static void init(Context context) {
         int[] attrs = new int[]{
                 R.attr.toolbarIconNormalColor,
@@ -57,8 +56,8 @@ public class MenuManager {
         a.recycle();
     }
 
-    public static Drawable makeToolbarNormalIcon(Resources res, int resId) {
-        Drawable d = res.getDrawable(resId);
+    public static Drawable makeToolbarNormalIcon(Context context, int resId) {
+        Drawable d = ContextCompat.getDrawable(context, resId);
         return DrawableUtils.tintDrawable(d, toolbarIconNormalColor);
     }
 
@@ -70,8 +69,8 @@ public class MenuManager {
         return DrawableUtils.tintDrawable(d, toolbarIconDisabledColor);
     }
 
-    public static Drawable makeMenuNormalIcon(Resources res, int resId) {
-        Drawable d = res.getDrawable(resId);
+    public static Drawable makeMenuNormalIcon(Context context, int resId) {
+        Drawable d = ContextCompat.getDrawable(context, resId);
         return DrawableUtils.tintDrawable(d, menuIconNormalColor);
     }
 
