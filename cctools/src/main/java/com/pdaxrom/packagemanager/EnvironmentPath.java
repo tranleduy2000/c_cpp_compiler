@@ -62,6 +62,14 @@ public class EnvironmentPath {
         return mkdirIfNotExist(path);
     }
 
+    /**
+     * @return temp directory for execute file
+     */
+    public static String getTmpExeDir(Context context) {
+        File file = new File(EnvironmentPath.getToolchainsDir(context), "tmp");
+        return mkdirIfNotExist(file);
+    }
+
 
     /**
      * External storage

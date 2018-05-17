@@ -67,7 +67,7 @@
     <string name="buildButton">Build</string>
     <string name="playButton">Run</string>
     <string name="logButton">Build log</string>
-    <string name="terminalButton">Terminal</string>
+    <string name="title_menu_terminal">Terminal</string>
     <string name="imgbuttdesc"></string>
     <string name="menu_goto">Goto</string>
     <string name="menu_search">Search</string>

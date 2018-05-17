@@ -31,4 +31,5 @@ android {
 dependencies {
     api project(':emulatorview')
     api project(':libtermexec')
+    api project(':style')
 }

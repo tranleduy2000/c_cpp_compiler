@@ -19,6 +19,7 @@ package jackpal.androidterm.compat;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 
 public class AlertDialogCompat extends AlertDialog {
     // API 11
@@ -45,10 +46,10 @@ public class AlertDialogCompat extends AlertDialog {
 
     ////////////////////////////////////////////////////////////
     public static AlertDialog newInstance(Context context, int theme) {
-        if (AndroidCompat.SDK >= 14) {
+        if (Build.VERSION.SDK_INT >= 14) {
             return (new Api14OrLater(context, theme));
         }
-        if (AndroidCompat.SDK >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             return (new Api11OrLater(context, theme));
         }
         return (new AlertDialogCompat(context));
@@ -60,7 +61,7 @@ public class AlertDialogCompat extends AlertDialog {
     }
 
     public static AlertDialog.Builder newInstanceBuilder(Context context, int theme) {
-        if (AndroidCompat.SDK >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             return new Api11OrLaterBuilder(context, theme);
         } else {
             return new AlertDialog.Builder(context);

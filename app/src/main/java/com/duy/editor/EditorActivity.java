@@ -78,6 +78,8 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
+import com.pdaxrom.cctools.BuildActivity;
+import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -86,6 +88,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import jackpal.androidterm.MultiTermActivity;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -432,12 +436,18 @@ public class EditorActivity extends FullScreenActivity
             case R.id.action_install_add_on:
                 startActivity(new Intent(this, PackageManagerActivity.class));
                 break;
-
+            case R.id.action_open_terminal:
+                openTerminal();
+                break;
             default:
                 commandEnum = MenuFactory.getInstance(this).idToCommandEnum(id);
                 if (commandEnum != Command.CommandEnum.NONE)
                     doCommand(new Command(commandEnum));
         }
+    }
+
+    private void openTerminal() {
+        startActivity(new Intent(this, MultiTermActivity.class));
     }
 
     public void createNewFile() {
@@ -471,18 +481,30 @@ public class EditorActivity extends FullScreenActivity
             String path = currentEditor.getPath();
             srcFiles[0] = new File(path);
         }
-        CompilerFactory.CompileType compileType;
+
+        // TODO: 17-May-18 improve
+        CompilerFactory.CompileType compilerType;
         if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
-            compileType = CompilerFactory.CompileType.G_PLUS_PLUS;
+            compilerType = CompilerFactory.CompileType.G_PLUS_PLUS;
+        } else if (srcFiles[0].getName().toLowerCase().endsWith(".c")) {
+            compilerType = CompilerFactory.CompileType.GCC;
         } else {
-            compileType = CompilerFactory.CompileType.GCC;
+            compilerType = CompilerFactory.CompileType.GCC;
         }
-        INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compileType);
+        INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compilerType);
         CompileManager compileManager = new CompileManager(EditorActivity.this);
         compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
         CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-        compileTask.execute();
+        //compileTask.execute();
+
+        File file = srcFiles[0];
+        Intent intent = new Intent(this, BuildActivity.class);
+        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
+        intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
+        intent.putExtra(BuildConstants.EXTRA_TMP_DIR, EnvironmentPath.getSdCardTmpDir());
+        intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
+        startActivity(intent);
     }
 
     @Override

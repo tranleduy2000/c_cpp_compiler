@@ -16,7 +16,6 @@
 
 package jackpal.androidterm;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -31,10 +30,12 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -76,7 +77,7 @@ import jackpal.androidterm.util.TermSettings;
  * A terminal emulator activity.
  */
 
-public class TermActivity extends Activity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+public class SingleTermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
     /**
@@ -88,8 +89,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     private final static int PASTE_ID = 2;
     private final static int SEND_CONTROL_KEY_ID = 3;
     private final static int SEND_FN_KEY_ID = 4;
-    // Available on API 12 and later
-    private static final int WIFI_MODE_FULL_HIGH_PERF = 3;
     /**
      * The ViewFlipper which holds the collection of EmulatorView widgets.
      */
@@ -97,7 +96,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     private SessionList mTermSessions;
     private TermSettings mSettings;
     private boolean mAlreadyStarted = false;
-    private boolean mStopServiceOnFinish = false;
     private Intent TSIntent;
     private int onResumeSelectWindow = -1;
     private boolean mBackKeyPressed;
@@ -212,6 +210,7 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        setContentView(R.layout.term_activity);
 
         Log.v(TermDebug.LOG_TAG, "onCreate");
 
@@ -224,25 +223,19 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
 
         TSIntent = new Intent(this, TermService.class);
         startService(TSIntent);
-
-        if (AndroidCompat.SDK >= 11) {
-            int actionBarMode = mSettings.actionBarMode();
-            mActionBarMode = actionBarMode;
-            if (AndroidCompat.V11ToV20) {
-                switch (actionBarMode) {
-                    case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
-                        setTheme(R.style.Theme_Holo);
-                        break;
-                    case TermSettings.ACTION_BAR_MODE_HIDES:
-                        setTheme(R.style.Theme_Holo_ActionBarOverlay);
-                        break;
-                }
+        int actionBarMode = mSettings.actionBarMode();
+        mActionBarMode = actionBarMode;
+        if (AndroidCompat.V11ToV20) {
+            switch (actionBarMode) {
+                case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
+                    setTheme(R.style.Theme_Holo);
+                    break;
+                case TermSettings.ACTION_BAR_MODE_HIDES:
+                    setTheme(R.style.Theme_Holo_ActionBarOverlay);
+                    break;
             }
-        } else {
-            mActionBarMode = TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE;
         }
 
-        setContentView(R.layout.term_activity);
         mViewFlipper = findViewById(VIEW_FLIPPER);
 
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
@@ -349,10 +342,7 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
-
-        if (mStopServiceOnFinish) {
-            stopService(TSIntent);
-        }
+        stopService(TSIntent);
         mTermService = null;
         mTSConnection = null;
     }
@@ -418,7 +408,7 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
             WindowManager.LayoutParams params = win.getAttributes();
             final int FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
             int desiredFlag = mSettings.showStatusBar() ? 0 : FULLSCREEN;
-            if (desiredFlag != (params.flags & FULLSCREEN) || (AndroidCompat.SDK >= 11 && mActionBarMode != mSettings.actionBarMode())) {
+            if (desiredFlag != (params.flags & FULLSCREEN) || (Build.VERSION.SDK_INT >= 11 && mActionBarMode != mSettings.actionBarMode())) {
                 if (mAlreadyStarted) {
                     // Can't switch to/from fullscreen after
                     // starting the activity.
@@ -452,13 +442,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     public void onPause() {
         super.onPause();
 
-        if (AndroidCompat.SDK < 5) {
-            /* If we lose focus between a back key down and a back key up,
-               we shouldn't respond to the next back key up event unless
-               we get another key down first */
-            mBackKeyPressed = false;
-        }
-
         /* Explicitly close the input method
            Otherwise, the soft keyboard could cover up whatever activity takes
            our place */
@@ -467,7 +450,9 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
             @Override
             public void run() {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(token, 0);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(token, 0);
+                }
             }
         }.start();
     }
@@ -629,7 +614,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
                     // Close the activity if user closed all sessions
                     // TODO the left path will be invoked when nothing happened, but this Activity was destroyed!
                     if (mTermSessions == null || mTermSessions.size() == 0) {
-                        mStopServiceOnFinish = true;
                         finish();
                     }
                 }
@@ -681,37 +665,19 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
         /* The pre-Eclair default implementation of onKeyDown() would prevent
            our handling of the Back key in onKeyUp() from taking effect, so
            ignore it here */
-        if (AndroidCompat.SDK < 5 && keyCode == KeyEvent.KEYCODE_BACK) {
-            /* Android pre-Eclair has no key event tracking, and a back key
-               down event delivered to an activity above us in the back stack
-               could be succeeded by a back key up event to us, so we need to
-               keep track of our own back key presses */
-            mBackKeyPressed = true;
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if (AndroidCompat.SDK < 5) {
-                    if (!mBackKeyPressed) {
-                    /* This key up event might correspond to a key down
-                       delivered to another activity -- ignore */
-                        return false;
-                    }
-                    mBackKeyPressed = false;
-                }
                 if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES && mActionBar != null && mActionBar.isShowing()) {
                     mActionBar.hide();
                     return true;
                 }
                 switch (mSettings.getBackKeyAction()) {
                     case TermSettings.BACK_KEY_STOPS_SERVICE:
-                        mStopServiceOnFinish = true;
                     case TermSettings.BACK_KEY_CLOSES_ACTIVITY:
                         finish();
                         return true;
@@ -741,7 +707,6 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
         }
 
         if (sessions.size() == 0) {
-            mStopServiceOnFinish = true;
             finish();
         } else if (sessions.size() < mViewFlipper.getChildCount()) {
             for (int i = 0; i < mViewFlipper.getChildCount(); ++i) {
@@ -880,7 +845,7 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
     private void doUIToggle(int x, int y, int width, int height) {
         switch (mActionBarMode) {
             case TermSettings.ACTION_BAR_MODE_NONE:
-                if (AndroidCompat.SDK >= 11 && (mHaveFullHwKeyboard || y < height / 2)) {
+                if (Build.VERSION.SDK_INT >= 11 && (mHaveFullHwKeyboard || y < height / 2)) {
                     openOptionsMenu();
                     return;
                 } else {
@@ -928,13 +893,13 @@ public class TermActivity extends Activity implements UpdateCallback, SharedPref
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView label = new TextView(TermActivity.this);
+            TextView label = new TextView(SingleTermActivity.this);
             String title = getSessionTitle(position, getString(R.string.window_title, position + 1));
             label.setText(title);
-            if (AndroidCompat.SDK >= 13) {
-                label.setTextAppearance(TermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
+            if (Build.VERSION.SDK_INT >= 13) {
+                label.setTextAppearance(SingleTermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
             } else {
-                label.setTextAppearance(TermActivity.this, android.R.style.TextAppearance_Medium);
+                label.setTextAppearance(SingleTermActivity.this, android.R.style.TextAppearance_Medium);
             }
             return label;
         }

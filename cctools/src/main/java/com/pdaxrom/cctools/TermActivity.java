@@ -47,9 +47,9 @@ public class TermActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.term);
 
-        String fileName = getIntent().getStringExtra("filename");
-        String workdir = getIntent().getStringExtra("workdir");
-        String cctoolsDir = getIntent().getStringExtra("cctoolsdir");
+        String fileName = getIntent().getStringExtra(BuildConstants.EXTRA_FILE_NAME);
+        String workdir = getIntent().getStringExtra(BuildConstants.EXTRA_WORK_DIR);
+        String cctoolsDir = getIntent().getStringExtra(BuildConstants.EXTRA_CCTOOLS_DIR);
 
         showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_executing));
 

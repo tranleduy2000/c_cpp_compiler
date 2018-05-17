@@ -67,7 +67,7 @@
     <string name="buildButton">Собрать</string>
     <string name="playButton">Запустить</string>
     <string name="logButton">Журнал сборки</string>
-    <string name="terminalButton">Терминал</string>
+    <string name="title_menu_terminal">Терминал</string>
     <string name="imgbuttdesc"></string>
     <string name="menu_goto">Перейти</string>
     <string name="menu_search">Поиск</string>

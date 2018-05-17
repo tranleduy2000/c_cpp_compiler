@@ -64,7 +64,7 @@
     <item
         android:id="@+id/item_terminal"
         android:icon="@drawable/gnome_terminal"
-        android:title="@string/terminalButton"
+        android:title="@string/title_menu_terminal"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_pkgmgr"

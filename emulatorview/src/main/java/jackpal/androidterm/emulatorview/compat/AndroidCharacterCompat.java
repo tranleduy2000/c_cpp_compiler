@@ -20,10 +20,6 @@ public class AndroidCharacterCompat {
     }
 
     public static int getEastAsianWidth(char c) {
-        if (AndroidCompat.SDK >= 8) {
-            return Api8OrLater.getEastAsianWidth(c);
-        } else {
-            return EAST_ASIAN_WIDTH_NARROW;
-        }
+        return Api8OrLater.getEastAsianWidth(c);
     }
 }

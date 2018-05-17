@@ -25,8 +25,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-
-import jackpal.androidterm.emulatorview.compat.AndroidCompat;
+import android.os.Build;
 
 
 class Bitmap4x8FontRenderer extends BaseTextRenderer {
@@ -41,7 +40,7 @@ class Bitmap4x8FontRenderer extends BaseTextRenderer {
 
     public Bitmap4x8FontRenderer(Resources resources, ColorScheme scheme) {
         super(scheme);
-        int fontResource = AndroidCompat.SDK <= 3 ? R.drawable.atari_small
+        int fontResource = Build.VERSION.SDK_INT <= 3 ? R.drawable.atari_small
                 : R.drawable.atari_small_nodpi;
         mFont = BitmapFactory.decodeResource(resources,fontResource);
         mPaint = new Paint();

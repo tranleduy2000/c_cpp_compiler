@@ -33,7 +33,7 @@
     <application>
 
         <activity
-            android:name=".TermActivity"
+            android:name=".MultiTermActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible">

@@ -16,6 +16,8 @@
 
 package jackpal.androidterm.compat;
 
+import android.os.Build;
+
 import java.io.File;
 
 /**
@@ -23,7 +25,7 @@ import java.io.File;
  */
 public class FileCompat {
     public static boolean canExecute(File file) {
-        if (AndroidCompat.SDK < 9) {
+        if (Build.VERSION.SDK_INT < 9) {
             return Api8OrEarlier.canExecute(file);
         } else {
             return Api9OrLater.canExecute(file);

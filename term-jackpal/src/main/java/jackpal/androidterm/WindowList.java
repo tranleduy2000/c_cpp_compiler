@@ -32,7 +32,6 @@ import android.widget.ListView;
 
 import jackpal.androidterm.compat.ActionBarCompat;
 import jackpal.androidterm.compat.ActivityCompat;
-import jackpal.androidterm.compat.AndroidCompat;
 import jackpal.androidterm.util.SessionList;
 
 public class WindowList extends ListActivity {
@@ -62,11 +61,9 @@ public class WindowList extends ListActivity {
         setResult(RESULT_CANCELED);
 
         // Display up indicator on action bar home button
-        if (AndroidCompat.SDK >= 11) {
-            ActionBarCompat bar = ActivityCompat.getActionBar(this);
-            if (bar != null) {
-                bar.setDisplayOptions(ActionBarCompat.DISPLAY_HOME_AS_UP, ActionBarCompat.DISPLAY_HOME_AS_UP);
-            }
+        ActionBarCompat bar = ActivityCompat.getActionBar(this);
+        if (bar != null) {
+            bar.setDisplayOptions(ActionBarCompat.DISPLAY_HOME_AS_UP, ActionBarCompat.DISPLAY_HOME_AS_UP);
         }
     }
 
@@ -113,7 +110,7 @@ public class WindowList extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent data = new Intent();
-        data.putExtra(TermActivity.EXTRA_WINDOW_ID, position - 1);
+        data.putExtra(MultiTermActivity.EXTRA_WINDOW_ID, position - 1);
         setResult(RESULT_OK, data);
         finish();
     }

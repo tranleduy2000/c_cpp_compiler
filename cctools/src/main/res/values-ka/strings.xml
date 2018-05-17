@@ -66,7 +66,7 @@
     <string name="buildButton">აწყობა</string>
     <string name="playButton">გაშვება</string>
     <string name="logButton">აწყობის ლოგი</string>
-    <string name="terminalButton">ტერმინალი</string>
+    <string name="title_menu_terminal">ტერმინალი</string>
     <string name="imgbuttdesc"></string>
     <string name="menu_goto">გადასვლა</string>
     <string name="menu_search">ძიება</string>

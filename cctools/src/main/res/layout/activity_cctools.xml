@@ -103,7 +103,7 @@
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
                 android:src="@drawable/gnome_terminal"
-                android:text="@string/terminalButton" />
+                android:text="@string/title_menu_terminal" />
 
         </LinearLayout>
     </HorizontalScrollView>

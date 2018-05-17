@@ -16,6 +16,7 @@
 
 package jackpal.androidterm.compat;
 
+import android.os.Build;
 import android.view.MenuItem;
 
 /**
@@ -28,7 +29,7 @@ public class MenuItemCompat {
     public static final int SHOW_AS_ACTION_WITH_TEXT = 4;
 
     public static void setShowAsAction(MenuItem item, int actionEnum) {
-        if (AndroidCompat.SDK >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             Api11OrLater.setShowAsAction(item, actionEnum);
         }
     }

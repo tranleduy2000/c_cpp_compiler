@@ -113,6 +113,8 @@ public class MenuFactory {
                 Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_cpp_example));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_install_add_on,
                 Command.CommandEnum.NONE, R.drawable.baseline_extension_24, R.string.title_menu_adds_on));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open_terminal,
+                Command.CommandEnum.NONE, R.drawable.ic_terminal_black, R.string.title_menu_terminal));
 
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_undo,
