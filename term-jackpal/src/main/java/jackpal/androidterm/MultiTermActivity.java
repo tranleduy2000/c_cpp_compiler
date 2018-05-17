@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -211,6 +212,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.term_activity);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         Log.v(TermDebug.LOG_TAG, "onCreate");
 
@@ -223,19 +225,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
 
         TSIntent = new Intent(this, TermService.class);
         startService(TSIntent);
-        int actionBarMode = mSettings.actionBarMode();
-        mActionBarMode = actionBarMode;
-        if (AndroidCompat.V11ToV20) {
-            switch (actionBarMode) {
-                case TermSettings.ACTION_BAR_MODE_ALWAYS_VISIBLE:
-                    setTheme(R.style.Theme_Holo);
-                    break;
-                case TermSettings.ACTION_BAR_MODE_HIDES:
-                    setTheme(R.style.Theme_Holo_ActionBarOverlay);
-                    break;
-            }
-        }
-
+        mActionBarMode = mSettings.actionBarMode();
         mViewFlipper = findViewById(VIEW_FLIPPER);
 
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
@@ -254,6 +244,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         mAlreadyStarted = true;
     }
 
+    @SuppressWarnings("unused")
     private String makePathFromBundle(Bundle extras) {
         if (extras == null || extras.size() == 0) {
             return "";

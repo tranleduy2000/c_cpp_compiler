@@ -9,7 +9,7 @@ public class CCtoolsPreferences extends PreferenceActivity implements SharedPref
         super.onCreate(savedInstanceState);
         getPreferenceManager().setSharedPreferencesName(CCToolsActivity.SHARED_PREFS_NAME);
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.cctools_preferences);
+        addPreferencesFromResource(R.xml.term_preferences);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
     }

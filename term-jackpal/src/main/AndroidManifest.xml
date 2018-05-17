@@ -40,7 +40,6 @@
 
         </activity>
 
-
         <activity
             android:name="TermPreferences"
             android:label="@string/preferences" />
