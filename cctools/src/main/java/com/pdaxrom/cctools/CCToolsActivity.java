@@ -664,12 +664,8 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void showLog() {
-        if (BuildActivity.errorsList.isEmpty()) {
-            Toast.makeText(getBaseContext(), getString(R.string.log_empty), Toast.LENGTH_SHORT).show();
-            return;
-        }
         ArrayList<HashMap<String, String>> menuItems = new ArrayList<HashMap<String, String>>();
-        for (LogItem item : BuildActivity.errorsList) {
+        for (LogItem item :  new ArrayList<LogItem>()) {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(KEY_FILE, item.getFile());
             map.put(KEY_LINE, Integer.toString(item.getLine()));

@@ -17,8 +17,7 @@
             android:id="@+id/buildLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:textSize="12sp"
+            android:textColor="?android:textColorPrimary"
             android:typeface="monospace" />
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

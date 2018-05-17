@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.packagemanager.EnvironmentPath;
-import com.pdaxrom.utils.LogItem;
 import com.pdaxrom.utils.Utils;
 
 import java.io.BufferedReader;
@@ -30,9 +29,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class BuildActivity extends AppCompatActivity {
@@ -40,7 +36,6 @@ public class BuildActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "GCCArgsFile";
 
-    public static ArrayList<LogItem> errorsList = new ArrayList<>();
     private TextView mLogView;
     private String mFileName;
     private String mCCToolsDir;
@@ -375,8 +370,6 @@ public class BuildActivity extends AppCompatActivity {
                 if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + mCommand);
                 String systemLdPath = System.getenv("LD_LIBRARY_PATH") != null ? ":" + System.getenv("LD_LIBRARY_PATH") : "";
                 final String[] envp = {
-                        "PWD=" + mWorkDir,
-                        "TMPDIR=" + mTmpDir,
                         "PATH=" + mCCToolsDir + "/bin:" + mCCToolsDir + "/sbin:" + System.getenv("PATH"),
                         "ANDROID_ASSETS=/system/app",
                         "ANDROID_BOOTLOGO=1",
@@ -386,8 +379,10 @@ public class BuildActivity extends AppCompatActivity {
                         "CCTOOLSRES=" + getPackageResourcePath(),
                         "LD_LIBRARY_PATH=" + mCCToolsDir + "/lib" + systemLdPath,
                         "HOME=" + EnvironmentPath.getHomeDir(BuildActivity.this),
+                        "PS1=$ ",
+                        "PWD=" + mWorkDir,
+                        "TMPDIR=" + mTmpDir,
                         "TMPEXEDIR=" + mTmpExeDir,
-                        "PS1=$ "
                 };
                 String shell = "/system/bin/sh";
                 shell = shell.replaceAll("\\s+", " ");
@@ -397,9 +392,6 @@ public class BuildActivity extends AppCompatActivity {
                 mProcessId = pId[0];
                 if (mProcessId > 0) {
                     try {
-                        Utils.setPtyUTF8Mode(fileDescriptor, true);
-                        Utils.setPtyWindowSize(fileDescriptor, 64, 128, 0, 0);
-
                         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileDescriptor)));
                         FileOutputStream outputStream = new FileOutputStream(fileDescriptor);
                         Thread execThread = new Thread() {
@@ -411,73 +403,12 @@ public class BuildActivity extends AppCompatActivity {
                         };
                         execThread.start();
                         outputStream.write("export PS1=''\n".getBytes());
-
-                        Pattern pat1 = Pattern.compile("^(\\S+):(\\d+):(\\d+): (\\S+|\\S+ \\S+): (.*)$");
-                        Pattern pat2 = Pattern.compile("^(\\S+):(\\d+): (\\S+|\\S+ \\S+): (.*)$");
-                        Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
-                        errorsList.clear();
                         mCommand = "exec " + mCommand + "\n";
                         outputStream.write(mCommand.getBytes());
-                        int skipStrings = 3; //skip echos from two command strings
                         do {
-                            String errstr;
-                            try {
-                                errstr = reader.readLine();
-                                // remove escape sequence
-                                errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
-                                // remove clearing new line
-                                Matcher m = patClearNewLine.matcher(errstr);
-                                if (m.find()) {
-                                    int length = m.end() - m.start();
-                                    if (m.start() > length) {
-                                        errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
-                                    }
-                                }
-                            } catch (IOException e) {
-                                break;
-                            }
-
-                            Matcher m = pat1.matcher(errstr);
-                            if (m.find()) {
-                                Log.e(TAG, "out " + m.group(1) + "|" + m.group(2) + "|" + m.group(3) + "|" + m.group(4) + "|" + m.group(5));
-                                int idx = errorsList.size() - 1;
-                                if (idx >= 0 &&
-                                        errorsList.get(idx).getFile().contentEquals(m.group(1)) &&
-                                        errorsList.get(idx).getType().contentEquals(m.group(4)) &&
-                                        errorsList.get(idx).getLine() == Integer.parseInt(m.group(2)) &&
-                                        errorsList.get(idx).getPos() == Integer.parseInt(m.group(3))) {
-                                    errorsList.get(idx).setMessage(errorsList.get(idx).getMessage() + " " + m.group(5));
-                                } else {
-                                    LogItem item = new LogItem(
-                                            m.group(4),
-                                            m.group(1),
-                                            Integer.parseInt(m.group(2)),
-                                            Integer.parseInt(m.group(3)), m.group(5));
-                                    errorsList.add(item);
-                                }
-
-                            } else {
-                                m = pat2.matcher(errstr);
-                                if (m.find()) {
-                                    Log.e(TAG, "out " + m.group(1) + "|" + m.group(2) + "|" + m.group(3) + "|" + m.group(4));
-                                    int idx = errorsList.size() - 1;
-                                    if (idx >= 0 &&
-                                            errorsList.get(idx).getFile().contentEquals(m.group(1)) &&
-                                            errorsList.get(idx).getType().contentEquals(m.group(3)) &&
-                                            errorsList.get(idx).getLine() == Integer.parseInt(m.group(2))) {
-                                        errorsList.get(idx).setMessage(errorsList.get(idx).getMessage() + " " + m.group(4));
-                                    } else {
-                                        LogItem item = new LogItem(m.group(3), m.group(1), Integer.parseInt(m.group(2)), -1, m.group(4));
-                                        errorsList.add(item);
-                                    }
-                                }
-                            }
-                            if (skipStrings > 0) {
-                                skipStrings--;
-                            } else {
-                                output(errstr + "\n");
-                            }
-                            if (DLog.DEBUG) DLog.d(TAG, "errstr = " + errstr);
+                            String errstr = reader.readLine();
+                            output(errstr + "\n");
+                            if (DLog.DEBUG) DLog.w(TAG, "stdout: " + errstr);
                         } while (execThread.isAlive());
                         if (mExitCode != 0) {
                             output(getString(R.string.build_error) + " " + mExitCode + "\n");
