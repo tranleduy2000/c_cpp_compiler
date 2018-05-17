@@ -127,7 +127,7 @@
     <string name="create_new">შექმნა:</string>
     <string name="cannot_create">შექმნა შეუძლებელია!</string>
 
-    <string name="pkgmgrButton">დანამატები</string>
+    <string name="title_menu_add_ons">დანამატები</string>
     <string name="pkgmgr_name">დანამატების მენეჯერი</string>
     <string name="pkginstaller_name">დანამატების ინსტალაცია/დეინსტალაცია</string>
 

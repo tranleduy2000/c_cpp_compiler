@@ -150,7 +150,7 @@
     <string name="message_file_move">Перемещение</string>
     <string name="message_file_delete">Удаление</string>
 
-    <string name="pkgmgrButton">Дополнения</string>
+    <string name="title_menu_add_ons">Дополнения</string>
     <string name="pkgmgr_name">Управление пакетами дополнений</string>
     <string name="pkginstaller_name">Установка/Удаление дополнений</string>
 

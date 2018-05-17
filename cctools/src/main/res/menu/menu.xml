@@ -69,7 +69,7 @@
     <item
         android:id="@+id/item_pkgmgr"
         android:icon="@drawable/pkgmgr"
-        android:title="@string/pkgmgrButton"
+        android:title="@string/title_menu_add_ons"
         app:showAsAction="always" />
     <item
         android:id="@+id/prefs"

@@ -237,7 +237,7 @@ public class EditorActivity extends FullScreenActivity
         List<MenuItemInfo> items = MenuFactory.getInstance(this).getToolbarIcon();
         for (MenuItemInfo item : items) {
             MenuItem menuItem = menu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), Menu.NONE, item.getTitleResId());
-            menuItem.setIcon(MenuManager.makeToolbarNormalIcon(res, item.getIconResId()));
+            menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, item.getIconResId()));
 
             menuItem.setOnMenuItemClickListener(this);
             menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);

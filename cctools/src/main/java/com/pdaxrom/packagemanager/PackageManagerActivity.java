@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -69,19 +70,21 @@ public class PackageManagerActivity extends FullScreenActivity {
     };
 
     private static final String TAG = "PkgMgrActivity";
-    private final Handler handler = new Handler();
+    @NonNull
+    private final Handler mHandler = new Handler();
     private String errorString = null;
     private Context context = this;
-    private PackagesLists packagesLists = new PackagesLists();
-    private String activityCmd = null;
-    private String activityData = null;
+    @NonNull
+    private PackagesLists mPackagesLists = new PackagesLists();
+    private String mActivityCmd = null;
+    private String mActivityData = null;
     // Last list position
-    private int lastPosition = 0;
-    private ListView listView;
-    private String sdCardDir;
-    private String backupDir;
-    private String toolchainDir;
-    private ProgressDialog progressDialog;
+    private int mLastPosition = 0;
+    private ListView mListView;
+    private String mSdCardDir;
+    private String mBackupDir;
+    private String mToolchainDir;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,90 +92,90 @@ public class PackageManagerActivity extends FullScreenActivity {
         setContentView(R.layout.activity_package_manager);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(R.string.title_menu_add_ons);
 
         setupDirs();
         setupVersion();
 
-        activityCmd = null;
-        activityData = null;
-        EditText inputSearch;
+        mListView = getListView();
+        mListView.requestFocus();
+
+        mActivityCmd = null;
+        mActivityData = null;
         if (getIntent().getExtras() != null) {
             String cmd = getIntent().getExtras().getString(EXTRA_CMD);
 
             Log.i(TAG, "External command " + cmd);
 
             if (ACTION_UPDATE.equals(cmd)) {
-                activityCmd = cmd;
+                mActivityCmd = cmd;
             } else if (ACTION_INSTALL.equals(cmd)) {
-                activityCmd = cmd;
-                activityData = getIntent().getExtras().getString(EXTRA_DATA);
+                mActivityCmd = cmd;
+                mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
             } else if (ACTION_UNINSTALL.equals(cmd)) {
-                activityCmd = cmd;
-                activityData = getIntent().getExtras().getString(EXTRA_DATA);
+                mActivityCmd = cmd;
+                mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
             }
 
             new DownloadRepoTask().execute(getReposList());
             return;
         } else {
-            inputSearch = findViewById(R.id.inputSearch);
+            EditText inputSearch = findViewById(R.id.inputSearch);
+            inputSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before,
+                                          int count) {
+                    if (start > 0) {
+                        mListView.setFilterText(s.toString());
+                    } else {
+                        mListView.clearTextFilter();
+                    }
+                }
+            });
             new DownloadRepoTask().execute(getReposList());
         }
 
-        // selecting single ListView item
-        listView = getListView();
-        // listening to single listitem click
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+        mListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // getting values from selected ListItem
                 final String name = ((TextView) view.findViewById(R.id.pkg_name)).getText().toString();
-
-                String toolchainDir = EnvironmentPath.getToolchainsDir(PackageManagerActivity.this);
-                String logFile = toolchainDir + INSTALLED_PACKAGE_DIR + name + ".list";
-
-                if ((new File(logFile)).exists()) {
-                    Builder dialog = new AlertDialog.Builder(context)
+                File logFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".list");
+                if (logFile.exists()) {
+                    new AlertDialog.Builder(context)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle(getString(R.string.pkg_selected) + name)
                             .setMessage(getString(R.string.pkg_alreadyinstalled))
                             .setCancelable(false)
-                            .setNeutralButton(getString(R.string.cancel), null);
-                    dialog.setNegativeButton(getString(R.string.pkg_uninstall), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            (new UninstallPackagesTask()).execute(name);
-                        }
-                    });
-                    dialog.show();
+                            .setNeutralButton(getString(R.string.cancel), null)
+                            .setNegativeButton(getString(R.string.pkg_uninstall), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new UninstallPackagesTask().execute(name);
+                                }
+                            })
+                            .create()
+                            .show();
                 } else {
-                    (new PrepareToInstallTask()).execute(name);
+                    new PrepareToInstallTask().execute(name);
                 }
             }
         });
-        listView.setTextFilterEnabled(true);
-        inputSearch.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                if (start > 0) {
-                    listView.setFilterText(s.toString());
-                } else {
-                    listView.clearTextFilter();
-                }
-            }
-        });
+        mListView.setTextFilterEnabled(true);
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
-        lastPosition = this.getListView().getFirstVisiblePosition();
-        Log.i(TAG, "Position " + lastPosition);
+        mLastPosition = this.getListView().getFirstVisiblePosition();
     }
 
     private ListView getListView() {
@@ -185,6 +188,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.item_update) {
@@ -198,31 +202,12 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private void setupDirs() {
-        sdCardDir = EnvironmentPath.getSdCardHomeDir();
-        backupDir = EnvironmentPath.getSdCardBackupDir();
-        String tmpDir = EnvironmentPath.getSdCardTmpDir();
-        toolchainDir = EnvironmentPath.getToolchainsDir(this);
-        String serviceDir = EnvironmentPath.getServiceDir(this);
-        String homeDir = EnvironmentPath.getHomeDir(this);
-
-        if (!(new File(sdCardDir)).exists()) {
-            (new File(sdCardDir)).mkdir();
-        }
-        if (!(new File(tmpDir)).exists()) {
-            (new File(tmpDir)).mkdir();
-        }
-        if (!(new File(backupDir)).exists()) {
-            (new File(backupDir)).mkdir();
-        }
-        if (!(new File(toolchainDir)).exists()) {
-            (new File(toolchainDir)).mkdir();
-        }
-        if (!(new File(serviceDir)).exists()) {
-            (new File(serviceDir)).mkdir();
-        }
-        if (!(new File(homeDir)).exists()) {
-            (new File(homeDir)).mkdir();
-        }
+        mSdCardDir = EnvironmentPath.getSdCardHomeDir();
+        mBackupDir = EnvironmentPath.getSdCardBackupDir();
+        EnvironmentPath.getSdCardTmpDir();
+        mToolchainDir = EnvironmentPath.getToolchainsDir(this);
+        EnvironmentPath.getServiceDir(this);
+        EnvironmentPath.getHomeDir(this);
     }
 
     private void setupVersion() {
@@ -311,47 +296,47 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         getListView().setAdapter(adapter);
 
-        if (lastPosition > 0 && lastPosition < repo.size()) {
-            this.getListView().setSelection(lastPosition);
+        if (mLastPosition > 0 && mLastPosition < repo.size()) {
+            getListView().setSelection(mLastPosition);
         }
 
     }
 
     private void showProgress(int title, int message) {
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle(getString(title));
-        progressDialog.setMessage(getString(message));
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setTitle(getString(title));
+        mProgressDialog.setMessage(getString(message));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
     }
 
     private void hideProgress() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 
     private void updateProgress(final int progress) {
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             public void run() {
-                progressDialog.setProgress(progress);
+                mProgressDialog.setProgress(progress);
             }
         });
     }
 
     private void updateProgress(final String progress) {
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             public void run() {
-                progressDialog.setMessage(progress);
+                mProgressDialog.setMessage(progress);
             }
         });
     }
 
     private void updateProgressTitle(final String out) {
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             public void run() {
-                progressDialog.setTitle(out);
+                mProgressDialog.setTitle(out);
             }
         });
     }
@@ -363,7 +348,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 .setMessage(message)
                 .setNeutralButton(getText(R.string.button_continue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if (activityCmd != null) {
+                        if (mActivityCmd != null) {
                             setResult(RESULT_CANCELED);
                             finish();
                             return;
@@ -381,7 +366,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             updateProgressTitle(getString(R.string.pkg_uninstallpackagetask) + " " + name);
             updateProgress(getString(R.string.wait_message));
             updateProgress(0);
-            String prermFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".prerm";
+            String prermFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".prerm";
             if ((new File(prermFile)).exists()) {
                 Log.i(TAG, "Execute prerm script " + prermFile);
                 Utils.chmod(prermFile, 0x1ed);
@@ -389,11 +374,11 @@ public class PackageManagerActivity extends FullScreenActivity {
                 (new File(prermFile)).delete();
             }
             updateProgress(25);
-            String descFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".pkgdesc";
+            String descFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".pkgdesc";
             if ((new File(descFile)).exists()) {
                 (new File(descFile)).delete();
             }
-            String logFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".list";
+            String logFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".list";
             if (!(new File(logFile)).exists()) {
                 updateProgress(100);
                 return false;
@@ -406,7 +391,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     Log.i(TAG, "Delete file: " + line);
-                    (new File(toolchainDir + "/" + line)).delete();
+                    (new File(mToolchainDir + "/" + line)).delete();
                 }
                 in.close();
                 (new File(logFile)).delete();
@@ -427,7 +412,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         }
 
         List<String> list = null;
-        String reposListFile = toolchainDir + "/cctools/etc/repos.list";
+        String reposListFile = mToolchainDir + "/cctools/etc/repos.list";
         if (new File(reposListFile).exists()) {
             try {
                 FileInputStream fin = new FileInputStream(reposListFile);
@@ -476,7 +461,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 .setView(ed)
                 .setPositiveButton(getString(R.string.button_continue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        String reposListFile = toolchainDir + "/cctools/etc/repos.list";
+                        String reposListFile = mToolchainDir + "/cctools/etc/repos.list";
                         try {
                             FileOutputStream fos = new FileOutputStream(reposListFile);
                             fos.write(ed.getText().toString().getBytes());
@@ -496,7 +481,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private void system(String cmdline) {
-        String cctoolsDir = toolchainDir + "/cctools";
+        String cctoolsDir = mToolchainDir + "/cctools";
         String bootClassPath = getEnv(cctoolsDir, "BOOTCLASSPATH");
         if (bootClassPath == null) {
             bootClassPath = Utils.getBootClassPath();
@@ -520,7 +505,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 "SHELL=" + getShell(),
                 "TERM=xterm",
                 "PS1=$ ",
-                "SDDIR=" + sdCardDir,
+                "SDDIR=" + mSdCardDir,
                 "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
         };
         try {
@@ -550,7 +535,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 "SHELL=" + getShell(),
                 "TERM=xterm",
                 "PS1=$ ",
-                "SDDIR=" + sdCardDir,
+                "SDDIR=" + mSdCardDir,
                 "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
         };
         String[] argv = {"/system/bin/sh", "-c", "set"};
@@ -581,8 +566,8 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     private String getShell() {
         String[] shellList = {
-                toolchainDir + "/cctools/bin/bash",
-                toolchainDir + "/cctools/bin/ash",
+                mToolchainDir + "/cctools/bin/bash",
+                mToolchainDir + "/cctools/bin/ash",
         };
 
         for (String shell : shellList) {
@@ -602,52 +587,52 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         @Override
         protected List<PackageInfo> doInBackground(List<String>[] params) {
-            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + INSTALLED_PACKAGE_DIR));
+            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(mToolchainDir + "/" + INSTALLED_PACKAGE_DIR));
             updateProgress(30);
-            packagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
+            mPackagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
             updateProgress(60);
-            if (packagesLists.getAvailablePackages() == null ||
-                    packagesLists.getInstalledPackages() == null) {
+            if (mPackagesLists.getAvailablePackages() == null ||
+                    mPackagesLists.getInstalledPackages() == null) {
                 return null;
             }
-            return RepoUtils.checkingForUpdates(packagesLists);
+            return RepoUtils.checkingForUpdates(mPackagesLists);
         }
 
         @Override
         protected void onPostExecute(List<PackageInfo> result) {
             if (!isCancelled()) {
                 updateProgress(100);
-                if (packagesLists.getAvailablePackages() != null && activityCmd == null) {
-                    Log.i(TAG, "Downloaded repo with " + packagesLists.getAvailablePackages().size() + " packages.");
-                    showPackages(packagesLists.getAvailablePackages());
+                if (mPackagesLists.getAvailablePackages() != null && mActivityCmd == null) {
+                    Log.i(TAG, "Downloaded repo with " + mPackagesLists.getAvailablePackages().size() + " packages.");
+                    showPackages(mPackagesLists.getAvailablePackages());
                 }
                 hideProgress();
-                if (packagesLists.getAvailablePackages() == null && activityCmd == null) {
+                if (mPackagesLists.getAvailablePackages() == null && mActivityCmd == null) {
                     showError(getString(R.string.pkg_repounavailable));
                     return;
                 }
 
-                if (activityCmd != null && activityCmd.equals(ACTION_INSTALL)) {
-                    if (packagesLists.getAvailablePackages() != null) {
-                        (new PrepareToInstallTask()).execute(activityData);
+                if (mActivityCmd != null && mActivityCmd.equals(ACTION_INSTALL)) {
+                    if (mPackagesLists.getAvailablePackages() != null) {
+                        (new PrepareToInstallTask()).execute(mActivityData);
                     } else {
                         showError(getString(R.string.pkg_repounavailable) +
                                 "\n" +
                                 getString(R.string.pkg_packageforinstall) +
-                                activityData);
+                                mActivityData);
                     }
                     return;
                 }
 
-                if (activityCmd != null && activityCmd.equals(ACTION_UNINSTALL)) {
-                    (new UninstallPackagesTask()).execute(activityData);
+                if (mActivityCmd != null && mActivityCmd.equals(ACTION_UNINSTALL)) {
+                    (new UninstallPackagesTask()).execute(mActivityData);
                     return;
                 }
 
                 if (result != null) {
                     final InstallPackageInfo updateInfo = new InstallPackageInfo();
                     for (PackageInfo pkg : result) {
-                        updateInfo.addPackage(packagesLists, pkg.getName());
+                        updateInfo.addPackage(mPackagesLists, pkg.getName());
                     }
                     Log.i(TAG, "update list = " + updateInfo.getPackagesStrings());
                     Builder dialog = new Builder(context)
@@ -663,7 +648,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                             .setCancelable(false)
                             .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if (activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
+                                    if (mActivityCmd != null && mActivityCmd.equals(ACTION_UPDATE)) {
                                         setResult(RESULT_CANCELED);
                                         finish();
                                     }
@@ -677,7 +662,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                             });
                     dialog.show();
                 }
-                if (result == null && activityCmd != null && activityCmd.equals(ACTION_UPDATE)) {
+                if (result == null && mActivityCmd != null && mActivityCmd.equals(ACTION_UPDATE)) {
                     setResult(RESULT_OK);
                     finish();
                 }
@@ -698,8 +683,8 @@ public class PackageManagerActivity extends FullScreenActivity {
         @Override
         protected InstallPackageInfo doInBackground(String... params) {
             // Update installed packages list
-            packagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(toolchainDir + "/" + INSTALLED_PACKAGE_DIR));
-            return new InstallPackageInfo(packagesLists, params[0]);
+            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(mToolchainDir + "/" + INSTALLED_PACKAGE_DIR));
+            return new InstallPackageInfo(mPackagesLists, params[0]);
         }
 
         protected void onPostExecute(final InstallPackageInfo info) {
@@ -717,7 +702,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                     .setCancelable(false)
                     .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            if (activityCmd != null) {
+                            if (mActivityCmd != null) {
                                 setResult(RESULT_CANCELED);
                                 finish();
                             }
@@ -751,36 +736,36 @@ public class PackageManagerActivity extends FullScreenActivity {
         private boolean installPackage(InstallPackageInfo info) {
             List<String> postinstList = new ArrayList<>();
             for (PackageInfo packageInfo : info.getPackagesList()) {
-                if ((new File(toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
+                if ((new File(mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
                         + packageInfo.getName() + ".pkgdesc")).exists()) {
-                    PackageInfo oldPackage = RepoUtils.getPackageByName(packagesLists.getInstalledPackages(),
+                    PackageInfo oldPackage = RepoUtils.getPackageByName(mPackagesLists.getInstalledPackages(),
                             packageInfo.getName());
                     if (packageInfo.getVersion().equals(oldPackage.getVersion())) {
                         Log.i(TAG, "Package " + packageInfo.getName() + " already installed.");
                         continue;
                     } else {
                         uninstallPackage(packageInfo.getName());
-                        if ((new File(backupDir, oldPackage.getFile())).exists()) {
-                            (new File(backupDir, oldPackage.getFile())).delete();
+                        if ((new File(mBackupDir, oldPackage.getFile())).exists()) {
+                            (new File(mBackupDir, oldPackage.getFile())).delete();
                         }
                     }
                 }
 
-                if (RepoUtils.isContainsPackage(packagesLists.getInstalledPackages(), packageInfo.getReplaces())) {
+                if (RepoUtils.isContainsPackage(mPackagesLists.getInstalledPackages(), packageInfo.getReplaces())) {
                     Log.i(TAG, "Replace package " + packageInfo.getReplaces());
-                    PackageInfo oldPackage = RepoUtils.getPackageByName(packagesLists.getInstalledPackages(),
+                    PackageInfo oldPackage = RepoUtils.getPackageByName(mPackagesLists.getInstalledPackages(),
                             packageInfo.getReplaces());
                     uninstallPackage(oldPackage.getName());
-                    if ((new File(backupDir, oldPackage.getFile())).exists()) {
-                        (new File(backupDir, oldPackage.getFile())).delete();
+                    if ((new File(mBackupDir, oldPackage.getFile())).exists()) {
+                        (new File(mBackupDir, oldPackage.getFile())).delete();
                     }
                 }
 
                 updateProgressTitle(getString(R.string.pkg_installpackagetask) + " " + packageInfo.getName());
 
                 Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFile());
-                if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), toolchainDir,
-                        toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + packageInfo.getName() + ".list")) {
+                if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), mToolchainDir,
+                        mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + packageInfo.getName() + ".list")) {
                     if (errorString != null) {
                         errorString += "\u0020" + info.getName();
                     }
@@ -790,12 +775,12 @@ public class PackageManagerActivity extends FullScreenActivity {
                 // Move package info files from root directory
                 String[] infoFiles = {"pkgdesc", "postinst", "prerm"};
                 for (String infoFile : infoFiles) {
-                    if ((new File(toolchainDir + "/" + infoFile)).exists()) {
-                        String infoFilePath = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
+                    if ((new File(mToolchainDir + "/" + infoFile)).exists()) {
+                        String infoFilePath = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/"
                                 + packageInfo.getName() + "." + infoFile;
                         Log.i(TAG, "Copy file to " + infoFilePath);
                         try {
-                            Utils.copyDirectory(new File(toolchainDir + "/" + infoFile),
+                            Utils.copyDirectory(new File(mToolchainDir + "/" + infoFile),
                                     new File(infoFilePath));
                             if (infoFile.equals("postinst")) {
                                 postinstList.add(packageInfo.getName());
@@ -805,18 +790,18 @@ public class PackageManagerActivity extends FullScreenActivity {
 
                             Log.e(TAG, "Copy " + infoFile + " file failed " + e);
                         }
-                        (new File(toolchainDir + "/" + infoFile)).delete();
+                        (new File(mToolchainDir + "/" + infoFile)).delete();
                     }
                 }
             }
 
             // Move Examples to sd card
-            if ((new File(toolchainDir + "/cctools/Examples")).exists()) {
+            if ((new File(mToolchainDir + "/cctools/Examples")).exists()) {
                 try {
                     Log.i(TAG, "Move Examples to SD card");
-                    Utils.copyDirectory(new File(toolchainDir + "/cctools/Examples"),
-                            new File(sdCardDir + "/Examples"));
-                    Utils.deleteDirectory(new File(toolchainDir + "/cctools/Examples"));
+                    Utils.copyDirectory(new File(mToolchainDir + "/cctools/Examples"),
+                            new File(mSdCardDir + "/Examples"));
+                    Utils.deleteDirectory(new File(mToolchainDir + "/cctools/Examples"));
                 } catch (IOException e) {
                     e.printStackTrace();
 
@@ -826,7 +811,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
             //Execute postinst scripts
             for (String name : postinstList) {
-                String postinstFile = toolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".postinst";
+                String postinstFile = mToolchainDir + "/" + INSTALLED_PACKAGE_DIR + "/" + name + ".postinst";
                 Log.i(TAG, "Execute postinst file " + postinstFile);
                 Utils.chmod(postinstFile, 0x1ed);
                 system(postinstFile);
@@ -841,7 +826,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
             errorString = null;
 
-            File temp = new File(backupDir + "/" + file);
+            File temp = new File(mBackupDir + "/" + file);
             if (!temp.exists()) {
                 try {
                     int totalread = 0;
@@ -851,7 +836,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                     cn.setReadTimeout(3 * 60 * 1000); // timeout 3 minutes
                     cn.connect();
                     int file_size = cn.getContentLength();
-                    StatFs stat = new StatFs(backupDir);
+                    StatFs stat = new StatFs(mBackupDir);
                     int sdAvailSize = stat.getAvailableBlocks();// * stat.getBlockSize();
                     Log.i(TAG, "File size " + file_size);
                     Log.i(TAG, "Available on SD (in blocks " + stat.getBlockSize() + ") " + sdAvailSize);
@@ -924,7 +909,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                     return false;
                 }
                 if (logFile == null) {
-                    logFile = toolchainDir + INSTALLED_PACKAGE_DIR + file + ".list";
+                    logFile = mToolchainDir + INSTALLED_PACKAGE_DIR + file + ".list";
                 }
                 if (Utils.unzip(tempPath, to, logFile) != 0) {
                     if ((new File(logFile)).exists()) {
@@ -946,8 +931,8 @@ public class PackageManagerActivity extends FullScreenActivity {
         protected void onPostExecute(Boolean result) {
             hideProgress();
             if (result) {
-                if (activityCmd != null &&
-                        (activityCmd.equals(ACTION_UPDATE) || activityCmd.equals(ACTION_INSTALL))) {
+                if (mActivityCmd != null &&
+                        (mActivityCmd.equals(ACTION_UPDATE) || mActivityCmd.equals(ACTION_INSTALL))) {
                     setResult(RESULT_OK);
                     finish();
                     return;
@@ -956,8 +941,8 @@ public class PackageManagerActivity extends FullScreenActivity {
                 showError(errorString);
                 return;
             }
-            lastPosition = listView.getFirstVisiblePosition();
-            showPackages(packagesLists.getAvailablePackages());
+            mLastPosition = mListView.getFirstVisiblePosition();
+            showPackages(mPackagesLists.getAvailablePackages());
         }
     }
 
@@ -976,13 +961,13 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         protected void onPostExecute(Boolean result) {
             hideProgress();
-            if (activityCmd != null && activityCmd.equals(ACTION_UNINSTALL)) {
+            if (mActivityCmd != null && mActivityCmd.equals(ACTION_UNINSTALL)) {
                 setResult(RESULT_OK);
                 finish();
                 return;
             }
-            lastPosition = listView.getFirstVisiblePosition();
-            showPackages(packagesLists.getAvailablePackages());
+            mLastPosition = mListView.getFirstVisiblePosition();
+            showPackages(mPackagesLists.getAvailablePackages());
         }
     }
 }

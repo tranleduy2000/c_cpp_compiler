@@ -150,7 +150,7 @@
     <string name="message_file_move">Moving</string>
     <string name="message_file_delete">Deleting</string>
 
-    <string name="pkgmgrButton">Add-ons</string>
+    <string name="title_menu_add_ons">Add-ons</string>
     <string name="pkgmgr_name">Add-ons manager</string>
     <string name="pkginstaller_name">Add/Remove add-ons</string>
 
