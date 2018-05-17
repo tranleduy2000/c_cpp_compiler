@@ -194,6 +194,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         //custom shell
         String cctoolsDir = context.getIntent().getStringExtra("cctoolsdir");
         String homeDir = context.getIntent().getStringExtra("homedir");
+        String systemLDPath = System.getenv("LD_LIBRARY_PATH");
         String[] envp = {
                 "TERM=" + settings.getTermType(),
                 "PATH=" + cctoolsDir + "/bin:" + cctoolsDir + "/sbin:" + System.getenv("PATH"),
@@ -201,12 +202,12 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
                 "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
                 "ANDROID_ASSETS=/system/app",
                 "ANDROID_BOOTLOGO=1",
-                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik",
+                "ANDROID_DATA=" + cctoolsDir + "/var/dalvik:" + System.getenv("ANDROID_DATA"),
                 "ANDROID_ROOT=/system",
                 "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + context.getPackageResourcePath(),
-//                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib:/system/lib:/vendor/lib",
-//                "PS1=$",
+                "LD_LIBRARY_PATH=" + cctoolsDir + "/lib" + (systemLDPath != null ? ":" + systemLDPath : ""),
+                "PS1=$"
         };
 
         GenericTermSession session = new ShellTermSession(settings, initialCommand, envp);

@@ -21,10 +21,15 @@ package com.jecelyin.editor.v2;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
+import com.duy.common.DLog;
+
+import java.util.Map;
+
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class TextEditorApplication extends MultiDexApplication {
+    private static final String TAG = "TextEditorApplication";
     private static Context context;
 
     public static Context getContext() {
@@ -35,7 +40,13 @@ public class TextEditorApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        System.out.println(System.getenv());
+        if (DLog.DEBUG) {
+            Map<String, String> env = System.getenv();
+            DLog.d(TAG, "onCreate: default env");
+            for (Map.Entry<String, String> entry : env.entrySet()) {
+                DLog.d(TAG, "entry = " + entry);
+            }
+        }
     }
 
 }
