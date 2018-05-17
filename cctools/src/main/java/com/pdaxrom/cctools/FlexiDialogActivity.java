@@ -17,6 +17,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.SelectionMode;
 import com.pdaxrom.utils.Utils;
@@ -37,7 +38,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlexiDialogActivity extends AppCompatActivity {
+public abstract class FlexiDialogActivity extends AppCompatActivity {
     protected static final String PKGS_LISTS_DIR = "/installed/";
     private final static String TAG = "FlexiDialog";
     private final static int REQUEST_DIALOG_FILE_SELECTOR = 1000;
@@ -49,48 +50,20 @@ public class FlexiDialogActivity extends AppCompatActivity {
     private String toolchainDir;
     private String sdHomeDir;
     private String tmpDir;
-    private String filesDir;
     private String serviceDir;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sdHomeDir = Environment.getExternalStorageDirectory().getPath() + "/CCTools";
-        tmpDir = sdHomeDir + "/tmp";
-        filesDir = sdHomeDir + "/backup";
-
-        if (!(new File(sdHomeDir)).exists()) {
-            (new File(sdHomeDir)).mkdir();
-        }
-        if (!(new File(tmpDir)).exists()) {
-            (new File(tmpDir)).mkdir();
-        }
-        if (!(new File(filesDir)).exists()) {
-            (new File(filesDir)).mkdir();
-        }
-
-        toolchainDir = getCacheDir().getParentFile().getAbsolutePath() + "/root";
-        if (!(new File(toolchainDir)).exists()) {
-            (new File(toolchainDir)).mkdir();
-        }
-
-        String dalvikCache = toolchainDir + "/cctools/var/dalvik/dalvik-cache";
-        if (!(new File(dalvikCache)).exists()) {
-            (new File(dalvikCache)).mkdirs();
-        }
-
+        sdHomeDir = EnvironmentPath.getSdCardHomeDir();
+        tmpDir = EnvironmentPath.getSdCardTmpDir();
+         EnvironmentPath.getSdCardBackupDir();
+        toolchainDir = EnvironmentPath.getToolchainsDir(this);
+        EnvironmentPath.getDalvikCacheDir(context);
+        EnvironmentPath.getInstalledPackageDir(context);
         updateClassPathEnv();
-
-        if (!(new File(toolchainDir + PKGS_LISTS_DIR)).exists()) {
-            (new File(toolchainDir + PKGS_LISTS_DIR)).mkdir();
-        }
-
-        serviceDir = toolchainDir + "/cctools/services";
-        if (!(new File(serviceDir)).exists()) {
-            (new File(serviceDir)).mkdir();
-        }
-
+        serviceDir = EnvironmentPath.getServiceDir(this);
     }
 
     protected String getToolchainDir() {

@@ -29,31 +29,64 @@ public class EnvironmentPath {
     public static final String APPLICATION_DIR_NAME = "CCtools";
     public static final String INSTALLED_PACKAGE_DIR = "/installed/";
 
+    /**
+     * Internal storage
+     */
     public static String getToolchainsDir(Context context) {
-        return context.getCacheDir().getParentFile().getAbsolutePath() + "/root";
-    }
-
-    public static String getRootDir(Context context) {
-        return new File(context.getCacheDir().getParentFile(), "root").getAbsolutePath();
-    }
-
-    public static String getSdCardDir() {
-        return Environment.getExternalStorageDirectory().getPath() + "/" + APPLICATION_DIR_NAME;
-    }
-
-    public static String getSdCardBackupDir() {
-        return getSdCardDir() + "/backup";
-    }
-
-    public static String getSdCardTmpDir() {
-        return getSdCardDir() + "/tmp";
+        String path = new File(context.getCacheDir().getParentFile(), "root").getPath();
+        return mkdirIfNotExist(path);
     }
 
     public static String getServiceDir(Context context) {
-        return new File(getToolchainsDir(context), "/cctools/services").getAbsolutePath();
+        String path = new File(getToolchainsDir(context), "/cctools/services").getAbsolutePath();
+        return mkdirIfNotExist(path);
     }
 
     public static String getHomeDir(Context context) {
-        return new File(getToolchainsDir(context), "/cctools/home").getAbsolutePath();
+        String path = new File(getToolchainsDir(context), "/cctools/home").getAbsolutePath();
+        return mkdirIfNotExist(path);
     }
+
+    public static String getInstalledPackageDir(Context context) {
+        String path = new File(getToolchainsDir(context), INSTALLED_PACKAGE_DIR).getAbsolutePath();
+        return mkdirIfNotExist(path);
+    }
+
+    public static String getDalvikCacheDir(Context context) {
+        File path = new File(getToolchainsDir(context), "/cctools/var/dalvik/dalvik-cache");
+        return mkdirIfNotExist(path);
+    }
+
+
+
+    /**
+     * External storage
+     */
+    public static String getSdCardHomeDir() {
+        String path = Environment.getExternalStorageDirectory().getPath() + "/" + APPLICATION_DIR_NAME;
+        return mkdirIfNotExist(path);
+    }
+
+    public static String getSdCardBackupDir() {
+        String path = getSdCardHomeDir() + "/backup";
+        return mkdirIfNotExist(path);
+    }
+
+    public static String getSdCardTmpDir() {
+        String path = getSdCardHomeDir() + "/tmp";
+        return mkdirIfNotExist(path);
+    }
+
+    private static String mkdirIfNotExist(String path) {
+        File file = new File(path);
+        return mkdirIfNotExist(file);
+    }
+
+    private static String mkdirIfNotExist(File file) {
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        return file.getAbsolutePath();
+    }
+
 }

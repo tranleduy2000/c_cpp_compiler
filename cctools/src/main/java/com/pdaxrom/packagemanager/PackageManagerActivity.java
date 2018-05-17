@@ -204,7 +204,7 @@ public class PackageManagerActivity extends AppCompatActivity {
     }
 
     private void setupDirs() {
-        sdCardDir = EnvironmentPath.getSdCardDir();
+        sdCardDir = EnvironmentPath.getSdCardHomeDir();
         backupDir = EnvironmentPath.getSdCardBackupDir();
         String tmpDir = EnvironmentPath.getSdCardTmpDir();
         toolchainDir = EnvironmentPath.getToolchainsDir(this);
