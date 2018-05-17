@@ -503,7 +503,6 @@ public class EditorActivity extends FullScreenActivity
         File file = srcFiles[0];
         Intent intent = new Intent(this, BuildActivity.class);
         intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
-        intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
         intent.putExtra(BuildConstants.EXTRA_TMP_DIR, EnvironmentPath.getSdCardTmpDir());
         intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
         startActivity(intent);

@@ -28,9 +28,9 @@ public class CompilerFactory {
             case G_PLUS_PLUS:
                 return new GPlusPlusCompiler(context);
             case GCC:
-                return new GCCCompiler(context);
+                return new GCCCompiler(context, new CompileSetting(context));
         }
-        return new GCCCompiler(context);
+        return new GCCCompiler(context, new CompileSetting(context));
     }
 
     /**
@@ -38,6 +38,6 @@ public class CompilerFactory {
      */
 
     public static enum CompileType {
-        GCC,  G_PLUS_PLUS
+        GCC, G_PLUS_PLUS
     }
 }

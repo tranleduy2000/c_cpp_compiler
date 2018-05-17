@@ -18,15 +18,11 @@ package com.duy.ccppcompiler.compiler;
 
 import android.content.Context;
 
+import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.ShellResult;
-import com.duy.ccppcompiler.compiler.shell.ShellUtils;
-import com.pdaxrom.packagemanager.EnvironmentPath;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -35,50 +31,21 @@ import java.util.Map;
 public class GCCCompiler implements INativeCompiler {
     private static final String TAG = "GCCCompiler";
     private Context mContext;
+    private ICompileSetting compileSetting;
 
-    public GCCCompiler(Context context) {
+    public GCCCompiler(Context context, ICompileSetting compileSetting) {
         this.mContext = context;
     }
 
     @Override
     public ShellResult compile(File[] sourceFiles) {
-        File internalDir = mContext.getFilesDir();
-        File gccDir = new File(internalDir, "gcc");
+        String command = buildCommand(sourceFiles);
 
-        String command = "gcc-4.9";
-
-        List<String> flags = new ArrayList<>();
-        for (File source : sourceFiles) {
-            flags.add(source.getAbsolutePath());
-        }
-        flags.add("-pie");
-        flags.add("-std=c99");
-        flags.add("-lz");//zlib
-        flags.add("-ldl");
-        flags.add("-lm");//math
-        flags.add("-llog");
-        flags.add("-lncurses");
-        flags.add("-Og");
-        flags.add("-o");
-        flags.add(new File(internalDir.getAbsolutePath(), GCCConstants.TEMP_BINARY_NAME).getAbsolutePath());
-        flags.addAll(getUserFlags());
-
-        File tmpDir = new File(gccDir, GCCConstants.BUILD_DIR);
-        tmpDir.mkdirs();
-        String TEMPEnv = tmpDir.getAbsolutePath();
-
-        Map<String, String> envMap = new HashMap<>();
-        envMap.put("TEMP", TEMPEnv);
-        String[] envp = EnvironmentPath.buildEnv(mContext);
-        for (String s : envp) {
-            String[] split = s.split("=");
-            envMap.put(split[0], split[1]);
-        }
-        return ShellUtils.execCommand(command, flags, envMap);
+        return null;
     }
 
 
-    private ArrayList<String> getUserFlags() {
+    private ArrayList<String> getCompileOutputFlags() {
         ArrayList<String> flags = new ArrayList<>();
         // Emit fix-it hints in a machine-parseable format, suitable for consumption by IDEs.
         // For each fix-it, a line will be printed after the relevant diagnostic, starting with the
@@ -99,5 +66,31 @@ public class GCCCompiler implements INativeCompiler {
         flags.add("-fno-diagnostics-show-caret");
 
         return flags;
+    }
+
+    private String buildCommand(File[] sourceFiles) {
+        File file = sourceFiles[0];
+        String fileName = file.getName();
+
+        CommandBuilder builder = new CommandBuilder("gcc-4.9");
+        for (File sourceFile : sourceFiles) {
+            builder.addFlags(sourceFile.getAbsolutePath());
+        }
+        String outFile = fileName.substring(0, fileName.lastIndexOf("."));
+        builder.addFlags(compileSetting.getCFlags());
+        builder.addFlags("-o", outFile);
+
+        builder.addFlags("-pie");
+        builder.addFlags("-std=c99");
+        builder.addFlags("-lz");//zlib
+        builder.addFlags("-ldl");
+        builder.addFlags("-lm");//math
+        builder.addFlags("-llog");
+        builder.addFlags("-lncurses");
+        builder.addFlags("-Og");
+
+        builder.addFlags(getCompileOutputFlags());
+
+        return builder.buildCommand();
     }
 }

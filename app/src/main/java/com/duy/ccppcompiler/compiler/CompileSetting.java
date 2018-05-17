@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package com.pdaxrom.cctools;
+package com.duy.ccppcompiler.compiler;
+
+import android.content.Context;
 
 /**
  * Created by Duy on 17-May-18.
  */
 
-public class BuildConstants {
-    public static final String EXTRA_EXEC_FILE = "executable_file";
-    @Deprecated
-    public static final String EXTRA_CCTOOLS_DIR = "cctoolsdir";
-    public static final String EXTRA_FILE_NAME = "filename";
-    public static final String EXTRA_TMP_DIR = "tmpdir";
-    public static final String EXTRA_WORK_DIR = "workdir";
-    public static final String EXTRA_HOME_DIR = "homedir";
-    public static final String EXTRA_FORCE_BUILD = "force";
+public class CompileSetting implements ICompileSetting {
+
+    public CompileSetting(Context context) {
+
+    }
+
+    @Override
+    public String getCFlags() {
+        return "";
+    }
+
+    @Override
+    public String getCxxFlags() {
+        return "";
+    }
+
+    @Override
+    public String getMakeFlags() {
+        return "";
+    }
 }

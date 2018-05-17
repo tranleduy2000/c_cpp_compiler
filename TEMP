@@ -1,0 +1,4 @@
+clear
+cd /mnt/sdcard/cctools/examples/c++
+g++-4.9 cin.cpp -o ${HOME}/cin
+${HOME}/cin

@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.utils.Utils;
 
 import java.io.File;
@@ -22,26 +23,23 @@ public class LauncherConsoleActivity extends AppCompatActivity {
     private Context context = this;
     private String outFile;
     private String workDir;
-    private String tmpExeDir;
-    private String cctoolsDir;
     private String cmd;
 
     private boolean forceRun;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String activityFile = getIntent().getExtras().getString("executable_file");
-        cctoolsDir = getIntent().getExtras().getString("cctoolsdir");
-        forceRun = getIntent().getExtras().getBoolean("force", false);
+        String activityFile = getIntent().getExtras().getString(BuildConstants.EXTRA_EXEC_FILE);
+        forceRun = getIntent().getExtras().getBoolean(BuildConstants.EXTRA_FORCE_BUILD, false);
 
         if (activityFile != null) {
             if ((new File(activityFile)).exists()) {
                 Log.i(TAG, "console executable file " + activityFile);
                 outFile = (new File(activityFile)).getName();
                 workDir = (new File(activityFile)).getParentFile().getAbsolutePath();
-                tmpExeDir = getCacheDir().getParentFile().getAbsolutePath() + "/root" + "/tmp";
-                (new File(tmpExeDir)).mkdir();
+                String tmpExeDir = EnvironmentPath.getTmpExeDir(context);
                 if (copyFile(activityFile, tmpExeDir + "/" + outFile)) {
                     Utils.chmod(tmpExeDir + "/" + outFile, 0x1ed); //S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH
                     cmd = tmpExeDir + "/" + outFile;
@@ -50,7 +48,7 @@ public class LauncherConsoleActivity extends AppCompatActivity {
             } else {
                 outFile = "";
                 Log.i(TAG, "Trying to execute cmdline " + activityFile);
-                workDir = getIntent().getExtras().getString("workdir");
+                workDir = getIntent().getExtras().getString(BuildConstants.EXTRA_WORK_DIR);
                 cmd = activityFile;
                 return;
             }
@@ -58,17 +56,18 @@ public class LauncherConsoleActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
     public void onStart() {
         super.onStart();
         if (forceRun) {
             Intent myIntent = new Intent(LauncherConsoleActivity.this, TermActivity.class);
-            myIntent.putExtra("filename", cmd);
-            myIntent.putExtra("cctoolsdir", cctoolsDir);
-            myIntent.putExtra("workdir", workDir);
+            myIntent.putExtra(BuildConstants.EXTRA_FILE_NAME, cmd);
+            myIntent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
             startActivity(myIntent);
             finish();
             return;
         }
+
         final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setSingleLine(true);
@@ -79,9 +78,8 @@ public class LauncherConsoleActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.button_continue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Intent myIntent = new Intent(LauncherConsoleActivity.this, TermActivity.class);
-                        myIntent.putExtra("filename", cmd + " " + input.getText().toString());
-                        myIntent.putExtra("cctoolsdir", cctoolsDir);
-                        myIntent.putExtra("workdir", workDir);
+                        myIntent.putExtra(BuildConstants.EXTRA_FILE_NAME, cmd + " " + input.getText().toString());
+                        myIntent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
                         startActivity(myIntent);
                         finish();
                     }
@@ -101,7 +99,7 @@ public class LauncherConsoleActivity extends AppCompatActivity {
             FileInputStream in = new FileInputStream(srcfile);
             FileOutputStream out = new FileOutputStream(dstfile);
             byte[] buf = new byte[100 * 1024];
-            int i = 0;
+            int i;
             while ((i = in.read(buf)) != -1) {
                 out.write(buf, 0, i);
             }

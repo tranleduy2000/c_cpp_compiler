@@ -1,3 +1,4 @@
 include ':app', ':style', ':terminal-emulator', ':terminal-view', ':editor-view',
         ':sdlplugin', ':cctools', ':apkbuilder'
 include ':emulatorview', ':libtermexec', ':term-jackpal'
+include ':cctools-repo'

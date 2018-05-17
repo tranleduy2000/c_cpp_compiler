@@ -78,7 +78,7 @@ public class EnvironmentPath {
     /**
      * @return temp directory for execute file
      */
-    public static String getTmpDir(Context context) {
+    public static String getTmpExeDir(Context context) {
         File file = new File(EnvironmentPath.getToolchainsDir(context), "tmp");
         return mkdirIfNotExist(file);
     }
@@ -241,5 +241,12 @@ public class EnvironmentPath {
             Log.e(TAG, "exception " + e);
         }
         return ret;
+    }
+
+    public static String[] join(String[] env1, String[] env2) {
+        String[] env = new String[env1.length + env2.length];
+        System.arraycopy(env1, 0, env, 0, env1.length);
+        System.arraycopy(env2, 0, env, env1.length, env2.length);
+        return env;
     }
 }
