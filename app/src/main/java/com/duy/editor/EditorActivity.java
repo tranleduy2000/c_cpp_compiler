@@ -448,7 +448,17 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void openTerminal() {
-        startActivity(new Intent(this, MultiTermActivity.class));
+        String workDir = EnvironmentPath.getHomeDir(this);
+        String fileName = getCurrentEditorDelegate().getPath();
+        if (fileName != null && new File(fileName).exists()) {
+            workDir = (new File(fileName)).getParentFile().getAbsolutePath();
+        }
+
+        Intent intent = new Intent(this, MultiTermActivity.class);
+        intent.putExtra(BuildConstants.EXTRA_CCTOOLS_DIR, EnvironmentPath.getCCtoolsDir(this));
+        intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
+        intent.putExtra(BuildConstants.EXTRA_HOME_DIR, EnvironmentPath.getHomeDir(this));
+        startActivity(intent);
     }
 
     public void createNewFile() {
