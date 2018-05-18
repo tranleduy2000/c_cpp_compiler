@@ -155,7 +155,9 @@ public class EnvironmentPath {
                 "BOOTCLASSPATH=" + getBootClassPath(),
                 "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + context.getPackageResourcePath(),
+
                 "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
+
                 "SHELL=" + getShell(),
                 "TERM=" + settings.getTermType(),
                 "PS1=$ ",

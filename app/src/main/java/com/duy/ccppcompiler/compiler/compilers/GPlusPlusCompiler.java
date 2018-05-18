@@ -17,61 +17,57 @@
 package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
+import android.os.Build;
 
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ccppcompiler.compiler.shell.ShellUtils;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.duy.ccppcompiler.compiler.ICompileSetting;
+import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
+import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
+public class GPlusPlusCompiler extends GCCCompiler {
 
-public class GPlusPlusCompiler extends NativeCompilerImpl<CommandResult> {
-    private Context mContext;
-
-    public GPlusPlusCompiler(Context context) {
-        this.mContext = context;
+    public GPlusPlusCompiler(Context context, ICompileSetting compileSetting) {
+        super(context, compileSetting);
     }
 
     @Override
-    public CommandResult compile(File[] sourceFiles) {
-        File internalDir = mContext.getFilesDir();
-        File gccDir = new File(internalDir, "gcc");
+    public GccCommandResult compile(File[] sourceFiles) {
+        return super.compile(sourceFiles);
+    }
 
-        String exec = "g++-4.9";
-        List<String> flags = new ArrayList<>();
+    @Override
+    protected String buildCommand(File[] sourceFiles) {
+        File file = sourceFiles[0];
+        String fileName = file.getName();
+        mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
+
+        CommandBuilder builder = new CommandBuilder("g++-4.9");
         for (File sourceFile : sourceFiles) {
-            flags.add(sourceFile.getAbsolutePath());
+            builder.addFlags(sourceFile.getAbsolutePath());
         }
-        flags.add("-pie");
-        flags.add("-std=c++14");
-        flags.add("-lz");
-        flags.add("-ldl");
-        flags.add("-lm");
-        flags.add("-llog");
-        flags.add("-lncurses");
-        flags.add("-Og");
-        flags.add("-o");
-        flags.add(internalDir.getAbsolutePath() + File.separator + GCCConstants.TEMP_BINARY_NAME);
+        builder.addFlags("-o", mOutFile.getAbsolutePath());
+        builder.addFlags(mSetting.getCxxFlags());
 
-        File tmpDir = new File(gccDir, GCCConstants.BUILD_DIR);
-        tmpDir.mkdirs();
-        String TEMPEnv = tmpDir.getAbsolutePath();
-
-        Map<String, String> envMap = new HashMap<>();
-        envMap.put("TEMP", TEMPEnv);
-        String[] envp = EnvironmentPath.buildDefaultEnv(mContext);
-        for (String s : envp) {
-            String[] split = s.split("=");
-            envMap.put(split[0], split[1]);
+        if (Build.VERSION.SDK_INT >= 21) {
+            builder.addFlags("-pie");
         }
-        return ShellUtils.execCommand(exec, flags, envMap);
+        builder.addFlags("-std=c++14");
+        builder.addFlags("-lz");
+        builder.addFlags("-ldl");
+        builder.addFlags("-lm");
+        builder.addFlags("-llog");
+        //builder.addFlags("-lncurses");
+        builder.addFlags("-Og");
 
+        // By default, each diagnostic emitted includes text indicating the command-line option that
+        // directly controls the diagnostic (if such an option is known to the diagnostic machinery).
+        // Specifying the -fno-diagnostics-show-option flag suppresses that behavior.
+        builder.addFlags("-fno-diagnostics-show-option");
+
+        return builder.buildCommand();
     }
 }

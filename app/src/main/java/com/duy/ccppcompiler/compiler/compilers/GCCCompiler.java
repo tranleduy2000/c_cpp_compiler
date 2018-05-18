@@ -17,6 +17,7 @@
 package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
@@ -36,9 +37,9 @@ import java.io.FileOutputStream;
 
 public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     private static final String TAG = "GCCCompiler";
+    protected File mOutFile;
     private Context mContext;
-    private ICompileSetting mSetting;
-    private File mOutFile;
+    protected ICompileSetting mSetting;
 
     public GCCCompiler(Context context, ICompileSetting compileSetting) {
         mContext = context;
@@ -75,7 +76,7 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         return result;
     }
 
-    private String buildCommand(File[] sourceFiles) {
+    protected String buildCommand(File[] sourceFiles) {
         File file = sourceFiles[0];
         String fileName = file.getName();
         mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
@@ -87,7 +88,9 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         builder.addFlags(mSetting.getCFlags());
         builder.addFlags("-o", mOutFile.getAbsolutePath());
 
-        builder.addFlags("-pie");
+        if (Build.VERSION.SDK_INT >= 21) {
+            builder.addFlags("-pie");
+        }
         builder.addFlags("-std=c99");
         builder.addFlags("-lz");//zlib
         builder.addFlags("-ldl");

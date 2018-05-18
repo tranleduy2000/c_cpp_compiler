@@ -2,3 +2,9 @@ clear
 cd /mnt/sdcard/cctools/examples/c++
 g++-4.9 cin.cpp -o ${HOME}/cin
 ${HOME}/cin
+
+^(?!(ViewRootImpl|InputMethodManager|InputEventReceiver))
+
+echo $LDFLAGS
+echo $LD_LIBRARY_FLAGS
+echo $LD_LIBRARY_PATH

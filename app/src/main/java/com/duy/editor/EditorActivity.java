@@ -39,13 +39,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompileTask;
-import com.duy.ccppcompiler.compiler.CompilerFactory;
+import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
@@ -78,8 +79,6 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
-import com.pdaxrom.cctools.BuildActivity;
-import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -485,28 +484,16 @@ public class EditorActivity extends FullScreenActivity
             srcFiles[0] = new File(path);
         }
 
-        // TODO: 17-May-18 improve
-        CompilerFactory.CompileType compilerType;
-        if (srcFiles[0].getName().toLowerCase().endsWith(".cpp")) {
-            compilerType = CompilerFactory.CompileType.G_PLUS_PLUS;
-        } else if (srcFiles[0].getName().toLowerCase().endsWith(".c")) {
-            compilerType = CompilerFactory.CompileType.GCC;
-        } else {
-            compilerType = CompilerFactory.CompileType.GCC;
-        }
-        INativeCompiler compiler = CompilerFactory.createCompiler(EditorActivity.this, compilerType);
+
+        INativeCompiler compiler = CompilerFactory.makeCompilerForFile(EditorActivity.this, srcFiles);
         CompileManager compileManager = new CompileManager(EditorActivity.this);
         compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
-        if (true) {
+        if (compiler != null) {
             CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
             compileTask.execute();
         } else {
-            File file = srcFiles[0];
-            Intent intent = new Intent(this, BuildActivity.class);
-            intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
-            intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
-            startActivity(intent);
+            Toast.makeText(this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
         }
     }
 
