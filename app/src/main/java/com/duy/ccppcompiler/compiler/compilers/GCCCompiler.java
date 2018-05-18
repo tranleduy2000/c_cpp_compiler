@@ -38,7 +38,7 @@ import java.io.FileOutputStream;
 public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     private static final String TAG = "GCCCompiler";
     protected File mOutFile;
-    private Context mContext;
+    protected Context mContext;
     protected ICompileSetting mSetting;
 
     public GCCCompiler(Context context, ICompileSetting compileSetting) {

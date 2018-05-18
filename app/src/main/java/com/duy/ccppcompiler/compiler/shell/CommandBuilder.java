@@ -42,6 +42,10 @@ public class CommandBuilder {
         this.flags.addAll(flags);
     }
 
+    public void addFlags(CommandBuilder otherFlags) {
+        this.flags.addAll(otherFlags.flags);
+    }
+
     @NonNull
     public String buildCommand() {
         StringBuilder sb = new StringBuilder();
@@ -57,5 +61,6 @@ public class CommandBuilder {
         }
         return sb.toString();
     }
+
 
 }

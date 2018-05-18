@@ -22,13 +22,5 @@ package com.duy.ccppcompiler.compiler.compilers;
 
 public class GCCConstants {
     public static final String GCC_DIR_NAME = "gcc";
-    public static final String GCC_VERSION = "7.2.0";
-    public static final String GCC_ASSET_FILE = "gcc.zip";
-
-    public static final String TEMP_FILE_NAME = "temp.c";
-    public static final String TEMP_BINARY_NAME = "temp";
-    public static final String BUILD_DIR = "tmpdir";
-
-    public static final String INDENT_FILE_NAME = "indent.c";
-    public static final String INDENT_ARGS = "-nbap -bli0 -i2 -l79 -ts2 -ncs -npcs -npsl -fca -lc79 -fc1 -ts1 -ce -br -cdw -brs -brf";
+    public static final String GCC_VERSION = "4.9";
 }

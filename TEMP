@@ -1,10 +1,93 @@
-clear
-cd /mnt/sdcard/cctools/examples/c++
-g++-4.9 cin.cpp -o ${HOME}/cin
-${HOME}/cin
+#!/bin/bash
+# You need to fix several header error before compiling.
+# For more information, please read: http://blog.mssun.me/technology/android/build-android-toolchain/
+export PWD=`pwd`
+export PREFIX=${PWD}/system
+mkdir $PREFIX
 
-^(?!(ViewRootImpl|InputMethodManager|InputEventReceiver))
+export ANDROID_API=23
+export GCC_VERSION=4.9.x
+export NDK_ROOT=${HOME}/android-ndk-r12b
+export NDK_TOOLCHAINS_PATH=${NDK_ROOT}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64
 
-echo $LDFLAGS
-echo $LD_LIBRARY_FLAGS
-echo $LD_LIBRARY_PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+export PATH=${NDK_TOOLCHAINS_PATH}/bin:$PATH
+
+
+export CROSS_COMPILE_PREFIX=${NDK_TOOLCHAINS_PATH}/bin/arm-linux-androideabi-
+export SYSROOT=${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm
+
+sudo make clean
+sudo make distclean
+sudo rm -rf */config.cache
+
+sed -i 's/^#include <stdio_ext.h>/\/* #include <stdio_ext.h> *\//' ../libiberty/fopen_unlocked.c
+sed -i 's/^# include <sys\/sysctl.h>/\/* # include <sys\/sysctl.h> *\//' ../libiberty/physmem.c
+
+
+rm -rf crtbegin_so.o
+rm -rf crtend_so.o
+rm -rf crtbegin_dynamic.o
+rm -rf crtend_android.o
+ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtbegin_so.o
+ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtend_so.o
+ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtbegin_dynamic.o
+ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtend_android.o
+
+export CC=${CROSS_COMPILE_PREFIX}gcc
+export CPP=${CROSS_COMPILE_PREFIX}cpp
+export CXX=${CROSS_COMPILE_PREFIX}g++
+export LD=${CROSS_COMPILE_PREFIX}ld
+export AR=${CROSS_COMPILE_PREFIX}ar
+export AS=${CROSS_COMPILE_PREFIX}as
+export RANLIB=${CROSS_COMPILE_PREFIX}ranlib
+
+export LDFLAGS="-Wl,-rpath-link=${SYSROOT}/usr/lib/"
+export LDFLAGS="${LDFLAGS} -L${SYSROOT}/usr/lib/"
+export LDFLAGS="${LDFLAGS} -pie"
+
+export CPPFLAGS="-I${SYSROOT}/usr/include/"
+export CPPFLAGS="${CPPFLAGS} -I${TOOLCHAINS_PATH}/lib/gcc/arm-linux-androideabi/${GCC_VERSION}/include/"
+export CPPFLAGS="${CPPFLAGS} -w"
+
+export CXXFLAGS="-w"
+
+export CFLAGS="-I${SYSROOT}/usr/include/"
+export CFLAGS="${CFLAGS} -I${TOOLCHAINS_PATH}/lib/gcc/arm-linux-androideabi/${GCC_VERSION}/include/"
+export CFLAGS="${CFLAGS} --sysroot=${SYSROOT}/"
+export CFLAGS="${CFLAGS} -g -I -O2 -mandroid -mbionic -w -fPIE"
+
+sudo ../configure \
+--prefix=$PREFIX \
+--host=arm-linux-androideabi \
+--target=arm-linux-androideabi \
+--enable-languages=c,c++ \
+--disable-shared \
+--disable-lto \
+--with-float=soft \
+--disable-multilib \
+--disable-libgomp \
+--disable-bootstrap \
+--disable-sjlj-exceptions \
+--disable-nls \
+--disable-gold \
+--disable-fortran \
+--disable-libssp \
+--disable-libquadmath \
+--disable-libquadmath-support \
+--disable-libada \
+--disable-werror \
+--disable-cloog
+
+
+sudo make all 2> ${PREFIX}/stderr.txt
+
+#sudo rm -rf ld/
+#mkdir ld
+#ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtbegin_so.o ld/
+#ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtend_so.o ld/
+#ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtbegin_dynamic.o ld/
+#ln -s ${NDK_ROOT}/platforms/android-${ANDROID_API}/arch-arm/usr/lib/crtend_android.o ld/
+
+
+

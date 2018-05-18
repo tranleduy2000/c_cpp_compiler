@@ -22,6 +22,7 @@ import android.os.Build;
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
+import com.pdaxrom.packagemanager.EnvironmentPath;
 
 import java.io.File;
 
@@ -41,11 +42,27 @@ public class GPlusPlusCompiler extends GCCCompiler {
 
     @Override
     protected String buildCommand(File[] sourceFiles) {
+        final String gccVersion = "4.9";
+        final String toolchainsDir = EnvironmentPath.getToolchainsDir(mContext);
+
         File file = sourceFiles[0];
         String fileName = file.getName();
         mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
 
         CommandBuilder builder = new CommandBuilder("g++-4.9");
+
+        //cpp flags
+        CommandBuilder cppFlags = new CommandBuilder("");
+        cppFlags.addFlags("-I" + toolchainsDir + "/lib/gcc/arm-linux-androideabi/" + gccVersion + "/include");
+        cppFlags.addFlags("-I" + toolchainsDir + "/lib/gcc/arm-linux-androideabi/" + gccVersion + "/usr/include");
+
+        //LD flags
+        CommandBuilder ldFlags = new CommandBuilder("");
+        ldFlags.addFlags("-L" + toolchainsDir + "/lib/gcc/arm-linux-androideabi/" + gccVersion + "/lib");
+
+        builder.addFlags(ldFlags);
+        builder.addFlags(cppFlags);
+
         for (File sourceFile : sourceFiles) {
             builder.addFlags(sourceFile.getAbsolutePath());
         }
@@ -55,13 +72,8 @@ public class GPlusPlusCompiler extends GCCCompiler {
         if (Build.VERSION.SDK_INT >= 21) {
             builder.addFlags("-pie");
         }
-        builder.addFlags("-std=c++14");
-        builder.addFlags("-lz");
-        builder.addFlags("-ldl");
-        builder.addFlags("-lm");
-        builder.addFlags("-llog");
-        //builder.addFlags("-lncurses");
-        builder.addFlags("-Og");
+        builder.addFlags("-std=c++14", "-lz", "-ldl", "-lm", "-llog", "-Og");
+
 
         // By default, each diagnostic emitted includes text indicating the command-line option that
         // directly controls the diagnostic (if such an option is known to the diagnostic machinery).

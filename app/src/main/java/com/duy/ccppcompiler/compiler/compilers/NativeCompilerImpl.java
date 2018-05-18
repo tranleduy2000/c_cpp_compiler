@@ -60,7 +60,7 @@ public abstract class NativeCompilerImpl<T extends CommandResult> implements INa
             }
 
             Utils.setPtyUTF8Mode(fd, true);
-            Utils.setPtyWindowSize(fd, 64, 200, 0, 0);
+            Utils.setPtyWindowSize(fd, 64, 128, 0, 0);
 
             BufferedReader in = new BufferedReader(new FileReader(fd));
             BufferedWriter out = new BufferedWriter(new FileWriter(fd));
