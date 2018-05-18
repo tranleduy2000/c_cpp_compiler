@@ -56,8 +56,8 @@ public class GPlusPlusCompiler extends GCCCompiler {
         if (Build.VERSION.SDK_INT >= 21) {
             builder.addFlags("-pie");
         }
-//        builder.addFlags("-std=c++14");
-//        builder.addFlags("-lz", "-ldl", "-lm", "-llog", "-Og");
+        // builder.addFlags("-std=c++14");
+        // builder.addFlags("-lz", "-ldl", "-lm", "-llog", "-Og");
 
 
         // By default, each diagnostic emitted includes text indicating the command-line option that

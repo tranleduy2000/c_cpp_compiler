@@ -91,10 +91,11 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         if (Build.VERSION.SDK_INT >= 21) {
             builder.addFlags("-pie");
         }
-        builder.addFlags("-std=c99");
-        builder.addFlags("-lz"/*zlib*/, "-ldl", "-lm" /*math*/, "-llog");
-        //builder.addFlags("-lncurses");
-        builder.addFlags("-Og");
+
+        // builder.addFlags("-std=c99");
+        // builder.addFlags("-lz"/*zlib*/, "-ldl", "-lm" /*math*/, "-llog");
+        // builder.addFlags("-lncurses");
+        // builder.addFlags("-Og");
 
         // Emit fix-it hints in a machine-parseable format, suitable for consumption by IDEs.
         // For each fix-it, a line will be printed after the relevant diagnostic, starting with the
