@@ -68,11 +68,6 @@
         </activity>
         <activity android:name="com.jecelyin.editor.v2.ui.settings.SettingsActivity" />
         <activity android:name="com.jecelyin.android.file_explorer.FileExplorerActivity" />
-        <activity android:name=".console.ConsoleActivity" />
-
-        <service
-            android:name=".console.services.TermuxService"
-            android:exported="false" />
 
         <activity android:name=".ui.examples.ExampleActivity" />
 
@@ -84,7 +79,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="com.pdaxrom.cctools.TermActivity"
+            android:name=".console.TermActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/console_name"
             android:windowSoftInputMode="adjustResize" />

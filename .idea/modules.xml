@@ -13,8 +13,6 @@
       <module fileurl="file://$PROJECT_DIR$/sdlplugin/sdlplugin.iml" filepath="$PROJECT_DIR$/sdlplugin/sdlplugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/style/style.iml" filepath="$PROJECT_DIR$/style/style.iml" />
       <module fileurl="file://$PROJECT_DIR$/term-jackpal/term-jackpal.iml" filepath="$PROJECT_DIR$/term-jackpal/term-jackpal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/terminal-emulator/terminal-emulator.iml" filepath="$PROJECT_DIR$/terminal-emulator/terminal-emulator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/terminal-view/terminal-view.iml" filepath="$PROJECT_DIR$/terminal-view/terminal-view.iml" />
     </modules>
   </component>
 </project>

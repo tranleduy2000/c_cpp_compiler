@@ -60,8 +60,6 @@ dependencies {
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
 
     api project(':editor-view')
-    api project(':terminal-emulator')
-    api project(':terminal-view')
     api project(':cctools')
 
     implementation 'com.google.firebase:firebase-core:15.0.2'

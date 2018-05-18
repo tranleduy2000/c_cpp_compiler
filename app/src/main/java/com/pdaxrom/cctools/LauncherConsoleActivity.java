@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.duy.ccppcompiler.console.TermActivity;
 import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 

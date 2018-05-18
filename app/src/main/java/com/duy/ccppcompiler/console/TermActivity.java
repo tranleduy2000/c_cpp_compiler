@@ -1,4 +1,20 @@
-package com.pdaxrom.cctools;
+/*
+ * Copyright 2018 Mr Duy
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.duy.ccppcompiler.console;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -26,6 +42,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.jecelyin.editor.v2.FullScreenActivity;
+import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.term.ShellTermSession;
 
@@ -61,7 +78,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
             }
             if (msg.what == 123) {
                 Log.i(TAG, "Message - Process exited!!!");
-                showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_finished));
+                showTitle(getString(com.pdaxrom.cctools.R.string.console_name) + " - " + getString(com.pdaxrom.cctools.R.string.console_finished));
                 isRunning = false;
             }
         }
@@ -115,18 +132,18 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_term);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setContentView(com.pdaxrom.cctools.R.layout.activity_term);
+        setSupportActionBar((Toolbar) findViewById(com.pdaxrom.cctools.R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String fileName = getIntent().getStringExtra(BuildConstants.EXTRA_FILE_NAME);
         String workDir = getIntent().getStringExtra(BuildConstants.EXTRA_WORK_DIR);
 
-        showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_executing));
+        showTitle(getString(com.pdaxrom.cctools.R.string.console_name) + " - " + getString(com.pdaxrom.cctools.R.string.console_executing));
 
         mSession = createShellTermSession(fileName, workDir);
         mTermView = createEmulatorView(mSession);
-        FrameLayout frameLayout = findViewById(R.id.content);
+        FrameLayout frameLayout = findViewById(com.pdaxrom.cctools.R.id.content);
         frameLayout.removeAllViews();
         frameLayout.addView(mTermView);
 

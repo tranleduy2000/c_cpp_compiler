@@ -21,7 +21,7 @@ import android.content.Intent;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 import com.duy.editor.EditorActivity;
 import com.pdaxrom.cctools.BuildConstants;
-import com.pdaxrom.cctools.TermActivity;
+import com.duy.ccppcompiler.console.TermActivity;
 
 import java.io.File;
 
