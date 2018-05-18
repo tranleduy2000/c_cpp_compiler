@@ -93,9 +93,12 @@
 -dontwarn android.support.**
 -dontwarn com.google.ads.**
 -dontwarn com.makeramen.roundedimageview.**
+-dontwarn kellinwood.security.**
+-dontwarn org.spongycastle.**
 
 -keep class android.core.** { public *; }
 -keep class com.duy.**
 -keep class com.jecelyin.** { public *; }
 -keep class com.simplecityapps.** { public *; }
 -keep class org.gjt.sp.jedit.** { public *; }
+-keep class com.pdaxrom.** { public *; }
