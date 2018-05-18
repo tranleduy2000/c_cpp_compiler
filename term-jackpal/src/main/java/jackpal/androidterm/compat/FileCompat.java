@@ -16,8 +16,6 @@
 
 package jackpal.androidterm.compat;
 
-import android.os.Build;
-
 import java.io.File;
 
 /**
@@ -25,24 +23,7 @@ import java.io.File;
  */
 public class FileCompat {
     public static boolean canExecute(File file) {
-        return Api9OrLater.canExecute(file);
+        return file.canExecute();
     }
 
-    private static class Api9OrLater {
-        public static boolean canExecute(File file) {
-            return file.canExecute();
-        }
-    }
-
-    private static class Api8OrEarlier {
-        static {
-            System.loadLibrary("jackpal-androidterm5");
-        }
-
-        public static boolean canExecute(File file) {
-            return testExecute(file.getAbsolutePath());
-        }
-
-        private static native boolean testExecute(String pathname);
-    }
 }

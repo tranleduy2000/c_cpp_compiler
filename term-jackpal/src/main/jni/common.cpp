@@ -32,7 +32,6 @@
 
 #include "common.h"
 #include "termExec.h"
-#include "fileCompat.h"
 
 #define LOG_TAG "libjackpal-androidterm"
 
@@ -83,11 +82,6 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     env = uenv.env;
 
     if (init_Exec(env) != JNI_TRUE) {
-        LOGE("ERROR: init of Exec failed");
-        goto bail;
-    }
-
-    if (init_FileCompat(env) != JNI_TRUE) {
         LOGE("ERROR: init of Exec failed");
         goto bail;
     }
