@@ -58,19 +58,6 @@ public class PackageManagerActivity extends FullScreenActivity {
     public static final String ACTION_UNINSTALL = "uninstall";
     public static final String ACTION_UPDATE = "update";
 
-    public static final int SDK_2_NDK_ARM[] = {
-            /*   1   2   3   4   5   6   7   8   9  10  a11  12  13  14  15  16  17  18  19  20  21  22  23  */
-            -1, -1, -1, 3, 4, 5, 5, 5, 8, 9, 9, 9, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
-    };
-    public static final int SDK_2_NDK_MIPS[] = {
-            /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, 9, 9, -1, -1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
-    };
-    public static final int SDK_2_NDK_X_86[] = {
-            /*   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 */
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, 9, 9, -1, -1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1
-    };
-
     private static final String TAG = "PkgMgrActivity";
     @NonNull
     private final Handler mHandler = new Handler();
@@ -216,32 +203,22 @@ public class PackageManagerActivity extends FullScreenActivity {
      * Define sdk and ndk for current device
      */
     private void setupVersion() {
-        int sdkVersion = Build.VERSION.SDK_INT;
+        final int sdkVersion = Build.VERSION.SDK_INT;
         int ndkVersion;
+        if (sdkVersion <= 24) {
+            ndkVersion = sdkVersion;
+        } else {
+            ndkVersion = Math.max(14, Math.min(sdkVersion, 24));
+        }
+
         String ndkArch;
         if (Build.CPU_ABI.startsWith("arm")) {
             ndkArch = "armel";
-            if (SDK_2_NDK_ARM.length > sdkVersion) {
-                ndkVersion = SDK_2_NDK_ARM[sdkVersion];
-            } else {
-                ndkVersion = SDK_2_NDK_ARM[SDK_2_NDK_ARM.length - 1];
-            }
         } else if (Build.CPU_ABI.startsWith("mips")) {
             ndkArch = "mipsel";
-            if (SDK_2_NDK_MIPS.length > sdkVersion) {
-                ndkVersion = SDK_2_NDK_MIPS[sdkVersion];
-            } else {
-                ndkVersion = SDK_2_NDK_MIPS[SDK_2_NDK_MIPS.length - 1];
-            }
         } else {
             ndkArch = "i686";
-            if (SDK_2_NDK_X_86.length > sdkVersion) {
-                ndkVersion = SDK_2_NDK_X_86[sdkVersion];
-            } else {
-                ndkVersion = SDK_2_NDK_X_86[SDK_2_NDK_X_86.length - 1];
-            }
         }
-
         RepoUtils.setVersion(Build.CPU_ABI, ndkArch, ndkVersion);
     }
 
