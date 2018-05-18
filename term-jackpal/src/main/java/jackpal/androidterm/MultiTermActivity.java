@@ -16,14 +16,12 @@
 
 package jackpal.androidterm;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -35,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -48,11 +47,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -73,7 +70,7 @@ import jackpal.androidterm.util.TermSettings;
  * A terminal emulator activity.
  */
 
-public class MultiTermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+public class MultiTermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener, TermSession.FinishCallback {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
 
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
@@ -92,12 +89,8 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     private SessionList mTermSessions;
     private TermSettings mSettings;
     private boolean mAlreadyStarted = false;
-    private Intent TSIntent;
-    private int onResumeSelectWindow = -1;
-    private TermService mTermService;
     private ActionBarCompat mActionBar;
     private int mActionBarMode = TermSettings.ACTION_BAR_MODE_NONE;
-    private WindowListAdapter mWinListAdapter;
     private boolean mHaveFullHwKeyboard = false;
     /**
      * Should we use keyboard shortcuts?
@@ -174,19 +167,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             return true;
         }
     };
-    private ServiceConnection mTSConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.i(TermDebug.LOG_TAG, "Bound to TermService");
-            TermService.TSBinder binder = (TermService.TSBinder) service;
-            mTermService = binder.getService();
-            populateViewFlipper();
-            populateWindowList();
-        }
 
-        public void onServiceDisconnected(ComponentName arg0) {
-            mTermService = null;
-        }
-    };
     private Handler mHandler = new Handler();
 
     protected static TermSession createTermSession(Activity context, TermSettings settings, String initialCommand) throws IOException {
@@ -216,11 +197,8 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         mSettings = new TermSettings(getResources(), mPrefs);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-        TSIntent = new Intent(this, TermService.class);
-        startService(TSIntent);
         mActionBarMode = mSettings.actionBarMode();
         mViewFlipper = findViewById(R.id.view_flipper);
-
         ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
         if (actionBar != null) {
             mActionBar = actionBar;
@@ -241,71 +219,45 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     protected void onStart() {
         super.onStart();
 
-        if (!bindService(TSIntent, mTSConnection, BIND_AUTO_CREATE)) {
-            throw new IllegalStateException("Failed to bind to TermService!");
-        }
+        populateViewFlipper();
     }
 
     private void populateViewFlipper() {
-        if (mTermService != null) {
-            mTermSessions = mTermService.getSessions();
-
-            if (mTermSessions.size() == 0) {
-                try {
-                    mTermSessions.add(createTermSession());
-                } catch (IOException e) {
-                    Toast.makeText(this, "Failed to start terminal session", Toast.LENGTH_LONG).show();
-                    finish();
-                    return;
-                }
-            }
-
-            mTermSessions.addCallback(this);
-
-            for (TermSession session : mTermSessions) {
-                EmulatorView view = createEmulatorView(session);
-                mViewFlipper.addView(view);
-            }
-
-            updatePrefs();
-
-            if (onResumeSelectWindow >= 0) {
-                mViewFlipper.setDisplayedChild(onResumeSelectWindow);
-                onResumeSelectWindow = -1;
-            }
-            mViewFlipper.onResume();
-        }
-    }
-
-    private void populateWindowList() {
-        if (mActionBar == null) {
-            // Not needed
+        mTermSessions = new SessionList();
+        try {
+            mTermSessions.add(createTermSession());
+        } catch (IOException e) {
+            Toast.makeText(this, "Failed to start terminal session", Toast.LENGTH_LONG).show();
+            finish();
             return;
         }
-        if (mTermSessions != null) {
-            int position = mViewFlipper.getDisplayedChild();
-            if (mWinListAdapter == null) {
-                mWinListAdapter = new WindowListActionBarAdapter(mTermSessions);
 
-                mActionBar.setListNavigationCallbacks(mWinListAdapter, mWinListItemSelected);
-            } else {
-                mWinListAdapter.setSessions(mTermSessions);
-            }
-            mViewFlipper.addCallback(mWinListAdapter);
+        mTermSessions.addCallback(this);
 
-            mActionBar.setSelectedNavigationItem(position);
+        for (TermSession session : mTermSessions) {
+            EmulatorView view = createEmulatorView(session);
+            mViewFlipper.addView(view);
         }
+
+        updatePrefs();
+
+        mViewFlipper.onResume();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
-        stopService(TSIntent);
-        mTermService = null;
-        mTSConnection = null;
+
+        for (TermSession session : mTermSessions) {
+            /* Don't automatically remove from list of sessions -- we clear the
+             * list below anyway and we could trigger
+             * ConcurrentModificationException if we do */
+            session.setFinishCallback(null);
+            session.finish();
+        }
+        mTermSessions.clear();
     }
 
     private void restart() {
@@ -319,7 +271,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             initialCommand = mSettings.getInitialCommand();
         }
         TermSession session = createTermSession(this, mSettings, initialCommand);
-        session.setFinishCallback(mTermService);
+        session.setFinishCallback(this);
         return session;
     }
 
@@ -427,17 +379,10 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         if (mTermSessions != null) {
             mTermSessions.removeCallback(this);
 
-            if (mWinListAdapter != null) {
-                mTermSessions.removeCallback(mWinListAdapter);
-                mTermSessions.removeTitleChangedListener(mWinListAdapter);
-                mViewFlipper.removeCallback(mWinListAdapter);
-            }
+
         }
 
         mViewFlipper.removeAllViews();
-
-        unbindService(mTSConnection);
-
         super.onStop();
     }
 
@@ -455,11 +400,6 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         EmulatorView v = (EmulatorView) mViewFlipper.getCurrentView();
         if (v != null) {
             v.updateSize(false);
-        }
-
-        if (mWinListAdapter != null) {
-            // Force Android to redraw the label in the navigation dropdown
-            mWinListAdapter.notifyDataSetChanged();
         }
     }
 
@@ -487,7 +427,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         } else if (id == R.id.menu_close_window) {
             confirmCloseWindow();
         } else if (id == R.id.menu_window_list) {
-            startActivityForResult(new Intent(this, WindowList.class), REQUEST_CHOOSE_WINDOW);
+            openWindowList();
         } else if (id == R.id.menu_reset) {
             doResetTerminal();
             Toast toast = Toast.makeText(this, R.string.reset_toast_notification, Toast.LENGTH_LONG);
@@ -507,6 +447,24 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             mActionBar.hide();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressLint("StringFormatInvalid")
+    private void openWindowList() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        int size = mTermSessions.size();
+        CharSequence[] titles = new CharSequence[size];
+        for (int i = 0; i < size; i++) {
+            titles[i] = getString(R.string.window_title, i + 1);
+        }
+        builder.setSingleChoiceItems(titles, mViewFlipper.getDisplayedChild(), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mViewFlipper.setDisplayedChild(which);
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
     }
 
     private void doCreateNewWindow() {
@@ -566,31 +524,6 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             mViewFlipper.showNext();
         }
     }
-
-    @Override
-    protected void onActivityResult(int request, int result, Intent data) {
-        switch (request) {
-            case REQUEST_CHOOSE_WINDOW:
-                if (result == RESULT_OK && data != null) {
-                    int position = data.getIntExtra(EXTRA_WINDOW_ID, -2);
-                    if (position >= 0) {
-                        // Switch windows after session list is in sync, not here
-                        onResumeSelectWindow = position;
-                    } else if (position == -1) {
-                        doCreateNewWindow();
-                        onResumeSelectWindow = mTermSessions.size() - 1;
-                    }
-                } else {
-                    // Close the activity if user closed all sessions
-                    // TODO the left path will be invoked when nothing happened, but this Activity was destroyed!
-                    if (mTermSessions == null || mTermSessions.size() == 0) {
-                        finish();
-                    }
-                }
-                break;
-        }
-    }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -854,32 +787,9 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             startActivity(openLink);
     }
 
-    private class WindowListActionBarAdapter extends WindowListAdapter implements UpdateCallback {
-        // From android.R.style in API 13
-        private static final int TextAppearance_Holo_Widget_ActionBar_Title = 0x01030112;
-
-        public WindowListActionBarAdapter(SessionList sessions) {
-            super(sessions);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView label = new TextView(MultiTermActivity.this);
-            String title = getSessionTitle(position, getString(R.string.window_title, position + 1));
-            label.setText(title);
-            label.setTextAppearance(MultiTermActivity.this, TextAppearance_Holo_Widget_ActionBar_Title);
-            return label;
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return super.getView(position, convertView, parent);
-        }
-
-        public void onUpdate() {
-            notifyDataSetChanged();
-            mActionBar.setSelectedNavigationItem(mViewFlipper.getDisplayedChild());
-        }
+    @Override
+    public void onSessionFinish(TermSession session) {
+        mTermSessions.remove(session);
     }
 
     private class EmulatorViewGestureListener extends SimpleOnGestureListener {

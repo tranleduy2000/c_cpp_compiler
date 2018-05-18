@@ -17,37 +17,25 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/window_list_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:maxLines="1"
-        android:padding="15dp"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:padding="16dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="?android:textColorPrimary"
+        tools:text="Window 1" />
 
-    <View
-        android:id="@+id/window_list_separator"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="5dp"
-        android:background="#ff313431" />
-
-    <view
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/window_list_close"
-        class="jackpal.androidterm.WindowList$CloseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@drawable/close_background"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:scaleType="center"
-        android:src="@drawable/btn_close_window" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/baseline_close_black_24" />
 </LinearLayout>

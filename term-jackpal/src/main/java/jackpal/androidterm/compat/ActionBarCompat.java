@@ -23,11 +23,7 @@ import android.widget.SpinnerAdapter;
  * Provides ActionBar APIs.
  */
 public abstract class ActionBarCompat {
-    public static final int NAVIGATION_MODE_STANDARD = 0;
     public static final int NAVIGATION_MODE_LIST = 1;
-    public static final int NAVIGATION_MODE_TABS = 2;
-    public static final int DISPLAY_USE_LOGO = 1;
-    public static final int DISPLAY_SHOW_HOME = 2;
     public static final int DISPLAY_HOME_AS_UP = 4;
     public static final int DISPLAY_SHOW_TITLE = 8;
     public static final int DISPLAY_SHOW_CUSTOM = 16;
