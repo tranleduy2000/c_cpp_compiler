@@ -63,7 +63,7 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
                     inputStream.close();
                     outputStream.close();
 
-                    Utils.chmod(internalBinary.getAbsolutePath(), 0x1fd/*0775*/);
+                    Utils.chmod(internalBinary.getAbsolutePath(), 0x1ed/*0775*/);
 
                     result.setBinaryFile(internalBinary);
                 } catch (Exception e) {

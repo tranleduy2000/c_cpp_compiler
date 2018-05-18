@@ -3,24 +3,23 @@ package com.pdaxrom.term;
 import android.os.Handler;
 import android.util.Log;
 
+import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
 
 public class ShellTermSession extends TermSession {
-    private final static String TAG = "ShellTermSession";
+    private static final String TAG = "ShellTermSession";
     private int mProcId;
     private FileDescriptor mFd;
     private Thread mWatcherThread;
-
-
     private Handler mMsgHandler;
-
     private UpdateCallback mUTF8ModeNotify = new UpdateCallback() {
         public void onUpdate() {
             Utils.setPtyUTF8Mode(mFd, getUTF8Mode());
@@ -29,6 +28,10 @@ public class ShellTermSession extends TermSession {
 
     public ShellTermSession(String[] argv, String envp[], String cwd, Handler handler) {
         super();
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "ShellTermSession() called with: argv = [" + Arrays.toString(argv) +
+                    "], envp = [" + Arrays.toString(envp) + "], cwd = [" + cwd + "], handler = [" + handler + "]");
+        }
 
         mMsgHandler = handler;
 
