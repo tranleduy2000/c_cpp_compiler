@@ -17,6 +17,7 @@
 package com.duy.ccppcompiler.console;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -118,6 +119,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         }
     };
     private TermSettings mSettings;
+    private boolean mHaveFullHwKeyboard = false;
 
     private ShellTermSession createShellTermSession(String cmdline, String workdir) {
         cmdline = cmdline.replaceAll("\\s+", " ");
@@ -151,7 +153,13 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         mSettings = new TermSettings(getResources(), mPrefs);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
+        mHaveFullHwKeyboard = checkHaveFullHwKeyboard(getResources().getConfiguration());
         updatePrefs();
+    }
+
+    private boolean checkHaveFullHwKeyboard(Configuration c) {
+        return (c.keyboard == Configuration.KEYBOARD_QWERTY) &&
+                (c.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO);
     }
 
     private void updatePrefs() {
@@ -236,6 +244,8 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        mHaveFullHwKeyboard = checkHaveFullHwKeyboard(newConfig);
+
         EmulatorView v = mTermView;
         if (v != null) {
             v.updateSize(false);
@@ -320,7 +330,6 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         getCurrentEmulatorView().sendFnKey();
     }
 
-
     /**
      * Send a URL up to Android to be handled by a browser.
      *
@@ -336,7 +345,20 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     }
 
     private void doUIToggle(int x, int y, int width, int height) {
-        mTermView.requestFocus();
+        if (!mHaveFullHwKeyboard) {
+            doToggleSoftKeyboard();
+        }
+
+        getCurrentEmulatorView().requestFocus();
+    }
+
+    private void doToggleSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+
     }
 
     private void doPaste() {
