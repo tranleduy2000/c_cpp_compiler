@@ -22,7 +22,6 @@ import android.os.Build;
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
-import com.pdaxrom.packagemanager.EnvironmentPath;
 
 import java.io.File;
 
@@ -30,6 +29,7 @@ import java.io.File;
  * Created by Duy on 25-Apr-18.
  */
 public class GPlusPlusCompiler extends GCCCompiler {
+    private static final String TAG = "GPlusPlusCompiler";
 
     public GPlusPlusCompiler(Context context, ICompileSetting compileSetting) {
         super(context, compileSetting);
@@ -42,27 +42,11 @@ public class GPlusPlusCompiler extends GCCCompiler {
 
     @Override
     protected String buildCommand(File[] sourceFiles) {
-        final String gccVersion = "4.9";
-        final String toolchainsDir = EnvironmentPath.getToolchainsDir(mContext);
-
         File file = sourceFiles[0];
         String fileName = file.getName();
         mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
 
         CommandBuilder builder = new CommandBuilder("g++-4.9");
-
-        //cpp flags
-        CommandBuilder cppFlags = new CommandBuilder("");
-        cppFlags.addFlags("-I" + toolchainsDir + "/lib/gcc/arm-linux-androideabi/" + gccVersion + "/include");
-        cppFlags.addFlags("-I" + toolchainsDir + "/lib/gcc/arm-linux-androideabi/" + gccVersion + "/usr/include");
-
-        //LD flags
-        CommandBuilder ldFlags = new CommandBuilder("");
-        ldFlags.addFlags("-L" + toolchainsDir + "/lib/gcc/arm-linux-androideabi/" + gccVersion + "/lib");
-
-        builder.addFlags(ldFlags);
-        builder.addFlags(cppFlags);
-
         for (File sourceFile : sourceFiles) {
             builder.addFlags(sourceFile.getAbsolutePath());
         }
@@ -72,7 +56,8 @@ public class GPlusPlusCompiler extends GCCCompiler {
         if (Build.VERSION.SDK_INT >= 21) {
             builder.addFlags("-pie");
         }
-        builder.addFlags("-std=c++14", "-lz", "-ldl", "-lm", "-llog", "-Og");
+//        builder.addFlags("-std=c++14");
+//        builder.addFlags("-lz", "-ldl", "-lm", "-llog", "-Og");
 
 
         // By default, each diagnostic emitted includes text indicating the command-line option that

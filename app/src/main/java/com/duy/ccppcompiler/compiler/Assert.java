@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.compilers;
+package com.duy.ccppcompiler.compiler;
+
+import com.duy.common.DLog;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
- * Created by Duy on 22-Apr-18.
+ * Created by Duy on 18-May-18.
  */
 
-public class GCCConstants {
-    public static final String GCC_DIR_NAME = "gcc";
-    public static final String GCC_VERSION = "4.9";
+public class Assert {
+    private static final String TAG = "Assert";
+
+    public static void existFile(String path) {
+        if (!new File(path).exists()) {
+            if (DLog.DEBUG) DLog.e(TAG, "File not found: ", new FileNotFoundException(path));
+        }
+    }
 }

@@ -45,7 +45,13 @@ public abstract class NativeCompilerImpl<T extends CommandResult> implements INa
     protected CommandResult execCommand(@NonNull Context context, @NonNull String mWorkDir,
                                         @NonNull String mCommand) {
         if (DLog.DEBUG) DLog.d(TAG, "mWorkDir = " + mWorkDir);
-        if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + mCommand);
+        if (DLog.DEBUG) {
+            String[] split = mCommand.split("\\s+");
+            for (String s : split) {
+                if (DLog.DEBUG) DLog.w(TAG, s);
+            }
+        }
+
 
         long startTime = System.currentTimeMillis();
         try {

@@ -79,6 +79,8 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
+import com.pdaxrom.cctools.BuildActivity;
+import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -478,22 +480,30 @@ public class EditorActivity extends FullScreenActivity
     private void compileAndRun() {
         saveAll(false);
         EditorDelegate currentEditor = getCurrentEditorDelegate();
-        File[] srcFiles = new File[1];
-        if (currentEditor != null) {
-            String path = currentEditor.getPath();
-            srcFiles[0] = new File(path);
+        if (currentEditor == null) {
+            return;
         }
-
+        File[] srcFiles = new File[1];
+        String path = currentEditor.getPath();
+        srcFiles[0] = new File(path);
 
         INativeCompiler compiler = CompilerFactory.makeCompilerForFile(EditorActivity.this, srcFiles);
         CompileManager compileManager = new CompileManager(EditorActivity.this);
         compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
-        if (compiler != null) {
-            CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-            compileTask.execute();
+        if (true) {
+            if (compiler != null) {
+                CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
+                compileTask.execute();
+            } else {
+                Toast.makeText(this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+            File file = srcFiles[0];
+            Intent intent = new Intent(this, BuildActivity.class);
+            intent.putExtra(BuildConstants.EXTRA_FILE_NAME, file.getAbsolutePath());
+            intent.putExtra(BuildConstants.EXTRA_FORCE_BUILD, false);
+            startActivity(intent);
         }
     }
 

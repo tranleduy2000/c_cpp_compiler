@@ -92,10 +92,7 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
             builder.addFlags("-pie");
         }
         builder.addFlags("-std=c99");
-        builder.addFlags("-lz");//zlib
-        builder.addFlags("-ldl");
-        builder.addFlags("-lm");//math
-        builder.addFlags("-llog");
+        builder.addFlags("-lz"/*zlib*/, "-ldl", "-lm" /*math*/, "-llog");
         //builder.addFlags("-lncurses");
         builder.addFlags("-Og");
 

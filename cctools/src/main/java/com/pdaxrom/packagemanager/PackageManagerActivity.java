@@ -776,7 +776,11 @@ public class PackageManagerActivity extends FullScreenActivity {
                         }
                         out.write(buf, 0, numRead);
                         totalRead += numRead;
-                        updateProgress(getString(R.string.received) + " " + totalRead + " " + getString(R.string.from) + " " + fileSize + " " + getString(R.string.bytes));
+                        updateProgress(getString(R.string.received) + " " +
+                                Utils.humanReadableByteCount(totalRead, false) + " " +
+                                getString(R.string.from) + " " +
+                                Utils.humanReadableByteCount(fileSize, false) + " " +
+                                getString(R.string.bytes));
                         if (fileSize > 20 * 1024 * 1024) {
                             updateProgress(totalRead / (fileSize / 100));
                         } else {

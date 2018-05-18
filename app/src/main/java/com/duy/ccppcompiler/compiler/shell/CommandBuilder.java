@@ -34,12 +34,18 @@ public class CommandBuilder {
         this.program = program;
     }
 
-    public void addFlags(String... flags) {
-        this.flags.addAll(Arrays.asList(flags));
+    public CommandBuilder() {
+        this.program = "";
     }
 
-    public void addFlags(List<String> flags) {
+    public CommandBuilder addFlags(String... flags) {
+        this.flags.addAll(Arrays.asList(flags));
+        return this;
+    }
+
+    public CommandBuilder addFlags(List<String> flags) {
         this.flags.addAll(flags);
+        return this;
     }
 
     public void addFlags(CommandBuilder otherFlags) {
