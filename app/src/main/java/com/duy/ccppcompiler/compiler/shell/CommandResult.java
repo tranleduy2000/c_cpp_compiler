@@ -20,8 +20,8 @@ import android.support.annotation.Nullable;
 
 public class CommandResult {
 
-    private final int resultCode;
     public String message;
+    private int resultCode;
     private long time = 0;
 
     public CommandResult(int resultCode) {
@@ -31,6 +31,10 @@ public class CommandResult {
     public CommandResult(int resultCode, @Nullable String message) {
         this.resultCode = resultCode;
         this.message = message;
+    }
+
+    public CommandResult(CommandResult commandResult) {
+        this(commandResult.getResultCode(), commandResult.getMessage());
     }
 
     public long getTime() {
@@ -54,7 +58,15 @@ public class CommandResult {
         return resultCode;
     }
 
+    public void setResultCode(int resultCode) {
+        this.resultCode = resultCode;
+    }
+
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

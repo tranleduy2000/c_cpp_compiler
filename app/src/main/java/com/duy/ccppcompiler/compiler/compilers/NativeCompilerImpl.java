@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Duy on 18-May-18.
  */
-public abstract class NativeCompilerImpl implements INativeCompiler {
+public abstract class NativeCompilerImpl<T extends CommandResult> implements INativeCompiler<T> {
     private static final String TAG = "NativeCompilerImpl";
 
     private int mProcessId;

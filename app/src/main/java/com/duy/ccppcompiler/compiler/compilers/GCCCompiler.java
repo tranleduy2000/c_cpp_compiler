@@ -20,18 +20,25 @@ import android.content.Context;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
+import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.utils.Utils;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
+public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     private static final String TAG = "GCCCompiler";
     private Context mContext;
     private ICompileSetting mSetting;
+    private File mOutFile;
 
     public GCCCompiler(Context context, ICompileSetting compileSetting) {
         mContext = context;
@@ -39,24 +46,46 @@ public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
     }
 
     @Override
-    public CommandResult compile(File[] sourceFiles) {
+    public GccCommandResult compile(File[] sourceFiles) {
         File fileToBeCompiled = sourceFiles[0];
         String command = buildCommand(sourceFiles);
         String mWorkDir = fileToBeCompiled.getParent();
-        return execCommand(mContext, mWorkDir, command);
+
+        GccCommandResult result = new GccCommandResult(execCommand(mContext, mWorkDir, command));
+        if (result.getResultCode() == 0) {
+            if (mOutFile.exists()) {
+                try {
+                    File internalBinary = new File(EnvironmentPath.getTmpExeDir(mContext), mOutFile.getName());
+                    FileInputStream inputStream = new FileInputStream(mOutFile);
+                    FileOutputStream outputStream = new FileOutputStream(internalBinary);
+                    IOUtils.copy(inputStream, outputStream);
+                    inputStream.close();
+                    outputStream.close();
+
+                    Utils.chmod(internalBinary.getAbsolutePath(), 0x1fd/*0775*/);
+
+                    result.setBinaryFile(internalBinary);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    result.setResultCode(-1);
+                    result.setMessage("Application error: " + e.getMessage() + ". Please report bug on GitHub of project");
+                }
+            }
+        }
+        return result;
     }
 
     private String buildCommand(File[] sourceFiles) {
         File file = sourceFiles[0];
         String fileName = file.getName();
+        mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
 
         CommandBuilder builder = new CommandBuilder("gcc-4.9");
         for (File sourceFile : sourceFiles) {
             builder.addFlags(sourceFile.getAbsolutePath());
         }
-        String outFile = fileName.substring(0, fileName.lastIndexOf("."));
         builder.addFlags(mSetting.getCFlags());
-        builder.addFlags("-o", outFile);
+        builder.addFlags("-o", mOutFile.getAbsolutePath());
 
         builder.addFlags("-pie");
         builder.addFlags("-std=c99");

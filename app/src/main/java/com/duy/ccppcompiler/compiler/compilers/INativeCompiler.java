@@ -26,7 +26,7 @@ import java.io.File;
  * Created by Duy on 25-Apr-18.
  */
 
-public interface INativeCompiler {
+public interface INativeCompiler<T extends CommandResult> {
     @WorkerThread
-    CommandResult compile(File[] sourceFiles) ;
+    T compile(File[] sourceFiles) ;
 }

@@ -27,11 +27,11 @@ import java.util.List;
  */
 
 public class CommandBuilder {
-    private String exec;
+    private String program;
     private ArrayList<String> flags = new ArrayList<>();
 
-    public CommandBuilder(String exec) {
-        this.exec = exec;
+    public CommandBuilder(String program) {
+        this.program = program;
     }
 
     public void addFlags(String... flags) {
@@ -45,7 +45,7 @@ public class CommandBuilder {
     @NonNull
     public String buildCommand() {
         StringBuilder sb = new StringBuilder();
-        sb.append(exec).append(" ");
+        sb.append(program).append(" ");
         for (int i = 0; i < flags.size(); i++) {
             String flag = flags.get(i);
             if (flag != null && !flag.isEmpty()) {

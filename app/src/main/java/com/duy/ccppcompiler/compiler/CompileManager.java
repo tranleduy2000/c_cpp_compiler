@@ -16,99 +16,32 @@
 
 package com.duy.ccppcompiler.compiler;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.widget.Toast;
 
-import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.compilers.GCCConstants;
-import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
-import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 import com.duy.ccppcompiler.console.ConsoleActivity;
-import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
-import com.duy.common.DLog;
 import com.duy.editor.EditorActivity;
-import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
-
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompileManager implements ICompileManager {
-    private static final String TAG = "CompileManager";
-    private ProgressDialog mCompileDialog;
-    private EditorActivity mActivity;
-    private DiagnosticPresenter mDiagnosticPresenter;
+public class CompileManager extends CompileManagerImpl<GccCommandResult> {
 
     public CompileManager(EditorActivity activity) {
-        mCompileDialog = new ProgressDialog(activity);
-        mActivity = activity;
+        super(activity);
     }
 
     @Override
-    public void onPrepareCompile() {
-        mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
-        mCompileDialog.setTitle(R.string.title_compiling);
-        mCompileDialog.setCancelable(false);
-        mCompileDialog.setCanceledOnTouchOutside(false);
-        mCompileDialog.show();
-    }
+    public void onCompileSuccess(GccCommandResult commandResult) {
+        super.onCompileSuccess(commandResult);
 
-    @Override
-    public void onNewMessage(CharSequence charSequence) {
-        mCompileDialog.setMessage(charSequence);
-    }
-
-    @Override
-    public void onCompileSuccess(CommandResult commandResult) {
-        finishCompile();
-        if (mCompileDialog != null && mCompileDialog.isShowing()) {
-            mCompileDialog.dismiss();
-        }
-
-        File internalDir = mActivity.getFilesDir();
-        String path = new File(internalDir, GCCConstants.TEMP_BINARY_NAME).getAbsolutePath();
-        Intent intent = new Intent(mActivity, ConsoleActivity.class);
-        intent.putExtra(ConsoleActivity.EXTRA_BINARY_FILE_PATH, path);
-        mActivity.startActivity(intent);
-    }
-
-    private void finishCompile() {
-        mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
-    }
-
-    @Override
-    public void onCompileFailed(CommandResult commandResult) {
-        finishCompile();
-        if (mCompileDialog != null && mCompileDialog.isShowing()) {
-            mCompileDialog.dismiss();
-        }
-        Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();
-        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + commandResult.getMessage());
-
-        if (mDiagnosticPresenter != null) {
-            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
-            OutputParser parser = new OutputParser(diagnosticsCollector);
-            parser.parse(commandResult.getMessage());
-            ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
-            mDiagnosticPresenter.setDiagnostics(diagnostics);
-            mDiagnosticPresenter.showView();
-
-            debug(diagnostics);
+        //now run binary file
+        if (commandResult.getBinaryFile() != null) {
+            Intent intent = new Intent(mActivity, ConsoleActivity.class);
+            intent.putExtra(ConsoleActivity.EXTRA_BINARY_FILE_PATH, commandResult.getBinaryFile().getAbsolutePath());
+            mActivity.startActivity(intent);
         }
     }
 
-    private void debug(ArrayList diagnostics) {
-        for (Object diagnostic : diagnostics) {
-            System.out.println(diagnostic);
-        }
-    }
-
-    public void setDiagnosticPresenter(DiagnosticPresenter diagnosticPresenter) {
-        this.mDiagnosticPresenter = diagnosticPresenter;
-    }
 }

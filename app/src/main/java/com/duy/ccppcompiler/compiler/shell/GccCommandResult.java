@@ -18,26 +18,25 @@ package com.duy.ccppcompiler.compiler.shell;
 
 import android.support.annotation.Nullable;
 
+import java.io.File;
+
 /**
  * Created by Duy on 18-May-18.
  */
 
 public class GccCommandResult extends CommandResult {
-    private String binaryFile;
+    @Nullable
+    private File binaryFile;
 
-    public GccCommandResult(int resultCode) {
-        super(resultCode);
+    public GccCommandResult(CommandResult commandResult) {
+        super(commandResult);
     }
 
-    public GccCommandResult(int resultCode, @Nullable String message) {
-        super(resultCode, message);
-    }
-
-    public String getBinaryFile() {
+    public File getBinaryFile() {
         return binaryFile;
     }
 
-    public void setBinaryFile(String binaryFile) {
+    public void setBinaryFile(File binaryFile) {
         this.binaryFile = binaryFile;
     }
 }

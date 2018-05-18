@@ -24,15 +24,15 @@ import com.duy.ccppcompiler.compiler.shell.CommandResult;
  * Created by Duy on 25-Apr-18.
  */
 
-public interface ICompileManager {
+public interface ICompileManager<T extends CommandResult> {
     @MainThread
     void onNewMessage(CharSequence charSequence);
 
     @MainThread
-    void onCompileSuccess(CommandResult commandResult);
+    void onCompileSuccess(T commandResult);
 
     @MainThread
-    void onCompileFailed(CommandResult commandResult);
+    void onCompileFailed(T commandResult);
 
     @MainThread
     void onPrepareCompile();

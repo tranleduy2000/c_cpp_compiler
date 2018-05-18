@@ -32,7 +32,7 @@ import java.util.Map;
  * Created by Duy on 25-Apr-18.
  */
 
-public class GPlusPlusCompiler implements INativeCompiler {
+public class GPlusPlusCompiler extends NativeCompilerImpl<CommandResult> {
     private Context mContext;
 
     public GPlusPlusCompiler(Context context) {
