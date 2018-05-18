@@ -32,7 +32,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -57,14 +56,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.text.Collator;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import jackpal.androidterm.compat.ActionBarCompat;
 import jackpal.androidterm.compat.ActivityCompat;
-import jackpal.androidterm.compat.MenuItemCompat;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
@@ -80,7 +75,11 @@ import jackpal.androidterm.util.TermSettings;
 
 public class MultiTermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
+
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
+    public static final String EXTRA_INIT_COMMAND = "EXTRA_INIT_COMMAND";
+    public static final String EXTRA_MULTI_WINDOW = "EXTRA_MULTI_WINDOW";
+
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
     private final static int PASTE_ID = 2;
@@ -238,29 +237,6 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         mAlreadyStarted = true;
     }
 
-    @SuppressWarnings("unused")
-    private String makePathFromBundle(Bundle extras) {
-        if (extras == null || extras.size() == 0) {
-            return "";
-        }
-
-        String[] keys = new String[extras.size()];
-        keys = extras.keySet().toArray(keys);
-        Collator collator = Collator.getInstance(Locale.US);
-        Arrays.sort(keys, collator);
-
-        StringBuilder path = new StringBuilder();
-        for (String key : keys) {
-            String dir = extras.getString(key);
-            if (dir != null && !dir.equals("")) {
-                path.append(dir);
-                path.append(":");
-            }
-        }
-
-        return path.substring(0, path.length() - 1);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -338,8 +314,11 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     }
 
     private TermSession createTermSession() throws IOException {
-        TermSettings settings = mSettings;
-        TermSession session = createTermSession(this, settings, settings.getInitialCommand());
+        String initialCommand = getIntent().getStringExtra(EXTRA_INIT_COMMAND);
+        if (initialCommand == null) {
+            initialCommand = mSettings.getInitialCommand();
+        }
+        TermSession session = createTermSession(this, mSettings, initialCommand);
         session.setFinishCallback(mTermService);
         return session;
     }
@@ -487,8 +466,14 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_terminal, menu);
-        MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_new_window), MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-        MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_close_window), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        menu.findItem(R.id.menu_close_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        boolean multiTerm = getIntent().getBooleanExtra(EXTRA_MULTI_WINDOW, true);
+        if (multiTerm) {
+            menu.findItem(R.id.menu_new_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        } else {
+            menu.findItem(R.id.menu_new_window).setVisible(false);
+            menu.findItem(R.id.menu_window_list).setVisible(false);
+        }
         return true;
     }
 

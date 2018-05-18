@@ -16,8 +16,6 @@
 
 package jackpal.androidterm;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,15 +24,11 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import jackpal.androidterm.compat.ServiceForegroundCompat;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.util.SessionList;
 
 public class TermService extends Service implements TermSession.FinishCallback {
-
-    private static final int RUNNING_NOTIFICATION = 1;
     private final IBinder mTSBinder = new TSBinder();
-    private ServiceForegroundCompat compat;
     private SessionList mTermSessions;
 
     @Override
@@ -62,24 +56,12 @@ public class TermService extends Service implements TermSession.FinishCallback {
         editor.putString("home_path", homePath);
         editor.apply();
 
-        compat = new ServiceForegroundCompat(this);
         mTermSessions = new SessionList();
-
-        /* Put the service in the foreground. */
-        Notification notification = new Notification(R.drawable.ic_stat_service_notification_icon, getText(R.string.service_notify_text), System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        Intent notifyIntent = new Intent(this, MultiTermActivity.class);
-        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
-        //notification.setLatestEventInfo(this, getText(R.string.application_terminal), getText(R.string.service_notify_text), pendingIntent);
-        compat.startForeground(RUNNING_NOTIFICATION, notification);
-
         Log.d(TermDebug.LOG_TAG, "TermService started");
     }
 
     @Override
     public void onDestroy() {
-        compat.stopForeground(true);
         for (TermSession session : mTermSessions) {
             /* Don't automatically remove from list of sessions -- we clear the
              * list below anyway and we could trigger
@@ -88,7 +70,6 @@ public class TermService extends Service implements TermSession.FinishCallback {
             session.finish();
         }
         mTermSessions.clear();
-        return;
     }
 
     public SessionList getSessions() {

@@ -19,8 +19,11 @@ package com.duy.ccppcompiler.compiler;
 import android.content.Intent;
 
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
-import com.duy.ccppcompiler.console.ConsoleActivity;
 import com.duy.editor.EditorActivity;
+
+import java.io.File;
+
+import jackpal.androidterm.MultiTermActivity;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -37,9 +40,14 @@ public class CompileManager extends CompileManagerImpl<GccCommandResult> {
         super.onCompileSuccess(commandResult);
 
         //now run binary file
-        if (commandResult.getBinaryFile() != null) {
-            Intent intent = new Intent(mActivity, ConsoleActivity.class);
-            intent.putExtra(ConsoleActivity.EXTRA_BINARY_FILE_PATH, commandResult.getBinaryFile().getAbsolutePath());
+        File binFile = commandResult.getBinaryFile();
+        if (binFile != null) {
+//            Intent intent = new Intent(mActivity, ConsoleActivity.class);
+//            intent.putExtra(ConsoleActivity.EXTRA_BINARY_FILE_PATH, binFile.getAbsolutePath());
+//            mActivity.startActivity(intent);
+            Intent intent = new Intent(mActivity, MultiTermActivity.class);
+            intent.putExtra(MultiTermActivity.EXTRA_INIT_COMMAND, binFile.getAbsolutePath());
+            intent.putExtra(MultiTermActivity.EXTRA_MULTI_WINDOW, false);
             mActivity.startActivity(intent);
         }
     }
