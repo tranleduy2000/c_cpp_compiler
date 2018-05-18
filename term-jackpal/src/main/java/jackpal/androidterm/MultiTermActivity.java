@@ -70,9 +70,6 @@ import jackpal.androidterm.util.TermSettings;
  */
 
 public class MultiTermActivity extends AppCompatActivity implements UpdateCallback, SharedPreferences.OnSharedPreferenceChangeListener, TermSession.FinishCallback {
-    public static final int REQUEST_CHOOSE_WINDOW = 1;
-
-    public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
     public static final String EXTRA_INIT_COMMAND = "EXTRA_INIT_COMMAND";
     public static final String EXTRA_MULTI_WINDOW = "EXTRA_MULTI_WINDOW";
 
@@ -154,7 +151,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
 
     private Handler mHandler = new Handler();
 
-    protected static TermSession createTermSession(Activity context, TermSettings settings, String initialCommand) throws IOException {
+    protected TermSession createTermSession(Activity context, TermSettings settings, String initialCommand) throws IOException {
         String[] envp = context.getIntent().getStringArrayExtra("envp");
         GenericTermSession session = new ShellTermSession(settings, initialCommand, envp);
         // XXX We should really be able to fetch this from within TermSession

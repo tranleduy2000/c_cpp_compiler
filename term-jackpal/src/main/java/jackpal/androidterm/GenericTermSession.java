@@ -16,7 +16,6 @@
 
 package jackpal.androidterm;
 
-import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
@@ -70,17 +69,7 @@ class GenericTermSession extends TermSession {
     }
 
     private static int getIntFd(ParcelFileDescriptor parcelFd) throws IOException {
-        if (Build.VERSION.SDK_INT >= 12)
-            return FdHelperHoneycomb.getFd(parcelFd);
-        else {
-            try {
-                cacheDescField();
-
-                return descriptorField.getInt(parcelFd.getFileDescriptor());
-            } catch (Exception e) {
-                throw new IOException("Unable to obtain file descriptor on this OS version: " + e.getMessage());
-            }
-        }
+        return FdHelperHoneycomb.getFd(parcelFd);
     }
 
     public void updatePrefs(TermSettings settings) {

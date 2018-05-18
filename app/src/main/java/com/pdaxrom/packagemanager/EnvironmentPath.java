@@ -158,7 +158,7 @@ public class EnvironmentPath {
 
                 "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
 
-                "SHELL=" + getShell(),
+                "SHELL=" + getShell(context),
                 "TERM=" + settings.getTermType(),
                 "PS1=$ ",
                 "SDDIR=" + getSdCardHomeDir(),
@@ -204,7 +204,7 @@ public class EnvironmentPath {
         return sb.toString();
     }
 
-    public static String getShell() {
+    public static String getShell(Context context) {
         return "/system/bin/sh";
     }
 
@@ -221,7 +221,7 @@ public class EnvironmentPath {
                 "CCTOOLSRES=" + context.getPackageResourcePath(),
                 "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
                 "HOME=" + getHomeDir(context),
-                "SHELL=" + getShell(),
+                "SHELL=" + getShell(context),
                 "TERM=xterm",
                 "PS1=$ ",
                 "SDDIR=" + getSdCardHomeDir(),
