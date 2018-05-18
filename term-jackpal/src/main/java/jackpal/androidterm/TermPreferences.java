@@ -16,17 +16,12 @@
 
 package jackpal.androidterm;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
-import jackpal.androidterm.compat.ActionBarCompat;
-import jackpal.androidterm.compat.ActivityCompat;
-import jackpal.androidterm.compat.AndroidCompat;
-
 public class TermPreferences extends PreferenceActivity {
-    private static final String ACTIONBAR_KEY = "actionbar";
-    private static final String CATEGORY_SCREEN_KEY = "screen";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,20 +29,16 @@ public class TermPreferences extends PreferenceActivity {
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_terminal);
-
-        // Display up indicator on action bar home button
-        if (AndroidCompat.V11ToV20) {
-            ActionBarCompat bar = ActivityCompat.getActionBar(this);
-            if (bar != null) {
-                bar.setDisplayOptions(ActionBarCompat.DISPLAY_HOME_AS_UP, ActionBarCompat.DISPLAY_HOME_AS_UP);
-            }
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case ActionBarCompat.ID_HOME:
+            case android.R.id.home:
                 // Action bar home button selected
                 finish();
                 return true;

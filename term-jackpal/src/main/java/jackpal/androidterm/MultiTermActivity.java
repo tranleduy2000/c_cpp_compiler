@@ -17,6 +17,7 @@
 package jackpal.androidterm;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -55,8 +56,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.List;
 
-import jackpal.androidterm.compat.ActionBarCompat;
-import jackpal.androidterm.compat.ActivityCompat;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
@@ -89,7 +88,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     private SessionList mTermSessions;
     private TermSettings mSettings;
     private boolean mAlreadyStarted = false;
-    private ActionBarCompat mActionBar;
+    private ActionBar mActionBar;
     private int mActionBarMode = TermSettings.ACTION_BAR_MODE_NONE;
     private boolean mHaveFullHwKeyboard = false;
     /**
@@ -152,21 +151,6 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             }
         }
     };
-    private ActionBarCompat.OnNavigationListener mWinListItemSelected = new ActionBarCompat.OnNavigationListener() {
-        public boolean onNavigationItemSelected(int position, long id) {
-            int oldPosition = mViewFlipper.getDisplayedChild();
-            if (position != oldPosition) {
-                if (position >= mViewFlipper.getChildCount()) {
-                    mViewFlipper.addView(createEmulatorView(mTermSessions.get(position)));
-                }
-                mViewFlipper.setDisplayedChild(position);
-                if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
-                    mActionBar.hide();
-                }
-            }
-            return true;
-        }
-    };
 
     private Handler mHandler = new Handler();
 
@@ -199,11 +183,9 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
 
         mActionBarMode = mSettings.actionBarMode();
         mViewFlipper = findViewById(R.id.view_flipper);
-        ActionBarCompat actionBar = ActivityCompat.getActionBar(this);
+        ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             mActionBar = actionBar;
-            actionBar.setNavigationMode(ActionBarCompat.NAVIGATION_MODE_LIST);
-            actionBar.setDisplayOptions(0, ActionBarCompat.DISPLAY_SHOW_TITLE);
             if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
                 actionBar.hide();
             }
@@ -735,14 +717,13 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
 
 
     private void doToggleActionBar() {
-        ActionBarCompat bar = mActionBar;
-        if (bar == null) {
+        if (mActionBar == null) {
             return;
         }
-        if (bar.isShowing()) {
-            bar.hide();
+        if (mActionBar.isShowing()) {
+            mActionBar.hide();
         } else {
-            bar.show();
+            mActionBar.show();
         }
     }
 
