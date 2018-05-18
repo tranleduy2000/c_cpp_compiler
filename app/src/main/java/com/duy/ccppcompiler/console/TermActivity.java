@@ -42,10 +42,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.Environment;
-import com.pdaxrom.term.ShellTermSession;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,7 +79,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
             }
             if (msg.what == 123) {
                 Log.i(TAG, "Message - Process exited!!!");
-                showTitle(getString(com.pdaxrom.cctools.R.string.console_name) + " - " + getString(com.pdaxrom.cctools.R.string.console_finished));
+                showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_finished));
                 isRunning = false;
             }
         }
@@ -134,18 +134,18 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.pdaxrom.cctools.R.layout.activity_term);
-        setSupportActionBar((Toolbar) findViewById(com.pdaxrom.cctools.R.id.toolbar));
+        setContentView(R.layout.activity_term);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String fileName = getIntent().getStringExtra(BuildConstants.EXTRA_FILE_NAME);
         String workDir = getIntent().getStringExtra(BuildConstants.EXTRA_WORK_DIR);
 
-        showTitle(getString(com.pdaxrom.cctools.R.string.console_name) + " - " + getString(com.pdaxrom.cctools.R.string.console_executing));
+        showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_executing));
 
         mSession = createShellTermSession(fileName, workDir);
         mTermView = createEmulatorView(mSession);
-        FrameLayout frameLayout = findViewById(com.pdaxrom.cctools.R.id.content);
+        FrameLayout frameLayout = findViewById(R.id.content);
         frameLayout.removeAllViews();
         frameLayout.addView(mTermView);
 
