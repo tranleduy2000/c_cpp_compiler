@@ -30,7 +30,6 @@ import com.duy.common.DLog;
 import com.jecelyin.editor.v2.view.EditorView;
 
 import java.io.File;
-import java.security.InvalidParameterException;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -66,18 +65,12 @@ public class EditorFragment extends Fragment {
         onRestoreState(savedInstanceState);
         if (mEditorDelegate == null) {
             Bundle arguments = getArguments();
-            if (arguments == null) {
-                throw new RuntimeException("Missing args");
-            }
             String encoding = arguments.getString(KEY_ENCODING);
             int offset = arguments.getInt(KEY_OFFSET);
             File file = (File) arguments.getSerializable(KEY_FILE);
-            if (file == null) {
-                throw new InvalidParameterException("Missing file arg");
-            }
             mEditorDelegate = new EditorDelegate(file, offset, encoding);
         }
-        EditorView view = (EditorView) inflater.inflate(R.layout.editor, container, false);
+        EditorView view = (EditorView) inflater.inflate(R.layout.fragment_editor, container, false);
         mEditorDelegate.setEditorView(view);
         return view;
     }

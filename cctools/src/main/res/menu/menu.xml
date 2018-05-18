@@ -2,42 +2,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/item_new"
-        android:icon="@drawable/document_new"
         android:title="@string/newButton"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_open"
-        android:icon="@drawable/document_open"
         android:title="@string/pathButton"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_save"
-        android:icon="@drawable/document_save"
         android:title="@string/saveButton"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_saveas"
-        android:icon="@drawable/document_save_as"
         android:title="@string/saveAsButton"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_close"
-        android:icon="@drawable/document_close"
         android:title="@string/closeButton"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_run"
-        android:icon="@drawable/play"
         android:title="@string/playButton"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_build"
-        android:icon="@drawable/build"
         android:title="@string/buildButton"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_buildlog"
-        android:icon="@drawable/logviewer"
         android:title="@string/logButton"
         app:showAsAction="ifRoom" />
     <item
@@ -63,22 +55,18 @@
     </item>
     <item
         android:id="@+id/item_terminal"
-        android:icon="@drawable/gnome_terminal"
         android:title="@string/title_menu_terminal"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_pkgmgr"
-        android:icon="@drawable/pkgmgr"
         android:title="@string/title_menu_add_ons"
         app:showAsAction="always" />
     <item
         android:id="@+id/prefs"
-        android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/prefs_button"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/about"
-        android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/about_button"
         app:showAsAction="ifRoom" />
 </menu>

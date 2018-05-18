@@ -1,6 +1,21 @@
+/*
+ * Copyright 2018 Mr Duy
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.pdaxrom.cctools;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,6 +55,7 @@ import android.widget.TextView.BufferType;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.duy.ccppcompiler.R;
 import com.pdaxrom.editor.CodeEditor;
 import com.pdaxrom.editor.CodeEditorInterface;
 import com.pdaxrom.packagemanager.EnvironmentPath;
@@ -414,19 +430,19 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private String getPrefString(String key) {
-        SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+        SharedPreferences settings = getPreferences(MODE_PRIVATE);
         return settings.getString(key, Environment.getExternalStorageDirectory().getPath() + "/CCTools/Examples");
     }
 
     private void setPrefString(String key, String value) {
-        SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+        SharedPreferences settings = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
     private int loadTabs() {
-        SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+        SharedPreferences settings = getPreferences(MODE_PRIVATE);
         int total = settings.getInt("TabsCount", 0);
         int skipped = 0;
 
@@ -461,7 +477,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void saveTabs() {
-        SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+        SharedPreferences settings = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("TabsCount", flipper.getChildCount());
         if (flipper.getChildCount() > 0) {
@@ -493,8 +509,8 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void addEditorTab() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        flipper.addView(inflater.inflate(R.layout.editor, null));
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        flipper.addView(inflater.inflate(R.layout.cctools_editor, null));
         codeEditor = flipper.getChildAt(flipper.getChildCount() - 1).findViewById(R.id.codeEditor);
         updateEditorPrefs(mPrefs, codeEditor);
         codeEditor.setCodeEditorInterface(this);
@@ -660,7 +676,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
     private void showLog() {
         ArrayList<HashMap<String, String>> menuItems = new ArrayList<HashMap<String, String>>();
-        for (LogItem item :  new ArrayList<LogItem>()) {
+        for (LogItem item : new ArrayList<LogItem>()) {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(KEY_FILE, item.getFile());
             map.put(KEY_LINE, Integer.toString(item.getLine()));

@@ -8,6 +8,7 @@
     <application
         android:name="com.jecelyin.editor.v2.TextEditorApplication"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -74,6 +75,58 @@
             android:exported="false" />
 
         <activity android:name=".ui.examples.ExampleActivity" />
+
+
+        <activity
+            android:name="com.pdaxrom.cctools.CCToolsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.pdaxrom.cctools.TermActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/console_name"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.pdaxrom.cctools.BuildActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/buildwindow_name"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.pdaxrom.utils.FileDialog"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/filebrowser_name" />
+        <activity
+            android:name="com.pdaxrom.cctools.CCtoolsPreferences"
+            android:label="@string/preferences" />
+        <activity android:name="com.pdaxrom.cctools.LauncherNativeActivity">
+            <intent-filter>
+                <action android:name="com.pdaXrom.cctools.action.RUN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.pdaxrom.cctools.LauncherConsoleActivity">
+            <intent-filter>
+                <action android:name="com.pdaXrom.cctools.action.RUN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="android.app.NativeActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="native-loader" />
+        </activity>
+        <activity
+            android:name="com.pdaxrom.packagemanager.PackageManagerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/pkgmgr_name" />
+        <activity
+            android:name="com.pdaxrom.cctools.DialogWindow"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Transparent" />
     </application>
 
 </manifest>

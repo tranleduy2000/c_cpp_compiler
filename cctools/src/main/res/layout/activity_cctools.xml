@@ -21,7 +21,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/edit_undo"
                 android:text="@string/menu_undo" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -30,7 +29,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/edit_redo"
                 android:text="@string/menu_redo" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -39,7 +37,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/document_new"
                 android:text="@string/newButton" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -48,7 +45,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/document_open"
                 android:text="@string/pathButton" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -57,7 +53,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/document_save"
                 android:text="@string/saveButton" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -66,7 +61,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/document_save_as"
                 android:text="@string/saveAsButton" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -75,7 +69,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/play"
                 android:text="@string/playButton" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -84,7 +77,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/build"
                 android:text="@string/buildButton" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -93,7 +85,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/logviewer"
                 android:text="@string/logButton" />
 
             <android.support.v7.widget.AppCompatImageButton
@@ -102,7 +93,6 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/imgbuttdesc"
                 android:scaleType="centerInside"
-                android:src="@drawable/gnome_terminal"
                 android:text="@string/title_menu_terminal" />
 
         </LinearLayout>
