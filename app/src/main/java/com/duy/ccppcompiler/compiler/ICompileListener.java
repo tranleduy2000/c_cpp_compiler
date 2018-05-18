@@ -16,12 +16,12 @@
 
 package com.duy.ccppcompiler.compiler;
 
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
 public interface ICompileListener {
-    void onCompileResult(CompileResult result);
+    void onCompileResult(CommandResult result);
 }

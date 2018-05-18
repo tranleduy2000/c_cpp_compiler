@@ -495,7 +495,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     private void system(String cmdline) {
         try {
-            final String[] envp = EnvironmentPath.buildEnv(this);
+            final String[] envp = EnvironmentPath.buildDefaultEnv(this);
             Log.i(TAG, "exec cmd " + cmdline + ", cctoolsdir " + EnvironmentPath.getCCtoolsDir(this));
             Process p = Runtime.getRuntime().exec(cmdline, envp);
             p.waitFor();

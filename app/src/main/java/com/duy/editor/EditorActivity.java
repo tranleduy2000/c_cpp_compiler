@@ -449,7 +449,7 @@ public class EditorActivity extends FullScreenActivity
 
     private void openTerminal() {
         Intent intent = new Intent(this, MultiTermActivity.class);
-        intent.putExtra("envp", EnvironmentPath.buildEnv(this));
+        intent.putExtra("envp", EnvironmentPath.buildDefaultEnv(this));
         startActivity(intent);
     }
 

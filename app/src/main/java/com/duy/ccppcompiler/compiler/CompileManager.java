@@ -24,7 +24,7 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.compilers.GCCConstants;
 import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
 import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.console.ConsoleActivity;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;
@@ -64,7 +64,7 @@ public class CompileManager implements ICompileManager {
     }
 
     @Override
-    public void onCompileSuccess(CompileResult compileResult) {
+    public void onCompileSuccess(CommandResult commandResult) {
         finishCompile();
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
@@ -82,18 +82,18 @@ public class CompileManager implements ICompileManager {
     }
 
     @Override
-    public void onCompileFailed(CompileResult compileResult) {
+    public void onCompileFailed(CommandResult commandResult) {
         finishCompile();
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
         }
         Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();
-        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + compileResult.getMessage());
+        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + commandResult.getMessage());
 
         if (mDiagnosticPresenter != null) {
             DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
             OutputParser parser = new OutputParser(diagnosticsCollector);
-            parser.parse(compileResult.getMessage());
+            parser.parse(commandResult.getMessage());
             ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
             mDiagnosticPresenter.setDiagnostics(diagnostics);
             mDiagnosticPresenter.showView();

@@ -18,17 +18,17 @@ package com.duy.ccppcompiler.compiler.shell;
 
 import android.support.annotation.Nullable;
 
-public class CompileResult {
+public class CommandResult {
 
     private final int resultCode;
     public String message;
     private long time = 0;
 
-    public CompileResult(int resultCode) {
+    public CommandResult(int resultCode) {
         this.resultCode = resultCode;
     }
 
-    public CompileResult(int resultCode, @Nullable String message) {
+    public CommandResult(int resultCode, @Nullable String message) {
         this.resultCode = resultCode;
         this.message = message;
     }

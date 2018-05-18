@@ -19,17 +19,17 @@ package com.duy.ccppcompiler.compiler.compilers;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 import com.pdaxrom.utils.Utils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,85 +40,82 @@ public abstract class NativeCompilerImpl implements INativeCompiler {
     private static final String TAG = "NativeCompilerImpl";
 
     private int mProcessId;
-    private int mExitCode;
 
     @NonNull
-    protected CompileResult execCommand(Context context, String mWorkDir, String mTmpDir,
-                                        @NonNull String mTmpExeDir, @NonNull String mCommand) {
+    protected CommandResult execCommand(@NonNull Context context, @NonNull String mWorkDir,
+                                        @NonNull String mCommand) {
         if (DLog.DEBUG) DLog.d(TAG, "mWorkDir = " + mWorkDir);
-        if (DLog.DEBUG) DLog.d(TAG, "mTmpDir = " + mTmpDir);
-        if (DLog.DEBUG) DLog.d(TAG, "mTmpExeDir = " + mTmpExeDir);
         if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + mCommand);
 
         long startTime = System.currentTimeMillis();
         try {
-            String[] env = {"PWD=" + mWorkDir, "TMPDIR=" + mTmpDir, "TEMP=" + mTmpDir, "TMPEXEDIR=" + mTmpExeDir,};
-            env = EnvironmentPath.join(env, EnvironmentPath.buildEnv(context));
-
+            String[] env = EnvironmentPath.buildDefaultEnv(context);
             String[] argv = new String[]{"/system/bin/sh"};
+
             int[] processIds = new int[1];
-            FileDescriptor fileDescriptor = Utils.createSubProcess(mWorkDir, argv[0], argv, env, processIds);
+            FileDescriptor fd = Utils.createSubProcess(mWorkDir, argv[0], argv, env, processIds);
             mProcessId = processIds[0];
-            if (mProcessId > 0) {
-                Utils.setPtyUTF8Mode(fileDescriptor, true);
-                Utils.setPtyWindowSize(fileDescriptor, 64, 128, 0, 0);
-                BufferedReader processOut = new BufferedReader(new InputStreamReader(new FileInputStream(fileDescriptor)));
-                FileOutputStream outputStream = new FileOutputStream(fileDescriptor);
-
-                Thread execThread = new Thread() {
-                    @Override
-                    public void run() {
-                        DLog.d(TAG, "Waiting for hangup session");
-                        mExitCode = Utils.waitFor(mProcessId);
-                        DLog.d(TAG, "Subprocess exited: " + mExitCode);
-                    }
-                };
-                execThread.start();
-
-                outputStream.write("export PS1=''\n".getBytes());
-                mCommand = "exec " + mCommand + "\n";
-                outputStream.write(mCommand.getBytes());
-
-
-                //parse output
-                StringBuilder message = new StringBuilder();
-                final Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
-                do {
-                    String errstr;
-                    try {
-                        errstr = processOut.readLine();
-                        // remove escape sequence
-                        errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
-                        // remove clearing new line
-                        Matcher m = patClearNewLine.matcher(errstr);
-                        if (m.find()) {
-                            int length = m.end() - m.start();
-                            if (m.start() > length) {
-                                errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
-                            }
-                        }
-                    } catch (IOException e) {
-                        break;
-                    }
-                    message.append(errstr).append("\n");
-                } while (execThread.isAlive());
-
-                if (DLog.DEBUG) DLog.d(TAG, "stdout: " + message);
-
-
-                outputStream.close();
-                processOut.close();
-
-                CompileResult compileResult = new CompileResult(mExitCode, message.toString());
-                long time = System.currentTimeMillis() - startTime;
-                compileResult.setTime(time);
-                return compileResult;
+            if (mProcessId <= 0) {
+                return new CommandResult(-1, "Could not create sub process");
             }
+
+            Utils.setPtyUTF8Mode(fd, true);
+            Utils.setPtyWindowSize(fd, 64, 200, 0, 0);
+
+            BufferedReader in = new BufferedReader(new FileReader(fd));
+            BufferedWriter out = new BufferedWriter(new FileWriter(fd));
+
+            out.write("export PS1=''\n");
+            out.write("exec " + mCommand + "\n");
+            out.flush();
+
+            DLog.d(TAG, "Waiting for hangup session");
+            int exitCode = Utils.waitFor(mProcessId);
+            DLog.d(TAG, "Subprocess exited: " + exitCode);
+
+            //parse output
+            StringBuilder message = new StringBuilder();
+            int skipStrings = 3; //skip echos from two command strings
+            final Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
+            do {
+                String errstr;
+                try {
+                    errstr = in.readLine();
+                    // remove escape sequence
+                    errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
+                    // remove clearing new line
+                    Matcher m = patClearNewLine.matcher(errstr);
+                    if (m.find()) {
+                        int length = m.end() - m.start();
+                        if (m.start() > length) {
+                            errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
+                        }
+                    }
+                } catch (IOException e) {
+                    break;
+                }
+                if (skipStrings > 0) {
+                    skipStrings--;
+                } else {
+                    message.append(errstr).append("\n");
+                }
+            } while (true);
+
+            if (DLog.DEBUG) DLog.d(TAG, "stdout: \n" + message);
+
+            out.close();
+            in.close();
+
+            CommandResult commandResult = new CommandResult(exitCode, message.toString());
+            long time = System.currentTimeMillis() - startTime;
+            if (DLog.DEBUG) DLog.d(TAG, "time = " + time);
+            commandResult.setTime(time);
+            return commandResult;
+
         } catch (Exception ie) {
             ie.printStackTrace();
-            return new CompileResult(-1, ie.getMessage());
+            return new CommandResult(-1, ie.getMessage());
         }
-        return new CompileResult(-1, "");
     }
 
     public void destroy() {

@@ -238,7 +238,7 @@ public class BuildActivity extends AppCompatActivity {
             try {
                 showProgress(true);
                 String[] workingEnv = {"PWD=" + mWorkDir, "TMPDIR=" + mTmpDir, "TEMP=" + mTmpDir, "TMPEXEDIR=" + mTmpExeDir,};
-                String[] defaultEnv = EnvironmentPath.buildEnv(context);
+                String[] defaultEnv = EnvironmentPath.buildDefaultEnv(context);
                 workingEnv = EnvironmentPath.join(workingEnv, defaultEnv);
 
                 String[] argv = new String[]{"/system/bin/sh"};

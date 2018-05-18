@@ -66,12 +66,12 @@ public class EnvironmentPath {
     }
 
     public static String getInstalledPackageDir(Context context) {
-        String path = new File(getToolchainsDir(context), INSTALLED_PACKAGE_DIR).getAbsolutePath();
+        String path = new File(getToolchainsDir(context), "installed").getAbsolutePath();
         return mkdirIfNotExist(path);
     }
 
     public static String getDalvikCacheDir(Context context) {
-        File path = new File(getToolchainsDir(context), "/cctools/var/dalvik/dalvik-cache");
+        File path = new File(getToolchainsDir(context), "cctools/var/dalvik/dalvik-cache");
         return mkdirIfNotExist(path);
     }
 
@@ -79,7 +79,7 @@ public class EnvironmentPath {
      * @return temp directory for execute file
      */
     public static String getTmpExeDir(Context context) {
-        File file = new File(EnvironmentPath.getToolchainsDir(context), "tmp");
+        File file = new File(EnvironmentPath.getToolchainsDir(context), "tmpdir");
         return mkdirIfNotExist(file);
     }
 
@@ -134,11 +134,37 @@ public class EnvironmentPath {
      * ANDROID_ROOT=/system
      * LD_LIBRARY_PATH=/vendor/lib:/system/lib
      */
-    public static String[] buildEnv(Context context) {
+    public static String[] buildDefaultEnv(Context context) {
         final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         TermSettings settings = new TermSettings(context.getResources(), mPrefs);
 
         String cctoolsDir = getCCtoolsDir(context);
+
+        return new String[]{
+                "TMPDIR=" + getTmpExeDir(context),
+                "TMPEXEDIR=" + getTmpExeDir(context),
+                "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
+                "HOME=" + getHomeDir(context),
+                "TEMP=" + getTmpExeDir(context),
+
+                "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
+                "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
+                "ANDROID_DATA=" + joinPath(cctoolsDir + "/var/dalvik", getEnv("ANDROID_DATA", null)),
+                "ANDROID_ROOT=" + getEnv("ANDROID_ROOT", "/system"),
+                "ANDROID_PROPERTY_WORKSPACE=" + getEnv(context, cctoolsDir, "ANDROID_PROPERTY_WORKSPACE"),
+                "BOOTCLASSPATH=" + getBootClassPath(),
+                "CCTOOLSDIR=" + cctoolsDir,
+                "CCTOOLSRES=" + context.getPackageResourcePath(),
+                "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
+                "SHELL=" + getShell(),
+                "TERM=" + settings.getTermType(),
+                "PS1=$ ",
+                "SDDIR=" + getSdCardHomeDir(),
+                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
+        };
+    }
+
+    private static String getBootClassPath() {
         String bootClassPath = getEnv("BOOTCLASSPATH", null);
         if (bootClassPath == null) {
             bootClassPath = Utils.getBootClassPath();
@@ -150,28 +176,9 @@ public class EnvironmentPath {
                     "/system/framework/android.policy.jar:" +
                     "/system/framework/services.jar";
         }
-
-        return new String[]{
-                "TMPDIR=" + getToolchainsDir(context) + "/tmpdir",
-                "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
-                "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
-                "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
-                "ANDROID_DATA=" + joinPath(cctoolsDir + "/var/dalvik", getEnv("ANDROID_DATA", null)),
-                "ANDROID_ROOT=" + getEnv("ANDROID_ROOT", "/system"),
-                "ANDROID_PROPERTY_WORKSPACE=" + getEnv(context, cctoolsDir, "ANDROID_PROPERTY_WORKSPACE"),
-
-                "BOOTCLASSPATH=" + bootClassPath,
-                "CCTOOLSDIR=" + cctoolsDir,
-                "CCTOOLSRES=" + context.getPackageResourcePath(),
-                "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
-                "HOME=" + getHomeDir(context),
-                "SHELL=" + getShell(),
-                "TERM=" + settings.getTermType(),
-                "PS1=$ ",
-                "SDDIR=" + getSdCardHomeDir(),
-                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
-        };
+        return bootClassPath;
     }
+
 
     private static String getEnv(String name, String defValue) {
         String value = System.getenv(name);
@@ -184,8 +191,7 @@ public class EnvironmentPath {
 
     private static String joinPath(String... paths) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < paths.length; i++) {
-            String path = paths[i];
+        for (String path : paths) {
             if (path != null && !path.isEmpty()) {
                 if (sb.length() != 0) {
                     sb.append(File.pathSeparator);

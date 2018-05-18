@@ -23,14 +23,13 @@ import java.util.Map;
  * to attached shell, even if said shell runs under a different user ID.
  */
 public class TermExec {
+    public static final String SERVICE_ACTION_V1 = "jackpal.androidterm.action.START_TERM.v1";
+    private static Field descriptorField;
+
     // Warning: bump the library revision, when an incompatible change happens
     static {
         System.loadLibrary("jackpal-termexec2");
     }
-
-    public static final String SERVICE_ACTION_V1 = "jackpal.androidterm.action.START_TERM.v1";
-
-    private static Field descriptorField;
 
     private final List<String> command;
     private final Map<String, String> environment;
@@ -44,19 +43,47 @@ public class TermExec {
         this.environment = new Hashtable<>(System.getenv());
     }
 
-    public @NonNull List<String> command() {
+    /**
+     * Causes the calling thread to wait for the process associated with the
+     * receiver to finish executing.
+     *
+     * @return The exit value of the Process being waited on
+     */
+    public static native int waitFor(int processId);
+
+    /**
+     * Send signal via the "kill" system call. Android {@link android.os.Process#sendSignal} does not
+     * allow negative numbers (denoting process groups) to be used.
+     */
+    public static native void sendSignal(int processId, int signal);
+
+    public static int createSubprocess(ParcelFileDescriptor masterFd, String cmd, String[] args, String[] envVars) throws IOException {
+        final int integerFd;
+
+        integerFd = FdHelperHoneycomb.getFd(masterFd);
+
+        return createSubprocessInternal(cmd, args, envVars, integerFd);
+    }
+
+    private static native int createSubprocessInternal(String cmd, String[] args, String[] envVars, int masterFd);
+
+    public @NonNull
+    List<String> command() {
         return command;
     }
 
-    public @NonNull Map<String, String> environment() {
+    public @NonNull
+    Map<String, String> environment() {
         return environment;
     }
 
-    public @NonNull TermExec command(@NonNull String... command) {
+    public @NonNull
+    TermExec command(@NonNull String... command) {
         return command(new ArrayList<>(Arrays.asList(command)));
     }
 
-    public @NonNull TermExec command(List<String> command) {
+    public @NonNull
+    TermExec command(List<String> command) {
         command.clear();
         command.addAll(command);
         return this;
@@ -89,31 +116,6 @@ public class TermExec {
 
         return createSubprocess(ptmxFd, cmd, cmdArray, envArray);
     }
-
-    /**
-     * Causes the calling thread to wait for the process associated with the
-     * receiver to finish executing.
-     *
-     * @return The exit value of the Process being waited on
-     */
-    public static native int waitFor(int processId);
-
-    /**
-     * Send signal via the "kill" system call. Android {@link android.os.Process#sendSignal} does not
-     * allow negative numbers (denoting process groups) to be used.
-     */
-    public static native void sendSignal(int processId, int signal);
-
-    static int createSubprocess(ParcelFileDescriptor masterFd, String cmd, String[] args, String[] envVars) throws IOException
-    {
-        final int integerFd;
-
-        integerFd = FdHelperHoneycomb.getFd(masterFd);
-
-        return createSubprocessInternal(cmd, args, envVars, integerFd);
-    }
-
-    private static native int createSubprocessInternal(String cmd, String[] args, String[] envVars, int masterFd);
 }
 
 // prevents runtime errors on old API versions with ruthless verifier

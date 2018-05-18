@@ -18,7 +18,7 @@ package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
 
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.pdaxrom.packagemanager.EnvironmentPath;
 
@@ -40,7 +40,7 @@ public class GPlusPlusCompiler implements INativeCompiler {
     }
 
     @Override
-    public CompileResult compile(File[] sourceFiles) {
+    public CommandResult compile(File[] sourceFiles) {
         File internalDir = mContext.getFilesDir();
         File gccDir = new File(internalDir, "gcc");
 
@@ -66,7 +66,7 @@ public class GPlusPlusCompiler implements INativeCompiler {
 
         Map<String, String> envMap = new HashMap<>();
         envMap.put("TEMP", TEMPEnv);
-        String[] envp = EnvironmentPath.buildEnv(mContext);
+        String[] envp = EnvironmentPath.buildDefaultEnv(mContext);
         for (String s : envp) {
             String[] split = s.split("=");
             envMap.put(split[0], split[1]);

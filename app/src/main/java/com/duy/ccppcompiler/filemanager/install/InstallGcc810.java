@@ -21,7 +21,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
 import com.duy.common.DLog;
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.utils.ExtractCallback;
 import com.duy.utils.IOUtils;
@@ -61,8 +61,8 @@ class InstallGcc810 extends AsyncTask<Void, CharSequence, Boolean> {
                 HashMap<String, String> env = new HashMap<>();
                 ArrayList<String> args = new ArrayList<>();
                 args.add("-v");
-                CompileResult compileResult = ShellUtils.execCommand(programPath.getAbsolutePath(), args, env);
-                if (DLog.DEBUG) DLog.d(TAG, "shellResult = " + compileResult);
+                CommandResult commandResult = ShellUtils.execCommand(programPath.getAbsolutePath(), args, env);
+                if (DLog.DEBUG) DLog.d(TAG, "shellResult = " + commandResult);
             }
 
             final File gccDir = new File(internalDir, "gcc-8.1.0");

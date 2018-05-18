@@ -49,9 +49,18 @@ public class IOUtils {
         return false;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void changeToExecutable(File file) {
-        file.setReadable(true);
-        file.setWritable(true);
-        file.setExecutable(true);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    changeToExecutable(f);
+                }
+            }
+        } else {
+            file.setExecutable(true);
+            file.setReadable(true);
+        }
     }
 }

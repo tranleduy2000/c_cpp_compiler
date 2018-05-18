@@ -256,7 +256,7 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
      */
     protected void system(String[] cmdarray, boolean waitForFinish) {
         try {
-            String[] envp = EnvironmentPath.buildEnv(this);
+            String[] envp = EnvironmentPath.buildDefaultEnv(this);
             Process p = Runtime.getRuntime().exec(cmdarray, envp);
             if (waitForFinish) {
                 BufferedReader in = new BufferedReader(

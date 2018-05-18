@@ -22,14 +22,14 @@ import android.support.annotation.Nullable;
  * Created by Duy on 18-May-18.
  */
 
-public class GccCompileResult extends CompileResult {
+public class GccCommandResult extends CommandResult {
     private String binaryFile;
 
-    public GccCompileResult(int resultCode) {
+    public GccCommandResult(int resultCode) {
         super(resultCode);
     }
 
-    public GccCompileResult(int resultCode, @Nullable String message) {
+    public GccCommandResult(int resultCode, @Nullable String message) {
         super(resultCode, message);
     }
 

@@ -25,7 +25,7 @@ import android.support.annotation.WorkerThread;
 public class ExecUtils {
 
     @WorkerThread
-    public CompileResult exec(String command) {
+    public CommandResult exec(String command) {
         return null;
     }
 }

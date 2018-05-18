@@ -101,7 +101,7 @@ public class TermActivity extends AppCompatActivity {
     private ShellTermSession createShellTermSession(String cmdline, String workdir) {
         cmdline = cmdline.replaceAll("\\s+", " ");
         Log.i(TAG, "Shell sesion for " + cmdline + "\n");
-        String[] envp = EnvironmentPath.buildEnv(this);
+        String[] envp = EnvironmentPath.buildDefaultEnv(this);
         String[] argv = cmdline.split("\\s+");
         Log.i(TAG, "argv " + argv[0]);
         Log.i(TAG, "envp " + Arrays.toString(envp));

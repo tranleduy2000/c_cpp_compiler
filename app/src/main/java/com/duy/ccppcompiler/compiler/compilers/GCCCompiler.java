@@ -20,8 +20,7 @@ import android.content.Context;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 
 import java.io.File;
 
@@ -40,16 +39,12 @@ public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
     }
 
     @Override
-    public CompileResult compile(File[] sourceFiles) {
+    public CommandResult compile(File[] sourceFiles) {
         File fileToBeCompiled = sourceFiles[0];
         String command = buildCommand(sourceFiles);
         String mWorkDir = fileToBeCompiled.getParent();
-        String mTmpExeDir = EnvironmentPath.getTmpExeDir(mContext);
-        String mTmpDir = EnvironmentPath.getSdCardTmpDir();
-        return execCommand(mContext, mWorkDir, mTmpDir, mTmpExeDir, command);
+        return execCommand(mContext, mWorkDir, command);
     }
-
-
 
     private String buildCommand(File[] sourceFiles) {
         File file = sourceFiles[0];
@@ -88,7 +83,7 @@ public class GCCCompiler extends NativeCompilerImpl implements INativeCompiler {
         // truncated to n characters, if the -fmessage-length=n option is given. When the output is
         // done to the terminal, the width is limited to the width given by the COLUMNS environment
         // variable or, if not set, to the terminal width.
-        builder.addFlags("-fno-diagnostics-show-caret");
+        // builder.addFlags("-fno-diagnostics-show-caret");
 
         return builder.buildCommand();
     }
