@@ -22,7 +22,7 @@ import android.os.Build;
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
 import org.apache.commons.io.IOUtils;
@@ -56,7 +56,7 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         if (result.getResultCode() == 0) {
             if (mOutFile.exists()) {
                 try {
-                    File internalBinary = new File(EnvironmentPath.getTmpExeDir(mContext), mOutFile.getName());
+                    File internalBinary = new File(Environment.getTmpExeDir(mContext), mOutFile.getName());
                     FileInputStream inputStream = new FileInputStream(mOutFile);
                     FileOutputStream outputStream = new FileOutputStream(internalBinary);
                     IOUtils.copy(inputStream, outputStream);

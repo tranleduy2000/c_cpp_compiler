@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jecelyin.common.utils.DLog;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
 import org.gjt.sp.jedit.Catalog;
@@ -67,8 +67,8 @@ public class BuildActivity extends AppCompatActivity {
 
         mWorkDir = new File(mFilePath).getParentFile().toString();
         mForceRun = false;
-        mTmpExeDir = EnvironmentPath.getTmpExeDir(this);
-        mTmpDir = EnvironmentPath.getSdCardTmpDir();
+        mTmpExeDir = Environment.getTmpExeDir(this);
+        mTmpDir = Environment.getSdCardTmpDir();
         runme_ca = mTmpDir + "/runme_ca";
         runme_na = mTmpDir + "/runme_na";
         deleteIfExist(new File(runme_ca));
@@ -107,11 +107,11 @@ public class BuildActivity extends AppCompatActivity {
                     mCommand += " " + mPrefs.getString("force_cxxopts", "");
 
                 } else if ((ext.contentEquals(".f") || ext.contentEquals(".f90") || ext.contentEquals(".f95")
-                        || ext.contentEquals(".f03")) && new File(EnvironmentPath.getCCtoolsDir(context), "/bin/f77").exists()) {
+                        || ext.contentEquals(".f03")) && new File(Environment.getCCtoolsDir(context), "/bin/f77").exists()) {
                     mCommand = "f77 " + fileName;
                     mCommand += " " + mPrefs.getString("force_ccopts", "");
 
-                } else if (Catalog.getModeByName("Java").acceptFile(mFilePath, fileName) && (new File(EnvironmentPath.getCCtoolsDir(context), "bin/javac")).exists()) {
+                } else if (Catalog.getModeByName("Java").acceptFile(mFilePath, fileName) && (new File(Environment.getCCtoolsDir(context), "bin/javac")).exists()) {
                     mCommand = "javac-single " + mOutFile;
                     mExecJava = true;
                 }
@@ -168,8 +168,8 @@ public class BuildActivity extends AppCompatActivity {
         } else {
             if (mBuildNativeActivity) {
                 mOutFile = "lib" + mOutFile + ".so";
-                mCommand += " -I" + EnvironmentPath.getCCtoolsDir(context) + "/sources/native_app_glue"
-                        + " " + EnvironmentPath.getCCtoolsDir(context) + "/sources/native_app_glue/android_native_app_glue.c"
+                mCommand += " -I" + Environment.getCCtoolsDir(context) + "/sources/native_app_glue"
+                        + " " + Environment.getCCtoolsDir(context) + "/sources/native_app_glue/android_native_app_glue.c"
                         + " -o " + mOutFile
                         + " -Wl,-soname," + mOutFile + " -shared"
                         + " -Wl,--no-undefined -Wl,-z,noexecstack"
@@ -238,8 +238,8 @@ public class BuildActivity extends AppCompatActivity {
             try {
                 showProgress(true);
                 String[] workingEnv = {"PWD=" + mWorkDir, "TMPDIR=" + mTmpDir, "TEMP=" + mTmpDir, "TMPEXEDIR=" + mTmpExeDir,};
-                String[] defaultEnv = EnvironmentPath.buildDefaultEnv(context);
-                workingEnv = EnvironmentPath.join(workingEnv, defaultEnv);
+                String[] defaultEnv = Environment.buildDefaultEnv(context);
+                workingEnv = Environment.join(workingEnv, defaultEnv);
 
                 String[] argv = new String[]{"/system/bin/sh"};
                 int[] pId = new int[1];
@@ -320,7 +320,7 @@ public class BuildActivity extends AppCompatActivity {
                     Intent intent = new Intent(BuildActivity.this, LauncherConsoleActivity.class);
                     if (mExecJava) {
                         intent.putExtra(BuildConstants.EXTRA_EXEC_FILE,
-                                EnvironmentPath.getCCtoolsDir(context) + "/bin/java -cp " + mWorkDir + "/" + mOutFile + " " + javaClass);
+                                Environment.getCCtoolsDir(context) + "/bin/java -cp " + mWorkDir + "/" + mOutFile + " " + javaClass);
                     } else {
                         intent.putExtra(BuildConstants.EXTRA_EXEC_FILE, mWorkDir + "/" + mOutFile);
                     }

@@ -18,7 +18,6 @@ package com.pdaxrom.packagemanager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -37,7 +36,7 @@ import jackpal.androidterm.util.TermSettings;
  * Created by Duy on 16-May-18.
  */
 
-public class EnvironmentPath {
+public class Environment {
     public static final String APPLICATION_DIR_NAME = "CCtools";
     public static final String INSTALLED_PACKAGE_DIR = "/installed/";
     private static final String TAG = "EnvironmentPath";
@@ -79,7 +78,7 @@ public class EnvironmentPath {
      * @return temp directory for execute file
      */
     public static String getTmpExeDir(Context context) {
-        File file = new File(EnvironmentPath.getToolchainsDir(context), "tmpdir");
+        File file = new File(Environment.getToolchainsDir(context), "tmpdir");
         return mkdirIfNotExist(file);
     }
 
@@ -87,7 +86,7 @@ public class EnvironmentPath {
      * External storage
      */
     public static String getSdCardHomeDir() {
-        File path = new File(Environment.getExternalStorageDirectory().getPath(), APPLICATION_DIR_NAME);
+        File path = new File(android.os.Environment.getExternalStorageDirectory().getPath(), APPLICATION_DIR_NAME);
         return mkdirIfNotExist(path);
     }
 
@@ -162,7 +161,7 @@ public class EnvironmentPath {
                 "TERM=" + settings.getTermType(),
                 "PS1=$ ",
                 "SDDIR=" + getSdCardHomeDir(),
-                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
+                "EXTERNAL_STORAGE=" + android.os.Environment.getExternalStorageDirectory().getPath(),
         };
     }
 
@@ -211,7 +210,7 @@ public class EnvironmentPath {
     protected static String getEnv(Context context, String cctoolsDir, String variable) {
         String ret = null;
         String[] envp = {
-                "TMPDIR=" + Environment.getExternalStorageDirectory().getPath(),
+                "TMPDIR=" + android.os.Environment.getExternalStorageDirectory().getPath(),
                 "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
                 "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
                 "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
@@ -225,7 +224,7 @@ public class EnvironmentPath {
                 "TERM=xterm",
                 "PS1=$ ",
                 "SDDIR=" + getSdCardHomeDir(),
-                "EXTERNAL_STORAGE=" + Environment.getExternalStorageDirectory().getPath(),
+                "EXTERNAL_STORAGE=" + android.os.Environment.getExternalStorageDirectory().getPath(),
         };
         String[] argv = {"/system/bin/sh", "-c", "set"};
         int[] pId = new int[1];

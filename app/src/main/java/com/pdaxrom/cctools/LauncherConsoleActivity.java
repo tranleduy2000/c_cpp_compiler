@@ -10,7 +10,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class LauncherConsoleActivity extends AppCompatActivity {
             Log.i(TAG, "console executable file " + execFile);
             outFile = (new File(execFile)).getName();
             workDir = (new File(execFile)).getParentFile().getAbsolutePath();
-            String tmpExeDir = EnvironmentPath.getTmpExeDir(context);
+            String tmpExeDir = Environment.getTmpExeDir(context);
             if (copyFile(execFile, tmpExeDir + "/" + outFile)) {
                 Utils.chmod(tmpExeDir + "/" + outFile, 0x1ed); //S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH
                 cmd = tmpExeDir + "/" + outFile;

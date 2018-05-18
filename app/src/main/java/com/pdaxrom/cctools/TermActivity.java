@@ -26,7 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.jecelyin.editor.v2.FullScreenActivity;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.term.ShellTermSession;
 
 import java.util.Arrays;
@@ -105,7 +105,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     private ShellTermSession createShellTermSession(String cmdline, String workdir) {
         cmdline = cmdline.replaceAll("\\s+", " ");
         Log.i(TAG, "Shell sesion for " + cmdline + "\n");
-        String[] envp = EnvironmentPath.buildDefaultEnv(this);
+        String[] envp = Environment.buildDefaultEnv(this);
         String[] argv = cmdline.split("\\s+");
         Log.i(TAG, "argv " + Arrays.toString(argv));
         isRunning = true;

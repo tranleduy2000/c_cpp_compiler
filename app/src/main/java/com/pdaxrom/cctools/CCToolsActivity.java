@@ -27,7 +27,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
@@ -58,7 +57,7 @@ import android.widget.ViewFlipper;
 import com.duy.ccppcompiler.R;
 import com.pdaxrom.editor.CodeEditor;
 import com.pdaxrom.editor.CodeEditorInterface;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.LogItem;
@@ -431,7 +430,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
     private String getPrefString(String key) {
         SharedPreferences settings = getPreferences(MODE_PRIVATE);
-        return settings.getString(key, Environment.getExternalStorageDirectory().getPath() + "/CCTools/Examples");
+        return settings.getString(key, android.os.Environment.getExternalStorageDirectory().getPath() + "/CCTools/Examples");
     }
 
     private void setPrefString(String key, String value) {
@@ -554,7 +553,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
             dir = (new File(fileName)).getParent();
         }
         if (dir == null || !new File(dir).exists()) {
-            dir = Environment.getExternalStorageDirectory().getPath();
+            dir = android.os.Environment.getExternalStorageDirectory().getPath();
         }
 
         intent.putExtra(FileDialog.START_PATH, dir);
@@ -570,7 +569,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
                 dir = (new File(fileName)).getParent();
             }
             if (dir == null || !new File(dir).exists()) {
-                dir = Environment.getExternalStorageDirectory().getPath();
+                dir = android.os.Environment.getExternalStorageDirectory().getPath();
             }
             Intent intent = new Intent(getBaseContext(), FileDialog.class);
             intent.putExtra(FileDialog.START_PATH, dir);
@@ -599,7 +598,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
             dir = (new File(fileName)).getParent();
         }
         if (dir == null || !new File(dir).exists()) {
-            dir = Environment.getExternalStorageDirectory().getPath();
+            dir = android.os.Environment.getExternalStorageDirectory().getPath();
         }
         intent.putExtra(FileDialog.START_PATH, dir);
         intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_CREATE);
@@ -936,7 +935,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
     private void runTerminal() {
         Intent intent = new Intent(this, MultiTermActivity.class);
-        intent.putExtra("envp", EnvironmentPath.buildDefaultEnv(this));
+        intent.putExtra("envp", Environment.buildDefaultEnv(this));
         startActivity(intent);
     }
 

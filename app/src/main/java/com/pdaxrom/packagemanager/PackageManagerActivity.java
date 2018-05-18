@@ -138,7 +138,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // getting values from selected ListItem
                 final String name = ((TextView) view.findViewById(R.id.pkg_name)).getText().toString();
-                File logFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".list");
+                File logFile = new File(Environment.getInstalledPackageDir(context), name + ".list");
                 if (logFile.exists()) {
                     new AlertDialog.Builder(context)
                             .setTitle(getString(R.string.pkg_selected) + name)
@@ -189,14 +189,14 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private void setupDirs() {
-        mSdCardDir = EnvironmentPath.getSdCardHomeDir();
-        mBackupDir = EnvironmentPath.getSdCardBackupDir();
-        mToolchainDir = EnvironmentPath.getToolchainsDir(this);
+        mSdCardDir = Environment.getSdCardHomeDir();
+        mBackupDir = Environment.getSdCardBackupDir();
+        mToolchainDir = Environment.getToolchainsDir(this);
 
         //create of not exist
-        EnvironmentPath.getSdCardTmpDir();
-        EnvironmentPath.getServiceDir(this);
-        EnvironmentPath.getHomeDir(this);
+        Environment.getSdCardTmpDir();
+        Environment.getServiceDir(this);
+        Environment.getHomeDir(this);
     }
 
     /**
@@ -239,7 +239,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             map.put(RepoUtils.KEY_SIZE, Utils.humanReadableByteCount(info.getSize(), false));
             map.put(RepoUtils.KEY_FILE, info.getFile());
 
-            File logFile = new File(EnvironmentPath.getInstalledPackageDir(this), info.getName() + ".list");
+            File logFile = new File(Environment.getInstalledPackageDir(this), info.getName() + ".list");
             if (logFile.exists()) {
                 map.put(RepoUtils.KEY_STATUS, getString(R.string.pkg_installed));
             } else {
@@ -357,7 +357,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             updateProgress(0);
 
             //delete file
-            String prermFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".prerm").getAbsolutePath();
+            String prermFile = new File(Environment.getInstalledPackageDir(context), name + ".prerm").getAbsolutePath();
             if ((new File(prermFile)).exists()) {
                 Log.i(TAG, "Execute prerm script " + prermFile);
                 Utils.chmod(prermFile, 0x1ed);
@@ -365,14 +365,14 @@ public class PackageManagerActivity extends FullScreenActivity {
                 new File(prermFile).delete();
             }
             updateProgress(25);
-            String descFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".pkgdesc").getAbsolutePath();
+            String descFile = new File(Environment.getInstalledPackageDir(context), name + ".pkgdesc").getAbsolutePath();
             if ((new File(descFile)).exists()) {
                 new File(descFile).delete();
             }
 
 
             //remove package in list installed
-            String logFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".list").getAbsolutePath();
+            String logFile = new File(Environment.getInstalledPackageDir(context), name + ".list").getAbsolutePath();
             if (!(new File(logFile)).exists()) {
                 updateProgress(100);
                 return false;
@@ -408,7 +408,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         }
 
         List<String> list = null;
-        File reposListFile = new File(EnvironmentPath.getToolchainsDir(this), "cctools/etc/repos.list");
+        File reposListFile = new File(Environment.getToolchainsDir(this), "cctools/etc/repos.list");
         if (reposListFile.exists()) {
             try {
                 FileInputStream fin = new FileInputStream(reposListFile);
@@ -472,8 +472,8 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     private void system(String cmdline) {
         try {
-            final String[] envp = EnvironmentPath.buildDefaultEnv(this);
-            Log.i(TAG, "exec cmd " + cmdline + ", cctoolsdir " + EnvironmentPath.getCCtoolsDir(this));
+            final String[] envp = Environment.buildDefaultEnv(this);
+            Log.i(TAG, "exec cmd " + cmdline + ", cctoolsdir " + Environment.getCCtoolsDir(this));
             Process p = Runtime.getRuntime().exec(cmdline, envp);
             p.waitFor();
         } catch (Exception e) {
@@ -492,7 +492,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         @Override
         protected List<PackageInfo> doInBackground(List<String>[] params) {
-            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(EnvironmentPath.getInstalledPackageDir(context)));
+            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(Environment.getInstalledPackageDir(context)));
             updateProgress(30);
             mPackagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
             updateProgress(60);
@@ -585,7 +585,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         @Override
         protected InstallPackageInfo doInBackground(String... params) {
             // Update installed packages list
-            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(EnvironmentPath.getInstalledPackageDir(context)));
+            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(Environment.getInstalledPackageDir(context)));
             return new InstallPackageInfo(mPackagesLists, params[0]);
         }
 
@@ -639,7 +639,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             List<String> postinstList = new ArrayList<>();
             for (PackageInfo packageInfo : info.getPackagesList()) {
 
-                File packageDesc = new File(EnvironmentPath.getInstalledPackageDir(context), packageInfo.getName() + ".pkgdesc");
+                File packageDesc = new File(Environment.getInstalledPackageDir(context), packageInfo.getName() + ".pkgdesc");
                 if (packageDesc.exists()) {
                     PackageInfo oldPackage = RepoUtils.getPackageByName(mPackagesLists.getInstalledPackages(), packageInfo.getName());
                     if (oldPackage != null && packageInfo.getVersion().equals(oldPackage.getVersion())) {
@@ -673,7 +673,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 updateProgressTitle(getString(R.string.pkg_installpackagetask) + " " + packageInfo.getName());
 
                 Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFile());
-                File logFile = new File(EnvironmentPath.getInstalledPackageDir(context), packageInfo.getName() + ".list");
+                File logFile = new File(Environment.getInstalledPackageDir(context), packageInfo.getName() + ".list");
                 if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), mToolchainDir, logFile.getAbsolutePath())) {
                     if (errorString != null) {
                         errorString += "\u0020" + info.getName();
@@ -687,7 +687,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 String[] infoFiles = {"pkgdesc", "postinst", "prerm"};
                 for (String infoFile : infoFiles) {
                     if ((new File(mToolchainDir, infoFile)).exists()) {
-                        String infoFilePath = new File(EnvironmentPath.getInstalledPackageDir(context),
+                        String infoFilePath = new File(Environment.getInstalledPackageDir(context),
                                 packageInfo.getName() + "." + infoFile).getAbsolutePath();
                         Log.i(TAG, "Copy file to " + infoFilePath);
                         try {
@@ -718,7 +718,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
             //Execute postinst scripts
             for (String name : postinstList) {
-                File postinstFile = new File(EnvironmentPath.getInstalledPackageDir(context), name + ".postinst");
+                File postinstFile = new File(Environment.getInstalledPackageDir(context), name + ".postinst");
                 Log.i(TAG, "Execute postinst file " + postinstFile);
                 Utils.chmod(postinstFile.getAbsolutePath(), 0x1ed/*0755*/);
                 system(postinstFile.getAbsolutePath());
@@ -833,7 +833,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 }
 
                 if (logFile == null) {
-                    logFile = new File(EnvironmentPath.getInstalledPackageDir(context), fileName + ".list").getAbsolutePath();
+                    logFile = new File(Environment.getInstalledPackageDir(context), fileName + ".list").getAbsolutePath();
                 }
                 if (Utils.unzip(tempPath, toPath, logFile) != 0) {
                     if (new File(logFile).exists()) {

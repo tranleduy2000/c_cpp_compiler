@@ -79,7 +79,7 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -364,8 +364,8 @@ public class EditorActivity extends FullScreenActivity
                 createNewFile();
                 break;
             case R.id.action_open:
-                String sourceDir = EnvironmentPath.getSdCardSourceDir();
-                String homeDir = BuildConfig.DEBUG ? EnvironmentPath.getToolchainsDir(this) : sourceDir;
+                String sourceDir = Environment.getSdCardSourceDir();
+                String homeDir = BuildConfig.DEBUG ? Environment.getToolchainsDir(this) : sourceDir;
                 FileExplorerActivity.startPickFileActivity(this, sourceDir, homeDir, RC_OPEN_FILE);
                 break;
             case R.id.m_goto_line:
@@ -448,7 +448,7 @@ public class EditorActivity extends FullScreenActivity
 
     private void openTerminal() {
         Intent intent = new Intent(this, MultiTermActivity.class);
-        intent.putExtra("envp", EnvironmentPath.buildDefaultEnv(this));
+        intent.putExtra("envp", Environment.buildDefaultEnv(this));
         startActivity(intent);
     }
 

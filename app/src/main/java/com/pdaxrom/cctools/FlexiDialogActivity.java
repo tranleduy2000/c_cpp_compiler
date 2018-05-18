@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -17,7 +16,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.SelectionMode;
 import com.pdaxrom.utils.XMLParser;
@@ -51,13 +50,13 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sdHomeDir = EnvironmentPath.getSdCardHomeDir();
-        toolchainDir = EnvironmentPath.getToolchainsDir(this);
-        serviceDir = EnvironmentPath.getServiceDir(this);
-        EnvironmentPath.getSdCardTmpDir();
-        EnvironmentPath.getSdCardBackupDir();
-        EnvironmentPath.getDalvikCacheDir(context);
-        EnvironmentPath.getInstalledPackageDir(context);
+        sdHomeDir = Environment.getSdCardHomeDir();
+        toolchainDir = Environment.getToolchainsDir(this);
+        serviceDir = Environment.getServiceDir(this);
+        Environment.getSdCardTmpDir();
+        Environment.getSdCardBackupDir();
+        Environment.getDalvikCacheDir(context);
+        Environment.getInstalledPackageDir(context);
         updateClassPathEnv();
     }
 
@@ -175,7 +174,7 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
                                     Intent intent = new Intent(getBaseContext(), FileDialog.class);
                                     String dir = lastOpenedDir;
                                     if (dir == null || !new File(dir).exists()) {
-                                        dir = Environment.getExternalStorageDirectory().getPath();
+                                        dir = android.os.Environment.getExternalStorageDirectory().getPath();
                                     }
                                     intent.putExtra(FileDialog.START_PATH, dir);
                                     intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_SELECT_DIR);
@@ -191,7 +190,7 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
                                     Intent intent = new Intent(getBaseContext(), FileDialog.class);
                                     String dir = lastOpenedDir;
                                     if (dir == null || !new File(dir).exists()) {
-                                        dir = Environment.getExternalStorageDirectory().getPath();
+                                        dir = android.os.Environment.getExternalStorageDirectory().getPath();
                                     }
                                     intent.putExtra(FileDialog.START_PATH, dir);
                                     intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
@@ -256,7 +255,7 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
      */
     protected void system(String[] cmdarray, boolean waitForFinish) {
         try {
-            String[] envp = EnvironmentPath.buildDefaultEnv(this);
+            String[] envp = Environment.buildDefaultEnv(this);
             Process p = Runtime.getRuntime().exec(cmdarray, envp);
             if (waitForFinish) {
                 BufferedReader in = new BufferedReader(

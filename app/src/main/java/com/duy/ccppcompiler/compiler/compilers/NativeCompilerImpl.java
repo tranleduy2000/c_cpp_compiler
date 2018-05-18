@@ -21,7 +21,7 @@ import android.support.annotation.NonNull;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.jecelyin.common.utils.DLog;
-import com.pdaxrom.packagemanager.EnvironmentPath;
+import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
 import java.io.BufferedReader;
@@ -55,7 +55,7 @@ public abstract class NativeCompilerImpl<T extends CommandResult> implements INa
 
         long startTime = System.currentTimeMillis();
         try {
-            String[] env = EnvironmentPath.buildDefaultEnv(context);
+            String[] env = Environment.buildDefaultEnv(context);
             String[] argv = new String[]{"/system/bin/sh"};
 
             int[] processIds = new int[1];
