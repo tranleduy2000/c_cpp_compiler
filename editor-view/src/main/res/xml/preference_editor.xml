@@ -61,9 +61,9 @@
     <PreferenceCategory android:title="@string/highlight_and_theme">
 
         <ListPreference
-            android:defaultValue="@string/default_theme"
+            android:defaultValue="0"
+            android:entries="@array/theme_titles"
             android:entryValues="@array/theme_values"
-            android:entries="@array/theme_values"
             android:key="pref_current_theme"
             android:title="@string/change_theme" />
 

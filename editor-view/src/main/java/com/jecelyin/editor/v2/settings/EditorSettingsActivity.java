@@ -147,10 +147,6 @@ public class EditorSettingsActivity extends FullScreenActivity {
                 value = prefercence.getValue(key);
 
                 if (preference instanceof ListPreference) {
-                    String v = ((ListPreference) preference).getValue();
-                    if (v != null) {
-                        preference.setSummary(v);
-                    }
                 } else if (preference instanceof EditTextPreference) {
                     ((EditTextPreference) preference).setText(String.valueOf(value));
                 } else if (preference instanceof CheckBoxPreference) {
