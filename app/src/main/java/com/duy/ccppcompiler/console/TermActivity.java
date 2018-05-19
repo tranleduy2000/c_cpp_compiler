@@ -243,7 +243,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(jackpal.androidterm.R.menu.menu_terminal, menu);
+        getMenuInflater().inflate(R.menu.menu_terminal, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

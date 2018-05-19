@@ -20,7 +20,8 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.view.KeyEvent;
 
-import jackpal.androidterm.R;
+import com.duy.ccppcompiler.R;
+
 
 /**
  * Terminal emulator settings
