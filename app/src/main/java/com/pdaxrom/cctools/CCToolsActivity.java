@@ -937,6 +937,19 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
         Intent intent = new Intent(this, MultiTermActivity.class);
         intent.putExtra("envp", Environment.buildDefaultEnv(this));
         startActivity(intent);
+
+        /**
+         *  Intent myIntent = new Intent(this, TermActivity.class);
+         myIntent.putExtra("filename", "-" + getShell());
+         myIntent.putExtra("cctoolsdir", getToolchainDir() + "/cctools");
+         String workDir = getToolchainDir() + "/cctools/home";
+         String fileName = codeEditor.getFileName();
+         if (fileName != null && (new File(fileName)).exists()) {
+         workDir = (new File(fileName)).getParentFile().getAbsolutePath();
+         }
+         myIntent.putExtra("workdir", workDir);
+         startActivity(myIntent);
+         */
     }
 
     private void newProject() {

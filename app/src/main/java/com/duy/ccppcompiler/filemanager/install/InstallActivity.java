@@ -36,9 +36,9 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.common.DLog;
+import com.duy.editor.EditorActivity;
 import com.duy.utils.ApkUtils;
 import com.duy.utils.ExtractCallback;
-import com.duy.editor.EditorActivity;
 
 /**
  * Created by Duy on 22-Apr-18.
@@ -66,8 +66,7 @@ public class InstallActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progress_bar);
         mTxtMessage = findViewById(R.id.txt_message);
         mScrollView = findViewById(R.id.scroll_view);
-
-        extractData();
+        openEditor();
     }
 
     @Override

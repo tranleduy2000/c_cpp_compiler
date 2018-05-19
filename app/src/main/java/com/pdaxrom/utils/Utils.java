@@ -24,7 +24,13 @@ public class Utils {
 
     public native static int unzippedSize(String file);
 
-    public native static FileDescriptor createSubProcess(String dir,
+    /**
+     * @param cwd     - current working directory
+     * @param cmd     - command
+     * @param args    - arguments
+     * @param envVars - environment variables
+     */
+    public native static FileDescriptor createSubProcess(String cwd,
                                                          String cmd, String[] args, String[] envVars, int[] processId);
 
     public native static void setPtyWindowSize(FileDescriptor fd,

@@ -16,7 +16,6 @@
 
 package com.duy.ccppcompiler.console;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,23 +23,27 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.FullScreenActivity;
@@ -50,6 +53,7 @@ import com.pdaxrom.packagemanager.Environment;
 import java.util.Arrays;
 import java.util.List;
 
+import jackpal.androidterm.TermPreferences;
 import jackpal.androidterm.TermView;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -59,31 +63,16 @@ import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
 import jackpal.androidterm.util.TermSettings;
 
 public class TermActivity extends FullScreenActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static final String EXTRA_MULTI_WINDOW = "EXTRA_MULTI_WINDOW";
     private static final String TAG = "TermActivity";
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
     private final static int PASTE_ID = 2;
     private final static int SEND_CONTROL_KEY_ID = 3;
     private final static int SEND_FN_KEY_ID = 4;
-
     private TermView mTermView;
     private ShellTermSession mSession;
-    private boolean isRunning = false;
     private Handler handler = new Handler();
-    @SuppressLint("HandlerLeak")
-    private final Handler mMsgHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (!isRunning) {
-                return;
-            }
-            if (msg.what == 123) {
-                Log.i(TAG, "Message - Process exited!!!");
-                showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_finished));
-                isRunning = false;
-            }
-        }
-    };
     /**
      * Should we use keyboard shortcuts?
      */
@@ -121,14 +110,14 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     private TermSettings mSettings;
     private boolean mHaveFullHwKeyboard = false;
 
-    private ShellTermSession createShellTermSession(String cmdline, String workdir) {
-        cmdline = cmdline.replaceAll("\\s+", " ");
-        Log.i(TAG, "Shell sesion for " + cmdline + "\n");
+    private ShellTermSession createShellTermSession(String cmd, String workdir) {
+        cmd = cmd.replaceAll("\\s+", " ");
+        Log.i(TAG, "Shell sesion for " + cmd + "\n");
         String[] envp = Environment.buildDefaultEnv(this);
-        String[] argv = cmdline.split("\\s+");
+        String[] argv = cmd.split("\\s+");
         Log.i(TAG, "argv " + Arrays.toString(argv));
-        isRunning = true;
-        return new ShellTermSession(argv, envp, workdir, mMsgHandler);
+        TermSettings settings = new TermSettings(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
+        return new ShellTermSession(settings, argv, envp, workdir);
     }
 
     @Override
@@ -141,7 +130,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         String fileName = getIntent().getStringExtra(BuildConstants.EXTRA_FILE_NAME);
         String workDir = getIntent().getStringExtra(BuildConstants.EXTRA_WORK_DIR);
 
-        showTitle(getString(R.string.console_name) + " - " + getString(R.string.console_executing));
+        setTitle(R.string.title_menu_terminal);
 
         mSession = createShellTermSession(fileName, workDir);
         mTermView = createEmulatorView(mSession);
@@ -171,7 +160,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
 
         mTermView.setDensity(metrics);
         mTermView.updatePrefs(mSettings);
-//        mSession.updatePrefs(mSettings);
+        mSession.updatePrefs(mSettings);
 
         int orientation = mSettings.getScreenOrientation();
         int o = 0;
@@ -253,33 +242,51 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     }
 
     @Override
-    public void onBackPressed() {
-        if (isRunning) {
-            Log.i(TAG, "kill process group");
-            mSession.hangup();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_terminal, menu);
+        menu.findItem(R.id.menu_close_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        boolean multiTerm = getIntent().getBooleanExtra(EXTRA_MULTI_WINDOW, true);
+        if (multiTerm) {
+            menu.findItem(R.id.menu_new_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        } else {
+            menu.findItem(R.id.menu_new_window).setVisible(false);
+            menu.findItem(R.id.menu_window_list).setVisible(false);
         }
-        super.onBackPressed();
+        return true;
     }
 
-    private void showTitle(final String str) {
-        Runnable proc = new Runnable() {
-            public void run() {
-                setTitle(str);
-            }
-        };
-        handler.post(proc);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_preferences) {
+            doPreferences();
+        } else if (id == R.id.menu_reset) {
+            doResetTerminal();
+            Toast toast = Toast.makeText(this, R.string.reset_toast_notification, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        } else if (id == R.id.menu_special_keys) {
+            doDocumentKeys();
+        } else if (id == R.id.menu_toggle_soft_keyboard) {
+            doToggleSoftKeyboard();
+        } else if (id == R.id.action_help) {
+            Intent openHelp = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(getString(R.string.help_url)));
+            startActivity(openHelp);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle(jackpal.androidterm.R.string.edit_text);
-        menu.add(0, SELECT_TEXT_ID, 0, jackpal.androidterm.R.string.select_text);
-        menu.add(0, COPY_ALL_ID, 0, jackpal.androidterm.R.string.copy_all);
-        menu.add(0, PASTE_ID, 0, jackpal.androidterm.R.string.paste);
-        menu.add(0, SEND_CONTROL_KEY_ID, 0, jackpal.androidterm.R.string.send_control_key);
-        menu.add(0, SEND_FN_KEY_ID, 0, jackpal.androidterm.R.string.send_fn_key);
+        menu.setHeaderTitle(R.string.edit_text);
+        menu.add(0, SELECT_TEXT_ID, 0, R.string.select_text);
+        menu.add(0, COPY_ALL_ID, 0, R.string.copy_all);
+        menu.add(0, PASTE_ID, 0, R.string.paste);
+        menu.add(0, SEND_CONTROL_KEY_ID, 0, R.string.send_control_key);
+        menu.add(0, SEND_FN_KEY_ID, 0, R.string.send_fn_key);
         if (!canPaste()) {
             menu.getItem(PASTE_ID).setEnabled(false);
         }
@@ -360,7 +367,34 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         }
 
     }
-
+    private void doDocumentKeys() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        Resources r = getResources();
+        dialog.setTitle(r.getString(R.string.control_key_dialog_title));
+        dialog.setMessage(
+                formatMessage(mSettings.getControlKeyId(), TermSettings.CONTROL_KEY_ID_NONE,
+                        r, R.array.control_keys_short_names,
+                        R.string.control_key_dialog_control_text,
+                        R.string.control_key_dialog_control_disabled_text, "CTRLKEY")
+                        + "\n\n" +
+                        formatMessage(mSettings.getFnKeyId(), TermSettings.FN_KEY_ID_NONE,
+                                r, R.array.fn_keys_short_names,
+                                R.string.control_key_dialog_fn_text,
+                                R.string.control_key_dialog_fn_disabled_text, "FNKEY"));
+        dialog.show();
+    }
+    private String formatMessage(int keyId, int disabledKeyId,
+                                 Resources r, int arrayId,
+                                 int enabledId,
+                                 int disabledId, String regex) {
+        if (keyId == disabledKeyId) {
+            return r.getString(disabledId);
+        }
+        String[] keyNames = r.getStringArray(arrayId);
+        String keyName = keyNames[keyId];
+        String template = r.getString(enabledId);
+        return template.replaceAll(regex, keyName);
+    }
     private void doPaste() {
         if (!canPaste()) {
             return;
@@ -375,6 +409,17 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         ClipboardManagerCompat clip = ClipboardManagerCompatFactory
                 .getManager(getApplicationContext());
         return clip.hasText();
+    }
+
+    private void doPreferences() {
+        startActivity(new Intent(this, TermPreferences.class));
+    }
+
+    private void doResetTerminal() {
+        TermSession session = getCurrentTermSession();
+        if (session != null) {
+            session.reset();
+        }
     }
 
     @Override

@@ -19,10 +19,8 @@ package jackpal.androidterm;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 
 import jackpal.androidterm.emulatorview.ColorScheme;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -36,7 +34,6 @@ import jackpal.androidterm.util.TermSettings;
 class GenericTermSession extends TermSession {
     //** Set to true to force into 80 x 24 for testing with vttest. */
     private static final boolean VTTEST_MODE = false;
-    private static Field descriptorField;
     final ParcelFileDescriptor mTermFd;
     private final long createdAt;
     TermSettings mSettings;
@@ -60,16 +57,8 @@ class GenericTermSession extends TermSession {
         updatePrefs(settings);
     }
 
-    private static void cacheDescField() throws NoSuchFieldException {
-        if (descriptorField != null)
-            return;
-
-        descriptorField = FileDescriptor.class.getDeclaredField("descriptor");
-        descriptorField.setAccessible(true);
-    }
-
     private static int getIntFd(ParcelFileDescriptor parcelFd) throws IOException {
-        return FdHelperHoneycomb.getFd(parcelFd);
+        return parcelFd.getFd();
     }
 
     public void updatePrefs(TermSettings settings) {

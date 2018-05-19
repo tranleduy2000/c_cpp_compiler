@@ -134,34 +134,33 @@ public class Environment {
      * LD_LIBRARY_PATH=/vendor/lib:/system/lib
      */
     public static String[] buildDefaultEnv(Context context) {
-        final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        TermSettings settings = new TermSettings(context.getResources(), mPrefs);
-
-        String cctoolsDir = getCCtoolsDir(context);
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        final TermSettings settings = new TermSettings(context.getResources(), pref);
+        final String cctoolsDir = getCCtoolsDir(context);
 
         return new String[]{
                 "TMPDIR=" + getTmpExeDir(context),
                 "TMPEXEDIR=" + getTmpExeDir(context),
+                "TEMPDIR=" + getTmpExeDir(context),
+                "TEMP=" + getTmpExeDir(context),
                 "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
                 "HOME=" + getHomeDir(context),
-                "TEMP=" + getTmpExeDir(context),
 
                 "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
                 "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
                 "ANDROID_DATA=" + joinPath(cctoolsDir + "/var/dalvik", getEnv("ANDROID_DATA", null)),
                 "ANDROID_ROOT=" + getEnv("ANDROID_ROOT", "/system"),
-                "ANDROID_PROPERTY_WORKSPACE=" + getEnv(context, cctoolsDir, "ANDROID_PROPERTY_WORKSPACE"),
+                "ANDROID_PROPERTY_WORKSPACE=" + getEnv(context, "ANDROID_PROPERTY_WORKSPACE"),
                 "BOOTCLASSPATH=" + getBootClassPath(),
-                "CCTOOLSDIR=" + cctoolsDir,
-                "CCTOOLSRES=" + context.getPackageResourcePath(),
-
+                "EXTERNAL_STORAGE=" + android.os.Environment.getExternalStorageDirectory().getPath(),
                 "LD_LIBRARY_PATH=" + joinPath(cctoolsDir + "/lib", getEnv("LD_LIBRARY_PATH", null)),
 
+                "CCTOOLSDIR=" + cctoolsDir,
+                "CCTOOLSRES=" + context.getPackageResourcePath(),
                 "SHELL=" + getShell(context),
                 "TERM=" + settings.getTermType(),
                 "PS1=$ ",
                 "SDDIR=" + getSdCardHomeDir(),
-                "EXTERNAL_STORAGE=" + android.os.Environment.getExternalStorageDirectory().getPath(),
         };
     }
 
@@ -207,8 +206,9 @@ public class Environment {
         return "/system/bin/sh";
     }
 
-    protected static String getEnv(Context context, String cctoolsDir, String variable) {
+    protected static String getEnv(Context context, String variable) {
         String ret = null;
+        final String cctoolsDir = getCCtoolsDir(context);
         String[] envp = {
                 "TMPDIR=" + android.os.Environment.getExternalStorageDirectory().getPath(),
                 "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),

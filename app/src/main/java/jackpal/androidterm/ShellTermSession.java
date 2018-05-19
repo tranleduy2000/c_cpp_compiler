@@ -36,10 +36,14 @@ import jackpal.androidterm.util.TermSettings;
  * upon stopping.
  */
 public class ShellTermSession extends GenericTermSession {
+
     private static final int PROCESS_EXITED = 1;
+
     private int mProcId;
     private Thread mWatcherThread;
     private String mInitialCommand;
+
+
     @SuppressLint("HandlerLeak")
     private Handler mMsgHandler = new Handler() {
         @Override
@@ -140,10 +144,8 @@ public class ShellTermSession extends GenericTermSession {
             arg0 = argList.get(0);
             File file = new File(arg0);
             if (!file.exists()) {
-                Log.e(TermDebug.LOG_TAG, "Shell " + arg0 + " not found!");
                 throw new FileNotFoundException(arg0);
             } else if (!file.canExecute()) {
-                Log.e(TermDebug.LOG_TAG, "Shell " + arg0 + " not executable!");
                 throw new FileNotFoundException(arg0);
             }
             args = argList.toArray(new String[1]);

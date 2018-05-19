@@ -7,7 +7,6 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -23,8 +22,6 @@ import java.util.Map;
  * to attached shell, even if said shell runs under a different user ID.
  */
 public class TermExec {
-    public static final String SERVICE_ACTION_V1 = "jackpal.androidterm.action.START_TERM.v1";
-    private static Field descriptorField;
 
     // Warning: bump the library revision, when an incompatible change happens
     static {

@@ -48,6 +48,7 @@ import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompileTask;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
+import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.filemanager.SrcFileManager;
@@ -79,6 +80,7 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
+import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -87,8 +89,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import jackpal.androidterm.MultiTermActivity;
 
 
 /**
@@ -447,8 +447,24 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void openTerminal() {
-        Intent intent = new Intent(this, MultiTermActivity.class);
-        intent.putExtra("envp", Environment.buildDefaultEnv(this));
+//        Intent intent = new Intent(this, MultiTermActivity.class);
+//        intent.putExtra("envp", Environment.buildDefaultEnv(this));
+//        startActivity(intent);
+
+        EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
+        String workDir = null;
+        if (currentEditorDelegate != null) {
+            workDir = currentEditorDelegate.getPath();
+            if (!new File(workDir).exists()) {
+                workDir = null;
+            }
+        }
+        if (workDir == null) {
+            workDir = Environment.getHomeDir(this);
+        }
+        Intent intent = new Intent(this, TermActivity.class);
+        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + Environment.getShell(this));
+        intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
         startActivity(intent);
     }
 

@@ -18,7 +18,6 @@ package jackpal.androidterm;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -151,11 +150,11 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
 
     private Handler mHandler = new Handler();
 
-    protected TermSession createTermSession(Activity context, TermSettings settings, String initialCommand) throws IOException {
-        String[] envp = context.getIntent().getStringArrayExtra("envp");
+    protected TermSession createTermSession(TermSettings settings, String initialCommand) throws IOException {
+        String[] envp = getIntent().getStringArrayExtra("envp");
         GenericTermSession session = new ShellTermSession(settings, initialCommand, envp);
         // XXX We should really be able to fetch this from within TermSession
-        session.setProcessExitMessage(context.getString(R.string.process_exit_message));
+        session.setProcessExitMessage(getString(R.string.process_exit_message));
         return session;
     }
 
@@ -249,7 +248,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         if (initialCommand == null) {
             initialCommand = mSettings.getInitialCommand();
         }
-        TermSession session = createTermSession(this, mSettings, initialCommand);
+        TermSession session = createTermSession(mSettings, initialCommand);
         session.setFinishCallback(this);
         return session;
     }
