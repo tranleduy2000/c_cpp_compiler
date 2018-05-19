@@ -63,7 +63,6 @@ import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
 import jackpal.androidterm.TermSettings;
 
 public class TermActivity extends FullScreenActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static final String EXTRA_MULTI_WINDOW = "EXTRA_MULTI_WINDOW";
     private static final String TAG = "TermActivity";
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
@@ -72,7 +71,6 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     private final static int SEND_FN_KEY_ID = 4;
     private TermView mTermView;
     private ShellTermSession mSession;
-    private Handler handler = new Handler();
     /**
      * Should we use keyboard shortcuts?
      */
