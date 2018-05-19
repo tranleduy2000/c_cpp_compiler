@@ -61,7 +61,7 @@ import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
 import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
 
-public class TermActivity extends FullScreenActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class TermActivity extends FullScreenActivity implements SharedPreferences.OnSharedPreferenceChangeListener, TermSession.FinishCallback {
     private static final String TAG = "TermActivity";
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
@@ -114,7 +114,11 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         String[] argv = cmd.split("\\s+");
         Log.i(TAG, "argv " + Arrays.toString(argv));
         TermSettings settings = new TermSettings(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
-        return new ShellTermSession(settings, argv, envp, workdir);
+
+        ShellTermSession shellTermSession = new ShellTermSession(settings, argv, envp, workdir);
+        shellTermSession.setProcessExitMessage(getString(R.string.process_exit_message));
+
+        return shellTermSession;
     }
 
     @Override
@@ -130,6 +134,8 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         setTitle(R.string.title_menu_terminal);
 
         mSession = createShellTermSession(fileName, workDir);
+        mSession.setFinishCallback(this);
+
         mTermView = createEmulatorView(mSession);
         FrameLayout frameLayout = findViewById(R.id.content);
         frameLayout.removeAllViews();
@@ -417,6 +423,11 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         mSettings.readPrefs(sharedPreferences);
+    }
+
+    @Override
+    public void onSessionFinish(TermSession session) {
+        finish();
     }
 
 
