@@ -34,6 +34,12 @@ public class RepoUtils {
     public static final String KEY_STATUS = "status";
 
     private static final String TAG = "RepoUtils";
+    /**
+     * armeabi-v7a/
+     * armeabi/
+     * mips/
+     * x86/
+     */
     private static String buildAbi;
     private static String ndkArch;
     private static int ndkVersion;

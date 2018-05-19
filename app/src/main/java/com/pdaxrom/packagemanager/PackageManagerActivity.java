@@ -590,7 +590,6 @@ public class PackageManagerActivity extends FullScreenActivity {
         protected void onPostExecute(final InstallPackageInfo info) {
             hideProgress();
             Builder dialog = new AlertDialog.Builder(context)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle(getString(R.string.pkg_selected) + info.getName())
                     .setMessage(getString(R.string.pkg_selected1) + info.getPackagesStrings()
                             + "\n\n"
