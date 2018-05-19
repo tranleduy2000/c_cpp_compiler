@@ -1,0 +1,3 @@
+Yes, I am Vietnamese. Nice to meet you
+If you have time, I hope you can help me build new GNU GCC version, I spend more time to build from GNU source code but it stuck on error.
+Could you tell me your OS, or some config to build it? I do not have much  experience with linux.
