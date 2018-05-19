@@ -124,14 +124,6 @@
             android:theme="@style/Theme.Transparent" />
 
         <activity
-            android:name="jackpal.androidterm.MultiTermActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
-
-        </activity>
-
-        <activity
             android:name="jackpal.androidterm.TermPreferencesActivity"
             android:label="@string/preferences" />
 

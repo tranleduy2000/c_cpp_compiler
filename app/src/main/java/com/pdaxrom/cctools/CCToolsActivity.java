@@ -934,10 +934,6 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
     }
 
     private void runTerminal() {
-        Intent intent = new Intent(this, MultiTermActivity.class);
-        intent.putExtra("envp", Environment.buildDefaultEnv(this));
-        startActivity(intent);
-
         /**
          *  Intent myIntent = new Intent(this, TermActivity.class);
          myIntent.putExtra("filename", "-" + getShell());
