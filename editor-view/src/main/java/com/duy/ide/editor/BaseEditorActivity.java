@@ -306,7 +306,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         MenuFactory menuFactory = MenuFactory.getInstance(this);
         List<MenuItemInfo> topMenu = menuFactory.getToolbarIcon();
         for (MenuItemInfo item : topMenu) {
-            MenuItem menuItem = container.add(item.getGroupId(), item.getItemId(), item.getOrder(), item.getTitleResId());
+            MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
             menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, item.getIconResId()));
             menuItem.setOnMenuItemClickListener(this);
             menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -322,7 +322,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
 
             List<MenuItemInfo> items = menuFactory.getMenuItemsWithoutToolbarMenu(group);
             for (MenuItemInfo item : items) {
-                MenuItem menuItem = subMenu.add(item.getGroupId(), item.getItemId(), item.getOrder(), item.getTitleResId());
+                MenuItem menuItem = subMenu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
                 menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, item.getIconResId()));
                 menuItem.setOnMenuItemClickListener(this);
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);

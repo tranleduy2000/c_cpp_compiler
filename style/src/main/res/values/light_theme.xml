@@ -20,8 +20,8 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
-        <item name="colorPrimaryDark">#512DA8</item>
-        <item name="colorPrimary">#673AB7</item>
+        <item name="colorPrimaryDark">#26a69a</item>
+        <item name="colorPrimary">#26a69a</item>
         <item name="colorAccent">#FF5722</item>
 
         <item name="actionBarStyle">@style/Light.Toolbar</item>
@@ -36,8 +36,8 @@
         <item name="dividerColor">#10000000</item>
 
         <item name="toolbarIconNormalColor">#ffffff</item>
-        <item name="toolbarIconDisabledColor">#50ffffff</item>
-        <item name="menuIconNormalColor">#000000</item>
+        <item name="toolbarIconDisabledColor">#c6c6c6</item>
+        <item name="menuIconNormalColor">#000</item>
 
 
         <item name="textForeground">#000000</item>

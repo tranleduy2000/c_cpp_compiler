@@ -34,6 +34,7 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ide.editor.BaseEditorActivity;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
@@ -78,7 +79,7 @@ public class CodeEditorActivity extends BaseEditorActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu container) {
         //add run button
-        container.add(0, R.id.action_run, 0, R.string.run)
+        container.add(MenuDef.GROUP_TOOLBAR, R.id.action_run, 0, R.string.run)
                 .setIcon(R.drawable.ic_play_arrow_white_24dp)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(container);
