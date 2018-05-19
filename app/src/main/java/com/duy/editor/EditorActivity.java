@@ -447,17 +447,10 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void openTerminal() {
-//        Intent intent = new Intent(this, MultiTermActivity.class);
-//        intent.putExtra("envp", Environment.buildDefaultEnv(this));
-//        startActivity(intent);
-
         EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
         String workDir = null;
         if (currentEditorDelegate != null) {
-            workDir = currentEditorDelegate.getPath();
-            if (!new File(workDir).exists()) {
-                workDir = null;
-            }
+            workDir = new File(currentEditorDelegate.getPath()).getParent();
         }
         if (workDir == null) {
             workDir = Environment.getHomeDir(this);
