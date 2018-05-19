@@ -403,7 +403,7 @@ public class EditorActivity extends FullScreenActivity implements MenuItem.OnMen
                 });
                 rfm.show(getContext());
                 break;
-            case R.id.m_wrap:
+            case R.id.action_wrap:
                 new WrapCharDialog(this).show();
                 break;
             case R.id.m_highlight:

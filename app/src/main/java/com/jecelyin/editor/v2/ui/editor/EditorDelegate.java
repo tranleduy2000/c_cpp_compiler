@@ -447,8 +447,8 @@ public class EditorDelegate implements TextWatcher {
     private void noticeMenuChanged() {
         EditorActivity editorActivity = (EditorActivity) this.mContext;
         editorActivity.setMenuStatus(R.id.action_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        editorActivity.setMenuStatus(R.id.m_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        editorActivity.setMenuStatus(R.id.m_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        editorActivity.setMenuStatus(R.id.action_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        editorActivity.setMenuStatus(R.id.action_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         ((EditorActivity) mContext).getTabManager().onDocumentChanged();
     }
 
@@ -600,7 +600,7 @@ public class EditorDelegate implements TextWatcher {
             boolean readOnly = Preferences.getInstance(mContext).isReadOnly();
             boolean selected = mEditText.hasSelection();
             if (selected) {
-                menu.add(0, R.id.m_find_replace, 0, R.string.find).
+                menu.add(0, R.id.action_find_replace, 0, R.string.find).
                         setIcon(R.drawable.ic_find_replace_white_24dp).
                         setAlphabeticShortcut('f').
                         setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
@@ -637,7 +637,7 @@ public class EditorDelegate implements TextWatcher {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.m_find_replace:
+                case R.id.action_find_replace:
                     doCommand(new Command(Command.CommandEnum.FIND));
                     return true;
                 case R.id.m_convert_to_uppercase:
