@@ -15,7 +15,7 @@
   -->
 
 <resources>
-    <string-array name="c_cpp_file_ext">
+    <string-array name="file_extensions">
         <item>.cpp</item>
         <item>.c</item>
     </string-array>

@@ -23,7 +23,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter file name">
+        android:hint="@string/enter_file_name">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
@@ -33,10 +33,9 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatSpinner
-        android:id="@+id/spinner"
+        android:id="@+id/spinner_exts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/c_cpp_file_ext"
         android:padding="8dp">
 
     </android.support.v7.widget.AppCompatSpinner>

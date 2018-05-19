@@ -176,10 +176,7 @@
         <item quantity="zero">0 found</item>
         <item quantity="other">%d text replaced</item>
     </plurals>
-    <string-array name="insert_datetime_lang">
-        <item>English</item>
-        <item>Chinese</item>
-    </string-array>
+
     <string-array name="wrap_char_list">
         <item>Convert to \\n（Linux/OSX）</item>
         <item>Convert to \\r\\n（Windows）</item>
@@ -213,4 +210,5 @@
     <string name="replace_log">Replace Log</string>
     <string name="use_regex_to_find_tip">Replace keyword support: \\r, \\n, \\t and capturing groups $0 ~ $9</string>
     <string name="editor_setting">Editor setting</string>
+    <string name="enter_file_name">Enter file name</string>
 </resources>

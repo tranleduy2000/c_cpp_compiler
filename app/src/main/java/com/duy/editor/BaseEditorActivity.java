@@ -374,6 +374,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         return super.onCreateOptionsMenu(container);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return onMenuItemClick(item) || super.onOptionsItemSelected(item);
@@ -493,8 +494,9 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
     }
 
     public void createNewFile() {
+        String[] fileExtensions = getSupportedFileExtensions();
         DialogNewFile
-                .create(this, new UIUtils.OnShowInputCallback() {
+                .create(this, fileExtensions, new UIUtils.OnShowInputCallback() {
                     @Override
                     public void onConfirm(CharSequence input) {
                         File srcDir = SrcFileManager.getSourceDir(BaseEditorActivity.this);
@@ -505,6 +507,10 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
                     }
                 })
                 .show();
+    }
+
+    protected String[] getSupportedFileExtensions() {
+        return new String[]{".txt"};
     }
 
     public void saveAll(boolean inBackgroundThread) {
