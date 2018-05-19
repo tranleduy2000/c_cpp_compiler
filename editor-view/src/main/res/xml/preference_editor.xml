@@ -35,7 +35,7 @@
             android:key="pref_insert_space_for_tab"
             android:title="@string/insert_space_for_tab" />
 
-        <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+        <EditTextPreference
             android:inputType="number"
             android:key="pref_tab_size"
             android:maxLength="1"
@@ -72,7 +72,7 @@
             android:key="pref_current_theme"
             android:title="@string/change_theme" />
 
-        <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+        <EditTextPreference
             android:inputType="number"
             android:key="pref_highlight_file_size_limit"
             android:singleLine="true"

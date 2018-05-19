@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -27,9 +28,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
-import com.rengwuxian.materialedittext.MaterialEditText;
 
-public class DrawClickableEditText extends MaterialEditText implements TextWatcher {
+public class DrawClickableEditText extends AppCompatEditText implements TextWatcher {
     int actionX, actionY;
     private Drawable drawableRight;
     private Drawable drawableLeft;
@@ -59,8 +59,8 @@ public class DrawClickableEditText extends MaterialEditText implements TextWatch
     }
 
     @Override
-    public void setPaddings(int left, int top, int right, int bottom) {
-        super.setPaddings(left, top, right, bottom);
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
         paddingRight = right;
     }
 
