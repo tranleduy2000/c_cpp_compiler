@@ -157,12 +157,7 @@
             android:key="mouse_tracking"
             android:summary="@string/summary_mouse_tracking_preference"
             android:title="@string/title_mouse_tracking_preference" />
-        <CheckBoxPreference
-            android:defaultValue="@bool/pref_close_window_on_process_exit_default"
-            android:key="close_window_on_process_exit"
-            android:summary="@string/summary_close_window_on_process_exit_preference"
-            android:title="@string/title_close_window_on_process_exit_preference"
-            android:visibility="gone" />
+   
         <CheckBoxPreference
             android:defaultValue="@bool/pref_verify_path_default"
             android:key="verify_path"

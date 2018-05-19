@@ -38,12 +38,10 @@ import jackpal.androidterm.util.TermSettings;
 public class ShellTermSession extends GenericTermSession {
 
     private static final int PROCESS_EXITED = 1;
-
+    private static final String TAG = "ShellTermSession";
     private int mProcId;
     private Thread mWatcherThread;
     private String mInitialCommand;
-
-
     @SuppressLint("HandlerLeak")
     private Handler mMsgHandler = new Handler() {
         @Override
@@ -71,9 +69,9 @@ public class ShellTermSession extends GenericTermSession {
         mWatcherThread = new Thread() {
             @Override
             public void run() {
-                Log.i(TermDebug.LOG_TAG, "waiting for: " + mProcId);
+                Log.i(TAG, "waiting for: " + mProcId);
                 int result = TermExec.waitFor(mProcId);
-                Log.i(TermDebug.LOG_TAG, "Subprocess exited: " + result);
+                Log.i(TAG, "Subprocess exited: " + result);
                 mMsgHandler.sendMessage(mMsgHandler.obtainMessage(PROCESS_EXITED, result));
             }
         };

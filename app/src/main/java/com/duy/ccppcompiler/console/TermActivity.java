@@ -53,7 +53,7 @@ import com.pdaxrom.packagemanager.Environment;
 import java.util.Arrays;
 import java.util.List;
 
-import jackpal.androidterm.TermPreferences;
+import jackpal.androidterm.TermPreferencesActivity;
 import jackpal.androidterm.TermView;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -407,7 +407,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     }
 
     private void doPreferences() {
-        startActivity(new Intent(this, TermPreferences.class));
+        startActivity(new Intent(this, TermPreferencesActivity.class));
     }
 
     private void doResetTerminal() {

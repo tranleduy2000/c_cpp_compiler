@@ -16,24 +16,29 @@
 
 package jackpal.androidterm;
 
-import android.app.ActionBar;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-public class TermPreferences extends PreferenceActivity {
+import com.duy.ccppcompiler.R;
+import com.jecelyin.editor.v2.FullScreenActivity;
+
+public class TermPreferencesActivity extends FullScreenActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_term_setting);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(R.string.preferences);
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences_terminal);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        TermPreferencesFragment fragment = new TermPreferencesFragment();
+        getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -44,6 +49,14 @@ public class TermPreferences extends PreferenceActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public static class TermPreferencesFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences_terminal);
         }
     }
 }

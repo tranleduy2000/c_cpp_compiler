@@ -132,7 +132,7 @@
         </activity>
 
         <activity
-            android:name="jackpal.androidterm.TermPreferences"
+            android:name="jackpal.androidterm.TermPreferencesActivity"
             android:label="@string/preferences" />
 
     </application>

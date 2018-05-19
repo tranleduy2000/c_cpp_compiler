@@ -529,7 +529,7 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     }
 
     private void doPreferences() {
-        startActivity(new Intent(this, TermPreferences.class));
+        startActivity(new Intent(this, TermPreferencesActivity.class));
     }
 
     private void doResetTerminal() {
