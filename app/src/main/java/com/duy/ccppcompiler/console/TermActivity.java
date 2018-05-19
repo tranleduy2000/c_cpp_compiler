@@ -37,7 +37,6 @@ import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -239,20 +238,6 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         if (v != null) {
             v.updateSize(false);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_terminal, menu);
-        menu.findItem(R.id.menu_close_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        boolean multiTerm = getIntent().getBooleanExtra(EXTRA_MULTI_WINDOW, true);
-        if (multiTerm) {
-            menu.findItem(R.id.menu_new_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        } else {
-            menu.findItem(R.id.menu_new_window).setVisible(false);
-            menu.findItem(R.id.menu_window_list).setVisible(false);
-        }
-        return true;
     }
 
     @Override

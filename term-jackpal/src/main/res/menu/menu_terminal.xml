@@ -15,20 +15,6 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/menu_new_window"
-        android:icon="@drawable/baseline_add_circle_outline_24"
-        android:title="@string/new_window" />
-
-    <item
-        android:id="@+id/menu_close_window"
-        android:icon="@drawable/baseline_close_24"
-        android:title="@string/close_window" />
-
-    <item
-        android:id="@+id/menu_window_list"
-        android:icon="@drawable/baseline_filter_list_24"
-        android:title="@string/window_list" />
 
     <item
         android:id="@+id/menu_toggle_soft_keyboard"

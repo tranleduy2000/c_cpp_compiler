@@ -16,11 +16,9 @@
 
 package jackpal.androidterm;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -37,13 +35,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -118,10 +114,6 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
                 } else {
                     mViewFlipper.showNext();
                 }
-
-                return true;
-            } else if (keyCode == KeycodeConstants.KEYCODE_N && isCtrlPressed && isShiftPressed) {
-                doCreateNewWindow();
 
                 return true;
             } else if (keyCode == KeycodeConstants.KEYCODE_V && isCtrlPressed && isShiftPressed) {
@@ -382,30 +374,10 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_terminal, menu);
-        menu.findItem(R.id.menu_close_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        boolean multiTerm = getIntent().getBooleanExtra(EXTRA_MULTI_WINDOW, true);
-        if (multiTerm) {
-            menu.findItem(R.id.menu_new_window).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        } else {
-            menu.findItem(R.id.menu_new_window).setVisible(false);
-            menu.findItem(R.id.menu_window_list).setVisible(false);
-        }
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_preferences) {
             doPreferences();
-        } else if (id == R.id.menu_new_window) {
-            doCreateNewWindow();
-        } else if (id == R.id.menu_close_window) {
-            confirmCloseWindow();
-        } else if (id == R.id.menu_window_list) {
-            openWindowList();
         } else if (id == R.id.menu_reset) {
             doResetTerminal();
             Toast toast = Toast.makeText(this, R.string.reset_toast_notification, Toast.LENGTH_LONG);
@@ -425,64 +397,6 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
             mActionBar.hide();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressLint("StringFormatInvalid")
-    private void openWindowList() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        int size = mTermSessions.size();
-        CharSequence[] titles = new CharSequence[size];
-        for (int i = 0; i < size; i++) {
-            titles[i] = getString(R.string.window_title, i + 1);
-        }
-        builder.setSingleChoiceItems(titles, mViewFlipper.getDisplayedChild(), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mViewFlipper.setDisplayedChild(which);
-                dialog.cancel();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void doCreateNewWindow() {
-        if (mTermSessions == null) {
-            Log.w(TermDebug.LOG_TAG, "Couldn't create new window because mTermSessions == null");
-            return;
-        }
-
-        try {
-            TermSession session = createTermSession();
-
-            mTermSessions.add(session);
-
-            TermView view = createEmulatorView(session);
-            view.updatePrefs(mSettings);
-
-            mViewFlipper.addView(view);
-            mViewFlipper.setDisplayedChild(mViewFlipper.getChildCount() - 1);
-        } catch (IOException e) {
-            Toast.makeText(this, "Failed to create a session", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void confirmCloseWindow() {
-        final AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setIcon(android.R.drawable.ic_dialog_alert);
-        b.setMessage(R.string.confirm_window_close_message);
-        final Runnable closeWindow = new Runnable() {
-            public void run() {
-                doCloseWindow();
-            }
-        };
-        b.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                mHandler.post(closeWindow);
-            }
-        });
-        b.setNegativeButton(android.R.string.no, null);
-        b.show();
     }
 
     private void doCloseWindow() {
