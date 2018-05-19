@@ -31,11 +31,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.rengwuxian.materialedittext:library:2.0.3'
     implementation 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
     implementation 'com.google.code.gson:gson:2.8.1'
 
-    implementation 'me.zhanghai.android.materialprogressbar:library:1.1.4'
     implementation 'org.apmem.tools:layouts:1.10@aar'
     implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
