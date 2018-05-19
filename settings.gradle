@@ -1,3 +1,2 @@
 include ':app', ':style', ':editor-view', ':sdlplugin', ':cctools', ':apkbuilder'
 include ':emulatorview', ':libtermexec'
-include ':cctools-repo'
