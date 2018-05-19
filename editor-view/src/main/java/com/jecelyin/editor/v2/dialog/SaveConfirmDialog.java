@@ -36,6 +36,7 @@ public class SaveConfirmDialog extends AbstractDialog {
 
     @Override
     public void show() {
+
         getDialogBuilder().title(R.string.confirm_save)
                 .content(context.getString(R.string.confirm_save_msg, filename))
                 .positiveText(R.string.yes)

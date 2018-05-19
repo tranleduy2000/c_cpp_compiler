@@ -33,7 +33,8 @@ public class WrapCharDialog extends AbstractDialog {
 
     @Override
     public void show() {
-        MaterialDialog dlg = getDialogBuilder().items(R.array.wrap_char_list)
+        MaterialDialog dlg = getDialogBuilder()
+                .items(R.array.wrap_char_list)
                 .title(R.string.convert_wrap_char)
                 .positiveText(R.string.ok)
                 .negativeText(R.string.cancel)

@@ -16,6 +16,7 @@
 
 package com.jecelyin.editor.v2.dialog;
 
+import android.app.Dialog;
 import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -35,7 +36,7 @@ public abstract class AbstractDialog {
         return new MaterialDialog.Builder(context);
     }
 
-    protected void handleDialog(MaterialDialog dlg) {
+    protected void handleDialog(Dialog dlg) {
         dlg.setCanceledOnTouchOutside(false);
         dlg.setCancelable(true);
     }

@@ -19,9 +19,9 @@
 package com.jecelyin.editor.v2.dialog;
 
 import android.content.Context;
-import android.view.View;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.common.Command;
 
@@ -80,21 +80,38 @@ public class LangListDialog extends AbstractDialog {
 
     @Override
     public void show() {
-        MaterialDialog dlg = getDialogBuilder().items(langList)
-                .title(R.string.select_lang_to_highlight)
-                .itemsCallbackSingleChoice(currentLangIndex, new MaterialDialog.ListCallbackSingleChoice() {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.select_lang_to_highlight)
+                .setSingleChoiceItems(langList, currentLangIndex, new DialogInterface.OnClickListener() {
                     @Override
-                    public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                    public void onClick(DialogInterface dialog, int which) {
                         Command command = new Command(Command.CommandEnum.HIGHLIGHT);
-                        command.object = scopeList[i];
+                        command.object = scopeList[which];
                         getMainActivity().doCommand(command);
-                        return true;
                     }
                 })
-                .negativeText(R.string.cancel)
-                .show();
-
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+//        MaterialDialog dlg = getDialogBuilder().items(langList)
+//                .title(R.string.select_lang_to_highlight)
+//                .itemsCallbackSingleChoice(currentLangIndex, new MaterialDialog.ListCallbackSingleChoice() {
+//
+//                    @Override
+//                    public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+//                        Command command = new Command(Command.CommandEnum.HIGHLIGHT);
+//                        command.object = scopeList[i];
+//                        getMainActivity().doCommand(command);
+//                        return true;
+//                    }
+//                })
+//                .negativeText(R.string.cancel)
+//                .show();
+        AlertDialog dlg = builder.create();
+        dlg.show();
         handleDialog(dlg);
     }
 

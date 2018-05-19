@@ -283,7 +283,8 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public boolean isReadOnly() {
-        return (boolean) map.get(KEY_READ_ONLY);
+//        return (boolean) map.get(KEY_READ_ONLY);
+        return false;
     }
 
     public void setReadOnly(boolean b) {

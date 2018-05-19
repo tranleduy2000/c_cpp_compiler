@@ -27,7 +27,6 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -37,6 +36,7 @@ import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
+import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 
@@ -44,9 +44,7 @@ import com.pdaxrom.packagemanager.PackageManagerActivity;
  * Created by Duy on 22-Apr-18.
  */
 
-public class InstallActivity extends AppCompatActivity {
-    private static final String KEY_EXTRACTED = "KEY_EXTRACTED";
-    private static final String KEY_APP_VERSION = "KEY_APP_VERSION";
+public class InstallActivity extends FullScreenActivity {
 
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
