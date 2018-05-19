@@ -31,7 +31,6 @@
 
         <item name="dividerColor">@color/darkDividerColor</item>
 
-        <item name="highlightBackground">#545454</item>
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#50ffffff</item>
         <item name="menuIconNormalColor">#829294</item>
