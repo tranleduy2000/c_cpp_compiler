@@ -37,6 +37,7 @@ import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -241,6 +242,12 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(jackpal.androidterm.R.menu.menu_terminal, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_preferences) {
@@ -352,6 +359,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         }
 
     }
+
     private void doDocumentKeys() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         Resources r = getResources();
@@ -368,6 +376,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
                                 R.string.control_key_dialog_fn_disabled_text, "FNKEY"));
         dialog.show();
     }
+
     private String formatMessage(int keyId, int disabledKeyId,
                                  Resources r, int arrayId,
                                  int enabledId,
@@ -380,6 +389,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         String template = r.getString(enabledId);
         return template.replaceAll(regex, keyName);
     }
+
     private void doPaste() {
         if (!canPaste()) {
             return;

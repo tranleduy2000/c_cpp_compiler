@@ -40,6 +40,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -371,6 +372,12 @@ public class MultiTermActivity extends AppCompatActivity implements UpdateCallba
         if (v != null) {
             v.updateSize(false);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_terminal, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
