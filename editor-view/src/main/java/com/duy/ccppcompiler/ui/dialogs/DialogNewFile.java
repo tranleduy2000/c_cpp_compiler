@@ -34,6 +34,7 @@ import com.jecelyin.common.utils.UIUtils;
  */
 
 public class DialogNewFile {
+    // TODO: 19-May-18 create new file and callback
     public static AlertDialog create(Context context, @NonNull String[] fileExtensions,
                                      final UIUtils.OnShowInputCallback inputCallback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

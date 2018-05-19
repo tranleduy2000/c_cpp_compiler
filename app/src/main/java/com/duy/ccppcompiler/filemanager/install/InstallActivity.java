@@ -36,7 +36,7 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.common.DLog;
-import com.duy.editor.BaseEditorActivity;
+import com.duy.editor.CodeEditorActivity;
 import com.duy.utils.ApkUtils;
 import com.duy.utils.ExtractCallback;
 
@@ -143,7 +143,7 @@ public class InstallActivity extends AppCompatActivity {
 
     private void closeAndStartMainActivity() {
         if (DLog.DEBUG) DLog.d(TAG, "closeAndStartMainActivity() called");
-        Intent intent = new Intent(this, BaseEditorActivity.class);
+        Intent intent = new Intent(this, CodeEditorActivity.class);
         startActivity(intent);
         overridePendingTransition(0, 0);
         finish();

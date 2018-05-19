@@ -50,8 +50,8 @@ public class CodeEditorActivity extends BaseEditorActivity {
         String[] defaultExts = super.getSupportedFileExtensions();
         String[] supportedExts = getResources().getStringArray(R.array.file_extensions);
         String[] finalResult = new String[defaultExts.length + supportedExts.length];
-        System.arraycopy(defaultExts, 0, finalResult, 0, defaultExts.length);
-        System.arraycopy(supportedExts, 0, finalResult, defaultExts.length, supportedExts.length);
+        System.arraycopy(supportedExts, 0, finalResult, 0, supportedExts.length);
+        System.arraycopy(defaultExts, 0, finalResult, supportedExts.length, defaultExts.length);
         return finalResult;
     }
 }
