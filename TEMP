@@ -1,8 +1,0 @@
-g++-4.9
--L/data/user/0/com.duy.ccppcompiler/root/lib/gcc/arm-linux-androideabi/4.9/lib
--L/data/user/0/com.duy.ccppcompiler/root/lib/gcc/arm-linux-androideabi/4.9/usr/lib
--I/data/user/0/com.duy.ccppcompiler/root/lib/gcc/arm-linux-androideabi/4.9/include
--I/data/user/0/com.duy.ccppcompiler/root/lib/gcc/arm-linux-androideabi/4.9/usr/include
-/storage/emulated/0/CCtools/Examples/c++/cin.cpp
--o /storage/emulated/0/CCtools/Examples/c++/cin
--pie -std=c++14 -lz -ldl -lm -llog -Og -fno-diagnostics-show-option
