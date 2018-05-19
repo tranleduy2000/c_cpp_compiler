@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -53,7 +55,6 @@ import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.dialog.GotoLineDialog;
@@ -64,12 +65,12 @@ import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
 import com.jecelyin.editor.v2.manager.TabManager;
 import com.jecelyin.editor.v2.settings.EditorSettingsActivity;
+import com.jecelyin.editor.v2.utils.DBHelper;
 import com.jecelyin.editor.v2.widget.SymbolBarLayout;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.widget.menu.MenuGroup;
 import com.jecelyin.editor.v2.widget.menu.MenuItemInfo;
-import com.jecelyin.editor.v2.utils.DBHelper;
 
 import java.io.File;
 import java.io.InputStream;
@@ -89,7 +90,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
 
     public Toolbar mToolbar;
     public ViewPager mEditorPager;
-    public RecyclerView mMenuRecyclerView;
     public DrawerLayout mDrawerLayout;
     public RecyclerView mTabRecyclerView;
     public TextView mVersionTextView;
@@ -110,7 +110,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         mPreferences = Preferences.getInstance(this);
 
         mEditorPager = findViewById(R.id.view_pager);
-        mMenuRecyclerView = findViewById(R.id.menuRecyclerView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
@@ -186,7 +185,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
     }
 
     private void initUI() {
-        mMenuRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mTabRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mDrawerLayout.setEnabled(true);
 
@@ -194,13 +192,18 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
 
         if (mMenuManager == null) {
             mMenuManager = new MenuManager(this);
-            MainMenuAdapter adapter = mMenuManager.getAdapter();
-            mMenuRecyclerView.setAdapter(adapter);
-            adapter.setMenuItemClickListener(this);
+            NavigationView rightMenu = findViewById(R.id.menuNavView);
+            Menu menu = rightMenu.getMenu();
+            onCreateNavigationMenu(menu);
+            rightMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    return onOptionsItemSelected(item);
+                }
+            });
         }
-
-
     }
+
 
     private void initToolbar() {
         mToolbar.setNavigationIcon(R.drawable.ic_drawer_raw);
@@ -336,6 +339,27 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         return super.onCreateOptionsMenu(container);
     }
 
+
+    @CallSuper
+    protected void onCreateNavigationMenu(Menu menu) {
+        MenuFactory menuFactory = MenuFactory.getInstance(this);
+        MenuGroup[] groups = new MenuGroup[]{MenuGroup.VIEW, MenuGroup.OTHER};
+        for (MenuGroup group : groups) {
+            if (group == MenuGroup.TOP) {
+                continue;
+            }
+            SubMenu subMenu = menu.addSubMenu(group.getNameResId());
+            subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+            List<MenuItemInfo> items = menuFactory.getMenuItemsWithoutToolbarMenu(group);
+            for (MenuItemInfo item : items) {
+                MenuItem menuItem = subMenu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
+                menuItem.setIcon(item.getIconResId());
+                menuItem.setOnMenuItemClickListener(this);
+                menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -611,10 +635,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
             return null;
 
         return editorDelegate.getLang();
-    }
-
-    public RecyclerView getMenuRecyclerView() {
-        return mMenuRecyclerView;
     }
 
     public RecyclerView getTabRecyclerView() {

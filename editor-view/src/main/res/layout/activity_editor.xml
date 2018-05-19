@@ -145,12 +145,8 @@
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:fitsSystemWindows="false">
+        android:fitsSystemWindows="true">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/menuRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </android.support.design.widget.NavigationView>
 
 
