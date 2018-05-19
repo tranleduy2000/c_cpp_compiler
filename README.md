@@ -10,7 +10,9 @@ Pull request always wellcomed.
 
 # Feature
 
-- Gcc/G++ compiler
+- C compiler
+- C++ compiler
+- Termial emulator
 - Diagnostic GUI: auto jump to error position
 - Syntax highligting
 - File manager

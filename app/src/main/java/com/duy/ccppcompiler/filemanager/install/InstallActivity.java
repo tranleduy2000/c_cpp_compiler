@@ -141,8 +141,17 @@ public class InstallActivity extends FullScreenActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_INSTALL_COMPILER && resultCode == RESULT_OK) {
-            openEditor();
+        if (requestCode == RC_INSTALL_COMPILER) {
+            if (resultCode == RESULT_OK) {
+                openEditor();
+            } else {
+                mTxtMessage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTxtMessage.setText("Failed to install compiler");
+                    }
+                });
+            }
         }
     }
 
