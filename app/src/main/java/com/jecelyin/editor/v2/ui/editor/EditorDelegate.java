@@ -39,12 +39,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.ccppcompiler.R;
+import com.duy.editor.EditorActivity;
 import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
-import com.duy.editor.EditorActivity;
 import com.jecelyin.editor.v2.ui.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.ui.dialog.FinderDialog;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;

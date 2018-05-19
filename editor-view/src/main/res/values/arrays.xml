@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018 Mr Duy
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,5 +21,9 @@
         <item>portrait</item>
     </string-array>
 
+    <string-array name="theme_values">
+        <item>@string/default_theme</item>
+        <item>@string/dark_theme</item>
+    </string-array>
 
 </resources>

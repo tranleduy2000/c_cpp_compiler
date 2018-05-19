@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +37,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,10 +75,11 @@ import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.manager.MenuManager;
 import com.jecelyin.editor.v2.ui.manager.RecentFilesManager;
 import com.jecelyin.editor.v2.ui.manager.TabManager;
-import com.jecelyin.editor.v2.ui.settings.SettingsActivity;
+import com.jecelyin.editor.v2.ui.settings.EditorSettingsActivity;
 import com.jecelyin.editor.v2.ui.widget.SymbolBarLayout;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
+import com.jecelyin.editor.v2.ui.widget.menu.MenuGroup;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.pdaxrom.cctools.BuildConstants;
@@ -93,8 +96,7 @@ import java.util.List;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditorActivity extends FullScreenActivity
-        implements MenuItem.OnMenuItemClickListener
+public class EditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener
         , FolderChooserDialog.FolderCallback
         , SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "MainActivity";
@@ -120,12 +122,13 @@ public class EditorActivity extends FullScreenActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = Preferences.getInstance(this);
-        MenuManager.init(this);
-
         setContentView(R.layout.activity_main);
-
         mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        MenuManager.init(this);
+        mPreferences = Preferences.getInstance(this);
+
         mEditorPager = findViewById(R.id.view_pager);
         mMenuRecyclerView = findViewById(R.id.menuRecyclerView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -236,21 +239,6 @@ public class EditorActivity extends FullScreenActivity
     private void initToolbar() {
         mToolbar.setNavigationIcon(R.drawable.ic_drawer_raw);
         mToolbar.setNavigationContentDescription(R.string.tab);
-
-        Menu container = mToolbar.getMenu();
-        List<MenuItemInfo> items = MenuFactory.getInstance(this).getToolbarIcon();
-        for (MenuItemInfo item : items) {
-            MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), Menu.NONE, item.getTitleResId());
-            menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, item.getIconResId()));
-
-            menuItem.setOnMenuItemClickListener(this);
-            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-        MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, R.id.m_menu, Menu.NONE, getString(R.string.more_menu));
-        menuItem.setIcon(R.drawable.ic_more_horiz_white_24dp);
-        menuItem.setOnMenuItemClickListener(this);
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
         mTabManager = new TabManager(this);
     }
 
@@ -346,6 +334,42 @@ public class EditorActivity extends FullScreenActivity
         }
     }
 
+    @CallSuper
+    @Override
+    public boolean onCreateOptionsMenu(Menu container) {
+        MenuFactory menuFactory = MenuFactory.getInstance(this);
+        List<MenuItemInfo> topMenu = menuFactory.getToolbarIcon();
+        for (MenuItemInfo item : topMenu) {
+            MenuItem menuItem = container.add(item.getGroupId(), item.getItemId(), item.getOrder(), item.getTitleResId());
+            menuItem.setIcon(item.getIconResId());
+            menuItem.setOnMenuItemClickListener(this);
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+
+        MenuGroup[] values = new MenuGroup[]{MenuGroup.FILE, MenuGroup.EDIT};
+        for (MenuGroup group : values) {
+            if (group == MenuGroup.TOP) {
+                continue;
+            }
+            SubMenu subMenu = container.addSubMenu(group.getNameResId());
+            subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+            List<MenuItemInfo> items = menuFactory.getMenuItemsWithoutToolbarMenu(group);
+            for (MenuItemInfo item : items) {
+                MenuItem menuItem = subMenu.add(item.getGroupId(), item.getItemId(), item.getOrder(), item.getTitleResId());
+                menuItem.setIcon(item.getIconResId());
+                menuItem.setOnMenuItemClickListener(this);
+                menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
+        }
+        return super.onCreateOptionsMenu(container);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return onMenuItemClick(item) || super.onOptionsItemSelected(item);
+    }
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         onMenuClick(item.getItemId());
@@ -422,7 +446,7 @@ public class EditorActivity extends FullScreenActivity
                 compileAndRun();
                 break;
             case R.id.m_settings:
-                SettingsActivity.startActivity(this, RC_SETTINGS);
+                EditorSettingsActivity.startActivity(this, RC_SETTINGS);
                 break;
 
             case R.id.action_c_example:
@@ -504,11 +528,6 @@ public class EditorActivity extends FullScreenActivity
         }
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        onMenuClick(R.id.m_menu);
-        return false;
-    }
 
     public void closeMenu() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {

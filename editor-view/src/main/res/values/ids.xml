@@ -10,11 +10,11 @@
     <item name="m_copy" type="id" />
     <item name="m_paste" type="id" />
     <item name="m_select_all" type="id" />
-    <item name="m_undo" type="id" />
-    <item name="m_redo" type="id" />
-    <item name="m_wrap" type="id" />
+    <item name="action_undo" type="id" />
+    <item name="action_redo" type="id" />
+    <item name="action_wrap" type="id" />
     <item name="m_duplication" type="id" />
-    <item name="m_find_replace" type="id" />
+    <item name="actiob_find_replace" type="id" />
     <item name="m_goto_top" type="id" />
     <item name="m_goto_end" type="id" />
     <item name="m_goto_line" type="id" />

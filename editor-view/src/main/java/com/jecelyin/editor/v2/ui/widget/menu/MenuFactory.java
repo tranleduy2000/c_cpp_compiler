@@ -28,6 +28,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.BACK;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.CONVERT_WRAP_CHAR;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.DOC_INFO;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.FIND;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.FORWARD;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.FULL_SCREEN;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_END;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_INDEX;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_TOP;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.NONE;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.OPEN;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.READONLY_MODE;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.REDO;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.SAVE;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.SAVE_AS;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.UNDO;
+
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
@@ -44,7 +61,7 @@ public class MenuFactory {
         groups.put(MenuGroup.TOP, topList);
         Integer[] toolbarIcons = Preferences.getInstance(context).getToolbarIcons();
         if (toolbarIcons == null) {
-            toolbarIcons = new Integer[]{R.id.action_run, R.id.m_undo};
+            toolbarIcons = new Integer[]{R.id.action_run, R.id.action_undo};
         }
 
         List<MenuItemInfo> items;
@@ -95,60 +112,40 @@ public class MenuFactory {
     }
 
     private void initAllMenuItem() {
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.TOP, R.id.action_run, Command.CommandEnum.NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
+//        menuItemInfos.add(new MenuItemInfo(MenuGroup.TOP, R.id.action_run, NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
 
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_new_file, Command.CommandEnum.NONE, R.drawable.ic_add_white_24dp, R.string.new_file));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open, Command.CommandEnum.OPEN, R.drawable.ic_folder_open_white_24dp, R.string.open));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save, Command.CommandEnum.SAVE, R.drawable.ic_save_white_24dp, R.string.save));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_all, Command.CommandEnum.NONE, R.drawable.m_save_all, R.string.save_all));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, Command.CommandEnum.SAVE_AS, R.drawable.m_save_as, R.string.save_as));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, Command.CommandEnum.NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_new_file, NONE, R.drawable.ic_add_white_24dp, R.string.new_file));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open, OPEN, R.drawable.ic_folder_open_white_24dp, R.string.open));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save, SAVE, R.drawable.ic_save_white_24dp, R.string.save));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_all, NONE, R.drawable.m_save_all, R.string.save_all));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, SAVE_AS, R.drawable.m_save_as, R.string.save_as));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
 
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_c_example,
-//                Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_c_example));
+//                NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_c_example));
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_cpp_example,
-//                Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_cpp_example));
+//                NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_cpp_example));
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_install_add_on,
-//                Command.CommandEnum.NONE, R.drawable.baseline_extension_24, R.string.title_menu_adds_on));
+//                NONE, R.drawable.baseline_extension_24, R.string.title_menu_adds_on));
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open_terminal,
-//                Command.CommandEnum.NONE, R.drawable.ic_terminal_black, R.string.title_menu_terminal));
+//                NONE, R.drawable.ic_terminal_black, R.string.title_menu_terminal));
 
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_undo, UNDO, R.drawable.ic_undo_white_24dp, R.string.undo));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_redo, REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_wrap, CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.actiob_find_replace, FIND, R.drawable.ic_find_in_page_white_24dp, R.string.find_or_replace));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_top, GOTO_TOP, R.drawable.ic_vertical_align_top_white_24dp, R.string.jump_to_start));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_end, GOTO_END, R.drawable.ic_vertical_align_bottom_white_24dp, R.string.jump_to_end));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_line, GOTO_INDEX, R.drawable.m_goto_line, R.string.goto_line));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_back, BACK, R.drawable.ic_arrow_back_white_24dp, R.string.back));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_forward, FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.forward));
 
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_undo,
-                Command.CommandEnum.UNDO, R.drawable.ic_undo_white_24dp, R.string.undo));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_redo,
-                Command.CommandEnum.REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_wrap,
-                Command.CommandEnum.CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
-
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_find_replace,
-                Command.CommandEnum.FIND, R.drawable.ic_find_in_page_white_24dp, R.string.find_or_replace));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_top,
-                Command.CommandEnum.GOTO_TOP, R.drawable.ic_vertical_align_top_white_24dp, R.string.jump_to_start));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_end,
-                Command.CommandEnum.GOTO_END, R.drawable.ic_vertical_align_bottom_white_24dp, R.string.jump_to_end));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_line,
-                Command.CommandEnum.GOTO_INDEX, R.drawable.m_goto_line, R.string.goto_line));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_back,
-                Command.CommandEnum.BACK, R.drawable.ic_arrow_back_white_24dp, R.string.back));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_forward,
-                Command.CommandEnum.FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.forward));
-
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_theme,
-                Command.CommandEnum.THEME, R.drawable.ic_style_white_24dp, R.string.change_theme));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_fullscreen,
-                Command.CommandEnum.FULL_SCREEN, R.drawable.ic_fullscreen_white_24dp, R.string.fullscreen_mode));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info,
-                Command.CommandEnum.DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_readonly,
-                Command.CommandEnum.READONLY_MODE, R.drawable.ic_remove_red_eye_white_24dp, R.string.read_only));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_highlight,
-                Command.CommandEnum.NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_encoding,
-                Command.CommandEnum.NONE, R.drawable.m_encoding, R.string.encoding));
-
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_settings,
-                Command.CommandEnum.NONE, R.drawable.ic_settings_white_24dp, R.string.settings));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_fullscreen, FULL_SCREEN, R.drawable.ic_fullscreen_white_24dp, R.string.fullscreen_mode));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_readonly, READONLY_MODE, R.drawable.ic_remove_red_eye_white_24dp, R.string.read_only));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_highlight, NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_encoding, NONE, R.drawable.m_encoding, R.string.encoding));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_settings, NONE, R.drawable.ic_settings_white_24dp, R.string.editor_setting));
     }
 
     public List<MenuItemInfo> getMenuItemsWithoutToolbarMenu(MenuGroup group) {
@@ -166,6 +163,6 @@ public class MenuFactory {
             if (itemInfo.getItemId() == id)
                 return itemInfo.getCommandEnum();
         }
-        return Command.CommandEnum.NONE;
+        return NONE;
     }
 }
