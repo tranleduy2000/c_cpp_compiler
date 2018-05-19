@@ -20,8 +20,8 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
-        <item name="colorPrimaryDark">#303F9F</item>
-        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#512DA8</item>
+        <item name="colorPrimary">#673AB7</item>
         <item name="colorAccent">#FF5722</item>
 
         <item name="actionBarStyle">@style/Light.Toolbar</item>
