@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jackpal.androidterm.util;
+package jackpal.androidterm;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;

@@ -60,7 +60,7 @@ import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
 import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.TermSettings;
 
 public class TermActivity extends FullScreenActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String EXTRA_MULTI_WINDOW = "EXTRA_MULTI_WINDOW";

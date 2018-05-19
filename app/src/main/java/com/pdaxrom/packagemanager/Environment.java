@@ -30,7 +30,7 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.TermSettings;
 
 /**
  * Created by Duy on 16-May-18.

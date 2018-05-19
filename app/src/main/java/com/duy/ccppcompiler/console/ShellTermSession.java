@@ -33,7 +33,7 @@ import java.util.Arrays;
 import jackpal.androidterm.emulatorview.ColorScheme;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
-import jackpal.androidterm.util.TermSettings;
+import jackpal.androidterm.TermSettings;
 
 public class ShellTermSession extends TermSession {
     public static final int PROCESS_EXITED = 1;

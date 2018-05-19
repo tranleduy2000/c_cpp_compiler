@@ -57,7 +57,6 @@ import android.widget.ViewFlipper;
 import com.duy.ccppcompiler.R;
 import com.pdaxrom.editor.CodeEditor;
 import com.pdaxrom.editor.CodeEditorInterface;
-import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.LogItem;
@@ -84,8 +83,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import jackpal.androidterm.MultiTermActivity;
 
 public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.TabListener, OnSharedPreferenceChangeListener, CodeEditorInterface {
     public static final String SHARED_PREFS_NAME = "cctoolsSettings";
