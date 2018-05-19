@@ -23,10 +23,10 @@ import com.duy.ide.editor.editor.R;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public enum MenuGroup {
+    //Run, edit
     TOP(0),
     FILE(R.string.file),
     EDIT(R.string.edit),
-    FIND(R.string.find),
     VIEW(R.string.view),
     OTHER(R.string.other);
 

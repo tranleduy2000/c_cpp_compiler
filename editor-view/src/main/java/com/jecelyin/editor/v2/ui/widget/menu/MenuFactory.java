@@ -44,7 +44,7 @@ public class MenuFactory {
         groups.put(MenuGroup.TOP, topList);
         Integer[] toolbarIcons = Preferences.getInstance(context).getToolbarIcons();
         if (toolbarIcons == null) {
-            toolbarIcons = new Integer[]{R.id.action_run, R.id.action_new_file, R.id.m_undo};
+            toolbarIcons = new Integer[]{R.id.action_run, R.id.m_undo};
         }
 
         List<MenuItemInfo> items;
@@ -121,17 +121,17 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_wrap,
                 Command.CommandEnum.CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
 
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_find_replace,
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_find_replace,
                 Command.CommandEnum.FIND, R.drawable.ic_find_in_page_white_24dp, R.string.find_or_replace));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_goto_top,
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_top,
                 Command.CommandEnum.GOTO_TOP, R.drawable.ic_vertical_align_top_white_24dp, R.string.jump_to_start));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_goto_end,
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_end,
                 Command.CommandEnum.GOTO_END, R.drawable.ic_vertical_align_bottom_white_24dp, R.string.jump_to_end));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_goto_line,
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_line,
                 Command.CommandEnum.GOTO_INDEX, R.drawable.m_goto_line, R.string.goto_line));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_back,
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_back,
                 Command.CommandEnum.BACK, R.drawable.ic_arrow_back_white_24dp, R.string.back));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FIND, R.id.m_forward,
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_forward,
                 Command.CommandEnum.FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.forward));
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_theme,
