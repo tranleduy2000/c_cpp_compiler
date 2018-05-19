@@ -20,7 +20,7 @@ import android.os.AsyncTask;
 
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
-import com.duy.editor.EditorActivity;
+import com.duy.editor.BaseEditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 
 /**
@@ -28,10 +28,10 @@ import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
  */
 
 public class SaveAllTask extends AsyncTask<Void, Void, Void> {
-    private EditorActivity editorActivity;
+    private BaseEditorActivity editorActivity;
     private SaveListener saveListener;
 
-    public SaveAllTask(EditorActivity editorActivity, SaveListener saveListener) {
+    public SaveAllTask(BaseEditorActivity editorActivity, SaveListener saveListener) {
         this.editorActivity = editorActivity;
         this.saveListener = saveListener;
     }

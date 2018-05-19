@@ -26,7 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.duy.editor.EditorActivity;
+import com.duy.editor.BaseEditorActivity;
 import com.jecelyin.editor.v2.ui.editor.Document;
 
 /**
@@ -69,7 +69,7 @@ public class ChangeThemeDialog extends AbstractDialog {
 
     private void restartApp() {
         Document.styles = null;
-        Intent it = new Intent(context, EditorActivity.class);
+        Intent it = new Intent(context, BaseEditorActivity.class);
         it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(it);
     }

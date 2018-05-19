@@ -97,7 +97,7 @@ import java.util.List;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener
+public class BaseEditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener
         , FolderChooserDialog.FolderCallback
         , SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "MainActivity";
@@ -497,7 +497,7 @@ public class EditorActivity extends FullScreenActivity implements MenuItem.OnMen
                 .create(this, new UIUtils.OnShowInputCallback() {
                     @Override
                     public void onConfirm(CharSequence input) {
-                        File srcDir = SrcFileManager.getSourceDir(EditorActivity.this);
+                        File srcDir = SrcFileManager.getSourceDir(BaseEditorActivity.this);
                         File file = new File(srcDir, input.toString());
                         if (com.duy.utils.IOUtils.createNewFile(file)) {
                             mTabManager.newTab(file);
@@ -525,8 +525,8 @@ public class EditorActivity extends FullScreenActivity implements MenuItem.OnMen
         String path = currentEditor.getPath();
         srcFiles[0] = new File(path);
 
-        INativeCompiler compiler = CompilerFactory.makeCompilerForFile(EditorActivity.this, srcFiles);
-        CompileManager compileManager = new CompileManager(EditorActivity.this);
+        INativeCompiler compiler = CompilerFactory.makeCompilerForFile(BaseEditorActivity.this, srcFiles);
+        CompileManager compileManager = new CompileManager(BaseEditorActivity.this);
         compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
 
         if (compiler != null) {

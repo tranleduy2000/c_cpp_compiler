@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name="com.duy.editor.EditorActivity"
+            android:name="com.duy.editor.BaseEditorActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask">
             <intent-filter>

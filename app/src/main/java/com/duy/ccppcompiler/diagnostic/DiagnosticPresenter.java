@@ -25,7 +25,7 @@ import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 import com.duy.common.DLog;
 import com.jecelyin.editor.v2.common.Command;
-import com.duy.editor.EditorActivity;
+import com.duy.editor.BaseEditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.manager.TabManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -41,13 +41,13 @@ import java.util.HashMap;
 
 public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
-    private final EditorActivity mActivity;
+    private final BaseEditorActivity mActivity;
     private final TabManager mTabManager;
     private ArrayList<Diagnostic> mDiagnostics;
     private DiagnosticContract.View mView;
     private HashMap<File, byte[]> mHashCode = new HashMap<>();
 
-    public DiagnosticPresenter(DiagnosticContract.View view, EditorActivity activity, TabManager tabManager) {
+    public DiagnosticPresenter(DiagnosticContract.View view, BaseEditorActivity activity, TabManager tabManager) {
         mActivity = activity;
         mTabManager = tabManager;
         mView = view;

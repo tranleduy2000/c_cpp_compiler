@@ -28,7 +28,7 @@ import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;
-import com.duy.editor.EditorActivity;
+import com.duy.editor.BaseEditorActivity;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
 
 import java.util.ArrayList;
@@ -39,12 +39,12 @@ import java.util.ArrayList;
 public abstract class CompileManagerImpl<T extends CommandResult> implements ICompileManager<T> {
     private static final String TAG = "CompileManager";
     @NonNull
-    protected EditorActivity mActivity;
+    protected BaseEditorActivity mActivity;
     @Nullable
     private ProgressDialog mCompileDialog;
     private DiagnosticPresenter mDiagnosticPresenter;
 
-    CompileManagerImpl(@NonNull EditorActivity activity) {
+    CompileManagerImpl(@NonNull BaseEditorActivity activity) {
         mActivity = activity;
     }
 

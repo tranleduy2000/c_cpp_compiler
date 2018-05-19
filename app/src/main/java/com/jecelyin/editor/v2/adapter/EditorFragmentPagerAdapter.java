@@ -21,7 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.jecelyin.editor.v2.common.TabCloseListener;
-import com.duy.editor.EditorActivity;
+import com.duy.editor.BaseEditorActivity;
 import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
 import com.jecelyin.editor.v2.ui.editor.EditorFragment;
 import com.jecelyin.editor.v2.ui.editor.EditorPageDescriptor;
@@ -36,9 +36,9 @@ import java.util.ArrayList;
 
 public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<EditorPageDescriptor> implements IEditorPagerAdapter {
     private static final String TAG = "EditorFragmentPagerAdap";
-    private EditorActivity context;
+    private BaseEditorActivity context;
 
-    public EditorFragmentPagerAdapter(EditorActivity activity) {
+    public EditorFragmentPagerAdapter(BaseEditorActivity activity) {
         super(activity.getSupportFragmentManager());
         this.context = activity;
     }
