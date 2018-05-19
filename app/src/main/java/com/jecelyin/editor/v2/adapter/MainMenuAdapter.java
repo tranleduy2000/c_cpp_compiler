@@ -56,7 +56,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
         this.mContext = context;
 
         MenuFactory menuFactory = MenuFactory.getInstance(context);
-        MenuGroup[] groups = MenuGroup.values();
+        MenuGroup[] groups = new MenuGroup[]{MenuGroup.VIEW, MenuGroup.OTHER};
         menuItems = new ArrayList<>();
 
         for (MenuGroup group : groups) {

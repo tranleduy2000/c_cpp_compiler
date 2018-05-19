@@ -362,6 +362,11 @@ public class EditorActivity extends FullScreenActivity implements MenuItem.OnMen
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }
+
+        MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, R.id.m_menu, Menu.NONE, getString(R.string.more_menu));
+        menuItem.setIcon(R.drawable.ic_more_horiz_white_24dp);
+        menuItem.setOnMenuItemClickListener(this);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(container);
     }
 
