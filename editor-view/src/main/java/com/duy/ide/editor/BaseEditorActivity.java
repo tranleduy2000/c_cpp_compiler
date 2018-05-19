@@ -323,7 +323,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
             List<MenuItemInfo> items = menuFactory.getMenuItemsWithoutToolbarMenu(group);
             for (MenuItemInfo item : items) {
                 MenuItem menuItem = subMenu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
-                menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, item.getIconResId()));
+                menuItem.setIcon(MenuManager.makeMenuNormalIcon(this, item.getIconResId()));
                 menuItem.setOnMenuItemClickListener(this);
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
