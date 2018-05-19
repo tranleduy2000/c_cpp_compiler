@@ -12,8 +12,7 @@ android {
 
     sourceSets {
         main {
-            res.srcDirs += "src/main/file-expoler-res"
-            res.srcDirs += "src/main/style-res"
+            res.srcDirs += "src/main/res-file-expoler"
         }
     }
 

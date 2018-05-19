@@ -26,7 +26,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -54,13 +53,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import jackpal.androidterm.TermPreferencesActivity;
+import jackpal.androidterm.TermSettings;
 import jackpal.androidterm.TermView;
 import jackpal.androidterm.emulatorview.EmulatorView;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
 import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
-import jackpal.androidterm.TermSettings;
 
 public class TermActivity extends FullScreenActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "TermActivity";
