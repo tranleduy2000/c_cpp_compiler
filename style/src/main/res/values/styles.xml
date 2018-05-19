@@ -17,26 +17,4 @@
 <resources>
 
 
-    <style name="Light.Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Light.Popup.Toolbar" parent="@style/ThemeOverlay.AppCompat.Light" />
-
-    <style name="Light.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
-        <item name="background">?colorPrimary</item>
-        <item name="height">?attr/actionBarSize</item>
-        <item name="titleTextStyle">@style/ActionModeTitle</item>
-        <item name="subtitleTextStyle">@style/ActionModeSubtitle</item>
-    </style>
-
-    <style name="ActionModeTitle">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
-    <style name="ActionModeSubtitle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
-
 </resources>

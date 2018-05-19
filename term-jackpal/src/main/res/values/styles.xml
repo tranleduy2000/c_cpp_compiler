@@ -18,10 +18,5 @@
 
 <resources>
 
-    <style name="Theme" parent="@android:style/Theme.Light">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
 </resources>
 
