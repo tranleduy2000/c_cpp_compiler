@@ -52,7 +52,7 @@
                     android:fillViewport="true"
                     android:orientation="horizontal">
 
-                    <com.duy.view.TintImageView
+                    <com.duy.ide.editor.view.TintImageView
                         android:id="@+id/btn_toggle_panel"
                         android:layout_width="@dimen/symbol_bar_height"
                         android:layout_height="@dimen/symbol_bar_height"
@@ -105,7 +105,7 @@
                 android:orientation="horizontal"
                 android:translationZ="3dp">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/appNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
                     android:textColor="#fff"
                     android:textSize="18sp" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/versionTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
