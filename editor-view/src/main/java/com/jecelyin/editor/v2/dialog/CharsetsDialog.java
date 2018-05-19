@@ -17,12 +17,9 @@
 package com.jecelyin.editor.v2.dialog;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.ColorDrawable;
-import android.view.View;
-import android.widget.ListView;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.common.Command;
 
@@ -58,29 +55,25 @@ public class CharsetsDialog extends AbstractDialog {
 
     @Override
     public void show() {
-        MaterialDialog dlg = getDialogBuilder().items(names)
-                .title(R.string.reopen_with_encoding)
-                .itemsCallback(new MaterialDialog.ListCallback() {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.reopen_with_encoding)
+                .setSingleChoiceItems(names, 0, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                    public void onClick(DialogInterface dialog, int which) {
                         Command command = new Command(Command.CommandEnum.RELOAD_WITH_ENCODING);
-                        command.object = names[i];
+                        command.object = names[which];
                         getMainActivity().doCommand(command);
+                        dialog.dismiss();
                     }
                 })
-                .positiveText(R.string.cancel)
-                .show();
-
+                .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog dlg = builder.create();
+        dlg.show();
         handleDialog(dlg);
-
-        TypedArray a = context.obtainStyledAttributes(new int[]{R.attr.dividerColor});
-        int dividerColor = a.getColor(0, 0);
-        a.recycle();
-
-        ListView listView = dlg.getListView();
-        listView.setDivider(new ColorDrawable(dividerColor));
-        listView.setDividerHeight(context.getResources().getDimensionPixelSize(R.dimen.divider_height));
-
     }
 }
