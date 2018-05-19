@@ -42,6 +42,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 
+import jackpal.androidterm.TermPreferencesActivity;
+
 /**
  * Created by Duy on 19-May-18.
  */
@@ -86,6 +88,15 @@ public class CodeEditorActivity extends BaseEditorActivity {
     }
 
     @Override
+    protected void onCreateNavigationMenu(Menu menu) {
+        //add run button
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_open_terminal, 0, R.string.title_menu_terminal).setIcon(R.drawable.ic_terminal_black);
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_term_preferences, 0, R.string.title_term_preferences).setIcon(R.drawable.ic_settings_white_24dp);
+
+        super.onCreateNavigationMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_install_add_on:
@@ -99,6 +110,11 @@ public class CodeEditorActivity extends BaseEditorActivity {
             case R.id.action_run:
                 compileAndRun();
                 return true;
+
+            case R.id.action_term_preferences:
+                startActivity(new Intent(this, TermPreferencesActivity.class));
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }

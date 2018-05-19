@@ -34,10 +34,6 @@
     <item name="m_fullscreen" type="id" />
     <item name="m_theme" type="id" />
 
-    <item name="action_c_example" type="id" />
-    <item name="action_cpp_example" type="id" />
-    <item name="action_install_add_on" type="id" />
-    <item name="action_open_terminal" type="id" />
 
     <item name="avpa_view_tag_key" type="id" />
 </resources>
