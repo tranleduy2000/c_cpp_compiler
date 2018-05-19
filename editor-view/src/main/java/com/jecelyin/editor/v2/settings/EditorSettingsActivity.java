@@ -33,7 +33,6 @@ import android.view.MenuItem;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.preference.JecListPreference;
 
 
 /**
@@ -147,8 +146,11 @@ public class EditorSettingsActivity extends FullScreenActivity {
 
                 value = prefercence.getValue(key);
 
-                if (preference instanceof JecListPreference) {
-    //
+                if (preference instanceof ListPreference) {
+                    String v = ((ListPreference) preference).getValue();
+                    if (v != null) {
+                        preference.setSummary(v);
+                    }
                 } else if (preference instanceof EditTextPreference) {
                     ((EditTextPreference) preference).setText(String.valueOf(value));
                 } else if (preference instanceof CheckBoxPreference) {
