@@ -16,34 +16,100 @@
 
 package com.duy.editor;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.CompileManager;
+import com.duy.ccppcompiler.compiler.CompileTask;
+import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
+import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
+import com.duy.ccppcompiler.console.TermActivity;
+import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
+import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
+import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
+import com.pdaxrom.cctools.BuildConstants;
+import com.pdaxrom.packagemanager.Environment;
+import com.pdaxrom.packagemanager.PackageManagerActivity;
+
+import java.io.File;
 
 /**
  * Created by Duy on 19-May-18.
  */
 
 public class CodeEditorActivity extends BaseEditorActivity {
+    private DiagnosticPresenter mDiagnosticPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FragmentManager fm = getSupportFragmentManager();
+        String tag = DiagnosticFragment.class.getSimpleName();
+        DiagnosticFragment diagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(tag);
+        if (diagnosticFragment == null) {
+            diagnosticFragment = DiagnosticFragment.newInstance();
+        }
+        fm.beginTransaction().replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
+                .commit();
+        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu container) {
         //add run button
-        container.add(0, R.id.action_run, 0, R.string.run);
+        container.add(0, R.id.action_run, 0, R.string.run)
+                .setIcon(R.drawable.ic_play_arrow_white_24dp)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(container);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_install_add_on:
+                startActivity(new Intent(this, PackageManagerActivity.class));
+                return true;
 
+            case R.id.action_open_terminal:
+                openTerminal();
+                return true;
+
+            case R.id.action_run:
+                compileAndRun();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
+
+
+    private void compileAndRun() {
+        saveAll(false);
+        EditorDelegate currentEditor = getCurrentEditorDelegate();
+        if (currentEditor == null) {
+            return;
+        }
+        File[] srcFiles = new File[1];
+        String path = currentEditor.getPath();
+        srcFiles[0] = new File(path);
+
+        INativeCompiler compiler = CompilerFactory.makeCompilerForFile(this, srcFiles);
+        CompileManager compileManager = new CompileManager(this);
+        compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+
+        if (compiler != null) {
+            CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
+            compileTask.execute();
+        } else {
+            Toast.makeText(this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     protected String[] getSupportedFileExtensions() {
@@ -54,4 +120,21 @@ public class CodeEditorActivity extends BaseEditorActivity {
         System.arraycopy(defaultExts, 0, finalResult, supportedExts.length, defaultExts.length);
         return finalResult;
     }
+
+
+    private void openTerminal() {
+        EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
+        String workDir = null;
+        if (currentEditorDelegate != null) {
+            workDir = new File(currentEditorDelegate.getPath()).getParent();
+        }
+        if (workDir == null) {
+            workDir = Environment.getHomeDir(this);
+        }
+        Intent intent = new Intent(this, TermActivity.class);
+        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + Environment.getShell(this));
+        intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
+        startActivity(intent);
+    }
+
 }

@@ -122,6 +122,11 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         mLastPath = Preferences.getInstance(this).getLastOpenPath();
         if (TextUtils.isEmpty(mLastPath)) {
             mLastPath = Environment.getExternalStorageDirectory().getPath();
+        } else {
+            File file = new File(mLastPath);
+            if (!file.exists() || !file.canRead()) {
+                mLastPath = Environment.getExternalStorageDirectory().getPath();
+            }
         }
 
         String initPath = intent.getStringExtra(EXTRA_INIT_PATH);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.ui.dialogs;
+package com.duy.ide.editor.dialogs;
 
 import android.content.Context;
 import android.content.DialogInterface;

@@ -23,10 +23,9 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -41,21 +40,10 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
-import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.CompileManager;
-import com.duy.ccppcompiler.compiler.CompileTask;
-import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
-import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
-import com.duy.ccppcompiler.console.TermActivity;
-import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
-import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.filemanager.SrcFileManager;
-import com.duy.ccppcompiler.ui.dialogs.DialogNewFile;
-import com.duy.ccppcompiler.ui.examples.ExampleActivity;
+import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.filemanager.FileManager;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
@@ -84,9 +72,6 @@ import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuGroup;
 import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
 import com.jecelyin.editor.v2.utils.DBHelper;
-import com.pdaxrom.cctools.BuildConstants;
-import com.pdaxrom.packagemanager.Environment;
-import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -98,12 +83,10 @@ import java.util.List;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class BaseEditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener
-        , FolderChooserDialog.FolderCallback
-        , SharedPreferences.OnSharedPreferenceChangeListener {
+public class BaseEditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
+    protected static final int RC_OPEN_FILE = 1;
     private static final String TAG = "MainActivity";
-
-    private static final int RC_OPEN_FILE = 1;
     private final static int RC_SAVE = 3;
     private static final int RC_SETTINGS = 5;
 
@@ -115,11 +98,10 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
     public TextView mVersionTextView;
     public SymbolBarLayout mSymbolBarLayout;
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
-    private TabManager mTabManager;
+    protected TabManager mTabManager;
     private Preferences mPreferences;
     private MenuManager mMenuManager;
     private long mExitTime;
-    private DiagnosticPresenter mDiagnosticPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,16 +211,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
             }
         });
 
-        FragmentManager fm = getSupportFragmentManager();
-        String tag = DiagnosticFragment.class.getSimpleName();
-        DiagnosticFragment diagnosticFragment = (DiagnosticFragment)
-                fm.findFragmentByTag(tag);
-        if (diagnosticFragment == null) {
-            diagnosticFragment = DiagnosticFragment.newInstance();
-        }
-        fm.beginTransaction().replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
-                .commit();
-        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
+
     }
 
     private void initToolbar() {
@@ -397,9 +370,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
                 createNewFile();
                 break;
             case R.id.action_open:
-                String sourceDir = Environment.getSdCardSourceDir();
-                String homeDir = BuildConfig.DEBUG ? Environment.getToolchainsDir(this) : sourceDir;
-                FileExplorerActivity.startPickFileActivity(this, sourceDir, homeDir, RC_OPEN_FILE);
+                openFileExplorer();
                 break;
             case R.id.m_goto_line:
                 new GotoLineDialog(this).show();
@@ -453,25 +424,11 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
             case R.id.m_encoding:
                 new CharsetsDialog(this).show();
                 break;
-            case R.id.action_run:
-                compileAndRun();
-                break;
+
             case R.id.m_settings:
                 EditorSettingsActivity.startActivity(this, RC_SETTINGS);
                 break;
 
-            case R.id.action_c_example:
-                ExampleActivity.openExample(this, "c");
-                break;
-            case R.id.action_cpp_example:
-                ExampleActivity.openExample(this, "cpp");
-                break;
-            case R.id.action_install_add_on:
-                startActivity(new Intent(this, PackageManagerActivity.class));
-                break;
-            case R.id.action_open_terminal:
-                openTerminal();
-                break;
             default:
                 commandEnum = MenuFactory.getInstance(this).idToCommandEnum(id);
                 if (commandEnum != Command.CommandEnum.NONE)
@@ -479,19 +436,16 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         }
     }
 
-    private void openTerminal() {
-        EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
-        String workDir = null;
-        if (currentEditorDelegate != null) {
-            workDir = new File(currentEditorDelegate.getPath()).getParent();
+    private void openFileExplorer() {
+        EditorDelegate editorDelegate = getCurrentEditorDelegate();
+        String sourceDir;
+        String homeDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        if (editorDelegate != null) {
+            sourceDir = new File(editorDelegate.getPath()).getParent();
+        } else {
+            sourceDir = homeDir;
         }
-        if (workDir == null) {
-            workDir = Environment.getHomeDir(this);
-        }
-        Intent intent = new Intent(this, TermActivity.class);
-        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + Environment.getShell(this));
-        intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
-        startActivity(intent);
+        FileExplorerActivity.startPickFileActivity(this, sourceDir, homeDir, RC_OPEN_FILE);
     }
 
     public void createNewFile() {
@@ -521,29 +475,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         }
     }
 
-    private void compileAndRun() {
-        saveAll(false);
-        EditorDelegate currentEditor = getCurrentEditorDelegate();
-        if (currentEditor == null) {
-            return;
-        }
-        File[] srcFiles = new File[1];
-        String path = currentEditor.getPath();
-        srcFiles[0] = new File(path);
-
-        INativeCompiler compiler = CompilerFactory.makeCompilerForFile(BaseEditorActivity.this, srcFiles);
-        CompileManager compileManager = new CompileManager(BaseEditorActivity.this);
-        compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
-
-        if (compiler != null) {
-            CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-            compileTask.execute();
-        } else {
-            Toast.makeText(this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
     public void closeMenu() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -551,11 +482,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
             mDrawerLayout.closeDrawer(GravityCompat.END);
         }
-    }
-
-    @Override
-    public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File file) {
-
     }
 
     private void hideSoftInput() {
@@ -582,7 +508,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         }
     }
 
-    private EditorDelegate getCurrentEditorDelegate() {
+    protected EditorDelegate getCurrentEditorDelegate() {
         if (mTabManager == null || mTabManager.getEditorPagerAdapter() == null)
             return null;
         return mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
