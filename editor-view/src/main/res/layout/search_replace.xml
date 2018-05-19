@@ -15,7 +15,6 @@
 
         <com.jecelyin.common.widget.DrawClickableEditText
             android:id="@+id/find_edit_text"
-            style="@style/MaterialEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/ic_arrow_drop_down_black"
@@ -30,7 +29,6 @@
 
         <com.jecelyin.common.widget.DrawClickableEditText
             android:id="@+id/replace_edit_text"
-            style="@style/MaterialEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/ic_arrow_drop_down_black"

@@ -27,6 +27,8 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -57,6 +59,7 @@ public class InstallActivity extends FullScreenActivity {
     private ScrollView mScrollView;
     @Nullable
     private AsyncTask<Void, CharSequence, Boolean> mExtractDataTask;
+    private Button mAction;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,8 +68,13 @@ public class InstallActivity extends FullScreenActivity {
         mProgressBar = findViewById(R.id.progress_bar);
         mTxtMessage = findViewById(R.id.txt_message);
         mScrollView = findViewById(R.id.scroll_view);
+        mAction = findViewById(R.id.btn_action);
 
-        new CheckCompilerInstalledTask().execute();
+        if (permissionGranted()) {
+            new CheckCompilerInstalledTask().execute();
+        } else {
+            requestPermission();
+        }
     }
 
     @Override
@@ -115,10 +123,17 @@ public class InstallActivity extends FullScreenActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            closeAndStartMainActivity();
+            new CheckCompilerInstalledTask().execute();
         } else {
-            mTxtMessage.setText("Can not run this app without read/write storage permission. " +
-                    "Please open setting and granted permission for this app.");
+            mTxtMessage.setText(R.string.message_need_permission);
+            mAction.setVisibility(View.VISIBLE);
+            mAction.setText(R.string.grant_permission);
+            mAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    requestPermission();
+                }
+            });
         }
     }
 
@@ -148,9 +163,18 @@ public class InstallActivity extends FullScreenActivity {
                 mTxtMessage.post(new Runnable() {
                     @Override
                     public void run() {
-                        mTxtMessage.setText("Failed to install compiler");
+                        mTxtMessage.setText(R.string.failed_to_install_compiler);
+                        mAction.setVisibility(View.VISIBLE);
+                        mAction.setText(R.string.reinstall_compiler);
+                        mAction.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new CheckCompilerInstalledTask().execute();
+                            }
+                        });
                     }
                 });
+
             }
         }
     }
