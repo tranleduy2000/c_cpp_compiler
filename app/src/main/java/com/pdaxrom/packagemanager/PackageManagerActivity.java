@@ -15,9 +15,8 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +73,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     private String mBackupDir;
     private String mToolchainDir;
     private ProgressDialog mProgressDialog;
+    private SearchView mSearchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,44 +92,15 @@ public class PackageManagerActivity extends FullScreenActivity {
         mAction = null;
         mActivityData = null;
         if (getIntent().getExtras() != null) {
-            String cmd = getIntent().getExtras().getString(EXTRA_CMD);
-
-            Log.i(TAG, "External command " + cmd);
-
-            if (ACTION_UPDATE.equals(cmd)) {
-                mAction = cmd;
-            } else if (ACTION_INSTALL.equals(cmd)) {
-                mAction = cmd;
+            mAction = getIntent().getExtras().getString(EXTRA_CMD);
+            if (ACTION_INSTALL.equals(mAction)) {
                 mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
-            } else if (ACTION_UNINSTALL.equals(cmd)) {
-                mAction = cmd;
+            } else if (ACTION_UNINSTALL.equals(mAction)) {
                 mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
             }
-
             new DownloadRepoTask().execute(getReposList());
             return;
         } else {
-            EditText inputSearch = findViewById(R.id.inputSearch);
-            inputSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before,
-                                          int count) {
-                    if (start > 0) {
-                        mListView.setFilterText(s.toString());
-                    } else {
-                        mListView.clearTextFilter();
-                    }
-                }
-            });
             new DownloadRepoTask().execute(getReposList());
         }
 
@@ -173,6 +144,25 @@ public class PackageManagerActivity extends FullScreenActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_package_manager, menu);
+
+        // Retrieve the SearchView and plug it into SearchManager
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() > 0) {
+                    mListView.setFilterText(newText);
+                } else {
+                    mListView.clearTextFilter();
+                }
+                return false;
+            }
+        });
         return true;
     }
 
@@ -184,6 +174,11 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         } else if (i == R.id.action_repo_mirrors) {
             editReposList();
+        } else if (i == android.R.id.home) {
+            if (!mSearchView.isIconified()) {
+                mSearchView.setIconified(true);
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -228,7 +223,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         for (PackageInfo info : repo) {
             // creating new HashMap
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<>();
 
             // adding each child node to HashMap key => value
             map.put(RepoUtils.KEY_NAME, info.getName());
@@ -402,9 +397,11 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private List<String> getReposList() {
-        String defaultUrl = "http://cctools.info/packages";
+        String defaultUrl;
         if (Build.VERSION.SDK_INT >= 21) {
-            defaultUrl += "-pie";
+            defaultUrl = "http://cctools.info/packages-pie";
+        } else {
+            defaultUrl = "http://cctools.info/packages";
         }
 
         List<String> list = null;
