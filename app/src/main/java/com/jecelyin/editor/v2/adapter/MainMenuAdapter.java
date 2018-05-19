@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
@@ -92,7 +93,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
             final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.mTextView.setText(item.getTitleResId());
             Drawable icon = MenuManager.makeMenuNormalIcon(mContext, item.getIconResId());
-            itemViewHolder.mTextView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            itemViewHolder.mImageView.setImageDrawable(icon);
             itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,12 +130,14 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
      */
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
+        ImageView mImageView;
         SwitchCompat mCheckBox;
 
         ItemViewHolder(View view) {
             super(view);
             mTextView = view.findViewById(R.id.textView);
             mCheckBox = view.findViewById(R.id.checkbox);
+            mImageView = view.findViewById(R.id.iconImageView);
         }
     }
 

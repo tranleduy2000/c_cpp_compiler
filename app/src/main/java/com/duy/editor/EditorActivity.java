@@ -19,7 +19,6 @@ package com.duy.editor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -235,20 +234,19 @@ public class EditorActivity extends FullScreenActivity
     }
 
     private void initToolbar() {
-        Resources res = getResources();
         mToolbar.setNavigationIcon(R.drawable.ic_drawer_raw);
         mToolbar.setNavigationContentDescription(R.string.tab);
 
-        Menu menu = mToolbar.getMenu();
+        Menu container = mToolbar.getMenu();
         List<MenuItemInfo> items = MenuFactory.getInstance(this).getToolbarIcon();
         for (MenuItemInfo item : items) {
-            MenuItem menuItem = menu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), Menu.NONE, item.getTitleResId());
+            MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), Menu.NONE, item.getTitleResId());
             menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, item.getIconResId()));
 
             menuItem.setOnMenuItemClickListener(this);
             menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
-        MenuItem menuItem = menu.add(MenuDef.GROUP_TOOLBAR, R.id.m_menu, Menu.NONE, getString(R.string.more_menu));
+        MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, R.id.m_menu, Menu.NONE, getString(R.string.more_menu));
         menuItem.setIcon(R.drawable.ic_more_horiz_white_24dp);
         menuItem.setOnMenuItemClickListener(this);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);

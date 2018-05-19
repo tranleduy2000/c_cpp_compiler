@@ -1,13 +1,11 @@
 /*
- * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
- *
- * This file is part of 920 Text Editor.
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +18,7 @@ package com.jecelyin.editor.v2.ui.widget.menu;
 
 import android.content.Context;
 
-import com.duy.ccppcompiler.R;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 
@@ -84,11 +82,10 @@ public class MenuFactory {
     }
 
     public static boolean isChecked(Context context, int id) {
-        switch (id) {
-            case R.id.m_readonly:
-                return Preferences.getInstance(context).isReadOnly();
-            case R.id.m_fullscreen:
-                return Preferences.getInstance(context).isFullScreenMode();
+        if (id == R.id.m_readonly) {
+            return Preferences.getInstance(context).isReadOnly();
+        } else if (id == R.id.m_fullscreen) {
+            return Preferences.getInstance(context).isFullScreenMode();
         }
         return false;
     }
@@ -107,14 +104,14 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, Command.CommandEnum.SAVE_AS, R.drawable.m_save_as, R.string.save_as));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, Command.CommandEnum.NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
 
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_c_example,
-                Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_c_example));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_cpp_example,
-                Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_cpp_example));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_install_add_on,
-                Command.CommandEnum.NONE, R.drawable.baseline_extension_24, R.string.title_menu_adds_on));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open_terminal,
-                Command.CommandEnum.NONE, R.drawable.ic_terminal_black, R.string.title_menu_terminal));
+//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_c_example,
+//                Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_c_example));
+//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_cpp_example,
+//                Command.CommandEnum.NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_cpp_example));
+//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_install_add_on,
+//                Command.CommandEnum.NONE, R.drawable.baseline_extension_24, R.string.title_menu_adds_on));
+//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open_terminal,
+//                Command.CommandEnum.NONE, R.drawable.ic_terminal_black, R.string.title_menu_terminal));
 
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_undo,
