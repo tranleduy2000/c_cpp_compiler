@@ -65,6 +65,7 @@ import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.EditorFragmentPagerAdapter;
 import com.jecelyin.editor.v2.adapter.IEditorPagerAdapter;
+import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.dialog.ChangeThemeDialog;
 import com.jecelyin.editor.v2.ui.dialog.CharsetsDialog;
@@ -214,6 +215,9 @@ public class EditorActivity extends FullScreenActivity implements MenuItem.OnMen
 
         if (mMenuManager == null) {
             mMenuManager = new MenuManager(this);
+            MainMenuAdapter adapter = mMenuManager.getAdapter();
+            mMenuRecyclerView.setAdapter(adapter);
+            adapter.setMenuItemClickListener(this);
         }
         final View toggleView = findViewById(R.id.btn_toggle_panel);
         mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);

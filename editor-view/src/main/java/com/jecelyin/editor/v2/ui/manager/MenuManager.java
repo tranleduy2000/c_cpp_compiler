@@ -1,13 +1,11 @@
 /*
- * Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
- *
- * This file is part of 920 Text Editor.
+ * Copyright 2018 Mr Duy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,8 +21,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
-import com.duy.ccppcompiler.R;
-import com.duy.editor.EditorActivity;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DrawableUtils;
 import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
 
@@ -32,15 +29,18 @@ import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class MenuManager {
-
     private static int toolbarIconNormalColor;
     private static int toolbarIconDisabledColor;
     private static int menuIconNormalColor;
 
-    public MenuManager(EditorActivity editorActivity) {
-        MainMenuAdapter adapter = new MainMenuAdapter(editorActivity);
-        editorActivity.getMenuRecyclerView().setAdapter(adapter);
-        adapter.setMenuItemClickListener(editorActivity);
+    private MainMenuAdapter mAdapter;
+
+    public MenuManager(Context context) {
+        mAdapter = new MainMenuAdapter(context);
+    }
+
+    public MainMenuAdapter getAdapter() {
+        return mAdapter;
     }
 
     public static void init(Context context) {

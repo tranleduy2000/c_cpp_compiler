@@ -73,7 +73,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     private void onTabMenuViewsClick(View v) {
         switch (v.getId()) {
-            case R.id.close_image_view:
+            case R.id.btn_close:
                 closeTab((int) v.getTag());
                 break;
             default:
