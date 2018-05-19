@@ -17,8 +17,8 @@
 package com.duy.ccppcompiler.filemanager.install;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,17 +28,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
-import com.duy.ide.editor.utils.ApkUtils;
-import com.duy.ide.editor.utils.ExtractCallback;
+import com.pdaxrom.packagemanager.Environment;
+import com.pdaxrom.packagemanager.PackageManagerActivity;
 
 /**
  * Created by Duy on 22-Apr-18.
@@ -53,6 +53,7 @@ public class InstallActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private static final String TAG = "InstallActivity";
+    private static final int RC_INSTALL_COMPILER = 12312;
     private ProgressBar mProgressBar;
     private TextView mTxtMessage;
     private ScrollView mScrollView;
@@ -66,7 +67,8 @@ public class InstallActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progress_bar);
         mTxtMessage = findViewById(R.id.txt_message);
         mScrollView = findViewById(R.id.scroll_view);
-        openEditor();
+
+        new CheckCompilerInstalledTask().execute();
     }
 
     @Override
@@ -74,60 +76,6 @@ public class InstallActivity extends AppCompatActivity {
         super.onStop();
         if (mExtractDataTask != null) {
             mExtractDataTask.cancel(true);
-        }
-    }
-
-    private void extractData() {
-        if (DLog.DEBUG) DLog.d(TAG, "extractData() called");
-        final SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        final String appVersion = ApkUtils.getAppVersion(this);
-        boolean extracted = preferences.getBoolean(KEY_EXTRACTED, false)
-                && preferences.getString(KEY_APP_VERSION, "").equals(appVersion);
-        if (DLog.DEBUG) DLog.d(TAG, "extracted = " + extracted);
-        //in debug mode, always extract data
-        if (BuildConfig.DEBUG) {
-            extracted = false;
-        }
-        if (!extracted) {
-            mExtractDataTask = new InstallGcc810(this, new ExtractCallback() {
-                @Override
-                public void onNewMessage(CharSequence message) {
-                    mTxtMessage.append(message);
-                    mTxtMessage.append("\n");
-                    mScrollView.fullScroll(View.FOCUS_DOWN);
-                }
-
-                @Override
-                public void onComplete() {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean(KEY_EXTRACTED, true);
-                    editor.putString(KEY_APP_VERSION, appVersion);
-                    editor.apply();
-                    mTxtMessage.append("Complete\n");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            openEditor();
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailed(@Nullable final Exception e) {
-                    if (e != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mTxtMessage.append("Error: " + e.getMessage());
-                                openEditor();
-                            }
-                        });
-                    }
-                }
-            });
-            mExtractDataTask.execute();
-        } else {
-            openEditor();
         }
     }
 
@@ -176,5 +124,48 @@ public class InstallActivity extends AppCompatActivity {
         }
     }
 
+    private void installCompiler() {
+       /* final String[] toolchainPackage = {
+                "build-essential-clang-compact",
+                "build-essential-gcc-compact",
+                "build-essential-fortran-compact",
+                "build-essential-gcc-avr",
+                "build-essential-mingw-w64",
+                "build-essential-luajit"
+        };*/
 
+        Intent intent = new Intent(this, PackageManagerActivity.class);
+        intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
+        intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc-compact");
+        startActivityForResult(intent, RC_INSTALL_COMPILER);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_INSTALL_COMPILER && resultCode == RESULT_OK) {
+            openEditor();
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class CheckCompilerInstalledTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            InstallActivity context = InstallActivity.this;
+            CommandResult result = ShellUtils.execCommand(context, Environment.getHomeDir(context), "gcc-4.9 -v");
+            return result != null && result.getResultCode() == 0;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean) {
+                openEditor();
+            } else {
+                installCompiler();
+            }
+        }
+    }
 }

@@ -16,175 +16,98 @@
 
 package com.duy.ccppcompiler.compiler.shell;
 
+import android.content.Context;
+
 import com.jecelyin.common.utils.DLog;
+import com.pdaxrom.packagemanager.Environment;
+import com.pdaxrom.utils.Utils;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileDescriptor;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ShellUtils {
 
-    private static final String COMMAND_SU = "su";
-    private static final String COMMAND_SH = "sh";
-    private static final String COMMAND_EXIT = "exit\n";
-    private static final String COMMAND_LINE_END = "\n";
     private static final String TAG = "ShellUtils";
 
-
     private ShellUtils() {
-        throw new AssertionError();
     }
 
-    public static boolean checkRootPermission() {
-        return execCommand(true, false).getResultCode() == 0;
-    }
-
-    public static CommandResult execCommand(String command) {
-        return execCommand(new String[]{command}, false, true);
-    }
-
-    public static CommandResult execCommand(List<String> commands, boolean isRoot) {
-        return execCommand(commands == null ? null : commands.toArray(new String[]{}), isRoot, true);
-    }
-
-    public static CommandResult execCommand(String[] commands, boolean isRoot) {
-        return execCommand(commands, isRoot, true);
-    }
-
-    private static CommandResult execCommand(boolean isRoot, boolean isNeedResultMsg) {
-        return execCommand(new String[]{"echo root"}, isRoot, isNeedResultMsg);
-    }
-
-    public static CommandResult execCommand(List<String> commands, boolean isRoot, boolean isNeedResultMsg) {
-        return execCommand(commands == null ? null : commands.toArray(new String[]{}), isRoot, isNeedResultMsg);
-    }
-
-    private static CommandResult execCommand(String[] commands, boolean isRoot, boolean isNeedResultMsg) {
-        int result = -1;
-        if (commands == null || commands.length == 0) {
-            return new CommandResult(result, null);
-        }
-
-        Process process = null;
-        BufferedReader successResult = null;
-        //BufferedReader errorResult = null;
-        StringBuilder msg = null;
-        // StringBuilder errorMsg = null;
-
-        DataOutputStream os = null;
+    public static CommandResult execCommand(Context context, String mWorkDir, String mCommand) {
+        long startTime = System.currentTimeMillis();
         try {
-            process = Runtime.getRuntime().exec(isRoot ? COMMAND_SU : COMMAND_SH, null);
-            os = new DataOutputStream(process.getOutputStream());
-            for (String command : commands) {
-                if (command == null) {
-                    continue;
-                }
-                // donnot use os.writeBytes(commmand), avoid chinese charset error
-                os.write(command.getBytes());
-                os.writeBytes(COMMAND_LINE_END);
-                os.flush();
-            }
-            os.writeBytes(COMMAND_EXIT);
-            os.flush();
+            String[] env = Environment.buildDefaultEnv(context);
+            String[] argv = new String[]{"/system/bin/sh"};
 
-            result = process.waitFor();
-            // get command result
-            if (isNeedResultMsg) {
-                msg = new StringBuilder();
-                //errorMsg = new StringBuilder();
-                successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                //errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                String s = null;
-                while ((s = successResult.readLine()) != null) {
-                    msg.append(s);
-                    msg.append("\n");
-                }
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (msg != null)
-                msg.append(e.toString());
-        } finally {
-            try {
-                if (os != null) {
-                    os.close();
-                }
-                if (successResult != null) {
-                    successResult.close();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            int[] processIds = new int[1];
+            FileDescriptor fd = Utils.createSubProcess(mWorkDir, argv[0], argv, env, processIds);
+            int processId = processIds[0];
+            if (processId <= 0) {
+                return new CommandResult(-1, "Could not create sub process");
             }
 
-            if (process != null) {
-                process.destroy();
-            }
+            Utils.setPtyUTF8Mode(fd, true);
+            Utils.setPtyWindowSize(fd, 64, 128, 0, 0);
+
+            BufferedReader in = new BufferedReader(new FileReader(fd));
+            BufferedWriter out = new BufferedWriter(new FileWriter(fd));
+
+            out.write("export PS1=''\n");
+            out.write("exec " + mCommand + "\n");
+            out.flush();
+
+            DLog.d(TAG, "Waiting for hangup session");
+            int exitCode = Utils.waitFor(processId);
+            DLog.d(TAG, "Subprocess exited: " + exitCode);
+
+            //parse output
+            StringBuilder message = new StringBuilder();
+            int skipStrings = 3; //skip echos from two command strings
+            final Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
+            do {
+                String errstr;
+                try {
+                    errstr = in.readLine();
+                    // remove escape sequence
+                    errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
+                    // remove clearing new line
+                    Matcher m = patClearNewLine.matcher(errstr);
+                    if (m.find()) {
+                        int length = m.end() - m.start();
+                        if (m.start() > length) {
+                            errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
+                        }
+                    }
+                } catch (IOException e) {
+                    break;
+                }
+                if (skipStrings > 0) {
+                    skipStrings--;
+                } else {
+                    message.append(errstr).append("\n");
+                }
+            } while (true);
+
+            if (DLog.DEBUG) DLog.d(TAG, "stdout: \n" + message);
+
+            out.close();
+            in.close();
+
+            CommandResult commandResult = new CommandResult(exitCode, message.toString());
+            long time = System.currentTimeMillis() - startTime;
+            if (DLog.DEBUG) DLog.d(TAG, "time = " + time);
+            commandResult.setTime(time);
+            return commandResult;
+
+        } catch (Throwable ie) {
+            ie.printStackTrace();
+            return new CommandResult(-1, ie.getMessage());
         }
-        return new CommandResult(result, msg == null ? null : msg.toString());
     }
-
-    public static CommandResult execCommand(String command, List<String> args, Map<String, String> env) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "execCommand() called with: command = [" + command + "], args = [" + args + "], env = [" + env + "]");
-        int result = -1;
-        if (command == null || command.length() == 0) {
-            return new CommandResult(result, null);
-        }
-        long timeStart = System.currentTimeMillis();
-
-        Process process = null;
-        BufferedReader reader = null;
-        StringBuilder message = null;
-        try {
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.command().addAll(args);
-
-            builder.redirectErrorStream(true);
-
-            Map<String, String> map = builder.environment();
-            //map.clear();
-            for (Map.Entry<String, String> entry : env.entrySet()) {
-                map.put(entry.getKey(), entry.getValue());
-            }
-            process = builder.start();
-            result = process.waitFor();
-
-
-            message = new StringBuilder();
-            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                message.append(line);
-                message.append("\n");
-            }
-        } catch (Exception e) {
-            if (DLog.DEBUG) DLog.e(TAG, "execCommand: ", e);
-            if (message != null) {
-                message.append(e.toString());
-            }
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                if (DLog.DEBUG) DLog.e(TAG, "execCommand: ", e);
-            }
-
-            if (process != null) {
-                process.destroy();
-            }
-        }
-        long timeEnd = System.currentTimeMillis();
-        CommandResult commandResult = new CommandResult(result, message == null ? "" : message.toString());
-        commandResult.setTime(timeEnd - timeStart);
-        return commandResult;
-    }
-
 }

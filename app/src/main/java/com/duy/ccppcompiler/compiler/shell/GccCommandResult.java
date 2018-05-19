@@ -32,11 +32,12 @@ public class GccCommandResult extends CommandResult {
         super(commandResult);
     }
 
+    @Nullable
     public File getBinaryFile() {
         return binaryFile;
     }
 
-    public void setBinaryFile(File binaryFile) {
+    public void setBinaryFile(@Nullable File binaryFile) {
         this.binaryFile = binaryFile;
     }
 }
