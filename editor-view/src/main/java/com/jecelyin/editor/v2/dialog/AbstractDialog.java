@@ -14,36 +14,35 @@
  * limitations under the License.
  */
 
-package com.duy.ide.filemanager;
+package com.jecelyin.editor.v2.dialog;
 
 import android.content.Context;
 
-import com.duy.ide.editor.utils.IOUtils;
-import com.jecelyin.common.utils.SysUtils;
-
-import java.io.File;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.duy.ide.editor.BaseEditorActivity;
 
 /**
- * Created by Duy on 25-Apr-18.
+ * @author Jecelyin Peng <jecelyin@gmail.com>
  */
+public abstract class AbstractDialog {
+    protected final Context context;
 
-public class FileManager {
-    private Context context;
-
-    public FileManager(Context context) {
+    public AbstractDialog(Context context) {
         this.context = context;
     }
 
-    public File createNewFile(String fileName) {
-        File file = new File(getApplicationDir(), fileName);
-        if (IOUtils.createNewFile(file)) {
-            return file;
-        }
-        return null;
+    protected MaterialDialog.Builder getDialogBuilder() {
+        return new MaterialDialog.Builder(context);
     }
 
-    public File getApplicationDir() {
-        String path = SysUtils.getAppStoragePath(context);
-        return new File(path);
+    protected void handleDialog(MaterialDialog dlg) {
+        dlg.setCanceledOnTouchOutside(false);
+        dlg.setCancelable(true);
     }
+
+    protected BaseEditorActivity getMainActivity() {
+        return (BaseEditorActivity) context;
+    }
+
+    public abstract void show();
 }

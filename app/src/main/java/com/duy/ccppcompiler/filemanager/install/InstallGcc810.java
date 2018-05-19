@@ -23,9 +23,9 @@ import android.support.annotation.Nullable;
 import com.duy.common.DLog;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
-import com.duy.utils.ExtractCallback;
-import com.duy.utils.IOUtils;
-import com.duy.utils.ZipExtractor;
+import com.duy.ide.editor.utils.ExtractCallback;
+import com.duy.ide.editor.utils.IOUtils;
+import com.duy.ide.editor.utils.ZipExtractor;
 
 import java.io.File;
 import java.io.InputStream;

@@ -52,7 +52,7 @@
                     android:fillViewport="true"
                     android:orientation="horizontal">
 
-                    <com.duy.ide.editor.view.TintImageView
+                    <com.duy.view.TintImageView
                         android:id="@+id/btn_toggle_panel"
                         android:layout_width="@dimen/symbol_bar_height"
                         android:layout_height="@dimen/symbol_bar_height"

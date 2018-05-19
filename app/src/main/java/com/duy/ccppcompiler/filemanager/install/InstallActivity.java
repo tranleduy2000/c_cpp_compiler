@@ -37,8 +37,8 @@ import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
-import com.duy.utils.ApkUtils;
-import com.duy.utils.ExtractCallback;
+import com.duy.ide.editor.utils.ApkUtils;
+import com.duy.ide.editor.utils.ExtractCallback;
 
 /**
  * Created by Duy on 22-Apr-18.

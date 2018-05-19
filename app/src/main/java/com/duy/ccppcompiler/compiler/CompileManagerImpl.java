@@ -28,8 +28,8 @@ import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;
-import com.duy.editor.BaseEditorActivity;
-import com.jecelyin.editor.v2.ui.widget.menu.MenuDef;
+import com.duy.ide.editor.BaseEditorActivity;
+import com.jecelyin.editor.v2.widget.menu.MenuDef;
 
 import java.util.ArrayList;
 

@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
@@ -31,10 +32,12 @@ import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
-import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
+import com.duy.ide.editor.BaseEditorActivity;
+import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 
@@ -43,11 +46,23 @@ import java.io.File;
  */
 
 public class CodeEditorActivity extends BaseEditorActivity {
+    public SlidingUpPanelLayout mSlidingUpPanelLayout;
     private DiagnosticPresenter mDiagnosticPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        final View toggleView = findViewById(R.id.btn_toggle_panel);
+        mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);
+        mSlidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                toggleView.animate().rotation(180 * slideOffset).start();
+            }
+        });
+
 
         FragmentManager fm = getSupportFragmentManager();
         String tag = DiagnosticFragment.class.getSimpleName();
@@ -137,4 +152,20 @@ public class CodeEditorActivity extends BaseEditorActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (closeDrawers()) {
+            return;
+        }
+        if (mSlidingUpPanelLayout != null) {
+            SlidingUpPanelLayout.PanelState state = mSlidingUpPanelLayout.getPanelState();
+            if (state == SlidingUpPanelLayout.PanelState.EXPANDED
+                    || state == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                return;
+            }
+        }
+        super.onBackPressed();
+
+    }
 }

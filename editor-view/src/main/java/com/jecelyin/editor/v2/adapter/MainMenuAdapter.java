@@ -30,10 +30,10 @@ import android.widget.TextView;
 
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.ui.manager.MenuManager;
-import com.jecelyin.editor.v2.ui.widget.menu.MenuFactory;
-import com.jecelyin.editor.v2.ui.widget.menu.MenuGroup;
-import com.jecelyin.editor.v2.ui.widget.menu.MenuItemInfo;
+import com.jecelyin.editor.v2.manager.MenuManager;
+import com.jecelyin.editor.v2.widget.menu.MenuFactory;
+import com.jecelyin.editor.v2.widget.menu.MenuGroup;
+import com.jecelyin.editor.v2.widget.menu.MenuItemInfo;
 
 import java.util.ArrayList;
 import java.util.List;

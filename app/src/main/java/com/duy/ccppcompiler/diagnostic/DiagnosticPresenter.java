@@ -24,10 +24,10 @@ import android.view.View;
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
 import com.duy.common.DLog;
+import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.common.Command;
-import com.duy.editor.BaseEditorActivity;
-import com.jecelyin.editor.v2.ui.editor.EditorDelegate;
-import com.jecelyin.editor.v2.ui.manager.TabManager;
+import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.manager.TabManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -41,13 +41,13 @@ import java.util.HashMap;
 
 public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
-    private final BaseEditorActivity mActivity;
+    private final CodeEditorActivity mActivity;
     private final TabManager mTabManager;
     private ArrayList<Diagnostic> mDiagnostics;
     private DiagnosticContract.View mView;
     private HashMap<File, byte[]> mHashCode = new HashMap<>();
 
-    public DiagnosticPresenter(DiagnosticContract.View view, BaseEditorActivity activity, TabManager tabManager) {
+    public DiagnosticPresenter(DiagnosticContract.View view, CodeEditorActivity activity, TabManager tabManager) {
         mActivity = activity;
         mTabManager = tabManager;
         mView = view;

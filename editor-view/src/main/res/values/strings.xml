@@ -212,4 +212,5 @@
     <string name="editor_setting">Editor setting</string>
     <string name="enter_file_name">Enter file name</string>
     <string name="create_new_file">Create new file</string>
+    <string name="cannot_read_folder">Can not read folder</string>
 </resources>
