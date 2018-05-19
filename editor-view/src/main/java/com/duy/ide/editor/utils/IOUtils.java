@@ -1,7 +1,6 @@
 package com.duy.ide.editor.utils;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by Duy on 22-Apr-18.
@@ -40,13 +39,16 @@ public class IOUtils {
      * Create new file, if file exist, do not create file
      */
     public static boolean createNewFile(File file) {
+        if (file.exists()) {
+            return true;
+        }
         try {
             file.getParentFile().mkdirs();
             return file.createNewFile();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
