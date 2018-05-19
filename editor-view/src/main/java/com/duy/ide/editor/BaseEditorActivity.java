@@ -311,7 +311,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         for (MenuItemInfo item : topMenu) {
             MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
             menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, item.getIconResId()));
-            menuItem.setOnMenuItemClickListener(this);
             menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
@@ -327,14 +326,12 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
             for (MenuItemInfo item : items) {
                 MenuItem menuItem = subMenu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
                 menuItem.setIcon(MenuManager.makeMenuNormalIcon(this, item.getIconResId()));
-                menuItem.setOnMenuItemClickListener(this);
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }
 
         MenuItem menuItem = container.add(MenuDef.GROUP_TOOLBAR, R.id.m_menu, Menu.NONE, getString(R.string.more_menu));
         menuItem.setIcon(MenuManager.makeToolbarNormalIcon(this, R.drawable.ic_more_horiz_white_24dp));
-        menuItem.setOnMenuItemClickListener(this);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(container);
     }
@@ -349,14 +346,10 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
                 continue;
             }
             SubMenu subMenu = menu.addSubMenu(group.getNameResId());
-            subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
             List<MenuItemInfo> items = menuFactory.getMenuItemsWithoutToolbarMenu(group);
             for (MenuItemInfo item : items) {
                 MenuItem menuItem = subMenu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
                 menuItem.setIcon(item.getIconResId());
-                menuItem.setOnMenuItemClickListener(this);
-                menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }
     }
