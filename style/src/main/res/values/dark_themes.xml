@@ -15,6 +15,72 @@
   -->
 
 <resources>
+    <color name="darkWindowBackground">#ff424242</color>
+    <color name="darkDividerColor">#30ffffff</color>
+
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowBackground">@color/darkWindowBackground</item>
+
+        <item name="actionBarStyle">@style/Light.Toolbar</item>
+        <item name="actionBarTheme">@style/DarkToolbarTheme</item>
+        <item name="actionBarPopupTheme">@style/DarkToolbarPopupTheme</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+
+        <item name="actionModeStyle">@style/DarkActionMode</item>
+
+        <item name="dividerColor">@color/darkDividerColor</item>
+
+        <!--<item name="netLoadingDrawable">@drawable/loading_icon</item>-->
+        <item name="highlightBackground">#545454</item>
+        <item name="toolbarIconNormalColor">#ffffff</item>
+        <item name="toolbarIconDisabledColor">#50ffffff</item>
+        <item name="menuIconNormalColor">#829294</item>
+
+        <item name="textForeground">#A6B2C0</item>
+        <item name="textBackground">#2b2b2b</item>
+        <item name="caret">#528BFF</item>
+        <item name="selection">#3D4350</item>
+        <item name="invisibles">#747369</item>
+        <item name="gutterForeground">#747369</item>
+        <item name="gutterBackground">#393939</item>
+        <item name="gutterDivider">#2b2b2b</item>
+        <item name="findResultsPath">#0000ff</item>
+        <item name="findResultsKeyword">#C26509</item>
+
+        <item name="hlComment1">#BC9458</item>
+        <item name="hlComment2">#808080</item>
+        <item name="hlComment3">#888888</item>
+        <item name="hlComment4">#cc6600</item>
+        <item name="hlDigit">#d1001c</item>
+        <item name="hlFoldLine0">#000000</item>
+        <item name="hlFoldLine1">#000000</item>
+        <item name="hlFoldLine2">#000000</item>
+        <item name="hlFoldLine3">#000000</item>
+        <item name="hlFunction">#5c92b9</item>
+        <item name="hlInvalid">#ff0066</item>
+        <item name="hlKeyword1">#ff7300</item>
+        <item name="hlKeyword2">#1d97b9</item>
+        <item name="hlKeyword3">#cfa621</item>
+        <item name="hlKeyword4">#0480f4</item>
+        <item name="hlLabel">#02b902</item>
+        <item name="hlLiteral1">#519F50</item>
+        <item name="hlLiteral2">#399138</item>
+        <item name="hlLiteral3">#519F50</item>
+        <item name="hlLiteral4">#9900cc</item>
+        <item name="hlMarkup">#E8BF6A</item>
+        <item name="hlOperator">#D0D0FF</item>
+    </style>
+
+    <style name="DarkToolbarTheme" parent="@style/Light.Toolbar" />
+
+    <style name="DarkToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark" />
+
+    <color name="dark_actionmode_light_background">#666666</color>
+
+    <style name="DarkActionMode" parent="@style/Light.ActionMode">
+        <item name="background">@color/dark_actionmode_light_background</item>
+    </style>
 
 
 </resources>
