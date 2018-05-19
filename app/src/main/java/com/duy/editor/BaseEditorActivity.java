@@ -30,6 +30,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -495,18 +496,17 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
 
     public void createNewFile() {
         String[] fileExtensions = getSupportedFileExtensions();
-        DialogNewFile
-                .create(this, fileExtensions, new UIUtils.OnShowInputCallback() {
-                    @Override
-                    public void onConfirm(CharSequence input) {
-                        File srcDir = SrcFileManager.getSourceDir(BaseEditorActivity.this);
-                        File file = new File(srcDir, input.toString());
-                        if (com.duy.utils.IOUtils.createNewFile(file)) {
-                            mTabManager.newTab(file);
-                        }
-                    }
-                })
-                .show();
+        AlertDialog dialog = DialogNewFile.create(this, fileExtensions, new UIUtils.OnShowInputCallback() {
+            @Override
+            public void onConfirm(CharSequence input) {
+                File srcDir = SrcFileManager.getSourceDir(BaseEditorActivity.this);
+                File file = new File(srcDir, input.toString());
+                if (com.duy.utils.IOUtils.createNewFile(file)) {
+                    mTabManager.newTab(file);
+                }
+            }
+        });
+        dialog.show();
     }
 
     protected String[] getSupportedFileExtensions() {
