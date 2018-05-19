@@ -33,7 +33,6 @@ import static com.jecelyin.editor.v2.common.Command.CommandEnum.CONVERT_WRAP_CHA
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.DOC_INFO;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.FIND;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.FORWARD;
-import static com.jecelyin.editor.v2.common.Command.CommandEnum.FULL_SCREEN;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_END;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_INDEX;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_TOP;
@@ -139,7 +138,7 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_back, BACK, R.drawable.ic_arrow_back_white_24dp, R.string.back));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_forward, FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.forward));
 
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_fullscreen, FULL_SCREEN, R.drawable.ic_fullscreen_white_24dp, R.string.fullscreen_mode));
+//        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_fullscreen, FULL_SCREEN, R.drawable.ic_fullscreen_white_24dp, R.string.fullscreen_mode));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_readonly, READONLY_MODE, R.drawable.ic_remove_red_eye_white_24dp, R.string.read_only));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_highlight, NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));

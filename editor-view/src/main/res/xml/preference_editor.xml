@@ -60,6 +60,11 @@
 
     <PreferenceCategory android:title="@string/highlight_and_theme">
 
+        <CheckBoxPreference
+            android:checked="false"
+            android:key="fullscreen_mode"
+            android:title="@string/fullscreen_mode" />
+
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/theme_titles"
