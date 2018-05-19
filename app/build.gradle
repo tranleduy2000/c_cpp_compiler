@@ -18,6 +18,13 @@ android {
             abiFilters 'armeabi-v7a', 'x86'
         }
     }
+
+    sourceSets {
+        main {
+            res.srcDirs += 'src/main/res-terminal'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true

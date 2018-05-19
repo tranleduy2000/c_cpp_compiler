@@ -12,7 +12,6 @@
       <module fileurl="file://$PROJECT_DIR$/libtermexec/libtermexec.iml" filepath="$PROJECT_DIR$/libtermexec/libtermexec.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdlplugin/sdlplugin.iml" filepath="$PROJECT_DIR$/sdlplugin/sdlplugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/style/style.iml" filepath="$PROJECT_DIR$/style/style.iml" />
-      <module fileurl="file://$PROJECT_DIR$/term-jackpal/term-jackpal.iml" filepath="$PROJECT_DIR$/term-jackpal/term-jackpal.iml" />
     </modules>
   </component>
 </project>

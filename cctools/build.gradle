@@ -41,7 +41,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     api project(':apkbuilder')
-    api project(':term-jackpal')
+    api project(':emulatorview')
+    api project(':libtermexec')
+    api project(':style')
     api project(':editor-view')
 
     api "com.android.support:appcompat-v7:$androidSupportVersion"
