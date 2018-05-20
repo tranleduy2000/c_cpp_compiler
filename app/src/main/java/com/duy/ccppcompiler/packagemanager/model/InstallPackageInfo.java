@@ -1,4 +1,22 @@
-package com.pdaxrom.packagemanager;
+/*
+ * Copyright 2018 Mr Duy
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.duy.ccppcompiler.packagemanager.model;
+
+import com.duy.ccppcompiler.packagemanager.RepoUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +30,15 @@ public class InstallPackageInfo {
     private int mInstallSize = 0;
     private int mDownloadSize = 0;
 
-    InstallPackageInfo() {
+    public InstallPackageInfo() {
         packages = new ArrayList<>();
     }
 
-    InstallPackageInfo(PackagesLists packagesLists, String pkg) {
+    public InstallPackageInfo(PackagesLists packagesLists, String pkg) {
         installPackageInfo(packagesLists, pkg, null);
     }
 
-    InstallPackageInfo(PackagesLists packagesLists, String pkg, List<PackageInfo> packages) {
+    public InstallPackageInfo(PackagesLists packagesLists, String pkg, List<PackageInfo> packages) {
         installPackageInfo(packagesLists, pkg, packages);
     }
 

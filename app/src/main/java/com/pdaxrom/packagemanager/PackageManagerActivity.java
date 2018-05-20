@@ -30,6 +30,13 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.RepoParser;
+import com.duy.ccppcompiler.packagemanager.RepoUtils;
+import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
+import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
+import com.duy.ccppcompiler.packagemanager.model.PackagesLists;
+import com.duy.ccppcompiler.packagemanager.repo.LocalPackageRepository;
+import com.duy.ccppcompiler.packagemanager.repo.UbuntuServerPackageRepository;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
@@ -63,8 +70,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     private final Handler mHandler = new Handler();
     private String errorString = null;
     private Context context = this;
-    @NonNull
-    private PackagesLists mPackagesLists = new PackagesLists();
+
     private String mAction = null;
     private String mActivityData = null;
     // Last list position
@@ -76,6 +82,10 @@ public class PackageManagerActivity extends FullScreenActivity {
     private ProgressDialog mProgressDialog;
     private SearchView mSearchView;
 
+    @NonNull
+    private PackagesLists mPackagesLists = new PackagesLists();
+    private LocalPackageRepository mLocalPackageRepository;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +94,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.title_menu_add_ons);
 
+        mLocalPackageRepository = new LocalPackageRepository(this);
         setupDirs();
         setupVersion();
 
@@ -227,19 +238,19 @@ public class PackageManagerActivity extends FullScreenActivity {
             HashMap<String, String> map = new HashMap<>();
 
             // adding each child node to HashMap key => value
-            map.put(RepoUtils.KEY_NAME, info.getName());
-            map.put(RepoUtils.KEY_VERSION, info.getVersion());
-            map.put(RepoUtils.KEY_DESC, info.getDescription());
-            map.put(RepoUtils.KEY_DEPENDS, info.getDepends());
-            map.put(RepoUtils.KEY_FILESIZE, Utils.humanReadableByteCount(info.getFileSize(), false));
-            map.put(RepoUtils.KEY_SIZE, Utils.humanReadableByteCount(info.getSize(), false));
-            map.put(RepoUtils.KEY_FILE, info.getFile());
+            map.put(RepoParser.KEY_NAME, info.getName());
+            map.put(RepoParser.KEY_VERSION, info.getVersion());
+            map.put(RepoParser.KEY_DESC, info.getDescription());
+            map.put(RepoParser.KEY_DEPENDS, info.getDepends());
+            map.put(RepoParser.KEY_FILESIZE, Utils.humanReadableByteCount(info.getFileSize(), false));
+            map.put(RepoParser.KEY_SIZE, Utils.humanReadableByteCount(info.getSize(), false));
+            map.put(RepoParser.KEY_FILE, info.getFile());
 
             File logFile = new File(Environment.getInstalledPackageDir(this), info.getName() + ".list");
             if (logFile.exists()) {
-                map.put(RepoUtils.KEY_STATUS, getString(R.string.pkg_installed));
+                map.put(RepoParser.KEY_STATUS, getString(R.string.pkg_installed));
             } else {
-                map.put(RepoUtils.KEY_STATUS, getString(R.string.pkg_notinstalled));
+                map.put(RepoParser.KEY_STATUS, getString(R.string.pkg_notinstalled));
             }
 
             // adding HashList to ArrayList
@@ -252,14 +263,14 @@ public class PackageManagerActivity extends FullScreenActivity {
                 menuItems,
                 R.layout.list_item_package,
                 new String[]{
-                        RepoUtils.KEY_NAME,
-                        RepoUtils.KEY_VERSION,
-                        RepoUtils.KEY_DESC,
-                        RepoUtils.KEY_DEPENDS,
-                        RepoUtils.KEY_FILE,
-                        RepoUtils.KEY_FILESIZE,
-                        RepoUtils.KEY_SIZE,
-                        RepoUtils.KEY_STATUS},
+                        RepoParser.KEY_NAME,
+                        RepoParser.KEY_VERSION,
+                        RepoParser.KEY_DESC,
+                        RepoParser.KEY_DEPENDS,
+                        RepoParser.KEY_FILE,
+                        RepoParser.KEY_FILESIZE,
+                        RepoParser.KEY_SIZE,
+                        RepoParser.KEY_STATUS},
                 new int[]{
                         R.id.pkg_name,
                         R.id.pkg_version,
@@ -490,9 +501,11 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         @Override
         protected List<PackageInfo> doInBackground(List<String>[] params) {
-            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(Environment.getInstalledPackageDir(context)));
+            mPackagesLists.setInstalledPackages(mLocalPackageRepository.getPackages());
             updateProgress(30);
-            mPackagesLists.setAvailablePackages(RepoUtils.getRepoFromUrl(params[0]));
+
+            UbuntuServerPackageRepository repository = new UbuntuServerPackageRepository(params[0]);
+            mPackagesLists.setAvailablePackages(repository.getPackages());
             updateProgress(60);
 
             if (mPackagesLists.getAvailablePackages().isEmpty() || mPackagesLists.getInstalledPackages().isEmpty()) {
@@ -583,7 +596,8 @@ public class PackageManagerActivity extends FullScreenActivity {
         @Override
         protected InstallPackageInfo doInBackground(String... params) {
             // Update installed packages list
-            mPackagesLists.setInstalledPackages(RepoUtils.getRepoFromDir(Environment.getInstalledPackageDir(context)));
+            List<PackageInfo> installedPackages = mLocalPackageRepository.getPackages();
+            mPackagesLists.setInstalledPackages(installedPackages);
             return new InstallPackageInfo(mPackagesLists, params[0]);
         }
 

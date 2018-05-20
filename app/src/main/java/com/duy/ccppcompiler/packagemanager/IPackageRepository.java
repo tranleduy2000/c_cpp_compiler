@@ -16,9 +16,17 @@
 
 package com.duy.ccppcompiler.packagemanager;
 
+import android.support.annotation.NonNull;
+
+import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
+
+import java.util.List;
+
 /**
  * Created by Duy on 20-May-18.
  */
 
-public class IStorageRepository {
+public interface IPackageRepository {
+    @NonNull
+    List<PackageInfo> getPackages();
 }
