@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pdaxrom.packagemanager;
+package com.duy.ccppcompiler.packagemanager;
 
 import android.content.Context;
 import android.content.SharedPreferences;

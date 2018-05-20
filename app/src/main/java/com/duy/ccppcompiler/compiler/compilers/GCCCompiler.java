@@ -22,7 +22,7 @@ import android.os.Build;
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
-import com.pdaxrom.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
 import org.apache.commons.io.IOUtils;

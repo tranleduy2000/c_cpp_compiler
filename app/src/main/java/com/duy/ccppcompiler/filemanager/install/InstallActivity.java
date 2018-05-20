@@ -40,7 +40,7 @@ import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.FullScreenActivity;
-import com.pdaxrom.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 
 /**

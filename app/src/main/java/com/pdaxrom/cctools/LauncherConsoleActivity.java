@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.duy.ccppcompiler.console.TermActivity;
-import com.pdaxrom.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
 import java.io.File;

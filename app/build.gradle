@@ -76,6 +76,7 @@ dependencies {
     api project(':cctools')
 
     implementation 'com.google.firebase:firebase-core:15.0.2'
+    implementation 'com.google.firebase:firebase-storage:15.0.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
     implementation group: 'commons-io', name: 'commons-io', version: '2.0.1'
 

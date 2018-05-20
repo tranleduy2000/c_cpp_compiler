@@ -36,7 +36,7 @@ import com.duy.ide.editor.BaseEditorActivity;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pdaxrom.cctools.BuildConstants;
-import com.pdaxrom.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.pdaxrom.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 

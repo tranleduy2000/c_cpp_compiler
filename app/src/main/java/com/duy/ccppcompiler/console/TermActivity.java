@@ -47,7 +47,7 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.R;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.cctools.BuildConstants;
-import com.pdaxrom.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.Environment;
 
 import java.util.Arrays;
 import java.util.List;

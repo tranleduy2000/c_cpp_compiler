@@ -16,7 +16,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.pdaxrom.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.pdaxrom.utils.FileDialog;
 import com.pdaxrom.utils.SelectionMode;
 import com.pdaxrom.utils.XMLParser;
