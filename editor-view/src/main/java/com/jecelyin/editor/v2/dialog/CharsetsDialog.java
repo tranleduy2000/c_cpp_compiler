@@ -57,7 +57,7 @@ public class CharsetsDialog extends AbstractDialog {
     public void show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.reopen_with_encoding)
-                .setSingleChoiceItems(names, 0, new DialogInterface.OnClickListener() {
+                .setItems(names, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Command command = new Command(Command.CommandEnum.RELOAD_WITH_ENCODING);
