@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
+import com.duy.common.DLog;
 import com.pdaxrom.utils.XMLParser;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import static com.duy.ccppcompiler.packagemanager.RepoUtils.replaceMacro;
  */
 
 public class UbuntuServerPackageRepository implements IPackageRepository {
+    private static final String TAG = "UbuntuServerPackageRepo";
     private List<String> mUrls;
 
     public UbuntuServerPackageRepository(List<String> urls) {
@@ -46,6 +48,7 @@ public class UbuntuServerPackageRepository implements IPackageRepository {
         RepoParser repoParser = new RepoParser();
         for (String url : mUrls) {
             url = url + "/" + CPU_API;
+            if (DLog.DEBUG) DLog.d(TAG, "url = " + url);
             list.addAll(repoParser.parseRepoXml(getRepoXmlFromUrl(url), url));
         }
         return list;

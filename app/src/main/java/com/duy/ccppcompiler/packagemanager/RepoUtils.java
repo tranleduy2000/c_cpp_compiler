@@ -34,15 +34,15 @@ public class RepoUtils {
      * x86/
      */
     public static String CPU_API;
-    private static String ndkArch;
-    private static int ndkVersion;
+    private static String NDK_ARCH;
+    private static int NDK_VERSION;
 
     private static boolean DEBUG = false;
 
     public static void setVersion(String buildAbi, String ndkArch, int ndkVersion) {
         RepoUtils.CPU_API = buildAbi;
-        RepoUtils.ndkArch = ndkArch;
-        RepoUtils.ndkVersion = ndkVersion;
+        RepoUtils.NDK_ARCH = ndkArch;
+        RepoUtils.NDK_VERSION = ndkVersion;
     }
 
     public static boolean isContainsPackage(List<PackageInfo> repo, String pkg) {
@@ -75,9 +75,9 @@ public class RepoUtils {
 
     public static String replaceMacro(String str) {
         if (str != null) {
-            str = str.replaceAll("\\$\\{HOSTARCH\\}", ndkArch);
-            str = str.replaceAll("\\$\\{HOSTNDKARCH\\}", ndkArch);
-            str = str.replaceAll("\\$\\{HOSTNDKVERSION\\}", String.valueOf(ndkVersion));
+            str = str.replaceAll("\\$\\{HOSTARCH\\}", NDK_ARCH);
+            str = str.replaceAll("\\$\\{HOSTNDKARCH\\}", NDK_ARCH);
+            str = str.replaceAll("\\$\\{HOSTNDKVERSION\\}", String.valueOf(NDK_VERSION));
         }
         return str;
     }

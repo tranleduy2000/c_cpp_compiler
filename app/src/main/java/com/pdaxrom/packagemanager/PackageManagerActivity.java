@@ -417,7 +417,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         }
 
         List<String> list = null;
-        File reposListFile = new File(Environment.getToolchainsDir(this), "cctools/etc/repos.list");
+        File reposListFile = new File(Environment.getCCtoolsDir(this), "etc/repos.list");
         if (reposListFile.exists()) {
             try {
                 FileInputStream fin = new FileInputStream(reposListFile);
