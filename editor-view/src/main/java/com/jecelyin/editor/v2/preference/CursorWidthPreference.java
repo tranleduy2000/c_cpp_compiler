@@ -41,15 +41,6 @@ public class CursorWidthPreference extends JecListPreference {
         init();
     }
 
-    public CursorWidthPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    public CursorWidthPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
 
     public void init() {
         ItemAdapter adapter = new ItemAdapter(1, 6, "%d sp");

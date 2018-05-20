@@ -22,8 +22,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.duy.ide.editor.editor.R;
-
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -94,11 +92,11 @@ public class RangeAdapter extends BaseAdapter {
     }
 
     protected int getLayoutResId() {
-        return R.layout.md_listitem;
+        return android.R.layout.simple_list_item_1;
     }
 
     protected int getTextResId() {
-        return R.id.title;
+        return android.R.id.text1;
     }
 
     protected void setupTextView(TextView tv, int position) {

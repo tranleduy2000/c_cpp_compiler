@@ -20,42 +20,26 @@ package com.jecelyin.editor.v2.preference;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.util.AttributeSet;
 import android.widget.BaseAdapter;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.prefs.MaterialListPreference;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class JecListPreference extends MaterialListPreference {
+public class JecListPreference extends ListPreference {
     private BaseAdapter adapter;
 
-    public JecListPreference(Context context) {
-        super(context);
-    }
 
     public JecListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public JecListPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public JecListPreference(Context context) {
+        super(context);
     }
 
-    public JecListPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    @Override
-    protected void showDialog(Bundle state) {
-        super.showDialog(state);
-
-        MaterialDialog dialog = (MaterialDialog) getDialog();
-        if (adapter != null)
-            dialog.getListView().setAdapter(adapter);
-    }
 
     public void setAdapter(BaseAdapter adapter) {
         this.adapter = adapter;

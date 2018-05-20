@@ -31,15 +31,6 @@ import com.jecelyin.editor.v2.adapter.RangeAdapter;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class FontSizePreference extends JecListPreference {
-    public FontSizePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
-    public FontSizePreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
 
     public FontSizePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
