@@ -305,7 +305,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
 
         final File newFile = new File(f, fileName);
         if (newFile.exists()) {
-            UIUtils.showConfirmDialog(getContext(), getString(R.string.override_file_prompt, fileName), new UIUtils.OnClickCallback() {
+            UIUtils.showConfirmDialog(this, getString(R.string.override_file_prompt, fileName), new UIUtils.OnClickCallback() {
                 @Override
                 public void onOkClick() {
                     saveAndFinish(newFile);

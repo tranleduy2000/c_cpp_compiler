@@ -129,8 +129,6 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
             }
         });
 
-        setStatusBarColor(mDrawerLayout);
-
         bindPreferences();
         setScreenOrientation();
 
@@ -221,11 +219,11 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
     private void processIntent() {
         try {
             if (!processIntentImpl()) {
-                UIUtils.alert(getContext(), getString(R.string.cannt_handle_intent_x, getIntent().toString()));
+                UIUtils.alert(this, getString(R.string.cannt_handle_intent_x, getIntent().toString()));
             }
         } catch (Throwable e) {
             DLog.e(e);
-            UIUtils.alert(getContext(), getString(R.string.handle_intent_x_error, getIntent().toString() + "\n" + e.getMessage()));
+            UIUtils.alert(this, getString(R.string.handle_intent_x_error, getIntent().toString() + "\n" + e.getMessage()));
         }
     }
 
@@ -387,7 +385,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
                     openFile(file, encoding, 0);
                 }
             });
-            rfm.show(getContext());
+            rfm.show(this);
 
         } else if (id == R.id.action_wrap) {
             new WrapCharDialog(this).show();
@@ -600,7 +598,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         }
 
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
-            UIUtils.toast(getContext(), R.string.press_again_will_exit);
+            UIUtils.toast(this, R.string.press_again_will_exit);
             mExitTime = System.currentTimeMillis();
         } else {
             mTabManager.onDestroy();

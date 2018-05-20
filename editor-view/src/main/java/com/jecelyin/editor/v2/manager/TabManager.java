@@ -55,7 +55,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                 onTabMenuViewsClick(v);
             }
         });
-        mActivity.getTabRecyclerView().addItemDecoration(new HorizontalDividerItemDecoration.Builder(activity.getContext()).build());
+        mActivity.getTabRecyclerView().addItemDecoration(new HorizontalDividerItemDecoration.Builder(activity).build());
         mActivity.getTabRecyclerView().setAdapter(mTabAdapter);
 
         initEditor();
