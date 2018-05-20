@@ -17,9 +17,6 @@
 <resources>
 
     <style name="DefaultTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-
         <item name="colorPrimaryDark">#26a69a</item>
         <item name="colorPrimary">#26a69a</item>
         <item name="colorAccent">#FF5722</item>
@@ -31,14 +28,12 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeStyle">@style/Light.ActionMode</item>
         <item name="android:actionModeStyle">@style/Light.ActionMode</item>
-        <!--<item name="actionModeFindDrawable">@drawable/ic_find_in_page_white_24dp</item>-->
 
         <item name="dividerColor">#10000000</item>
 
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#c6c6c6</item>
         <item name="menuIconNormalColor">#000</item>
-
 
         <item name="textForeground">#000000</item>
         <item name="textBackground">#FFFFFF</item>
