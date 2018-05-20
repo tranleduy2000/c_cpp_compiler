@@ -28,11 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.jecelyin.editor.v2.common.Command.CommandEnum.BACK;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_BACK;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.CONVERT_WRAP_CHAR;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.DOC_INFO;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.FIND;
-import static com.jecelyin.editor.v2.common.Command.CommandEnum.FORWARD;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_FORWARD;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_END;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_INDEX;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_TOP;
@@ -132,18 +132,20 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_redo, REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_wrap, CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_find_replace, FIND, R.drawable.ic_find_in_page_white_24dp, R.string.find_or_replace));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_top, GOTO_TOP, R.drawable.ic_vertical_align_top_white_24dp, R.string.jump_to_start));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_end, GOTO_END, R.drawable.ic_vertical_align_bottom_white_24dp, R.string.jump_to_end));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_goto_line, GOTO_INDEX, R.drawable.m_goto_line, R.string.goto_line));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_back, BACK, R.drawable.ic_arrow_back_white_24dp, R.string.back));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.m_forward, FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.forward));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_goto_top, GOTO_TOP, R.drawable.ic_vertical_align_top_white_24dp, R.string.jump_to_start));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_goto_end, GOTO_END, R.drawable.ic_vertical_align_bottom_white_24dp, R.string.jump_to_end));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_goto_line, GOTO_INDEX, R.drawable.m_goto_line, R.string.goto_line));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_back, CURSOR_BACK, R.drawable.ic_arrow_back_white_24dp, R.string.cursor_back));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_forward, CURSOR_FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.cursor_forward));
 
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_fullscreen, FULL_SCREEN, R.drawable.ic_fullscreen_white_24dp, R.string.fullscreen_mode));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_readonly, READONLY_MODE, R.drawable.ic_remove_red_eye_white_24dp, R.string.read_only));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_highlight, NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_encoding, NONE, R.drawable.m_encoding, R.string.encoding));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.m_settings, NONE, R.drawable.ic_settings_white_24dp, R.string.editor_setting));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_highlight, NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_encoding, NONE, R.drawable.m_encoding, R.string.encoding));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_editor_setting, NONE, R.drawable.ic_settings_white_24dp, R.string.editor_setting));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_share, NONE, R.drawable.baseline_share_24, R.string.share_this_app));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_rate, NONE, R.drawable.baseline_rate_review_24, R.string.rate_this_app));
     }
 
     public List<MenuItemInfo> getMenuItemsWithoutToolbarMenu(MenuGroup group) {

@@ -334,10 +334,10 @@ public class EditorDelegate implements TextWatcher {
             case RELOAD_WITH_ENCODING:
                 reOpenWithEncoding((String) command.object);
                 break;
-            case FORWARD:
+            case CURSOR_FORWARD:
                 mEditText.forwardLocation();
                 break;
-            case BACK:
+            case CURSOR_BACK:
                 mEditText.backLocation();
                 break;
             case REQUEST_FOCUS:

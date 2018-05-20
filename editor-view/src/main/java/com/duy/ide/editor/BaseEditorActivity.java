@@ -43,6 +43,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 
+import com.duy.common.StoreUtil;
 import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
@@ -374,7 +375,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         } else if (id == R.id.action_open) {
             openFileExplorer();
 
-        } else if (id == R.id.m_goto_line) {
+        } else if (id == R.id.action_goto_line) {
             new GotoLineDialog(this).show();
 
         } else if (id == R.id.m_history) {
@@ -390,7 +391,7 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
         } else if (id == R.id.action_wrap) {
             new WrapCharDialog(this).show();
 
-        } else if (id == R.id.m_highlight) {
+        } else if (id == R.id.action_highlight) {
             new LangListDialog(this).show();
 
         } else if (id == R.id.m_menu) {
@@ -420,12 +421,16 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
             mPreferences.setReadOnly(readOnly);
             doCommandForAllEditor(new Command(Command.CommandEnum.READONLY_MODE));
 
-        } else if (id == R.id.m_encoding) {
+        } else if (id == R.id.action_encoding) {
             new CharsetsDialog(this).show();
 
-        } else if (id == R.id.m_settings) {
+        } else if (id == R.id.action_editor_setting) {
             EditorSettingsActivity.startActivity(this, RC_SETTINGS);
 
+        } else if (id == R.id.action_share) {
+            StoreUtil.shareThisApp(this);
+        } else if (id == R.id.action_rate) {
+            StoreUtil.gotoPlayStore(this, getPackageName());
         } else {
             commandEnum = MenuFactory.getInstance(this).idToCommandEnum(id);
             if (commandEnum != Command.CommandEnum.NONE)
