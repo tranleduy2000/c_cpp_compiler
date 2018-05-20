@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
@@ -103,6 +104,7 @@ public class InstallActivity extends FullScreenActivity {
         finish();
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     private boolean permissionGranted() {
         for (String permission : PERMISSIONS) {
             if (!(ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)) {
