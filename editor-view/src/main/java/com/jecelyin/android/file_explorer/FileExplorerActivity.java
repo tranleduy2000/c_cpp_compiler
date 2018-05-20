@@ -19,19 +19,20 @@
 package com.jecelyin.android.file_explorer;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.editor.databinding.ActivityFileExplorerBinding;
 import com.jecelyin.android.file_explorer.io.JecFile;
@@ -258,7 +259,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         Set k = m.keySet();
 
         int selected = 0;
-        String[] names = new String[m.size() + 1];
+        final String[] names = new String[m.size() + 1];
         names[0] = getString(R.string.auto_detection_encoding);
         Iterator iterator = k.iterator();
         int i = 1;
@@ -269,15 +270,14 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
             names[i++] = n;
         }
 
-        new MaterialDialog.Builder(this)
-                .items(names)
-                .itemsCallbackSingleChoice(selected, new MaterialDialog.ListCallbackSingleChoice() {
+        new AlertDialog.Builder(this)
+                .setSingleChoiceItems(names, -1, new DialogInterface.OnClickListener() {
                     @Override
-                    public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                        binding.fileEncodingTextView.setText(charSequence);
-                        if (i > 0)
-                            fileEncoding = charSequence.toString();
-                        return true;
+                    public void onClick(DialogInterface dialog, int which) {
+                        binding.fileEncodingTextView.setText(names[which]);
+                        if (which > 0) {
+                            fileEncoding = names[which];
+                        }
                     }
                 })
                 .show();

@@ -49,7 +49,7 @@
             android:title="@string/auto_capitalize" />
 
 
-        <com.jecelyin.editor.v2.preference.SymbolBarPreference
+        <EditTextPreference
             android:key="pref_symbol"
             android:maxLines="7"
             android:negativeButtonText="@string/reset"

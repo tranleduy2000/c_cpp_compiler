@@ -20,7 +20,6 @@ package com.jecelyin.common.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
@@ -33,8 +32,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 
 /**
@@ -46,12 +43,17 @@ public class UIUtils {
     }
 
     public static void alert(Context context, String title, String message) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
-                .content(message)
-                .positiveText(android.R.string.ok);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
 
         if (!TextUtils.isEmpty(title))
-            builder.title(title);
+            builder.setTitle(title);
 
         builder.show();
     }
@@ -148,29 +150,28 @@ public class UIUtils {
     }
 
     public static void showConfirmDialog(Context context, CharSequence title, CharSequence message, final OnClickCallback callback, String postiveStr, String negativeStr) {
-        MaterialDialog.Builder dialog = new MaterialDialog.Builder(context)
-                .title(title)
-                .content(message)
-                .positiveText(postiveStr)
-                .negativeText(negativeStr)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(postiveStr, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         if (callback == null)
                             return;
                         callback.onOkClick();
                     }
                 })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                .setNegativeButton(negativeStr, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         if (callback == null)
                             return;
                         callback.onCancelClick();
                     }
                 });
-
-        MaterialDialog dlg = dialog.show();
+        AlertDialog dlg = dialog.show();
         dlg.setCanceledOnTouchOutside(false);
         dlg.setCancelable(true);
     }
