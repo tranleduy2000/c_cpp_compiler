@@ -18,6 +18,7 @@ package com.duy.ccppcompiler.packagemanager;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
@@ -54,7 +55,7 @@ public class RepoParser {
     private static final boolean DEBUG = DLog.DEBUG;
 
     @NonNull
-    public List<PackageInfo> parseRepoXml(String repo, String url) {
+    public List<PackageInfo> parseRepoXml(String repo, @Nullable String url) {
         ArrayList<PackageInfo> list = new ArrayList<>();
         if (repo != null) {
             XMLParser parser = new XMLParser();
@@ -98,7 +99,7 @@ public class RepoParser {
                         parser.getValue(e, KEY_DEPENDS),
                         parser.getValue(e, KEY_ARCH),
                         parser.getValue(e, KEY_REPLACES),
-                        Uri.parse(url));
+                        url == null ? null : Uri.parse(url));
                 list.add(packageInfo);
                 if (DEBUG) {
                     System.out.println(TAG + " added pkg = " + packageInfo.getName());

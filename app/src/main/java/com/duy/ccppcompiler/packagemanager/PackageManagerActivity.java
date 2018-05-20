@@ -109,6 +109,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         setTitle(R.string.title_menu_add_ons);
 
         mLocalPackageRepository = new LocalPackageRepository(this);
+
         setupDirs();
         setupVersion();
 
@@ -777,20 +778,20 @@ public class PackageManagerActivity extends FullScreenActivity {
                         return false;
                     }
 
-                    InputStream inputStream = cn.getInputStream();
-                    if (inputStream == null) {
+                    InputStream input = cn.getInputStream();
+                    if (input == null) {
                         throw new RuntimeException("stream is null");
                     }
 
                     Log.i(TAG, "File is " + temp.getAbsolutePath());
-                    FileOutputStream out = new FileOutputStream(temp);
+                    FileOutputStream output = new FileOutputStream(temp);
                     byte buf[] = new byte[128 * 1024];
                     do {
-                        int numRead = inputStream.read(buf);
+                        int numRead = input.read(buf);
                         if (numRead <= 0) {
                             break;
                         }
-                        out.write(buf, 0, numRead);
+                        output.write(buf, 0, numRead);
                         totalRead += numRead;
                         updateProgress(getString(R.string.received) + " " +
                                 Utils.humanReadableByteCount(totalRead, false) + " " +
@@ -804,8 +805,8 @@ public class PackageManagerActivity extends FullScreenActivity {
                         }
                     } while (true);
 
-                    inputStream.close();
-                    out.close();
+                    input.close();
+                    output.close();
                     if (totalRead != fileSize) {
                         throw new RuntimeException("Partially downloaded file!");
                     }

@@ -26,6 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RepoUtils {
+    public static final String ARCH_ARM_V7A = "armeabi-v7a";
+    public static final String ARCH_MIPS = "mips";
+    public static final String ARCH_X86 = "x86";
+
+    public static final String PACKAGES_INDEX_FILE = "Packages";
 
     /**
      * armeabi-v7a/
@@ -50,13 +55,13 @@ public class RepoUtils {
         String ndkArch;
         if (Build.CPU_ABI.startsWith("arm")) {
             ndkArch = "armel";
-            cpuAbi = "armeabi-v7a";
+            cpuAbi = ARCH_ARM_V7A;
         } else if (Build.CPU_ABI.startsWith("mips")) {
             ndkArch = "mipsel";
-            cpuAbi = "mips";
+            cpuAbi = ARCH_MIPS;
         } else {
             ndkArch = "i686";
-            cpuAbi = "x86";
+            cpuAbi = ARCH_X86;
         }
 
         RepoUtils.CPU_API = cpuAbi;

@@ -151,7 +151,7 @@ public class InstallActivity extends FullScreenActivity {
 
         Intent intent = new Intent(this, PackageManagerActivity.class);
         intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
-        intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc-compact");
+        intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc");
         startActivityForResult(intent, RC_INSTALL_COMPILER);
     }
 

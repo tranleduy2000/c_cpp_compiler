@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.duy.ccppcompiler.packagemanager.DownloadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
+import com.duy.ccppcompiler.packagemanager.RepoUtils;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
 import com.pdaxrom.utils.XMLParser;
@@ -123,7 +124,7 @@ public class UbuntuServerPackageRepository implements IPackageRepository {
 
     private String getRepoXmlFromUrl(String url) {
         XMLParser parser = new XMLParser();
-        String xml = parser.getXmlFromUrl(url + "/Packages");
+        String xml = parser.getXmlFromUrl(url + "/" + RepoUtils.PACKAGES_INDEX_FILE);
         return replaceMacro(xml);
     }
 

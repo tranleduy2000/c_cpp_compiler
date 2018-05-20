@@ -16,33 +16,69 @@
 
 package com.duy.ccppcompiler.packagemanager.repo;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.duy.ccppcompiler.packagemanager.DownloadListener;
+import com.duy.ccppcompiler.packagemanager.RepoParser;
+import com.duy.ccppcompiler.packagemanager.RepoUtils;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
+import com.duy.common.DLog;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.sun.tools.javac.util.Context;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.duy.ccppcompiler.packagemanager.RepoUtils.PACKAGES_INDEX_FILE;
+import static com.duy.ccppcompiler.packagemanager.repo.FirebasePackageRepo.FirebaseStorageContract.PACKAGES;
+import static com.duy.ccppcompiler.packagemanager.repo.FirebasePackageRepo.FirebaseStorageContract.PACKAGES_PIE;
+import static com.duy.ccppcompiler.packagemanager.repo.FirebasePackageRepo.FirebaseStorageContract.ROOT;
 
 /**
  * Created by Duy on 20-May-18.
  */
 
 public class FirebasePackageRepo implements IPackageRepository {
-    private FirebaseStorage mStorage;
-    private Context mContext;
+    private static final String TAG = "FirebasePackageRepo";
+    private StorageReference mStorage;
+    private List<PackageInfo> mPackageInfos = null;
 
-    public FirebasePackageRepo(Context context) {
-        mContext = context;
-        mStorage = FirebaseStorage.getInstance();
+    public FirebasePackageRepo() {
+        mStorage = FirebaseStorage.getInstance().getReference();
+        getPackages(); //download as son as possible
     }
 
     @NonNull
     @Override
     public List<PackageInfo> getPackages() {
-        return null;
+        final StorageReference repo = mStorage.child(ROOT)
+                .child(Build.VERSION.SDK_INT >= 21 ? PACKAGES_PIE : PACKAGES)
+                .child(RepoUtils.CPU_API);
+        repo.child(PACKAGES_INDEX_FILE)
+                .getBytes(1024 * 1024)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        String content = new String(bytes);
+                        if (DLog.DEBUG) DLog.d(TAG, "content = " + content);
+                        RepoParser repoParser = new RepoParser();
+                        mPackageInfos = repoParser.parseRepoXml(content, repo.getPath());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        if (mPackageInfos != null) {
+            return mPackageInfos;
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -50,12 +86,9 @@ public class FirebasePackageRepo implements IPackageRepository {
 
     }
 
-    private static class FirebaseStorageContract {
+    static class FirebaseStorageContract {
         static final String ROOT = "android-repo";
         static final String PACKAGES_PIE = "packages-pie";
         static final String PACKAGES = "packages";
-        static final String ARCH_ARM_V7A = "armeabi-v7a";
-        static final String ARCH_MIPS = "mips";
-        static final String ARCH_X86 = "x86";
     }
 }
