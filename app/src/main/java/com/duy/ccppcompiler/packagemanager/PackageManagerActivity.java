@@ -1,4 +1,20 @@
-package com.pdaxrom.packagemanager;
+/*
+ * Copyright 2018 Mr Duy
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.duy.ccppcompiler.packagemanager;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -30,9 +46,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
-import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.ccppcompiler.packagemanager.RepoParser;
-import com.duy.ccppcompiler.packagemanager.RepoUtils;
 import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackagesLists;
@@ -670,7 +683,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFileName());
                 File logFile = new File(Environment.getInstalledPackageDir(context), packageInfo.getName() + ".list");
                 if (packageInfo.getURL() != null) {
-                    if (!downloadAndUnpack(packageInfo.getFileName(), packageInfo.getURL(), mToolchainDir, logFile.getAbsolutePath())) {
+                    if (!downloadAndUnpack(new File(mBackupDir), packageInfo.getFileName(), packageInfo.getURL(), mToolchainDir, logFile.getAbsolutePath())) {
                         if (errorString != null) {
                             errorString += "\u0020" + info.getName();
                         }
@@ -728,8 +741,11 @@ public class PackageManagerActivity extends FullScreenActivity {
             return true;
         }
 
-        private boolean downloadAndUnpack(@NonNull final String fileName, @NonNull final URL fromUrl,
-                                          @NonNull final String toPath, final String log) {
+        private boolean downloadAndUnpack(@NonNull File saveToDir,
+                                          @NonNull final String fileName,
+                                          @NonNull final URL fromUrl,
+                                          @NonNull final String toPath,
+                                          String logFile) {
             updateProgress(getString(R.string.download_file) + " " + fileName + "...");
 
             errorString = null;
@@ -812,7 +828,6 @@ public class PackageManagerActivity extends FullScreenActivity {
             updateProgress(getString(R.string.unpacking_file) + " " + fileName + "...");
             Log.i(TAG, "Unpack file " + tempPath + " to " + toPath);
 
-            String logFile = log;
             try {
                 int needMem = Utils.unzippedSize(tempPath);
                 if (needMem < 0) {

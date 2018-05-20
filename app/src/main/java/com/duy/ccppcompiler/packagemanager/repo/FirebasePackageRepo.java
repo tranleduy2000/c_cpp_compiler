@@ -18,10 +18,12 @@ package com.duy.ccppcompiler.packagemanager.repo;
 
 import android.support.annotation.NonNull;
 
+import com.duy.ccppcompiler.packagemanager.DownloadListener;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.google.firebase.storage.FirebaseStorage;
 import com.sun.tools.javac.util.Context;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -41,6 +43,11 @@ public class FirebasePackageRepo implements IPackageRepository {
     @Override
     public List<PackageInfo> getPackages() {
         return null;
+    }
+
+    @Override
+    public void download(File saveToDir, PackageInfo packageInfo, DownloadListener listener) {
+
     }
 
     private static class FirebaseStorageContract {

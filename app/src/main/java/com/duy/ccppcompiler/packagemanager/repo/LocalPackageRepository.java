@@ -19,6 +19,7 @@ package com.duy.ccppcompiler.packagemanager.repo;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.duy.ccppcompiler.packagemanager.DownloadListener;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -27,6 +28,7 @@ import com.duy.common.DLog;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,6 +52,16 @@ public class LocalPackageRepository implements IPackageRepository {
     public List<PackageInfo> getPackages() {
         RepoParser parser = new RepoParser();
         return parser.parseRepoXml(getInstalledPackagesData(mInstalledDir), mInstalledDir.getAbsolutePath());
+    }
+
+    @Override
+    public void download(File saveToDir, PackageInfo packageInfo, DownloadListener listener) {
+        File file = new File(saveToDir, packageInfo.getFileName());
+        if (file.exists()) {
+            listener.onComplete(file);
+        } else {
+            listener.onFailure(new FileNotFoundException(file + " not found"));
+        }
     }
 
     /**

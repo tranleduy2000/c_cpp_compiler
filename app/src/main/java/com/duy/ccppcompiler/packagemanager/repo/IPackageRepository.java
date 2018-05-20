@@ -17,9 +17,12 @@
 package com.duy.ccppcompiler.packagemanager.repo;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
+import com.duy.ccppcompiler.packagemanager.DownloadListener;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -29,4 +32,7 @@ import java.util.List;
 public interface IPackageRepository {
     @NonNull
     List<PackageInfo> getPackages();
+
+    @WorkerThread
+    void download(File saveToDir, PackageInfo packageInfo, DownloadListener listener);
 }

@@ -16,9 +16,18 @@
 
 package com.duy.ccppcompiler.packagemanager;
 
+import android.support.annotation.Nullable;
+
+import java.io.File;
+
 /**
  * Created by Duy on 20-May-18.
  */
 
-public class PackageDownloader {
+public interface DownloadListener {
+    void onComplete(File downloadedFile);
+
+    void onFailure(@Nullable Exception e);
+
+    void onProgress(int totalRead, int fileSize);
 }

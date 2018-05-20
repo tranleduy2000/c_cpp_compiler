@@ -41,7 +41,7 @@ import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
-import com.pdaxrom.packagemanager.PackageManagerActivity;
+import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 
 /**
  * Created by Duy on 22-Apr-18.
