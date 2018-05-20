@@ -2,40 +2,40 @@
 
 C/C++ compiler for Android device using GCC compiler
 
-This project develop to help community learn C or C++ language on the go.
+This project is developed to help the community to learn C or C++ on the go.
 
-> I am developing this project, it not stable
+> I am developing this project, it is not stable
 
-Pull request always wellcomed.
+Pull request always welcomed.
 
-# Feature
+## Features
 
 - C compiler
 - C++ compiler
-- Termial emulator
-- Diagnostic GUI: auto jump to error position
-- Syntax highligting
+- Terminal emulator
+- Diagnostic utility: auto jump to error position
+- Syntax highlighting
 - File manager
-- Multi Tab, you can open different files in different tabs to facilitate you in a different text of this switch to edit
-- Easy toolbar, you can quickly doing a new file, open, save, save as, undo/redo , and some commonly used symbols, back to last edit location, etc.
-- List of recently opened files history
+- Multi Tab: you can open different files in different tabs to manage editing multiple files simultaneously with ease.
+- Easy toolbar: you can quickly create a new file, open, save, save as, undo/redo, insert some commonly used symbols, go back to last edit location, etc.
+- List of recently opened files
 - Regular search, replace or replace all
-- Change the font and font size
+- Change the typeface and font size
 - Show line numbers
-- Show blank characters (tabs, line breaks)
-- List of recently opened files history
+- Show whitespace characters (tabs, line breaks)
 - Regular search, replace or replace all
-- Change the font and font size
 - "Word wrap" switch
-- Lock the screen orientation in: auto, horizontal or vertical
-- Remember the last open file
+- Lock the screen orientation in auto, horizontal or vertical
+- Remember the last opened file
 - Hide the soft keyboard, long press the edit area can be turn on
-- Long press the "edit area" you can convert selected text to uppercase or lowercase
-- Auto indent
-- Keep the screen in the awake state
-- Dark/Light Theme
+- Convert selected text to uppercase or lowercase by long pressing the "edit area"
+- Automatic indentation
+- Keep the screen awaken
+- Dark/Light Themes
 
-## GNU License 
+## License
+GNU GPL V3.0
+
     Copyright (C) 2018 Tran Le Duy	
 
     This program is free software: you can redistribute it and/or modify
