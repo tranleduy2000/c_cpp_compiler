@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.packagemanager;
+package com.duy.ccppcompiler.packagemanager.repo;
 
 import android.support.annotation.NonNull;
 

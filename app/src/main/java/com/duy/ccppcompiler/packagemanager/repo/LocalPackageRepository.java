@@ -20,7 +20,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.ccppcompiler.packagemanager.IPackageRepository;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
