@@ -17,7 +17,8 @@
 package com.jecelyin.editor.v2.dialog;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ActionMode;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,8 +30,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.utils.DLog;
@@ -117,28 +116,26 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
             }
         });
 
-        MaterialDialog dlg = getDialogBuilder().title(R.string.find_replace)
-                .customView(view, false)
-                .negativeText(R.string.close)
-                .positiveText(R.string.find)
-                .autoDismiss(false)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (onFindButtonClick(holder)) {
-                            dialog.dismiss();
-                        }
-                    }
-                })
-                .show();
-
-        handleDialog(dlg);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.find_replace);
+        builder.setView(view);
+        builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.setPositiveButton(R.string.find, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (onFindButtonClick(holder)) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        handleDialog(dialog);
     }
 
     private boolean onFindButtonClick(ViewHolder holder) {

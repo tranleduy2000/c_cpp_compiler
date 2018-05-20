@@ -17,9 +17,9 @@
 package com.jecelyin.editor.v2.dialog;
 
 import android.content.Context;
-import android.view.View;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.common.Command;
 
@@ -33,33 +33,29 @@ public class WrapCharDialog extends AbstractDialog {
 
     @Override
     public void show() {
-        MaterialDialog dlg = getDialogBuilder()
-                .items(R.array.wrap_char_list)
-                .title(R.string.convert_wrap_char)
-                .positiveText(R.string.ok)
-                .negativeText(R.string.cancel)
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        String[] items = context.getResources().getStringArray(R.array.wrap_char_list);
+        builder.setTitle(R.string.convert_wrap_char)
+                .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                     @Override
-                    public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                        return false;
-                    }
-                })
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        int index = dialog.getSelectedIndex();
-                        if (index < 0)
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which < 0)
                             return;
                         String[] chars = new String[]{"\n", "\r\n"};
                         Command command = new Command(Command.CommandEnum.CONVERT_WRAP_CHAR);
-                        command.object = chars[index];
+                        command.object = chars[which];
                         getMainActivity().doCommand(command);
+                        dialog.cancel();
                     }
                 })
-                .show();
-
-        handleDialog(dlg);
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        handleDialog(alertDialog);
     }
 }

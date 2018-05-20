@@ -67,7 +67,6 @@ dependencies {
     implementation 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
     implementation 'com.rengwuxian.materialedittext:library:2.0.3'
 
-    implementation 'me.zhanghai.android.materialprogressbar:library:1.1.4'
     implementation 'org.apmem.tools:layouts:1.10@aar'
     implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
@@ -78,7 +77,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.firebase:firebase-storage:15.0.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
-    implementation group: 'commons-io', name: 'commons-io', version: '2.0.1'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.4'
 
     testImplementation 'org.jsoup:jsoup:1.11.2'
 }

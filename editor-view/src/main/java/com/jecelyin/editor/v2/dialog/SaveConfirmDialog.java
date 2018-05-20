@@ -17,18 +17,19 @@
 package com.jecelyin.editor.v2.dialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class SaveConfirmDialog extends AbstractDialog {
-    private final MaterialDialog.SingleButtonCallback callback;
+    private final DialogInterface.OnClickListener callback;
     private final String filename;
 
-    public SaveConfirmDialog(Context context, String filename, MaterialDialog.SingleButtonCallback callback) {
+    public SaveConfirmDialog(Context context, String filename, DialogInterface.OnClickListener callback) {
         super(context);
         this.callback = callback;
         this.filename = filename;
@@ -36,14 +37,12 @@ public class SaveConfirmDialog extends AbstractDialog {
 
     @Override
     public void show() {
-
-        getDialogBuilder().title(R.string.confirm_save)
-                .content(context.getString(R.string.confirm_save_msg, filename))
-                .positiveText(R.string.yes)
-                .negativeText(R.string.no)
-                .neutralText(R.string.cancel)
-                .onPositive(callback)
-                .onNegative(callback)
-                .show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.confirm_save);
+        builder.setMessage(context.getString(R.string.confirm_save_msg, filename));
+        builder.setPositiveButton(R.string.yes, callback);
+        builder.setNegativeButton(R.string.no, callback);
+        builder.setNeutralButton(R.string.cancel, callback);
+        builder.create().show();
     }
 }

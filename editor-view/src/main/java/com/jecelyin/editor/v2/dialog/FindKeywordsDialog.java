@@ -17,11 +17,9 @@
 package com.jecelyin.editor.v2.dialog;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.widget.DrawClickableEditText;
 import com.jecelyin.editor.v2.utils.DBHelper;
@@ -32,7 +30,7 @@ import java.util.List;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 
-public class FindKeywordsDialog extends AbstractDialog implements MaterialDialog.SingleButtonCallback, MaterialDialog.ListCallback {
+public class FindKeywordsDialog extends AbstractDialog {
     private final boolean isReplace;
     private final DrawClickableEditText editText;
 
@@ -44,34 +42,31 @@ public class FindKeywordsDialog extends AbstractDialog implements MaterialDialog
 
     @Override
     public void show() {
-        List<String> items = DBHelper.getInstance(context).getFindKeywords(isReplace);
-
-        MaterialDialog dlg = getDialogBuilder()
-                .items(items)
-                .dividerColorRes(R.color.md_divider_black)
-                .negativeText(R.string.clear_history)
-                .onNegative(this)
-                .positiveText(R.string.close)
-                .title(isReplace ? R.string.replace_log : R.string.find_log)
-                .itemsCallback(this)
-                .show();
-        handleDialog(dlg);
-    }
-
-    @Override
-    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-        switch (which) {
-            case NEGATIVE:
+        final List<String> items = DBHelper.getInstance(context).getFindKeywords(isReplace);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setNegativeButton(R.string.clear_history, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 DBHelper.getInstance(context).clearFindKeywords(isReplace);
-            default:
+                dialog.cancel();
+            }
+        });
+        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.setTitle(isReplace ? R.string.replace_log : R.string.find_log);
+        builder.setItems(items.toArray(new String[1]), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                break;
-        }
-    }
-
-    @Override
-    public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-        dialog.dismiss();
-        editText.setText(text.toString());
+                editText.setText(items.get(which));
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        handleDialog(dialog);
     }
 }

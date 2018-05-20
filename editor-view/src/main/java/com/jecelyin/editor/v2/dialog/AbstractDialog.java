@@ -19,7 +19,6 @@ package com.jecelyin.editor.v2.dialog;
 import android.app.Dialog;
 import android.content.Context;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.duy.ide.editor.BaseEditorActivity;
 
 /**
@@ -30,10 +29,6 @@ public abstract class AbstractDialog {
 
     public AbstractDialog(Context context) {
         this.context = context;
-    }
-
-    protected MaterialDialog.Builder getDialogBuilder() {
-        return new MaterialDialog.Builder(context);
     }
 
     protected void handleDialog(Dialog dlg) {
