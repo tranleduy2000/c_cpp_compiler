@@ -1,7 +1,7 @@
 # c_cpp_compiler
 
 C/C++ compiler for Android device using GCC compiler
-
+Stable version on Google play store https://play.google.com/store/apps/details?id=com.duy.c.cpp.compiler
 This project is developed to help the community to learn C or C++ on the go.
 
 > I am developing this project, it is not stable
