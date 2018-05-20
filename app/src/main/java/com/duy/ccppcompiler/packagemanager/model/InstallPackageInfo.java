@@ -17,13 +17,13 @@
 package com.duy.ccppcompiler.packagemanager.model;
 
 import com.duy.ccppcompiler.packagemanager.RepoUtils;
+import com.duy.common.DLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InstallPackageInfo {
     private static final String TAG = "InstallPackageInfo";
-    private static boolean debug = false;
 
     private String pkg = null;
     private List<PackageInfo> packages = null;
@@ -40,10 +40,6 @@ public class InstallPackageInfo {
 
     public InstallPackageInfo(PackagesLists packagesLists, String pkg, List<PackageInfo> packages) {
         installPackageInfo(packagesLists, pkg, packages);
-    }
-
-    public static void enableDebug(boolean debug) {
-        InstallPackageInfo.debug = debug;
     }
 
     public void addPackage(PackagesLists packagesLists, String pkg) {
@@ -110,12 +106,13 @@ public class InstallPackageInfo {
 
     private void getDepends(PackagesLists packagesLists, String packageWithVariants, List<PackageInfo> list) {
         String[] packageVariants = packageWithVariants.replace('|', ' ').split("\\s+");
-        if (debug) {
+        boolean debug = false;
+        if (DLog.DEBUG) {
             System.out.println(TAG + " packageVariants = " + packageWithVariants.replace('|', ' '));
         }
         String firstPackage = packageVariants[0];
         for (String packageVariant : packageVariants) {
-            if (debug) {
+            if (DLog.DEBUG) {
                 System.out.println(TAG + " packageVariant = " + packageVariant);
             }
             if (RepoUtils.isContainsPackage(list, packageVariant)) {
@@ -130,13 +127,13 @@ public class InstallPackageInfo {
         for (PackageInfo info : packagesLists.getAvailablePackages()) {
             if (firstPackage.equals(info.getName())) {
                 String deps = info.getDepends();
-                if (debug) {
+                if (DLog.DEBUG) {
                     System.out.println(TAG + " package deps = " + deps);
                 }
                 if (deps != null && !deps.equals("")) {
                     deps = deps.replaceAll("\\s+", " ");
                     for (String dep : deps.split("\\s+")) {
-                        if (debug) {
+                        if (DLog.DEBUG) {
                             System.out.println(TAG + " check package = " + dep);
                         }
                         getDepends(packagesLists, dep, list);
@@ -146,14 +143,14 @@ public class InstallPackageInfo {
                         packagesLists.getInstalledPackages(), firstPackage);
                 if (installedPackage != null) {
                     if (installedPackage.getVersion().equals(info.getVersion())) {
-                        if (debug) {
+                        if (DLog.DEBUG) {
                             System.out.println(TAG + " the same version, skip package = " + firstPackage);
                         }
                         break;
                     }
                 }
                 list.add(info);
-                if (debug) {
+                if (DLog.DEBUG) {
                     System.out.println(TAG + " add package = " + firstPackage);
                 }
                 break;

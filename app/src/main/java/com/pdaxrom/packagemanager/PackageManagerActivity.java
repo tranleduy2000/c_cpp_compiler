@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.RepoUtils;
@@ -210,23 +211,8 @@ public class PackageManagerActivity extends FullScreenActivity {
      * Define sdk and ndk for current device
      */
     private void setupVersion() {
-        final int sdkVersion = Build.VERSION.SDK_INT;
-        int ndkVersion;
-        if (sdkVersion <= 24) {
-            ndkVersion = sdkVersion;
-        } else {
-            ndkVersion = Math.max(14, Math.min(sdkVersion, 24));
-        }
 
-        String ndkArch;
-        if (Build.CPU_ABI.startsWith("arm")) {
-            ndkArch = "armel";
-        } else if (Build.CPU_ABI.startsWith("mips")) {
-            ndkArch = "mipsel";
-        } else {
-            ndkArch = "i686";
-        }
-        RepoUtils.setVersion(Build.CPU_ABI, ndkArch, ndkVersion);
+        RepoUtils.setVersion();
     }
 
     @UiThread
@@ -238,13 +224,13 @@ public class PackageManagerActivity extends FullScreenActivity {
             HashMap<String, String> map = new HashMap<>();
 
             // adding each child node to HashMap key => value
-            map.put(RepoParser.KEY_NAME, info.getName());
+            map.put(RepoParser.KEY_PACKAGE_NAME, info.getName());
             map.put(RepoParser.KEY_VERSION, info.getVersion());
             map.put(RepoParser.KEY_DESC, info.getDescription());
             map.put(RepoParser.KEY_DEPENDS, info.getDepends());
             map.put(RepoParser.KEY_FILESIZE, Utils.humanReadableByteCount(info.getFileSize(), false));
             map.put(RepoParser.KEY_SIZE, Utils.humanReadableByteCount(info.getSize(), false));
-            map.put(RepoParser.KEY_FILE, info.getFile());
+            map.put(RepoParser.KEY_LOCAL_FILE_NAME, info.getFileName());
 
             File logFile = new File(Environment.getInstalledPackageDir(this), info.getName() + ".list");
             if (logFile.exists()) {
@@ -263,11 +249,11 @@ public class PackageManagerActivity extends FullScreenActivity {
                 menuItems,
                 R.layout.list_item_package,
                 new String[]{
-                        RepoParser.KEY_NAME,
+                        RepoParser.KEY_PACKAGE_NAME,
                         RepoParser.KEY_VERSION,
                         RepoParser.KEY_DESC,
                         RepoParser.KEY_DEPENDS,
-                        RepoParser.KEY_FILE,
+                        RepoParser.KEY_LOCAL_FILE_NAME,
                         RepoParser.KEY_FILESIZE,
                         RepoParser.KEY_SIZE,
                         RepoParser.KEY_STATUS},
@@ -481,13 +467,10 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     private void system(String cmdline) {
         try {
-            final String[] envp = Environment.buildDefaultEnv(this);
-            Log.i(TAG, "exec cmd " + cmdline + ", cctoolsdir " + Environment.getCCtoolsDir(this));
-            Process p = Runtime.getRuntime().exec(cmdline, envp);
-            p.waitFor();
+            if (DLog.DEBUG) DLog.d(TAG, "cmdline = " + cmdline);
+            ShellUtils.execCommand(this, Environment.getHomeDir(this), cmdline);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "Exec exception " + e);
         }
     }
 
@@ -638,6 +621,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("StaticFieldLeak")
     private class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Void, Boolean> {
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -659,7 +643,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                     } else {
                         uninstallPackage(packageInfo.getName());
                         if (oldPackage != null) {
-                            File oldPackageFile = new File(mBackupDir, oldPackage.getFile());
+                            File oldPackageFile = new File(mBackupDir, oldPackage.getFileName());
                             if (oldPackageFile.exists()) {
                                 oldPackageFile.delete();
                             }
@@ -673,7 +657,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                             packageInfo.getReplaces());
                     if (oldPackage != null) {
                         uninstallPackage(oldPackage.getName());
-                        File oldPackageFile = new File(mBackupDir, oldPackage.getFile());
+                        File oldPackageFile = new File(mBackupDir, oldPackage.getFileName());
                         if (oldPackageFile.exists()) {
                             oldPackageFile.delete();
                         }
@@ -683,12 +667,17 @@ public class PackageManagerActivity extends FullScreenActivity {
 
                 updateProgressTitle(getString(R.string.pkg_installpackagetask) + " " + packageInfo.getName());
 
-                Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFile());
+                Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFileName());
                 File logFile = new File(Environment.getInstalledPackageDir(context), packageInfo.getName() + ".list");
-                if (!downloadAndUnpack(packageInfo.getFile(), packageInfo.getUrl(), mToolchainDir, logFile.getAbsolutePath())) {
-                    if (errorString != null) {
-                        errorString += "\u0020" + info.getName();
+                if (packageInfo.getURL() != null) {
+                    if (!downloadAndUnpack(packageInfo.getFileName(), packageInfo.getURL(), mToolchainDir, logFile.getAbsolutePath())) {
+                        if (errorString != null) {
+                            errorString += "\u0020" + info.getName();
+                        }
+                        return false;
                     }
+                } else {
+                    errorString = "URL not found!";
                     return false;
                 }
 
@@ -739,7 +728,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             return true;
         }
 
-        private boolean downloadAndUnpack(@NonNull final String fileName, @NonNull final String fromUrl,
+        private boolean downloadAndUnpack(@NonNull final String fileName, @NonNull final URL fromUrl,
                                           @NonNull final String toPath, final String log) {
             updateProgress(getString(R.string.download_file) + " " + fileName + "...");
 

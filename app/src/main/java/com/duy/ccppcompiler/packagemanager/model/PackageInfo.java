@@ -16,9 +16,15 @@
 
 package com.duy.ccppcompiler.packagemanager.model;
 
+import android.net.Uri;
+import android.support.annotation.Nullable;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class PackageInfo {
     private String name;
-    private String file;
+    private String fileName;
     private int size;
     private int filesize;
     private String version;
@@ -26,13 +32,30 @@ public class PackageInfo {
     private String depends;
     private String arch;
     private String replaces;
-    private String url;
+    private Uri uri;
 
-    public PackageInfo(String name, String file, int size, int filesize,
+    /**
+     * <name>build-essential-clang-compact</name>
+     * <replaces>build-essential-clang</replaces>
+     * <version>1.1</version>
+     * <arch>armel</arch>
+     * <description>Informational list of clang compact build-essential packages</description>
+     * <depends>busybox project-ctl binutils-compact libgcc-compact-dev libstdc++-compact-dev clang make ndk-misc ndk-sysroot-${HOSTNDKARCH}-${HOSTNDKVERSION} cctools-examples</depends>
+     * <size></size>
+     * <file>build-essential-clang-compact_1.1_all.zip</file>
+     * <filesize>601</filesize>
+     *
+     * @param name     - package name
+     * @param fileName - name of file will be store in {@link com.duy.ccppcompiler.packagemanager.repo.LocalPackageRepository}
+     * @param version  - current version
+     * @param depends  - all package dependencies on this package
+     * @param uri      - URL contains this package
+     */
+    public PackageInfo(String name, String fileName, int size, int filesize,
                        String version, String description, String depends,
-                       String arch, String replaces, String url) {
+                       String arch, String replaces, Uri uri) {
         this.name = name;
-        this.file = file;
+        this.fileName = fileName;
         this.size = size;
         this.filesize = filesize;
         this.version = version;
@@ -40,15 +63,31 @@ public class PackageInfo {
         this.depends = depends;
         this.arch = arch;
         this.replaces = replaces;
-        this.url = url;
+        this.uri = uri;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getFile() {
-        return file;
+    @Override
+    public String toString() {
+        return "PackageInfo{" +
+                "name='" + name + '\'' +
+                ", file='" + fileName + '\'' +
+                ", size=" + size +
+                ", filesize=" + filesize +
+                ", version='" + version + '\'' +
+                ", description='" + description + '\'' +
+                ", depends='" + depends + '\'' +
+                ", arch='" + arch + '\'' +
+                ", replaces='" + replaces + '\'' +
+                ", url='" + uri + '\'' +
+                '}';
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public int getSize() {
@@ -71,7 +110,7 @@ public class PackageInfo {
         return depends;
     }
 
-    String getArch() {
+    public String getArch() {
         return arch;
     }
 
@@ -79,7 +118,22 @@ public class PackageInfo {
         return replaces;
     }
 
-    public String getUrl() {
-        return url;
+    /**
+     * @return URL contains this package
+     */
+    public Uri getUri() {
+        return uri;
+    }
+
+    @Nullable
+    public URL getURL() {
+        if (uri != null) {
+            try {
+                return new URL(uri.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

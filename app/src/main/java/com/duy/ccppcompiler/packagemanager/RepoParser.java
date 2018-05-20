@@ -16,6 +16,7 @@
 
 package com.duy.ccppcompiler.packagemanager;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -38,8 +39,8 @@ import static com.duy.ccppcompiler.packagemanager.RepoUtils.isContainsPackage;
 public class RepoParser {
     // XML node keys
     public static final String KEY_PACKAGE = "package"; // parent node
-    public static final String KEY_NAME = "name";
-    public static final String KEY_FILE = "file";
+    public static final String KEY_PACKAGE_NAME = "name";
+    public static final String KEY_LOCAL_FILE_NAME = "file";
     public static final String KEY_SIZE = "size";
     public static final String KEY_FILESIZE = "filesize";
     public static final String KEY_VERSION = "version";
@@ -68,7 +69,7 @@ public class RepoParser {
                 int size;
                 int filesize;
                 if (DEBUG) {
-                    System.out.println(TAG + " pkg [ " + parser.getValue(e, KEY_NAME) + " ][ " + parser.getValue(e, KEY_SIZE) + "]");
+                    System.out.println(TAG + " pkg [ " + parser.getValue(e, KEY_PACKAGE_NAME) + " ][ " + parser.getValue(e, KEY_SIZE) + "]");
                 }
                 if (parser.getValue(e, KEY_SIZE).length() > 0) {
                     size = Integer.valueOf(parser.getValue(e, KEY_SIZE).replaceAll("@SIZE@", "0"));
@@ -81,15 +82,15 @@ public class RepoParser {
                     // old format of packages not included unpacked size
                     filesize = size;
                 }
-                if (isContainsPackage(list, parser.getValue(e, KEY_NAME), parser.getValue(e, KEY_VERSION))) {
+                if (isContainsPackage(list, parser.getValue(e, KEY_PACKAGE_NAME), parser.getValue(e, KEY_VERSION))) {
                     if (DEBUG) {
-                        System.out.println(TAG + "skip exists pkg" + parser.getValue(e, KEY_NAME));
+                        System.out.println(TAG + "skip exists pkg" + parser.getValue(e, KEY_PACKAGE_NAME));
                     }
                     continue;
                 }
                 PackageInfo packageInfo = new PackageInfo(
-                        parser.getValue(e, KEY_NAME),
-                        parser.getValue(e, KEY_FILE),
+                        parser.getValue(e, KEY_PACKAGE_NAME),
+                        parser.getValue(e, KEY_LOCAL_FILE_NAME),
                         size /*Integer.valueOf(parser.getValue(e, KEY_SIZE))*/,
                         filesize /*Integer.valueOf(parser.getValue(e, KEY_FILESIZE))*/,
                         parser.getValue(e, KEY_VERSION),
@@ -97,7 +98,7 @@ public class RepoParser {
                         parser.getValue(e, KEY_DEPENDS),
                         parser.getValue(e, KEY_ARCH),
                         parser.getValue(e, KEY_REPLACES),
-                        url);
+                        Uri.parse(url));
                 list.add(packageInfo);
                 if (DEBUG) {
                     System.out.println(TAG + " added pkg = " + packageInfo.getName());

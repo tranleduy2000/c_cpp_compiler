@@ -16,6 +16,7 @@
 
 package com.duy.ccppcompiler.packagemanager;
 
+import android.os.Build;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -36,8 +37,29 @@ public class RepoUtils {
     private static String NDK_ARCH;
     private static int NDK_VERSION;
 
-    public static void setVersion(String buildAbi, String ndkArch, int ndkVersion) {
-        RepoUtils.CPU_API = buildAbi;
+    public static void setVersion() {
+        final int sdkVersion = Build.VERSION.SDK_INT;
+        int ndkVersion;
+        if (sdkVersion <= 24) {
+            ndkVersion = sdkVersion;
+        } else {
+            ndkVersion = Math.max(14, Math.min(sdkVersion, 24));
+        }
+
+        String cpuAbi;
+        String ndkArch;
+        if (Build.CPU_ABI.startsWith("arm")) {
+            ndkArch = "armel";
+            cpuAbi = "armeabi-v7a";
+        } else if (Build.CPU_ABI.startsWith("mips")) {
+            ndkArch = "mipsel";
+            cpuAbi = "mips";
+        } else {
+            ndkArch = "i686";
+            cpuAbi = "x86";
+        }
+
+        RepoUtils.CPU_API = cpuAbi;
         RepoUtils.NDK_ARCH = ndkArch;
         RepoUtils.NDK_VERSION = ndkVersion;
     }

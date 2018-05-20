@@ -56,7 +56,7 @@ public class LocalPackageRepository implements IPackageRepository {
      * @param dir - the directory contains installed package
      * @return xml content of all installed package
      */
-    public String getInstalledPackagesData(File dir) {
+    private String getInstalledPackagesData(File dir) {
         if (dir.isDirectory()) {
             StringBuilder sb = new StringBuilder();
             sb.append("<repo>").append("\n");

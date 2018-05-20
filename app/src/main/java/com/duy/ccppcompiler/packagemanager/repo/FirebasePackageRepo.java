@@ -42,4 +42,13 @@ public class FirebasePackageRepo implements IPackageRepository {
     public List<PackageInfo> getPackages() {
         return null;
     }
+
+    private static class FirebaseStorageContract {
+        static final String ROOT = "android-repo";
+        static final String PACKAGES_PIE = "packages-pie";
+        static final String PACKAGES = "packages";
+        static final String ARCH_ARM_V7A = "armeabi-v7a";
+        static final String ARCH_MIPS = "mips";
+        static final String ARCH_X86 = "x86";
+    }
 }
