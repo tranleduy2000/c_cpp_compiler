@@ -37,8 +37,7 @@ import jackpal.androidterm.TermSettings;
  */
 
 public class Environment {
-    public static final String APPLICATION_DIR_NAME = "CCtools";
-    public static final String INSTALLED_PACKAGE_DIR = "/installed/";
+    public static final String APPLICATION_DIR_NAME = "CCTools";
     private static final String TAG = "EnvironmentPath";
 
     /**
