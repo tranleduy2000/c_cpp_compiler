@@ -26,7 +26,6 @@ import java.util.List;
 
 public class RepoUtils {
 
-    private static final String TAG = "RepoUtils";
     /**
      * armeabi-v7a/
      * armeabi/
@@ -36,8 +35,6 @@ public class RepoUtils {
     public static String CPU_API;
     private static String NDK_ARCH;
     private static int NDK_VERSION;
-
-    private static boolean DEBUG = false;
 
     public static void setVersion(String buildAbi, String ndkArch, int ndkVersion) {
         RepoUtils.CPU_API = buildAbi;
