@@ -6,11 +6,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/md_dialog_frame_margin"
-        android:paddingLeft="@dimen/md_listitem_margin_left"
-        android:paddingRight="@dimen/md_dialog_frame_margin"
-        android:paddingStart="@dimen/md_listitem_margin_left">
+        android:layout_margin="8dp"
+        android:orientation="vertical">
 
         <com.jecelyin.common.widget.DrawClickableEditText
             android:id="@+id/find_edit_text"
