@@ -16,7 +16,7 @@
 
 package com.duy.ccppcompiler.packagemanager.repo;
 
-import com.duy.ccppcompiler.packagemanager.DownloadListener;
+import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -57,10 +57,10 @@ public class LocalPackageRepository extends PackageRepositoryImpl {
     }
 
     @Override
-    public void download(File saveToDir, PackageInfo packageInfo, DownloadListener listener) {
+    public void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener) {
         File file = new File(saveToDir, packageInfo.getFileName());
         if (file.exists()) {
-            listener.onComplete(file);
+            listener.onComplete(packageInfo, file);
         } else {
             listener.onFailure(new FileNotFoundException(file + " not found"));
         }

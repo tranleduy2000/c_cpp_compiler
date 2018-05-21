@@ -11,4 +11,8 @@ public class NotEnoughStorageException extends Exception {
     public String getMessage() {
         return "Not enough storage to store file. Need " + needMem + " bytes";
     }
+
+    public long getNeedMem() {
+        return needMem;
+    }
 }

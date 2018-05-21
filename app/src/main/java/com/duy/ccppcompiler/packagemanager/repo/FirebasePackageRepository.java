@@ -19,7 +19,7 @@ package com.duy.ccppcompiler.packagemanager.repo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.duy.ccppcompiler.packagemanager.DownloadListener;
+import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.RepoUtils;
@@ -85,7 +85,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
     }
 
     @Override
-    public void download(File saveToDir, PackageInfo packageInfo, DownloadListener listener) {
+    public void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener) {
 
     }
 

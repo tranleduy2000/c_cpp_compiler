@@ -19,7 +19,7 @@ package com.duy.ccppcompiler.packagemanager.repo;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.duy.ccppcompiler.packagemanager.DownloadListener;
+import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 
@@ -34,7 +34,7 @@ public interface IPackageRepository {
     void getPackagesInBackground(IPackageLoadListener listener);
 
     @WorkerThread
-    void download(File saveToDir, PackageInfo packageInfo, DownloadListener listener);
+    void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener);
 
     void destroy();
 }

@@ -18,8 +18,8 @@ package com.duy.ccppcompiler.packagemanager.repo;
 
 import android.util.Log;
 
-import com.duy.ccppcompiler.packagemanager.DownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
+import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
@@ -34,7 +34,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.duy.ccppcompiler.packagemanager.RepoUtils.CPU_API;
 import static com.duy.ccppcompiler.packagemanager.RepoUtils.replaceMacro;
 import static com.duy.ccppcompiler.packagemanager.repo.RepoConstants.PACKAGES_INDEX_FILE;
 
@@ -44,10 +43,13 @@ import static com.duy.ccppcompiler.packagemanager.repo.RepoConstants.PACKAGES_IN
  */
 public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
     private static final String TAG = "UbuntuServerPackageRepo";
-    private List<String> mUrls;
+    private final String mUrl;
 
-    public UbuntuServerPackageRepository(List<String> urls) {
-        this.mUrls = urls;
+    public UbuntuServerPackageRepository(String url) {
+        if (url == null) {
+            throw new NullPointerException();
+        }
+        mUrl = url;
     }
 
     @Override
@@ -55,17 +57,10 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                List<PackageInfo> list = new ArrayList<>();
                 RepoParser repoParser = new RepoParser();
-                for (String url : mUrls) {
-                    if (destroy) {
-                        return;
-                    }
-                    url = url + "/" + CPU_API;
-                    if (DLog.DEBUG) DLog.d(TAG, "url = " + url);
-                    String repoXmlFromUrl = getRepoXmlFromUrl(url);
-                    list.addAll(repoParser.parseRepoXml(repoXmlFromUrl, url));
-                }
+                if (DLog.DEBUG) DLog.d(TAG, "url = " + mUrl);
+                String repoXmlFromUrl = getRepoXmlFromUrl(mUrl);
+                List<PackageInfo> list = new ArrayList<>(repoParser.parseRepoXml(repoXmlFromUrl, mUrl));
                 listener.onSuccess(list);
             }
         });
@@ -73,27 +68,27 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
     }
 
     @Override
-    public void download(File saveToDir, PackageInfo packageInfo, DownloadListener listener) {
+    public void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "download() called with: saveToDir = [" + saveToDir + "], packageInfo = [" + packageInfo + "], listener = [" + listener + "]");
         //download file from url
         File temp = new File(saveToDir, packageInfo.getFileName());
-        if (temp.exists()) {
+        if (temp.exists() && temp.length() != 0) {
             Log.i(TAG, "Use file " + temp.getAbsolutePath());
-            listener.onComplete(temp);
+            listener.onComplete(packageInfo, temp);
             return;
         }
 
-        URL fromUrl = packageInfo.getURL();
+        URL fromUrl = getUrl(packageInfo);
         if (fromUrl == null) {
             listener.onFailure(new MalformedURLException("URL not found"));
             return;
         }
 
-        final String fileName = packageInfo.getFileName();
-        DLog.i(TAG, "Downloading file " + fromUrl + "/" + fileName);
+        DLog.i(TAG, "Downloading file " + fromUrl.toString());
 
         try {
-            URL url = new URL(fromUrl + "/" + fileName);
-            URLConnection urlConnection = url.openConnection();
+            URLConnection urlConnection = fromUrl.openConnection();
             urlConnection.setReadTimeout(3 * 60 * 1000); // timeout 3 minutes
             urlConnection.connect();
 
@@ -114,7 +109,7 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
                 }
                 outputStream.write(buf, 0, numRead);
                 totalRead += numRead;
-                listener.onProgress(totalRead, fileSize);
+                listener.onDownloadProgress(packageInfo, totalRead, fileSize);
             } while (true);
 
             inputStream.close();
@@ -122,13 +117,22 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
             if (totalRead != fileSize) {
                 listener.onFailure(new RuntimeException("Partially downloaded file!"));
             }
-
+            listener.onComplete(packageInfo, temp);
         } catch (Exception e) {
             e.printStackTrace();
             temp.delete();
             listener.onFailure(e);
         }
+    }
 
+    private URL getUrl(PackageInfo packageInfo) {
+        try {
+            String url = mUrl + "/" + packageInfo.getFileName();
+            return new URL(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private String getRepoXmlFromUrl(String url) {
