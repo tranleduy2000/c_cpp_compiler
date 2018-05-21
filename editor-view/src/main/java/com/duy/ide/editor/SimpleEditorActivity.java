@@ -81,7 +81,7 @@ import java.util.List;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class BaseEditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener,
+public class SimpleEditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
     protected static final int RC_OPEN_FILE = 1;
     private static final String TAG = "MainActivity";

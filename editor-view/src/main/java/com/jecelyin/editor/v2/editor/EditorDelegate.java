@@ -38,7 +38,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.duy.ide.editor.BaseEditorActivity;
+import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.editor.view.EditorView;
@@ -116,8 +116,8 @@ public class EditorDelegate implements TextWatcher {
         return mContext;
     }
 
-    private BaseEditorActivity getMainActivity() {
-        return (BaseEditorActivity) mContext;
+    private SimpleEditorActivity getMainActivity() {
+        return (SimpleEditorActivity) mContext;
     }
 
     public String getTitle() {
@@ -445,11 +445,11 @@ public class EditorDelegate implements TextWatcher {
 
     @MainThread
     private void noticeMenuChanged() {
-        BaseEditorActivity editorActivity = (BaseEditorActivity) this.mContext;
+        SimpleEditorActivity editorActivity = (SimpleEditorActivity) this.mContext;
         editorActivity.setMenuStatus(R.id.action_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.action_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         editorActivity.setMenuStatus(R.id.action_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        ((BaseEditorActivity) mContext).getTabManager().onDocumentChanged();
+        ((SimpleEditorActivity) mContext).getTabManager().onDocumentChanged();
     }
 
     @Override

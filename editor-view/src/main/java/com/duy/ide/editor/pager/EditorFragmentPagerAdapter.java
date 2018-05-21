@@ -22,7 +22,7 @@ import android.support.v4.app.Fragment;
 
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
-import com.duy.ide.editor.BaseEditorActivity;
+import com.duy.ide.editor.SimpleEditorActivity;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.EditorFragment;
 import com.nakama.arraypageradapter.ArrayFragmentStatePagerAdapter;
@@ -36,9 +36,9 @@ import java.util.ArrayList;
 
 public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<EditorPageDescriptor> implements IEditorPagerAdapter {
     private static final String TAG = "EditorFragmentPagerAdap";
-    private BaseEditorActivity context;
+    private SimpleEditorActivity context;
 
-    public EditorFragmentPagerAdapter(BaseEditorActivity activity) {
+    public EditorFragmentPagerAdapter(SimpleEditorActivity activity) {
         super(activity.getSupportFragmentManager());
         this.context = activity;
     }

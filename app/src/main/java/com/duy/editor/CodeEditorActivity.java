@@ -33,8 +33,7 @@ import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.common.DLog;
-import com.duy.ide.editor.BaseEditorActivity;
+import com.duy.ide.editor.SimpleEditorActivity;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pdaxrom.cctools.BuildConstants;
@@ -49,7 +48,7 @@ import jackpal.androidterm.TermPreferencesActivity;
  * Created by Duy on 19-May-18.
  */
 
-public class CodeEditorActivity extends BaseEditorActivity {
+public class CodeEditorActivity extends SimpleEditorActivity {
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
     private DiagnosticPresenter mDiagnosticPresenter;
 
