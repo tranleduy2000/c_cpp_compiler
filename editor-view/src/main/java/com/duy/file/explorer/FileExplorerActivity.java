@@ -31,12 +31,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.editor.databinding.ActivityFileExplorerBinding;
 import com.duy.file.explorer.io.JecFile;
 import com.duy.file.explorer.io.LocalFile;
 import com.duy.file.explorer.listener.OnClipboardDataChangedListener;
 import com.duy.file.explorer.util.FileListSorter;
+import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.editor.databinding.ActivityFileExplorerBinding;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
@@ -55,6 +55,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
     public static final String EXTRA_HOME_PATH = "home_path";
     public static final String EXTRA_INIT_PATH = "dest_file";
     public static final String EXTRA_MODE = "mode";
+    private static final String EXTRA_ENCODING = "encoding";
 
     private static final int MODE_PICK_FILE = 1;
     private static final int MODE_PICK_PATH = 2;
@@ -82,7 +83,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         Intent it = new Intent(activity, FileExplorerActivity.class);
         it.putExtra(EXTRA_MODE, MODE_PICK_PATH);
         it.putExtra(EXTRA_INIT_PATH, destFile);
-        it.putExtra("encoding", encoding);
+        it.putExtra(EXTRA_ENCODING, encoding);
         activity.startActivityForResult(it, requestCode);
     }
 
@@ -116,7 +117,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(mMode == MODE_PICK_FILE ? R.string.open_file : R.string.save_file);
+        setTitle(mMode == MODE_PICK_FILE ? R.string.open_file : R.string.save_file);
 
         mLastPath = Preferences.getInstance(this).getLastOpenPath();
         if (TextUtils.isEmpty(mLastPath)) {
@@ -129,7 +130,6 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         }
 
         String initPath = intent.getStringExtra(EXTRA_INIT_PATH);
-
         if (!TextUtils.isEmpty(initPath)) {
             File dest = new File(initPath);
             mLastPath = dest.isFile() ? dest.getParent() : dest.getPath();
@@ -277,7 +277,8 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
                         if (which > 0) {
                             fileEncoding = names[which];
                         }
-                        dialog.dismiss();;
+                        dialog.dismiss();
+                        ;
                     }
                 })
                 .show();

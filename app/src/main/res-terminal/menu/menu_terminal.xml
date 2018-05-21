@@ -14,22 +14,23 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_toggle_soft_keyboard"
         android:icon="@drawable/ic_keyboard_black_24dp"
-        android:title="@string/toggle_soft_keyboard" />
+        android:title="@string/toggle_soft_keyboard"
+        app:showAsAction="ifRoom" />
+
 
     <item
         android:id="@+id/menu_special_keys"
         android:title="@string/special_keys" />
-
     <item
         android:id="@+id/menu_preferences"
         android:icon="@drawable/baseline_settings_black_24"
         android:title="@string/preferences" />
-
     <item
         android:id="@+id/menu_reset"
         android:title="@string/reset" />
