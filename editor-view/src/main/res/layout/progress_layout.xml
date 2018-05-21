@@ -23,11 +23,7 @@
     android:paddingRight="20dp"
     android:paddingTop="15dp">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/messageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

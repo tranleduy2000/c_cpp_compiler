@@ -57,10 +57,9 @@ public class DocumentInfoDialog extends AbstractDialog {
     public void show() {
         Matcher matcher = Pattern.compile("[a-zA-Z]+").matcher(editAreaView.getText());
         int wordCount = 0;
-        while (matcher.find())
-            wordCount++;
+        while (matcher.find()) wordCount++;
 
-        View view = LayoutInflater.from(context).inflate(R.layout.document_info, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_document_info, null);
         ViewHolder viewHolder = new ViewHolder(view);
         viewHolder.mPathTextView.setText(context.getString(R.string.path_x, path == null ? "" : path));
         viewHolder.mCharCountTextView.setText(context.getString(R.string.char_x, editAreaView.getText().length()));

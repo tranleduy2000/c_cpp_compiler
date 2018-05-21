@@ -16,7 +16,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="item" type="com.jecelyin.android.file_explorer.model.FileItemModel" />
+
+        <variable
+            name="item"
+            type="com.duy.file.explorer.model.FileItemModel" />
     </data>
 
     <LinearLayout
@@ -42,10 +45,9 @@
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 app:riv_corner_radius="360dp"
-                app:riv_mutate_background="true"
-                />
+                app:riv_mutate_background="true" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/extTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -63,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +78,7 @@
                 android:textSize="17sp" />
 
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/dateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,7 +89,7 @@
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="13sp" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/secondLineTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
