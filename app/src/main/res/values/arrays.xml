@@ -17,6 +17,7 @@
 <resources>
     <string-array name="file_extensions">
         <item>.cpp</item>
+        <item>.h</item>
         <item>.c</item>
     </string-array>
 </resources>

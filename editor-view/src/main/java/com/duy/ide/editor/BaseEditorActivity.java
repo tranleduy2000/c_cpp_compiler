@@ -31,7 +31,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,12 +43,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.duy.common.StoreUtil;
+import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.IEditorPagerAdapter;
 import com.duy.ide.filemanager.FileManager;
-import com.duy.file.explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
@@ -452,17 +451,20 @@ public class BaseEditorActivity extends FullScreenActivity implements MenuItem.O
 
     public void createNewFile() {
         String[] fileExtensions = getSupportedFileExtensions();
-        AlertDialog dialog = DialogNewFile.create(this, fileExtensions, new UIUtils.OnShowInputCallback() {
-            @Override
-            public void onConfirm(CharSequence input) {
-                String appStoragePath = SysUtils.getAppStoragePath(BaseEditorActivity.this);
-                File srcDir = new File(appStoragePath, "src");
-                File file = new File(srcDir, input.toString());
-                if (com.duy.ide.editor.utils.IOUtils.createNewFile(file)) {
-                    mTabManager.newTab(file);
-                }
-            }
-        });
+        EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
+        String path = null;
+        if (currentEditorDelegate != null) {
+            path = currentEditorDelegate.getPath();
+        } else {
+            path = Environment.getExternalStorageDirectory().getPath();
+        }
+        DialogNewFile dialog = new DialogNewFile(this, fileExtensions, path,
+                new DialogNewFile.OnCreateFileListener() {
+                    @Override
+                    public void onFileCreated(@NonNull File file) {
+                        mTabManager.newTab(file);
+                    }
+                });
         dialog.show();
     }
 

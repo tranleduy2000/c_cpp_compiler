@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CCppCompiler.iml" filepath="$PROJECT_DIR$/CCppCompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/apkbuilder/apkbuilder.iml" filepath="$PROJECT_DIR$/apkbuilder/apkbuilder.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/c_cpp_compiler.iml" filepath="$PROJECT_DIR$/c_cpp_compiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/cctools/cctools.iml" filepath="$PROJECT_DIR$/cctools/cctools.iml" />
       <module fileurl="file://$PROJECT_DIR$/editor-view/editor-view.iml" filepath="$PROJECT_DIR$/editor-view/editor-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/emulatorview/emulatorview.iml" filepath="$PROJECT_DIR$/emulatorview/emulatorview.iml" />

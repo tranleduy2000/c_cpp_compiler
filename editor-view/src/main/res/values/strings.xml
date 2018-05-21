@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
   ~
   ~ This file is part of 920 Text Editor.
@@ -215,4 +214,7 @@
     <string name="cannot_read_folder">Can not read folder</string>
     <string name="share_this_app">Share this app</string>
     <string name="rate_this_app">Rate this app</string>
+    <string name="path">Path</string>
+    <string name="invalid_name">Invalid name</string>
+    <string name="cannot_create_new_file">Cannot create file</string>
 </resources>

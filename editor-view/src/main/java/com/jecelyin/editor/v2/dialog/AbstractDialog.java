@@ -18,6 +18,7 @@ package com.jecelyin.editor.v2.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 
 import com.duy.ide.editor.BaseEditorActivity;
 
@@ -34,6 +35,10 @@ public abstract class AbstractDialog {
     protected void handleDialog(Dialog dlg) {
         dlg.setCanceledOnTouchOutside(false);
         dlg.setCancelable(true);
+    }
+
+    protected AlertDialog.Builder getBuilder() {
+        return new AlertDialog.Builder(context);
     }
 
     protected BaseEditorActivity getMainActivity() {
