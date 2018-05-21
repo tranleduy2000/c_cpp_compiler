@@ -17,20 +17,18 @@
 package com.duy.ccppcompiler.packagemanager;
 
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackagesLists;
+import com.duy.ccppcompiler.packagemanager.repo.RepoConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RepoUtils {
-    public static final String ARCH_ARM_V7A = "armeabi-v7a";
-    public static final String ARCH_MIPS = "mips";
-    public static final String ARCH_X86 = "x86";
 
-    public static final String PACKAGES_INDEX_FILE = "Packages";
 
     /**
      * armeabi-v7a/
@@ -55,13 +53,13 @@ public class RepoUtils {
         String ndkArch;
         if (Build.CPU_ABI.startsWith("arm")) {
             ndkArch = "armel";
-            cpuAbi = ARCH_ARM_V7A;
+            cpuAbi = RepoConstants.ARCH_ARM_V7A;
         } else if (Build.CPU_ABI.startsWith("mips")) {
             ndkArch = "mipsel";
-            cpuAbi = ARCH_MIPS;
+            cpuAbi = RepoConstants.ARCH_MIPS;
         } else {
             ndkArch = "i686";
-            cpuAbi = ARCH_X86;
+            cpuAbi = RepoConstants.ARCH_X86;
         }
 
         RepoUtils.CPU_API = cpuAbi;
@@ -106,17 +104,15 @@ public class RepoUtils {
         return str;
     }
 
+    @NonNull
     public static List<PackageInfo> checkingForUpdates(List<PackageInfo> availablePackages,
                                                        List<PackageInfo> installedPackages) {
-        List<PackageInfo> list = null;
+        List<PackageInfo> list = new ArrayList<>();
 
         for (PackageInfo installedPkg : installedPackages) {
             for (PackageInfo pkg : availablePackages) {
                 if (installedPkg.getName().equals(pkg.getName())) {
                     if (!installedPkg.getVersion().equals(pkg.getVersion())) {
-                        if (list == null) {
-                            list = new ArrayList<>();
-                        }
                         list.add(pkg);
                     }
                     break;
@@ -126,6 +122,7 @@ public class RepoUtils {
         return list;
     }
 
+    @NonNull
     public static List<PackageInfo> checkingForUpdates(PackagesLists packagesLists) {
         return checkingForUpdates(packagesLists.getAvailablePackages(),
                 packagesLists.getInstalledPackages());

@@ -255,4 +255,15 @@ public class Environment {
         System.arraycopy(env2, 0, env, env1.length, env2.length);
         return env;
     }
+
+    public static void mkdirs(Context context) {
+        Environment.getServiceDir(context);
+        Environment.getHomeDir(context);
+        Environment.getToolchainsDir(context);
+
+        Environment.getSdCardHomeDir();
+        Environment.getSdCardBackupDir();
+        Environment.getSdCardTmpDir();
+
+    }
 }

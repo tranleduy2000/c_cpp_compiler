@@ -16,11 +16,8 @@
 
 package com.duy.ccppcompiler.packagemanager.repo;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
 import com.duy.ccppcompiler.packagemanager.DownloadListener;
-import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
@@ -39,17 +36,22 @@ import static com.duy.ccppcompiler.packagemanager.RepoUtils.replaceMacro;
 /**
  * Created by Duy on 20-May-18.
  */
-public class LocalPackageRepository implements IPackageRepository {
+public class LocalPackageRepository extends PackageRepositoryImpl {
     private static final String TAG = "LocalPackageRepository";
     private File mInstalledDir;
 
-    public LocalPackageRepository(Context context) {
-        mInstalledDir = new File(Environment.getInstalledPackageDir(context));
+    public LocalPackageRepository(File installDir) {
+        mInstalledDir = installDir;
     }
 
     @Override
-    @NonNull
-    public List<PackageInfo> getPackages() {
+    public void getPackagesInBackground(IPackageLoadListener listener) {
+        RepoParser parser = new RepoParser();
+        List<PackageInfo> packageInfos = parser.parseRepoXml(getInstalledPackagesData(mInstalledDir), mInstalledDir.getAbsolutePath());
+        listener.onSuccess(packageInfos);
+    }
+
+    public List<PackageInfo> getInstalledPackages() {
         RepoParser parser = new RepoParser();
         return parser.parseRepoXml(getInstalledPackagesData(mInstalledDir), mInstalledDir.getAbsolutePath());
     }

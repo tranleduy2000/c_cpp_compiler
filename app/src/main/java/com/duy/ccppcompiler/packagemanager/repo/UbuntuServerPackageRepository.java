@@ -16,12 +16,11 @@
 
 package com.duy.ccppcompiler.packagemanager.repo;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.duy.ccppcompiler.packagemanager.DownloadListener;
+import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
-import com.duy.ccppcompiler.packagemanager.RepoUtils;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
 import com.pdaxrom.utils.XMLParser;
@@ -37,12 +36,13 @@ import java.util.List;
 
 import static com.duy.ccppcompiler.packagemanager.RepoUtils.CPU_API;
 import static com.duy.ccppcompiler.packagemanager.RepoUtils.replaceMacro;
+import static com.duy.ccppcompiler.packagemanager.repo.RepoConstants.PACKAGES_INDEX_FILE;
 
 /**
  * old cctools repo
  * Created by Duy on 20-May-18.
  */
-public class UbuntuServerPackageRepository implements IPackageRepository {
+public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
     private static final String TAG = "UbuntuServerPackageRepo";
     private List<String> mUrls;
 
@@ -51,16 +51,25 @@ public class UbuntuServerPackageRepository implements IPackageRepository {
     }
 
     @Override
-    @NonNull
-    public List<PackageInfo> getPackages() {
-        List<PackageInfo> list = new ArrayList<>();
-        RepoParser repoParser = new RepoParser();
-        for (String url : mUrls) {
-            url = url + "/" + CPU_API;
-            if (DLog.DEBUG) DLog.d(TAG, "url = " + url);
-            list.addAll(repoParser.parseRepoXml(getRepoXmlFromUrl(url), url));
-        }
-        return list;
+    public void getPackagesInBackground(final IPackageLoadListener listener) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<PackageInfo> list = new ArrayList<>();
+                RepoParser repoParser = new RepoParser();
+                for (String url : mUrls) {
+                    if (destroy) {
+                        return;
+                    }
+                    url = url + "/" + CPU_API;
+                    if (DLog.DEBUG) DLog.d(TAG, "url = " + url);
+                    String repoXmlFromUrl = getRepoXmlFromUrl(url);
+                    list.addAll(repoParser.parseRepoXml(repoXmlFromUrl, url));
+                }
+                listener.onSuccess(list);
+            }
+        });
+        thread.start();
     }
 
     @Override
@@ -124,7 +133,7 @@ public class UbuntuServerPackageRepository implements IPackageRepository {
 
     private String getRepoXmlFromUrl(String url) {
         XMLParser parser = new XMLParser();
-        String xml = parser.getXmlFromUrl(url + "/" + RepoUtils.PACKAGES_INDEX_FILE);
+        String xml = parser.getXmlFromUrl(url + "/" + PACKAGES_INDEX_FILE);
         return replaceMacro(xml);
     }
 

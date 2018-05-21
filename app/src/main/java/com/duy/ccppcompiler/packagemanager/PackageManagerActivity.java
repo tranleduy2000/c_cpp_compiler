@@ -49,6 +49,7 @@ import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackagesLists;
+import com.duy.ccppcompiler.packagemanager.repo.FirebasePackageRepository;
 import com.duy.ccppcompiler.packagemanager.repo.LocalPackageRepository;
 import com.duy.ccppcompiler.packagemanager.repo.UbuntuServerPackageRepository;
 import com.jecelyin.common.utils.DLog;
@@ -86,7 +87,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     private Context context = this;
 
     private String mAction = null;
-    private String mActivityData = null;
+    private String mIntentData = null;
     // Last list position
     private int mLastPosition = 0;
     private ListView mListView;
@@ -98,7 +99,10 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     @NonNull
     private PackagesLists mPackagesLists = new PackagesLists();
+
     private LocalPackageRepository mLocalPackageRepository;
+    private UbuntuServerPackageRepository mUbuntuServerPackageRepository;
+    private FirebasePackageRepository mFirebasePackageRepository;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,29 +112,16 @@ public class PackageManagerActivity extends FullScreenActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.title_menu_add_ons);
 
-        mLocalPackageRepository = new LocalPackageRepository(this);
+        mLocalPackageRepository = new LocalPackageRepository(new File(Environment.getInstalledPackageDir(context)));
+        mUbuntuServerPackageRepository = new UbuntuServerPackageRepository(getReposList());
+        mFirebasePackageRepository = new FirebasePackageRepository();
 
-        setupDirs();
-        setupVersion();
+        Environment.mkdirs(this);
+        RepoUtils.setVersion();
+        getDataFromIntent();
 
         mListView = getListView();
         mListView.requestFocus();
-
-        mAction = null;
-        mActivityData = null;
-        if (getIntent().getExtras() != null) {
-            mAction = getIntent().getExtras().getString(EXTRA_CMD);
-            if (ACTION_INSTALL.equals(mAction)) {
-                mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
-            } else if (ACTION_UNINSTALL.equals(mAction)) {
-                mActivityData = getIntent().getExtras().getString(EXTRA_DATA);
-            }
-            new DownloadRepoTask().execute(getReposList());
-            return;
-        } else {
-            new DownloadRepoTask().execute(getReposList());
-        }
-
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -151,17 +142,40 @@ public class PackageManagerActivity extends FullScreenActivity {
                             .create()
                             .show();
                 } else {
-                    new PrepareToInstallTask().execute(name);
+                    prepareForInstallPackage(name);
                 }
             }
         });
         mListView.setTextFilterEnabled(true);
+
+        downloadListPackages();
+    }
+
+
+    private void getDataFromIntent() {
+        mAction = null;
+        mIntentData = null;
+        if (getIntent().getExtras() != null) {
+            mAction = getIntent().getExtras().getString(EXTRA_CMD);
+            if (ACTION_INSTALL.equals(mAction)) {
+                mIntentData = getIntent().getExtras().getString(EXTRA_DATA);
+            } else if (ACTION_UNINSTALL.equals(mAction)) {
+                mIntentData = getIntent().getExtras().getString(EXTRA_DATA);
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mLastPosition = this.getListView().getFirstVisiblePosition();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mFirebasePackageRepository.destroy();
+        mUbuntuServerPackageRepository.destroy();
     }
 
     private ListView getListView() {
@@ -197,7 +211,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_update) {
-            (new DownloadRepoTask()).execute(getReposList());
+            downloadListPackages();
 
         } else if (i == R.id.action_repo_mirrors) {
             editReposList();
@@ -210,24 +224,6 @@ public class PackageManagerActivity extends FullScreenActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupDirs() {
-        mSdCardDir = Environment.getSdCardHomeDir();
-        mBackupDir = Environment.getSdCardBackupDir();
-        mToolchainDir = Environment.getToolchainsDir(this);
-
-        //create of not exist
-        Environment.getSdCardTmpDir();
-        Environment.getServiceDir(this);
-        Environment.getHomeDir(this);
-    }
-
-    /**
-     * Define sdk and ndk for current device
-     */
-    private void setupVersion() {
-
-        RepoUtils.setVersion();
-    }
 
     @UiThread
     private void showPackages(List<PackageInfo> repo) {
@@ -290,10 +286,16 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private void showProgress(int title, int message) {
+        showProgress(title, message, false);
+    }
+
+    private void showProgress(int title, int message, boolean intermediate) {
         mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setTitle(getString(title));
         mProgressDialog.setMessage(getString(message));
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        if (!intermediate) {
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        }
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
     }
@@ -334,9 +336,9 @@ public class PackageManagerActivity extends FullScreenActivity {
     @UiThread
     private void showError(String message) {
         new AlertDialog.Builder(context)
-                .setTitle(R.string.pkgmgr_name)
+                .setTitle(R.string.err)
                 .setMessage(message)
-                .setNeutralButton(getText(R.string.button_continue), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getText(R.string.button_continue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mAction != null) {
                             setResult(RESULT_CANCELED);
@@ -345,7 +347,6 @@ public class PackageManagerActivity extends FullScreenActivity {
                     }
                 })
                 .setCancelable(false)
-                .setIcon(R.drawable.baseline_error_black_24)
                 .show();
     }
 
@@ -404,6 +405,8 @@ public class PackageManagerActivity extends FullScreenActivity {
                 Log.e(TAG, "Error during remove files " + e);
             }
             updateProgress(100);
+
+
         }
         return true;
     }
@@ -488,58 +491,79 @@ public class PackageManagerActivity extends FullScreenActivity {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class DownloadRepoTask extends AsyncTask<List<String>, Void, List<PackageInfo>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showProgress(R.string.title_repo_update, R.string.message_package_downloading);
-        }
+    private void updateInstalledPackages() {
+        //local packages
+        List<PackageInfo> installedPackages = mLocalPackageRepository.getInstalledPackages();
+        mPackagesLists.setInstalledPackages(installedPackages);
+    }
 
-        @Override
-        protected List<PackageInfo> doInBackground(List<String>[] params) {
-            mPackagesLists.setInstalledPackages(mLocalPackageRepository.getPackages());
-            updateProgress(30);
+    private void downloadListPackages() {
+        showProgress(R.string.title_repo_update, R.string.message_package_downloading, true);
 
-            UbuntuServerPackageRepository repository = new UbuntuServerPackageRepository(params[0]);
-            mPackagesLists.setAvailablePackages(repository.getPackages());
-            updateProgress(60);
+        updateInstalledPackages();
 
-            if (mPackagesLists.getAvailablePackages().isEmpty() || mPackagesLists.getInstalledPackages().isEmpty()) {
-                return null;
-            }
-            return RepoUtils.checkingForUpdates(mPackagesLists);
-        }
-
-        @Override
-        protected void onPostExecute(List<PackageInfo> needUpdatePackages) {
-            updateProgress(100);
-            if (!mPackagesLists.getAvailablePackages().isEmpty() && mAction == null) {
-                DLog.i(TAG, "Downloaded repo with " + mPackagesLists.getAvailablePackages().size() + " packages.");
-                showPackages(mPackagesLists.getAvailablePackages());
+        //using firebase server
+        mFirebasePackageRepository.getPackagesInBackground(new IPackageLoadListener() {
+            @Override
+            public void onSuccess(List<PackageInfo> packages) {
+                if (DLog.DEBUG)
+                    DLog.d(TAG, "mFirebasePackageRepository onSuccess() called with: packages = [" + packages + "]");
+                downloadPackagesComplete(packages);
             }
 
-            hideProgress();
-            if (mPackagesLists.getAvailablePackages().isEmpty() && mAction == null) {
-                showError(getString(R.string.message_package_repo_unavailable));
-                return;
-            }
+            @Override
+            public void onFailed(@NonNull Exception e) {
+                if (DLog.DEBUG)
+                    DLog.e(TAG, "mFirebasePackageRepository onFailed: Firebase not available", e);
+                mUbuntuServerPackageRepository.getPackagesInBackground(new IPackageLoadListener() {
+                    @Override
+                    public void onSuccess(List<PackageInfo> packages) {
+                        downloadPackagesComplete(packages);
+                    }
 
-            if (ACTION_INSTALL.equals(mAction)) {
-                if (!mPackagesLists.getAvailablePackages().isEmpty()) {
-                    new PrepareToInstallTask().execute(mActivityData);
-                } else {
-                    showError(getString(R.string.message_package_repo_unavailable) + "\n" +
-                            getString(R.string.message_package_for_install) +
-                            mActivityData);
-                }
-                return;
-            } else if (ACTION_UNINSTALL.equals(mAction)) {
-                new UninstallPackagesTask().execute(mActivityData);
-                return;
-            }
+                    @Override
+                    public void onFailed(@NonNull Exception e) {
+                        downloadListPackagesFailed(e);
+                    }
+                });
 
-            if (needUpdatePackages != null) {
+            }
+        });
+    }
+
+    /**
+     * Called when can not load list packages
+     */
+    private void downloadListPackagesFailed(Exception e) {
+        hideProgress();
+        showError(getString(R.string.message_package_repo_unavailable) + "\n" + e.getMessage());
+    }
+
+    /**
+     * Called when list packages is loaded
+     */
+    private void downloadPackagesComplete(List<PackageInfo> packages) {
+        mPackagesLists.setAvailablePackages(packages);
+
+        //display to UI
+        hideProgress();
+        showPackages(mPackagesLists.getAvailablePackages());
+
+        if (ACTION_INSTALL.equals(mAction)) {
+            if (!mPackagesLists.getAvailablePackages().isEmpty()) {
+                prepareForInstallPackage(mIntentData);
+            } else {
+                showError(getString(R.string.message_package_repo_unavailable) + "\n" +
+                        getString(R.string.message_package_for_install) +
+                        mIntentData);
+            }
+        } else if (ACTION_UNINSTALL.equals(mAction)) {
+            new UninstallPackagesTask().execute(mIntentData);
+
+        } else {
+
+            List<PackageInfo> needUpdatePackages = RepoUtils.checkingForUpdates(mPackagesLists);
+            if (!needUpdatePackages.isEmpty()) {
                 final InstallPackageInfo updateInfo = new InstallPackageInfo();
                 for (PackageInfo pkg : needUpdatePackages) {
                     updateInfo.addPackage(mPackagesLists, pkg.getName());
@@ -572,68 +596,50 @@ public class PackageManagerActivity extends FullScreenActivity {
                         });
                 dialog.show();
             }
-            if (needUpdatePackages == null && mAction != null && mAction.equals(ACTION_UPDATE)) {
+
+            if (needUpdatePackages.isEmpty() && ACTION_UPDATE.equals(mAction)) {
+                mProgressDialog.dismiss();
                 setResult(RESULT_OK);
                 finish();
             }
         }
     }
 
-    /**
-     * Prepare for downloading a package
-     */
-    @SuppressLint("StaticFieldLeak")
-    private class PrepareToInstallTask extends AsyncTask<String, Void, InstallPackageInfo> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showProgress(R.string.pkg_prepareinstalltask, R.string.pkg_prepareinstall);
-        }
-
-        @Override
-        protected InstallPackageInfo doInBackground(String... params) {
-            // Update installed packages list
-            List<PackageInfo> installedPackages = mLocalPackageRepository.getPackages();
-            mPackagesLists.setInstalledPackages(installedPackages);
-            return new InstallPackageInfo(mPackagesLists, params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(final InstallPackageInfo info) {
-            hideProgress();
-            Builder dialog = new AlertDialog.Builder(context)
-                    .setTitle(getString(R.string.pkg_selected) + info.getName())
-                    .setMessage(getString(R.string.pkg_selected1) + info.getPackagesStrings()
-                            + "\n\n"
-                            + getString(R.string.pkg_selected2)
-                            + Utils.humanReadableByteCount(info.getDownloadSize(), false)
-                            + "\u0020"
-                            + getString(R.string.pkg_selected3)
-                            + Utils.humanReadableByteCount(info.getInstallSize(), false))
-                    .setCancelable(false)
-                    .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (mAction != null) {
-                                setResult(RESULT_CANCELED);
-                                finish();
-                            }
+    private void prepareForInstallPackage(String name) {
+        final InstallPackageInfo info = new InstallPackageInfo(mPackagesLists, name);
+        Builder dialog = new AlertDialog.Builder(context)
+                .setTitle(getString(R.string.pkg_selected) + info.getName())
+                .setMessage(getString(R.string.pkg_selected1) + info.getPackagesStrings()
+                        + "\n\n"
+                        + getString(R.string.pkg_selected2)
+                        + Utils.humanReadableByteCount(info.getDownloadSize(), false)
+                        + "\u0020"
+                        + getString(R.string.pkg_selected3)
+                        + Utils.humanReadableByteCount(info.getInstallSize(), false))
+                .setCancelable(false)
+                .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mAction != null) {
+                            setResult(RESULT_CANCELED);
+                            finish();
                         }
-                    })
-                    .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Log.i(TAG, "Get install packages = " + info.getPackagesStrings());
-                            new InstallPackagesTask().execute(info);
-                        }
-                    });
-            dialog.show();
-        }
+                    }
+                })
+                .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(TAG, "Get install packages = " + info.getPackagesStrings());
+                        new InstallPackagesTask().execute(info);
+                    }
+                });
+        dialog.show();
     }
+
 
     /**
      * Download an install package and all dependencies
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("StaticFieldLeak")
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Void, Boolean> {
 
         @Override
