@@ -33,7 +33,7 @@
 
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#50ffffff</item>
-        <item name="menuIconNormalColor">#829294</item>
+        <item name="menuIconNormalColor">#ffffff</item>
 
         <item name="textForeground">#A6B2C0</item>
         <item name="textBackground">#2b2b2b</item>

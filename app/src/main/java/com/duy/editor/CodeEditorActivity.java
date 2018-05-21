@@ -74,7 +74,8 @@ public class CodeEditorActivity extends BaseEditorActivity {
         if (diagnosticFragment == null) {
             diagnosticFragment = DiagnosticFragment.newInstance();
         }
-        fm.beginTransaction().replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
+        fm.beginTransaction()
+                .replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
                 .commit();
         mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
     }
@@ -91,11 +92,12 @@ public class CodeEditorActivity extends BaseEditorActivity {
     @Override
     protected void onCreateNavigationMenu(Menu menu) {
         //add run button
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_open_terminal, 0, R.string.title_menu_terminal).setIcon(R.drawable.ic_terminal_black);
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_term_preferences, 0, R.string.title_term_preferences).setIcon(R.drawable.ic_settings_white_24dp);
-        if (DLog.DEBUG){
-            menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons).setIcon(R.drawable.baseline_extension_24);
-        }
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
+                .setIcon(R.drawable.ic_terminal_black);
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_term_preferences, 0, R.string.title_term_preferences)
+                .setIcon(R.drawable.ic_settings_white_24dp);
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
+                .setIcon(R.drawable.baseline_extension_24);
         super.onCreateNavigationMenu(menu);
     }
 
