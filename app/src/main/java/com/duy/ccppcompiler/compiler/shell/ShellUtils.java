@@ -18,8 +18,8 @@ package com.duy.ccppcompiler.compiler.shell;
 
 import android.content.Context;
 
-import com.jecelyin.common.utils.DLog;
 import com.duy.ccppcompiler.packagemanager.Environment;
+import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;
 
 import java.io.BufferedReader;
@@ -37,6 +37,10 @@ public class ShellUtils {
     private static final String TAG = "ShellUtils";
 
     private ShellUtils() {
+    }
+
+    public static CommandResult execCommand(Context context, String mCommand) {
+        return execCommand(context, Environment.getHomeDir(context), mCommand);
     }
 
     public static CommandResult execCommand(Context context, String mWorkDir, String mCommand) {

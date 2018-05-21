@@ -27,7 +27,9 @@ import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -46,12 +48,12 @@ import static com.duy.ccppcompiler.packagemanager.repo.RepoConstants.PACKAGES_PI
  */
 public class FirebasePackageRepository extends PackageRepositoryImpl {
     private static final String TAG = "FirebasePackageRepository";
-    private StorageReference mStorage;
+    private StorageReference mRepo;
     private List<PackageInfo> mPackageInfos = null;
 
     public FirebasePackageRepository() {
-        mStorage = FirebaseStorage.getInstance().getReference();
-        mStorage = mStorage.child(ROOT)
+        mRepo = FirebaseStorage.getInstance().getReference();
+        mRepo = mRepo.child(ROOT)
                 .child(Build.VERSION.SDK_INT >= 21 ? PACKAGES_PIE : PACKAGES)
                 .child(RepoUtils.CPU_API);
     }
@@ -62,7 +64,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
             listener.onSuccess(mPackageInfos);
             return;
         }
-        mStorage.child(PACKAGES_INDEX_FILE)
+        mRepo.child(PACKAGES_INDEX_FILE)
                 .getBytes(1024 * 1024)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -84,8 +86,32 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
     }
 
     @Override
-    public void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener) {
-
+    public void download(File saveToDir, final PackageInfo packageInfo, final PackageDownloadListener listener) {
+        final File localFile = new File(saveToDir, packageInfo.getFileName());
+        if (localFile.exists() && localFile.length() != 0) {
+            listener.onComplete(packageInfo, localFile);
+            return;
+        }
+        mRepo.child(packageInfo.getFileName())
+                .getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        listener.onComplete(packageInfo, localFile);
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        listener.onDownloadProgress(packageInfo, taskSnapshot.getBytesTransferred(), taskSnapshot.getTotalByteCount());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        listener.onFailure(exception);
+                    }
+                });
     }
 
     static class FirebaseStorageContract {

@@ -16,7 +16,7 @@
 
 package com.duy.ccppcompiler.packagemanager;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -32,8 +32,8 @@ public interface PackageDownloadListener {
     void onComplete(PackageInfo packageInfo, File downloadedFile);
 
     @WorkerThread
-    void onFailure(@Nullable Exception e);
+    void onFailure(@NonNull Exception e);
 
     @WorkerThread
-    void onDownloadProgress(PackageInfo packageInfo, int totalRead, int fileSize);
+    void onDownloadProgress(PackageInfo packageInfo, long totalRead, long fileSize);
 }

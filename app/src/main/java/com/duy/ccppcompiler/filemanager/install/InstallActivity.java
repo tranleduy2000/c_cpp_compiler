@@ -37,11 +37,10 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.FullScreenActivity;
-import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 
 /**
  * Created by Duy on 22-Apr-18.
@@ -187,7 +186,7 @@ public class InstallActivity extends FullScreenActivity {
         @Override
         protected Boolean doInBackground(Void... voids) {
             InstallActivity context = InstallActivity.this;
-            CommandResult result = ShellUtils.execCommand(context, Environment.getHomeDir(context), "gcc-4.9 -v");
+            CommandResult result = ShellUtils.execCommand(context, "gcc-4.9 -v");
             if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
             return result != null && result.getResultCode() == 0;
         }
