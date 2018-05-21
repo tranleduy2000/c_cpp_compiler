@@ -47,10 +47,11 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatImageView
+    <com.duy.ide.editor.view.TintImageView
         android:id="@+id/btn_close"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:scaleType="center"
-        android:src="@drawable/ic_close_black_24dp" />
+        android:src="@drawable/ic_close_black_24dp"
+        android:textColor="?android:textColorPrimary" />
 </LinearLayout>
