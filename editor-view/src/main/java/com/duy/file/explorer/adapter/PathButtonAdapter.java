@@ -58,14 +58,15 @@ public class PathButtonAdapter extends RecyclerView.Adapter<PathButtonAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, final int position) {
         JecFile path = pathList.get(position);
         String name = path.getName();
-        if("/".equals(name) || TextUtils.isEmpty(name))
+        if ("/".equals(name) || TextUtils.isEmpty(name))
             name = holder.textView.getContext().getString(R.string.root_path);
         holder.textView.setText(name);
-        holder.textView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClickListener != null)
+                if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(position, v);
+                }
             }
         });
     }
@@ -76,12 +77,12 @@ public class PathButtonAdapter extends RecyclerView.Adapter<PathButtonAdapter.Vi
     }
 
     public void setPath(JecFile path) {
-        if(pathList == null)
+        if (pathList == null)
             pathList = new ArrayList<>();
         else
             pathList.clear();
 
-        for(;path != null;) {
+        for (; path != null; ) {
             pathList.add(path);
             path = path.getParentFile();
         }
@@ -96,7 +97,7 @@ public class PathButtonAdapter extends RecyclerView.Adapter<PathButtonAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
 
-            textView = (TextView)itemView;
+            textView = itemView.findViewById(R.id.textView);
         }
     }
 }

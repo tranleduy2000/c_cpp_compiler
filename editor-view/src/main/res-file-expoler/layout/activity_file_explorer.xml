@@ -18,11 +18,15 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:listDivider" />
+
         <LinearLayout
             android:id="@+id/filename_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:minHeight="30dp"
             android:orientation="horizontal"
             android:paddingLeft="8dp"
@@ -79,6 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
+                android:drawableEnd="@drawable/ic_arrow_drop_down_black"
                 android:drawableRight="@drawable/ic_arrow_drop_down_black"
                 android:gravity="center_vertical"
                 android:minHeight="30dp"

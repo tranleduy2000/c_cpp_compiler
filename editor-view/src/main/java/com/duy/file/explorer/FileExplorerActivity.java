@@ -269,13 +269,15 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         }
 
         new AlertDialog.Builder(this)
-                .setSingleChoiceItems(names, -1, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.encoding)
+                .setSingleChoiceItems(names, selected, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         binding.fileEncodingTextView.setText(names[which]);
                         if (which > 0) {
                             fileEncoding = names[which];
                         }
+                        dialog.dismiss();;
                     }
                 })
                 .show();

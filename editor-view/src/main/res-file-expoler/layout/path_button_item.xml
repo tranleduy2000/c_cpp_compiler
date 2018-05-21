@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical">
 
     <android.support.v7.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:drawablePadding="8dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="8dp"
-        android:text="Path"
-        android:textColor="#6f707a">
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textColor="?android:textColorPrimary"
+        tools:text="Path">
 
     </android.support.v7.widget.AppCompatTextView>
 
-    <android.support.v7.widget.AppCompatImageView
+    <com.duy.ide.editor.view.TintImageView
         android:layout_width="wrap_content"
-        android:drawableRight="@drawable/ic_chevron_right_black_24dp"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_chevron_right_black_24dp"
+        android:textColor="?android:textColorPrimary" />
 
 </LinearLayout>
