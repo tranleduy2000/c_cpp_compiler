@@ -310,7 +310,7 @@ public class Document implements ReadFileListener, TextWatcher {
         mEncoding = encoding;
         mSourceMD5 = md5(mEditorDelegate.getText());
         mSourceLength = mEditorDelegate.getText().length();
-        mEditorDelegate.noticeDocumentChanged();
+        mEditorDelegate.onDocumentChanged();
     }
 
     public boolean isChanged() {

@@ -48,7 +48,6 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.dialog.FinderDialog;
-import com.jecelyin.editor.v2.widget.menu.MenuDef;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
@@ -108,7 +107,7 @@ public class EditorDelegate implements TextWatcher {
             }
         });
 
-        noticeDocumentChanged();
+        onDocumentChanged();
         loaded = true;
     }
 
@@ -116,7 +115,7 @@ public class EditorDelegate implements TextWatcher {
         return mContext;
     }
 
-    private SimpleEditorActivity getMainActivity() {
+    private SimpleEditorActivity getActivity() {
         return (SimpleEditorActivity) mContext;
     }
 
@@ -166,7 +165,7 @@ public class EditorDelegate implements TextWatcher {
         }
 
         mEditText.addTextChangedListener(this);
-        noticeDocumentChanged();
+        onDocumentChanged();
     }
 
     public void onDestroy() {
@@ -199,7 +198,7 @@ public class EditorDelegate implements TextWatcher {
 
     private void startSaveFileSelectorActivity() {
         if (mDocument != null) {
-            getMainActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
+            getActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
         }
     }
 
@@ -438,18 +437,10 @@ public class EditorDelegate implements TextWatcher {
      * This method will be called when document changed file
      */
     @MainThread
-    void noticeDocumentChanged() {
+    protected void onDocumentChanged() {
         savedState.title = mDocument.getFile().getName();
-        noticeMenuChanged();
-    }
-
-    @MainThread
-    private void noticeMenuChanged() {
-        SimpleEditorActivity editorActivity = (SimpleEditorActivity) this.mContext;
-        editorActivity.setMenuStatus(R.id.action_save, isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        editorActivity.setMenuStatus(R.id.action_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        editorActivity.setMenuStatus(R.id.action_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        ((SimpleEditorActivity) mContext).getTabManager().onDocumentChanged();
+        getActivity().invalidateEditMenu(mDocument, mEditText);
+        getActivity().getTabManager().onDocumentChanged(mDocument);
     }
 
     @Override
@@ -465,7 +456,8 @@ public class EditorDelegate implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         if (loaded) {
-            noticeMenuChanged();
+            getActivity().invalidateEditMenu(mDocument, mEditText);
+            getActivity().getTabManager().onDocumentChanged(mDocument);
         }
     }
 

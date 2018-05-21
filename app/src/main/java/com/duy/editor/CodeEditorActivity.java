@@ -17,6 +17,7 @@
 package com.duy.editor;
 
 import android.content.Intent;
+import android.core.widget.EditAreaView;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
@@ -33,11 +34,12 @@ import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ide.editor.SimpleEditorActivity;
+import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pdaxrom.cctools.BuildConstants;
-import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -98,6 +100,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
                 .setIcon(R.drawable.baseline_extension_24);
         super.onCreateNavigationMenu(menu);
+    }
+
+    @Override
+    public void invalidateEditMenu(Document document, EditAreaView mEditText) {
+        super.invalidateEditMenu(document, mEditText);
+        setMenuStatus(R.id.action_run, document != null ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
     }
 
     @Override

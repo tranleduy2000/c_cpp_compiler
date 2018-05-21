@@ -30,6 +30,7 @@ import com.duy.ide.editor.pager.EditorPageDescriptor;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
+import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -196,7 +197,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         mTabAdapter.notifyDataSetChanged();
     }
 
-    public void onDocumentChanged() {
+    public void onDocumentChanged(Document mDocument) {
         updateTabList();
         updateToolbar();
     }

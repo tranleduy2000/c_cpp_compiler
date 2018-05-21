@@ -19,6 +19,7 @@ package com.duy.ide.editor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.core.widget.EditAreaView;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -60,6 +61,7 @@ import com.jecelyin.editor.v2.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.dialog.GotoLineDialog;
 import com.jecelyin.editor.v2.dialog.LangListDialog;
 import com.jecelyin.editor.v2.dialog.WrapCharDialog;
+import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
@@ -636,5 +638,12 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
 
     public RecyclerView getTabRecyclerView() {
         return mTabRecyclerView;
+    }
+
+    @CallSuper
+    public void invalidateEditMenu(Document document, EditAreaView mEditText) {
+        setMenuStatus(R.id.action_save, document.isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        setMenuStatus(R.id.action_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+        setMenuStatus(R.id.action_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
     }
 }

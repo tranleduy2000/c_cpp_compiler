@@ -93,4 +93,5 @@ public abstract class FullScreenActivity extends AppCompatActivity implements Sh
         super.onStop();
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
+
 }
