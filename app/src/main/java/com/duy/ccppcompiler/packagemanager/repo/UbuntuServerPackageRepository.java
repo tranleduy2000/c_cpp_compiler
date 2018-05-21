@@ -69,8 +69,10 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
 
     @Override
     public void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "download() called with: saveToDir = [" + saveToDir + "], packageInfo = [" + packageInfo + "], listener = [" + listener + "]");
+        if (DLog.DEBUG) DLog.d(TAG, "download() called with: ");
+        if (DLog.DEBUG) DLog.d(TAG, "saveToDir = " + saveToDir);
+        if (DLog.DEBUG) DLog.d(TAG, "packageInfo = " + packageInfo);
+
         //download file from url
         File temp = new File(saveToDir, packageInfo.getFileName());
         if (temp.exists() && temp.length() != 0) {

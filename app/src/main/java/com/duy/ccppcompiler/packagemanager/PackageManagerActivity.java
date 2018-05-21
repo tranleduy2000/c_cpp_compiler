@@ -89,6 +89,7 @@ public class PackageManagerActivity extends FullScreenActivity {
     private ProgressDialog mProgressDialog;
     private SearchView mSearchView;
     private String mToolchainDir;
+    private String mInstalledDir;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,10 +101,11 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         Environment.mkdirs(this);
         mToolchainDir = Environment.getToolchainsDir(this);
+        mInstalledDir = Environment.getInstalledPackageDir(this);
         RepoUtils.setVersion();
         getDataFromIntent();
 
-        mLocalPackageRepository = new LocalPackageRepository(new File(Environment.getInstalledPackageDir(context)));
+        mLocalPackageRepository = new LocalPackageRepository(new File(mInstalledDir));
         mUbuntuServerPackageRepository = new UbuntuServerPackageRepository(getRepoUrl());
         mFirebasePackageRepository = new FirebasePackageRepository();
 
@@ -114,7 +116,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // getting values from selected ListItem
                 final String name = ((TextView) view.findViewById(R.id.pkg_name)).getText().toString();
-                File logFile = new File(Environment.getInstalledPackageDir(context), name + ".list");
+                File logFile = new File(mInstalledDir, name + ".list");
                 if (logFile.exists()) {
                     new AlertDialog.Builder(context)
                             .setTitle(getString(R.string.pkg_selected) + name)
@@ -228,7 +230,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             map.put(RepoParser.KEY_SIZE, Utils.humanReadableByteCount(info.getSize(), false));
             map.put(RepoParser.KEY_LOCAL_FILE_NAME, info.getFileName());
 
-            File logFile = new File(Environment.getInstalledPackageDir(this), info.getName() + ".list");
+            File logFile = new File(mInstalledDir, info.getName() + ".list");
             if (logFile.exists()) {
                 map.put(RepoParser.KEY_STATUS, getString(R.string.pkg_installed));
             } else {
@@ -336,20 +338,20 @@ public class PackageManagerActivity extends FullScreenActivity {
     protected boolean uninstallPackage(String name) {
         if (name != null) {
             //delete file
-            String prermFile = new File(Environment.getInstalledPackageDir(context), name + ".prerm").getAbsolutePath();
+            String prermFile = new File(mInstalledDir, name + ".prerm").getAbsolutePath();
             if ((new File(prermFile)).exists()) {
                 Log.i(TAG, "Execute prerm script " + prermFile);
                 Utils.chmod(prermFile, 0x1ed);
                 ShellUtils.execCommand(this, Environment.getHomeDir(this), prermFile);
                 new File(prermFile).delete();
             }
-            String descFile = new File(Environment.getInstalledPackageDir(context), name + ".pkgdesc").getAbsolutePath();
+            String descFile = new File(mInstalledDir, name + ".pkgdesc").getAbsolutePath();
             if ((new File(descFile)).exists()) {
                 new File(descFile).delete();
             }
 
             //remove package in list installed
-            String logFile = new File(Environment.getInstalledPackageDir(context), name + ".list").getAbsolutePath();
+            String logFile = new File(mInstalledDir, name + ".list").getAbsolutePath();
             if (!(new File(logFile)).exists()) {
                 return false;
             }
@@ -369,6 +371,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 e.printStackTrace();
                 Log.e(TAG, "Error during remove files " + e);
             }
+            updateInstalledPackages();
         }
         return true;
     }
@@ -411,9 +414,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     private void downloadListPackages() {
         showProgress(R.string.title_repo_update, R.string.message_package_downloading, true);
-
         updateInstalledPackages();
-
         //using firebase server
         mFirebasePackageRepository.getPackagesInBackground(new IPackageLoadListener() {
             @Override

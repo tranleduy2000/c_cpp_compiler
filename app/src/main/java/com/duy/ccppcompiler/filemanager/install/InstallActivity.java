@@ -188,6 +188,7 @@ public class InstallActivity extends FullScreenActivity {
         protected Boolean doInBackground(Void... voids) {
             InstallActivity context = InstallActivity.this;
             CommandResult result = ShellUtils.execCommand(context, Environment.getHomeDir(context), "gcc-4.9 -v");
+            if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
             return result != null && result.getResultCode() == 0;
         }
 

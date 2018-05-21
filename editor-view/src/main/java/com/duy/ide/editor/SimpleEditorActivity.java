@@ -46,6 +46,7 @@ import android.widget.TextView;
 import com.duy.common.StoreUtil;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.editor.dialogs.DialogNewFile;
+import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.IEditorPagerAdapter;
@@ -446,6 +447,9 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
         EditorDelegate editorDelegate = getCurrentEditorDelegate();
         String sourceDir;
         String homeDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        if (BuildConfig.DEBUG) {
+//            homeDir = getFilesDir().getAbsolutePath();
+        }
         if (editorDelegate != null) {
             sourceDir = new File(editorDelegate.getPath()).getParent();
         } else {

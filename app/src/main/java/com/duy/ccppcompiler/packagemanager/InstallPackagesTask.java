@@ -8,6 +8,7 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.Assert;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
 import com.duy.ccppcompiler.packagemanager.exceptions.NotEnoughStorageException;
 import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
@@ -55,14 +56,13 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         mBackupDir = Environment.getSdCardBackupDir();
         mInstalledDir = Environment.getInstalledPackageDir(mActivity);
         mToolchainDir = Environment.getToolchainsDir(mActivity);
-        mSdCardDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        mSdCardDir = Environment.getSdCardDir();
     }
 
     @Override
     protected Void doInBackground(InstallPackageInfo... installPackageInfos) {
         InstallPackageInfo info = installPackageInfos[0];
-        List<String> postinstList = new ArrayList<>();
-        downloadPackages(info, postinstList);
+        downloadPackages(info);
         return null;
     }
 
@@ -102,7 +102,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     }
 
     @WorkerThread
-    private void downloadPackages(InstallPackageInfo info, final List<String> postinstList) {
+    private void downloadPackages(InstallPackageInfo info) {
+        final List<File> postinstList = new ArrayList<>();
         final List<PackageInfo> needInstall = new ArrayList<>();
         for (PackageInfo packageInfo : info.getPackagesList()) {
             if (!checkPackageInstalled(packageInfo)) {
@@ -113,49 +114,26 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
             publishProgress(INSTALL_COMPLETE);
             return;
         }
+
         final Iterator<PackageInfo> packageInfoIterator = needInstall.iterator();
         PackageDownloadListener downloadListener = new PackageDownloadListener() {
 
             @Override
             public void onComplete(PackageInfo packageInfo, File downloadedFile) {
-                if (DLog.DEBUG)
-                    DLog.d(TAG, "onComplete() called with: packageInfo = [" + packageInfo + "], downloadedFile = [" + downloadedFile + "]");
-                if (downloadedFile == null) {
-                    throw new RuntimeException("File must be not null");
-                }
-                if (downloadedFile.isDirectory() || !downloadedFile.exists()) {
-                    throw new RuntimeException(downloadedFile + " is not a file");
-                }
+                if (DLog.DEBUG) DLog.d(TAG, "onComplete() called with:");
+                if (DLog.DEBUG) DLog.d(TAG, "packageInfo = " + packageInfo);
+                if (DLog.DEBUG) DLog.d(TAG, "downloadedFile = " + downloadedFile);
+                Assert.existFile(downloadedFile.getPath());
 
                 if (DLog.DEBUG) DLog.d(TAG, "onComplete: copy info files");
                 publishProgress(UPDATE_MESSAGE, mActivity.getString(R.string.wait_message));
-                final String postinst = "postinst";
-                // Move package info files from root directory
-                String[] infoFiles = {"pkgdesc", postinst, "prerm"};
-                for (String fileName : infoFiles) {
-                    if ((new File(mToolchainDir, fileName)).exists()) {
-                        try {
-                            File infoFile = new File(mInstalledDir, packageInfo.getName() + "." + fileName);
-                            Log.i(TAG, "Copy file to " + infoFile);
-                            Utils.copyDirectory(new File(mToolchainDir, fileName), infoFile);
-                            if (fileName.equals(postinst)) {
-                                postinstList.add(packageInfo.getName());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "Copy " + fileName + " file failed " + e);
-                        }
-                        new File(mToolchainDir, fileName).delete();
-                    }
-                }
-
 
                 //unpack file
                 String fileName = downloadedFile.getName();
                 String tempPath = downloadedFile.getAbsolutePath();
                 String toPath = mToolchainDir;
                 publishProgress(UPDATE_MESSAGE, mActivity.getString(R.string.unpacking_file) + " " + fileName + "...");
-                Log.i(TAG, "Unpack file " + tempPath + " to " + toPath);
+                Log.d(TAG, "Unpack file " + tempPath + " to " + toPath);
 
                 try {
                     int needMem = Utils.unzippedSize(tempPath);
@@ -164,8 +142,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                     }
                     StatFs stat = new StatFs(toPath);
                     double cacheAvailSize = stat.getAvailableBlocks();
-                    Log.i(TAG, "Unzipped size " + needMem);
-                    Log.i(TAG, "Available (blocks) " + cacheAvailSize + "(" + stat.getBlockSize() + ")");
+                    Log.d(TAG, "Unzipped size " + needMem);
+                    Log.d(TAG, "Available (blocks) " + cacheAvailSize + "(" + stat.getBlockSize() + ")");
                     cacheAvailSize *= stat.getBlockSize();
                     if (cacheAvailSize < needMem) {
                         String message = mActivity.getString(R.string.cache_no_memory) +
@@ -188,9 +166,30 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                 } catch (Exception e) {
                     e.printStackTrace();
                     downloadedFile.delete();
-                    Log.i(TAG, "Corrupted archive, restart application and try install again");
+                    Log.d(TAG, "Corrupted archive, restart application and try install again");
                     onFailure(new IOException(mActivity.getString(R.string.bad_archive) + " (" + fileName + ")"));
                     return;
+                }
+
+                final String postinst = "postinst";
+                // Move package info files from root directory
+                String[] infoFiles = {"pkgdesc", postinst, "prerm"};
+                for (String path : infoFiles) {
+                    File file = new File(mToolchainDir, path);
+                    if (file.exists()) {
+                        try {
+                            File infoFile = new File(mInstalledDir, packageInfo.getName() + "." + path);
+                            Log.i(TAG, "Copy file to " + infoFile);
+                            Utils.copyDirectory(file, infoFile);
+                            if (path.equals(postinst)) {
+                                postinstList.add(file);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Copy " + path + " file failed " + e);
+                        }
+                        file.delete();
+                    }
                 }
 
                 if (isCancelled()) return;
@@ -228,6 +227,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                 }
             }
         };
+
         download(packageInfoIterator.next(), downloadListener);
     }
 
@@ -290,7 +290,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     }
 
     @WorkerThread
-    private void finishInstallPackages(List<String> postinstList) {
+    private void finishInstallPackages(List<File> postinstList) {
         if (DLog.DEBUG)
             DLog.d(TAG, "finishInstallPackages() called with: postinstList = [" + postinstList + "]");
 
@@ -308,8 +308,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         }
 
         //Execute postinst scripts
-        for (String name : postinstList) {
-            File postinstFile = new File(mInstalledDir, name + ".postinst");
+        for (File postinstFile : postinstList) {
             Log.i(TAG, "Execute postinst file " + postinstFile);
             Utils.chmod(postinstFile.getAbsolutePath(), 0x1ed/*0755*/);
             ShellUtils.execCommand(mActivity, Environment.getHomeDir(mActivity), postinstFile.getAbsolutePath());

@@ -20,6 +20,7 @@ import com.duy.common.DLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by Duy on 18-May-18.
@@ -29,6 +30,15 @@ public class Assert {
     private static final String TAG = "Assert";
 
     public static void existFile(String path) {
+        if (!new File(path).exists()) {
+            if (DLog.DEBUG) DLog.e(TAG, new FileNotFoundException(path));
+        }
+        if (new File(path).isDirectory()) {
+            if (DLog.DEBUG) DLog.e(TAG, new IOException("Not a file"));
+        }
+    }
+
+    public static void existDir(String path) {
         if (!new File(path).exists()) {
             if (DLog.DEBUG) DLog.e(TAG, "File not found: ", new FileNotFoundException(path));
         }

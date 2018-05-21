@@ -63,7 +63,7 @@ public class DLog {
     public static void d(String TAG, Object message) {
         if (DEBUG) {
             if (ANDROID) {
-                Log.d(TAG, message.toString());
+                Log.w(TAG, message.toString());
             } else {
                 System.out.println(TAG + ": " + message.toString());
             }
