@@ -74,10 +74,14 @@ import com.jecelyin.editor.v2.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.widget.menu.MenuGroup;
 import com.jecelyin.editor.v2.widget.menu.MenuItemInfo;
 
+import org.gjt.sp.jedit.Catalog;
+import org.gjt.sp.jedit.Mode;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -566,12 +570,12 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
         openFile(file, null, 0);
     }
 
-    public void openFile(String filePath, String encoding, int offset) {
+    public void openFile(final String filePath, final String encoding, final int offset) {
         //ensure file exist, can read/write
         if (TextUtils.isEmpty(filePath)) {
             return;
         }
-        File file = new File(filePath);
+        final File file = new File(filePath);
         if (!file.isFile()) {
             UIUtils.toast(this, R.string.file_not_exists);
             return;
@@ -581,10 +585,31 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
             return;
         }
 
-        if (!mTabManager.newTab(file, offset, encoding)) {
-            return;
+        boolean textFile = false;
+        for (Map.Entry<String, Mode> mode : Catalog.modes.entrySet()) {
+            if (mode.getValue().accept(file.getPath(), file.getName(), "")) {
+                textFile = true;
+                break;
+            }
         }
-        DBHelper.getInstance(this).addRecentFile(filePath, encoding);
+        if (!textFile) {
+            UIUtils.showConfirmDialog(this, getString(R.string.not_a_text_file, file.getName()),
+                    new UIUtils.OnClickCallback() {
+                        @Override
+                        public void onOkClick() {
+                            if (!mTabManager.newTab(file, offset, encoding)) {
+                                return;
+                            }
+                            DBHelper.getInstance(SimpleEditorActivity.this).addRecentFile(filePath, encoding);
+                        }
+                    });
+        } else {
+            if (!mTabManager.newTab(file, offset, encoding)) {
+                return;
+            }
+            DBHelper.getInstance(this).addRecentFile(filePath, encoding);
+        }
+
     }
 
     public void insertText(CharSequence text) {
