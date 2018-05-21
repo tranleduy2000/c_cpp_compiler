@@ -62,7 +62,7 @@
 
         <CheckBoxPreference
             android:checked="false"
-            android:key="fullscreen_mode"
+            android:key="@string/pref_key_fullscreen"
             android:title="@string/fullscreen_mode" />
 
         <ListPreference

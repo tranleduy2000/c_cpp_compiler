@@ -149,8 +149,7 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (mToolbar == null)
-            return;
+        super.onSharedPreferenceChanged(sharedPreferences, key);
         switch (key) {
             case Preferences.KEY_KEEP_SCREEN_ON:
                 mToolbar.setKeepScreenOn(sharedPreferences.getBoolean(key, false));

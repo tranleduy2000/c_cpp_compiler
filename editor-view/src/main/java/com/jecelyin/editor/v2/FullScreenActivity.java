@@ -16,17 +16,22 @@
 
 package com.jecelyin.editor.v2;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.duy.ide.editor.editor.R;
+
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public abstract class FullScreenActivity extends AppCompatActivity {
+public abstract class FullScreenActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,25 +42,32 @@ public abstract class FullScreenActivity extends AppCompatActivity {
             setTheme(Preferences.THEMES[theme]);
         }
 
-        if (isFullScreenMode()) {
-            enabledFullScreenMode();
-        }
+        setFullScreenMode(isFullScreenMode());
     }
 
     protected boolean isFullScreenMode() {
         return Preferences.getInstance(this).isFullScreenMode();
     }
 
-    private void enabledFullScreenMode() {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        View decorView = getWindow().getDecorView();
-        // Hide the status bar.
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
+    private void setFullScreenMode(boolean fullScreenMode) {
+        if (fullScreenMode) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            View decorView = getWindow().getDecorView();
+            // Hide the status bar.
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                decorView.setSystemUiVisibility(uiOptions);
+            }
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -66,5 +78,19 @@ public abstract class FullScreenActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    @CallSuper
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_key_fullscreen))) {
+            setFullScreenMode(isFullScreenMode());
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 }

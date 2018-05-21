@@ -45,9 +45,9 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.cctools.BuildConstants;
-import com.duy.ccppcompiler.packagemanager.Environment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -422,6 +422,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        super.onSharedPreferenceChanged(sharedPreferences, s);
         mSettings.readPrefs(sharedPreferences);
     }
 
