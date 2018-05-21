@@ -115,8 +115,8 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_new_file, NONE, R.drawable.ic_add_white_24dp, R.string.new_file));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open, OPEN, R.drawable.ic_folder_open_white_24dp, R.string.open));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save, SAVE, R.drawable.ic_save_white_24dp, R.string.save));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_all, NONE, R.drawable.m_save_all, R.string.save_all));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, SAVE_AS, R.drawable.m_save_as, R.string.save_as));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_all, NONE, R.drawable.ic_save_white_24dp, R.string.save_all));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, SAVE_AS, R.drawable.ic_save_white_24dp, R.string.save_as));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
 
 //        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_c_example,
