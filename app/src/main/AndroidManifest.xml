@@ -67,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.jecelyin.editor.v2.settings.EditorSettingsActivity" />
-        <activity android:name="com.jecelyin.android.file_explorer.FileExplorerActivity" />
+        <activity android:name="com.duy.file.explorer.FileExplorerActivity" />
 
         <activity android:name=".ui.examples.ExampleActivity" />
 

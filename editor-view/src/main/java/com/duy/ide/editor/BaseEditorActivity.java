@@ -49,7 +49,7 @@ import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.IEditorPagerAdapter;
 import com.duy.ide.filemanager.FileManager;
-import com.jecelyin.android.file_explorer.FileExplorerActivity;
+import com.duy.file.explorer.FileExplorerActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
