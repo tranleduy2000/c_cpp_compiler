@@ -369,7 +369,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             if ((new File(prermFile)).exists()) {
                 Log.i(TAG, "Execute prerm script " + prermFile);
                 Utils.chmod(prermFile, 0x1ed);
-                system(prermFile);
+                exec(prermFile);
                 new File(prermFile).delete();
             }
             updateProgress(25);
@@ -482,7 +482,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 });
     }
 
-    private void system(String cmdline) {
+    private void exec(String cmdline) {
         try {
             if (DLog.DEBUG) DLog.d(TAG, "cmdline = " + cmdline);
             ShellUtils.execCommand(this, Environment.getHomeDir(this), cmdline);
@@ -741,7 +741,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 File postinstFile = new File(Environment.getInstalledPackageDir(context), name + ".postinst");
                 Log.i(TAG, "Execute postinst file " + postinstFile);
                 Utils.chmod(postinstFile.getAbsolutePath(), 0x1ed/*0755*/);
-                system(postinstFile.getAbsolutePath());
+                exec(postinstFile.getAbsolutePath());
                 postinstFile.delete();
             }
 
