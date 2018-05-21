@@ -97,7 +97,7 @@ void android_main(struct android_app* state) {
         nativeApp = get_app_name(confDir, buf, sizeof(buf));
         if (!nativeApp) {
         	LOGW("Fail-safe mode...\n");
-        	nativeApp = get_app_name("/data/data/com.pdaxrom.cctools/root/tmp/native-loader.conf", buf, sizeof(buf));
+        	nativeApp = get_app_name("/data/data/com.duy.c.cpp.compiler/root/tmp/native-loader.conf", buf, sizeof(buf));
         	if (!nativeApp) {
         	    nativeApp = get_app_name("/data/data/com.pdaxrom.cctools.free/cache/tmp/native-loader.conf", buf, sizeof(buf));
         	    if (!nativeApp) {
