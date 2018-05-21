@@ -110,24 +110,12 @@ public class MenuFactory {
     }
 
     private void initAllMenuItem() {
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.TOP, R.id.action_run, NONE, R.drawable.ic_play_arrow_white_24dp, R.string.run));
-
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_new_file, NONE, R.drawable.ic_add_white_24dp, R.string.new_file));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open, OPEN, R.drawable.ic_folder_open_white_24dp, R.string.open));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save, SAVE, R.drawable.ic_save_white_24dp, R.string.save));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_all, NONE, R.drawable.ic_save_white_24dp, R.string.save_all));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, SAVE_AS, R.drawable.ic_save_white_24dp, R.string.save_as));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
-
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_c_example,
-//                NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_c_example));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_cpp_example,
-//                NONE, R.drawable.ic_code_black_24dp, R.string.title_menu_cpp_example));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_install_add_on,
-//                NONE, R.drawable.baseline_extension_24, R.string.title_menu_adds_on));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open_terminal,
-//                NONE, R.drawable.ic_terminal_black, R.string.title_menu_terminal));
-
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_undo, UNDO, R.drawable.ic_undo_white_24dp, R.string.undo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_redo, REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_wrap, CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
@@ -138,9 +126,7 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_back, CURSOR_BACK, R.drawable.ic_arrow_back_white_24dp, R.string.cursor_back));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_forward, CURSOR_FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.cursor_forward));
 
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_fullscreen, FULL_SCREEN, R.drawable.ic_fullscreen_white_24dp, R.string.fullscreen_mode));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
-//        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_readonly, READONLY_MODE, R.drawable.ic_remove_red_eye_white_24dp, R.string.read_only));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_highlight, NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_encoding, NONE, R.drawable.m_encoding, R.string.encoding));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_editor_setting, NONE, R.drawable.ic_settings_white_24dp, R.string.editor_setting));
