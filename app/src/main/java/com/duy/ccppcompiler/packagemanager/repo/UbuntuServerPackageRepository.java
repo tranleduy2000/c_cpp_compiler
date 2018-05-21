@@ -60,7 +60,7 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
                 RepoParser repoParser = new RepoParser();
                 if (DLog.DEBUG) DLog.d(TAG, "url = " + mUrl);
                 String repoXmlFromUrl = getRepoXmlFromUrl(mUrl);
-                List<PackageInfo> list = new ArrayList<>(repoParser.parseRepoXml(repoXmlFromUrl, mUrl));
+                List<PackageInfo> list = new ArrayList<>(repoParser.parseRepoXml(repoXmlFromUrl));
                 listener.onSuccess(list);
             }
         });

@@ -83,17 +83,12 @@ public class PackageManagerActivity extends FullScreenActivity {
     protected LocalPackageRepository mLocalPackageRepository;
     protected UbuntuServerPackageRepository mUbuntuServerPackageRepository;
     protected FirebasePackageRepository mFirebasePackageRepository;
-    private String errorString = null;
     private Context context = this;
     private String mIntentData = null;
-    // Last list position
-    private int mLastPosition = 0;
     private ListView mListView;
-    private String mSdCardDir;
-    private String mBackupDir;
-    private String mToolchainDir;
     private ProgressDialog mProgressDialog;
     private SearchView mSearchView;
+    private String mToolchainDir;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +99,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         setTitle(R.string.title_menu_add_ons);
 
         Environment.mkdirs(this);
+        mToolchainDir = Environment.getToolchainsDir(this);
         RepoUtils.setVersion();
         getDataFromIntent();
 
@@ -159,7 +155,6 @@ public class PackageManagerActivity extends FullScreenActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mLastPosition = this.getListView().getFirstVisiblePosition();
     }
 
     @Override
@@ -267,13 +262,12 @@ public class PackageManagerActivity extends FullScreenActivity {
                         R.id.pkg_filesize,
                         R.id.pkg_size,
                         R.id.pkg_status});
-
-        getListView().setAdapter(adapter);
-
-        if (mLastPosition > 0 && mLastPosition < repo.size()) {
-            getListView().setSelection(mLastPosition);
+        ListView listView = getListView();
+        int selectedItemPosition = listView.getFirstVisiblePosition();
+        listView.setAdapter(adapter);
+        if (selectedItemPosition >= 0 && selectedItemPosition < adapter.getCount()) {
+            listView.setSelection(selectedItemPosition);
         }
-
     }
 
     @UiThread
@@ -339,13 +333,8 @@ public class PackageManagerActivity extends FullScreenActivity {
      * @return {@code true} if uninstall success
      */
     @WorkerThread
-    boolean uninstallPackage(String name) {
+    protected boolean uninstallPackage(String name) {
         if (name != null) {
-            //update UI
-            updateProgressTitle(getString(R.string.title_package_uninstall) + " " + name);
-            updateMessage(getString(R.string.wait_message));
-            updateProgress(0);
-
             //delete file
             String prermFile = new File(Environment.getInstalledPackageDir(context), name + ".prerm").getAbsolutePath();
             if ((new File(prermFile)).exists()) {
@@ -354,23 +343,17 @@ public class PackageManagerActivity extends FullScreenActivity {
                 ShellUtils.execCommand(this, Environment.getHomeDir(this), prermFile);
                 new File(prermFile).delete();
             }
-            updateProgress(25);
             String descFile = new File(Environment.getInstalledPackageDir(context), name + ".pkgdesc").getAbsolutePath();
             if ((new File(descFile)).exists()) {
                 new File(descFile).delete();
             }
 
-
             //remove package in list installed
             String logFile = new File(Environment.getInstalledPackageDir(context), name + ".list").getAbsolutePath();
             if (!(new File(logFile)).exists()) {
-                updateProgress(100);
                 return false;
             }
 
-            updateProgress(50);
-
-            // TODO: 17-May-18 Do not remove dependencies package because other package need this package
             try {
                 FileInputStream fin = new FileInputStream(logFile);
                 DataInputStream in = new DataInputStream(fin);
@@ -386,9 +369,6 @@ public class PackageManagerActivity extends FullScreenActivity {
                 e.printStackTrace();
                 Log.e(TAG, "Error during remove files " + e);
             }
-            updateProgress(100);
-
-
         }
         return true;
     }
@@ -423,7 +403,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                 });
     }
 
-    private void updateInstalledPackages() {
+    protected void updateInstalledPackages() {
         //local packages
         List<PackageInfo> installedPackages = mLocalPackageRepository.getInstalledPackages();
         mPackagesLists.setInstalledPackages(installedPackages);
@@ -589,7 +569,6 @@ public class PackageManagerActivity extends FullScreenActivity {
                 finish();
                 return;
             }
-            mLastPosition = mListView.getFirstVisiblePosition();
             showPackages(mPackagesLists.getAvailablePackages());
         }
     }

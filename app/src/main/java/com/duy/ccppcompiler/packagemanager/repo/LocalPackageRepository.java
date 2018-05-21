@@ -47,13 +47,13 @@ public class LocalPackageRepository extends PackageRepositoryImpl {
     @Override
     public void getPackagesInBackground(IPackageLoadListener listener) {
         RepoParser parser = new RepoParser();
-        List<PackageInfo> packageInfos = parser.parseRepoXml(getInstalledPackagesData(mInstalledDir), mInstalledDir.getAbsolutePath());
+        List<PackageInfo> packageInfos = parser.parseRepoXml(getInstalledPackagesData(mInstalledDir));
         listener.onSuccess(packageInfos);
     }
 
     public List<PackageInfo> getInstalledPackages() {
         RepoParser parser = new RepoParser();
-        return parser.parseRepoXml(getInstalledPackagesData(mInstalledDir), mInstalledDir.getAbsolutePath());
+        return parser.parseRepoXml(getInstalledPackagesData(mInstalledDir));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class LocalPackageRepository extends PackageRepositoryImpl {
             if (DLog.DEBUG) {
                 System.out.println(TAG + " installed xml = " + replaceMacro(sb.toString()));
             }
-            return replaceMacro(sb.toString());
+            return sb.toString();
         }
         return null;
     }

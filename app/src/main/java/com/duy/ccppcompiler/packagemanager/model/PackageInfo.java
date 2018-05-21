@@ -16,12 +16,6 @@
 
 package com.duy.ccppcompiler.packagemanager.model;
 
-import android.net.Uri;
-import android.support.annotation.Nullable;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class PackageInfo {
     private String name;
     private String fileName;
@@ -32,7 +26,6 @@ public class PackageInfo {
     private String depends;
     private String arch;
     private String replaces;
-    private Uri uri;
 
     /**
      * <name>build-essential-clang-compact</name>
@@ -49,11 +42,10 @@ public class PackageInfo {
      * @param fileName - name of file will be store in {@link com.duy.ccppcompiler.packagemanager.repo.LocalPackageRepository}
      * @param version  - current version
      * @param depends  - all package dependencies on this package
-     * @param uri      - URL contains this package
      */
     public PackageInfo(String name, String fileName, int size, int filesize,
                        String version, String description, String depends,
-                       String arch, String replaces, Uri uri) {
+                       String arch, String replaces) {
         this.name = name;
         this.fileName = fileName;
         this.size = size;
@@ -63,7 +55,6 @@ public class PackageInfo {
         this.depends = depends;
         this.arch = arch;
         this.replaces = replaces;
-        this.uri = uri;
     }
 
     public String getName() {
@@ -82,7 +73,6 @@ public class PackageInfo {
                 ", depends='" + depends + '\'' +
                 ", arch='" + arch + '\'' +
                 ", replaces='" + replaces + '\'' +
-                ", url='" + uri + '\'' +
                 '}';
     }
 
@@ -118,22 +108,4 @@ public class PackageInfo {
         return replaces;
     }
 
-    /**
-     * @return URL contains this package
-     */
-    public Uri getUri() {
-        return uri;
-    }
-
-    @Nullable
-    public URL getURL() {
-        if (uri != null) {
-            try {
-                return new URL(uri.toString());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
 }

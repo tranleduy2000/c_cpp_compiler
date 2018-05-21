@@ -19,8 +19,8 @@ package com.duy.ccppcompiler.packagemanager.repo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
+import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.RepoUtils;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -51,6 +51,9 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
 
     public FirebasePackageRepository() {
         mStorage = FirebaseStorage.getInstance().getReference();
+        mStorage = mStorage.child(ROOT)
+                .child(Build.VERSION.SDK_INT >= 21 ? PACKAGES_PIE : PACKAGES)
+                .child(RepoUtils.CPU_API);
     }
 
     @Override
@@ -59,11 +62,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
             listener.onSuccess(mPackageInfos);
             return;
         }
-
-        final StorageReference repo = mStorage.child(ROOT)
-                .child(Build.VERSION.SDK_INT >= 21 ? PACKAGES_PIE : PACKAGES)
-                .child(RepoUtils.CPU_API);
-        repo.child(PACKAGES_INDEX_FILE)
+        mStorage.child(PACKAGES_INDEX_FILE)
                 .getBytes(1024 * 1024)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -71,7 +70,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
                         String content = new String(bytes);
                         if (DLog.DEBUG) DLog.d(TAG, "content = " + content);
                         RepoParser repoParser = new RepoParser();
-                        mPackageInfos = repoParser.parseRepoXml(content, repo.getPath());
+                        mPackageInfos = repoParser.parseRepoXml(content);
                         listener.onSuccess(mPackageInfos);
                     }
                 })

@@ -32,7 +32,7 @@ import static com.duy.ccppcompiler.packagemanager.PackageManagerActivity.ACTION_
 @SuppressWarnings("ResultOfMethodCallIgnored")
 class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     private static final String TAG = "InstallPackagesTask";
-    private static final int DOWNLOAD_COMPLETE = 0;
+    private static final int INSTALL_COMPLETE = 0;
     private static final int DOWNLOAD_ERROR = 1;
     private static final int UPDATE_TITLE = 2;
     private static final int UPDATE_PROCESS = 3;
@@ -42,7 +42,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     private PackagesLists mPackagesLists;
     private String mInstalledDir, mBackupDir, mToolchainDir, mSdCardDir;
 
-    public InstallPackagesTask(PackageManagerActivity activity) {
+    InstallPackagesTask(PackageManagerActivity activity) {
         mActivity = activity;
         mPackagesLists = activity.mPackagesLists;
 
@@ -109,7 +109,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                 needInstall.add(packageInfo);
             }
         }
-        if (needInstall.isEmpty()){
+        if (needInstall.isEmpty()) {
+            publishProgress(INSTALL_COMPLETE);
             return;
         }
         final Iterator<PackageInfo> packageInfoIterator = needInstall.iterator();
@@ -199,7 +200,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                     download(packageInfoIterator.next(), this);
                 } else {
                     finishInstallPackages(postinstList);
-                    publishProgress(DOWNLOAD_COMPLETE);
+                    mActivity.updateInstalledPackages();
+                    publishProgress(INSTALL_COMPLETE);
                 }
             }
 
@@ -234,8 +236,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         super.onProgressUpdate(values);
         int code = (int) values[0];
         switch (code) {
-            case DOWNLOAD_COMPLETE:
-                onDownloadComplete();
+            case INSTALL_COMPLETE:
+                onInstallComplete();
                 break;
             case DOWNLOAD_ERROR:
                 onDownloadError((Exception) values[1]);
@@ -253,7 +255,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     }
 
     @UiThread
-    private void onDownloadComplete() {
+    private void onInstallComplete() {
         mActivity.hideProgress();
         if (ACTION_UPDATE.equals(mActivity.mAction) || ACTION_INSTALL.equals(mActivity.mAction)) {
             mActivity.setResult(RESULT_OK);
