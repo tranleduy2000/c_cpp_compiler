@@ -1,7 +1,10 @@
 package com.duy.ccppcompiler.diagnostic.ui;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.diagnostic.DiagnosticClickListener;
+import com.jecelyin.common.utils.DrawableUtils;
 
 import java.io.File;
 import java.util.List;
@@ -54,6 +58,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
         } else {
             holder.txtFile.setText("");
         }
+        setIcon(holder, diagnostic);
 
         holder.txtMessage.setText(diagnostic.getMessage(mContext));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +69,26 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
                 }
             }
         });
+    }
+
+    private void setIcon(ViewHolder holder, Diagnostic diagnostic) {
+        switch (diagnostic.getKind()) {
+            case ERROR: {
+                Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.baseline_error_24);
+                drawable = DrawableUtils.tintDrawable(drawable, Color.RED);
+                holder.icon.setImageDrawable(drawable);
+                break;
+            }
+            case WARNING: {
+                Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.baseline_warning_24);
+                drawable = DrawableUtils.tintDrawable(drawable, Color.YELLOW);
+                holder.icon.setImageDrawable(drawable);
+                break;
+            }
+            default:
+                holder.icon.setImageDrawable(null);
+                break;
+        }
     }
 
     @Override
