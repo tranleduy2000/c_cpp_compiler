@@ -15,4 +15,8 @@
     <string name="title_orientation_preference">Hướng màn hình</string>
     <string name="title_cursorstyle_preference">Kiểu con trỏ</string>
     <string name="summary_utf8_by_default_preference">Cho dù chế độ UTF-8 được bật theo mặc định hay chưa.</string>
+    <string name="preferences">Cài đặt</string>
+    <string name="copy_all">Sao chép tất cả</string>
+    <string name="paste">Dán</string>
+    <string name="title_color_preference">Màu sắc</string>
 </resources>

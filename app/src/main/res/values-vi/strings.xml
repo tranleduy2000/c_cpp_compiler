@@ -11,4 +11,6 @@
     <string name="failed_to_install_compiler">Cài đặt trình biên dịch thất bại</string>
     <string name="reinstall_compiler">Cài đặt lại trình biên dịch</string>
     <string name="compiler_setting">Cài đặt trình biên dịch</string>
+    <string name="app_name">C/C++ Compiler</string>
+    <string name="non_project_file_message">Tệp này không thuộc về dự án: (%s)</string>
 </resources>

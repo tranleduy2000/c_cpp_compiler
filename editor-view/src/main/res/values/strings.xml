@@ -118,7 +118,7 @@
     <string name="more_menu">More menu</string>
     <string name="reopen_with_encoding">Reopen with encoding</string>
     <string name="document_changed">Document changed</string>
-    <string name="give_up_document_changed_message">Document has changed, your changes will be lost if you don’t save them, confirm？</string>
+    <string name="give_up_document_changed_message">Document has changed, your changes will be lost if you don’t save them, confirm?</string>
     <string name="preview_in_browser">Preview in browser</string>
     <string name="use_sl4a_in_background_run_script">Use SL4A in background run script</string>
     <string name="use_sl4a_in_terminal_run_script">Use SL4A in terminal run script</string>
@@ -195,7 +195,7 @@
     <string name="change_theme">Change theme</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="default_theme">Default Theme</string>
-    <string name="fullscreen_mode">Fullscreen Mode</string>
+    <string name="fullscreen_mode">Full screen Mode</string>
     <string name="enable_fullscreen_mode_message">Restart the application will enable the full screen mode</string>
     <string name="disabled_fullscreen_mode_message">Restart the application will disable the full screen mode</string>
     <string name="confirm_change_theme_message">Change theme will not auto save documents, you confirm discard document to change theme?</string>
