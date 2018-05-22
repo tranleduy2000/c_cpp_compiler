@@ -58,6 +58,7 @@ import jackpal.androidterm.TermPreferencesActivity;
 
 public class CodeEditorActivity extends SimpleEditorActivity {
     private static final String TAG = "CodeEditorActivity";
+
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
     private DiagnosticPresenter mDiagnosticPresenter;
 
@@ -194,7 +195,6 @@ public class CodeEditorActivity extends SimpleEditorActivity {
 
     }
 
-
     @Override
     protected String[] getSupportedFileExtensions() {
         String[] defaultExts = super.getSupportedFileExtensions();
@@ -204,7 +204,6 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         System.arraycopy(defaultExts, 0, finalResult, supportedExts.length, defaultExts.length);
         return finalResult;
     }
-
 
     private void openTerminal() {
         EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
@@ -219,6 +218,23 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         intent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + Environment.getShell(this));
         intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ExampleActivity.RC_OPEN_EXAMPLE) {
+            if (resultCode == RESULT_OK) {
+                final String path = data.getStringExtra(Intent.EXTRA_RETURN_RESULT);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        openFile(path, "UTF-8", 0);
+                    }
+                });
+            }
+        }
     }
 
     @Override

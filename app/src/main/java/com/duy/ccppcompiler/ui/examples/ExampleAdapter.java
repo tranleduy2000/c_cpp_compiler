@@ -15,6 +15,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ViewHold
 
     private final ExampleActivity activity;
     private final ArrayList<ExampleItem> exampleItems;
+    private OnExampleClickListener exampleClickListener;
 
     public ExampleAdapter(ExampleActivity activity, ArrayList<ExampleItem> exampleItems) {
         this.activity = activity;
@@ -30,14 +31,30 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ExampleItem exampleItem = exampleItems.get(position);
+        final ExampleItem exampleItem = exampleItems.get(position);
         holder.txtTitle.setText(exampleItem.getTitle().replaceAll("[\n]", " "));
         holder.txtDesc.setText(exampleItem.getDesc().replaceAll("[\n]", " "));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (exampleClickListener != null) {
+                    exampleClickListener.onExampleClick(exampleItem);
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return exampleItems.size();
+    }
+
+    public void setExampleClickListener(OnExampleClickListener exampleClickListener) {
+        this.exampleClickListener = exampleClickListener;
+    }
+
+    public interface OnExampleClickListener {
+        void onExampleClick(ExampleItem exampleItem);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

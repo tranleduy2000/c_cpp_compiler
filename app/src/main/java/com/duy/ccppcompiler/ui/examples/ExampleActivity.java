@@ -21,14 +21,19 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.packagemanager.Environment;
+import com.jecelyin.editor.v2.FullScreenActivity;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,12 +44,13 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Duy on 02-May-18.
  */
 
-public class ExampleActivity extends AppCompatActivity {
+public class ExampleActivity extends FullScreenActivity implements ExampleAdapter.OnExampleClickListener {
 
     public static final String EXTRA_LANGUAGE = "EXTRA_LANGUAGE";
+    public static final int RC_OPEN_EXAMPLE = 13123;
     private static final String TAG = "ExampleActivity";
-    private static final int RC_OPEN_EXAMPLE = 13123;
     private RecyclerView mRecyclerView;
+    private String mExamplePath;
 
     public static void openExample(Activity activity, String language) {
         Intent intent = new Intent(activity, ExampleActivity.class);
@@ -56,11 +62,15 @@ public class ExampleActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_example);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
         if (intent == null || !intent.hasExtra(EXTRA_LANGUAGE)) {
             finish();
             return;
-    }
+        }
+
         initUi();
         loadData();
     }
@@ -68,8 +78,9 @@ public class ExampleActivity extends AppCompatActivity {
     private void loadData() {
         try {
             String language = getIntent().getStringExtra(EXTRA_LANGUAGE);
-            String path = String.format("examples/%s/index.xml", language);
-            InputStream index = getAssets().open(path);
+            mExamplePath = String.format("examples/%s", language);
+
+            InputStream index = getAssets().open(mExamplePath + "/index.xml");
             new ParseExampleTask().execute(index);
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,6 +90,32 @@ public class ExampleActivity extends AppCompatActivity {
     private void initUi() {
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void displayExamples(ArrayList<ExampleItem> exampleItems) {
+        ExampleAdapter adapter = new ExampleAdapter(ExampleActivity.this, exampleItems);
+        mRecyclerView.setAdapter(adapter);
+        adapter.setExampleClickListener(this);
+    }
+
+    @Override
+    public void onExampleClick(ExampleItem exampleItem) {
+        try {
+            String sdCardHomeDir = Environment.getSdCardHomeDir();
+            File file = new File(sdCardHomeDir, exampleItem.getRelativePath());
+
+            InputStream inputStream = getAssets().open(mExamplePath + "/" + exampleItem.getRelativePath());
+            FileOutputStream outputStream = new FileOutputStream(file);
+            IOUtils.copy(inputStream, outputStream);
+            inputStream.close();
+            outputStream.close();
+
+            Intent intent = getIntent().putExtra(Intent.EXTRA_RETURN_RESULT, file.getPath());
+            setResult(RESULT_OK, intent);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class ParseExampleTask extends AsyncTask<InputStream, Void, ArrayList<ExampleItem>> {
@@ -102,8 +139,7 @@ public class ExampleActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<ExampleItem> exampleItems) {
             super.onPostExecute(exampleItems);
             if (exampleItems != null) {
-                ExampleAdapter adapter = new ExampleAdapter(ExampleActivity.this, exampleItems);
-                mRecyclerView.setAdapter(adapter);
+                displayExamples(exampleItems);
             }
         }
     }

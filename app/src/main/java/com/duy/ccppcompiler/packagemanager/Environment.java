@@ -37,7 +37,7 @@ import jackpal.androidterm.TermSettings;
  */
 
 public class Environment {
-    public static final String APPLICATION_DIR_NAME = "cctools";
+    public static final String APPLICATION_DIR_NAME = "Cpp-N-IDE";
     private static final String TAG = "EnvironmentPath";
 
     /**
@@ -269,5 +269,10 @@ public class Environment {
 
     public static String getSdCardDir() {
         return android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+
+    public static String getSdCardExampleDir() {
+        File file = new File(getSdCardHomeDir(), "Examples");
+        return mkdirIfNotExist(file);
     }
 }
