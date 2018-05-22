@@ -36,6 +36,7 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.diagnostic.ui.DiagnosticFragment;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.common.DLog;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.filemanager.SaveListener;
@@ -99,6 +100,10 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     @Override
     protected void onCreateNavigationMenu(Menu menu) {
         //add run button
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_c_example, 0, R.string.title_menu_c_example)
+                .setIcon(R.drawable.ic_code_black_24dp);
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
+                .setIcon(R.drawable.ic_code_black_24dp);
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
                 .setIcon(R.drawable.ic_terminal_black);
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
@@ -139,6 +144,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 startActivity(new Intent(this, CompilerSettingActivity.class));
                 break;
 
+            case R.id.action_cpp_example:
+                ExampleActivity.openExample(this, "cpp");
+                break;
+            case R.id.action_c_example:
+                ExampleActivity.openExample(this, "c");
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

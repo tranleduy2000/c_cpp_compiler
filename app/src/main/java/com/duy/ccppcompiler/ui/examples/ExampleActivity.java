@@ -18,10 +18,10 @@ package com.duy.ccppcompiler.ui.examples;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -60,29 +60,51 @@ public class ExampleActivity extends AppCompatActivity {
         if (intent == null || !intent.hasExtra(EXTRA_LANGUAGE)) {
             finish();
             return;
-        }
+    }
+        initUi();
+        loadData();
+    }
 
-        String language = intent.getStringExtra(EXTRA_LANGUAGE);
-        String path = "example/" + language + "/index.xml";
+    private void loadData() {
         try {
+            String language = getIntent().getStringExtra(EXTRA_LANGUAGE);
+            String path = String.format("examples/%s/index.xml", language);
             InputStream index = getAssets().open(path);
-            parseData(index);
-
+            new ParseExampleTask().execute(index);
         } catch (Exception e) {
             e.printStackTrace();
-            finish();
-            return;
         }
-        initUi();
     }
 
     private void initUi() {
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
-    private ArrayList<ExampleItem> parseData(InputStream in) throws IOException, SAXException, ParserConfigurationException {
-        return new ExampleParser().parse(in);
+    private class ParseExampleTask extends AsyncTask<InputStream, Void, ArrayList<ExampleItem>> {
+
+        @Override
+        protected ArrayList<ExampleItem> doInBackground(InputStream... params) {
+            InputStream in = params[0];
+            try {
+                return new ExampleParser().parse(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ExampleItem> exampleItems) {
+            super.onPostExecute(exampleItems);
+            if (exampleItems != null) {
+                ExampleAdapter adapter = new ExampleAdapter(ExampleActivity.this, exampleItems);
+                mRecyclerView.setAdapter(adapter);
+            }
+        }
     }
 }

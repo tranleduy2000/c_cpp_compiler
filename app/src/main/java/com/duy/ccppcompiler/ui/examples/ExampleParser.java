@@ -19,6 +19,7 @@ package com.duy.ccppcompiler.ui.examples;
 import com.duy.common.DLog;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -44,9 +45,12 @@ public class ExampleParser {
         DocumentBuilder dBuilder = factory.newDocumentBuilder();
         Document doc = dBuilder.parse(in);
         doc.getDocumentElement().normalize();
-        NodeList examples = doc.getElementsByTagName("examples").item(0).getChildNodes();
-        for (int i = 0; i < examples.getLength(); i++) {
-            Node example = examples.item(i);
+        NodeList examplesList = doc.getElementsByTagName("examples").item(0).getChildNodes();
+        for (int i = 0; i < examplesList.getLength(); i++) {
+            Node example = examplesList.item(i);
+            if (!(example instanceof Element)) {
+                continue;
+            }
             NodeList childNodes = example.getChildNodes();
             ExampleItem item = new ExampleItem();
             for (int j = 0; j < childNodes.getLength(); j++) {
