@@ -30,8 +30,6 @@
         <item name="actionModeStyle">@style/Light.ActionMode</item>
         <item name="android:actionModeStyle">@style/Light.ActionMode</item>
 
-        <item name="dividerColor">#10000000</item>
-
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#c6c6c6</item>
         <item name="menuIconNormalColor">#000</item>

@@ -15,9 +15,6 @@
   -->
 
 <resources>
-    <attr name="dividerColor" format="color" />
-    <attr name="listItemBackground" format="reference" />
-    <attr name="highlightBackground" format="color" />
     <attr name="toolbarIconNormalColor" format="color" />
     <attr name="toolbarIconDisabledColor" format="color" />
     <attr name="menuIconNormalColor" format="color" />
@@ -35,6 +32,7 @@
         <attr name="findResultsPath" format="color" />
         <attr name="findResultsKeyword" format="color" />
     </declare-styleable>
+
     <declare-styleable name="Highlight">
         <attr name="hlComment1" format="color" />
         <attr name="hlComment2" format="color" />

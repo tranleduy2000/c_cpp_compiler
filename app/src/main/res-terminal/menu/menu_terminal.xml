@@ -23,7 +23,6 @@
         android:title="@string/toggle_soft_keyboard"
         app:showAsAction="ifRoom" />
 
-
     <item
         android:id="@+id/menu_special_keys"
         android:title="@string/special_keys" />
