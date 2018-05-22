@@ -549,6 +549,7 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
                 if (delegate != null) {
                     adapter.updateDescriptor(file, encoding);
                     delegate.saveTo(new File(file), encoding);
+                    DBHelper.getInstance(this).addRecentFile(file, encoding);
                 }
                 break;
             case RC_SETTINGS:
@@ -597,19 +598,20 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
                     new UIUtils.OnClickCallback() {
                         @Override
                         public void onOkClick() {
-                            if (!mTabManager.newTab(file, offset, encoding)) {
-                                return;
-                            }
-                            DBHelper.getInstance(SimpleEditorActivity.this).addRecentFile(filePath, encoding);
+                            createNewEditor(file, offset, encoding);
                         }
                     });
         } else {
-            if (!mTabManager.newTab(file, offset, encoding)) {
-                return;
-            }
-            DBHelper.getInstance(this).addRecentFile(filePath, encoding);
+            createNewEditor(file, offset, encoding);
         }
 
+    }
+
+    private void createNewEditor(File file, int offset, String encoding) {
+        if (!mTabManager.newTab(file, offset, encoding)) {
+            return;
+        }
+        DBHelper.getInstance(SimpleEditorActivity.this).addRecentFile(file.getPath(), encoding);
     }
 
     public void insertText(CharSequence text) {
@@ -629,12 +631,11 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
         if (closeDrawers()) {
             return;
         }
-
-        if ((System.currentTimeMillis() - mExitTime) > 2000) {
-            UIUtils.toast(this, R.string.press_again_will_exit);
-            mExitTime = System.currentTimeMillis();
-        } else {
-            if (mTabManager.onDestroy()) {
+        if (mTabManager.onDestroy()) {
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                UIUtils.toast(this, R.string.press_again_will_exit);
+                mExitTime = System.currentTimeMillis();
+            } else {
                 super.onBackPressed();
             }
         }

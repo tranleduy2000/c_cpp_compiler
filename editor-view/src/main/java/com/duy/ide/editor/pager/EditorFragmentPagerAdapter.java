@@ -137,8 +137,4 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
         return null;
     }
 
-    @Override
-    public void updateDescriptor(String file, String encoding) {
-
-    }
 }
