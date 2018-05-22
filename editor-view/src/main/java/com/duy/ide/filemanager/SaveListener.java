@@ -16,12 +16,18 @@
 
 package com.duy.ide.filemanager;
 
+import android.support.annotation.UiThread;
+
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public interface SaveListener {
+    @UiThread
+    void onSavedSuccess();
 
-    void onSaved();
-
+    @UiThread
     void onPrepare();
+
+    @UiThread
+    void onSaveFailed(Exception e);
 }

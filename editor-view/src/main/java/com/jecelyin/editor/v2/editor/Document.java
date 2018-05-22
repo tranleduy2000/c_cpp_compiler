@@ -22,7 +22,6 @@ import android.core.text.SpannableStringBuilder;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.text.Editable;
 import android.text.Spannable;
@@ -41,6 +40,7 @@ import com.jecelyin.editor.v2.editor.task.SaveTask;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.highlight.HighlightInfo;
 import com.jecelyin.editor.v2.io.FileReader;
+import com.jecelyin.editor.v2.io.LocalFileWriter;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.ColorSchemeLoader;
@@ -61,20 +61,18 @@ import java.util.HashMap;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class Document implements ReadFileListener, TextWatcher {
+    private static final String TAG = "Document";
     public static SyntaxStyle[] styles;
     private final EditorDelegate mEditorDelegate;
     private final Context mContext;
-    private final SaveTask mSaveTask;
     private final Preferences mPreferences;
     private final Buffer mBuffer;
     @SuppressLint("UseSparseArrays")
     private final HashMap<Integer, ArrayList<ForegroundColorSpan>> mColorSpanMap = new HashMap<>();
-
     private int mLineCount;
     private String mEncoding = "UTF-8";
     private byte[] mSourceMD5;
     private int mSourceLength;
-
     private String mModeName;
     @NonNull
     private File mFile;
@@ -85,7 +83,6 @@ public class Document implements ReadFileListener, TextWatcher {
         mFile = currentFile;
         mPreferences = Preferences.getInstance(context);
         mBuffer = new Buffer(context);
-        mSaveTask = new SaveTask(context, editorDelegate, this);
         editorDelegate.mEditText.addTextChangedListener(this);
     }
 
@@ -288,13 +285,15 @@ public class Document implements ReadFileListener, TextWatcher {
         return mEncoding;
     }
 
-    @UiThread
-    public void save(boolean inBackground, @Nullable SaveListener listener) {
-        if (mSaveTask.isWriting()) {
-            UIUtils.toast(mContext, R.string.writing);
-            return;
+    @WorkerThread
+    public void save() throws Exception {
+        Document document = mEditorDelegate.getDocument();
+        if (document.isChanged()) {
+            File file = document.getFile();
+            String encoding = document.getEncoding();
+            LocalFileWriter writer = new LocalFileWriter(file, encoding);
+            writer.writeToFile(mEditorDelegate.getEditableText());
         }
-        mSaveTask.save(inBackground, listener);
     }
 
     /**
@@ -302,12 +301,32 @@ public class Document implements ReadFileListener, TextWatcher {
      *
      * @param file - file to write
      */
-    @WorkerThread
-    void saveTo(File file, String encoding) {
-        mSaveTask.saveTo(file, encoding, true, null);
+    protected void saveTo(final File file, final String encoding, @Nullable final SaveListener listener) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], listener = [" + listener + "]");
+        SaveTask saveTask = new SaveTask(mEditorDelegate, new SaveListener() {
+            @Override
+            public void onSavedSuccess() {
+                onSaveSuccess(file, encoding);
+                if (listener != null) {
+                    listener.onSavedSuccess();
+                }
+            }
+
+            @Override
+            public void onPrepare() {
+
+            }
+
+            @Override
+            public void onSaveFailed(Exception e) {
+                UIUtils.alert(mContext, e.getMessage());
+            }
+        });
+        saveTask.execute();
     }
 
-    public void onSaveSuccess(File newFile, String encoding) {
+    private void onSaveSuccess(File newFile, String encoding) {
         mFile = newFile;
         mEncoding = encoding;
         mSourceMD5 = md5(mEditorDelegate.getText());

@@ -17,23 +17,25 @@
 package com.jecelyin.editor.v2.editor.task;
 
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.filemanager.SaveListener;
-import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 
 /**
  * Created by Duy on 30-Apr-18.
  */
 
-public class SaveAllTask extends AsyncTask<Void, Void, Void> {
+public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
     private static final String TAG = "SaveAllTask";
     private SimpleEditorActivity editorActivity;
+    @Nullable
     private SaveListener saveListener;
+    private Exception exception;
 
-    public SaveAllTask(SimpleEditorActivity editorActivity, SaveListener saveListener) {
+    public SaveAllTask(SimpleEditorActivity editorActivity, @Nullable SaveListener saveListener) {
         this.editorActivity = editorActivity;
         this.saveListener = saveListener;
     }
@@ -41,24 +43,37 @@ public class SaveAllTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        saveListener.onPrepare();
+        if (saveListener != null) {
+            saveListener.onPrepare();
+        }
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
-        if (DLog.DEBUG) DLog.d(TAG, "doInBackground() called with: voids = [" + voids + "]");
+    protected Boolean doInBackground(Void... voids) {
         EditorFragmentPagerAdapter editorPagerAdapter = editorActivity.getTabManager().getEditorPagerAdapter();
         for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
-            editorDelegate.save(false);
+            try {
+                editorDelegate.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+                exception = e;
+                return false;
+            }
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        if (saveListener != null) {
-            saveListener.onSaved();
+    protected void onPostExecute(Boolean aBoolean) {
+        super.onPostExecute(aBoolean);
+        if (aBoolean) {
+            if (saveListener != null) {
+                saveListener.onSavedSuccess();
+            }
+        } else {
+            if (saveListener != null) {
+                saveListener.onSaveFailed(exception);
+            }
         }
     }
 }

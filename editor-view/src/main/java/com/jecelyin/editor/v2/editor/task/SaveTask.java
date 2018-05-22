@@ -16,107 +16,48 @@
 
 package com.jecelyin.editor.v2.editor.task;
 
-import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.duy.ide.filemanager.SaveListener;
-import com.jecelyin.common.utils.DLog;
-import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.io.LocalFileWriterTask;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SaveTask {
+public class SaveTask extends AsyncTask<Void, Void, Boolean> {
     private static final String TAG = "SaveTask";
 
-    private final WeakReference<Context> mContext;
-    private final WeakReference<EditorDelegate> mEditorDelegate;
-    private final WeakReference<Document> mDocument;
+    private final EditorDelegate mEditorDelegate;
     private final AtomicBoolean mWriting = new AtomicBoolean(false);
+    private SaveListener mListener;
+    private Exception mException;
 
-    public SaveTask(Context context, EditorDelegate editorDelegate, Document document) {
-        mContext = new WeakReference<>(context);
-        mEditorDelegate = new WeakReference<>(editorDelegate);
-        mDocument = new WeakReference<>(document);
+    public SaveTask(@NonNull EditorDelegate editorDelegate, SaveListener listener) {
+        mEditorDelegate = (editorDelegate);
+        mListener = listener;
     }
 
-    public boolean isWriting() {
-        return mWriting.get();
+    @Override
+    protected Boolean doInBackground(Void... voids) {
+        try {
+            Document document = mEditorDelegate.getDocument();
+            document.save();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            mException = e;
+            return false;
+        }
     }
 
-    /**
-     * @param inBackground - use background thread
-     */
-    public void save(boolean inBackground, SaveListener listener) {
-        if (isWriting()) {
-            return;
-        }
-
-        Document document = mDocument.get();
-        EditorDelegate delegate = mEditorDelegate.get();
-        if (document == null || delegate == null) {
-            return;
-        }
-        if (!document.isChanged()) {
-            if (listener != null) {
-                listener.onSaved();
-            }
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        super.onPostExecute(aBoolean);
+        if (aBoolean) {
+            mListener.onSavedSuccess();
         } else {
-            saveTo(document.getFile(), document.getEncoding(), inBackground, listener);
-        }
-    }
-
-    /**
-     * @param file       - file to write
-     * @param encoding   - file encoding
-     * @param background - <code>true</code> if using background thread
-     */
-    public void saveTo(@NonNull final File file, final String encoding, final boolean background,
-                       @Nullable final SaveListener listener) {
-        if (DLog.DEBUG) {
-            DLog.d(TAG, "saveTo() called with: file = [" + file + "]");
-        }
-        if (mEditorDelegate.get() == null || mContext.get() == null) {
-            return;
-        }
-
-        mWriting.set(true);
-        LocalFileWriterTask writer = new LocalFileWriterTask(file, encoding);
-        writer.setFileWriteListener(new LocalFileWriterTask.FileWriteListener() {
-            @Override
-            public void onSuccess() {
-                mWriting.set(false);
-                if (!background) {
-                    if (mDocument.get() == null || mContext.get() == null || mEditorDelegate.get() == null) {
-                        return;
-                    }
-                    mDocument.get().onSaveSuccess(file, encoding);
-                    if (listener != null) {
-                        listener.onSaved();
-                    }
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                mWriting.set(false);
-                DLog.e(e);
-                if (!background) {
-                    if (mContext.get() != null) {
-                        UIUtils.alert(mContext.get(), e.getMessage());
-                    }
-                }
-            }
-        });
-        if (background) {
-            writer.execute(mEditorDelegate.get().getEditableText());
-        } else {
-            writer.onPostExecute(writer.writeToFile(mEditorDelegate.get().getEditableText()));
+            mListener.onSaveFailed(mException);
         }
     }
 }

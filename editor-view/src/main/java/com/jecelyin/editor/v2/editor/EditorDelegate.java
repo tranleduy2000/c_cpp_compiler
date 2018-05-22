@@ -48,6 +48,7 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.dialog.FinderDialog;
+import com.jecelyin.editor.v2.editor.task.SaveTask;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
@@ -209,12 +210,20 @@ public class EditorDelegate implements TextWatcher {
      */
     public void saveTo(File file, String encoding) {
         if (mDocument != null) {
-            mDocument.saveTo(file, encoding == null ? mDocument.getEncoding() : encoding);
+            if (encoding == null) {
+                encoding = mDocument.getEncoding();
+            }
+            mDocument.saveTo(file, encoding, null);
         }
     }
 
-    public void save(boolean background) {
-        mDocument.save(background, null);
+    public void save() throws Exception {
+        mDocument.save();
+    }
+
+    public void saveInBackground(@Nullable SaveListener listener) {
+        SaveTask saveTask = new SaveTask(this, listener);
+        saveTask.execute();
     }
 
 
@@ -291,8 +300,9 @@ public class EditorDelegate implements TextWatcher {
                 mEditText.setReadOnly(readOnly);
                 break;
             case SAVE:
-                if (!readonly)
-                    mDocument.save(command.args.getBoolean(KEY_CLUSTER, false), (SaveListener) command.object);
+                if (!readonly) {
+                    saveInBackground((SaveListener) command.object);
+                }
                 break;
             case SAVE_AS:
                 startSaveFileSelectorActivity();
@@ -505,7 +515,11 @@ public class EditorDelegate implements TextWatcher {
                     DLog.d("current is screen orientation, discard auto save!");
                     mOrientation = newOrientation;
                 } else {
-                    mDocument.save(true, null);
+                    try {
+                        mDocument.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -28,8 +28,10 @@ import android.view.ViewGroup;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
 import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.Preferences;
+import com.jecelyin.editor.v2.editor.task.SaveTask;
 
 import java.io.File;
 
@@ -82,9 +84,26 @@ public class EditorFragment extends Fragment {
         if (DLog.DEBUG) DLog.d(TAG, "onDestroyView() called");
         if (mEditorDelegate != null) {
             if (mEditorDelegate.isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
-                mEditorDelegate.save(true);
+                if (DLog.DEBUG)
+                    DLog.d(TAG, "onDestroyView: auto save file " + mEditorDelegate.getDocument().getFile());
+                SaveTask saveTask = new SaveTask(mEditorDelegate, new SaveListener() {
+                    @Override
+                    public void onSavedSuccess() {
+                        mEditorDelegate.onDestroy();
+                    }
+
+                    @Override
+                    public void onPrepare() {
+
+                    }
+
+                    @Override
+                    public void onSaveFailed(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                saveTask.execute();
             }
-            mEditorDelegate.onDestroy();
         }
         super.onDestroyView();
     }

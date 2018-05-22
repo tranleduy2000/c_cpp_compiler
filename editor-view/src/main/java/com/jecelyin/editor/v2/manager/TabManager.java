@@ -16,6 +16,7 @@
 
 package com.jecelyin.editor.v2.manager;
 
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
@@ -27,11 +28,14 @@ import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
+import com.jecelyin.editor.v2.dialog.SaveConfirmDialog;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -211,16 +215,75 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         }
     }
 
-    public void onDestroy() {
+    public boolean onDestroy() {
         if (mActivity.mEditorPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
+        ArrayList<File> needSaveFiles = new ArrayList<>();
         ArrayList<EditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
         for (EditorDelegate editorDelegate : allEditor) {
             String path = editorDelegate.getPath();
             String encoding = editorDelegate.getEncoding();
             int offset = editorDelegate.getCursorOffset();
+            if (editorDelegate.isChanged()) {
+                needSaveFiles.add(editorDelegate.getDocument().getFile());
+            }
             DBHelper.getInstance(mActivity).updateRecentFile(path, encoding, offset);
+        }
+
+        if (needSaveFiles.isEmpty()) {
+            return true;
+        } else {
+
+            StringBuilder fileName = new StringBuilder("(");
+            for (int i = 0; i < needSaveFiles.size(); i++) {
+                File needSaveFile = needSaveFiles.get(i);
+                fileName.append(needSaveFile.getName());
+                if (i != needSaveFiles.size() - 1) {
+                    fileName.append(", ");
+                }
+            }
+            fileName.append(")");
+
+            SaveConfirmDialog saveConfirmDialog = new SaveConfirmDialog(mActivity, fileName.toString(),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    SaveAllTask saveAllTask = new SaveAllTask(mActivity, new SaveListener() {
+                                        @Override
+                                        public void onSavedSuccess() {
+                                            mActivity.finish();
+                                        }
+
+                                        @Override
+                                        public void onPrepare() {
+
+                                        }
+
+                                        @Override
+                                        public void onSaveFailed(Exception e) {
+
+                                        }
+                                    });
+                                    dialog.dismiss();
+                                    saveAllTask.execute();
+                                    break;
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    dialog.cancel();
+                                    mActivity.finish();
+                                    break;
+                                case DialogInterface.BUTTON_NEUTRAL:
+                                    dialog.cancel();
+                                    break;
+                            }
+
+                        }
+                    });
+            saveConfirmDialog.show();
+            return false;
         }
     }
 

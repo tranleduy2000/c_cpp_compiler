@@ -38,6 +38,7 @@ import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.filemanager.SaveListener;
+import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.task.SaveAllTask;
@@ -143,7 +144,13 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             }
 
             @Override
-            public void onSaved() {
+            public void onSaveFailed(Exception e) {
+                UIUtils.alert(CodeEditorActivity.this, e.getMessage());
+                mDiagnosticPresenter.log(e.getMessage());
+            }
+
+            @Override
+            public void onSavedSuccess() {
                 if (DLog.DEBUG) DLog.d(TAG, "onSaved() called");
 
                 EditorDelegate currentEditor = getCurrentEditorDelegate();

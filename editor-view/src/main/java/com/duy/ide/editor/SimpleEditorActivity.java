@@ -48,7 +48,6 @@ import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.IEditorPagerAdapter;
 import com.duy.ide.filemanager.FileManager;
 import com.jecelyin.common.utils.DLog;
@@ -64,6 +63,7 @@ import com.jecelyin.editor.v2.dialog.LangListDialog;
 import com.jecelyin.editor.v2.dialog.WrapCharDialog;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
 import com.jecelyin.editor.v2.manager.TabManager;
@@ -80,7 +80,6 @@ import org.gjt.sp.jedit.Mode;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -412,7 +411,7 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
 
         } else if (id == R.id.action_save_all) {
             UIUtils.toast(this, R.string.save_all);
-            saveAll(true);
+            saveAll();
 
         } else if (id == R.id.m_fullscreen) {
             boolean fullscreenMode = mPreferences.isFullScreenMode();
@@ -481,12 +480,9 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
         return new String[]{".txt"};
     }
 
-    public void saveAll(boolean inBackgroundThread) {
-        EditorFragmentPagerAdapter editorPagerAdapter = mTabManager.getEditorPagerAdapter();
-        ArrayList<EditorDelegate> allEditor = editorPagerAdapter.getAllEditor();
-        for (EditorDelegate editorDelegate : allEditor) {
-            editorDelegate.getDocument().save(inBackgroundThread, null);
-        }
+    public void saveAll() {
+        SaveAllTask saveAllTask = new SaveAllTask(this, null);
+        saveAllTask.execute();
     }
 
     public void closeMenu() {
@@ -638,8 +634,9 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
             UIUtils.toast(this, R.string.press_again_will_exit);
             mExitTime = System.currentTimeMillis();
         } else {
-            mTabManager.onDestroy();
-            super.onBackPressed();
+            if (mTabManager.onDestroy()) {
+                super.onBackPressed();
+            }
         }
     }
 
