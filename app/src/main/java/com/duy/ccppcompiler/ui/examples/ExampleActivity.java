@@ -101,8 +101,8 @@ public class ExampleActivity extends FullScreenActivity implements ExampleAdapte
     @Override
     public void onExampleClick(ExampleItem exampleItem) {
         try {
-            String sdCardHomeDir = Environment.getSdCardHomeDir();
-            File file = new File(sdCardHomeDir, exampleItem.getRelativePath());
+            String sourceDir = Environment.getSdCardSourceDir();
+            File file = new File(sourceDir, exampleItem.getRelativePath());
 
             InputStream inputStream = getAssets().open(mExamplePath + "/" + exampleItem.getRelativePath());
             FileOutputStream outputStream = new FileOutputStream(file);
