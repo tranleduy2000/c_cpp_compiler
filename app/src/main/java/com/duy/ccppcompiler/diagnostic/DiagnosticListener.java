@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.diagnostic.suggestion;
+package com.duy.ccppcompiler.diagnostic;
 
-/**
- * An empty replacement string indicates that the given range is to be removed. An empty range
- * (e.g. “45:3-45:3”) indicates that the string is to be inserted at the given position.
- * Otherwise replace
- * Created by Duy on 29-Apr-18.
- */
+public interface DiagnosticListener {
+    /**
+     * Call when a problem is found.
+     *
+     * @param diagnostic a diagnostic representing the problem that was found
+     */
+    void report(Diagnostic diagnostic);
 
-public enum SuggestionKind {
-    INSERT, REPLACE, DELETE
+    void clear();
 }

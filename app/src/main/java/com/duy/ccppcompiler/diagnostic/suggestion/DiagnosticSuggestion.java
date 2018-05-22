@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.diagnostic.suggestion;
+package com.duy.ccppcompiler.diagnostic.suggestion;
 
 import android.os.Parcel;
 import android.os.Parcelable;

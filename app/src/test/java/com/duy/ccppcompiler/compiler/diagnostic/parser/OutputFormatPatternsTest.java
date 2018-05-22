@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 
 import java.util.regex.Matcher;
 
-import static com.duy.ccppcompiler.compiler.diagnostic.OutputParser.DIAGNOSTICS_PATTERN;
+import static com.duy.ccppcompiler.diagnostic.OutputParser.DIAGNOSTICS_PATTERN;
 
 /**
  * Created by Duy on 28-Apr-18.

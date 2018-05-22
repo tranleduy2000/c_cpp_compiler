@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.diagnostic.suggestion;
-
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-
-import java.io.File;
+package com.duy.ccppcompiler.diagnostic.suggestion;
 
 /**
+ * An empty replacement string indicates that the given range is to be removed. An empty range
+ * (e.g. “45:3-45:3”) indicates that the string is to be inserted at the given position.
+ * Otherwise replace
  * Created by Duy on 29-Apr-18.
  */
 
-public interface ISuggestion extends Parcelable {
-    File getSourceFile();
-
-    int getLineStart();
-
-    int getColStart();
-
-    int getLineEnd();
-
-    int getColEnd();
-
-    @NonNull
-    String getMessage();
+public enum SuggestionKind {
+    INSERT, REPLACE, DELETE
 }

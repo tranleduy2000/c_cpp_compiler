@@ -18,8 +18,7 @@ package com.duy.ccppcompiler.diagnostic;
 
 import android.support.annotation.MainThread;
 
-import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
 
 import java.io.File;
 import java.util.List;

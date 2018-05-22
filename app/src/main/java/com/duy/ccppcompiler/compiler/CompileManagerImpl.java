@@ -23,8 +23,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
-import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
+import com.duy.ccppcompiler.diagnostic.DiagnosticsCollector;
+import com.duy.ccppcompiler.diagnostic.OutputParser;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.common.DLog;

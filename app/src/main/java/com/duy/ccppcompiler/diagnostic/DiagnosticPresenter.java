@@ -21,8 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.common.Command;

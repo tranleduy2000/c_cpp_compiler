@@ -14,15 +14,28 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.diagnostic;
+package com.duy.ccppcompiler.diagnostic.suggestion;
 
-public interface DiagnosticListener {
-    /**
-     * Call when a problem is found.
-     *
-     * @param diagnostic a diagnostic representing the problem that was found
-     */
-    void report(Diagnostic diagnostic);
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
-    void clear();
+import java.io.File;
+
+/**
+ * Created by Duy on 29-Apr-18.
+ */
+
+public interface ISuggestion extends Parcelable {
+    File getSourceFile();
+
+    int getLineStart();
+
+    int getColStart();
+
+    int getLineEnd();
+
+    int getColEnd();
+
+    @NonNull
+    String getMessage();
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.diagnostic;
+package com.duy.ccppcompiler.diagnostic;
 
 import java.util.ArrayList;
 

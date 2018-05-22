@@ -18,8 +18,7 @@ package com.duy.ccppcompiler.diagnostic;
 
 import android.view.View;
 
-import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.

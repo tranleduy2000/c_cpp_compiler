@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.diagnostic.model;
+package com.duy.ccppcompiler.diagnostic.model;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.compiler.diagnostic.Kind;
-import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ccppcompiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.diagnostic.Kind;
+import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 
 import java.io.File;
 

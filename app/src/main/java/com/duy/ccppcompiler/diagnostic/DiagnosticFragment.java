@@ -29,8 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 
 import java.util.ArrayList;
 import java.util.List;

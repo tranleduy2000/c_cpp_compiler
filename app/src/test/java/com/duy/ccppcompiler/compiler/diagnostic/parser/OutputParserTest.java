@@ -16,9 +16,9 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic.parser;
 
-import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.compiler.diagnostic.DiagnosticsCollector;
-import com.duy.ccppcompiler.compiler.diagnostic.OutputParser;
+import com.duy.ccppcompiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.diagnostic.DiagnosticsCollector;
+import com.duy.ccppcompiler.diagnostic.OutputParser;
 
 import junit.framework.TestCase;
 
