@@ -15,21 +15,13 @@
   -->
 
 <resources>
-    <color name="darkWindowBackground">#ff424242</color>
-    <color name="darkDividerColor">#30ffffff</color>
-
     <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:windowBackground">@color/darkWindowBackground</item>
-
         <item name="actionBarStyle">@style/Light.Toolbar</item>
         <item name="actionBarTheme">@style/DarkToolbarTheme</item>
         <item name="actionBarPopupTheme">@style/DarkToolbarPopupTheme</item>
         <item name="actionMenuTextColor">@android:color/white</item>
-
         <item name="actionModeStyle">@style/DarkActionMode</item>
-
-        <item name="dividerColor">@color/darkDividerColor</item>
 
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#50ffffff</item>

@@ -19,7 +19,7 @@
 
     <item
         android:id="@+id/menu_toggle_soft_keyboard"
-        android:icon="@drawable/ic_keyboard_black_24dp"
+        android:icon="@drawable/ic_keyboard_white_24dp"
         android:title="@string/toggle_soft_keyboard"
         app:showAsAction="ifRoom" />
 
