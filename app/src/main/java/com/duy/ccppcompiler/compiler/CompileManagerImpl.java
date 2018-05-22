@@ -23,11 +23,12 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.diagnostic.DiagnosticsCollector;
-import com.duy.ccppcompiler.diagnostic.OutputParser;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
+import com.duy.ccppcompiler.diagnostic.DiagnosticsCollector;
+import com.duy.ccppcompiler.diagnostic.OutputParser;
 import com.duy.common.DLog;
+import com.duy.editor.CodeEditorActivity;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 
@@ -44,7 +45,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
     private ProgressDialog mCompileDialog;
     private DiagnosticPresenter mDiagnosticPresenter;
 
-    CompileManagerImpl(@NonNull SimpleEditorActivity activity) {
+    CompileManagerImpl(@NonNull CodeEditorActivity activity) {
         mActivity = activity;
     }
 
@@ -58,6 +59,8 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         mCompileDialog.setCancelable(false);
         mCompileDialog.setCanceledOnTouchOutside(false);
         mCompileDialog.show();
+
+        mDiagnosticPresenter.clear();
     }
 
     @Override

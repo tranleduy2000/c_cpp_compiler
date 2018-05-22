@@ -19,9 +19,9 @@ package com.duy.ccppcompiler.compiler;
 import android.content.Intent;
 
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
-import com.duy.ide.editor.SimpleEditorActivity;
-import com.pdaxrom.cctools.BuildConstants;
 import com.duy.ccppcompiler.console.TermActivity;
+import com.duy.editor.CodeEditorActivity;
+import com.pdaxrom.cctools.BuildConstants;
 
 import java.io.File;
 
@@ -31,7 +31,7 @@ import java.io.File;
 
 public class CompileManager extends CompileManagerImpl<GccCommandResult> {
 
-    public CompileManager(SimpleEditorActivity activity) {
+    public CompileManager(CodeEditorActivity activity) {
         super(activity);
     }
 

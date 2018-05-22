@@ -47,13 +47,19 @@ public class DiagnosticContract {
         @MainThread
         void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion);
 
+        @MainThread
         void showView();
 
+        @MainThread
         void hideView();
 
         @MainThread
         void setDiagnostics(ArrayList<Diagnostic> diagnostics);
 
+        @MainThread
         void log(String string);
+
+        @MainThread
+        void clear();
     }
 }

@@ -178,4 +178,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     public void log(String string) {
 // TODO: 22-May-18 impl
     }
+
+    @Override
+    public void clear() {
+        mView.clear();
+    }
 }
