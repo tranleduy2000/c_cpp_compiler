@@ -17,7 +17,6 @@
 package com.duy.ccppcompiler.compiler;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -63,14 +62,6 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         }
         mCompileDialog.setTitle(mActivity.getString(R.string.title_compiling));
         mCompileDialog.setMessage(mActivity.getString(R.string.wait_message));
-        mCompileDialog.setButton(DialogInterface.BUTTON_NEGATIVE, mActivity.getString(R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mCompiler.hangup();
-                        dialog.cancel();
-                    }
-                });
         mCompileDialog.setCancelable(false);
         mCompileDialog.setCanceledOnTouchOutside(false);
         mCompileDialog.show();
