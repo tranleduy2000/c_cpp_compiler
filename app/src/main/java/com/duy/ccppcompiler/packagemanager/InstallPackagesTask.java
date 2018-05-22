@@ -312,7 +312,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         if (examples.exists()) {
             try {
                 Log.i(TAG, "Move Examples to SD card");
-                Utils.copyDirectory(examples, new File(mSdCardDir, "CCTools/Examples"));
+                Utils.copyDirectory(examples, new File(Environment.getSdCardExampleDir()));
                 Utils.deleteDirectory(examples);
             } catch (IOException e) {
                 e.printStackTrace();

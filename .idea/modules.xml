@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/apkbuilder/apkbuilder.iml" filepath="$PROJECT_DIR$/apkbuilder/apkbuilder.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cctools/cctools.iml" filepath="$PROJECT_DIR$/cctools/cctools.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cctools-repo/cctools-repo.iml" filepath="$PROJECT_DIR$/cctools-repo/cctools-repo.iml" />
       <module fileurl="file://$PROJECT_DIR$/editor-view/editor-view.iml" filepath="$PROJECT_DIR$/editor-view/editor-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/emulatorview/emulatorview.iml" filepath="$PROJECT_DIR$/emulatorview/emulatorview.iml" />
       <module fileurl="file://$PROJECT_DIR$/libtermexec/libtermexec.iml" filepath="$PROJECT_DIR$/libtermexec/libtermexec.iml" />

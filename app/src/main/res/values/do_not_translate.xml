@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_key_c_options">pref_key_c_options</string>
-    <string name="pref_key_cxx_options">pref_key_cxx_options</string>
+    <string name="pref_key_c_options" translatable="false">pref_key_c_options</string>
+    <string name="pref_key_cxx_options" translatable="false">pref_key_cxx_options</string>
 </resources>

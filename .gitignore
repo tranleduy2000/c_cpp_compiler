@@ -67,3 +67,4 @@ fastlane/readme.md
 !/system/
 /editor.txt
 .idea/caches/
+/cctools-repo/mirror/
