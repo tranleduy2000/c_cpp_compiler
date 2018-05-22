@@ -22,4 +22,5 @@
     <item name="action_install_add_on" type="id" />
     <item name="action_open_terminal" type="id" />
     <item name="action_term_preferences" type="id" />
+    <item name="action_compiler_setting" type="id" />
 </resources>

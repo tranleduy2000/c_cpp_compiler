@@ -12,4 +12,5 @@
     <string name="reinstall_compiler">Reinstall compiler</string>
     <string name="diagnostic">Diagnostic</string>
     <string name="logview">Log</string>
+    <string name="compiler_setting">Compiler setting</string>
 </resources>

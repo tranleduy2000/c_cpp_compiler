@@ -70,7 +70,7 @@
         <activity android:name="com.duy.file.explorer.FileExplorerActivity" />
 
         <activity android:name=".ui.examples.ExampleActivity" />
-
+        <activity android:name=".compiler.CompilerSettingActivity" />
 
         <activity
             android:name="com.pdaxrom.cctools.CCToolsActivity"

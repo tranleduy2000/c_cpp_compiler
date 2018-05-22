@@ -28,11 +28,12 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompileTask;
+import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.console.TermActivity;
-import com.duy.ccppcompiler.diagnostic.ui.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
+import com.duy.ccppcompiler.diagnostic.ui.DiagnosticFragment;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
@@ -100,10 +101,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         //add run button
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
                 .setIcon(R.drawable.ic_terminal_black);
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_term_preferences, 0, R.string.title_term_preferences)
-                .setIcon(R.drawable.ic_settings_white_24dp);
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
                 .setIcon(R.drawable.baseline_extension_24);
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_term_preferences, 0, R.string.title_term_preferences)
+                .setIcon(R.drawable.ic_settings_white_24dp);
+        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_compiler_setting, 0, R.string.compiler_setting)
+                .setIcon(R.drawable.ic_settings_white_24dp);
         super.onCreateNavigationMenu(menu);
     }
 
@@ -130,6 +133,10 @@ public class CodeEditorActivity extends SimpleEditorActivity {
 
             case R.id.action_term_preferences:
                 startActivity(new Intent(this, TermPreferencesActivity.class));
+                break;
+
+            case R.id.action_compiler_setting:
+                startActivity(new Intent(this, CompilerSettingActivity.class));
                 break;
 
         }
