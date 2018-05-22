@@ -32,12 +32,13 @@ import static com.duy.ccppcompiler.diagnostic.Kind.OTHER;
  */
 
 public class OutputParser {
-    ///storage/emulated/0/Examples/c++/cin2.cpp:25:1: error: expected ';' before '}' token
-    private static final Pattern FILE_LINE_COL_TYPE_MESSAGE_PATTERN = Pattern.compile(
-            "(\\S+):([0-9]+):([0-9]+):(\\s+.*:\\s+)(.*)");
+    private static final Pattern FILE_LINE_COL_TYPE_MESSAGE_PATTERN
+            = Pattern.compile("(\\S+):([0-9]+):([0-9]+):(\\s+.*:\\s+)(.*)");
+    private static final Pattern FILE_LINE_COL_MESSAGE_PATTERN
+            = Pattern.compile("(\\S+):([0-9]+):([0-9]+)(.*)");
+    private static final Pattern FILE_LINE_MESSAGE_PATTERN
+            = Pattern.compile("(\\S+):([0-9]+):(.*)");
 
-    ///storage/emulated/0/Examples/c++/cin2.cpp: In function 'int main()':
-    private static final Pattern FILE_MESSAGE_PATTERN = Pattern.compile("(\\S+):(.*)");
     private DiagnosticsCollector diagnosticsCollector;
 
     public OutputParser(DiagnosticsCollector diagnosticsCollector) {
@@ -65,13 +66,26 @@ public class OutputParser {
                     continue;
                 }
 
-                matcher = FILE_MESSAGE_PATTERN.matcher(line);
+                matcher = FILE_LINE_COL_MESSAGE_PATTERN.matcher(line);
                 if (matcher.find()) {
                     String filePath = matcher.group(1);
-                    String message = matcher.group(2);
+                    int lineNumber = Integer.parseInt(matcher.group(2));
+                    int colNumber = Integer.parseInt(matcher.group(3));
+                    String message = matcher.group(4);
+
+                    Diagnostic diagnostic = DiagnosticFactory.create(OTHER, filePath, lineNumber, colNumber, message);
+                    diagnosticsCollector.report(diagnostic);
+                    continue;
+                }
+
+                matcher = FILE_LINE_MESSAGE_PATTERN.matcher(line);
+                if (matcher.find()) {
+                    String filePath = matcher.group(1);
+                    int lineNumber = Integer.parseInt(matcher.group(2));
+                    String message = matcher.group(3);
 
                     Diagnostic diagnostic =
-                            DiagnosticFactory.create(OTHER, filePath, Diagnostic.NOPOS, Diagnostic.NOPOS, message);
+                            DiagnosticFactory.create(OTHER, filePath, lineNumber, Diagnostic.NOPOS, message);
                     diagnosticsCollector.report(diagnostic);
                 }
             }

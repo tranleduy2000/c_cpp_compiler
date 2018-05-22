@@ -46,7 +46,9 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Diagnostic diagnostic = mDiagnostics.get(position);
         if (diagnostic.getLineNumber() != Diagnostic.NOPOS) {
-            String text = diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber();
+            long columnNumber = diagnostic.getColumnNumber();
+            String text = diagnostic.getLineNumber() + ":"
+                    + (columnNumber != Diagnostic.NOPOS ? columnNumber : "");
             holder.txtLineCol.setText(text);
         } else {
             holder.txtLineCol.setText("");
@@ -54,13 +56,19 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
 
         File source = diagnostic.getSourceFile();
         if (source != null) {
-            holder.txtFile.setText(source.getName());
+            holder.txtFile.setText(source.getPath());
         } else {
             holder.txtFile.setText("");
         }
         setIcon(holder, diagnostic);
 
-        holder.txtMessage.setText(diagnostic.getMessage(mContext));
+        if (diagnostic.getMessage(mContext).isEmpty()) {
+            holder.txtMessage.setVisibility(View.GONE);
+        }else {
+            holder.txtMessage.setVisibility(View.VISIBLE);
+            holder.txtMessage.setText(diagnostic.getMessage(mContext));
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
