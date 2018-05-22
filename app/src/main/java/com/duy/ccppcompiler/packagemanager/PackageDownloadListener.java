@@ -29,7 +29,7 @@ import java.io.File;
 
 public interface PackageDownloadListener {
     @WorkerThread
-    void onComplete(PackageInfo packageInfo, File downloadedFile);
+    void onDownloadComplete(PackageInfo packageInfo, File downloadedFile);
 
     @WorkerThread
     void onFailure(@NonNull Exception e);

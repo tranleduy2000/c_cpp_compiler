@@ -1,5 +1,6 @@
 package com.duy.ccppcompiler.packagemanager;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.StatFs;
 import android.support.annotation.NonNull;
@@ -38,6 +39,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     private static final int UPDATE_PROCESS = 3;
     private static final int UPDATE_MESSAGE = 4;
 
+    @SuppressLint("StaticFieldLeak")
     private PackageManagerActivity mActivity;
     private PackagesLists mPackagesLists;
     private String mInstalledDir, mBackupDir, mToolchainDir, mSdCardDir;
@@ -45,7 +47,6 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     InstallPackagesTask(PackageManagerActivity activity) {
         mActivity = activity;
         mPackagesLists = activity.mPackagesLists;
-
     }
 
     @Override
@@ -115,10 +116,10 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         }
 
         final Iterator<PackageInfo> packageInfoIterator = needInstall.iterator();
-        PackageDownloadListener downloadListener = new PackageDownloadListener() {
+        final PackageDownloadListener downloadListener = new PackageDownloadListener() {
 
             @Override
-            public void onComplete(PackageInfo packageInfo, @NonNull File downloadedFile) {
+            public void onDownloadComplete(PackageInfo packageInfo, @NonNull File downloadedFile) {
                 if (DLog.DEBUG) DLog.d(TAG, "onComplete() called with:");
                 if (DLog.DEBUG) DLog.d(TAG, "packageInfo = " + packageInfo);
                 if (DLog.DEBUG) DLog.d(TAG, "downloadedFile = " + downloadedFile);
@@ -156,7 +157,6 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                         }
                         throw new RuntimeException("bad archive");
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     downloadedFile.delete();
@@ -283,8 +283,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         if (DLog.DEBUG) DLog.d(TAG, "download: use firebsae");
         mActivity.mFirebasePackageRepository.download(new File(mBackupDir), packageInfo, new PackageDownloadListener() {
             @Override
-            public void onComplete(PackageInfo packageInfo, File downloadedFile) {
-                listener.onComplete(packageInfo, downloadedFile);
+            public void onDownloadComplete(PackageInfo packageInfo, File downloadedFile) {
+                listener.onDownloadComplete(packageInfo, downloadedFile);
             }
 
             @Override
@@ -308,10 +308,10 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
             DLog.d(TAG, "finishInstallPackage() called with: postinstFile = [" + postinstFile + "]");
         // Move Examples to sd card
         String cCtoolsDir = Environment.getCCtoolsDir(mActivity);
-        if (new File(cCtoolsDir, "Examples").exists()) {
+        File examples = new File(cCtoolsDir, "Examples");
+        if (examples.exists()) {
             try {
                 Log.i(TAG, "Move Examples to SD card");
-                File examples = new File(cCtoolsDir, "Examples");
                 Utils.copyDirectory(examples, new File(mSdCardDir, "CCTools/Examples"));
                 Utils.deleteDirectory(examples);
             } catch (IOException e) {
@@ -323,6 +323,5 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         Log.i(TAG, "Execute postinst file " + postinstFile);
         Utils.chmod(postinstFile.getAbsolutePath(), 0x1ed/*0755*/);
         ShellUtils.execCommand(mActivity, postinstFile.getAbsolutePath());
-        postinstFile.delete();
     }
 }

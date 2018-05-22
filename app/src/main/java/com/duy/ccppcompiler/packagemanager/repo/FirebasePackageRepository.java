@@ -64,8 +64,9 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
             listener.onSuccess(mPackageInfos);
             return;
         }
+        final int oneMegabytes = 1024 * 1024;
         mRepo.child(PACKAGES_INDEX_FILE)
-                .getBytes(1024 * 1024)
+                .getBytes(oneMegabytes)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
@@ -89,7 +90,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
     public void download(File saveToDir, final PackageInfo packageInfo, final PackageDownloadListener listener) {
         final File localFile = new File(saveToDir, packageInfo.getFileName());
         if (localFile.exists() && localFile.length() != 0) {
-            listener.onComplete(packageInfo, localFile);
+            listener.onDownloadComplete(packageInfo, localFile);
             return;
         }
         mRepo.child(packageInfo.getFileName())
@@ -97,7 +98,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
                 .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        listener.onComplete(packageInfo, localFile);
+                        listener.onDownloadComplete(packageInfo, localFile);
                     }
                 })
                 .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
@@ -109,6 +110,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
+                        localFile.delete();
                         listener.onFailure(exception);
                     }
                 });

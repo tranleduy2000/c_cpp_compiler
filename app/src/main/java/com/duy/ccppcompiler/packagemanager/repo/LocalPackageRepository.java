@@ -60,7 +60,7 @@ public class LocalPackageRepository extends PackageRepositoryImpl {
     public void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener) {
         File file = new File(saveToDir, packageInfo.getFileName());
         if (file.exists()) {
-            listener.onComplete(packageInfo, file);
+            listener.onDownloadComplete(packageInfo, file);
         } else {
             listener.onFailure(new FileNotFoundException(file + " not found"));
         }

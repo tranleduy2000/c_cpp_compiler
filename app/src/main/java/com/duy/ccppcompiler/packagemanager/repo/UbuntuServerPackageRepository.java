@@ -27,6 +27,7 @@ import com.pdaxrom.utils.XMLParser;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -77,13 +78,13 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
         File temp = new File(saveToDir, packageInfo.getFileName());
         if (temp.exists() && temp.length() != 0) {
             Log.i(TAG, "Use file " + temp.getAbsolutePath());
-            listener.onComplete(packageInfo, temp);
+            listener.onDownloadComplete(packageInfo, temp);
             return;
         }
 
         URL fromUrl = getUrl(packageInfo);
         if (fromUrl == null) {
-            listener.onFailure(new MalformedURLException("URL not found"));
+            listener.onFailure(new MalformedURLException("Download URL not found (" + packageInfo.getFileName() + ")"));
             return;
         }
 
@@ -95,31 +96,33 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
             urlConnection.connect();
 
             int fileSize = urlConnection.getContentLength();
-            InputStream inputStream = urlConnection.getInputStream();
-            if (inputStream == null) {
-                throw new RuntimeException("stream is null");
+            InputStream input = urlConnection.getInputStream();
+            if (input == null) {
+                listener.onFailure(new RuntimeException("Can not open input stream for package " + packageInfo.getName()));
+                return;
             }
 
             Log.i(TAG, "File is " + temp.getAbsolutePath());
             int totalRead = 0;
-            FileOutputStream outputStream = new FileOutputStream(temp);
+            FileOutputStream output = new FileOutputStream(temp);
             byte buf[] = new byte[128 * 1024];
             do {
-                int numRead = inputStream.read(buf);
+                int numRead = input.read(buf);
                 if (numRead <= 0) {
                     break;
                 }
-                outputStream.write(buf, 0, numRead);
+                output.write(buf, 0, numRead);
                 totalRead += numRead;
                 listener.onDownloadProgress(packageInfo, totalRead, fileSize);
             } while (true);
 
-            inputStream.close();
-            outputStream.close();
+            input.close();
+            output.close();
             if (totalRead != fileSize) {
-                listener.onFailure(new RuntimeException("Partially downloaded file!"));
+                listener.onFailure(new IOException("Partially downloaded file!"));
+                return;
             }
-            listener.onComplete(packageInfo, temp);
+            listener.onDownloadComplete(packageInfo, temp);
         } catch (Exception e) {
             e.printStackTrace();
             temp.delete();
