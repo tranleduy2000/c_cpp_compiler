@@ -68,6 +68,9 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
     @Nullable
     @Override
     public EditorDelegate getCurrentEditorDelegate() {
+        if (getCount() == 0){
+            return null;
+        }
         EditorFragment fragment = (EditorFragment) getCurrentFragment();
         if (fragment != null) {
             return fragment.getEditorDelegate();
