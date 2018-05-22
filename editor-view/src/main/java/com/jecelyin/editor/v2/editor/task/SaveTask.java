@@ -18,31 +18,26 @@ package com.jecelyin.editor.v2.editor.task;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.editor.Document;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SaveTask extends AsyncTask<Void, Void, Boolean> {
-    private static final String TAG = "SaveTask";
-
-    private final EditorDelegate mEditorDelegate;
-    private final AtomicBoolean mWriting = new AtomicBoolean(false);
+    private Document mDocument;
+    @Nullable
     private SaveListener mListener;
     private Exception mException;
 
-    public SaveTask(@NonNull EditorDelegate editorDelegate, SaveListener listener) {
-        mEditorDelegate = (editorDelegate);
+    public SaveTask(@NonNull Document document, @Nullable SaveListener listener) {
+        mDocument = document;
         mListener = listener;
     }
 
     @Override
     protected Boolean doInBackground(Void... voids) {
         try {
-            Document document = mEditorDelegate.getDocument();
-            document.save();
+            mDocument.save();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,9 +50,13 @@ public class SaveTask extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
         if (aBoolean) {
-            mListener.onSavedSuccess();
+            if (mListener != null) {
+                mListener.onSavedSuccess();
+            }
         } else {
-            mListener.onSaveFailed(mException);
+            if (mListener != null) {
+                mListener.onSaveFailed(mException);
+            }
         }
     }
 }

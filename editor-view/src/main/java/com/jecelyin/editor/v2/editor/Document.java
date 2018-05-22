@@ -294,6 +294,7 @@ public class Document implements ReadFileListener, TextWatcher {
             LocalFileWriter writer = new LocalFileWriter(file, encoding);
             writer.writeToFile(mEditorDelegate.getEditableText());
         }
+        onSaveSuccess(document.getFile(), document.getEncoding(), false);
     }
 
     /**
@@ -301,21 +302,16 @@ public class Document implements ReadFileListener, TextWatcher {
      *
      * @param file - file to write
      */
-    protected void saveTo(final File file, final String encoding, @Nullable final SaveListener listener) {
+    protected void saveInBackground(final File file, final String encoding, @Nullable final SaveListener listener) {
         if (DLog.DEBUG)
             DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], listener = [" + listener + "]");
-        SaveTask saveTask = new SaveTask(mEditorDelegate, new SaveListener() {
+        SaveTask saveTask = new SaveTask(this, new SaveListener() {
             @Override
             public void onSavedSuccess() {
-                onSaveSuccess(file, encoding);
+                onSaveSuccess(file, encoding, true);
                 if (listener != null) {
                     listener.onSavedSuccess();
                 }
-            }
-
-            @Override
-            public void onPrepare() {
-
             }
 
             @Override
@@ -326,12 +322,14 @@ public class Document implements ReadFileListener, TextWatcher {
         saveTask.execute();
     }
 
-    private void onSaveSuccess(File newFile, String encoding) {
+    protected void onSaveSuccess(File newFile, String encoding, boolean notifyDataChange) {
         mFile = newFile;
         mEncoding = encoding;
         mSourceMD5 = md5(mEditorDelegate.getText());
         mSourceLength = mEditorDelegate.getText().length();
-        mEditorDelegate.onDocumentChanged();
+        if (notifyDataChange) {
+            mEditorDelegate.onDocumentChanged();
+        }
     }
 
     public boolean isChanged() {

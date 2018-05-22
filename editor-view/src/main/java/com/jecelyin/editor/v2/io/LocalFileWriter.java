@@ -22,6 +22,7 @@ import android.text.GetChars;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 /**
@@ -39,7 +40,7 @@ public class LocalFileWriter {
         this.encoding = encoding;
     }
 
-    public void writeToFile(GetChars content) throws Exception {
+    public void writeToFile(GetChars content) throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding), BUFFER_SIZE);
         char[] buffer = new char[BUFFER_SIZE]; //16kb
         int size = content.length();

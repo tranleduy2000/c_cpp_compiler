@@ -23,6 +23,7 @@ import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.manager.TabManager;
 
 /**
  * Created by Duy on 30-Apr-18.
@@ -43,29 +44,30 @@ public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (saveListener != null) {
-            saveListener.onPrepare();
-        }
     }
 
     @Override
     protected Boolean doInBackground(Void... voids) {
-        EditorFragmentPagerAdapter editorPagerAdapter = editorActivity.getTabManager().getEditorPagerAdapter();
+        TabManager tabManager = editorActivity.getTabManager();
+        EditorFragmentPagerAdapter editorPagerAdapter = tabManager.getEditorPagerAdapter();
         for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
             try {
                 editorDelegate.save();
             } catch (Exception e) {
                 e.printStackTrace();
                 exception = e;
-                return false;
             }
         }
-        return null;
+        return exception == null;
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
+        EditorFragmentPagerAdapter editorPagerAdapter = editorActivity.getTabManager().getEditorPagerAdapter();
+        for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
+            editorDelegate.onDocumentChanged();
+        }
         if (aBoolean) {
             if (saveListener != null) {
                 saveListener.onSavedSuccess();

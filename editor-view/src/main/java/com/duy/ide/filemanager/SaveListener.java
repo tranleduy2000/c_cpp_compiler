@@ -26,8 +26,5 @@ public interface SaveListener {
     void onSavedSuccess();
 
     @UiThread
-    void onPrepare();
-
-    @UiThread
     void onSaveFailed(Exception e);
 }

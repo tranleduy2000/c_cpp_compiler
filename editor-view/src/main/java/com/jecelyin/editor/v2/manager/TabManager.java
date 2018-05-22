@@ -259,11 +259,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
                                         }
 
                                         @Override
-                                        public void onPrepare() {
-
-                                        }
-
-                                        @Override
                                         public void onSaveFailed(Exception e) {
 
                                         }

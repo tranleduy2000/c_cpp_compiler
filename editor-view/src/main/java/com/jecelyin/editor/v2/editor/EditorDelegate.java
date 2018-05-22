@@ -42,13 +42,11 @@ import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.editor.view.EditorView;
-import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.dialog.FinderDialog;
-import com.jecelyin.editor.v2.editor.task.SaveTask;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
@@ -213,7 +211,7 @@ public class EditorDelegate implements TextWatcher {
             if (encoding == null) {
                 encoding = mDocument.getEncoding();
             }
-            mDocument.saveTo(file, encoding, null);
+            mDocument.saveInBackground(file, encoding, null);
         }
     }
 
@@ -221,9 +219,8 @@ public class EditorDelegate implements TextWatcher {
         mDocument.save();
     }
 
-    public void saveInBackground(@Nullable SaveListener listener) {
-        SaveTask saveTask = new SaveTask(this, listener);
-        saveTask.execute();
+    public void saveInBackground() {
+        saveTo(mDocument.getFile(), mDocument.getEncoding());
     }
 
 
@@ -301,7 +298,7 @@ public class EditorDelegate implements TextWatcher {
                 break;
             case SAVE:
                 if (!readonly) {
-                    saveInBackground((SaveListener) command.object);
+                    saveInBackground();
                 }
                 break;
             case SAVE_AS:
@@ -447,7 +444,7 @@ public class EditorDelegate implements TextWatcher {
      * This method will be called when document changed file
      */
     @MainThread
-    protected void onDocumentChanged() {
+    public void onDocumentChanged() {
         savedState.title = mDocument.getFile().getName();
         getActivity().invalidateEditMenu(mDocument, mEditText);
         getActivity().getTabManager().onDocumentChanged(mDocument);
