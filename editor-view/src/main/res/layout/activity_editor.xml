@@ -5,19 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="end">
+    tools:openDrawer="start">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false"
         android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="false">
+            android:layout_height="wrap_content">
 
             <com.jecelyin.editor.v2.widget.EditorToolbar
                 android:id="@+id/toolbar"
@@ -95,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,10 +102,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="?attr/colorPrimaryDark"
-                android:orientation="horizontal"
-                android:translationZ="3dp">
+                android:layout_height="?actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/appNameTextView"
@@ -131,8 +128,8 @@
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/appNameTextView"
                     android:layout_toRightOf="@id/appNameTextView"
-                    android:text="16.1.1"
-                    android:textColor="#fff" />
+                    android:textColor="#fff"
+                    tools:text="16.1.1" />
 
             </RelativeLayout>
 
@@ -149,7 +146,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="false">
 
     </android.support.design.widget.NavigationView>
 
