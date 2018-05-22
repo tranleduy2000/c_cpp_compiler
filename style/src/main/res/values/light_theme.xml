@@ -15,11 +15,12 @@
   -->
 
 <resources>
+    <color name="light_color_accent">#FF5722</color>
 
     <style name="DefaultTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">#00897b</item>
         <item name="colorPrimary">#26a69a</item>
-        <item name="colorAccent">#FF5722</item>
+        <item name="colorAccent">@color/light_color_accent</item>
 
         <item name="actionBarStyle">@style/Light.Toolbar</item>
         <item name="actionBarTheme">@style/Light.Toolbar</item>
@@ -34,6 +35,8 @@
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#c6c6c6</item>
         <item name="menuIconNormalColor">#000</item>
+
+        <item name="editorTabBackground">@drawable/drawer_tab_item_background_light</item>
 
         <item name="textForeground">#000000</item>
         <item name="textBackground">#FFFFFF</item>

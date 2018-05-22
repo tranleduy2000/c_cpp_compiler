@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFF</color>
+    <color name="color_material_gray_300">#009688</color>
+    <color name="color_material_gray_200">#009688</color>
+    <color name="color_material_grey_200">#eeeeee</color>
+</resources>

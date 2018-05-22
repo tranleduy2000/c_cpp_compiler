@@ -21,7 +21,8 @@
     <attr name="toolbarIconNormalColor" format="color" />
     <attr name="toolbarIconDisabledColor" format="color" />
     <attr name="menuIconNormalColor" format="color" />
-    
+    <attr name="editorTabBackground" format="reference" />
+
     <declare-styleable name="Editor">
         <attr name="textForeground" format="color" />
         <attr name="textBackground" format="color" />

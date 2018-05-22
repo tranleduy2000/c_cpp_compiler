@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 Jecelyin Peng <jecelyin@gmail.com>
   ~
   ~ This file is part of 920 Text Editor.
@@ -17,15 +16,27 @@
   ~ limitations under the License.
   -->
 
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_selected="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/accent_material_dark" />
+                </shape>
+            </item>
+
+            <item android:left="4dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/background_material_dark" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#009688" />
+            <solid android:color="@color/background_material_dark" />
         </shape>
     </item>
-    <item android:left="5dp">
-        <shape android:shape="rectangle">
-            <solid android:color="#fff" />
-        </shape>
-    </item>
-</layer-list>
+</selector>
