@@ -6,4 +6,9 @@
     <string name="title_menu_c_example">Code mẫu C</string>
     <string name="title_menu_cpp_example">Code mẫu C++</string>
     <string name="title_term_preferences">Cài đặt Terminal</string>
+    <string name="message_need_permission">Không thể chạy ứng dụng này mà không có quyền đọc / ghi bộ nhớ. Vui lòng mở cài đặt và cấp quyền cho ứng dụng này.</string>
+    <string name="grant_permission">Cấp quyền</string>
+    <string name="failed_to_install_compiler">Cài đặt trình biên dịch thất bại</string>
+    <string name="reinstall_compiler">Cài đặt lại trình biên dịch</string>
+    <string name="compiler_setting">Cài đặt trình biên dịch</string>
 </resources>

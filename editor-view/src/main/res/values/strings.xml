@@ -67,7 +67,7 @@
     <string name="duplication_line">Duplication line</string>
     <string name="jump_to_start">Jump to start</string>
     <string name="jump_to_end">Jump to end</string>
-    <string name="goto_line">Goto line</string>
+    <string name="goto_line">Go to line</string>
     <string name="cursor_back">Cursor back</string>
     <string name="cursor_forward">Cursor forward</string>
     <string name="document_info">Document Info</string>

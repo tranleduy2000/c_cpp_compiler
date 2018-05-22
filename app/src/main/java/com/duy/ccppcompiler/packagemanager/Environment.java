@@ -19,7 +19,6 @@ package com.duy.ccppcompiler.packagemanager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.pdaxrom.utils.Utils;
 
@@ -37,8 +36,8 @@ import jackpal.androidterm.TermSettings;
  */
 
 public class Environment {
-    public static final String APPLICATION_DIR_NAME = "Cpp-N-IDE";
-    private static final String TAG = "EnvironmentPath";
+    public static final String APPLICATION_DIR_NAME = "CCPlusPlusNIDE";
+    private static final String TAG = "Environment";
 
     /**
      * Internal storage
@@ -244,7 +243,7 @@ public class Environment {
             in.close();
             Utils.waitFor(pId[0]);
         } catch (Exception e) {
-            Log.e(TAG, "exception " + e);
+            e.printStackTrace();
         }
         return ret;
     }

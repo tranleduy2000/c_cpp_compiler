@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="special_keys">Các phím đặc biệt</string>
+    <string name="screen_preferences">Màn hình</string>
+    <string name="title_statusbar_preference">Thanh trạng thái</string>
+    <string name="summary_statusbar_preference">Hiển thị / ẩn thanh trạng thái.</string>
+    <string name="dialog_title_statusbar_preference">Thanh trạng thái</string>
+    <string name="dialog_title_color_preference">Màu chữ</string>
+    <string name="keyboard_preferences">Bàn phím</string>
+    <string name="summary_color_preference">Chọn màu chữ.</string>
+    <string name="dialog_title_fontsize_preference">Cỡ chữ</string>
+    <string name="title_fontsize_preference">Cỡ chữ</string>
+    <string name="title_utf8_by_default_preference">Mặc định là UTF-8</string>
+    <string name="text_preferences">Văn bản</string>
+    <string name="title_orientation_preference">Hướng màn hình</string>
+    <string name="title_cursorstyle_preference">Kiểu con trỏ</string>
+    <string name="summary_utf8_by_default_preference">Cho dù chế độ UTF-8 được bật theo mặc định hay chưa.</string>
+</resources>
