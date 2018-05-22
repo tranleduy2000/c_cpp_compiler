@@ -22,7 +22,7 @@ import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.jecelyin.common.utils.DLog;
+import com.duy.common.DLog;
 
 import java.io.File;
 

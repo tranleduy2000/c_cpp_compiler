@@ -20,7 +20,6 @@ package com.duy.ide.filemanager;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public interface SaveListener {
-    void onPrepare();
 
     void onSaved();
 }

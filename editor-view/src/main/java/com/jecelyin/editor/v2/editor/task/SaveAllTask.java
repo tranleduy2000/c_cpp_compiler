@@ -18,9 +18,10 @@ package com.jecelyin.editor.v2.editor.task;
 
 import android.os.AsyncTask;
 
-import com.duy.ide.filemanager.SaveListener;
-import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
+import com.duy.ide.filemanager.SaveListener;
+import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 
 /**
@@ -28,6 +29,7 @@ import com.jecelyin.editor.v2.editor.EditorDelegate;
  */
 
 public class SaveAllTask extends AsyncTask<Void, Void, Void> {
+    private static final String TAG = "SaveAllTask";
     private SimpleEditorActivity editorActivity;
     private SaveListener saveListener;
 
@@ -37,15 +39,8 @@ public class SaveAllTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        if (saveListener != null) {
-            saveListener.onPrepare();
-        }
-    }
-
-    @Override
     protected Void doInBackground(Void... voids) {
+        if (DLog.DEBUG) DLog.d(TAG, "doInBackground() called with: voids = [" + voids + "]");
         EditorFragmentPagerAdapter editorPagerAdapter = editorActivity.getTabManager().getEditorPagerAdapter();
         for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
             editorDelegate.save(false);

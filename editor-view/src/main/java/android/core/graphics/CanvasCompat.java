@@ -29,24 +29,22 @@ import android.support.annotation.NonNull;
  */
 public class CanvasCompat {
 
-    @SuppressLint("NewApi")
     public static void drawTextRun(Canvas c, @NonNull char[] text, int index, int count, int contextIndex,
                                    int contextCount, float x, float y, boolean isRtl, @NonNull Paint paint) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0以上
             c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl, paint);
         } else {
-            c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl /*? 1 : 0*/, paint);
+            c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl, paint);
         }
     }
 
 
-    @SuppressLint("NewApi")
     public static void drawTextRun(Canvas c, @NonNull CharSequence text, int start, int end, int contextStart,
                                    int contextEnd, float x, float y, boolean isRtl, @NonNull Paint paint) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0以上
             c.drawTextRun(text, start, end, contextStart, contextEnd, x, y, isRtl, paint);
         } else {
-            c.drawTextRun(text, start, end, contextStart, contextEnd, x, y, isRtl /*? 1 : 0*/, paint);
+            c.drawTextRun(text, start, end, contextStart, contextEnd, x, y, isRtl, paint);
         }
     }
 }

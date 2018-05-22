@@ -22,6 +22,7 @@ import android.core.text.SpannableStringBuilder;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.text.Editable;
 import android.text.Spannable;
@@ -36,10 +37,10 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
+import com.jecelyin.editor.v2.editor.task.SaveTask;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.highlight.HighlightInfo;
 import com.jecelyin.editor.v2.io.FileReader;
-import com.jecelyin.editor.v2.editor.task.SaveTask;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.ColorSchemeLoader;
@@ -287,6 +288,7 @@ public class Document implements ReadFileListener, TextWatcher {
         return mEncoding;
     }
 
+    @UiThread
     public void save(boolean inBackground, @Nullable SaveListener listener) {
         if (mSaveTask.isWriting()) {
             UIUtils.toast(mContext, R.string.writing);

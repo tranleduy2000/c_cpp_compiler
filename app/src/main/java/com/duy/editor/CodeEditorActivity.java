@@ -35,9 +35,12 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.common.DLog;
 import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pdaxrom.cctools.BuildConstants;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -51,6 +54,7 @@ import jackpal.androidterm.TermPreferencesActivity;
  */
 
 public class CodeEditorActivity extends SimpleEditorActivity {
+    private static final String TAG = "CodeEditorActivity";
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
     private DiagnosticPresenter mDiagnosticPresenter;
 
@@ -131,27 +135,35 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void compileAndRun() {
-        saveAll(false);
-        EditorDelegate currentEditor = getCurrentEditorDelegate();
-        if (currentEditor == null) {
-            return;
-        }
-        File[] srcFiles = new File[1];
-        String path = currentEditor.getPath();
-        srcFiles[0] = new File(path);
+        SaveAllTask saveAllTask = new SaveAllTask(this, new SaveListener() {
+            @Override
+            public void onSaved() {
+                if (DLog.DEBUG) DLog.d(TAG, "onSaved() called");
 
-        INativeCompiler compiler = CompilerFactory.makeCompilerForFile(this, srcFiles);
-        CompileManager compileManager = new CompileManager(this);
-        compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+                EditorDelegate currentEditor = getCurrentEditorDelegate();
+                if (currentEditor == null) {
+                    return;
+                }
+                File[] srcFiles = new File[1];
+                String path = currentEditor.getPath();
+                srcFiles[0] = new File(path);
 
-        if (compiler != null) {
-            CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-            compileTask.execute();
-        } else {
-            Toast.makeText(this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
-        }
+                CodeEditorActivity activity = CodeEditorActivity.this;
+                INativeCompiler compiler = CompilerFactory.makeCompilerForFile(activity, srcFiles);
+                CompileManager compileManager = new CompileManager(activity);
+                compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+
+                if (compiler != null) {
+                    CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
+                    compileTask.execute();
+                } else {
+                    Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        saveAllTask.execute();
+
     }
 
 

@@ -17,25 +17,33 @@
 package com.duy.ccppcompiler.compiler;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.duy.ccppcompiler.R;
 
 /**
  * Created by Duy on 17-May-18.
  */
 
 public class CompileSetting implements ICompileSetting {
+    private SharedPreferences mPreferences;
+    private Context mContext;
 
     public CompileSetting(Context context) {
-
+        mContext = context;
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
     public String getCFlags() {
-        return "";
+        return mPreferences.getString(mContext.getString(R.string.pref_key_c_options), "");
     }
 
     @Override
     public String getCxxFlags() {
-        return "";
+        return mPreferences.getString(mContext.getString(R.string.pref_key_cxx_options), "");
+
     }
 
     @Override
