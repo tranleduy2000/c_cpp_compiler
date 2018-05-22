@@ -48,7 +48,6 @@ import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.pager.IEditorPagerAdapter;
 import com.duy.ide.filemanager.FileManager;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -91,7 +90,7 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
         SharedPreferences.OnSharedPreferenceChangeListener {
     protected static final int RC_OPEN_FILE = 1;
     private static final String TAG = "MainActivity";
-    private final static int RC_SAVE = 3;
+    private final static int RC_SAVE_AS = 3;
     private static final int RC_SETTINGS = 5;
 
     public Toolbar mToolbar;
@@ -525,31 +524,29 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
     }
 
     public void startPickPathActivity(String path, String encoding) {
-        FileExplorerActivity.startPickPathActivity(this, path, encoding, RC_SAVE);
+        FileExplorerActivity.startPickPathActivity(this, path, encoding, RC_SAVE_AS);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode != RESULT_OK)
             return;
+
         switch (requestCode) {
             case RC_OPEN_FILE:
                 if (data == null)
                     break;
                 openFile(FileExplorerActivity.getFile(data), FileExplorerActivity.getFileEncoding(data), data.getIntExtra("offset", 0));
                 break;
-            case RC_SAVE:
+            case RC_SAVE_AS:
                 String file = FileExplorerActivity.getFile(data);
                 String encoding = FileExplorerActivity.getFileEncoding(data);
-
-                IEditorPagerAdapter adapter = mTabManager.getEditorPagerAdapter();
-                EditorDelegate delegate = adapter.getCurrentEditorDelegate();
+                EditorDelegate delegate = getCurrentEditorDelegate();
                 if (delegate != null) {
-                    adapter.updateDescriptor(file, encoding);
                     delegate.saveTo(new File(file), encoding);
                     DBHelper.getInstance(this).addRecentFile(file, encoding);
+                    DBHelper.getInstance(this).updateRecentFile(file, false);
                 }
                 break;
             case RC_SETTINGS:

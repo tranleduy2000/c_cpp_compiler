@@ -445,7 +445,7 @@ public class EditorDelegate implements TextWatcher {
      */
     @MainThread
     public void onDocumentChanged() {
-        savedState.title = mDocument.getFile().getName();
+        setCurrentFileToEdit(mDocument.getFile());
         getActivity().invalidateEditMenu(mDocument, mEditText);
         getActivity().getTabManager().onDocumentChanged(mDocument);
     }
