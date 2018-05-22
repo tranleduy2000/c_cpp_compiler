@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.duy.ccppcompiler.R;
@@ -75,12 +77,12 @@ public class ExampleActivity extends AppCompatActivity {
     }
 
     private void initUi() {
-//        mRecyclerView = findViewById(R.id.recycler_view);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     private ArrayList<ExampleItem> parseData(InputStream in) throws IOException, SAXException, ParserConfigurationException {
-      return new ExampleParser().parse(in);
+        return new ExampleParser().parse(in);
     }
 }
