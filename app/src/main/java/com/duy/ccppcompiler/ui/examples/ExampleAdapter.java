@@ -32,7 +32,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final ExampleItem exampleItem = exampleItems.get(position);
-        holder.txtTitle.setText(exampleItem.getTitle().replaceAll("[\n]", " "));
+        holder.txtTitle.setText(cleanText(exampleItem.getTitle()));
         holder.txtDesc.setText(cleanText(exampleItem.getDesc()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
