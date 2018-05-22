@@ -33,7 +33,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final ExampleItem exampleItem = exampleItems.get(position);
         holder.txtTitle.setText(exampleItem.getTitle().replaceAll("[\n]", " "));
-        holder.txtDesc.setText(exampleItem.getDesc().replaceAll("[\n]", " "));
+        holder.txtDesc.setText(cleanText(exampleItem.getDesc()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,6 +42,10 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ViewHold
                 }
             }
         });
+    }
+
+    private String cleanText(String desc) {
+        return desc.replaceAll("\\s+", " ");
     }
 
     @Override
