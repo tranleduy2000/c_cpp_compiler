@@ -37,7 +37,6 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:textColor="?android:textColorPrimary"
-            android:typeface="monospace"
             tools:text="12:22" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -48,7 +47,6 @@
             android:padding="4dp"
             android:singleLine="true"
             android:textColor="?android:textColorPrimary"
-            android:typeface="monospace"
             tools:text="/mnt/sdcard/src/c/examples/sssmain.c" />
     </LinearLayout>
 

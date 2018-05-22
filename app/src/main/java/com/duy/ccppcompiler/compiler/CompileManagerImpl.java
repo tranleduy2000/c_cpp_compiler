@@ -61,7 +61,8 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         if (mCompileDialog == null) {
             mCompileDialog = new ProgressDialog(mActivity);
         }
-        mCompileDialog.setMessage(mActivity.getString(R.string.title_compiling));
+        mCompileDialog.setTitle(mActivity.getString(R.string.title_compiling));
+        mCompileDialog.setMessage(mActivity.getString(R.string.wait_message));
         mCompileDialog.setButton(DialogInterface.BUTTON_NEGATIVE, mActivity.getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     @Override
