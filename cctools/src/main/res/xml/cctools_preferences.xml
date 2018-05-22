@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="updater"
-        android:title="@string/pref_updater" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="showToolBar"
-        android:title="@string/pref_toolbar" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="drawLineNumbers"
-        android:title="@string/pref_linenumbers" />
-    <ListPreference
-        android:defaultValue="@string/pref_fontsize_default"
-        android:dialogTitle="@string/pref_dialog_fontsize"
-        android:entries="@array/entries_fontsize_preference"
-        android:entryValues="@array/entryvalues_fontsize_preference"
-        android:key="fontsize"
-        android:title="@string/pref_fontsize" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="syntax"
-        android:title="@string/pref_syntax" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="autopair"
-        android:title="@string/pref_autopair" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="autoindent"
-        android:title="@string/pref_autoindent" />
-    <ListPreference
-        android:defaultValue="@string/pref_console_fontsize_default"
-        android:dialogTitle="@string/pref_dialog_fontsize"
-        android:entries="@array/entries_fontsize_preference"
-        android:entryValues="@array/entryvalues_fontsize_preference"
-        android:key="console_fontsize"
-        android:title="@string/pref_console_fontsize" />
     <PreferenceCategory android:title="@string/pref_force_run">
         <EditTextPreference
             android:key="force_ccopts"
@@ -54,7 +16,6 @@
             android:defaultValue="true"
             android:key="force_run"
             android:title="@string/pref_runargs" />
-
     </PreferenceCategory>
 
 
