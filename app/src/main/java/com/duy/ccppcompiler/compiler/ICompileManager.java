@@ -20,6 +20,8 @@ import android.support.annotation.MainThread;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 
+import java.io.File;
+
 /**
  * Created by Duy on 25-Apr-18.
  */
@@ -28,12 +30,29 @@ public interface ICompileManager<T extends CommandResult> {
     @MainThread
     void onNewMessage(CharSequence charSequence);
 
+
+    /**
+     * This method will be call to prepare UI
+     */
+    @MainThread
+    void onPrepareCompile();
+
+    /**
+     * Compile source files
+     */
+    @MainThread
+    void compile(File[] srcFiles);
+
+    /**
+     * This method will be call when compile success
+     */
     @MainThread
     void onCompileSuccess(T commandResult);
 
+    /**
+     * This method will be call when compile failed with error
+     */
     @MainThread
     void onCompileFailed(T commandResult);
 
-    @MainThread
-    void onPrepareCompile();
 }

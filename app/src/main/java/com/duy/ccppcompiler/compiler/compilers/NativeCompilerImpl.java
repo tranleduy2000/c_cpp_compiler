@@ -42,4 +42,8 @@ public abstract class NativeCompilerImpl<T extends CommandResult> implements INa
         return ShellUtils.execCommand(context, mWorkDir, mCommand);
     }
 
+    @Override
+    public void hangup() {
+
+    }
 }

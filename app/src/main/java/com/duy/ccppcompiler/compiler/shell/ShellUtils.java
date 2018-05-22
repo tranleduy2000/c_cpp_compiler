@@ -51,7 +51,7 @@ public class ShellUtils {
 
             int[] processIds = new int[1];
             FileDescriptor fd = Utils.createSubProcess(mWorkDir, argv[0], argv, env, processIds);
-            int processId = processIds[0];
+            final int processId = processIds[0];
             if (processId <= 0) {
                 return new CommandResult(-1, "Could not create sub process");
             }
@@ -66,9 +66,16 @@ public class ShellUtils {
             out.write("exec " + mCommand + "\n");
             out.flush();
 
-            DLog.d(TAG, "Waiting for hangup session");
-            int exitCode = Utils.waitFor(processId);
-            DLog.d(TAG, "Subprocess exited: " + exitCode);
+            final int[] exitCode = new int[1];
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    DLog.d(TAG, "Waiting for hangup session");
+                    exitCode[0] = Utils.waitFor(processId);
+                    DLog.d(TAG, "Subprocess exited: " + exitCode[0]);
+                }
+            });
+            thread.start();
 
             //parse output
             StringBuilder message = new StringBuilder();
@@ -96,14 +103,14 @@ public class ShellUtils {
                 } else {
                     message.append(errstr).append("\n");
                 }
-            } while (true);
+            } while (thread.isAlive());
 
             if (DLog.DEBUG) DLog.d(TAG, "stdout: \n" + message);
 
             out.close();
             in.close();
 
-            CommandResult commandResult = new CommandResult(exitCode, message.toString());
+            CommandResult commandResult = new CommandResult(exitCode[0], message.toString());
             long time = System.currentTimeMillis() - startTime;
             if (DLog.DEBUG) DLog.d(TAG, "time = " + time);
             commandResult.setTime(time);

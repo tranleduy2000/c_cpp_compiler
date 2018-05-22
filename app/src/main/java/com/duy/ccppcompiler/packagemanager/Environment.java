@@ -81,6 +81,14 @@ public class Environment {
     }
 
     /**
+     * @return temp directory for execute file
+     */
+    public static String getTmpDir(Context context) {
+        File file = new File(Environment.getToolchainsDir(context), "tmp");
+        return mkdirIfNotExist(file);
+    }
+
+    /**
      * External storage
      */
     public static String getSdCardHomeDir() {

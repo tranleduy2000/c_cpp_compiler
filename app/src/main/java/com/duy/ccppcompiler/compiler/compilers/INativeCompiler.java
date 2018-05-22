@@ -29,4 +29,6 @@ import java.io.File;
 public interface INativeCompiler<T extends CommandResult> {
     @WorkerThread
     T compile(File[] sourceFiles) ;
+
+    void hangup();
 }

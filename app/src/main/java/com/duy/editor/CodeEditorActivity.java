@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
-import com.duy.ccppcompiler.compiler.CompileTask;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
@@ -177,13 +176,14 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 srcFiles[0] = new File(path);
 
                 CodeEditorActivity activity = CodeEditorActivity.this;
-                INativeCompiler compiler = CompilerFactory.makeCompilerForFile(activity, srcFiles);
+
+                INativeCompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles);
                 CompileManager compileManager = new CompileManager(activity);
                 compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+                compileManager.setCompiler(compiler);
 
                 if (compiler != null) {
-                    CompileTask compileTask = new CompileTask(compiler, srcFiles, compileManager);
-                    compileTask.execute();
+                    compileManager.compile(srcFiles);
                 } else {
                     Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
                 }

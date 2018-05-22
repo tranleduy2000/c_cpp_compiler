@@ -31,7 +31,7 @@ import java.io.File;
 
 public class CompilerFactory {
     @Nullable
-    public static INativeCompiler makeCompilerForFile(Context context, File[] sourceFiles) {
+    public static INativeCompiler getCompilerForFile(Context context, File[] sourceFiles) {
         File file = sourceFiles[0];
         String filePath = file.getAbsolutePath();
         String fileName = file.getName();

@@ -17,12 +17,14 @@
 package com.duy.ccppcompiler.compiler;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.diagnostic.DiagnosticsCollector;
@@ -32,6 +34,7 @@ import com.duy.editor.CodeEditorActivity;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -44,6 +47,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
     @Nullable
     private ProgressDialog mCompileDialog;
     private DiagnosticPresenter mDiagnosticPresenter;
+    private INativeCompiler mCompiler;
 
     CompileManagerImpl(@NonNull CodeEditorActivity activity) {
         mActivity = activity;
@@ -51,16 +55,31 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
 
     @Override
     public void onPrepareCompile() {
+        mDiagnosticPresenter.clear();
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
+
         if (mCompileDialog == null) {
             mCompileDialog = new ProgressDialog(mActivity);
         }
-        mCompileDialog.setTitle(R.string.title_compiling);
+        mCompileDialog.setMessage(mActivity.getString(R.string.title_compiling));
+        mCompileDialog.setButton(DialogInterface.BUTTON_NEGATIVE, mActivity.getString(R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mCompiler.hangup();
+                        dialog.cancel();
+                    }
+                });
         mCompileDialog.setCancelable(false);
         mCompileDialog.setCanceledOnTouchOutside(false);
         mCompileDialog.show();
 
-        mDiagnosticPresenter.clear();
+    }
+
+    @Override
+    public void compile(File[] srcFiles) {
+        CompileTask compileTask = new CompileTask(mCompiler, srcFiles, this);
+        compileTask.execute();
     }
 
     @Override
@@ -116,5 +135,9 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
             mCompileDialog.dismiss();
         }
+    }
+
+    public void setCompiler(INativeCompiler compiler) {
+        this.mCompiler = compiler;
     }
 }
