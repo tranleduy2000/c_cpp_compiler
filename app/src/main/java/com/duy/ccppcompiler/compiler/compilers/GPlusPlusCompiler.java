@@ -70,7 +70,7 @@ public class GPlusPlusCompiler extends GCCCompiler {
         // truncated to n characters, if the -fmessage-length=n option is given. When the output is
         // done to the terminal, the width is limited to the width given by the COLUMNS environment
         // variable or, if not set, to the terminal width.
-        builder.addFlags("-fno-diagnostics-show-caret");
+        //builder.addFlags("-fno-diagnostics-show-caret");
 
         return builder.buildCommand();
     }

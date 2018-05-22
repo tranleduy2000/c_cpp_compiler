@@ -23,10 +23,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.diagnostic.Diagnostic;
@@ -46,8 +48,9 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticAdapter mAdapter;
 
+    private ViewFlipper mViewFlipper;
     private RecyclerView mDiagnosticView;
-    private ScrollView mLogView;
+    private TextView mLogView;
 
     public static DiagnosticFragment newInstance() {
 
@@ -75,10 +78,16 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
             diagnostics = new ArrayList<>();
         }
 
+        mViewFlipper = view.findViewById(R.id.view_flipper);
+
+        mLogView = view.findViewById(R.id.txt_log);
+        mLogView.setMovementMethod(new ScrollingMovementMethod());
+
+        mViewFlipper.setDisplayedChild(1);
+
         mDiagnosticView = view.findViewById(R.id.diagnostic_list_view);
         mDiagnosticView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mDiagnosticView.addItemDecoration(new DividerItemDecoration(getContext(),
-                DividerItemDecoration.VERTICAL));
+        mDiagnosticView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
         mAdapter = new DiagnosticAdapter(diagnostics, getContext());
         mAdapter.setDiagnosticClickListener(this);
@@ -99,7 +108,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     @Override
     public void showLog(CharSequence log) {
-
+        mLogView.setText(log);
     }
 
     @Override
@@ -115,6 +124,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     @Override
     public void clear() {
         mAdapter.clear();
+        mLogView.setText("");
     }
 
     @Override

@@ -95,6 +95,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
 
             ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
             mDiagnosticPresenter.setDiagnostics(diagnostics);
+            mDiagnosticPresenter.log(commandResult.getMessage());
             mDiagnosticPresenter.expandView();
 
             debug(diagnostics);

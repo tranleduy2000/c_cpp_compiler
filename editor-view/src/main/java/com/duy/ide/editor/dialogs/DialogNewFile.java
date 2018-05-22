@@ -41,9 +41,8 @@ public class DialogNewFile extends AbstractDialog {
     private final Context context;
     @Nullable
     private final OnCreateFileListener mListener;
-    private String dir;
     private final String[] fileExtensions;
-
+    private String dir;
     private EditText mPathExitText, mNameEditText;
 
     // TODO: 19-May-18 create new file and callback
