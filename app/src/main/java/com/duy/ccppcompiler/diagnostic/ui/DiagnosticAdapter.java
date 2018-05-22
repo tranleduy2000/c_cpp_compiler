@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.diagnostic;
+package com.duy.ccppcompiler.diagnostic.ui;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,9 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.diagnostic.DiagnosticClickListener;
 
 import java.io.File;
 import java.util.List;
@@ -44,16 +47,6 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
         } else {
             holder.txtLineCol.setText("");
         }
-        holder.btnFixIt.setVisibility(diagnostic.getSuggestion() != null ?
-                View.VISIBLE : View.GONE);
-        holder.btnFixIt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mDiagnosticClickListener != null) {
-                    mDiagnosticClickListener.onSuggestionClick(v, diagnostic, diagnostic.getSuggestion());
-                }
-            }
-        });
 
         File source = diagnostic.getSourceFile();
         if (source != null) {
@@ -63,7 +56,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
         }
 
         holder.txtMessage.setText(diagnostic.getMessage(mContext));
-        holder.root.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mDiagnosticClickListener != null) {
@@ -112,16 +105,14 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtLineCol, txtMessage, txtFile;
-        View root;
-        View btnFixIt;
+        ImageView icon;
 
         ViewHolder(View itemView) {
             super(itemView);
             txtLineCol = itemView.findViewById(R.id.txt_line_col);
             txtMessage = itemView.findViewById(R.id.txt_message);
             txtFile = itemView.findViewById(R.id.txt_file);
-            btnFixIt = itemView.findViewById(R.id.btn_fix_it);
-            root = itemView;
+            icon = itemView.findViewById(R.id.imageview);
         }
     }
 }

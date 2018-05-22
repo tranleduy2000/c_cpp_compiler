@@ -31,7 +31,7 @@ import com.duy.ccppcompiler.compiler.CompileTask;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.console.TermActivity;
-import com.duy.ccppcompiler.diagnostic.DiagnosticFragment;
+import com.duy.ccppcompiler.diagnostic.ui.DiagnosticFragment;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;

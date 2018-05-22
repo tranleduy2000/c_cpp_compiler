@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic;
+package com.duy.ccppcompiler.diagnostic.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +29,9 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.diagnostic.Diagnostic;
+import com.duy.ccppcompiler.diagnostic.DiagnosticClickListener;
+import com.duy.ccppcompiler.diagnostic.DiagnosticContract;
 import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 
 import java.util.ArrayList;
