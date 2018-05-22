@@ -63,7 +63,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             DLog.d(TAG, "onDiagnosticClick() called diagnostic = [" + diagnostic + "]");
         File source = diagnostic.getSourceFile();
         if (source != null) {
-            EditorDelegate editorDelegate = moveToEditor(source, mHashCode.get(source));
+            EditorDelegate editorDelegate = moveToEditor(source, null);
             if (editorDelegate != null) {
                 Command command = new Command(Command.CommandEnum.GOTO_INDEX);
                 command.args.putInt("line", (int) diagnostic.getLineNumber());
@@ -95,7 +95,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Nullable
     @SuppressWarnings("ConstantConditions")
     @MainThread
-    private EditorDelegate moveToEditor(File source, byte[] md5) {
+    private EditorDelegate moveToEditor(File source, @Nullable byte[] md5) {
         Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
         if (pair != null) {
             int index = pair.first;
@@ -150,10 +150,10 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         if (delegate != null) {
             delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
             delegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR_SPAN));
-            
+
             for (Diagnostic diagnostic : mDiagnostics) {
                 File sourceFile = diagnostic.getSourceFile();
-                
+
                 if (sourceFile != null) {
                     if (sourceFile.getPath().equals(delegate.getPath())) {
                         Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);

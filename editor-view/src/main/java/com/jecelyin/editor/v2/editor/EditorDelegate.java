@@ -235,9 +235,9 @@ public class EditorDelegate implements TextWatcher {
         return mEditText.getSelectionEnd();
     }
 
-    public boolean doCommand(Command command) {
+    public void doCommand(Command command) {
         if (mEditText == null)
-            return false;
+            return;
         boolean readonly = Preferences.getInstance(mContext).isReadOnly();
         switch (command.what) {
             case HIDE_SOFT_INPUT:
@@ -255,15 +255,21 @@ public class EditorDelegate implements TextWatcher {
                     mEditText.redo();
                 break;
             case CUT:
-                if (!readonly)
-                    return mEditText.cut();
+                if (!readonly) {
+                    mEditText.cut();
+                    return;
+                }
             case COPY:
-                return mEditText.copy();
+                mEditText.copy();
+                return;
             case PASTE:
-                if (!readonly)
-                    return mEditText.paste();
+                if (!readonly) {
+                    mEditText.paste();
+                    return;
+                }
             case SELECT_ALL:
-                return mEditText.selectAll();
+                mEditText.selectAll();
+                return;
             case DUPLICATION:
                 if (!readonly)
                     mEditText.duplication();
@@ -356,7 +362,6 @@ public class EditorDelegate implements TextWatcher {
                 clearErrorSpan();
                 break;
         }
-        return true;
     }
 
     private void clearErrorSpan() {
