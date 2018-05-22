@@ -21,10 +21,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
+import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
+import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.manager.TabManager;
@@ -60,10 +62,18 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @MainThread
     @Override
     public void onDiagnosticClick(View view, Diagnostic diagnostic) {
-        if (DLog.DEBUG)
+        if (DLog.DEBUG) {
             DLog.d(TAG, "onDiagnosticClick() called diagnostic = [" + diagnostic + "]");
+        }
         File source = diagnostic.getSourceFile();
+
         if (source != null) {
+            if (isSystemFile(source)) {
+                UIUtils.alert(mActivity,
+                        mActivity.getString(R.string.non_project_file_title),
+                        mActivity.getString(R.string.non_project_file_message, source.getPath()));
+                return;
+            }
             EditorDelegate editorDelegate = moveToEditor(source, null);
             if (editorDelegate != null) {
                 Command command = new Command(Command.CommandEnum.GOTO_INDEX);
@@ -138,9 +148,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @MainThread
     @Override
     public void setDiagnostics(ArrayList<Diagnostic> diagnostics) {
-        mDiagnostics = cleanDiagnostics(diagnostics);
+        mDiagnostics = diagnostics;
         mHashCode.clear();
-        show(diagnostics);
+        show(mDiagnostics);
         highlightErrorCurrentEditor();
     }
 
@@ -150,29 +160,20 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         }
     }
 
-    /**
-     * Ignore all system error message
-     * <p>
-     * arm-linux-androideabi/include/c++/4.9/bits/char_traits.h:113:57: error: 'std::size_t' has not been declared
-     */
-    private ArrayList<Diagnostic> cleanDiagnostics(ArrayList<Diagnostic> diagnostics) {
+    private boolean isSystemFile(File file) {
         ArrayList<Diagnostic> result = new ArrayList<>();
         String cCtoolsDir = Environment.getCCtoolsDir(mActivity);
         //in android 6 or above, the data dir is a symbolic link
         String cCtoolsDir2 = "/data/data/" + mActivity.getPackageName() + "/root/cctools";
-        for (Diagnostic diagnostic : diagnostics) {
-            File file = diagnostic.getSourceFile();
-            if (file != null) {
-                if (file.getPath().startsWith(cCtoolsDir)) {
-                    continue;
-                }
-                if (file.getPath().startsWith(cCtoolsDir2)) {
-                    continue;
-                }
+        if (file != null) {
+            if (file.getPath().startsWith(cCtoolsDir)) {
+                return true;
             }
-            result.add(diagnostic);
+            if (file.getPath().startsWith(cCtoolsDir2)) {
+                return true;
+            }
         }
-        return result;
+        return false;
     }
 
     private void highlightErrorCurrentEditor() {

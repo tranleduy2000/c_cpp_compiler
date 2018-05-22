@@ -23,10 +23,9 @@ import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,13 +56,13 @@ public class ShellUtils {
             }
 
             Utils.setPtyUTF8Mode(fd, true);
-            Utils.setPtyWindowSize(fd, 64, 128, 0, 0);
+            Utils.setPtyWindowSize(fd, 128, 1024, 0, 0);
 
             BufferedReader in = new BufferedReader(new FileReader(fd));
-            BufferedWriter out = new BufferedWriter(new FileWriter(fd));
+            FileOutputStream out = new FileOutputStream(fd);
 
-            out.write("export PS1=''\n");
-            out.write("exec " + mCommand + "\n");
+            out.write(("export PS1=''\n").getBytes("UTF-8"));
+            out.write(("exec " + mCommand + "\n").getBytes("UTF-8"));
             out.flush();
 
             final int[] exitCode = new int[1];
@@ -79,7 +78,7 @@ public class ShellUtils {
 
             //parse output
             StringBuilder message = new StringBuilder();
-            int skipStrings = 3; //skip echos from two command strings
+            int skipStrings = 0; //skip echos from two command strings
             final Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
             do {
                 String errstr;

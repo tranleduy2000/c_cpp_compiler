@@ -13,4 +13,7 @@
     <string name="diagnostic">Diagnostic</string>
     <string name="logview">Log</string>
     <string name="compiler_setting">Compiler setting</string>
+
+    <string name="non_project_file_message">"This file does not belong to the project: (%s)"</string>
+    <string name="non_project_file_title">Non-Project Files Protection</string>
 </resources>
