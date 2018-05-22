@@ -63,14 +63,15 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         if (DLog.DEBUG)
             DLog.d(TAG, "onDiagnosticClick() called diagnostic = [" + diagnostic + "]");
         File source = diagnostic.getSourceFile();
-        EditorDelegate editorDelegate = moveToEditor(source, mHashCode.get(source));
-        if (editorDelegate != null) {
-            Command command = new Command(Command.CommandEnum.GOTO_INDEX);
-            command.args.putInt("line", (int) diagnostic.getLineNumber());
-            command.args.putInt("col", (int) diagnostic.getColumnNumber());
-            editorDelegate.doCommand(command);
+        if (source != null) {
+            EditorDelegate editorDelegate = moveToEditor(source, mHashCode.get(source));
+            if (editorDelegate != null) {
+                Command command = new Command(Command.CommandEnum.GOTO_INDEX);
+                command.args.putInt("line", (int) diagnostic.getLineNumber());
+                command.args.putInt("col", (int) diagnostic.getColumnNumber());
+                editorDelegate.doCommand(command);
+            }
         }
-
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -150,21 +151,25 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         if (delegate != null) {
             delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
             delegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR_SPAN));
+            
             for (Diagnostic diagnostic : mDiagnostics) {
                 File sourceFile = diagnostic.getSourceFile();
-                if (sourceFile.getPath().equals(delegate.getPath())) {
-                    Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
-                    if (diagnostic.getSuggestion() != null) {
-                        ISuggestion suggestion = diagnostic.getSuggestion();
-                        command.args.putInt("line", suggestion.getLineStart());
-                        command.args.putInt("col", suggestion.getColStart());
-                        command.args.putInt("lineEnd", suggestion.getLineEnd());
-                        command.args.putInt("colEnd", suggestion.getColEnd());
-                    } else {
-                        command.args.putInt("line", (int) diagnostic.getLineNumber());
-                        command.args.putInt("col", (int) diagnostic.getColumnNumber());
+                
+                if (sourceFile != null) {
+                    if (sourceFile.getPath().equals(delegate.getPath())) {
+                        Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
+                        if (diagnostic.getSuggestion() != null) {
+                            ISuggestion suggestion = diagnostic.getSuggestion();
+                            command.args.putInt("line", suggestion.getLineStart());
+                            command.args.putInt("col", suggestion.getColStart());
+                            command.args.putInt("lineEnd", suggestion.getLineEnd());
+                            command.args.putInt("colEnd", suggestion.getColEnd());
+                        } else {
+                            command.args.putInt("line", (int) diagnostic.getLineNumber());
+                            command.args.putInt("col", (int) diagnostic.getColumnNumber());
+                        }
+                        delegate.doCommand(command);
                     }
-                    delegate.doCommand(command);
                 }
             }
         }

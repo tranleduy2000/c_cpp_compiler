@@ -23,4 +23,6 @@ public interface DiagnosticListener {
      * @param diagnostic a diagnostic representing the problem that was found
      */
     void report(Diagnostic diagnostic);
+
+    void clear();
 }

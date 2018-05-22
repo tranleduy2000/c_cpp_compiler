@@ -26,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.diagnostic.Diagnostic;
@@ -40,9 +41,11 @@ import java.util.List;
 
 public class DiagnosticFragment extends Fragment implements DiagnosticContract.View, DiagnosticClickListener {
     private static final String KEY_DATA = "data";
-    private RecyclerView mRecyclerView;
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticAdapter mAdapter;
+
+    private RecyclerView mDiagnosticView;
+    private ScrollView mLogView;
 
     public static DiagnosticFragment newInstance() {
 
@@ -70,14 +73,14 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
             diagnostics = new ArrayList<>();
         }
 
-        mRecyclerView = view.findViewById(R.id.diagnostic_list_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+        mDiagnosticView = view.findViewById(R.id.diagnostic_list_view);
+        mDiagnosticView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mDiagnosticView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
 
         mAdapter = new DiagnosticAdapter(diagnostics, getContext());
         mAdapter.setDiagnosticClickListener(this);
-        mRecyclerView.setAdapter(mAdapter);
+        mDiagnosticView.setAdapter(mAdapter);
     }
 
     @Override

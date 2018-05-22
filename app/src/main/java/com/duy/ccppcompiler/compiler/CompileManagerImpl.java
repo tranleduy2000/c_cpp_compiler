@@ -78,6 +78,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
             DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
             OutputParser parser = new OutputParser(diagnosticsCollector);
             parser.parse(commandResult.getMessage());
+
             ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
             mDiagnosticPresenter.setDiagnostics(diagnostics);
             mDiagnosticPresenter.showView();

@@ -43,7 +43,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
             String text = diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber();
             holder.txtLineCol.setText(text);
         } else {
-            holder.txtLineCol.getEditableText().clear();
+            holder.txtLineCol.setText("");
         }
         holder.btnFixIt.setVisibility(diagnostic.getSuggestion() != null ?
                 View.VISIBLE : View.GONE);
@@ -55,8 +55,14 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
                 }
             }
         });
+
         File source = diagnostic.getSourceFile();
-        holder.txtFile.setText(source.getName());
+        if (source != null) {
+            holder.txtFile.setText(source.getName());
+        } else {
+            holder.txtFile.setText("");
+        }
+
         holder.txtMessage.setText(diagnostic.getMessage(mContext));
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override

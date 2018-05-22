@@ -32,6 +32,15 @@ public class DiagnosticsCollector implements DiagnosticListener {
         diagnostics.add(diagnostic);
     }
 
+    @Override
+    public void clear() {
+        diagnostics.clear();
+    }
+
+    public Diagnostic getAt(int index) {
+        return diagnostics.get(index);
+    }
+
     public ArrayList<Diagnostic> getDiagnostics() {
         return diagnostics;
     }

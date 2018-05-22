@@ -10,4 +10,6 @@
     <string name="grant_permission">Grant permissions</string>
     <string name="failed_to_install_compiler">Failed to install compiler</string>
     <string name="reinstall_compiler">Reinstall compiler</string>
+    <string name="diagnostic">Diagnostic</string>
+    <string name="logview">Log</string>
 </resources>

@@ -18,7 +18,6 @@ package com.duy.ccppcompiler.compiler.diagnostic;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
@@ -33,7 +32,7 @@ public interface Diagnostic extends Parcelable {
     /**
      * Used to signal that no position is available.
      */
-    public final static long NOPOS = -1;
+    public final static int NOPOS = -1;
 
     Kind getKind();
 
@@ -44,7 +43,7 @@ public interface Diagnostic extends Parcelable {
      * {@code null} if no source object is associated with the
      * diagnostic.
      */
-    @NonNull
+    @Nullable
     File getSourceFile();
 
     /**

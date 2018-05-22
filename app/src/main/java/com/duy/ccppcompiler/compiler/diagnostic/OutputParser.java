@@ -16,15 +16,12 @@
 
 package com.duy.ccppcompiler.compiler.diagnostic;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.duy.ccppcompiler.compiler.diagnostic.suggestion.ISuggestion;
-
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.duy.ccppcompiler.compiler.diagnostic.Kind.OTHER;
 
 /**
  * https://gcc.gnu.org/onlinedocs/gcc-3.3.5/gnat_ug_unx/Output-and-Error-Message-Control.html
@@ -35,24 +32,14 @@ import java.util.regex.Pattern;
  */
 
 public class OutputParser {
-    public static final Pattern DIAGNOSTICS_PATTERN = Pattern.compile(
-            "(.*):" + /*File path*/
-                    "([0-9]+):" + /*Line*/
-                    "([0-9]+):" + /*Col*/
-                    "(\\s+.*:\\s+)" + /*Type*/
-                    "(.*)" /*Message*/);
+    ///storage/emulated/0/Examples/c++/cin2.cpp:25:1: error: expected ';' before '}' token
+    public static final Pattern FILE_LINE_COL_TYPE_MESSAGE_PATTERN = Pattern.compile(
+            "(\\S+):([0-9]+):([0-9]+):(\\s+.*:\\s+)(.*)");
 
-    //fix-it:"/storage/emulated/0/examples/simple/bit_print.c":{6:7-6:11}:"printf"
-    public static final Pattern FIX_IT_PATTERN = Pattern.compile(
-            "(fix-it):" +/*prefix*/
-                    Pattern.quote("\"") + "(.*)" + Pattern.quote("\"") + ":" +/*File path*/
-                    "\\{([0-9]+):([0-9]+)-([0-9]+):([0-9]+)\\}:" + /*Index (line:col)-(line:col)*/
-                    Pattern.quote("\"") + "(.*)" + Pattern.quote("\"")/*Message*/);
+    ///storage/emulated/0/Examples/c++/cin2.cpp: In function 'int main()':
+    public static final Pattern FILE_MESSAGE_PATTERN = Pattern.compile("(\\S+):(.*)");
 
-    public static final Pattern MESSAGE_PATTERN = Pattern.compile(
-            "(.*):" + /*File path*/
-                    "(.*)" /*Message*/);
-
+    private static final String TAG = "OutputParser2";
     private DiagnosticsCollector diagnosticsCollector;
 
     public OutputParser(DiagnosticsCollector diagnosticsCollector) {
@@ -67,58 +54,34 @@ public class OutputParser {
 
             String line;
             while ((line = lineReader.readLine()) != null) {
-                processLine(lineReader, line, lineReader.readLine());
+                Matcher matcher = FILE_LINE_COL_TYPE_MESSAGE_PATTERN.matcher(line);
+                if (matcher.find()) {
+                    String filePath = matcher.group(1);
+                    int lineNumber = Integer.parseInt(matcher.group(2));
+                    int colNumber = Integer.parseInt(matcher.group(3));
+                    Kind type = DiagnosticFactory.createType(matcher.group(4));
+                    String message = matcher.group(5);
+
+                    Diagnostic diagnostic =
+                            DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
+                    diagnosticsCollector.report(diagnostic);
+                    continue;
+                }
+
+                matcher = FILE_MESSAGE_PATTERN.matcher(line);
+                if (matcher.find()) {
+                    String filePath = matcher.group(1);
+                    String message = matcher.group(2);
+
+                    Diagnostic diagnostic =
+                            DiagnosticFactory.create(OTHER, filePath, Diagnostic.NOPOS, Diagnostic.NOPOS, message);
+                    diagnosticsCollector.report(diagnostic);
+                }
             }
 
         } catch (Exception e) {
             //should not happened
             e.printStackTrace();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void processLine(LineNumberReader lineReader, @NonNull String line, @Nullable String nextLine) {
-        try {
-            line = line.trim();
-            Matcher matcher = DIAGNOSTICS_PATTERN.matcher(line);
-            Diagnostic diagnostic;
-            if (matcher.find()) {
-                String filePath = matcher.group(1);
-                int lineNumber = Integer.parseInt(matcher.group(2));
-                int colNumber = Integer.parseInt(matcher.group(3));
-                Kind type = DiagnosticFactory.createType(matcher.group(4));
-                String message = matcher.group(5);
-
-                diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
-                diagnosticsCollector.report(diagnostic);
-            } else {
-                if (nextLine != null) {
-                    processLine(lineReader, nextLine, lineReader.readLine());
-                }
-                return;
-            }
-            if (nextLine == null) {
-                return;
-            }
-            nextLine = nextLine.trim();
-
-            matcher = FIX_IT_PATTERN.matcher(nextLine);
-            if (matcher.find()) {
-                String filePath = matcher.group(2);
-                int lineStart = Integer.parseInt(matcher.group(3));
-                int colStart = Integer.parseInt(matcher.group(4));
-                int lineEnd = Integer.parseInt(matcher.group(5));
-                int colEnd = Integer.parseInt(matcher.group(6));
-                String message = matcher.group(7);
-                ISuggestion suggestion = DiagnosticFactory.createSuggestion(filePath, lineStart, colStart, lineEnd, colEnd, message);
-                diagnostic.setSuggestion(suggestion);
-            } else {
-                processLine(lineReader, nextLine, lineReader.readLine());
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            //should not happend
         }
     }
 }
