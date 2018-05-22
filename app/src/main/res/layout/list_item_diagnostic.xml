@@ -18,45 +18,44 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/imageview"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/baseline_warning_24" />
+        android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_line_col"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:padding="4dp"
-        android:textColor="?android:textColorPrimary"
-        android:typeface="monospace"
-        tools:text="12:22" />
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_warning_24" />
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_file"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/txt_line_col"
-        android:layout_toRightOf="@+id/txt_line_col"
-        android:padding="4dp"
-        android:textColor="?android:textColorPrimary"
-        android:typeface="monospace"
-        tools:text="main.c" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_line_col"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textColor="?android:textColorPrimary"
+            android:typeface="monospace"
+            tools:text="12:22" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="start"
+            android:padding="4dp"
+            android:singleLine="true"
+            android:textColor="?android:textColorPrimary"
+            android:typeface="monospace"
+            tools:text="/mnt/sdcard/src/c/examples/sssmain.c" />
+    </LinearLayout>
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txt_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/txt_file"
-        android:layout_toRightOf="@+id/txt_file"
         android:padding="4dp"
         android:textColor="?android:textColorPrimary"
         tools:text="Long message Long message Long message Long messageLong messageLong messageLong messageLong messageLong message" />

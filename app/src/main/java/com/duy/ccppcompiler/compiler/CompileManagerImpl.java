@@ -103,7 +103,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
 
             ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
             mDiagnosticPresenter.setDiagnostics(diagnostics);
-            mDiagnosticPresenter.showView();
+            mDiagnosticPresenter.expandView();
 
             debug(diagnostics);
         }
@@ -116,7 +116,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
 
     private void debug(ArrayList diagnostics) {
         for (Object diagnostic : diagnostics) {
-            System.out.println(diagnostic);
+            if (DLog.DEBUG) DLog.d(TAG, "diagnostic = " + diagnostic);
         }
     }
 

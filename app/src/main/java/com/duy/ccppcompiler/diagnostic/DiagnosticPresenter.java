@@ -22,6 +22,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.common.Command;
@@ -125,7 +126,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @Override
-    public void showView() {
+    public void expandView() {
         mActivity.mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
     }
 
@@ -137,12 +138,41 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @MainThread
     @Override
     public void setDiagnostics(ArrayList<Diagnostic> diagnostics) {
-        mDiagnostics = diagnostics;
+        mDiagnostics = cleanDiagnostics(diagnostics);
         mHashCode.clear();
-        if (mView != null) {
-            mView.show(diagnostics);
-        }
+        show(diagnostics);
         highlightErrorCurrentEditor();
+    }
+
+    private void show(ArrayList<Diagnostic> diagnostics) {
+        if (mView != null) {
+            mView.show(mDiagnostics);
+        }
+    }
+
+    /**
+     * Ignore all system error message
+     * <p>
+     * arm-linux-androideabi/include/c++/4.9/bits/char_traits.h:113:57: error: 'std::size_t' has not been declared
+     */
+    private ArrayList<Diagnostic> cleanDiagnostics(ArrayList<Diagnostic> diagnostics) {
+        ArrayList<Diagnostic> result = new ArrayList<>();
+        String cCtoolsDir = Environment.getCCtoolsDir(mActivity);
+        //in android 6 or above, the data dir is a symbolic link
+        String cCtoolsDir2 = "/data/data/" + mActivity.getPackageName() + "/root/cctools";
+        for (Diagnostic diagnostic : diagnostics) {
+            File file = diagnostic.getSourceFile();
+            if (file != null) {
+                if (file.getPath().startsWith(cCtoolsDir)) {
+                    continue;
+                }
+                if (file.getPath().startsWith(cCtoolsDir2)) {
+                    continue;
+                }
+            }
+            result.add(diagnostic);
+        }
+        return result;
     }
 
     private void highlightErrorCurrentEditor() {

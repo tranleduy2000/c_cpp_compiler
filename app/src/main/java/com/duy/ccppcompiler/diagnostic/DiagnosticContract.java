@@ -48,7 +48,7 @@ public class DiagnosticContract {
         void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion);
 
         @MainThread
-        void showView();
+        void expandView();
 
         @MainThread
         void hideView();

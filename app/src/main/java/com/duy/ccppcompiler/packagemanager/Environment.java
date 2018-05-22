@@ -84,7 +84,7 @@ public class Environment {
      * @return temp directory for execute file
      */
     public static String getTmpDir(Context context) {
-        File file = new File(Environment.getToolchainsDir(context), "tmp");
+        File file = new File(Environment.getToolchainsDir(context), "t");
         return mkdirIfNotExist(file);
     }
 

@@ -33,13 +33,13 @@ import static com.duy.ccppcompiler.diagnostic.Kind.OTHER;
 
 public class OutputParser {
     ///storage/emulated/0/Examples/c++/cin2.cpp:25:1: error: expected ';' before '}' token
-    public static final Pattern FILE_LINE_COL_TYPE_MESSAGE_PATTERN = Pattern.compile(
+    private static final Pattern FILE_LINE_COL_TYPE_MESSAGE_PATTERN = Pattern.compile(
             "(\\S+):([0-9]+):([0-9]+):(\\s+.*:\\s+)(.*)");
 
     ///storage/emulated/0/Examples/c++/cin2.cpp: In function 'int main()':
-    public static final Pattern FILE_MESSAGE_PATTERN = Pattern.compile("(\\S+):(.*)");
+    private static final Pattern FILE_MESSAGE_PATTERN = Pattern.compile("(\\S+):(.*)");
 
-    private static final String TAG = "OutputParser2";
+    private static final boolean ENABLE_SHOW_MESSAGE = false;
     private DiagnosticsCollector diagnosticsCollector;
 
     public OutputParser(DiagnosticsCollector diagnosticsCollector) {
@@ -62,20 +62,21 @@ public class OutputParser {
                     Kind type = DiagnosticFactory.createType(matcher.group(4));
                     String message = matcher.group(5);
 
-                    Diagnostic diagnostic =
-                            DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
+                    Diagnostic diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
                     diagnosticsCollector.report(diagnostic);
                     continue;
                 }
 
-                matcher = FILE_MESSAGE_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    String filePath = matcher.group(1);
-                    String message = matcher.group(2);
+                if (ENABLE_SHOW_MESSAGE) {
+                    matcher = FILE_MESSAGE_PATTERN.matcher(line);
+                    if (matcher.find()) {
+                        String filePath = matcher.group(1);
+                        String message = matcher.group(2);
 
-                    Diagnostic diagnostic =
-                            DiagnosticFactory.create(OTHER, filePath, Diagnostic.NOPOS, Diagnostic.NOPOS, message);
-                    diagnosticsCollector.report(diagnostic);
+                        Diagnostic diagnostic =
+                                DiagnosticFactory.create(OTHER, filePath, Diagnostic.NOPOS, Diagnostic.NOPOS, message);
+                        diagnosticsCollector.report(diagnostic);
+                    }
                 }
             }
 

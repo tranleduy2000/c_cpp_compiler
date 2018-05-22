@@ -26,6 +26,11 @@ import java.util.ArrayList;
 
 public class DiagnosticsCollector implements DiagnosticListener {
     private final ArrayList<Diagnostic> diagnostics = new ArrayList<>();
+    private boolean ignoreSystemFiles = true;
+
+    public void setIgnoreSystemFiles(boolean ignoreSystemFiles) {
+        this.ignoreSystemFiles = ignoreSystemFiles;
+    }
 
     @Override
     public void report(Diagnostic diagnostic) {
@@ -35,10 +40,6 @@ public class DiagnosticsCollector implements DiagnosticListener {
     @Override
     public void clear() {
         diagnostics.clear();
-    }
-
-    public Diagnostic getAt(int index) {
-        return diagnostics.get(index);
     }
 
     public ArrayList<Diagnostic> getDiagnostics() {

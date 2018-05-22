@@ -111,7 +111,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
 
     public void clear() {
         mDiagnostics.clear();
-        notifyItemRangeRemoved(0, mDiagnostics.size() - 1);
+        notifyDataSetChanged();
     }
 
     public void setDiagnosticClickListener(DiagnosticClickListener diagnosticClickListener) {
