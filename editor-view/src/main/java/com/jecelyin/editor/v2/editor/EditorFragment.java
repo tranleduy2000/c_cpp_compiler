@@ -29,6 +29,7 @@ import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
 import com.duy.ide.editor.view.EditorView;
 import com.jecelyin.common.utils.DLog;
+import com.jecelyin.editor.v2.Preferences;
 
 import java.io.File;
 
@@ -80,7 +81,7 @@ public class EditorFragment extends Fragment {
     public void onDestroyView() {
         if (DLog.DEBUG) DLog.d(TAG, "onDestroyView() called");
         if (mEditorDelegate != null) {
-            if (mEditorDelegate.isChanged()) {
+            if (mEditorDelegate.isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
                 mEditorDelegate.save(true);
             }
             mEditorDelegate.onDestroy();

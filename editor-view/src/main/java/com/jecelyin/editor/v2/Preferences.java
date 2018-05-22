@@ -83,7 +83,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     static {
     }
 
-    private final SharedPreferences pm;
+    private final SharedPreferences preferences;
 
     private final Map<String, Object> map;
     private final Context context;
@@ -92,8 +92,8 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     public Preferences(Context context) {
         this.context = context;
-        pm = PreferenceManager.getDefaultSharedPreferences(context);
-        pm.registerOnSharedPreferenceChangeListener(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.registerOnSharedPreferenceChangeListener(this);
 
         map = new HashMap<>();
         map.put(KEY_FONT_SIZE, 13);
@@ -114,7 +114,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_KEEP_SCREEN_ON, false);
         map.put(KEY_PREF_AUTO_CHECK_UPDATES, true);
 
-        toolbarIcons = pm.getStringSet(KEY_TOOLBAR_ICONS, null);
+        toolbarIcons = preferences.getStringSet(KEY_TOOLBAR_ICONS, null);
         map.put(KEY_LAST_OPEN_PATH, Environment.getExternalStorageDirectory().getPath());
         map.put(KEY_READ_ONLY, false);
         map.put(KEY_SHOW_HIDDEN_FILES, false);
@@ -122,7 +122,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_FULL_SCREEN, false);
         map.put(KEY_LAST_TAB, 0);
 
-        Map<String, ?> values = pm.getAll();
+        Map<String, ?> values = preferences.getAll();
         for (String key : map.keySet()) {
             updateValue(key, values);
         }
@@ -222,7 +222,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
      */
     public void setTheme(int theme) {
         map.put(KEY_THEME, theme);
-        pm.edit().putInt(KEY_THEME, theme).apply();
+        preferences.edit().putInt(KEY_THEME, theme).apply();
     }
 
     public int getHighlightSizeLimit() {
@@ -231,7 +231,15 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     //auto save is default
     public boolean isAutoSave() {
-        return true;
+        return getBoolean(context.getString(R.string.pref_auto_save), true);
+    }
+
+    private boolean getBoolean(String key, boolean def) {
+        try {
+            return preferences.getBoolean(key, def);
+        } catch (ClassCastException e) {
+            return Boolean.parseBoolean(preferences.getString(key, String.valueOf(def)));
+        }
     }
 
     public boolean isKeepScreenOn() {
@@ -254,7 +262,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         for (Integer id : toolbarIcons) {
             this.toolbarIcons.add(String.valueOf(id));
         }
-        pm.edit().putStringSet(KEY_TOOLBAR_ICONS, this.toolbarIcons).apply();
+        preferences.edit().putStringSet(KEY_TOOLBAR_ICONS, this.toolbarIcons).apply();
     }
 
     public Object getValue(String key) {
@@ -266,7 +274,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public void setLastOpenPath(String path) {
-        pm.edit().putString(KEY_LAST_OPEN_PATH, path).apply();
+        preferences.edit().putString(KEY_LAST_OPEN_PATH, path).apply();
         map.put(KEY_LAST_OPEN_PATH, path);
     }
 
@@ -288,7 +296,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public void setReadOnly(boolean b) {
-        pm.edit().putBoolean(KEY_READ_ONLY, b).apply();
+        preferences.edit().putBoolean(KEY_READ_ONLY, b).apply();
         map.put(KEY_READ_ONLY, b);
     }
 
@@ -338,7 +346,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public void setShowHiddenFiles(boolean b) {
-        pm.edit().putBoolean(KEY_SHOW_HIDDEN_FILES, b).apply();
+        preferences.edit().putBoolean(KEY_SHOW_HIDDEN_FILES, b).apply();
         map.put(KEY_SHOW_HIDDEN_FILES, b);
     }
 
@@ -347,7 +355,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public void setFileSortType(int type) {
-        pm.edit().putInt(KEY_FILE_SORT_TYPE, type).apply();
+        preferences.edit().putInt(KEY_FILE_SORT_TYPE, type).apply();
         map.put(KEY_FILE_SORT_TYPE, type);
     }
 
@@ -356,7 +364,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public void setFullScreenMode(boolean b) {
-        pm.edit().putBoolean(KEY_FULL_SCREEN, b).apply();
+        preferences.edit().putBoolean(KEY_FULL_SCREEN, b).apply();
         map.put(KEY_FULL_SCREEN, b);
     }
 
@@ -365,7 +373,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public void setLastTab(int index) {
-        pm.edit().putInt(KEY_LAST_TAB, index).apply();
+        preferences.edit().putInt(KEY_LAST_TAB, index).apply();
         map.put(KEY_LAST_TAB, index);
     }
 

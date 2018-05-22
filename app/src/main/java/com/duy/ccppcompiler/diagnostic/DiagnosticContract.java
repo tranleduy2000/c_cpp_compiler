@@ -54,5 +54,7 @@ public class DiagnosticContract {
 
         @MainThread
         void setDiagnostics(ArrayList<Diagnostic> diagnostics);
+
+        void log(String string);
     }
 }

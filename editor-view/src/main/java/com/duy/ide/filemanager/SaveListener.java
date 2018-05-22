@@ -22,4 +22,6 @@ package com.duy.ide.filemanager;
 public interface SaveListener {
 
     void onSaved();
+
+    void onPrepare();
 }

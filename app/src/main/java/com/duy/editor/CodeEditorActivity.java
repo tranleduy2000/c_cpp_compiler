@@ -138,6 +138,11 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     private void compileAndRun() {
         SaveAllTask saveAllTask = new SaveAllTask(this, new SaveListener() {
             @Override
+            public void onPrepare() {
+                mDiagnosticPresenter.log(getString(R.string.save_all));
+            }
+
+            @Override
             public void onSaved() {
                 if (DLog.DEBUG) DLog.d(TAG, "onSaved() called");
 
@@ -161,6 +166,8 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                     Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
                 }
             }
+
+
         });
         saveAllTask.execute();
 

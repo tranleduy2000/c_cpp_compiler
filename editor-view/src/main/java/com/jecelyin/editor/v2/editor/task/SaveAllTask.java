@@ -39,6 +39,12 @@ public class SaveAllTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        saveListener.onPrepare();
+    }
+
+    @Override
     protected Void doInBackground(Void... voids) {
         if (DLog.DEBUG) DLog.d(TAG, "doInBackground() called with: voids = [" + voids + "]");
         EditorFragmentPagerAdapter editorPagerAdapter = editorActivity.getTabManager().getEditorPagerAdapter();

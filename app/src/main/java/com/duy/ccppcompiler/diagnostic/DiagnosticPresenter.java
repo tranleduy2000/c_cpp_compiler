@@ -169,4 +169,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             }
         }
     }
+
+    @Override
+    public void log(String string) {
+// TODO: 22-May-18 impl
+    }
 }
