@@ -41,7 +41,8 @@ public class LocalFileWriter {
     }
 
     public void writeToFile(GetChars content) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding), BUFFER_SIZE);
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fileOutputStream, encoding), BUFFER_SIZE);
         char[] buffer = new char[BUFFER_SIZE]; //16kb
         int size = content.length();
         if (size > 0) {
@@ -59,7 +60,7 @@ public class LocalFileWriter {
                 end += BUFFER_SIZE;
             }
         }
-
         bw.close();
+        fileOutputStream.close();
     }
 }

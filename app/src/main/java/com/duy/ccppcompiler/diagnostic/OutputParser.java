@@ -38,8 +38,6 @@ public class OutputParser {
 
     ///storage/emulated/0/Examples/c++/cin2.cpp: In function 'int main()':
     private static final Pattern FILE_MESSAGE_PATTERN = Pattern.compile("(\\S+):(.*)");
-
-    private static final boolean ENABLE_SHOW_MESSAGE = false;
     private DiagnosticsCollector diagnosticsCollector;
 
     public OutputParser(DiagnosticsCollector diagnosticsCollector) {
@@ -67,16 +65,14 @@ public class OutputParser {
                     continue;
                 }
 
-                if (ENABLE_SHOW_MESSAGE) {
-                    matcher = FILE_MESSAGE_PATTERN.matcher(line);
-                    if (matcher.find()) {
-                        String filePath = matcher.group(1);
-                        String message = matcher.group(2);
+                matcher = FILE_MESSAGE_PATTERN.matcher(line);
+                if (matcher.find()) {
+                    String filePath = matcher.group(1);
+                    String message = matcher.group(2);
 
-                        Diagnostic diagnostic =
-                                DiagnosticFactory.create(OTHER, filePath, Diagnostic.NOPOS, Diagnostic.NOPOS, message);
-                        diagnosticsCollector.report(diagnostic);
-                    }
+                    Diagnostic diagnostic =
+                            DiagnosticFactory.create(OTHER, filePath, Diagnostic.NOPOS, Diagnostic.NOPOS, message);
+                    diagnosticsCollector.report(diagnostic);
                 }
             }
 

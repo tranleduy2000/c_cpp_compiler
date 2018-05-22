@@ -43,6 +43,7 @@ public class ShellUtils {
     }
 
     public static CommandResult execCommand(Context context, String mWorkDir, String mCommand) {
+        if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + mCommand);
         long startTime = System.currentTimeMillis();
         try {
             String[] env = Environment.buildDefaultEnv(context);
@@ -78,7 +79,7 @@ public class ShellUtils {
 
             //parse output
             StringBuilder message = new StringBuilder();
-            int skipStrings = 0; //skip echos from two command strings
+            int skipStrings = 6; //skip echos from two command strings
             final Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
             do {
                 String errstr;

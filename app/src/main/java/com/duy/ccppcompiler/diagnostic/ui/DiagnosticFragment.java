@@ -93,8 +93,13 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
-    public void show(List<Diagnostic> diagnostics) {
+    public void showDiagnostic(List<Diagnostic> diagnostics) {
         mAdapter.setData(diagnostics);
+    }
+
+    @Override
+    public void showLog(CharSequence log) {
+
     }
 
     @Override

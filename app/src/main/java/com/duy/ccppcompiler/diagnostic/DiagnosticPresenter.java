@@ -156,7 +156,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     private void show(ArrayList<Diagnostic> diagnostics) {
         if (mView != null) {
-            mView.show(mDiagnostics);
+            mView.showDiagnostic(mDiagnostics);
         }
     }
 
@@ -206,8 +206,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @Override
-    public void log(String string) {
-// TODO: 22-May-18 impl
+    public void log(String message) {
+        mView.showLog(message);
     }
 
     @Override

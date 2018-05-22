@@ -29,7 +29,9 @@ import java.util.List;
 
 public class DiagnosticContract {
     public static interface View {
-        void show(List<Diagnostic> diagnostics);
+        void showDiagnostic(List<Diagnostic> diagnostics);
+
+        void showLog(CharSequence log);
 
         void remove(Diagnostic diagnostic);
 

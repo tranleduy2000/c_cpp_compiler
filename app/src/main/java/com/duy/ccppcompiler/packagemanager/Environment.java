@@ -250,8 +250,7 @@ public class Environment {
             }
             in.close();
             Utils.waitFor(pId[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return ret;
     }
