@@ -313,10 +313,10 @@ public class PackageManagerActivity extends FullScreenActivity {
 
     @UiThread
     protected void showError(final String message) {
-        new AlertDialog.Builder(context)
-                .setTitle(R.string.err)
+        Builder builder = new Builder(this);
+        builder.setTitle(R.string.err)
                 .setMessage(message)
-                .setPositiveButton(getText(R.string.button_continue), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mAction != null) {
                             setResult(RESULT_CANCELED);
@@ -324,8 +324,15 @@ public class PackageManagerActivity extends FullScreenActivity {
                         }
                     }
                 })
-                .setCancelable(false)
-                .show();
+                .setPositiveButton(R.string.pkg_reinstall, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        downloadListPackages();
+                    }
+                })
+                .setCancelable(false);
+        builder.create().show();
     }
 
     /**

@@ -48,17 +48,16 @@ import static com.duy.ccppcompiler.packagemanager.repo.RepoConstants.PACKAGES_PI
  */
 public class FirebasePackageRepository extends PackageRepositoryImpl {
     private static final String TAG = "FirebasePackageRepository";
-    private StorageReference mRepo;
+    private StorageReference mRepoRef;
     private List<PackageInfo> mPackageInfos = null;
 
     public FirebasePackageRepository() {
-        mRepo = FirebaseStorage.getInstance().getReference();
-        mRepo = mRepo.child(ROOT)
+        StorageReference storage = FirebaseStorage.getInstance().getReference();
+        mRepoRef = storage.child(ROOT)
                 .child(Build.VERSION.SDK_INT >= 21 ? PACKAGES_PIE : PACKAGES)
                 .child(RepoUtils.CPU_API);
     }
 
-    @NonNull
     @Override
     public void getPackagesInBackground(final IPackageLoadListener listener) {
         if (mPackageInfos != null) {
@@ -66,7 +65,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
             return;
         }
         final int oneMegabytes = 1024 * 1024;
-        mRepo.child(PACKAGES_INDEX_FILE)
+        mRepoRef.child(PACKAGES_INDEX_FILE)
                 .getBytes(oneMegabytes)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -94,9 +93,11 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
             listener.onDownloadComplete(packageInfo, localFile);
             return;
         }
-        StorageReference fileRef = mRepo.child(packageInfo.getFileName());
-        String path = fileRef.getPath();
-        if (DLog.DEBUG) DLog.d(TAG, "path = " + path);
+        StorageReference fileRef = mRepoRef.child(packageInfo.getFileName());
+        if (DLog.DEBUG) {
+            String path = fileRef.getPath();
+            DLog.d(TAG, "fileRef path = " + path);
+        }
         fileRef.getFile(localFile)
                 .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
@@ -121,6 +122,5 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
 
     static class FirebaseStorageContract {
         static final String ROOT = "android-repo";
-
     }
 }
