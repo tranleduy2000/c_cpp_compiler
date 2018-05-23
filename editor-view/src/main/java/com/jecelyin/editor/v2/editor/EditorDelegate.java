@@ -304,7 +304,6 @@ public class EditorDelegate implements TextWatcher {
             case GOTO_INDEX:
                 int col = command.args.getInt("col", -1);
                 int line = command.args.getInt("line", -1);
-                mEditText.requestFocus();
                 mEditText.gotoLine(line, col);
                 break;
             case GOTO_TOP:
