@@ -29,7 +29,9 @@
             android:id="@+id/imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_warning_24" />
+            android:layout_gravity="center"
+            android:src="@drawable/baseline_warning_black_18"
+            tools:tint="#d50000" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/txt_line_col"
@@ -37,7 +39,9 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:textColor="?android:textColorPrimary"
-            tools:text="12:22" />
+            android:minEms="4"
+            android:textSize="@dimen/smallest_text_size"
+            tools:text="1222:222" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/txt_file"
@@ -47,6 +51,7 @@
             android:padding="4dp"
             android:singleLine="true"
             android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/smallest_text_size"
             tools:text="/mnt/sdcard/src/c/examples/sssmain.c" />
     </LinearLayout>
 
@@ -56,6 +61,7 @@
         android:layout_height="wrap_content"
         android:padding="4dp"
         android:textColor="?android:textColorPrimary"
+        android:textSize="@dimen/smallest_text_size"
         tools:text="Long message Long message Long message Long messageLong messageLong messageLong messageLong messageLong message" />
 
 </LinearLayout>

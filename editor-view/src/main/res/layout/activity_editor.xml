@@ -38,7 +38,7 @@
             app:umanoPanelHeight="@dimen/symbol_bar_height">
 
             <android.support.v4.view.ViewPager
-                android:id="@+id/view_pager"
+                android:id="@+id/editor_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

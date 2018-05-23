@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.diagnostic.Diagnostic;
@@ -44,11 +44,12 @@ import java.util.List;
  */
 
 public class DiagnosticFragment extends Fragment implements DiagnosticContract.View, DiagnosticClickListener {
-    private static final String KEY_DATA = "data";
-    private DiagnosticContract.Presenter mPresenter;
-    private DiagnosticAdapter mAdapter;
+    private static final String KEY_LIST_DIAGNOSTIC = "KEY_LIST_DIAGNOSTIC";
+    private static final String KEY_LOG = "KEY_LOG";
 
-    private ViewFlipper mViewFlipper;
+    private DiagnosticContract.Presenter mPresenter;
+    private DiagnosticsAdapter mAdapter;
+
     private RecyclerView mDiagnosticView;
     private TextView mLogView;
 
@@ -71,34 +72,36 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ArrayList<Diagnostic> diagnostics;
-        if (savedInstanceState != null) {
-            diagnostics = savedInstanceState.getParcelableArrayList(KEY_DATA);
-        } else {
-            diagnostics = new ArrayList<>();
-        }
 
-        mViewFlipper = view.findViewById(R.id.view_flipper);
+        ViewPager viewPager = view.findViewById(R.id.diagnostic_view_pager);
+        viewPager.setAdapter(new PagerAdapter(this));
+        viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
 
         mLogView = view.findViewById(R.id.txt_log);
         mLogView.setMovementMethod(new ScrollingMovementMethod());
-
-        mViewFlipper.setDisplayedChild(0);
 
         mDiagnosticView = view.findViewById(R.id.diagnostic_list_view);
         mDiagnosticView.setLayoutManager(new LinearLayoutManager(getContext()));
         mDiagnosticView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
-        mAdapter = new DiagnosticAdapter(diagnostics, getContext());
+        mAdapter = new DiagnosticsAdapter(new ArrayList<Diagnostic>(), getContext());
         mAdapter.setDiagnosticClickListener(this);
         mDiagnosticView.setAdapter(mAdapter);
+
+        if (savedInstanceState != null) {
+            ArrayList<Diagnostic> diagnostics = savedInstanceState.getParcelableArrayList(KEY_LIST_DIAGNOSTIC);
+            showDiagnostic(diagnostics);
+            String log = savedInstanceState.getString(KEY_LOG);
+            showLog(log);
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         ArrayList<Diagnostic> diagnostics = new ArrayList<>(mAdapter.getDiagnostics());
-        outState.putParcelableArrayList(KEY_DATA, diagnostics);
+        outState.putParcelableArrayList(KEY_LIST_DIAGNOSTIC, diagnostics);
+        outState.putString(KEY_LOG, mLogView.getText().toString());
     }
 
     @Override

@@ -24,12 +24,12 @@ import java.util.List;
  * Created by Duy on 28-Apr-18.
  */
 
-public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.ViewHolder> {
+public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.ViewHolder> {
     private List<Diagnostic> mDiagnostics;
     private Context mContext;
     private DiagnosticClickListener mDiagnosticClickListener;
 
-    DiagnosticAdapter(List<Diagnostic> diagnostics, Context context) {
+    DiagnosticsAdapter(List<Diagnostic> diagnostics, Context context) {
         this.mDiagnostics = diagnostics;
         this.mContext = context;
     }
@@ -56,7 +56,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Vi
 
         File source = diagnostic.getSourceFile();
         if (source != null) {
-            holder.txtFile.setText(source.getPath());
+            holder.txtFile.setText(source.getName());
         } else {
             holder.txtFile.setText("");
         }

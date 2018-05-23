@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class DiagnosticContract {
-    public static interface View {
+    public interface View {
         void showDiagnostic(List<Diagnostic> diagnostics);
 
         void showLog(CharSequence log);
@@ -40,6 +40,7 @@ public class DiagnosticContract {
         void clear();
 
         void setPresenter(Presenter presenter);
+
     }
 
     public interface Presenter {

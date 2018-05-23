@@ -114,7 +114,7 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
         MenuManager.init(this);
         mPreferences = Preferences.getInstance(this);
 
-        mEditorPager = findViewById(R.id.view_pager);
+        mEditorPager = findViewById(R.id.editor_view_pager);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
