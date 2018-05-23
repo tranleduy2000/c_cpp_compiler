@@ -16,11 +16,10 @@
 
 package com.duy.ccppcompiler.packagemanager.repo;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
+import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 
 import java.io.File;
@@ -30,7 +29,6 @@ import java.io.File;
  */
 
 public interface IPackageRepository {
-    @NonNull
     void getPackagesInBackground(IPackageLoadListener listener);
 
     @WorkerThread

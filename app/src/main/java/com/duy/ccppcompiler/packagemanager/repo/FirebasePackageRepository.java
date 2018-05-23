@@ -58,6 +58,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
                 .child(RepoUtils.CPU_API);
     }
 
+    @NonNull
     @Override
     public void getPackagesInBackground(final IPackageLoadListener listener) {
         if (mPackageInfos != null) {
@@ -93,8 +94,10 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
             listener.onDownloadComplete(packageInfo, localFile);
             return;
         }
-        mRepo.child(packageInfo.getFileName())
-                .getFile(localFile)
+        StorageReference fileRef = mRepo.child(packageInfo.getFileName());
+        String path = fileRef.getPath();
+        if (DLog.DEBUG) DLog.d(TAG, "path = " + path);
+        fileRef.getFile(localFile)
                 .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {

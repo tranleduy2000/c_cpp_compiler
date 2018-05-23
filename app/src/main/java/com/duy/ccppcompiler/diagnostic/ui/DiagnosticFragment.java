@@ -83,7 +83,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         mLogView = view.findViewById(R.id.txt_log);
         mLogView.setMovementMethod(new ScrollingMovementMethod());
 
-        mViewFlipper.setDisplayedChild(1);
+        mViewFlipper.setDisplayedChild(0);
 
         mDiagnosticView = view.findViewById(R.id.diagnostic_list_view);
         mDiagnosticView.setLayoutManager(new LinearLayoutManager(getContext()));

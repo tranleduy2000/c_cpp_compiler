@@ -16,6 +16,8 @@
 
 package com.duy.ccppcompiler.packagemanager.repo;
 
+import android.support.annotation.NonNull;
+
 import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
@@ -44,6 +46,7 @@ public class LocalPackageRepository extends PackageRepositoryImpl {
         mInstalledDir = installDir;
     }
 
+    @NonNull
     @Override
     public void getPackagesInBackground(IPackageLoadListener listener) {
         RepoParser parser = new RepoParser();

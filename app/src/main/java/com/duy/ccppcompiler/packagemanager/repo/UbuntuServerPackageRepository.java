@@ -69,65 +69,70 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
     }
 
     @Override
-    public void download(File saveToDir, PackageInfo packageInfo, PackageDownloadListener listener) {
+    public void download(final File saveToDir, final PackageInfo packageInfo, final PackageDownloadListener listener) {
         if (DLog.DEBUG) DLog.d(TAG, "download() called with: ");
         if (DLog.DEBUG) DLog.d(TAG, "saveToDir = " + saveToDir);
         if (DLog.DEBUG) DLog.d(TAG, "packageInfo = " + packageInfo);
-
-        //download file from url
-        File temp = new File(saveToDir, packageInfo.getFileName());
-        if (temp.exists() && temp.length() != 0) {
-            Log.i(TAG, "Use file " + temp.getAbsolutePath());
-            listener.onDownloadComplete(packageInfo, temp);
-            return;
-        }
-
-        URL fromUrl = getUrl(packageInfo);
-        if (fromUrl == null) {
-            listener.onFailure(new MalformedURLException("Download URL not found (" + packageInfo.getFileName() + ")"));
-            return;
-        }
-
-        DLog.i(TAG, "Downloading file " + fromUrl.toString());
-
-        try {
-            URLConnection urlConnection = fromUrl.openConnection();
-            urlConnection.setReadTimeout(3 * 60 * 1000); // timeout 3 minutes
-            urlConnection.connect();
-
-            int fileSize = urlConnection.getContentLength();
-            InputStream input = urlConnection.getInputStream();
-            if (input == null) {
-                listener.onFailure(new RuntimeException("Can not open input stream for package " + packageInfo.getName()));
-                return;
-            }
-
-            Log.i(TAG, "File is " + temp.getAbsolutePath());
-            int totalRead = 0;
-            FileOutputStream output = new FileOutputStream(temp);
-            byte buf[] = new byte[128 * 1024];
-            do {
-                int numRead = input.read(buf);
-                if (numRead <= 0) {
-                    break;
+        Thread downloadThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //download file from url
+                File temp = new File(saveToDir, packageInfo.getFileName());
+                if (temp.exists() && temp.length() != 0) {
+                    Log.i(TAG, "Use file " + temp.getAbsolutePath());
+                    listener.onDownloadComplete(packageInfo, temp);
+                    return;
                 }
-                output.write(buf, 0, numRead);
-                totalRead += numRead;
-                listener.onDownloadProgress(packageInfo, totalRead, fileSize);
-            } while (true);
 
-            input.close();
-            output.close();
-            if (totalRead != fileSize) {
-                listener.onFailure(new IOException("Partially downloaded file!"));
-                return;
+                URL fromUrl = getUrl(packageInfo);
+                if (fromUrl == null) {
+                    listener.onFailure(new MalformedURLException("Download URL not found (" + packageInfo.getFileName() + ")"));
+                    return;
+                }
+
+                DLog.i(TAG, "Downloading file " + fromUrl.toString());
+
+                try {
+                    URLConnection urlConnection = fromUrl.openConnection();
+                    urlConnection.setReadTimeout(3 * 60 * 1000); // timeout 3 minutes
+                    urlConnection.connect();
+
+                    int fileSize = urlConnection.getContentLength();
+                    InputStream input = urlConnection.getInputStream();
+                    if (input == null) {
+                        listener.onFailure(new RuntimeException("Can not open input stream for package " + packageInfo.getName()));
+                        return;
+                    }
+
+                    Log.i(TAG, "File is " + temp.getAbsolutePath());
+                    int totalRead = 0;
+                    FileOutputStream output = new FileOutputStream(temp);
+                    byte buf[] = new byte[128 * 1024];
+                    do {
+                        int numRead = input.read(buf);
+                        if (numRead <= 0) {
+                            break;
+                        }
+                        output.write(buf, 0, numRead);
+                        totalRead += numRead;
+                        listener.onDownloadProgress(packageInfo, totalRead, fileSize);
+                    } while (true);
+
+                    input.close();
+                    output.close();
+                    if (totalRead != fileSize) {
+                        listener.onFailure(new IOException("Partially downloaded file!"));
+                        return;
+                    }
+                    listener.onDownloadComplete(packageInfo, temp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    temp.delete();
+                    listener.onFailure(e);
+                }
             }
-            listener.onDownloadComplete(packageInfo, temp);
-        } catch (Exception e) {
-            e.printStackTrace();
-            temp.delete();
-            listener.onFailure(e);
-        }
+        });
+        downloadThread.start();
     }
 
     private URL getUrl(PackageInfo packageInfo) {
