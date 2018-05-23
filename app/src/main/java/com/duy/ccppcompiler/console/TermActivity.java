@@ -116,7 +116,7 @@ public class TermActivity extends FullScreenActivity implements SharedPreference
         TermSettings settings = new TermSettings(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
 
         ShellTermSession shellTermSession = new ShellTermSession(settings, argv, envp, workdir);
-        shellTermSession.setProcessExitMessage(getString(R.string.process_exit_message));
+        shellTermSession.setProcessExitMessage(getString(R.string.message_program_finished));
 
         return shellTermSession;
     }

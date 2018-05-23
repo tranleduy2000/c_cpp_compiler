@@ -24,9 +24,9 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        style="@style/Light.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:popupTheme="?attr/actionBarPopupTheme"
         app:theme="?attr/actionBarTheme" />
+
 </android.support.design.widget.AppBarLayout>

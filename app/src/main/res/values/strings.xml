@@ -11,9 +11,11 @@
     <string name="failed_to_install_compiler">Failed to install compiler</string>
     <string name="reinstall_compiler">Reinstall compiler</string>
     <string name="diagnostic">Diagnostic</string>
-    <string name="logview">Log</string>
-    <string name="compiler_setting">Compiler setting</string>
+    <string name="compiler_output">Compiler output</string>
 
-    <string name="non_project_file_message">"This file does not belong to the project: (%s)"</string>
-    <string name="non_project_file_title">Non-Project Files Protection</string>
+    <string name="compiler_setting">Compiler setting</string>
+    <string name="title_non_project_file">Non-Project Files Protection</string>
+
+    <string name="message_non_project_file">"This file does not belong to the project: (%s)"</string>
+    <string name="message_program_finished">Program finished</string>
 </resources>

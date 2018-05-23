@@ -70,8 +70,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         if (source != null) {
             if (isSystemFile(source)) {
                 UIUtils.alert(mActivity,
-                        mActivity.getString(R.string.non_project_file_title),
-                        mActivity.getString(R.string.non_project_file_message, source.getPath()));
+                        mActivity.getString(R.string.title_non_project_file),
+                        mActivity.getString(R.string.message_non_project_file, source.getPath()));
                 return;
             }
             EditorDelegate editorDelegate = moveToEditor(source, null);
