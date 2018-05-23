@@ -1,7 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+import com.android.build.OutputFile;
+
 android {
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     useLibrary 'org.apache.http.legacy'
@@ -10,18 +13,62 @@ android {
         applicationId "com.duy.c.cpp.compiler"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "1.0.6"
+        versionCode 7
+        versionName "1.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        ndk {
+        /*ndk {
             abiFilters 'armeabi-v7a', 'x86'
+        }*/
+    }
+
+    flavorDimensions "abi"
+    productFlavors {
+        arch_x86 {
+            versionNameSuffix "-x86"
+            ndk {
+                abiFilter "x86"
+            }
+        }
+        arch_armeabi_v7a {
+            versionNameSuffix "-armeabi-v7a"
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
         }
     }
 
     sourceSets {
         main {
             res.srcDirs += 'src/main/res-terminal'
+        }
+    }
+
+    // Map for the version code that gives each ABI a value.
+    project.ext.abiCodes = ['armeabi-v7a': 1, x86: 2]
+    applicationVariants.all { variant ->
+
+        // Assigns a different version code for each output APK
+        // other than the universal APK.
+        variant.outputs.each { output ->
+
+            // Stores the value of ext.abiCodes that is associated with the ABI for this variant.
+            def baseAbiVersionCode =
+                    // Determines the ABI for this variant and returns the mapped value.
+                    project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
+
+            // Because abiCodes.get() returns null for ABIs that are not mapped by ext.abiCodes,
+            // the following code does not override the version code for universal APKs.
+            // However, because we want universal APKs to have the lowest version code,
+            // this outcome is desirable.
+            if (baseAbiVersionCode != null) {
+
+                // Assigns the new version code to versionCodeOverride, which changes the version code
+                // for only the output APK, not for the variant itself. Skipping this step simply
+                // causes Gradle to use the value of variant.versionCode for the APK.
+                output.versionCodeOverride =
+                        baseAbiVersionCode * 1000 + variant.versionCode
+            }
         }
     }
 
@@ -40,7 +87,6 @@ android {
         enabled = true
     }
 
-
     externalNativeBuild {
         ndkBuild {
             path 'src/main/jni/Android.mk'
@@ -54,6 +100,7 @@ android {
         abortOnError false
     }
 }
+
 
 dependencies {
     testImplementation 'junit:junit:4.12'
@@ -81,4 +128,6 @@ dependencies {
 
     testImplementation 'org.jsoup:jsoup:1.11.2'
 }
+
+
 apply plugin: 'com.google.gms.google-services'
