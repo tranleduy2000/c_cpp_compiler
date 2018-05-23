@@ -42,7 +42,9 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
     @SuppressLint("StaticFieldLeak")
     private PackageManagerActivity mActivity;
     private PackagesLists mPackagesLists;
-    private String mInstalledDir, mBackupDir, mToolchainDir, mSdCardDir;
+    private String mInstalledDir;
+    private String mBackupDir;
+    private String mToolchainDir;
 
     InstallPackagesTask(PackageManagerActivity activity) {
         mActivity = activity;
@@ -56,7 +58,6 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         mBackupDir = Environment.getSdCardBackupDir();
         mInstalledDir = Environment.getInstalledPackageDir(mActivity);
         mToolchainDir = Environment.getToolchainsDir(mActivity);
-        mSdCardDir = Environment.getSdCardDir();
     }
 
     @Override
@@ -206,13 +207,14 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
             }
 
             @Override
-            public void onDownloadProgress(PackageInfo packageInfo, long totalRead, long fileSize) {
+            public void onDownloadProgress(String serverName, PackageInfo packageInfo, long totalRead, long fileSize) {
                 if (!isCancelled()) {
-                    publishProgress(UPDATE_MESSAGE, mActivity.getString(com.pdaxrom.cctools.R.string.received) + " " +
-                            Utils.humanReadableByteCount(totalRead, false) + " " +
-                            mActivity.getString(com.pdaxrom.cctools.R.string.from) + " " +
-                            Utils.humanReadableByteCount(fileSize, false) + " " +
-                            mActivity.getString(com.pdaxrom.cctools.R.string.bytes));
+                    publishProgress(UPDATE_MESSAGE,
+                            serverName + "\n" +
+                                    mActivity.getString(R.string.received) + " " +
+                                    Utils.humanReadableByteCount(totalRead, false) + " " +
+                                    mActivity.getString(R.string.from) + " " +
+                                    Utils.humanReadableByteCount(fileSize, false));
 
                     if (fileSize > 20 * 1024 * 1024) {
                         publishProgress(UPDATE_PROCESS, totalRead / (fileSize / 100));
@@ -295,8 +297,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
             }
 
             @Override
-            public void onDownloadProgress(PackageInfo packageInfo, long totalRead, long fileSize) {
-                listener.onDownloadProgress(packageInfo, totalRead, fileSize);
+            public void onDownloadProgress(String serverName, PackageInfo packageInfo, long totalRead, long fileSize) {
+                listener.onDownloadProgress(serverName, packageInfo, totalRead, fileSize);
             }
         });
 

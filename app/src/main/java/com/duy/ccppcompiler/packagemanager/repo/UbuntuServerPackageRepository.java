@@ -115,7 +115,7 @@ public class UbuntuServerPackageRepository extends PackageRepositoryImpl {
                         }
                         output.write(buf, 0, numRead);
                         totalRead += numRead;
-                        listener.onDownloadProgress(packageInfo, totalRead, fileSize);
+                        listener.onDownloadProgress("Ubuntu", packageInfo, totalRead, fileSize);
                     } while (true);
 
                     input.close();

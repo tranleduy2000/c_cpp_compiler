@@ -107,7 +107,7 @@ public class FirebasePackageRepository extends PackageRepositoryImpl {
                 .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        listener.onDownloadProgress(packageInfo, taskSnapshot.getBytesTransferred(), taskSnapshot.getTotalByteCount());
+                        listener.onDownloadProgress("Firebase", packageInfo, taskSnapshot.getBytesTransferred(), taskSnapshot.getTotalByteCount());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -35,5 +35,5 @@ public interface PackageDownloadListener {
     void onFailure(@NonNull Exception e);
 
     @WorkerThread
-    void onDownloadProgress(PackageInfo packageInfo, long totalRead, long fileSize);
+    void onDownloadProgress(String serverName, PackageInfo packageInfo, long totalRead, long fileSize);
 }
