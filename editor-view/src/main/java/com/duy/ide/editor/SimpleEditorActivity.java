@@ -544,7 +544,7 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
                 String encoding = FileExplorerActivity.getFileEncoding(data);
                 EditorDelegate delegate = getCurrentEditorDelegate();
                 if (delegate != null) {
-                    delegate.saveTo(new File(file), encoding);
+                    delegate.saveInBackground(new File(file), encoding);
                     DBHelper.getInstance(this).addRecentFile(file, encoding);
                     DBHelper.getInstance(this).updateRecentFile(file, false);
                 }

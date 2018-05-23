@@ -42,7 +42,9 @@ import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
+import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.DocumentInfoDialog;
@@ -195,33 +197,50 @@ public class EditorDelegate implements TextWatcher {
         return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s", changed, title, encode, fileMode, cursor);
     }
 
-    private void startSaveFileSelectorActivity() {
+    private void startSaveFileSelectorActivity(){
         if (mDocument != null) {
             getActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
         }
     }
 
     /**
-     * Should be call in save as action
+     * Write out content of editor to file in background thread
      *
-     * @param file - new file to write
+     * @param file     - File to write
+     * @param encoding - file encoding
      */
-    public void saveTo(File file, String encoding) {
+    public void saveInBackground(File file, String encoding) {
         if (mDocument != null) {
-            mDocument.saveInBackground(file,
-                    encoding == null ? mDocument.getEncoding() : encoding);
+            mDocument.saveInBackground(file, encoding == null ? mDocument.getEncoding() : encoding,
+                    new SaveListener() {
+                        @Override
+                        public void onSavedSuccess() {
+                            onDocumentChanged();
+                        }
+
+                        @Override
+                        public void onSaveFailed(Exception e) {
+                            UIUtils.alert(mContext, e.getMessage());
+                        }
+                    });
         }
     }
 
+    /**
+     * Write current content of editor to file
+     */
     public void saveCurrentFile() throws Exception {
         if (mDocument.isChanged()) {
-            mDocument.writeToFile();
+            mDocument.writeToFile(mDocument.getFile(), mDocument.getEncoding());
         }
     }
 
+    /**
+     * Write out content of editor to file in background thread
+     */
     public void saveInBackground() {
         if (mDocument.isChanged()) {
-            saveTo(mDocument.getFile(), mDocument.getEncoding());
+            saveInBackground(mDocument.getFile(), mDocument.getEncoding());
         } else {
             if (DLog.DEBUG) DLog.d(TAG, "saveInBackground: document not changed, no need to save");
         }
@@ -522,7 +541,7 @@ public class EditorDelegate implements TextWatcher {
                     mOrientation = newOrientation;
                 } else {
                     try {
-                        mDocument.writeToFile();
+                        saveCurrentFile();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

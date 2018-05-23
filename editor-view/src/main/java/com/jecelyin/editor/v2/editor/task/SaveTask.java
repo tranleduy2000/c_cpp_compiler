@@ -23,13 +23,19 @@ import android.support.annotation.Nullable;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.editor.v2.editor.Document;
 
+import java.io.File;
+
 public class SaveTask extends AsyncTask<Void, Void, Boolean> {
+    private File mFile;
+    private String mEncoding;
     private Document mDocument;
     @Nullable
     private SaveListener mListener;
     private Exception mException;
 
-    public SaveTask(@NonNull Document document, @Nullable SaveListener listener) {
+    public SaveTask(File file, String encoding, @NonNull Document document, @Nullable SaveListener listener) {
+        mFile = file;
+        mEncoding = encoding;
         mDocument = document;
         mListener = listener;
     }
@@ -37,7 +43,7 @@ public class SaveTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
         try {
-            mDocument.writeToFile();
+            mDocument.writeToFile(mFile, mEncoding);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

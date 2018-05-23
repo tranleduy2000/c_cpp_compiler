@@ -286,15 +286,11 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
     @WorkerThread
-    public void writeToFile() throws Exception {
-        Document document = mEditorDelegate.getDocument();
-
-        File file = document.getFile();
-        String encoding = document.getEncoding();
+    public void writeToFile(File file, String encoding) throws Exception {
         LocalFileWriter writer = new LocalFileWriter(file, encoding);
         writer.writeToFile(mEditorDelegate.getEditableText());
 
-        onSaveSuccess(document.getFile(), document.getEncoding(), false);
+        onSaveSuccess(file, encoding);
     }
 
     /**
@@ -302,29 +298,17 @@ public class Document implements ReadFileListener, TextWatcher {
      *
      * @param file - file to write
      */
-    protected void saveInBackground(final File file, final String encoding) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], listener = [" + null + "]");
-        SaveTask saveTask = new SaveTask(this, new SaveListener() {
-            @Override
-            public void onSavedSuccess() {
-                onSaveSuccess(file, encoding, true);
-            }
-
-            @Override
-            public void onSaveFailed(Exception e) {
-                UIUtils.alert(mContext, e.getMessage());
-            }
-        });
+    protected void saveInBackground(final File file, final String encoding, SaveListener listener) {
+        SaveTask saveTask = new SaveTask(file, encoding, this, listener);
         saveTask.execute();
     }
 
-    private void onSaveSuccess(File newFile, String encoding, boolean notifyDataChanged) {
+    private void onSaveSuccess(File newFile, String encoding) {
         mFile = newFile;
         mEncoding = encoding;
         mSourceMD5 = md5(mEditorDelegate.getText());
         mSourceLength = mEditorDelegate.getText().length();
-        if (notifyDataChanged) {
+        if (false) {
             mEditorDelegate.onDocumentChanged();
         }
     }
