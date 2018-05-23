@@ -197,7 +197,7 @@ public class EditorDelegate implements TextWatcher {
         return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s", changed, title, encode, fileMode, cursor);
     }
 
-    private void startSaveFileSelectorActivity(){
+    private void startSaveFileSelectorActivity() {
         if (mDocument != null) {
             getActivity().startPickPathActivity(mDocument.getPath(), mDocument.getEncoding());
         }
@@ -378,7 +378,7 @@ public class EditorDelegate implements TextWatcher {
                 mEditText.requestFocus();
                 break;
             case HIGHLIGHT_ERROR:
-                highlightError(command.args);
+                highlightError(command.args, false);
                 break;
             case CLEAR_ERROR_SPAN:
                 clearErrorSpan();
@@ -400,7 +400,7 @@ public class EditorDelegate implements TextWatcher {
      *
      * @param args - contains four key
      */
-    private void highlightError(Bundle args) {
+    private void highlightError(Bundle args, boolean includeWhitespace) {
         if (DLog.DEBUG) DLog.d(TAG, "highlightError() called with: args = [" + args + "]");
         int realLine = args.getInt("line", -1);
         int virtualLine = mEditText.realLineToVirtualLine(realLine);
@@ -419,16 +419,18 @@ public class EditorDelegate implements TextWatcher {
                 startIndex = mEditText.getLayout().getLineStart(virtualLine);
                 endIndex = mEditText.getLayout().getLineEnd(virtualLine);
                 //remove white space, tab or line terminate
-                while (startIndex < endIndex) {
-                    if (Character.isWhitespace(editableText.charAt(startIndex))) {
-                        startIndex++;
-                        continue;
+                if (!includeWhitespace) {
+                    while (startIndex < endIndex) {
+                        if (Character.isWhitespace(editableText.charAt(startIndex))) {
+                            startIndex++;
+                            continue;
+                        }
+                        if (Character.isWhitespace(editableText.charAt(endIndex - 1))) {
+                            endIndex--;
+                            continue;
+                        }
+                        break;
                     }
-                    if (Character.isWhitespace(editableText.charAt(endIndex - 1))) {
-                        endIndex--;
-                        continue;
-                    }
-                    break;
                 }
             }
             ErrorSpan[] spans = editableText.getSpans(startIndex, endIndex, ErrorSpan.class);
