@@ -286,14 +286,14 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
     @WorkerThread
-    public void save() throws Exception {
+    public void writeToFile() throws Exception {
         Document document = mEditorDelegate.getDocument();
-        if (document.isChanged()) {
-            File file = document.getFile();
-            String encoding = document.getEncoding();
-            LocalFileWriter writer = new LocalFileWriter(file, encoding);
-            writer.writeToFile(mEditorDelegate.getEditableText());
-        }
+
+        File file = document.getFile();
+        String encoding = document.getEncoding();
+        LocalFileWriter writer = new LocalFileWriter(file, encoding);
+        writer.writeToFile(mEditorDelegate.getEditableText());
+
         onSaveSuccess(document.getFile(), document.getEncoding(), false);
     }
 
@@ -302,16 +302,13 @@ public class Document implements ReadFileListener, TextWatcher {
      *
      * @param file - file to write
      */
-    protected void saveInBackground(final File file, final String encoding, @Nullable final SaveListener listener) {
+    protected void saveInBackground(final File file, final String encoding) {
         if (DLog.DEBUG)
-            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], listener = [" + listener + "]");
+            DLog.d(TAG, "saveTo() called with: file = [" + file + "], encoding = [" + encoding + "], listener = [" + null + "]");
         SaveTask saveTask = new SaveTask(this, new SaveListener() {
             @Override
             public void onSavedSuccess() {
                 onSaveSuccess(file, encoding, true);
-                if (listener != null) {
-                    listener.onSavedSuccess();
-                }
             }
 
             @Override
@@ -322,12 +319,12 @@ public class Document implements ReadFileListener, TextWatcher {
         saveTask.execute();
     }
 
-    protected void onSaveSuccess(File newFile, String encoding, boolean notifyDataChange) {
+    private void onSaveSuccess(File newFile, String encoding, boolean notifyDataChanged) {
         mFile = newFile;
         mEncoding = encoding;
         mSourceMD5 = md5(mEditorDelegate.getText());
         mSourceLength = mEditorDelegate.getText().length();
-        if (notifyDataChange) {
+        if (notifyDataChanged) {
             mEditorDelegate.onDocumentChanged();
         }
     }

@@ -208,19 +208,23 @@ public class EditorDelegate implements TextWatcher {
      */
     public void saveTo(File file, String encoding) {
         if (mDocument != null) {
-            if (encoding == null) {
-                encoding = mDocument.getEncoding();
-            }
-            mDocument.saveInBackground(file, encoding, null);
+            mDocument.saveInBackground(file,
+                    encoding == null ? mDocument.getEncoding() : encoding);
         }
     }
 
-    public void save() throws Exception {
-        mDocument.save();
+    public void saveCurrentFile() throws Exception {
+        if (mDocument.isChanged()) {
+            mDocument.writeToFile();
+        }
     }
 
     public void saveInBackground() {
-        saveTo(mDocument.getFile(), mDocument.getEncoding());
+        if (mDocument.isChanged()) {
+            saveTo(mDocument.getFile(), mDocument.getEncoding());
+        } else {
+            if (DLog.DEBUG) DLog.d(TAG, "saveInBackground: document not changed, no need to save");
+        }
     }
 
 
@@ -518,7 +522,7 @@ public class EditorDelegate implements TextWatcher {
                     mOrientation = newOrientation;
                 } else {
                     try {
-                        mDocument.save();
+                        mDocument.writeToFile();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -52,7 +52,7 @@ public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
         EditorFragmentPagerAdapter editorPagerAdapter = tabManager.getEditorPagerAdapter();
         for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
             try {
-                editorDelegate.save();
+                editorDelegate.saveCurrentFile();
             } catch (Exception e) {
                 e.printStackTrace();
                 exception = e;

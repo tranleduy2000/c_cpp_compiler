@@ -37,7 +37,7 @@ public class SaveTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
         try {
-            mDocument.save();
+            mDocument.writeToFile();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
