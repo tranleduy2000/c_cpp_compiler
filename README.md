@@ -1,14 +1,18 @@
-# c_cpp_compiler
 
-C/C++ compiler for Android device using GCC compiler
+![](google-play-store/wallpaper/wallpaper.png)
 
-Stable version on Google play store https://play.google.com/store/apps/details?id=com.duy.c.cpp.compiler
+# C/Cpp Compiler on Android - CPP N-IDE
+## C/C++ compiler for Android device using GCC compiler
+
+<a href="https://play.google.com/store/apps/details?id=com.duy.c.cpp.compiler">
+    <img src="google-play-store/en_badge_web_generic.png" alt="google-play" width="200"/>
+</a>
+
 
 This project is developed to help the community to learn C or C++ on the go.
 
-> I am developing this project, it is not stable
+You can use this app to code and compile C/C++ project without Internet.
 
-Pull request always welcomed.
 
 ## Features
 
@@ -16,7 +20,9 @@ Pull request always welcomed.
 - C++ compiler
 - Terminal emulator
 - Diagnostic utility: auto jump to error position
+- Compiler output
 - Syntax highlighting
+- C/C++ examples from https://www.programiz.com/cpp-programming/examples
 - File manager
 - Multi Tab: you can open different files in different tabs to manage editing multiple files simultaneously with ease.
 - Easy toolbar: you can quickly create a new file, open, save, save as, undo/redo, insert some commonly used symbols, go back to last edit location, etc.
@@ -34,6 +40,14 @@ Pull request always welcomed.
 - Automatic indentation
 - Keep the screen awaken
 - Dark/Light Themes
+
+## TODO
+- Code completion
+- Real-time diagnostics (warnings, errors) and suggestion to fix it
+- Static code analysis
+- Code indention
+
+## Pull request always welcomed.
 
 ## License
 GNU GPL V3.0
