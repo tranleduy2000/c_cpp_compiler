@@ -90,12 +90,6 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     }
 
     @Override
-    protected void onShowKeyboard(int keyboardHeight) {
-        super.onShowKeyboard(keyboardHeight);
-//        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu container) {
         //add run button
         container.add(MenuDef.GROUP_TOOLBAR, R.id.action_run, 0, R.string.run)

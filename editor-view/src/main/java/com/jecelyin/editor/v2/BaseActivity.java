@@ -30,7 +30,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.duy.ide.editor.editor.R;
-import com.jecelyin.common.utils.DLog;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -55,8 +54,6 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     };
 
     protected void onShowKeyboard(int keyboardHeight) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "onShowKeyboard() called with: keyboardHeight = [" + keyboardHeight + "]");
     }
 
     protected void onHideKeyboard() {
