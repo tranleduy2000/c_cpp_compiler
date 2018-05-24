@@ -19,20 +19,22 @@ android {
         multiDexEnabled true
     }
 
-    flavorDimensions "abi"
+    flavorDimensions "cpuArch"
     productFlavors {
-        arch_x86 {
-            versionNameSuffix "-x86"
+        arch_arm7 {
+            dimension 'cpuArch'
+            versionNameSuffix "-armeabi-v7a"
             ndk {
-                abiFilters "x86"
+                abiFilter "armeabi-v7a"
             }
         }
-//        arch_armeabi_v7a {
-//            versionNameSuffix "-armeabi-v7a"
-//            ndk {
-//                abiFilters "armeabi-v7a"
-//            }
-//        }
+        arch_x86 {
+            dimension 'cpuArch'
+            versionNameSuffix "-x86"
+            ndk {
+                abiFilter "x86"
+            }
+        }
     }
 
     sourceSets {

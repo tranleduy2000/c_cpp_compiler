@@ -116,7 +116,7 @@ public class TermActivity extends BaseActivity implements SharedPreferences.OnSh
         TermSettings settings = new TermSettings(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
 
         ShellTermSession shellTermSession = new ShellTermSession(settings, argv, envp, workdir);
-        shellTermSession.setProcessExitMessage(getString(R.string.message_program_finished));
+        shellTermSession.setProcessExitMessage(getString(R.string.console_finished));
 
         return shellTermSession;
     }
