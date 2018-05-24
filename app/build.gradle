@@ -48,6 +48,17 @@ android {
     project.ext.abiCodes = ['armeabi-v7a': 1, x86: 2]
     applicationVariants.all { variant ->
 
+        Properties props = new Properties()
+        def propFile = new File("app/signing.properties")
+        if (propFile.exists()){
+            props.load(new FileInputStream(propFile))
+            buildConfigField "String", "BASE64_KEY", "\"" + props['BASE64_KEY'] + "\""
+            buildConfigField "String", "SKU_PREMIUM", "\"" + props['SKU_PREMIUM'] + "\""
+        } else {
+            buildConfigField "String", "BASE64_KEY", "\"\""
+            buildConfigField "String", "SKU_PREMIUM", "\"\""
+        }
+
         // Assigns a different version code for each output APK
         // other than the universal APK.
         variant.outputs.each { output ->
