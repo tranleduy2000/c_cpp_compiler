@@ -53,7 +53,7 @@ import java.io.IOException;
  * Created by Duy on 22-Apr-18.
  */
 
-public class LauncherActivity extends BaseActivity {
+public class InstallActivity extends BaseActivity {
 
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -140,7 +140,7 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private void installCompiler() {
-        Intent intent = new Intent(LauncherActivity.this, PackageManagerActivity.class);
+        Intent intent = new Intent(InstallActivity.this, PackageManagerActivity.class);
         intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
         intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc-compact");
         startActivityForResult(intent, RC_INSTALL_COMPILER);
@@ -178,7 +178,7 @@ public class LauncherActivity extends BaseActivity {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                LauncherActivity context = LauncherActivity.this;
+                InstallActivity context = InstallActivity.this;
 
                 //Check C compiler
                 publishProgress("Test C compiler\n");
