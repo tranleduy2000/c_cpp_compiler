@@ -82,7 +82,6 @@ public class PackageInstaller {
         }
     }
 
-
     @WorkerThread
     private void finishInstallPackage(File postinstFile) throws IOException {
         if (DLog.DEBUG) {
@@ -91,6 +90,7 @@ public class PackageInstaller {
             input.close();
             DLog.d(TAG, "finishInstallPackage called with \n" + content);
         }
+
         // Move Examples to sd card
         File examples = new File(mCCToolsDir, "Examples");
         if (examples.exists()) {

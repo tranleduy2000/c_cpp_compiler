@@ -44,6 +44,9 @@ public class Shell {
     }
 
     public static CommandResult exec(Context context, File file) {
+        if (!file.canExecute()) {
+            Utils.chmod(file.getAbsolutePath(), 0775);
+        }
         return exec(context, file.getParent(), file.getPath());
     }
 
