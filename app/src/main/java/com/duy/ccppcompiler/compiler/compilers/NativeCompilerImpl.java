@@ -21,7 +21,6 @@ import android.support.annotation.NonNull;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.ShellUtils;
-import com.jecelyin.common.utils.DLog;
 
 /**
  * Created by Duy on 18-May-18.
@@ -30,16 +29,8 @@ public abstract class NativeCompilerImpl<T extends CommandResult> implements INa
     private static final String TAG = "NativeCompilerImpl";
 
     @NonNull
-    protected CommandResult execCommand(@NonNull Context context, @NonNull String mWorkDir,
-                                        @NonNull String mCommand) {
-        if (DLog.DEBUG) DLog.d(TAG, "mWorkDir = " + mWorkDir);
-        if (DLog.DEBUG) {
-            String[] split = mCommand.split("\\s+");
-            for (String s : split) {
-                if (DLog.DEBUG) DLog.w(TAG, s);
-            }
-        }
-        return ShellUtils.execCommand(context, mWorkDir, mCommand);
+    protected CommandResult execCommand(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
+        return ShellUtils.exec(context, workingDir, cmd);
     }
 
     @Override

@@ -107,7 +107,7 @@ public class PackageInstaller {
         Log.i(TAG, "Execute postinst file " + postinstFile);
 
         Utils.chmod(postinstFile.getAbsolutePath(), 493/*0755*/);
-        ShellUtils.execCommand(mContext, postinstFile.getParent(), postinstFile.getAbsolutePath());
+        ShellUtils.exec(mContext, postinstFile);
     }
 
 

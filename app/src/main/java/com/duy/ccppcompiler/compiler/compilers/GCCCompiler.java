@@ -51,11 +51,11 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
 
     @Override
     public GccCommandResult compile(File[] sourceFiles) {
-        File fileToBeCompiled = sourceFiles[0];
+        File sourceFile = sourceFiles[0];
         String command = buildCommand(sourceFiles);
-        String mWorkDir = fileToBeCompiled.getParent();
+        String workingDir = sourceFile.getParent();
 
-        GccCommandResult result = new GccCommandResult(execCommand(mContext, mWorkDir, command));
+        GccCommandResult result = new GccCommandResult(execCommand(mContext, workingDir, command));
         if (result.getResultCode() == 0) {
             if (mOutFile.exists()) {
                 try {

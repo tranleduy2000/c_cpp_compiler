@@ -23,6 +23,7 @@ import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -38,19 +39,29 @@ public class ShellUtils {
     private ShellUtils() {
     }
 
-    public static CommandResult execCommand(Context context, String mCommand) {
-        return execCommand(context, Environment.getHomeDir(context), mCommand);
+    public static CommandResult exec(Context context, String mCommand) {
+        return exec(context, Environment.getHomeDir(context), mCommand);
     }
 
-    public static CommandResult execCommand(Context context, String mWorkDir, String mCommand) {
-        if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + mCommand);
+    public static CommandResult exec(Context context, File file) {
+        return exec(context, file.getParent(), file.getPath());
+    }
+
+    /**
+     * @param context - Android context for build environments variable
+     * @param cwd     - Current working directory
+     * @param cmd     - Command to be executed
+     * @return output from process
+     */
+    public static CommandResult exec(Context context, String cwd, String cmd) {
+        if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + cmd);
         long startTime = System.currentTimeMillis();
         try {
             String[] env = Environment.buildDefaultEnv(context);
             String[] argv = new String[]{"/system/bin/sh"};
 
             int[] processIds = new int[1];
-            FileDescriptor fd = Utils.createSubProcess(mWorkDir, argv[0], argv, env, processIds);
+            FileDescriptor fd = Utils.createSubProcess(cwd, argv[0], argv, env, processIds);
             final int processId = processIds[0];
             if (processId <= 0) {
                 return new CommandResult(-1, "Could not create sub process");
@@ -63,7 +74,7 @@ public class ShellUtils {
             FileOutputStream out = new FileOutputStream(fd);
 
             out.write(("export PS1=''\n").getBytes("UTF-8"));
-            out.write(("exec " + mCommand + "\n").getBytes("UTF-8"));
+            out.write(("exec " + cmd + "\n").getBytes("UTF-8"));
             out.flush();
 
             final int[] exitCode = new int[1];

@@ -375,16 +375,16 @@ public class PackageManagerActivity extends BaseActivity {
     protected boolean uninstallPackage(String name) {
         if (name != null) {
             //delete file
-            String prermFile = new File(mInstalledDir, name + ".prerm").getAbsolutePath();
-            if ((new File(prermFile)).exists()) {
-                Log.i(TAG, "Execute prerm script " + prermFile);
-                Utils.chmod(prermFile, 0x1ed);
-                ShellUtils.execCommand(this, Environment.getHomeDir(this), prermFile);
-                new File(prermFile).delete();
+            File permFile = new File(mInstalledDir, name + ".prerm");
+            if (permFile.exists()) {
+                Utils.chmod(permFile.getAbsolutePath(), 0x1ed);
+                ShellUtils.exec(this, permFile);
+                permFile.delete();
             }
-            String descFile = new File(mInstalledDir, name + ".pkgdesc").getAbsolutePath();
-            if ((new File(descFile)).exists()) {
-                new File(descFile).delete();
+
+            File descFile = new File(mInstalledDir, name + ".pkgdesc");
+            if (descFile.exists()) {
+                descFile.delete();
             }
 
             //remove package in list installed
