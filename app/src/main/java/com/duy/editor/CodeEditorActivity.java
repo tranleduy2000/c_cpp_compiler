@@ -42,6 +42,7 @@ import com.duy.common.DLog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.editor.theme.ThemeActivity;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.editor.Document;
@@ -69,6 +70,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startActivity(new Intent(this, ThemeActivity.class));
         mPremiumHelper = new InAppPurchaseHelper(this);
 
         final View toggleView = findViewById(R.id.btn_toggle_panel);

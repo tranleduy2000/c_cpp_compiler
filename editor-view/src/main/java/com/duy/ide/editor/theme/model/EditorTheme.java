@@ -2,6 +2,7 @@ package com.duy.ide.editor.theme.model;
 
 import android.graphics.Color;
 
+import com.duy.ide.editor.theme.SyntaxUtilities;
 import com.duy.ide.editor.theme.ThemeAttr;
 
 import java.util.Properties;
@@ -12,6 +13,10 @@ public class EditorTheme extends ColorScheme {
     private WhiteSpaceStyle whiteSpaceStyle = new WhiteSpaceStyle();
     private SyntaxStyle[] syntaxStyles;
     private String name;
+
+    public SyntaxStyle[] getSyntaxStyles() {
+        return syntaxStyles;
+    }
 
     public int getLineHighlightColor() {
         return getColor(Attr.VIEW_LINE_HIGHLIGHT_COLOR);
@@ -76,6 +81,7 @@ public class EditorTheme extends ColorScheme {
         name = properties.getProperty(ThemeAttr.scheme_name.getKey());
         gutterStyle.load(properties);
         whiteSpaceStyle.load(properties);
+        syntaxStyles = SyntaxUtilities.loadStyles(properties);
     }
 
     private enum Attr {

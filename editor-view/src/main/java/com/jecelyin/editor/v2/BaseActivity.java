@@ -30,7 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.duy.ide.editor.editor.R;
-import com.jecelyin.editor.v2.editor.Document;
+import com.jecelyin.common.utils.DLog;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -121,7 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         if (key.equals(getString(R.string.pref_key_fullscreen))) {
             setFullScreenMode(isFullScreenMode());
         } else if (key.equals(getString(R.string.pref_current_theme))) {
-            Document.styles = null;
+            if (DLog.DEBUG) DLog.d(TAG, "onSharedPreferenceChanged: change theme");
         }
     }
 

@@ -12,20 +12,51 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.WeakHashMap;
 
 public class ThemeLoader {
     private static final String TAG = "ThemeLoader";
-    public static WeakHashMap<String, EditorTheme> themes;
+    private static final WeakHashMap<String, EditorTheme> CACHED = new WeakHashMap<>();
+    private static final String ASSET_PATH = "themes";
 
-    static {
-        themes = new WeakHashMap<>();
+    public static void init(Context context) {
+        try {
+            String[] themes = context.getAssets().list(ASSET_PATH);
+            for (String theme : themes) {
+                loadTheme(context, theme);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static EditorTheme getTheme(Context context, String name) {
+        loadTheme(context, name);
+        return CACHED.get(name);
+    }
+
+    public static ArrayList<EditorTheme> getAll() {
+        ArrayList<EditorTheme> themes = new ArrayList<>();
+        for (Map.Entry<String, EditorTheme> entry : CACHED.entrySet()) {
+            themes.add(entry.getValue());
+        }
+        return themes;
     }
 
     public static EditorTheme loadDefault(Context context) {
         AssetManager assets = context.getAssets();
-        return loadFromAsset(assets, "colorschemes/Solarized-dark.properties");
+        return loadFromAsset(assets, "themes/Solarized-dark.properties");
+    }
+
+    private static void loadTheme(Context context, String theme) {
+        if (CACHED.containsKey(theme)) {
+            return;
+        }
+        EditorTheme editorTheme = loadFromAsset(context.getAssets(), ASSET_PATH + "/" + theme);
+        CACHED.put(theme, editorTheme);
     }
 
     private static EditorTheme loadFromAsset(AssetManager assets, String propFile) {
@@ -60,5 +91,6 @@ public class ThemeLoader {
             return defaultValue;
         }
     }
+
 }
 

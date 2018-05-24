@@ -64,6 +64,7 @@ import android.os.Parcelable;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -121,8 +122,8 @@ import android.widget.RemoteViews.RemoteView;
 import android.widget.Scroller;
 
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.theme.ThemeLoader;
+import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Preferences;
@@ -288,6 +289,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private volatile Locale mCurrentSpellCheckerLocaleCache;
     private Path mHighlightPath;
     private boolean mHighlightPathBogus = true;
+
+    /**
+     * Editor color schemes, include text color, text background and more color attrs
+     */
+    @Nullable
+    private EditorTheme mEditorTheme;
 
     public BaseEditorView(Context context) {
         this(context, null);
@@ -782,6 +789,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
+    }
+
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -795,10 +806,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
-    }
-
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -2001,7 +2008,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mMinWidthMode == EMS ? mMinWidth : -1;
     }
 
-
     /**
      * Makes the TextView at least this many ems wide
      * <p>
@@ -2050,6 +2056,16 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mMaxWidthMode == EMS ? mMaxWidth : -1;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+
+//    /**
+//     * Sets the Factory used to create new Editables.
+//     */
+//    public final void setEditableFactory(Editable.Factory factory) {
+//        mEditableFactory = factory;
+//        setText(mText);
+//    }
+
     /**
      * Makes the TextView at most this many ems wide
      * <p>
@@ -2062,16 +2078,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         requestLayout();
         invalidate();
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-
-//    /**
-//     * Sets the Factory used to create new Editables.
-//     */
-//    public final void setEditableFactory(Editable.Factory factory) {
-//        mEditableFactory = factory;
-//        setText(mText);
-//    }
 
     /**
      * @return the maximum width of the TextView, in pixels or -1 if the maximum width
@@ -2877,7 +2883,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         mEditor.mInputContentType.imeActionId = actionId;
     }
 
-
     /**
      * Get the IME action label previous set with {@link #setImeActionLabel}.
      *
@@ -2914,6 +2919,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         mEditor.mInputContentType.onEditorActionListener = l;
     }
 
+    /////////////////////////////////////////////////////////////////////////
+
     /**
      * Called when an attached input method calls
      * {@link InputConnection#performEditorAction(int)
@@ -2945,8 +2952,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         }
     }
-
-    /////////////////////////////////////////////////////////////////////////
 
     /**
      * Get the private type of the content.
@@ -6688,7 +6693,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         }
     }
 
-
     /**
      * @hide
      */
@@ -6910,6 +6914,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     public void setTheme(@NonNull EditorTheme editorTheme) {
+        mEditorTheme = editorTheme;
+
         setBackgroundColor(editorTheme.getBgColor());
         setTextColor(editorTheme.getFgColor());
         setHighlightColor(editorTheme.getSelectionColor());
@@ -6921,6 +6927,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         postInvalidate();
     }
 
+    public EditorTheme getEditorTheme(){
+        return mEditorTheme;
+    }
 
     public enum BufferType {
         NORMAL, SPANNABLE, EDITABLE,

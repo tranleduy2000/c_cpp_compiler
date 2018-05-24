@@ -2,9 +2,13 @@ package com.duy.ide.editor.theme.model;
 
 import android.graphics.Color;
 
+import com.jecelyin.common.utils.DLog;
+
 import java.util.Properties;
 
 public class GutterStyle extends ColorScheme {
+
+    private static final String TAG = "GutterStyle";
 
     public GutterStyle() {
 
@@ -18,41 +22,33 @@ public class GutterStyle extends ColorScheme {
         return getColor(Attr.VIEW_GUTTER_BG_COLOR);
     }
 
-
     public int getCurrentLineColor() {
         return getColor(Attr.VIEW_GUTTER_CURRENT_LINE_COLOR);
     }
-
 
     public int getFgColor() {
         return getColor(Attr.VIEW_GUTTER_FG_COLOR);
     }
 
-
     public int getFocusBorderColor() {
         return getColor(Attr.VIEW_GUTTER_FOCUS_BORDER_COLOR);
     }
-
 
     public int getFoldColor() {
         return getColor(Attr.VIEW_GUTTER_FOLD_COLOR);
     }
 
-
     public int getHighlightColor() {
         return getColor(Attr.VIEW_GUTTER_HIGHLIGHT_COLOR);
     }
-
 
     public int getMarkerColor() {
         return getColor(Attr.VIEW_GUTTER_MARKER_COLOR);
     }
 
-
     public int getNoFocusBorderColor() {
         return getColor(Attr.VIEW_GUTTER_NO_FOCUS_BORDER_COLOR);
     }
-
 
     public int getRegisterColor() {
         return getColor(Attr.VIEW_GUTTER_REGISTER_COLOR);
@@ -65,7 +61,7 @@ public class GutterStyle extends ColorScheme {
                 String color = properties.getProperty(attr.getKey());
                 put(attr.getKey(), Color.parseColor(color));
             } catch (Exception ignored) {
-                ignored.printStackTrace();
+                if (DLog.DEBUG) DLog.w(TAG, "load: can not find attr " + attr.getKey());
             }
         }
     }

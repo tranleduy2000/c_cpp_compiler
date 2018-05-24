@@ -29,7 +29,8 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.theme.ColorSchemeLoader;
+import com.duy.ide.editor.theme.model.EditorTheme;
+import com.duy.ide.editor.theme.model.SyntaxStyle;
 import com.duy.ide.filemanager.ReadFileListener;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -47,7 +48,6 @@ import org.gjt.sp.jedit.LineManager;
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.syntax.DefaultTokenHandler;
 import org.gjt.sp.jedit.syntax.ModeProvider;
-import com.duy.ide.editor.theme.model.SyntaxStyle;
 import org.gjt.sp.jedit.syntax.Token;
 
 import java.io.File;
@@ -61,7 +61,6 @@ import java.util.HashMap;
  */
 public class Document implements ReadFileListener, TextWatcher {
     private static final String TAG = "Document";
-    public static SyntaxStyle[] styles;
     private final EditorDelegate mEditorDelegate;
     private final Context mContext;
     private final Preferences mPreferences;
@@ -239,13 +238,6 @@ public class Document implements ReadFileListener, TextWatcher {
                 editableText.removeSpan(span);
             }
         }
-//        {
-//            ErrorSpan[] spans = editableText.getSpans(lineStartOffset, lineEndOffset, ErrorSpan.class);
-//            for (ErrorSpan span : spans) {
-//                editableText.removeSpan(span);
-//            }
-//        }
-
         highlight(editableText, startLine, endLine);
     }
 
@@ -331,11 +323,10 @@ public class Document implements ReadFileListener, TextWatcher {
     private void highlight(Spannable spannableStringBuilder, int startLine, int endLine) {
         if (!mBuffer.isCanHighlight())
             return;
+        EditorTheme editorTheme = mEditorDelegate.getEditText().getEditorTheme();
+        SyntaxStyle[] syntaxStyles = editorTheme.getSyntaxStyles();
 
         DefaultTokenHandler tokenHandler;
-//        if (styles == null) {
-        styles = ColorSchemeLoader.loadStyles(mContext);
-//        }
         ArrayList<HighlightInfo> mergerArray;
 
         for (int i = startLine; i <= endLine; i++) {
@@ -344,7 +335,7 @@ public class Document implements ReadFileListener, TextWatcher {
             Token token = tokenHandler.getTokens();
 
             mergerArray = new ArrayList<>();
-            collectToken(mBuffer, i, token, mergerArray);
+            collectToken(syntaxStyles, mBuffer, i, token, mergerArray);
             addTokenSpans(spannableStringBuilder, i, mergerArray);
         }
     }
@@ -378,7 +369,7 @@ public class Document implements ReadFileListener, TextWatcher {
         mColorSpanMap.put(line, spans);
     }
 
-    private void collectToken(Buffer buffer, int lineNumber, Token token,
+    private void collectToken(SyntaxStyle[] syntaxStyles, Buffer buffer, int lineNumber, Token token,
                               ArrayList<HighlightInfo> mergerArray) {
 
         int lineStartOffset = buffer.getLineManager().getLineStartOffset(lineNumber);
@@ -387,7 +378,7 @@ public class Document implements ReadFileListener, TextWatcher {
         while (token.id != Token.END) {
             int startIndex = lineStartOffset + token.offset;
             int endIndex = lineStartOffset + token.offset + token.length;
-            SyntaxStyle style = styles[token.id];
+            SyntaxStyle style = syntaxStyles[token.id];
             token = token.next;
 
             if (style == null)
