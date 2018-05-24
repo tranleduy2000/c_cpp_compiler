@@ -23,9 +23,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.duy.ccppcompiler.R;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 
-public class TermPreferencesActivity extends FullScreenActivity {
+public class TermPreferencesActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -6,11 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 
 import com.duy.ccppcompiler.R;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 
 import static com.duy.common.preferences.PreferencesNative.bindPreferenceSummaryToValue;
 
-public class CompilerSettingActivity extends FullScreenActivity {
+public class CompilerSettingActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

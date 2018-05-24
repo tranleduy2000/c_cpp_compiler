@@ -41,7 +41,7 @@ import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 
 import org.apache.commons.io.IOUtils;
 
@@ -53,7 +53,7 @@ import java.io.IOException;
  * Created by Duy on 22-Apr-18.
  */
 
-public class LauncherActivity extends FullScreenActivity {
+public class LauncherActivity extends BaseActivity {
 
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,

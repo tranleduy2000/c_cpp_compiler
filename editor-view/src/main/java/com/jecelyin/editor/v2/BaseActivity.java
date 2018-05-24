@@ -31,7 +31,7 @@ import com.duy.ide.editor.editor.R;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public abstract class FullScreenActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class BaseActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

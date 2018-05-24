@@ -52,7 +52,7 @@ import com.duy.ccppcompiler.packagemanager.repo.LocalPackageRepository;
 import com.duy.ccppcompiler.packagemanager.repo.UbuntuServerPackageRepository;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 import com.pdaxrom.cctools.R;
 import com.pdaxrom.utils.Utils;
 
@@ -71,7 +71,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class PackageManagerActivity extends FullScreenActivity {
+public class PackageManagerActivity extends BaseActivity {
     public static final String EXTRA_CMD = "command";
     public static final String EXTRA_DATA = "data";
     public static final String ACTION_INSTALL = "install";

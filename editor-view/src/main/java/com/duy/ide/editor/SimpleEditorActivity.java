@@ -53,7 +53,7 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.CharsetsDialog;
@@ -86,8 +86,9 @@ import java.util.Map;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class SimpleEditorActivity extends FullScreenActivity implements MenuItem.OnMenuItemClickListener,
+public class SimpleEditorActivity extends BaseActivity implements MenuItem.OnMenuItemClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
+
     protected static final int RC_OPEN_FILE = 1;
     private static final String TAG = "MainActivity";
     private final static int RC_SAVE_AS = 3;

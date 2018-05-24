@@ -39,7 +39,7 @@ import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.editor.databinding.ActivityFileExplorerBinding;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 import com.jecelyin.editor.v2.Preferences;
 
 import java.io.File;
@@ -51,7 +51,7 @@ import java.util.SortedMap;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class FileExplorerActivity extends FullScreenActivity implements View.OnClickListener, OnClipboardDataChangedListener {
+public class FileExplorerActivity extends BaseActivity implements View.OnClickListener, OnClipboardDataChangedListener {
     public static final String EXTRA_HOME_PATH = "home_path";
     public static final String EXTRA_INIT_PATH = "dest_file";
     public static final String EXTRA_MODE = "mode";

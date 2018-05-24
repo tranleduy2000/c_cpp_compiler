@@ -46,7 +46,7 @@ import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.packagemanager.Environment;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 import com.pdaxrom.cctools.BuildConstants;
 
 import java.util.Arrays;
@@ -61,7 +61,7 @@ import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
 import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
 
-public class TermActivity extends FullScreenActivity implements SharedPreferences.OnSharedPreferenceChangeListener, TermSession.FinishCallback {
+public class TermActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener, TermSession.FinishCallback {
     private static final String TAG = "TermActivity";
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;

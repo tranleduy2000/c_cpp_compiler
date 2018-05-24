@@ -31,7 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.duy.ide.editor.editor.R;
-import com.jecelyin.editor.v2.FullScreenActivity;
+import com.jecelyin.editor.v2.BaseActivity;
 import com.jecelyin.editor.v2.Preferences;
 
 
@@ -51,7 +51,7 @@ import com.jecelyin.editor.v2.Preferences;
  * API Guide</a> for more information on developing a Settings UI.
  * <p/>
  */
-public class EditorSettingsActivity extends FullScreenActivity {
+public class EditorSettingsActivity extends BaseActivity {
 
     public static void startActivity(Activity activity, int requestCode) {
         activity.startActivityForResult(new Intent(activity, EditorSettingsActivity.class), requestCode);
