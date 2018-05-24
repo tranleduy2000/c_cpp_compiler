@@ -11,7 +11,7 @@
     <android.support.v7.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="8dp"
         android:textColor="?android:textColorPrimary"
         tools:text="Path">
@@ -20,7 +20,7 @@
 
     <com.duy.ide.editor.view.TintImageView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:src="@drawable/ic_chevron_right_black_24dp"
         android:textColor="?android:textColorPrimary" />
 
