@@ -40,8 +40,8 @@
 
         <item name="textForeground">#000000</item>
         <item name="textBackground">#FFFFFF</item>
-        <item name="caret">#000000</item>
-        <item name="selection">#4D97FF54</item>
+        <item name="caretColor">#000000</item>
+        <item name="selectionColor">#4D97FF54</item>
         <item name="invisibles">#dddddd</item>
         <item name="gutterForeground">#000000</item>
         <item name="gutterBackground">#dfdfdf</item>

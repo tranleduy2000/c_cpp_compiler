@@ -6915,7 +6915,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 R.attr.gutterBackground,
                 R.attr.gutterDivider,
                 R.attr.invisibles,
-                R.attr.selection,
+                R.attr.selectionColor,
         });
         int textForeground = a.getColor(0, Color.BLACK);
         int textBackground = a.getColor(1, Color.BLACK);

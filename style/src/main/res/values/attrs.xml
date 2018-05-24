@@ -23,8 +23,8 @@
     <declare-styleable name="Editor">
         <attr name="textForeground" format="color" />
         <attr name="textBackground" format="color" />
-        <attr name="caret" format="color" />
-        <attr name="selection" format="color" />
+        <attr name="caretColor" format="color" />
+        <attr name="selectionColor" format="color" />
         <attr name="invisibles" format="color" />
         <attr name="gutterForeground" format="color" />
         <attr name="gutterBackground" format="color" />
