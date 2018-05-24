@@ -32,11 +32,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class ShellUtils {
+public class Shell {
 
     private static final String TAG = "ShellUtils";
 
-    private ShellUtils() {
+    private Shell() {
     }
 
     public static CommandResult exec(Context context, String mCommand) {

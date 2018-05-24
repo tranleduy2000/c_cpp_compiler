@@ -5,7 +5,7 @@ import android.os.StatFs;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.duy.ccppcompiler.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.exceptions.BadArchiveException;
 import com.duy.ccppcompiler.packagemanager.exceptions.NotEnoughCacheException;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -107,7 +107,7 @@ public class PackageInstaller {
         Log.i(TAG, "Execute postinst file " + postinstFile);
 
         Utils.chmod(postinstFile.getAbsolutePath(), 493/*0755*/);
-        ShellUtils.exec(mContext, postinstFile);
+        Shell.exec(mContext, postinstFile);
     }
 
 

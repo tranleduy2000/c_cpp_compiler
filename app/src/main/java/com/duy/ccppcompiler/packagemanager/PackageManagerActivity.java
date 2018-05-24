@@ -43,7 +43,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.duy.ccppcompiler.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackagesLists;
@@ -378,7 +378,7 @@ public class PackageManagerActivity extends BaseActivity {
             File permFile = new File(mInstalledDir, name + ".prerm");
             if (permFile.exists()) {
                 Utils.chmod(permFile.getAbsolutePath(), 0x1ed);
-                ShellUtils.exec(this, permFile);
+                Shell.exec(this, permFile);
                 permFile.delete();
             }
 
