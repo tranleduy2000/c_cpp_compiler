@@ -305,7 +305,6 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
             //path.add(ROOT);
 
             item.add("../");
-            addItem("..", R.drawable.folder);
             path.add(f.getParent());
             parentPath = f.getParent();
 
@@ -353,7 +352,7 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
                 ITEM_KEY, ITEM_IMAGE}, new int[]{R.id.fdrowtext, R.id.fdrowimage});
 
         for (String dir : dirsMap.tailMap("").values()) {
-            addItem(dir, R.drawable.folder);
+            addItem(dir, -1);
         }
 
         for (String file : filesMap.tailMap("").values()) {
@@ -410,21 +409,7 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
     }
 
     private int getFileIcon(String file) {
-        String ext = "";
-        int dot = file.lastIndexOf(".");
-        if (dot != -1)
-            ext = file.substring(dot);
-        if (ext.contentEquals(".c"))
-            return R.drawable.text_x_c;
-        if (ext.contentEquals(".cpp") || ext.contentEquals(".c++"))
-            return R.drawable.text_x_cpp;
-        if (ext.contentEquals(".h") || ext.contentEquals(".hpp"))
-            return R.drawable.text_x_h;
-        if (ext.contentEquals(".sh"))
-            return R.drawable.text_x_script;
-        if (ext.contentEquals(".mk") || ext.contentEquals(".mak") || file.contentEquals("Makefile") || file.contentEquals("makefile"))
-            return R.drawable.text_x_make;
-        return R.drawable.application_octet_stream;
+      return -1;
     }
 
     @Override

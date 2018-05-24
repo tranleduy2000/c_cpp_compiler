@@ -163,7 +163,6 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
                         namedViews.add(new NamedView(edit, ne.getAttribute("name"), fileSelectorId));
 
                         ImageButton button = new ImageButton(context);
-                        button.setImageResource(R.drawable.folder);
 
                         if (ne.getAttribute("type").equals("dirpath")) {
                             button.setOnClickListener(new OnClickListener() {
