@@ -78,7 +78,6 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         if (theme != 0) {
             setTheme(Preferences.THEMES[theme]);
         }
-
         setFullScreenMode(isFullScreenMode());
     }
 
@@ -122,7 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_key_fullscreen))) {
             setFullScreenMode(isFullScreenMode());
-        } else if (key.equals(getString(R.string.change_theme))) {
+        } else if (key.equals(getString(R.string.pref_current_theme))) {
             ColorSchemeLoader.loadStyles(this);
         }
     }
