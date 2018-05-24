@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
@@ -89,6 +90,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     }
 
     @Override
+    protected void onShowKeyboard(int keyboardHeight) {
+        super.onShowKeyboard(keyboardHeight);
+//        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu container) {
         //add run button
         container.add(MenuDef.GROUP_TOOLBAR, R.id.action_run, 0, R.string.run)
@@ -106,8 +113,10 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 .setIcon(R.drawable.ic_code_black_24dp);
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
                 .setIcon(R.drawable.ic_terminal_black);
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
-                .setIcon(R.drawable.baseline_extension_24);
+        if (BuildConfig.DEBUG) {
+            menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
+                    .setIcon(R.drawable.baseline_extension_24);
+        }
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_term_preferences, 0, R.string.title_term_preferences)
                 .setIcon(R.drawable.ic_settings_white_24dp);
         menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_compiler_setting, 0, R.string.compiler_setting)

@@ -124,6 +124,11 @@ public class SimpleEditorActivity extends BaseActivity implements MenuItem.OnMen
                 hideSoftInput();
             }
         });
+
+        //keyboard hide/show listener
+        setRootLayout(mDrawerLayout);
+        attachKeyboardListeners();
+
         mTabRecyclerView = findViewById(R.id.tabRecyclerView);
         mVersionTextView = findViewById(R.id.versionTextView);
 
@@ -144,7 +149,9 @@ public class SimpleEditorActivity extends BaseActivity implements MenuItem.OnMen
         final String version = SysUtils.getVersionName(this);
         mVersionTextView.setText(version);
 
-        start();
+        mEditorPager.setVisibility(View.VISIBLE);
+        initUI();
+        processIntent();
     }
 
     private void bindPreferences() {
@@ -179,12 +186,6 @@ public class SimpleEditorActivity extends BaseActivity implements MenuItem.OnMen
         } else if (Preferences.SCREEN_ORIENTATION_PORTRAIT == orgi) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-    }
-
-    private void start() {
-        mEditorPager.setVisibility(View.VISIBLE);
-        initUI();
-        processIntent();
     }
 
     private void initUI() {

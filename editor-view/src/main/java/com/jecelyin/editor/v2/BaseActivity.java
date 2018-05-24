@@ -24,19 +24,57 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.duy.ide.editor.editor.R;
+import com.jecelyin.common.utils.DLog;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public abstract class BaseActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = "BaseActivity";
+    private boolean keyboardListenersAttached = false;
+    @Nullable
+    private ViewGroup rootLayout;
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            int heightDiff = rootLayout.getRootView().getHeight() - rootLayout.getHeight();
+            int contentViewTop = getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();
+            if (heightDiff <= contentViewTop) {
+                onHideKeyboard();
+            } else {
+                int keyboardHeight = heightDiff - contentViewTop;
+                onShowKeyboard(keyboardHeight);
+            }
+        }
+    };
+
+    protected void onShowKeyboard(int keyboardHeight) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "onShowKeyboard() called with: keyboardHeight = [" + keyboardHeight + "]");
+    }
+
+    protected void onHideKeyboard() {
+    }
+
+    protected void attachKeyboardListeners() {
+        if (keyboardListenersAttached) {
+            return;
+        }
+        if (rootLayout != null) {
+            rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+            keyboardListenersAttached = true;
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         int theme = Preferences.getInstance(this).getTheme();
         if (theme != 0) {
             setTheme(Preferences.THEMES[theme]);
@@ -94,4 +132,18 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (keyboardListenersAttached) {
+            if (rootLayout != null) {
+                rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(keyboardLayoutListener);
+            }
+        }
+    }
+
+    public void setRootLayout(@Nullable ViewGroup view) {
+        rootLayout = view;
+    }
 }
