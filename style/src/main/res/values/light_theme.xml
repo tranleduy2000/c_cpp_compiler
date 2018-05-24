@@ -35,6 +35,8 @@
         <item name="menuIconNormalColor">#000</item>
 
         <item name="editorTabBackground">@drawable/drawer_tab_item_background_light</item>
+        <item name="findResultsPath">#0000ff</item>
+        <item name="findResultsKeyword">#eaa95e</item>
 
         <item name="textForeground">#000000</item>
         <item name="textBackground">#FFFFFF</item>
@@ -44,8 +46,7 @@
         <item name="gutterForeground">#000000</item>
         <item name="gutterBackground">#dfdfdf</item>
         <item name="gutterDivider">#000000</item>
-        <item name="findResultsPath">#0000ff</item>
-        <item name="findResultsKeyword">#eaa95e</item>
+
 
         <item name="hlComment1">#cc0000</item>
         <item name="hlComment2">#ff8400</item>

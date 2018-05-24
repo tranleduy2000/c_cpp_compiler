@@ -6874,7 +6874,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         int newPaddingLeft = layoutContext.gutterWidth + gutterPaddingRight;
         if (getPaddingLeft() != newPaddingLeft) {
-            setPaddingRelative(newPaddingLeft, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
+            setPaddingRelative(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
         }
     }
 
