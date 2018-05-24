@@ -9,4 +9,5 @@ public class MenuDef {
     public final static int STATUS_DISABLED = 2;
 
     public static final int GROUP_TOOLBAR = 1;
+    public static final int GROUP_NAVIGATION = 2;
 }

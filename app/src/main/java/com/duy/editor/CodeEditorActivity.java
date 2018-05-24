@@ -16,6 +16,7 @@
 
 package com.duy.editor;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.core.widget.EditAreaView;
 import android.os.Bundle;
@@ -36,8 +37,10 @@ import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.diagnostic.ui.DiagnosticFragment;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.common.DLog;
+import com.duy.common.purchase.Premium;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.UIUtils;
@@ -101,19 +104,24 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     @Override
     protected void onCreateNavigationMenu(Menu menu) {
         //add run button
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_c_example, 0, R.string.title_menu_c_example)
+        if (!Premium.isPremiumUser(this)) {
+            menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_premium, 0, R.string.title_premium_version)
+                    .setIcon(R.drawable.baseline_lock_open_24);
+        }
+
+        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
+        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
+        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
                 .setIcon(R.drawable.ic_terminal_black);
         if (BuildConfig.DEBUG) {
-            menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
+            menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
                     .setIcon(R.drawable.baseline_extension_24);
         }
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_term_preferences, 0, R.string.title_term_preferences)
+        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_term_preferences, 0, R.string.title_term_preferences)
                 .setIcon(R.drawable.ic_settings_white_24dp);
-        menu.add(MenuDef.GROUP_TOOLBAR, R.id.action_compiler_setting, 0, R.string.compiler_setting)
+        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_compiler_setting, 0, R.string.compiler_setting)
                 .setIcon(R.drawable.ic_settings_white_24dp);
         super.onCreateNavigationMenu(menu);
     }
@@ -153,8 +161,24 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             case R.id.action_c_example:
                 ExampleActivity.openExample(this, "c");
                 break;
+
+            case R.id.action_premium:
+                clickUpgrade();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clickUpgrade() {
+        PremiumDialog dialog = new PremiumDialog(this, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                }
+            }
+        });
+        dialog.show();
     }
 
     private void compileAndRun() {

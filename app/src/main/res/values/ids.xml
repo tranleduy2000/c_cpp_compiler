@@ -23,4 +23,5 @@
     <item name="action_open_terminal" type="id" />
     <item name="action_term_preferences" type="id" />
     <item name="action_compiler_setting" type="id" />
+    <item name="action_premium" type="id" />
 </resources>
