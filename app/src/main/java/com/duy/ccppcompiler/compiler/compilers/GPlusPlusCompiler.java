@@ -30,6 +30,7 @@ import java.io.File;
  */
 public class GPlusPlusCompiler extends GCCCompiler {
     private static final String TAG = "GPlusPlusCompiler";
+    private static final String COMPILER_NAME = "g++-4.9";
 
     public GPlusPlusCompiler(Context context, ICompileSetting compileSetting) {
         super(context, compileSetting);
@@ -46,7 +47,7 @@ public class GPlusPlusCompiler extends GCCCompiler {
         String fileName = file.getName();
         mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
 
-        CommandBuilder builder = new CommandBuilder("g++-4.9");
+        CommandBuilder builder = new CommandBuilder(COMPILER_NAME);
         for (File sourceFile : sourceFiles) {
             builder.addFlags(sourceFile.getAbsolutePath());
         }

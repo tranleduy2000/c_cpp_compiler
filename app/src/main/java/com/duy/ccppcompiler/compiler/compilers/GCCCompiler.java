@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 
 public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     private static final String TAG = "GCCCompiler";
+    private static final String COMPILER_NAME = "gcc-4.9";
     protected File mOutFile;
     protected Context mContext;
     @Nullable
@@ -83,7 +84,7 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         String fileName = file.getName();
         mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
 
-        CommandBuilder builder = new CommandBuilder("gcc-4.9");
+        CommandBuilder builder = new CommandBuilder(COMPILER_NAME);
         for (File sourceFile : sourceFiles) {
             builder.addFlags(sourceFile.getAbsolutePath());
         }
