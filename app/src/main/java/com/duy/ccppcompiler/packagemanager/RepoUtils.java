@@ -41,11 +41,11 @@ public class RepoUtils {
 
     public static void setVersion() {
         final int sdkVersion = Build.VERSION.SDK_INT;
-        int ndkVersion;
+        int ndkVersion = 14;
         if (sdkVersion <= 24) {
-            ndkVersion = sdkVersion;
+            //ndkVersion = sdkVersion;
         } else {
-            ndkVersion = Math.max(14, Math.min(sdkVersion, 24));
+            //ndkVersion = Math.max(14, Math.min(sdkVersion, 24));
         }
 
         String cpuAbi;

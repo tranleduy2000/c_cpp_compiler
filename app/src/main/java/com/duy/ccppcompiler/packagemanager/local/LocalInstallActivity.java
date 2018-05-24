@@ -29,15 +29,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.content.ContextCompat;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ccppcompiler.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.compiler.CompileSetting;
+import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
+import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageInstaller;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
@@ -54,6 +55,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -73,7 +75,7 @@ public class LocalInstallActivity extends FullScreenActivity {
     private static final int RC_INSTALL_COMPILER = 12312;
     private ProgressBar mProgressBar;
     private TextView mTxtMessage;
-    @Nullable
+    private ScrollView mScrollView;
     private AsyncTask<Void, CharSequence, Boolean> mExtractDataTask;
     private Button mAction;
 
@@ -83,7 +85,7 @@ public class LocalInstallActivity extends FullScreenActivity {
         setContentView(R.layout.activity_install);
         mProgressBar = findViewById(R.id.progress_bar);
         mTxtMessage = findViewById(R.id.txt_message);
-        mTxtMessage.setMovementMethod(new ScrollingMovementMethod());
+        mScrollView = findViewById(R.id.scroll_view);
         mAction = findViewById(R.id.btn_action);
 
         if (permissionGranted()) {
@@ -193,9 +195,23 @@ public class LocalInstallActivity extends FullScreenActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            LocalInstallActivity context = LocalInstallActivity.this;
-            CommandResult result = ShellUtils.execCommand(context, "gcc-4.9 -v");
-            return result != null && result.getResultCode() == 0;
+            try {
+                File file = new File(getCacheDir(), "tmp.c");
+                FileOutputStream output = new FileOutputStream(file);
+                org.apache.commons.io.IOUtils.write("#include <stdio.h> int main(){ return 0; }", output);
+                output.close();
+
+                LocalInstallActivity context = LocalInstallActivity.this;
+
+                GCCCompiler compiler = new GCCCompiler(context, new CompileSetting(context));
+                GccCommandResult result = compiler.compile(new File[]{file});
+
+                return result != null && result.getResultCode() == 0;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return false;
         }
 
         @Override
@@ -250,7 +266,7 @@ public class LocalInstallActivity extends FullScreenActivity {
                 PackagesLists allPackages = new PackagesLists();
                 allPackages.setAvailablePackages(parser.parseRepoXml(content));
 
-                String compilerPackage = "build-essential-gcc";
+                String compilerPackage = "build-essential-gcc-compact";
                 InstallPackageInfo installPackageInfo = new InstallPackageInfo(allPackages, compilerPackage);
                 List<PackageInfo> compilerPackagesList = installPackageInfo.getPackagesList();
                 if (DLog.DEBUG) DLog.d(TAG, "compilerPackagesList = " + compilerPackagesList);
@@ -260,7 +276,7 @@ public class LocalInstallActivity extends FullScreenActivity {
                 for (PackageInfo packageInfo : compilerPackagesList) {
                     File zipFile = new File(Environment.getSdCardBackupDir(), packageInfo.getFileName());
                     if (!zipFile.exists()) {
-                        throw new FileNotFoundException("Package not exist on your device " + packageInfo);
+                        throw new FileNotFoundException("Can not find packages in assets data " + packageInfo);
                     }
                     publishProgress("Installing " + packageInfo.getName() + "\n");
                     packageInstaller.install(zipFile, packageInfo);
@@ -279,6 +295,7 @@ public class LocalInstallActivity extends FullScreenActivity {
         protected void onProgressUpdate(Object... values) {
             super.onProgressUpdate(values);
             mTxtMessage.append(String.valueOf(values[0]));
+            mScrollView.fullScroll(View.FOCUS_DOWN);
         }
 
         @Override
