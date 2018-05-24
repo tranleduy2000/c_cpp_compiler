@@ -17,9 +17,6 @@ android {
         versionName "1.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        /*ndk {
-            abiFilters 'armeabi-v7a', 'x86'
-        }*/
     }
 
     flavorDimensions "abi"
