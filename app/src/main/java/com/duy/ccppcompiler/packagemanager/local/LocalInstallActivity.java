@@ -106,11 +106,11 @@ public class LocalInstallActivity extends FullScreenActivity {
     @MainThread
     private void openEditor() {
         if (DLog.DEBUG) DLog.d(TAG, "openEditor() called");
-//        if (permissionGranted()) {
-//            closeAndStartMainActivity();
-//        } else {
-//            requestPermission();
-//        }
+        if (permissionGranted()) {
+            closeAndStartMainActivity();
+        } else {
+            requestPermission();
+        }
     }
 
     private void closeAndStartMainActivity() {
@@ -217,11 +217,11 @@ public class LocalInstallActivity extends FullScreenActivity {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-//            if (aBoolean) {
-//                openEditor();
-//            } else {
-            installCompiler();
-//            }
+            if (aBoolean) {
+                openEditor();
+            } else {
+                installCompiler();
+            }
         }
     }
 
@@ -303,6 +303,9 @@ public class LocalInstallActivity extends FullScreenActivity {
             super.onPostExecute(result);
             if (result) {
                 mTxtMessage.append("Install complete\n");
+                openEditor();
+            } else {
+                installCompiler();
             }
 
 //            Intent intent = new Intent(InstallActivity.this, PackageManagerActivity.class);
