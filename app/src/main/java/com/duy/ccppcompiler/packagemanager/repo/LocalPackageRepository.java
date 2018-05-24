@@ -16,21 +16,25 @@
 
 package com.duy.ccppcompiler.packagemanager.repo;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
 
-import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.IPackageLoadListener;
+import com.duy.ccppcompiler.packagemanager.PackageDownloadListener;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.List;
 
 import static com.duy.ccppcompiler.packagemanager.RepoUtils.replaceMacro;
@@ -40,13 +44,14 @@ import static com.duy.ccppcompiler.packagemanager.RepoUtils.replaceMacro;
  */
 public class LocalPackageRepository extends PackageRepositoryImpl {
     private static final String TAG = "LocalPackageRepository";
+    private Context mContext;
     private File mInstalledDir;
 
-    public LocalPackageRepository(File installDir) {
+    public LocalPackageRepository(Context context, File installDir) {
+        mContext = context;
         mInstalledDir = installDir;
     }
 
-    @NonNull
     @Override
     public void getPackagesInBackground(IPackageLoadListener listener) {
         RepoParser parser = new RepoParser();
@@ -65,7 +70,18 @@ public class LocalPackageRepository extends PackageRepositoryImpl {
         if (file.exists()) {
             listener.onDownloadComplete(packageInfo, file);
         } else {
-            listener.onFailure(new FileNotFoundException(file + " not found"));
+            try {
+                InputStream inputStream = mContext.getAssets().open("repo/" + packageInfo.getFileName());
+                OutputStream outputStream = new FileOutputStream(file);
+                IOUtils.copy(inputStream, outputStream);
+                inputStream.close();
+                outputStream.close();
+
+                listener.onDownloadComplete(packageInfo, file);
+            } catch (IOException e) {
+                listener.onFailure(e);
+                e.printStackTrace();
+            }
         }
     }
 

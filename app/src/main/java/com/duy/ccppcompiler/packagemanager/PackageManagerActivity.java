@@ -56,11 +56,15 @@ import com.jecelyin.editor.v2.FullScreenActivity;
 import com.pdaxrom.cctools.R;
 import com.pdaxrom.utils.Utils;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,7 +109,7 @@ public class PackageManagerActivity extends FullScreenActivity {
         RepoUtils.setVersion();
         getDataFromIntent();
 
-        mLocalPackageRepository = new LocalPackageRepository(new File(mInstalledDir));
+        mLocalPackageRepository = new LocalPackageRepository(this, new File(mInstalledDir));
         mUbuntuServerPackageRepository = new UbuntuServerPackageRepository(getRepoUrl());
         mFirebasePackageRepository = new FirebasePackageRepository();
 
@@ -219,30 +223,30 @@ public class PackageManagerActivity extends FullScreenActivity {
         final String[] hidePackages = new String[]{
                 "acer-a200-ics403-libc-fix",
                 "android-pre-233-libc-fix",
-             /*   "binutils-compact",
-                "build-essential-clang-compact",
-                "build-essential-clang-objc-compact",
-                "build-essential-fortran-compact",
-                "build-essential-gcc-compact",
-                "build-essential-gcc-objc-compact",
-                "build-essential-gcc-objc-fortran-compact",
-                "build-essential-mingw-w64",
-                "cctools-examples",
-                "cppcheck-module",
-                "gcc-mingw-w64-i686",
-                "gfortran-examples",
-                "binutils-mingw-w64-i686",
-                "mingw-w64-i686-dev",
-                "mingw-w64-examples",*/
+                /*   "binutils-compact",
+                   "build-essential-clang-compact",
+                   "build-essential-clang-objc-compact",
+                   "build-essential-fortran-compact",
+                   "build-essential-gcc-compact",
+                   "build-essential-gcc-objc-compact",
+                   "build-essential-gcc-objc-fortran-compact",
+                   "build-essential-mingw-w64",
+                   "cctools-examples",
+                   "cppcheck-module",
+                   "gcc-mingw-w64-i686",
+                   "gfortran-examples",
+                   "binutils-mingw-w64-i686",
+                   "mingw-w64-i686-dev",
+                   "mingw-w64-examples",*/
         };
         for (PackageInfo info : repo) {
             boolean shouldShow = true;
             for (String hidePackage : hidePackages) {
-                if (info.getName().contentEquals(hidePackage)){
+                if (info.getName().contentEquals(hidePackage)) {
                     shouldShow = false;
                 }
             }
-            if (!shouldShow){
+            if (!shouldShow) {
                 continue;
             }
 
@@ -448,6 +452,19 @@ public class PackageManagerActivity extends FullScreenActivity {
     private void downloadListPackages() {
         showProgress(R.string.title_repo_update, R.string.message_package_downloading, true);
         updateInstalledPackages();
+
+        //local data
+        try {
+            InputStream packagesFile = getAssets().open("compiler/Packages");
+            String content = IOUtils.toString(packagesFile);
+            RepoParser parser = new RepoParser();
+            List<PackageInfo> packageInfos = parser.parseRepoXml(content);
+            downloadPackagesComplete(packageInfos);
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //using firebase server
         mFirebasePackageRepository.getPackagesInBackground(new IPackageLoadListener() {
             @Override

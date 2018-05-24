@@ -242,8 +242,8 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         Log.i(TAG, "Install " + packageInfo.getName() + " -> " + packageInfo.getFileName());
         publishProgress(UPDATE_TITLE, mActivity.getString(R.string.pkg_installpackagetask) + " " + packageInfo.getName());
 
-        if (DLog.DEBUG) DLog.d(TAG, "download: use firebsae");
-        mActivity.mFirebasePackageRepository.download(new File(mBackupDir), packageInfo, new PackageDownloadListener() {
+        final File saveToDir = new File(mBackupDir);
+        mActivity.mLocalPackageRepository.download(saveToDir, packageInfo, new PackageDownloadListener() {
             @Override
             public void onDownloadComplete(PackageInfo packageInfo, File downloadedFile) {
                 listener.onDownloadComplete(packageInfo, downloadedFile);
@@ -251,9 +251,26 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
 
             @Override
             public void onFailure(@NonNull Exception e) {
-                e.printStackTrace();
-                //failed, use ubuntu server
-                mActivity.mUbuntuServerPackageRepository.download(new File(mBackupDir), packageInfo, listener);
+
+                if (DLog.DEBUG) DLog.d(TAG, "download: use firebsae");
+                mActivity.mFirebasePackageRepository.download(saveToDir, packageInfo, new PackageDownloadListener() {
+                    @Override
+                    public void onDownloadComplete(PackageInfo packageInfo, File downloadedFile) {
+                        listener.onDownloadComplete(packageInfo, downloadedFile);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                        //failed, use ubuntu server
+                        mActivity.mUbuntuServerPackageRepository.download(saveToDir, packageInfo, listener);
+                    }
+
+                    @Override
+                    public void onDownloadProgress(String serverName, PackageInfo packageInfo, long totalRead, long fileSize) {
+                        listener.onDownloadProgress(serverName, packageInfo, totalRead, fileSize);
+                    }
+                });
             }
 
             @Override
@@ -261,6 +278,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                 listener.onDownloadProgress(serverName, packageInfo, totalRead, fileSize);
             }
         });
+
 
     }
 

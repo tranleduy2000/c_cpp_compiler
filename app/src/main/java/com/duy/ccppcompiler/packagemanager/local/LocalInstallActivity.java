@@ -41,6 +41,7 @@ import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageInstaller;
+import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.packagemanager.RepoParser;
 import com.duy.ccppcompiler.packagemanager.RepoUtils;
 import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
@@ -236,6 +237,9 @@ public class LocalInstallActivity extends FullScreenActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+            if (true) {
+                return false;
+            }
             RepoUtils.setVersion();
             AssetManager assets = getAssets();
             if (DLog.DEBUG) DLog.d(TAG, "doInBackground: copy data from assets");
@@ -305,13 +309,11 @@ public class LocalInstallActivity extends FullScreenActivity {
                 mTxtMessage.append("Install complete\n");
                 openEditor();
             } else {
-                installCompiler();
+                Intent intent = new Intent(LocalInstallActivity.this, PackageManagerActivity.class);
+                intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
+                intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc-compact");
+                startActivityForResult(intent, RC_INSTALL_COMPILER);
             }
-
-//            Intent intent = new Intent(InstallActivity.this, PackageManagerActivity.class);
-//            intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
-//            intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc");
-//            startActivityForResult(intent, RC_INSTALL_COMPILER);
         }
     }
 }
