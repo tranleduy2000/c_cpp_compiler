@@ -27,12 +27,12 @@ android {
                 abiFilters "x86"
             }
         }
-        arch_armeabi_v7a {
-            versionNameSuffix "-armeabi-v7a"
-            ndk {
-                abiFilters "armeabi-v7a"
-            }
-        }
+//        arch_armeabi_v7a {
+//            versionNameSuffix "-armeabi-v7a"
+//            ndk {
+//                abiFilters "armeabi-v7a"
+//            }
+//        }
     }
 
     sourceSets {

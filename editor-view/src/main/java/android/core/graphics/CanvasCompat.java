@@ -18,11 +18,14 @@
 
 package android.core.graphics;
 
-import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.NonNull;
+
+import com.jecelyin.common.utils.MethodReflection;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -31,20 +34,24 @@ public class CanvasCompat {
 
     public static void drawTextRun(Canvas c, @NonNull char[] text, int index, int count, int contextIndex,
                                    int contextCount, float x, float y, boolean isRtl, @NonNull Paint paint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl, paint);
         } else {
-            c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl, paint);
+            try {
+                //c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl ? 1 : 0, paint);
+                MethodReflection.callAny(c, "drawTextRun",
+                        new Class[]{char[].class, int.class, int.class, int.class, int.class, float.class, float.class, int.class, Paint.class},
+                        new Object[]{text, index, count, contextIndex, contextCount, x, y, isRtl ? 1 : 0, paint}
+                );
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
-    public static void drawTextRun(Canvas c, @NonNull CharSequence text, int start, int end, int contextStart,
-                                   int contextEnd, float x, float y, boolean isRtl, @NonNull Paint paint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0以上
-            c.drawTextRun(text, start, end, contextStart, contextEnd, x, y, isRtl, paint);
-        } else {
-            c.drawTextRun(text, start, end, contextStart, contextEnd, x, y, isRtl, paint);
-        }
-    }
 }
