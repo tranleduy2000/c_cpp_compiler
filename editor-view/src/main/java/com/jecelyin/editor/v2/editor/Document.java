@@ -334,7 +334,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
         DefaultTokenHandler tokenHandler;
 //        if (styles == null) {
-            styles = ColorSchemeLoader.loadStyles(mContext);
+        styles = ColorSchemeLoader.loadStyles(mContext);
 //        }
         ArrayList<HighlightInfo> mergerArray;
 

@@ -25,6 +25,11 @@ import com.duy.ide.editor.editor.R;
 
 import org.gjt.sp.jedit.syntax.SyntaxStyle;
 import org.gjt.sp.jedit.syntax.Token;
+import org.gjt.sp.jedit.util.SyntaxUtilities;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -77,5 +82,23 @@ public class ColorSchemeLoader {
         a.recycle();
 
         return styles;
+    }
+
+    public static SyntaxStyle[] loadStyles(Properties properties) {
+        return SyntaxUtilities.loadStyles(properties);
+    }
+
+    public static SyntaxStyle[] loadStyles(Context context, String assetsPath) {
+        try {
+            InputStream inout = context.getAssets().open(assetsPath);
+            Properties properties = new Properties();
+            properties.load(inout);
+            inout.close();
+
+            return SyntaxUtilities.loadStyles(properties);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -28,6 +28,9 @@
         <item name="menuIconNormalColor">#ffffff</item>
         <item name="editorTabBackground">@drawable/drawer_tab_item_background_dark</item>
 
+        <item name="findResultsPath">#0000ff</item>
+        <item name="findResultsKeyword">#C26509</item>
+
         <item name="textForeground">#A6B2C0</item>
         <item name="textBackground">#2b2b2b</item>
         <item name="caret">#528BFF</item>
@@ -36,8 +39,6 @@
         <item name="gutterForeground">#747369</item>
         <item name="gutterBackground">#393939</item>
         <item name="gutterDivider">#2b2b2b</item>
-        <item name="findResultsPath">#0000ff</item>
-        <item name="findResultsKeyword">#C26509</item>
 
         <item name="hlComment1">#BC9458</item>
         <item name="hlComment2">#808080</item>
