@@ -27,18 +27,20 @@ import com.jecelyin.editor.v2.Preferences;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class LayoutContext {
-    public int lineNumber = -1;
-    public Paint lineNumberPaint;
-    public Paint linePaint;
+    public Paint gutterForegroundPaint;
+    public Paint gutterDividerPaint;
     public Paint gutterBackgroundPaint;
     public int gutterWidth;
-    public int lineNumberX;
 
+
+    public Preferences preferences;
 
     public int cursorThickness;
-    public Preferences preferences;
     public boolean isShowWhiteSpace;
     public int whiteSpaceColor;
+
+    public int lineNumber = -1;
+    public int lineNumberX;
     public TextLineNumber textLineNumber = new TextLineNumber();
 
     public int getWhiteSpaceColor() {
@@ -73,20 +75,20 @@ public class LayoutContext {
         this.lineNumber = lineNumber;
     }
 
-    public Paint getLineNumberPaint() {
-        return lineNumberPaint;
+    public Paint getGutterForegroundPaint() {
+        return gutterForegroundPaint;
     }
 
-    public void setLineNumberPaint(Paint lineNumberPaint) {
-        this.lineNumberPaint = lineNumberPaint;
+    public void setGutterForegroundPaint(Paint gutterForegroundPaint) {
+        this.gutterForegroundPaint = gutterForegroundPaint;
     }
 
-    public Paint getLinePaint() {
-        return linePaint;
+    public Paint getGutterDividerPaint() {
+        return gutterDividerPaint;
     }
 
-    public void setLinePaint(Paint linePaint) {
-        this.linePaint = linePaint;
+    public void setGutterDividerPaint(Paint gutterDividerPaint) {
+        this.gutterDividerPaint = gutterDividerPaint;
     }
 
     public Paint getGutterBackgroundPaint() {

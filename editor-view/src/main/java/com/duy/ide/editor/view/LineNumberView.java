@@ -78,11 +78,11 @@ public class LineNumberView extends View implements TextWatcher {
         int width = getScrollX() + layoutContext.gutterWidth;
         int height = getScrollY() + getHeight();
         canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.gutterBackgroundPaint);
-        canvas.drawLine(width, getScrollY(), width, height, layoutContext.linePaint);
+        canvas.drawLine(width, getScrollY(), width, height, layoutContext.gutterDividerPaint);
 
         List<TextLineNumber.LineInfo> lines = layoutContext.textLineNumber.getLines();
         for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.lineNumberPaint);
+            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.gutterForegroundPaint);
         }
     }
 

@@ -56,4 +56,40 @@ public class SyntaxStyle {
     public Font getFont() {
         return font;
     }
+
+    public enum Attr {
+        view_style_comment1("view.style.comment1"),
+        view_style_comment2("view.style.comment2"),
+        view_style_comment3("view.style.comment3"),
+        view_style_comment4("view.style.comment4"),
+        view_style_digit("view.style.digit"),
+        view_style_foldLine_0("view.style.foldLine.0"),
+        view_style_foldLine_1("view.style.foldLine.1"),
+        view_style_foldLine_2("view.style.foldLine.2"),
+        view_style_foldLine_3("view.style.foldLine.3"),
+        view_style_function("view.style.function"),
+        view_style_invalid("view.style.invalid"),
+        view_style_keyword1("view.style.keyword1"),
+        view_style_keyword2("view.style.keyword2"),
+        view_style_keyword3("view.style.keyword3"),
+        view_style_keyword4("view.style.keyword4"),
+        view_style_label("view.style.label"),
+        view_style_literal1("view.style.literal1"),
+        view_style_literal2("view.style.literal2"),
+        view_style_literal3("view.style.literal3"),
+        view_style_literal4("view.style.literal4"),
+        view_style_markup("view.style.markup"),
+        view_style_operator("view.style.operator");
+
+        private String key;
+
+        Attr(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+    }
 }

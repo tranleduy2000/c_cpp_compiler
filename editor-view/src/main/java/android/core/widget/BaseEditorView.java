@@ -63,6 +63,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -120,6 +121,8 @@ import android.widget.RemoteViews.RemoteView;
 import android.widget.Scroller;
 
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.theme.model.EditorTheme;
+import com.duy.ide.editor.theme.ThemeLoader;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Preferences;
@@ -779,10 +782,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
-    }
-
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -796,6 +795,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
+    }
+
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -6771,20 +6774,20 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         lineNumberPaint.setTextSize(getPaint().getTextSize() * 0.5f);
         lineNumberPaint.setTextAlign(Paint.Align.LEFT);
         lineNumberPaint.setAntiAlias(true);
-        layoutContext.lineNumberPaint = lineNumberPaint;
+        layoutContext.gutterForegroundPaint = lineNumberPaint;
 
         Paint linePaint = new Paint();
-        linePaint.setColor(layoutContext.lineNumberPaint.getColor());
+        linePaint.setColor(layoutContext.gutterForegroundPaint.getColor());
         linePaint.setAntiAlias(false);
         linePaint.setStyle(Paint.Style.STROKE);
-        layoutContext.linePaint = linePaint;
+        layoutContext.gutterDividerPaint = linePaint;
 
         Paint gutterBackgroundPaint = new Paint();
         gutterBackgroundPaint.setColor(Color.LTGRAY);
         layoutContext.gutterBackgroundPaint = gutterBackgroundPaint;
         setLineNumber(1);
         onTextSizeChanged();
-        initTheme();
+        setTheme(ThemeLoader.loadDefault(getContext()));
 
         onSharedPreferenceChanged(null, Preferences.KEY_FONT_SIZE);
         onSharedPreferenceChanged(null, Preferences.KEY_CURSOR_WIDTH);
@@ -6858,14 +6861,14 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         if (!layoutContext.preferences.isShowLineNumber()) {
             //invalidate
-            setPaddingRelative(getPaddingEnd(), getPaddingTop(), getPaddingEnd(), getPaddingBottom());
+            setPaddingRelative(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
             return;
         }
 
         int numberPadding = SysUtils.dpAsPixels(getContext(), 2);
         int gutterPaddingRight = SysUtils.dpAsPixels(getContext(), 2);
 
-        float textWidth = layoutContext.lineNumberPaint.measureText(" ");
+        float textWidth = layoutContext.gutterForegroundPaint.measureText(" ");
         double columnCount = Math.ceil(Math.log10(lineNumber)) + 2;
         columnCount = Math.max(1, columnCount);
 
@@ -6887,11 +6890,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         int width = getScrollX() + layoutContext.gutterWidth;
         int height = getScrollY() + getHeight();
         canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.gutterBackgroundPaint);
-        canvas.drawLine(width, getScrollY(), width, height, layoutContext.linePaint);
+        canvas.drawLine(width, getScrollY(), width, height, layoutContext.gutterDividerPaint);
 
         List<TextLineNumber.LineInfo> lines = layoutContext.textLineNumber.getLines();
         for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.lineNumberPaint);
+            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.gutterForegroundPaint);
         }
     }
 
@@ -6906,34 +6909,16 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return getLayout().getHeight() - vspace;
     }
 
-    @SuppressWarnings("ResourceType")
-    public void initTheme() {
-        TypedArray a = getContext().obtainStyledAttributes(new int[]{
-                R.attr.textForeground,
-                R.attr.textBackground,
-                R.attr.gutterForeground,
-                R.attr.gutterBackground,
-                R.attr.gutterDivider,
-                R.attr.invisibles,
-                R.attr.selectionColor,
-        });
-        int textForeground = a.getColor(0, Color.BLACK);
-        int textBackground = a.getColor(1, Color.BLACK);
-        int gutterForeground = a.getColor(2, Color.BLACK);
-        int gutterBackground = a.getColor(3, Color.BLACK);
-        int gutterDivider = a.getColor(4, Color.BLACK);
-        int invisibles = a.getColor(5, Color.BLACK);
-        int selection = a.getColor(6, Color.BLACK);
-        a.recycle();
+    public void setTheme(@NonNull EditorTheme editorTheme) {
+        setBackgroundColor(editorTheme.getBgColor());
+        setTextColor(editorTheme.getFgColor());
+        setHighlightColor(editorTheme.getSelectionColor());
 
-        setBackgroundColor(textBackground);
-        setTextColor(textForeground);
-        setHighlightColor(selection);
-
-        layoutContext.lineNumberPaint.setColor(gutterForeground);
-        layoutContext.linePaint.setColor(gutterDivider);
-        layoutContext.gutterBackgroundPaint.setColor(gutterBackground);
-        layoutContext.whiteSpaceColor = invisibles;
+        layoutContext.gutterForegroundPaint.setColor(editorTheme.getGutterStyle().getFgColor());
+        layoutContext.gutterBackgroundPaint.setColor(editorTheme.getGutterStyle().getBgColor());
+        layoutContext.gutterDividerPaint.setColor(editorTheme.getGutterStyle().getFoldColor());
+        layoutContext.whiteSpaceColor = editorTheme.getWhiteSpaceStyle().getWhitespace();
+        postInvalidate();
     }
 
 
