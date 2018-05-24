@@ -1,18 +1,23 @@
 package com.duy.ide.editor.theme;
 
 import android.content.Context;
-import android.core.text.SpannableStringBuilder;
 import android.core.widget.EditAreaView;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.EditorTheme;
+import com.jecelyin.editor.v2.editor.Highlighter;
+import com.jecelyin.editor.v2.highlight.Buffer;
+
+import org.gjt.sp.jedit.Catalog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> {
     private final ArrayList<EditorTheme> mEditorThemes;
@@ -24,8 +29,6 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         mEditorThemes = ThemeLoader.getAll();
     }
 
-    private void initData() {
-    }
 
     @NonNull
     @Override
@@ -35,27 +38,31 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.mEditorView.setTheme(mEditorThemes.get(position));
-        holder.mEditorView.setText(new SpannableStringBuilder(getSampleData()));
-    }
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        Buffer buffer = new Buffer();
+        Highlighter highlighter = new Highlighter();
+        EditorTheme editorTheme = mEditorThemes.get(position);
+        EditAreaView editorView = holder.mEditorView;
+        editorView.setTheme(editorTheme);
+        editorView.setEnabled(false);
+        editorView.setFocusable(false);
+        editorView.setFocusableInTouchMode(false);
 
+        buffer.setMode(Catalog.getModeByName("C"), mContext);
+        editorView.getText().insert(0, getSampleData());
+        buffer.setEditable(editorView.getText());
+        buffer.insert(0, getSampleData());
+
+        HashMap<Integer, ArrayList<ForegroundColorSpan>> colorsMap = new HashMap<>();
+        int lineCount = buffer.getLineManager().getLineCount();
+        highlighter.highlight(buffer, editorTheme, colorsMap, editorView.getText(), 0, lineCount - 1);
+    }
 
 
     @Override
     public int getItemCount() {
         return mEditorThemes.size();
     }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        EditAreaView mEditorView;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            mEditorView = itemView.findViewById(R.id.editor_view);
-        }
-    }
-
 
     private CharSequence getSampleData() {
         return "// C Program to Access Elements of an Array Using Pointer\n" +
@@ -77,5 +84,15 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
                 "\n" +
                 "    return 0;\n" +
                 "}";
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        EditAreaView mEditorView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            setIsRecyclable(false);
+            mEditorView = itemView.findViewById(R.id.editor_view);
+        }
     }
 }

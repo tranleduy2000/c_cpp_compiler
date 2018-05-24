@@ -23,12 +23,10 @@
 package com.duy.ide.editor.theme;
 
 
-//{{{ Imports
-
 import android.graphics.Color;
 
+import com.duy.common.DLog;
 import com.duy.ide.editor.theme.model.SyntaxStyle;
-import com.jecelyin.common.utils.DLog;
 
 import org.gjt.sp.jedit.awt.Font;
 import org.gjt.sp.jedit.syntax.Token;
@@ -36,7 +34,6 @@ import org.gjt.sp.jedit.syntax.Token;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.StringTokenizer;
-//}}}
 
 /**
  * Syntax utilities that depends on JDK only and syntax package.
@@ -69,12 +66,11 @@ public class SyntaxUtilities {
      * Converts a style string to a style object.
      *
      * @param str            The style string
-     * @param color          If false, the styles will be monochrome
      * @param defaultFgColor Default foreground color (if not specified in style string)
      * @throws IllegalArgumentException if the style is invalid
      * @since jEdit 4.3pre17
      */
-    public static SyntaxStyle parseStyle(String str, boolean color, int defaultFgColor)
+    public static SyntaxStyle parseStyle(String str, int defaultFgColor)
             throws IllegalArgumentException {
         int fgColor = defaultFgColor;
         Integer bgColor = null;
@@ -84,14 +80,10 @@ public class SyntaxUtilities {
         while (st.hasMoreTokens()) {
             String s = st.nextToken();
             if (s.startsWith("color:")) {
-                if (color) {
-                    String substring = s.substring(6);
-                    fgColor = parseColor(substring, Color.BLACK);
-                }
+                String substring = s.substring(6);
+                fgColor = parseColor(substring, Color.BLACK);
             } else if (s.startsWith("bgColor:")) {
-                if (color) {
-                    bgColor = parseColor(s.substring(8), null);
-                }
+                bgColor = parseColor(s.substring(8), null);
             } else if (s.startsWith("style:")) {
                 for (int i = 6; i < s.length(); i++) {
                     if (s.charAt(i) == 'i')
@@ -106,22 +98,21 @@ public class SyntaxUtilities {
                 throw new IllegalArgumentException(
                         "Invalid directive: " + s);
         }
-        return new SyntaxStyle(fgColor, bgColor,
-                new Font((italic ? Font.ITALIC : 0) | (bold ? Font.BOLD : 0)));
+        return new SyntaxStyle(fgColor, bgColor, new Font((italic ? Font.ITALIC : 0) | (bold ? Font.BOLD : 0)));
     }
 
     /**
      * Converts a style string to a style object.
      *
-     * @param str   The style string
-     * @param color If false, the styles will be monochrome
+     * @param str The style string
      * @throws IllegalArgumentException if the style is invalid
      * @since jEdit 4.3pre13
      */
-    public static SyntaxStyle parseStyle(String str, boolean color)
+    public static SyntaxStyle parseStyle(String str)
             throws IllegalArgumentException {
-        return parseStyle(str, color, Color.BLACK);
+        return parseStyle(str, Color.BLACK);
     }
+
 
     /**
      * Loads the syntax styles from the properties, giving them the specified
@@ -130,26 +121,18 @@ public class SyntaxUtilities {
      * @since jEdit 4.3pre13
      */
     public static SyntaxStyle[] loadStyles(Properties properties) {
-        return loadStyles(properties, true);
-    }
-
-    /**
-     * Loads the syntax styles from the properties, giving them the specified
-     * base font family and size.
-     *
-     * @param color If false, the styles will be monochrome
-     * @since jEdit 4.3pre13
-     */
-    public static SyntaxStyle[] loadStyles(Properties properties, boolean color) {
         SyntaxStyle[] styles = new SyntaxStyle[Token.ID_COUNT];
 
         // start at 1 not 0 to skip Token.NULL
         for (int i = 1; i < styles.length; i++) {
+            String styleName = "view.style." + Token.tokenToString((byte) i).toLowerCase(Locale.ENGLISH);
             try {
-                String styleName = "view.style." + Token.tokenToString((byte) i).toLowerCase(Locale.ENGLISH);
-                styles[i] = parseStyle(properties.getProperty(styleName), color);
+                String property = properties.getProperty(styleName);
+                if (DLog.DEBUG) DLog.d(TAG, "styleName = " + styleName);
+                if (DLog.DEBUG) DLog.d(TAG, "property = " + property);
+                styles[i] = parseStyle(property);
             } catch (Exception e) {
-                if (DLog.DEBUG) DLog.e(TAG, "loadStyles: ", e);
+                if (DLog.DEBUG) DLog.e(TAG, "loadStyles: failed " + styleName);
             }
         }
 

@@ -19,7 +19,7 @@ package com.duy.common;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.duy.ccppcompiler.BuildConfig;
+import com.duy.ide.editor.editor.BuildConfig;
 
 
 /**

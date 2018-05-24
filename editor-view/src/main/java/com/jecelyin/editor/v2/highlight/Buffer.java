@@ -19,7 +19,7 @@ package com.jecelyin.editor.v2.highlight;
 
 import android.content.Context;
 import android.core.text.SpannableStringBuilder;
-import android.text.Editable;
+import android.text.GetChars;
 
 import com.jecelyin.common.utils.DLog;
 
@@ -39,15 +39,13 @@ import org.gjt.sp.jedit.util.IntegerArray;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class Buffer {
-    private final Context context;
     private final IntegerArray integerArray;
     private TokenMarker tokenMarker;
     private LineManager lineMgr;
-    private Editable editable;
+    private GetChars editable;
     private Mode mode;
 
-    public Buffer(Context context) {
-        this.context = context;
+    public Buffer() {
         editable = new SpannableStringBuilder();
         lineMgr = new LineManager();
         integerArray = new IntegerArray();
@@ -81,10 +79,6 @@ public class Buffer {
 
     public void setLineManager(LineManager lineManager) {
         this.lineMgr = lineManager;
-    }
-
-    public Context getContext() {
-        return context;
     }
 
     public Mode getMode() {
@@ -317,12 +311,12 @@ public class Buffer {
         return editable.toString();
     }
 
-    public void setEditable(Editable editable) {
-        if (this.editable == editable)
-            return;
-
-        if (!(editable instanceof SpannableStringBuilder))
-            throw new RuntimeException("Can't set a " + editable.getClass().getName() + " to Buffer");
+    public void setEditable(GetChars editable) {
+//        if (this.editable == editable)
+//            return;
+//
+//        if (!(editable instanceof SpannableStringBuilder))
+//            throw new RuntimeException("Can't set a " + editable.getClass().getName() + " to Buffer");
 
         this.editable = editable;
     }

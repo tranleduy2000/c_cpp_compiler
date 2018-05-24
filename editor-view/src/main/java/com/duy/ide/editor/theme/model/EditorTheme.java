@@ -4,11 +4,13 @@ import android.graphics.Color;
 
 import com.duy.ide.editor.theme.SyntaxUtilities;
 import com.duy.ide.editor.theme.ThemeAttr;
+import com.jecelyin.common.utils.DLog;
 
 import java.util.Properties;
 
 
 public class EditorTheme extends ColorScheme {
+    private static final String TAG = "EditorTheme";
     private GutterStyle gutterStyle = new GutterStyle();
     private WhiteSpaceStyle whiteSpaceStyle = new WhiteSpaceStyle();
     private SyntaxStyle[] syntaxStyles;
@@ -22,17 +24,14 @@ public class EditorTheme extends ColorScheme {
         return getColor(Attr.VIEW_LINE_HIGHLIGHT_COLOR);
     }
 
-
     public int getSelectionColor() {
         return getColor(Attr.VIEW_SELECTION_COLOR);
     }
-
 
     public int getBgColor() {
         return getColor(Attr.VIEW_BG_COLOR);
 
     }
-
 
     public int getCaretColor() {
         return getColor(Attr.VIEW_CARET_COLOR);
@@ -58,11 +57,9 @@ public class EditorTheme extends ColorScheme {
         return super.getColor(attr.getKey());
     }
 
-
     public GutterStyle getGutterStyle() {
         return gutterStyle;
     }
-
 
     public WhiteSpaceStyle getWhiteSpaceStyle() {
         return whiteSpaceStyle;
@@ -75,7 +72,7 @@ public class EditorTheme extends ColorScheme {
                 String color = properties.getProperty(attr.getKey());
                 put(attr.getKey(), Color.parseColor(color));
             } catch (Exception ignored) {
-                ignored.printStackTrace();
+                if (DLog.DEBUG) DLog.w(TAG, "load: missing attr " + attr.key);
             }
         }
         name = properties.getProperty(ThemeAttr.scheme_name.getKey());
