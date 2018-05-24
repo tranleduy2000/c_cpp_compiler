@@ -16,7 +16,6 @@
 
 package com.duy.editor;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.core.widget.EditAreaView;
 import android.os.Bundle;
@@ -40,6 +39,7 @@ import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.common.DLog;
+import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.filemanager.SaveListener;
@@ -64,11 +64,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
 
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
     private DiagnosticPresenter mDiagnosticPresenter;
+    private InAppPurchaseHelper mPremiumHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mPremiumHelper = new InAppPurchaseHelper(this);
 
         final View toggleView = findViewById(R.id.btn_toggle_panel);
         mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);
@@ -170,14 +171,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     }
 
     private void clickUpgrade() {
-        PremiumDialog dialog = new PremiumDialog(this, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                if (which == DialogInterface.BUTTON_POSITIVE) {
-                }
-            }
-        });
+        PremiumDialog dialog = new PremiumDialog(this, mPremiumHelper);
         dialog.show();
     }
 
@@ -279,5 +273,11 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         }
         super.onBackPressed();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPremiumHelper.destroy();
+        super.onDestroy();
     }
 }

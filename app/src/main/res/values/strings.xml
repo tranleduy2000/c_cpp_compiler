@@ -30,6 +30,7 @@
         To support developer, you can buy premium version with 1$. With premium version, you can access some locked features: \n
         1. Dark theme\n
         2. Editor color schemes\n
-        3. More editor fonts
+        3. Change editor fonts
     </string>
+    <string name="button_purchase_restore">Restore</string>
 </resources>
