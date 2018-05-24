@@ -13,12 +13,7 @@ This project is developed to help the community to learn C or C++ on the go.
 
 You can use this app to code and compile C/C++ project without Internet.
 
-## Android install
-- For arm devices: download ``app-arch_armeabi_v7a-release.apk`` in release
-- For x86 devices: download ``app-arch_x86-release.apk`` in release
-
 ## Features
-
 - C compiler
 - C++ compiler
 - Terminal emulator
@@ -43,6 +38,10 @@ You can use this app to code and compile C/C++ project without Internet.
 - Automatic indentation
 - Keep the screen awaken
 - Dark/Light Themes
+
+## Android install
+- For arm devices: download ``app-arch_armeabi_v7a-release.apk`` in release
+- For x86 devices: download ``app-arch_x86-release.apk`` in release
 
 ## TODO
 - Code completion

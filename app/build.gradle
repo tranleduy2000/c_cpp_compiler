@@ -1,8 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
-import com.android.build.OutputFile;
-
 android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -24,17 +22,14 @@ android {
         arch_x86 {
             dimension 'cpuArch'
             versionNameSuffix "-x86"
-            versionCode
-            ndk {
-                abiFilter "x86"
-            }
+            versionCode 1
+            ndk.abiFilter "x86"
         }
         arch_arm7 {
             dimension 'cpuArch'
             versionNameSuffix "-armeabi-v7a"
-            ndk {
-                abiFilter "armeabi-v7a"
-            }
+            versionCode 2
+            ndk.abiFilter "armeabi-v7a"
         }
     }
     sourceSets {
@@ -46,23 +41,23 @@ android {
 
     signingConfigs {
         release {
-            Properties props = new Properties()
             def propFile = new File("signing.properties")
-            props.load(new FileInputStream(propFile))
-            storeFile new File(props["RELEASE_STORE_FILE"])
-            storePassword props["RELEASE_STORE_PASSWORD"]
-            keyAlias props["RELEASE_KEY_ALIAS"]
-            keyPassword props["RELEASE_KEY_PASSWORD"]
+            if (propFile.exists()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(propFile))
+                storeFile new File(props["RELEASE_STORE_FILE"])
+                storePassword props["RELEASE_STORE_PASSWORD"]
+                keyAlias props["RELEASE_KEY_ALIAS"]
+                keyPassword props["RELEASE_KEY_PASSWORD"]
+            }
         }
     }
 
     // Map for the version code that gives each ABI a value.
-    project.ext.abiCodes = ['armeabi-v7a': 1, x86: 2]
     applicationVariants.all { variant ->
-
         Properties props = new Properties()
         def propFile = new File("app/signing.properties")
-        if (propFile.exists()){
+        if (propFile.exists()) {
             props.load(new FileInputStream(propFile))
             buildConfigField "String", "BASE64_KEY", "\"" + props['BASE64_KEY'] + "\""
             buildConfigField "String", "SKU_PREMIUM", "\"" + props['SKU_PREMIUM'] + "\""
@@ -71,27 +66,12 @@ android {
             buildConfigField "String", "SKU_PREMIUM", "\"\""
         }
 
-        // Assigns a different version code for each output APK
-        // other than the universal APK.
+
         variant.outputs.each { output ->
-
-            // Stores the value of ext.abiCodes that is associated with the ABI for this variant.
-            def baseAbiVersionCode =
-                    // Determines the ABI for this variant and returns the mapped value.
-                    project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
-
-            // Because abiCodes.get() returns null for ABIs that are not mapped by ext.abiCodes,
-            // the following code does not override the version code for universal APKs.
-            // However, because we want universal APKs to have the lowest version code,
-            // this outcome is desirable.
-            if (baseAbiVersionCode != null) {
-
-                // Assigns the new version code to versionCodeOverride, which changes the version code
-                // for only the output APK, not for the variant itself. Skipping this step simply
-                // causes Gradle to use the value of variant.versionCode for the APK.
-                output.versionCodeOverride =
-                        baseAbiVersionCode * 1000 + variant.versionCode
-            }
+            // get the version code of each flavor
+            def abiVersion = variant.versionCode
+            output.versionCodeOverride = abiVersion * 100000 + defaultConfig.versionCode
+            println " output.versionCodeOverride " + output.versionCodeOverride
         }
     }
 
