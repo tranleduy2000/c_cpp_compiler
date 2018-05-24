@@ -32,7 +32,6 @@ public class RepoUtils {
 
     /**
      * armeabi-v7a/
-     * armeabi/
      * mips/
      * x86/
      */

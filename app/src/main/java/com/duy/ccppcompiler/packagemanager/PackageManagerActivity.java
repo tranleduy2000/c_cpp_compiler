@@ -131,7 +131,7 @@ public class PackageManagerActivity extends FullScreenActivity {
                             .create()
                             .show();
                 } else {
-                    prepareForInstallPackage(name);
+                    prepareForInstallPackage(name, true);
                 }
             }
         });
@@ -216,12 +216,38 @@ public class PackageManagerActivity extends FullScreenActivity {
     @UiThread
     protected void showPackages(List<PackageInfo> repo) {
         ArrayList<HashMap<String, String>> menuItems = new ArrayList<>();
-
+        final String[] hidePackages = new String[]{
+                "acer-a200-ics403-libc-fix",
+                "android-pre-233-libc-fix",
+             /*   "binutils-compact",
+                "build-essential-clang-compact",
+                "build-essential-clang-objc-compact",
+                "build-essential-fortran-compact",
+                "build-essential-gcc-compact",
+                "build-essential-gcc-objc-compact",
+                "build-essential-gcc-objc-fortran-compact",
+                "build-essential-mingw-w64",
+                "cctools-examples",
+                "cppcheck-module",
+                "gcc-mingw-w64-i686",
+                "gfortran-examples",
+                "binutils-mingw-w64-i686",
+                "mingw-w64-i686-dev",
+                "mingw-w64-examples",*/
+        };
         for (PackageInfo info : repo) {
-            // creating new HashMap
+            boolean shouldShow = true;
+            for (String hidePackage : hidePackages) {
+                if (info.getName().contentEquals(hidePackage)){
+                    shouldShow = false;
+                }
+            }
+            if (!shouldShow){
+                continue;
+            }
+
             HashMap<String, String> map = new HashMap<>();
 
-            // adding each child node to HashMap key => value
             map.put(RepoParser.KEY_PACKAGE_NAME, info.getName());
             map.put(RepoParser.KEY_VERSION, info.getVersion());
             map.put(RepoParser.KEY_DESC, info.getDescription());
@@ -471,7 +497,7 @@ public class PackageManagerActivity extends FullScreenActivity {
 
         if (ACTION_INSTALL.equals(mAction)) {
             if (!mPackagesLists.getAvailablePackages().isEmpty()) {
-                prepareForInstallPackage(mIntentData);
+                prepareForInstallPackage(mIntentData, false);
             } else {
                 showError(getString(R.string.message_package_repo_unavailable) + "\n" +
                         getString(R.string.message_package_for_install) +
@@ -525,33 +551,37 @@ public class PackageManagerActivity extends FullScreenActivity {
         }
     }
 
-    private void prepareForInstallPackage(String name) {
+    private void prepareForInstallPackage(String name, boolean confirmBeforeInstall) {
         final InstallPackageInfo info = new InstallPackageInfo(mPackagesLists, name);
-        Builder dialog = new AlertDialog.Builder(context)
-                .setTitle(getString(R.string.pkg_selected) + info.getName())
-                .setMessage(getString(R.string.pkg_selected1) + info.getPackagesStrings()
-                        + "\n\n"
-                        + getString(R.string.pkg_selected2)
-                        + Utils.humanReadableByteCount(info.getDownloadSize(), false)
-                        + "\u0020"
-                        + getString(R.string.pkg_selected3)
-                        + Utils.humanReadableByteCount(info.getInstallSize(), false))
-                .setCancelable(false)
-                .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mAction != null) {
-                            setResult(RESULT_CANCELED);
-                            finish();
+        if (confirmBeforeInstall) {
+            Builder dialog = new AlertDialog.Builder(context)
+                    .setTitle(getString(R.string.pkg_selected) + info.getName())
+                    .setMessage(getString(R.string.pkg_selected1) + info.getPackagesStrings()
+                            + "\n\n"
+                            + getString(R.string.pkg_selected2)
+                            + Utils.humanReadableByteCount(info.getDownloadSize(), false)
+                            + "\u0020"
+                            + getString(R.string.pkg_selected3)
+                            + Utils.humanReadableByteCount(info.getInstallSize(), false))
+                    .setCancelable(false)
+                    .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (mAction != null) {
+                                setResult(RESULT_CANCELED);
+                                finish();
+                            }
                         }
-                    }
-                })
-                .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.i(TAG, "Get install packages = " + info.getPackagesStrings());
-                        new InstallPackagesTask(PackageManagerActivity.this).execute(info);
-                    }
-                });
-        dialog.show();
+                    })
+                    .setPositiveButton(getString(R.string.pkg_install), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.i(TAG, "Get install packages = " + info.getPackagesStrings());
+                            new InstallPackagesTask(PackageManagerActivity.this).execute(info);
+                        }
+                    });
+            dialog.show();
+        } else {
+            new InstallPackagesTask(PackageManagerActivity.this).execute(info);
+        }
     }
 
 

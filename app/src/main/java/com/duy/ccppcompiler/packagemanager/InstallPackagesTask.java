@@ -2,14 +2,14 @@ package com.duy.ccppcompiler.packagemanager;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
-import android.os.StatFs;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.shell.ShellUtils;
+import com.duy.ccppcompiler.packagemanager.exceptions.BadArchiveException;
+import com.duy.ccppcompiler.packagemanager.exceptions.NotEnoughCacheException;
 import com.duy.ccppcompiler.packagemanager.exceptions.NotEnoughStorageException;
 import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -18,7 +18,6 @@ import com.duy.common.DLog;
 import com.pdaxrom.utils.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -120,72 +119,25 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
         final PackageDownloadListener downloadListener = new PackageDownloadListener() {
 
             @Override
-            public void onDownloadComplete(PackageInfo packageInfo, @NonNull File downloadedFile) {
+            public void onDownloadComplete(PackageInfo packageInfo, @NonNull File zipFile) {
                 if (DLog.DEBUG) DLog.d(TAG, "onComplete() called with:");
                 if (DLog.DEBUG) DLog.d(TAG, "packageInfo = " + packageInfo);
-                if (DLog.DEBUG) DLog.d(TAG, "downloadedFile = " + downloadedFile);
+                if (DLog.DEBUG) DLog.d(TAG, "downloadedFile = " + zipFile);
 
-                //unpack file
-                final String tempPath = downloadedFile.getAbsolutePath();
-                final String toPath = mToolchainDir;
+                publishProgress(UPDATE_MESSAGE, mActivity.getString(R.string.pkg_install) + " " + zipFile.getName() + "...");
 
-                publishProgress(UPDATE_MESSAGE, mActivity.getString(R.string.unpacking_file) + " " + downloadedFile.getName() + "...");
-                Log.d(TAG, "Unpack file " + tempPath + " to " + toPath);
                 try {
-                    int needMem = Utils.unzippedSize(tempPath);
-                    if (needMem < 0) {
-                        throw new RuntimeException("bad archive");
-                    }
-                    StatFs stat = new StatFs(toPath);
-                    double cacheAvailSize = stat.getAvailableBlocks();
-                    Log.d(TAG, "Unzipped size " + needMem);
-                    Log.d(TAG, "Available (blocks) " + cacheAvailSize + "(" + stat.getBlockSize() + ")");
-                    cacheAvailSize *= stat.getBlockSize();
-                    if (cacheAvailSize < needMem) {
-                        String message = mActivity.getString(R.string.cache_no_memory) +
-                                Utils.humanReadableByteCount(needMem, false) +
-                                mActivity.getString(R.string.cache_no_memory1) +
-                                Utils.humanReadableByteCount((int) cacheAvailSize, false) +
-                                mActivity.getString(R.string.cache_no_memory2);
-                        onFailure(new IOException(message));
-                        return;
-                    }
-
-                    File logFile = new File(mInstalledDir, packageInfo.getName() + ".list");
-                    if (Utils.unzip(tempPath, toPath, logFile.getAbsolutePath()) != 0) {
-                        if (logFile.exists()) {
-                            logFile.delete();
-                        }
-                        throw new RuntimeException("bad archive");
-                    }
-                } catch (Exception e) {
+                    new PackageInstaller(mActivity).install(zipFile, packageInfo);
+                } catch (NotEnoughCacheException e) {
                     e.printStackTrace();
-                    downloadedFile.delete();
-                    Log.d(TAG, "Corrupted archive, restart application and try install again");
-                    onFailure(new IOException(mActivity.getString(R.string.bad_archive) + " (" + downloadedFile.getName() + ")"));
+                    onFailure(e);
                     return;
-                }
-
-                publishProgress(UPDATE_MESSAGE, mActivity.getString(R.string.wait_message));
-                if (DLog.DEBUG) DLog.d(TAG, "onComplete: copy info files");
-                // Move package info files from root directory
-                String[] infoFiles = {"pkgdesc", "prerm", "postinst"};
-                for (String infoFilePath : infoFiles) {
-                    File file = new File(mToolchainDir, infoFilePath);
-                    if (file.exists()) {
-                        try {
-                            File infoFile = new File(mInstalledDir, packageInfo.getName() + "." + infoFilePath);
-                            Log.i(TAG, "Copy file to " + infoFile);
-                            Utils.copyDirectory(file, infoFile);
-                            if (infoFilePath.equals("postinst")) {
-                                finishInstallPackage(file);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "Copy " + infoFilePath + " file failed " + e);
-                        }
-                        file.delete();
-                    }
+                } catch (BadArchiveException e) {
+                    e.printStackTrace();
+                    zipFile.delete();
+                    Log.d(TAG, "Corrupted archive, restart application and try install again");
+                    onFailure(e);
+                    return;
                 }
 
                 if (isCancelled()) {
@@ -270,6 +222,14 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
             error = mActivity.getString(R.string.sd_no_memory) +
                     " " + Utils.humanReadableByteCount(((NotEnoughStorageException) e).getNeedMem(), false) +
                     " " + mActivity.getString(R.string.sd_no_memory2);
+        } else if (e instanceof NotEnoughCacheException) {
+            error = mActivity.getString(R.string.cache_no_memory) +
+                    Utils.humanReadableByteCount(((NotEnoughCacheException) e).getNeedMem(), false) +
+                    mActivity.getString(R.string.cache_no_memory1) +
+                    Utils.humanReadableByteCount(((NotEnoughCacheException) e).getCacheAvailSize(), false) +
+                    mActivity.getString(R.string.cache_no_memory2);
+        } else if (e instanceof BadArchiveException) {
+            error = mActivity.getString(R.string.bad_archive) + " (" + ((BadArchiveException) e).getFileName() + ")";
         } else {
             error = e.getMessage();
         }
@@ -304,26 +264,4 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
 
     }
 
-    @WorkerThread
-    private void finishInstallPackage(File postinstFile) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "finishInstallPackage() called with: postinstFile = [" + postinstFile + "]");
-        // Move Examples to sd card
-        String cCtoolsDir = Environment.getCCtoolsDir(mActivity);
-        File examples = new File(cCtoolsDir, "Examples");
-        if (examples.exists()) {
-            try {
-                Log.i(TAG, "Move Examples to SD card");
-                Utils.copyDirectory(examples, new File(Environment.getSdCardExampleDir()));
-                Utils.deleteDirectory(examples);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, "Can't copy examples directory " + e);
-            }
-        }
-
-        Log.i(TAG, "Execute postinst file " + postinstFile);
-        Utils.chmod(postinstFile.getAbsolutePath(), 0x1ed/*0755*/);
-        ShellUtils.execCommand(mActivity, postinstFile.getAbsolutePath());
-    }
 }

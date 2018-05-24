@@ -65,6 +65,6 @@ fastlane/test_output
 fastlane/readme.md
 
 !/system/
-/editor.txt
+/editor.xml
 .idea/caches/
 /cctools-repo/mirror/

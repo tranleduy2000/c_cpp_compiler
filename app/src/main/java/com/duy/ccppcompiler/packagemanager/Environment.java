@@ -163,11 +163,17 @@ public class Environment {
 
                 "CCTOOLSDIR=" + cctoolsDir,
                 "CCTOOLSRES=" + context.getPackageResourcePath(),
+                "CFGDIR=" + getShareDir(context),
                 "SHELL=" + getShell(context),
                 "TERM=" + settings.getTermType(),
                 "PS1=$ ",
                 "SDDIR=" + getSdCardHomeDir(),
         };
+    }
+
+    private static String getShareDir(Context context) {
+        File file = new File(getCCtoolsDir(context), "share");
+        return mkdirIfNotExist(file);
     }
 
     private static String getBootClassPath() {
