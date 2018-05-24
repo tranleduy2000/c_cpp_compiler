@@ -32,7 +32,7 @@ import android.view.WindowManager;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.editor.v2.editor.Document;
 
-import org.gjt.sp.jedit.ColorSchemeLoader;
+import com.duy.ide.editor.theme.ColorSchemeLoader;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>

@@ -29,6 +29,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.theme.ColorSchemeLoader;
 import com.duy.ide.filemanager.ReadFileListener;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -42,7 +43,6 @@ import com.jecelyin.editor.v2.io.FileReader;
 import com.jecelyin.editor.v2.io.LocalFileWriter;
 
 import org.gjt.sp.jedit.Catalog;
-import org.gjt.sp.jedit.ColorSchemeLoader;
 import org.gjt.sp.jedit.LineManager;
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.syntax.DefaultTokenHandler;
@@ -333,9 +333,9 @@ public class Document implements ReadFileListener, TextWatcher {
             return;
 
         DefaultTokenHandler tokenHandler;
-        if (styles == null) {
+//        if (styles == null) {
             styles = ColorSchemeLoader.loadStyles(mContext);
-        }
+//        }
         ArrayList<HighlightInfo> mergerArray;
 
         for (int i = startLine; i <= endLine; i++) {
