@@ -446,7 +446,7 @@ public class SimpleEditorActivity extends FullScreenActivity implements MenuItem
         String sourceDir;
         String homeDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         if (BuildConfig.DEBUG) {
-//            homeDir = getFilesDir().getAbsolutePath();
+            homeDir = getFilesDir().getAbsolutePath();
         }
         if (editorDelegate != null) {
             sourceDir = new File(editorDelegate.getPath()).getParent();

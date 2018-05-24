@@ -6,6 +6,7 @@
     android:background="?selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
+    android:padding="4dp"
     android:gravity="center_vertical">
 
     <android.support.v7.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
