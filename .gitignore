@@ -68,3 +68,4 @@ fastlane/readme.md
 /editor.xml
 .idea/caches/
 /cctools-repo/mirror/
+/app/signing.properties
