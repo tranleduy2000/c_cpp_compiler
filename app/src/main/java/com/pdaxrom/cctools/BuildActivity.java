@@ -12,8 +12,9 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.jecelyin.common.utils.DLog;
+import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.packagemanager.Environment;
+import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;
 
 import org.gjt.sp.jedit.Catalog;

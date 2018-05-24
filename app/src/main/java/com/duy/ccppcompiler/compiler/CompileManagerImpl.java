@@ -57,16 +57,12 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
     public void onPrepareCompile() {
         mDiagnosticPresenter.clear();
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
-
-        if (mCompileDialog == null) {
-            mCompileDialog = new ProgressDialog(mActivity);
-        }
-        mCompileDialog.setTitle(mActivity.getString(R.string.title_compiling));
+        mCompileDialog = new ProgressDialog(mActivity);
+        mCompileDialog.setTitle(mActivity.getString(R.string.compiling));
         mCompileDialog.setMessage(mActivity.getString(R.string.wait_message));
         mCompileDialog.setCancelable(false);
         mCompileDialog.setCanceledOnTouchOutside(false);
         mCompileDialog.show();
-
     }
 
     @Override

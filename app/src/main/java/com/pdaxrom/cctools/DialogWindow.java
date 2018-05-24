@@ -10,6 +10,8 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.duy.ccppcompiler.R;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
