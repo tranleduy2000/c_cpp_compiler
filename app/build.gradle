@@ -127,7 +127,6 @@ dependencies {
     implementation 'org.apmem.tools:layouts:1.10@aar'
     implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
-    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
 
     api project(':editor-view')
     api project(':apkbuilder')

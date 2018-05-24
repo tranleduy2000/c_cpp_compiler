@@ -44,7 +44,6 @@
             android:title="@string/tab_size" />
 
         <CheckBoxPreference
-
             android:key="pref_auto_capitalize"
             android:title="@string/auto_capitalize" />
 

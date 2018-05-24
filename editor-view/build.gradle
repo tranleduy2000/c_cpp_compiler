@@ -32,6 +32,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     api 'com.google.code.gson:gson:2.8.1'
+    api 'com.anjlab.android.iab.v3:library:1.0.44'
 
     api 'org.apmem.tools:layouts:1.10@aar'
     api 'com.makeramen:roundedimageview:2.2.1'

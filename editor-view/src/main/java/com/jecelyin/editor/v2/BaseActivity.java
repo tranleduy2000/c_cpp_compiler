@@ -31,6 +31,8 @@ import android.view.WindowManager;
 
 import com.duy.ide.editor.editor.R;
 
+import org.gjt.sp.jedit.ColorSchemeLoader;
+
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
@@ -120,6 +122,8 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_key_fullscreen))) {
             setFullScreenMode(isFullScreenMode());
+        } else if (key.equals(getString(R.string.change_theme))) {
+            ColorSchemeLoader.loadStyles(this);
         }
     }
 

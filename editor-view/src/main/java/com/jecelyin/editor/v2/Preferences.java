@@ -50,7 +50,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public static final String KEY_SYMBOL = "pref_symbol";
     public static final String KEY_AUTO_CAPITALIZE = "pref_auto_capitalize";
     public static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
-    public static final String KEY_THEME = "pref_current_theme";
     public static final String KEY_REMEMBER_LAST_OPENED_FILES = "pref_remember_last_opened_files";
     public static final String KEY_SCREEN_ORIENTATION = "pref_screen_orientation";
     public static final String KEY_KEEP_SCREEN_ON = "pref_keep_screen_on";
@@ -77,6 +76,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             R.style.DefaultTheme,
             R.style.DarkTheme
     };
+
     private static final Object mContent = new Object();
     private static Preferences instance;
 
@@ -108,7 +108,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_SYMBOL, VALUE_SYMBOL);
         map.put(KEY_AUTO_CAPITALIZE, false);
         map.put(KEY_HIGHLIGHT_FILE_SIZE_LIMIT, 500);
-        map.put(KEY_THEME, 0);
         map.put(KEY_REMEMBER_LAST_OPENED_FILES, true);
         map.put(KEY_SCREEN_ORIENTATION, "auto");
         map.put(KEY_KEEP_SCREEN_ON, false);
@@ -212,17 +211,15 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public int getTheme() {
-        return (int) map.get(KEY_THEME);
+        return getInt(context.getString(R.string.pref_current_theme), 0);
     }
 
     /**
      * theme index of {@link #THEMES}
      *
-     * @param theme
      */
     public void setTheme(int theme) {
-        map.put(KEY_THEME, theme);
-        preferences.edit().putInt(KEY_THEME, theme).apply();
+        preferences.edit().putInt(context.getString(R.string.pref_current_theme), theme).apply();
     }
 
     public int getHighlightSizeLimit() {
@@ -239,6 +236,14 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             return preferences.getBoolean(key, def);
         } catch (ClassCastException e) {
             return Boolean.parseBoolean(preferences.getString(key, String.valueOf(def)));
+        }
+    }
+
+    private int getInt(String key, int def) {
+        try {
+            return preferences.getInt(key, def);
+        } catch (ClassCastException e) {
+            return Integer.parseInt(preferences.getString(key, String.valueOf(def)));
         }
     }
 
