@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CCTools</string>
-
     <string name="updating_caption">Установка</string>
     <string name="removing_caption">Удаление</string>
     <string name="establishing_handshake_message">Установка соединения.\nПожалуйста подождите</string>
@@ -39,7 +37,6 @@
     <string name="about_button">О программе</string>
     <string name="prefs_button">Настройки</string>
 
-    <string name="preferences">Настройки</string>
     <string name="pref_updater">Проверить обновления при запуске</string>
     <string name="pref_toolbar">Панель инструментов</string>
     <string name="pref_syntax">Подсветка синтаксиса</string>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CCTools</string>
-
     <string name="updating_caption">Installation</string>
     <string name="removing_caption">Uninstallation</string>
     <string name="establishing_handshake_message">Establishing handshake.\nPlease wait</string>
@@ -39,7 +37,6 @@
     <string name="about_button">About</string>
     <string name="prefs_button">Settings</string>
 
-    <string name="preferences">Settings</string>
     <string name="pref_updater">Check for available updates at startup</string>
     <string name="pref_toolbar">Toolbar</string>
     <string name="pref_syntax">Syntax highlighting</string>
@@ -155,16 +152,16 @@
     <string name="pkginstaller_name">Add/Remove add-ons</string>
 
     <string name="title_repo_update">Remote repository</string>
-    <string name="message_package_downloading">Downloading list of packages...</string>
+    <string name="message_package_downloading">Downloading list of packages…</string>
     <string name="message_package_repo_unavailable">Remote repository is unavailable at the moment. Please try again later.</string>
     <string name="message_package_for_install">Use Addons manager to install package:\u0020</string>
     <string name="pkg_prepareinstalltask">Package list processing</string>
-    <string name="pkg_prepareinstall">Checking the package dependencies...</string>
+    <string name="pkg_prepareinstall">Checking the package dependencies…</string>
     <string name="pkg_installpackagetask">Installing package</string>
     <string name="pkg_installpackage">Installing package</string>
     <string name="title_package_uninstall">Uninstalling package</string>
     <string name="message_package_uninstall">Uninstalling package</string>
-    <string name="pkg_checkupdates">Checking for updates...</string>
+    <string name="pkg_checkupdates">Checking for updates…</string>
 
     <string name="pkg_name">Name</string>
     <string name="pkg_version">Version:\u0020</string>

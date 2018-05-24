@@ -28,7 +28,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.pdaxrom.cctools.R;
+import com.duy.ccppcompiler.R;
 
 import java.io.File;
 import java.io.IOException;

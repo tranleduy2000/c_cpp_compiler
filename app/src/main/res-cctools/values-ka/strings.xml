@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CCTools</string>
-
     <string name="updating_caption">ინსტალაცია</string>
     <string name="removing_caption">დეინსტალაცია</string>
     <string name="establishing_handshake_message">კავშირის დამყარება.\nგთხოვთ დაელოდოთ</string>
-    <string name="wait_message">გთხოვთ დაელოდოთ...</string>
+    <string name="wait_message">გთხოვთ დაელოდოთ…</string>
     <string name="download_cctools">ინსტრუმენტების გადმოწერა</string>
     <string name="received">მიღებულია\u0020</string>
     <string name="from">\u0020სგან\u0020</string>
@@ -39,7 +37,6 @@
     <string name="about_button">პროგრამის შესახებ</string>
     <string name="prefs_button">პარამეტრები</string>
 
-    <string name="preferences">პარამეტრები</string>
     <string name="pref_updater">აპდეიტების შემოწმება გაშვების დროს</string>
     <string name="pref_toolbar">პანელი</string>
     <string name="pref_syntax">სინტაქსის შეფერადება</string>

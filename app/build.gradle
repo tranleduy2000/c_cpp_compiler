@@ -24,13 +24,13 @@ android {
         arch_x86 {
             versionNameSuffix "-x86"
             ndk {
-                abiFilter "x86"
+                abiFilters "x86"
             }
         }
         arch_armeabi_v7a {
             versionNameSuffix "-armeabi-v7a"
             ndk {
-                abiFilter "armeabi-v7a"
+                abiFilters "armeabi-v7a"
             }
         }
     }
@@ -38,6 +38,7 @@ android {
     sourceSets {
         main {
             res.srcDirs += 'src/main/res-terminal'
+            res.srcDirs += 'src/main/res-cctools'
         }
     }
 
@@ -116,7 +117,10 @@ dependencies {
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 
     api project(':editor-view')
-    api project(':cctools')
+    api project(':apkbuilder')
+    api project(':emulatorview')
+    api project(':libtermexec')
+    api project(':style')
 
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.firebase:firebase-storage:15.0.2'

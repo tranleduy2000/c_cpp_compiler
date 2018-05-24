@@ -43,6 +43,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
 import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
@@ -53,7 +54,6 @@ import com.duy.ccppcompiler.packagemanager.repo.UbuntuServerPackageRepository;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.BaseActivity;
-import com.pdaxrom.cctools.R;
 import com.pdaxrom.utils.Utils;
 
 import org.apache.commons.io.IOUtils;

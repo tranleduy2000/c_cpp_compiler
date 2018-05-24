@@ -119,9 +119,7 @@
             android:label="@string/pkgmgr_name" />
         <activity
             android:name="com.pdaxrom.cctools.DialogWindow"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Transparent" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
 
         <activity
             android:name="jackpal.androidterm.TermPreferencesActivity"

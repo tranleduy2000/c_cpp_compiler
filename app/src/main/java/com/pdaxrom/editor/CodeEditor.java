@@ -16,7 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
-import com.pdaxrom.cctools.R;
+import com.duy.ccppcompiler.R;
 
 import java.io.File;
 import java.io.FileInputStream;

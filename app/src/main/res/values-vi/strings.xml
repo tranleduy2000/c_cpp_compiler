@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="installing_system">Cài đặt hệ thống</string>
-    <string name="title_compiling">Đang biên dịch</string>
+    <string name="compiling">Đang biên dịch</string>
     <string name="title_activity_console">Console</string>
     <string name="title_menu_c_example">Code mẫu C</string>
     <string name="title_menu_cpp_example">Code mẫu C++</string>

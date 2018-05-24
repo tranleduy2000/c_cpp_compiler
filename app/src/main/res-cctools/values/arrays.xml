@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="toolchain_selector">
+        <item>Clang C/C++</item>
+        <item>GNU C/C++</item>
+        <item>GNU Fortran</item>
+        <item>AVR C/C++ (crosscompiler)</item>
+        <item>MinGW W64 (crosscompiler)</item>
+        <item>Lua JIT</item>
+    </string-array>
+</resources>
