@@ -16,12 +16,16 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_key_tab"
+        android:title="Tab"
+        app:showAsAction="always|withText" />
 
     <item
         android:id="@+id/menu_toggle_soft_keyboard"
         android:icon="@drawable/ic_keyboard_white_24dp"
         android:title="@string/toggle_soft_keyboard"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_special_keys"

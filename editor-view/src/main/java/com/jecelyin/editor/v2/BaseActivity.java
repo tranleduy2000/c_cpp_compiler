@@ -30,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.duy.ide.editor.editor.R;
+import com.jecelyin.editor.v2.editor.Document;
 
 import org.gjt.sp.jedit.ColorSchemeLoader;
 
@@ -122,7 +123,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         if (key.equals(getString(R.string.pref_key_fullscreen))) {
             setFullScreenMode(isFullScreenMode());
         } else if (key.equals(getString(R.string.pref_current_theme))) {
-            ColorSchemeLoader.loadStyles(this);
+            Document.styles = ColorSchemeLoader.loadStyles(this);
         }
     }
 

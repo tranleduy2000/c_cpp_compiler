@@ -265,11 +265,19 @@ public class TermActivity extends BaseActivity implements SharedPreferences.OnSh
         } else if (id == R.id.menu_toggle_soft_keyboard) {
             doToggleSoftKeyboard();
         } else if (id == R.id.action_help) {
-            Intent openHelp = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(getString(R.string.help_url)));
+            Intent openHelp = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.help_url)));
             startActivity(openHelp);
+        } else if (id == R.id.action_key_tab) {
+            sendTabKeyEvent();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendTabKeyEvent() {
+        KeyEvent tabDown = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_TAB);
+        KeyEvent tabUp = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_TAB);
+        getCurrentEmulatorView().onKeyDown(tabDown.getKeyCode(), tabDown);
+        getCurrentEmulatorView().onKeyUp(tabUp.getKeyCode(), tabUp);
     }
 
     @Override
