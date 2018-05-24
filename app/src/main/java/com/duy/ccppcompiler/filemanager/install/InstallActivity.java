@@ -55,10 +55,6 @@ import java.io.IOException;
 
 public class InstallActivity extends BaseActivity {
 
-    private static final String[] PERMISSIONS = new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
     private static final String TAG = "InstallActivity";
     private static final int RC_INSTALL_COMPILER = 12312;
     private ProgressBar mProgressBar;
@@ -106,7 +102,7 @@ public class InstallActivity extends BaseActivity {
     }
 
     private boolean isPermissionGranted() {
-        for (String permission : PERMISSIONS) {
+        for (String permission : getPermissions()) {
             if (!(ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)) {
                 return false;
             }
@@ -114,10 +110,18 @@ public class InstallActivity extends BaseActivity {
         return true;
     }
 
+    private String[] getPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        } else {
+            return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        }
+    }
+
     private void requestPermission() {
         if (DLog.DEBUG) DLog.d(TAG, "requestPermission() called");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(PERMISSIONS, 0);
+            requestPermissions(getPermissions(), 0);
         }
     }
 
