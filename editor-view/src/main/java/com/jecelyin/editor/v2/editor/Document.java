@@ -47,7 +47,7 @@ import org.gjt.sp.jedit.LineManager;
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.syntax.DefaultTokenHandler;
 import org.gjt.sp.jedit.syntax.ModeProvider;
-import org.gjt.sp.jedit.syntax.SyntaxStyle;
+import com.duy.ide.editor.theme.model.SyntaxStyle;
 import org.gjt.sp.jedit.syntax.Token;
 
 import java.io.File;

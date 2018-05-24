@@ -23,9 +23,8 @@ import android.content.res.TypedArray;
 
 import com.duy.ide.editor.editor.R;
 
-import org.gjt.sp.jedit.syntax.SyntaxStyle;
+import com.duy.ide.editor.theme.model.SyntaxStyle;
 import org.gjt.sp.jedit.syntax.Token;
-import org.gjt.sp.jedit.util.SyntaxUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;

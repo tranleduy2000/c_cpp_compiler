@@ -20,17 +20,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package org.gjt.sp.jedit.util;
+package com.duy.ide.editor.theme;
 
 
 //{{{ Imports
 
 import android.graphics.Color;
 
+import com.duy.ide.editor.theme.model.SyntaxStyle;
 import com.jecelyin.common.utils.DLog;
 
 import org.gjt.sp.jedit.awt.Font;
-import org.gjt.sp.jedit.syntax.SyntaxStyle;
 import org.gjt.sp.jedit.syntax.Token;
 
 import java.util.Locale;
@@ -55,59 +55,14 @@ public class SyntaxUtilities {
     }
 
     /**
-     * Converts a color object to its hex value. The hex value
-     * prefixed is with `#', for example `#ff0088'.
-     *
-     * @param c The color object
-     * @since jEdit 4.3pre13
-     */
-    public static String getColorHexString(int c) {
-        String colString = Integer.toHexString(c & 0xffffff);
-        return "#000000".substring(0, 7 - colString.length()).concat(colString);
-    }
-
-    /**
      * @since jEdit 4.3pre13
      */
     public static Integer parseColor(String name, Integer defaultColor) {
-        if (name == null || name.length() == 0)
+        try {
+            return Color.parseColor(name);
+        } catch (Exception e) {
             return defaultColor;
-
-        name = name.trim();
-        if (name.charAt(0) == '#') {
-            try {
-                return Color.parseColor(name);
-            } catch (NumberFormatException nf) {
-                return defaultColor;
-            }
-        } else if ("red".equals(name))
-            return Color.RED;
-        else if ("green".equals(name))
-            return Color.GREEN;
-        else if ("blue".equals(name))
-            return Color.BLACK;
-        else if ("yellow".equals(name))
-            return Color.YELLOW;
-//        else if ("orange".equals(name))
-//            return Color.orange;
-        else if ("white".equals(name))
-            return Color.WHITE;
-        else if ("lightGray".equals(name))
-            return Color.LTGRAY;
-        else if ("gray".equals(name))
-            return Color.GRAY;
-        else if ("darkGray".equals(name))
-            return Color.DKGRAY;
-        else if ("black".equals(name))
-            return Color.BLACK;
-        else if ("cyan".equals(name))
-            return Color.CYAN;
-        else if ("magenta".equals(name))
-            return Color.MAGENTA;
-//        else if ("pink".equals(name))
-//            return Color.pink;
-        else
-            return defaultColor;
+        }
     }
 
     /**

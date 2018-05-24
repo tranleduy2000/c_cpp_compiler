@@ -1,4 +1,4 @@
-package org.gjt.sp.jedit.syntax;
+package com.duy.ide.editor.theme.model;
 
 import android.support.annotation.Nullable;
 
