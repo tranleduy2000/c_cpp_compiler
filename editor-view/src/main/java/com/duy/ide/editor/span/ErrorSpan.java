@@ -16,7 +16,6 @@
 
 package com.duy.ide.editor.span;
 
-import android.core.text.TextPaintCompat;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextPaint;
@@ -63,6 +62,9 @@ public class ErrorSpan extends CharacterStyle implements UpdateAppearance, Parce
 
     @Override
     public void updateDrawState(TextPaint paint) {
-        TextPaintCompat.setUnderlineText(paint, mColor, 4);
+        paint.setColor(mColor);
+        paint.setUnderlineText(true);
+        paint.setFakeBoldText(true);
+//        TextPaintCompat.setUnderlineText(paint, mColor, 4);
     }
 }

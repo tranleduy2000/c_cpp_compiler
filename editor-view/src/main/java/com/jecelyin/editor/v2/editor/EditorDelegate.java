@@ -380,7 +380,7 @@ public class EditorDelegate implements TextWatcher {
             case HIGHLIGHT_ERROR:
                 highlightError(command.args, false);
                 break;
-            case CLEAR_ERROR_SPAN:
+            case CLEAR_ERROR:
                 clearErrorSpan();
                 break;
         }

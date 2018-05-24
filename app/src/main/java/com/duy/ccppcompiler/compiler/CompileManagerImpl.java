@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
 import com.duy.ccppcompiler.diagnostic.DiagnosticsCollector;
 import com.duy.ccppcompiler.diagnostic.OutputParser;
@@ -117,10 +118,10 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         this.mDiagnosticPresenter = diagnosticPresenter;
     }
 
-    @MainThread
-    protected void finishCompile() {
-        mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
+    private void finishCompile() {
         hideDialog();
+        mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
+        mDiagnosticPresenter.setDiagnostics(new ArrayList<Diagnostic>());
     }
 
     @MainThread

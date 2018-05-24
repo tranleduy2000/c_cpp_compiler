@@ -180,13 +180,13 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         EditorDelegate delegate = mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
         if (delegate != null) {
             delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-            delegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR_SPAN));
+            delegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
 
             for (Diagnostic diagnostic : mDiagnostics) {
                 File sourceFile = diagnostic.getSourceFile();
 
                 if (sourceFile != null) {
-                    if (sourceFile.getPath().equals(delegate.getPath())) {
+                    if (sourceFile.equals(delegate.getDocument().getFile())) {
                         Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
                         if (diagnostic.getSuggestion() != null) {
                             ISuggestion suggestion = diagnostic.getSuggestion();
