@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
@@ -37,11 +36,14 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileSetting;
 import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
+import com.duy.ccppcompiler.compiler.compilers.GPlusPlusCompiler;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.FullScreenActivity;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,7 +75,7 @@ public class LauncherActivity extends FullScreenActivity {
         mScrollView = findViewById(R.id.scroll_view);
         mAction = findViewById(R.id.btn_action);
 
-        if (permissionGranted()) {
+        if (isPermissionGranted()) {
             new CheckCompilerInstalledTask().execute();
         } else {
             requestPermission();
@@ -88,7 +90,7 @@ public class LauncherActivity extends FullScreenActivity {
     @MainThread
     private void openEditor() {
         if (DLog.DEBUG) DLog.d(TAG, "openEditor() called");
-        if (permissionGranted()) {
+        if (isPermissionGranted()) {
             closeAndStartMainActivity();
         } else {
             requestPermission();
@@ -103,8 +105,7 @@ public class LauncherActivity extends FullScreenActivity {
         finish();
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    private boolean permissionGranted() {
+    private boolean isPermissionGranted() {
         for (String permission : PERMISSIONS) {
             if (!(ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)) {
                 return false;
@@ -126,20 +127,16 @@ public class LauncherActivity extends FullScreenActivity {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             new CheckCompilerInstalledTask().execute();
         } else {
-            installCompilerFailed();
+            mTxtMessage.setText(R.string.message_need_permission);
+            mAction.setVisibility(View.VISIBLE);
+            mAction.setText(R.string.grant_permission);
+            mAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    requestPermission();
+                }
+            });
         }
-    }
-
-    private void installCompilerFailed() {
-        mTxtMessage.setText(R.string.message_need_permission);
-        mAction.setVisibility(View.VISIBLE);
-        mAction.setText(R.string.grant_permission);
-        mAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestPermission();
-            }
-        });
     }
 
     private void installCompiler() {
@@ -182,18 +179,35 @@ public class LauncherActivity extends FullScreenActivity {
         protected Boolean doInBackground(Void... voids) {
             try {
                 LauncherActivity context = LauncherActivity.this;
-                publishProgress("Check C compiler working\n");
 
+                //Check C compiler
+                publishProgress("Test C compiler\n");
                 File file = new File(getCacheDir(), "tmp.c");
                 FileOutputStream output = new FileOutputStream(file);
-                org.apache.commons.io.IOUtils.write("#include <stdio.h> int main(){ return 0; }", output);
+                IOUtils.write("#include <stdio.h>\n" + "int main(){ return 0; }", output);
                 output.close();
-
 
                 GCCCompiler compiler = new GCCCompiler(context, new CompileSetting(context));
                 GccCommandResult result = compiler.compile(new File[]{file});
+                if (result == null || result.getResultCode() != 0) {
+                    publishProgress("Could not exec C compiler, please install compiler");
+                    return false;
+                }
 
-                return result != null && result.getResultCode() == 0;
+                //Check C++ compiler
+                publishProgress("Test C++ compiler\n");
+                output = new FileOutputStream(file);
+                IOUtils.write("#include <iostream>\n" + "using namespace std;\n" + "int main() { return 0; }", output);
+                output.close();
+                compiler = new GPlusPlusCompiler(context, new CompileSetting(context));
+                result = compiler.compile(new File[]{file});
+                if (result == null || result.getResultCode() != 0) {
+                    publishProgress("Could not exec C++ compiler, please install compiler");
+                    return false;
+                }
+
+                file.delete();
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
