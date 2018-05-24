@@ -150,6 +150,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     public void setDiagnostics(ArrayList<Diagnostic> diagnostics) {
         mDiagnostics = diagnostics;
         mHashCode.clear();
+
         show(mDiagnostics);
         highlightErrorCurrentEditor();
     }
@@ -176,30 +177,40 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         return false;
     }
 
+    /**
+     * Show error in current editor,
+     * Find first error index and move cursor to it
+     */
     private void highlightErrorCurrentEditor() {
         EditorDelegate delegate = mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
-        if (delegate != null) {
-            delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-            delegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
+        if (delegate == null) {
+            return;
+        }
 
-            for (Diagnostic diagnostic : mDiagnostics) {
-                File sourceFile = diagnostic.getSourceFile();
+        delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
+        delegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
 
-                if (sourceFile != null) {
-                    if (sourceFile.equals(delegate.getDocument().getFile())) {
-                        Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
-                        if (diagnostic.getSuggestion() != null) {
-                            ISuggestion suggestion = diagnostic.getSuggestion();
-                            command.args.putInt("line", suggestion.getLineStart());
-                            command.args.putInt("col", suggestion.getColStart());
-                            command.args.putInt("lineEnd", suggestion.getLineEnd());
-                            command.args.putInt("colEnd", suggestion.getColEnd());
-                        } else {
-                            command.args.putInt("line", (int) diagnostic.getLineNumber());
-                            command.args.putInt("col", (int) diagnostic.getColumnNumber());
-                        }
-                        delegate.doCommand(command);
-                    }
+        boolean firstIndex = false;
+
+        for (Diagnostic diagnostic : mDiagnostics) {
+            File sourceFile = diagnostic.getSourceFile();
+            if (sourceFile == null) {
+                continue;
+            }
+            if (sourceFile.equals(delegate.getDocument().getFile())) {
+                Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
+                int lineNumber = (int) diagnostic.getLineNumber();
+                int columnNumber = (int) diagnostic.getColumnNumber();
+
+                command.args.putInt("line", lineNumber);
+                command.args.putInt("col", columnNumber);
+                delegate.doCommand(command);
+
+                if (!firstIndex) {
+                    Command gotoIndexCmd = new Command(Command.CommandEnum.GOTO_INDEX);
+                    gotoIndexCmd.args.putAll(command.args);
+                    delegate.doCommand(gotoIndexCmd);
+                    firstIndex = true;
                 }
             }
         }

@@ -304,7 +304,7 @@ public class EditorDelegate implements TextWatcher {
             case GOTO_INDEX:
                 int col = command.args.getInt("col", -1);
                 int line = command.args.getInt("line", -1);
-                mEditText.gotoLine(line, col);
+                goToLine(line, col);
                 break;
             case GOTO_TOP:
                 mEditText.gotoTop();
@@ -384,6 +384,13 @@ public class EditorDelegate implements TextWatcher {
                 clearErrorSpan();
                 break;
         }
+    }
+
+    /**
+     * @param realLine - real line in source code
+     */
+    private void goToLine(int realLine, int column) {
+        mEditText.gotoLine(realLine, column);
     }
 
     private void clearErrorSpan() {
