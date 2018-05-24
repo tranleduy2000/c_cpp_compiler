@@ -18,6 +18,7 @@ package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
@@ -39,9 +40,10 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     private static final String TAG = "GCCCompiler";
     protected File mOutFile;
     protected Context mContext;
+    @Nullable
     protected ICompileSetting mSetting;
 
-    public GCCCompiler(Context context, ICompileSetting compileSetting) {
+    public GCCCompiler(Context context, @Nullable ICompileSetting compileSetting) {
         mContext = context;
         mSetting = compileSetting;
     }
@@ -85,7 +87,9 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         for (File sourceFile : sourceFiles) {
             builder.addFlags(sourceFile.getAbsolutePath());
         }
-        builder.addFlags(mSetting.getCFlags());
+        if (mSetting != null) {
+            builder.addFlags(mSetting.getCFlags());
+        }
         builder.addFlags("-o", mOutFile.getAbsolutePath());
 
         if (Build.VERSION.SDK_INT >= 21) {

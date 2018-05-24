@@ -450,12 +450,11 @@ public class PackageManagerActivity extends FullScreenActivity {
     }
 
     private void downloadListPackages() {
-        showProgress(R.string.title_repo_update, R.string.message_package_downloading, true);
         updateInstalledPackages();
 
         //local data
         try {
-            InputStream packagesFile = getAssets().open("compiler/Packages");
+            InputStream packagesFile = getAssets().open("repo/Packages");
             String content = IOUtils.toString(packagesFile);
             RepoParser parser = new RepoParser();
             List<PackageInfo> packageInfos = parser.parseRepoXml(content);
@@ -465,6 +464,7 @@ public class PackageManagerActivity extends FullScreenActivity {
             e.printStackTrace();
         }
 
+        showProgress(R.string.title_repo_update, R.string.message_package_downloading, true);
         //using firebase server
         mFirebasePackageRepository.getPackagesInBackground(new IPackageLoadListener() {
             @Override

@@ -130,15 +130,17 @@ public class LocalFile extends JecFile {
     @Override
     public void delete(BoolResultListener listener) {
         boolean result = deleteRecursive(file);
-        if (listener != null)
+        if (listener != null) {
             listener.onResult(result);
+        }
     }
 
     private static boolean deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
                 deleteRecursive(child);
-
+            }
+        }
         return fileOrDirectory.delete();
     }
 

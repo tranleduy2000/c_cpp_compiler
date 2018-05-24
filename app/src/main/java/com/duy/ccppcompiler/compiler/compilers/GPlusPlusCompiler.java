@@ -51,7 +51,9 @@ public class GPlusPlusCompiler extends GCCCompiler {
             builder.addFlags(sourceFile.getAbsolutePath());
         }
         builder.addFlags("-o", mOutFile.getAbsolutePath());
-        builder.addFlags(mSetting.getCxxFlags());
+        if (mSetting != null) {
+            builder.addFlags(mSetting.getCxxFlags());
+        }
 
         if (Build.VERSION.SDK_INT >= 21) {
             builder.addFlags("-pie");

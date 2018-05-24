@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.packagemanager.local;
+package com.duy.ccppcompiler.filemanager.install;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,34 +38,20 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileSetting;
 import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
-import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.ccppcompiler.packagemanager.PackageInstaller;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
-import com.duy.ccppcompiler.packagemanager.RepoParser;
-import com.duy.ccppcompiler.packagemanager.RepoUtils;
-import com.duy.ccppcompiler.packagemanager.model.InstallPackageInfo;
-import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
-import com.duy.ccppcompiler.packagemanager.model.PackagesLists;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.FullScreenActivity;
 
-import org.apache.commons.compress.utils.IOUtils;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Duy on 22-Apr-18.
  */
 
-public class LocalInstallActivity extends FullScreenActivity {
+public class LauncherActivity extends FullScreenActivity {
 
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -77,7 +62,6 @@ public class LocalInstallActivity extends FullScreenActivity {
     private ProgressBar mProgressBar;
     private TextView mTxtMessage;
     private ScrollView mScrollView;
-    private AsyncTask<Void, CharSequence, Boolean> mExtractDataTask;
     private Button mAction;
 
     @Override
@@ -99,9 +83,6 @@ public class LocalInstallActivity extends FullScreenActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mExtractDataTask != null) {
-            mExtractDataTask.cancel(true);
-        }
     }
 
     @MainThread
@@ -162,7 +143,10 @@ public class LocalInstallActivity extends FullScreenActivity {
     }
 
     private void installCompiler() {
-        new InstallCompilerTask().execute();
+        Intent intent = new Intent(LauncherActivity.this, PackageManagerActivity.class);
+        intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
+        intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc-compact");
+        startActivityForResult(intent, RC_INSTALL_COMPILER);
     }
 
     @Override
@@ -192,17 +176,19 @@ public class LocalInstallActivity extends FullScreenActivity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class CheckCompilerInstalledTask extends AsyncTask<Void, Void, Boolean> {
+    private class CheckCompilerInstalledTask extends AsyncTask<Void, String, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
+                LauncherActivity context = LauncherActivity.this;
+                publishProgress("Check C compiler working\n");
+
                 File file = new File(getCacheDir(), "tmp.c");
                 FileOutputStream output = new FileOutputStream(file);
                 org.apache.commons.io.IOUtils.write("#include <stdio.h> int main(){ return 0; }", output);
                 output.close();
 
-                LocalInstallActivity context = LocalInstallActivity.this;
 
                 GCCCompiler compiler = new GCCCompiler(context, new CompileSetting(context));
                 GccCommandResult result = compiler.compile(new File[]{file});
@@ -216,103 +202,18 @@ public class LocalInstallActivity extends FullScreenActivity {
         }
 
         @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            mTxtMessage.append(values[0]);
+        }
+
+        @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean) {
                 openEditor();
             } else {
                 installCompiler();
-            }
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private class InstallCompilerTask extends AsyncTask<Void, Object, Boolean> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mTxtMessage.append("Copy asset data to external storage\n");
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            if (true) {
-                return false;
-            }
-            RepoUtils.setVersion();
-            AssetManager assets = getAssets();
-            if (DLog.DEBUG) DLog.d(TAG, "doInBackground: copy data from assets");
-            try {
-                //extract assets data to local storage
-                String[] names = assets.list("compiler");
-                if (DLog.DEBUG) DLog.d(TAG, "names = " + Arrays.toString(names));
-                for (String name : names) {
-                    publishProgress("Copying " + " " + name + "\n");
-                    if (DLog.DEBUG) DLog.d(TAG, "doInBackground: copying " + name);
-
-                    File file = new File(Environment.getSdCardBackupDir(), name);
-                    InputStream input = assets.open("compiler/" + name);
-                    OutputStream output = new FileOutputStream(file);
-                    IOUtils.copy(input, output);
-                    output.close();
-                    input.close();
-
-                    publishProgress("Copy " + name + " completed\n");
-                }
-
-                //read list packages
-                InputStream packagesFile = assets.open("compiler/Packages");
-                String content = org.apache.commons.io.IOUtils.toString(packagesFile);
-                packagesFile.close();
-
-                RepoParser parser = new RepoParser();
-                PackagesLists allPackages = new PackagesLists();
-                allPackages.setAvailablePackages(parser.parseRepoXml(content));
-
-                String compilerPackage = "build-essential-gcc-compact";
-                InstallPackageInfo installPackageInfo = new InstallPackageInfo(allPackages, compilerPackage);
-                List<PackageInfo> compilerPackagesList = installPackageInfo.getPackagesList();
-                if (DLog.DEBUG) DLog.d(TAG, "compilerPackagesList = " + compilerPackagesList);
-
-                //install packages
-                PackageInstaller packageInstaller = new PackageInstaller(LocalInstallActivity.this);
-                for (PackageInfo packageInfo : compilerPackagesList) {
-                    File zipFile = new File(Environment.getSdCardBackupDir(), packageInfo.getFileName());
-                    if (!zipFile.exists()) {
-                        throw new FileNotFoundException("Can not find packages in assets data " + packageInfo);
-                    }
-                    publishProgress("Installing " + packageInfo.getName() + "\n");
-                    packageInstaller.install(zipFile, packageInfo);
-                    publishProgress("Install complete " + packageInfo.getName() + "\n");
-                }
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                publishProgress("Error " + e.getMessage());
-            }
-            return false;
-        }
-
-        @Override
-        protected void onProgressUpdate(Object... values) {
-            super.onProgressUpdate(values);
-            mTxtMessage.append(String.valueOf(values[0]));
-            mScrollView.fullScroll(View.FOCUS_DOWN);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result) {
-                mTxtMessage.append("Install complete\n");
-                openEditor();
-            } else {
-                Intent intent = new Intent(LocalInstallActivity.this, PackageManagerActivity.class);
-                intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
-                intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc-compact");
-                startActivityForResult(intent, RC_INSTALL_COMPILER);
             }
         }
     }
