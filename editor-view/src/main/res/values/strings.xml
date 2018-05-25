@@ -194,7 +194,7 @@
     <string name="reset">Reset</string>
     <string name="change_theme">Change theme</string>
     <string name="dark_theme">Dark Theme</string>
-    <string name="default_theme">Default Theme</string>
+    <string name="light_theme">Light Theme</string>
     <string name="fullscreen_mode">Full screen Mode</string>
     <string name="enable_fullscreen_mode_message">Restart the application will enable the full screen mode</string>
     <string name="disabled_fullscreen_mode_message">Restart the application will disable the full screen mode</string>

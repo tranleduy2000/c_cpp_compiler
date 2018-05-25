@@ -52,9 +52,9 @@ public class ThemeLoader {
     }
 
     private static void loadTheme(Context context, String theme) {
-//        if (CACHED.get(theme) != null) {
-//            return;
-//        }
+        if (CACHED.get(theme) != null) {
+            return;
+        }
         EditorTheme editorTheme = loadFromAsset(context.getAssets(), ASSET_PATH + "/" + theme);
         CACHED.put(theme, editorTheme);
     }

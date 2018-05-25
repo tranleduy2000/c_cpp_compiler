@@ -73,7 +73,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n"});
 
     public static final int[] THEMES = new int[]{
-            R.style.DefaultTheme,
+            R.style.LightTheme,
             R.style.DarkTheme
     };
 

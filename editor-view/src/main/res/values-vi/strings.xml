@@ -126,7 +126,7 @@
     <string name="reset">Cài lại</string>
     <string name="change_theme">Thay đổi chủ đề</string>
     <string name="dark_theme">Chủ đề tối</string>
-    <string name="default_theme">Chủ đề mặc định</string>
+    <string name="light_theme">Chủ đề sáng</string>
     <string name="fullscreen_mode">Chế độ toàn màn hình</string>
     <string name="out_of_memory_error">Hết bộ nhớ ứng dụng</string>
     <string name="editor_setting">Cài đặt trình soạn thảo</string>

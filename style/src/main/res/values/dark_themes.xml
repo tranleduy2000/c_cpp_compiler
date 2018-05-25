@@ -30,13 +30,9 @@
 
         <item name="findResultsPath">#0000ff</item>
         <item name="findResultsKeyword">#C26509</item>
-        
-        <item name="android:statusBarColor">#228a96</item>
     </style>
 
-    <style name="DarkToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:background">#293139</item>
-    </style>
+    <style name="DarkToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="DarkToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark" />
 
