@@ -112,7 +112,7 @@ public class Highlighter {
                 mergerArray.add(new HighlightInfo(startIndex, endIndex, style));
             } else {
                 hi = mergerArray.get(mergerArray.size() - 1);
-                if (hi.style == style && hi.endOffset == startIndex) {
+                if (hi.style.equals(style) && hi.endOffset == startIndex) {
                     hi.endOffset = endIndex;
                 } else {
                     mergerArray.add(new HighlightInfo(startIndex, endIndex, style));

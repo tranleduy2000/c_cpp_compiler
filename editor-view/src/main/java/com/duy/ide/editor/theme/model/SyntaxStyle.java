@@ -1,7 +1,5 @@
 package com.duy.ide.editor.theme.model;
 
-import android.graphics.Color;
-
 import org.gjt.sp.jedit.awt.Font;
 
 /**
@@ -13,25 +11,11 @@ import org.gjt.sp.jedit.awt.Font;
  */
 public class SyntaxStyle {
     private int fgColor;
-
     /**
      * Background color can be null
      */
-    private int bgColor = Color.TRANSPARENT;
-
+    private int bgColor;
     private Font font;
-
-
-    /**
-     * Creates a new SyntaxStyle.
-     *
-     * @param fgColor The text color
-     * @param bgColor The background color
-     */
-    public SyntaxStyle(int fgColor, int bgColor) {
-        this.fgColor = fgColor;
-        this.bgColor = bgColor;
-    }
 
     public SyntaxStyle(int fgColor, int bgColor, Font font) {
         this.fgColor = fgColor;
@@ -39,6 +23,25 @@ public class SyntaxStyle {
         this.font = font;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SyntaxStyle)) return false;
+
+        SyntaxStyle that = (SyntaxStyle) o;
+
+        if (fgColor != that.fgColor) return false;
+        if (bgColor != that.bgColor) return false;
+        return getFont() != null ? getFont().equals(that.getFont()) : that.getFont() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fgColor;
+        result = 31 * result + bgColor;
+        result = 31 * result + (getFont() != null ? getFont().hashCode() : 0);
+        return result;
+    }
 
     /**
      * Returns the text color.

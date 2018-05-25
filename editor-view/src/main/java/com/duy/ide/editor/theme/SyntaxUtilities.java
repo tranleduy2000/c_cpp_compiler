@@ -100,7 +100,7 @@ public class SyntaxUtilities {
                 throw new IllegalArgumentException(
                         "Invalid directive: " + s);
         }
-        return new SyntaxStyle(fgColor, bgColor, new Font((italic ? Font.ITALIC : 0) | (bold ? Font.BOLD : 0)));
+        return new SyntaxStyle(fgColor, bgColor, new Font((italic ? Font.ITALIC : Font.NORMAL) | (bold ? Font.BOLD : Font.NORMAL)));
     }
 
     /**

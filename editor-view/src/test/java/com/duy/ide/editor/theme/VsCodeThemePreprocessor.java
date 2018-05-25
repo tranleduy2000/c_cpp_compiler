@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -27,8 +26,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Using JUnit on Android studio faster than create class with main method
@@ -356,7 +353,4 @@ public class VsCodeThemePreprocessor extends TestCase {
     }
 
 
-    private void convert(File file) throws IOException, SAXException, ParserConfigurationException {
-
-    }
 }
