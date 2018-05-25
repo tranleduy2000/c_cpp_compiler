@@ -53,7 +53,7 @@ import com.duy.ccppcompiler.packagemanager.repo.LocalPackageRepository;
 import com.duy.ccppcompiler.packagemanager.repo.UbuntuServerPackageRepository;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.BaseActivity;
+import com.jecelyin.editor.v2.ThemeSupportActivity;
 import com.pdaxrom.utils.Utils;
 
 import org.apache.commons.io.IOUtils;
@@ -71,7 +71,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class PackageManagerActivity extends BaseActivity {
+public class PackageManagerActivity extends ThemeSupportActivity {
     public static final String EXTRA_CMD = "command";
     public static final String EXTRA_DATA = "data";
     public static final String ACTION_INSTALL = "install";

@@ -35,7 +35,7 @@ import com.jecelyin.common.utils.DLog;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public abstract class BaseActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class ThemeSupportActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "BaseActivity";
     private boolean keyboardListenersAttached = false;
     @Nullable

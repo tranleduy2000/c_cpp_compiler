@@ -41,7 +41,7 @@ import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
-import com.jecelyin.editor.v2.BaseActivity;
+import com.jecelyin.editor.v2.ThemeSupportActivity;
 
 import org.apache.commons.io.IOUtils;
 
@@ -53,7 +53,7 @@ import java.io.IOException;
  * Created by Duy on 22-Apr-18.
  */
 
-public class InstallActivity extends BaseActivity {
+public class InstallActivity extends ThemeSupportActivity {
 
     private static final String TAG = "InstallActivity";
     private static final int RC_INSTALL_COMPILER = 12312;

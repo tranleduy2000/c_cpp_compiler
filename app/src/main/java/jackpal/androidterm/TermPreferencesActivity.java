@@ -23,9 +23,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.duy.ccppcompiler.R;
-import com.jecelyin.editor.v2.BaseActivity;
+import com.jecelyin.editor.v2.ThemeSupportActivity;
 
-public class TermPreferencesActivity extends BaseActivity {
+public class TermPreferencesActivity extends ThemeSupportActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

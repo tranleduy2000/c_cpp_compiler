@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.duy.ide.editor.editor.R;
-import com.jecelyin.editor.v2.BaseActivity;
+import com.jecelyin.editor.v2.ThemeSupportActivity;
 
-public class ThemeActivity extends BaseActivity {
+public class ThemeActivity extends ThemeSupportActivity {
     private RecyclerView mRecyclerView;
     private ThemeAdapter mThemeAdapter;
 

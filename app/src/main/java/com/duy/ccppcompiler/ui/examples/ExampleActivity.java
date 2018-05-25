@@ -27,7 +27,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.packagemanager.Environment;
-import com.jecelyin.editor.v2.BaseActivity;
+import com.jecelyin.editor.v2.ThemeSupportActivity;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.xml.sax.SAXException;
@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Duy on 02-May-18.
  */
 
-public class ExampleActivity extends BaseActivity implements ExampleAdapter.OnExampleClickListener {
+public class ExampleActivity extends ThemeSupportActivity implements ExampleAdapter.OnExampleClickListener {
 
     public static final String EXTRA_LANGUAGE = "EXTRA_LANGUAGE";
     public static final int RC_OPEN_EXAMPLE = 13123;
