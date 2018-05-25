@@ -26,11 +26,11 @@ import com.duy.ide.editor.theme.model.SyntaxStyle;
 public class HighlightInfo {
     public int startOffset;
     public int endOffset;
-    public SyntaxStyle color;
+    public SyntaxStyle style;
 
-    public HighlightInfo(int startOffset, int endOffset, SyntaxStyle color) {
+    public HighlightInfo(int startOffset, int endOffset, SyntaxStyle style) {
         this.startOffset = startOffset;
         this.endOffset = endOffset;
-        this.color = color;
+        this.style = style;
     }
 }

@@ -71,20 +71,20 @@ public class Highlighter {
                 DLog.e("hi.startOffset %d >= hi.endOffset %d", info.startOffset, info.endOffset);
                 continue;
             }
-            fcs = new ForegroundColorSpan(info.color.getForegroundColor());
+            fcs = new ForegroundColorSpan(info.style.getForegroundColor());
             spannable.setSpan(fcs, info.startOffset, info.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
             spans.add(fcs);
 
-            if (info.color.getFont() != null) {
-                if (info.color.getFont().getStyle() != Font.NORMAL) {
-                    fcs = new StyleSpan(info.color.getFont().getStyle());
+            if (info.style.getFont() != null) {
+                if (info.style.getFont().getStyle() != Font.NORMAL) {
+                    fcs = new StyleSpan(info.style.getFont().getStyle());
                     spannable.setSpan(fcs, info.startOffset, info.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
                     spans.add(fcs);
                 }
             }
-            if (info.color.getBackgroundColor() != Color.TRANSPARENT) {
-                if (info.color.getFont().getStyle() != Font.NORMAL) {
-                    fcs = new BackgroundColorSpan(info.color.getFont().getStyle());
+            if (info.style.getBackgroundColor() != Color.TRANSPARENT) {
+                if (info.style.getFont().getStyle() != Font.NORMAL) {
+                    fcs = new BackgroundColorSpan(info.style.getFont().getStyle());
                     spannable.setSpan(fcs, info.startOffset, info.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
                     spans.add(fcs);
                 }
@@ -112,7 +112,7 @@ public class Highlighter {
                 mergerArray.add(new HighlightInfo(startIndex, endIndex, style));
             } else {
                 hi = mergerArray.get(mergerArray.size() - 1);
-                if (hi.color == style && hi.endOffset == startIndex) {
+                if (hi.style == style && hi.endOffset == startIndex) {
                     hi.endOffset = endIndex;
                 } else {
                     mergerArray.add(new HighlightInfo(startIndex, endIndex, style));
