@@ -38,4 +38,5 @@
     <item name="avpa_view_tag_key" type="id" />
     <item name="action_share" type="id">Share</item>
     <item name="action_rate" type="id" />
+    <item name="action_editor_color_scheme" type="id" />
 </resources>

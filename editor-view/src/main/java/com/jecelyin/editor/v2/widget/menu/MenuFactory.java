@@ -127,8 +127,10 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_forward, CURSOR_FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.cursor_forward));
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_highlight, NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_encoding, NONE, R.drawable.m_encoding, R.string.encoding));
+
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_highlight, NONE, R.drawable.ic_highlight_white_24dp, R.string.highlight_language));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_editor_color_scheme, NONE, R.drawable.ic_color_lens_white_24dp, R.string.editor_theme));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_editor_setting, NONE, R.drawable.ic_settings_white_24dp, R.string.editor_setting));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_share, NONE, R.drawable.baseline_share_24, R.string.share_this_app));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.OTHER, R.id.action_rate, NONE, R.drawable.baseline_rate_review_24, R.string.rate_this_app));

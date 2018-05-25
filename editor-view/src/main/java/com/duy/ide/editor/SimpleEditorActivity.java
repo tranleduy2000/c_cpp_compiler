@@ -48,6 +48,7 @@ import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.theme.EditorThemeActivity;
 import com.duy.ide.filemanager.FileManager;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -352,7 +353,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
             SubMenu subMenu = menu.addSubMenu(group.getNameResId());
             List<MenuItemInfo> items = menuFactory.getMenuItemsWithoutToolbarMenu(group);
             for (MenuItemInfo item : items) {
-                MenuItem menuItem = subMenu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
+                MenuItem menuItem = subMenu.add(MenuDef.GROUP_NAVIGATION, item.getItemId(), item.getOrder(), item.getTitleResId());
                 menuItem.setIcon(item.getIconResId());
             }
         }
@@ -436,7 +437,9 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
             StoreUtil.shareThisApp(this);
         } else if (id == R.id.action_rate) {
             StoreUtil.gotoPlayStore(this, getPackageName());
-        } else {
+        } else if (id == R.id.action_editor_color_scheme){
+            startActivity(new Intent(this, EditorThemeActivity.class));
+        }else {
             commandEnum = MenuFactory.getInstance(this).idToCommandEnum(id);
             if (commandEnum != Command.CommandEnum.NONE)
                 doCommand(new Command(commandEnum));
