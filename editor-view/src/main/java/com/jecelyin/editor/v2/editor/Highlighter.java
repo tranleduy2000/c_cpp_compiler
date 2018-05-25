@@ -1,8 +1,12 @@
 package com.jecelyin.editor.v2.editor;
 
 import android.core.text.SpannableStringBuilder;
+import android.graphics.Color;
 import android.text.Spannable;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.theme.model.SyntaxStyle;
@@ -10,6 +14,7 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.highlight.HighlightInfo;
 
+import org.gjt.sp.jedit.awt.Font;
 import org.gjt.sp.jedit.syntax.DefaultTokenHandler;
 import org.gjt.sp.jedit.syntax.Token;
 
@@ -22,7 +27,7 @@ public class Highlighter {
     }
 
     public void highlight(Buffer buffer, EditorTheme editorTheme,
-                          HashMap<Integer, ArrayList<ForegroundColorSpan>> colorsMap,
+                          HashMap<Integer, ArrayList<CharacterStyle>> colorsMap,
                           Spannable spannable,
                           int startLine, int endLine) {
         if (!buffer.isCanHighlight())
@@ -44,31 +49,46 @@ public class Highlighter {
     }
 
     private void addTokenSpans(Spannable spannable, int line, ArrayList<HighlightInfo> mergerArray,
-                               HashMap<Integer, ArrayList<ForegroundColorSpan>> colorsMap) {
-        ForegroundColorSpan fcs;
+                               HashMap<Integer, ArrayList<CharacterStyle>> colorsMap) {
+        CharacterStyle fcs;
 
-        ArrayList<ForegroundColorSpan> oldSpans = colorsMap.remove(line);
+        ArrayList<CharacterStyle> oldSpans = colorsMap.remove(line);
         if (oldSpans != null) {
-            for (ForegroundColorSpan span : oldSpans) {
+            for (CharacterStyle span : oldSpans) {
                 spannable.removeSpan(span);
             }
         }
 
         int length = spannable.length();
 
-        ArrayList<ForegroundColorSpan> spans = new ArrayList<>(mergerArray.size());
-        for (HighlightInfo hi : mergerArray) {
-            if (hi.endOffset > length) {
-                DLog.e("assert hi.endOffset %d > maxLength %d", hi.endOffset, length);
-                hi.endOffset = length;
+        ArrayList<CharacterStyle> spans = new ArrayList<>(mergerArray.size());
+        for (HighlightInfo info : mergerArray) {
+            if (info.endOffset > length) {
+                DLog.e("assert hi.endOffset %d > maxLength %d", info.endOffset, length);
+                info.endOffset = length;
             }
-            if (hi.startOffset >= hi.endOffset) {
-                DLog.e("hi.startOffset %d >= hi.endOffset %d", hi.startOffset, hi.endOffset);
+            if (info.startOffset >= info.endOffset) {
+                DLog.e("hi.startOffset %d >= hi.endOffset %d", info.startOffset, info.endOffset);
                 continue;
             }
-            fcs = new ForegroundColorSpan(hi.color);
-            spannable.setSpan(fcs, hi.startOffset, hi.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+            fcs = new ForegroundColorSpan(info.color.getForegroundColor());
+            spannable.setSpan(fcs, info.startOffset, info.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
             spans.add(fcs);
+
+            if (info.color.getFont() != null) {
+                if (info.color.getFont().getStyle() != Font.NORMAL) {
+                    fcs = new StyleSpan(info.color.getFont().getStyle());
+                    spannable.setSpan(fcs, info.startOffset, info.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spans.add(fcs);
+                }
+            }
+            if (info.color.getBackgroundColor() != Color.TRANSPARENT) {
+                if (info.color.getFont().getStyle() != Font.NORMAL) {
+                    fcs = new BackgroundColorSpan(info.color.getFont().getStyle());
+                    spannable.setSpan(fcs, info.startOffset, info.endOffset, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spans.add(fcs);
+                }
+            }
         }
         colorsMap.put(line, spans);
     }
@@ -88,16 +108,14 @@ public class Highlighter {
             if (style == null)
                 continue;
 
-            int color = style.getForegroundColor();
-
             if (mergerArray.isEmpty()) {
-                mergerArray.add(new HighlightInfo(startIndex, endIndex, color));
+                mergerArray.add(new HighlightInfo(startIndex, endIndex, style));
             } else {
                 hi = mergerArray.get(mergerArray.size() - 1);
-                if (hi.color == color && hi.endOffset == startIndex) {
+                if (hi.color == style && hi.endOffset == startIndex) {
                     hi.endOffset = endIndex;
                 } else {
-                    mergerArray.add(new HighlightInfo(startIndex, endIndex, color));
+                    mergerArray.add(new HighlightInfo(startIndex, endIndex, style));
                 }
             }
         }

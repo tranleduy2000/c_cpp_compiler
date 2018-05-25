@@ -1,6 +1,6 @@
 package com.duy.ide.editor.theme.model;
 
-import android.support.annotation.Nullable;
+import android.graphics.Color;
 
 import org.gjt.sp.jedit.awt.Font;
 
@@ -13,8 +13,12 @@ import org.gjt.sp.jedit.awt.Font;
  */
 public class SyntaxStyle {
     private int fgColor;
-    @Nullable
-    private Integer bgColor;
+
+    /**
+     * Background color can be null
+     */
+    private int bgColor = Color.TRANSPARENT;
+
     private Font font;
 
 
@@ -29,7 +33,7 @@ public class SyntaxStyle {
         this.bgColor = bgColor;
     }
 
-    public SyntaxStyle(int fgColor, Integer bgColor, Font font) {
+    public SyntaxStyle(int fgColor, int bgColor, Font font) {
         this.fgColor = fgColor;
         this.bgColor = bgColor;
         this.font = font;
@@ -46,7 +50,7 @@ public class SyntaxStyle {
     /**
      * Returns the background color.
      */
-    public Integer getBackgroundColor() {
+    public int getBackgroundColor() {
         return bgColor;
     }
 

@@ -6797,7 +6797,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(@Nullable SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case Preferences.KEY_FONT_SIZE:
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, preferences.getFontSize());

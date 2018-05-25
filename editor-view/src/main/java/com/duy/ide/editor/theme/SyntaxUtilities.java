@@ -54,7 +54,7 @@ public class SyntaxUtilities {
     /**
      * @since jEdit 4.3pre13
      */
-    public static Integer parseColor(String name, Integer defaultColor) {
+    public static int parseColor(String name, int defaultColor) {
         try {
             return Color.parseColor(name);
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class SyntaxUtilities {
     public static SyntaxStyle parseStyle(String str, int defaultFgColor)
             throws IllegalArgumentException {
         int fgColor = defaultFgColor;
-        Integer bgColor = null;
+        int bgColor = Color.TRANSPARENT;
         boolean italic = false;
         boolean bold = false;
         StringTokenizer st = new StringTokenizer(str);
@@ -83,7 +83,7 @@ public class SyntaxUtilities {
                 String substring = s.substring(6);
                 fgColor = parseColor(substring, Color.BLACK);
             } else if (s.startsWith("bgColor:")) {
-                bgColor = parseColor(s.substring(8), null);
+                bgColor = parseColor(s.substring(8), bgColor);
             } else if (s.startsWith("style:")) {
                 for (int i = 6; i < s.length(); i++) {
                     if (s.charAt(i) == 'i')

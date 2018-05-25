@@ -34,6 +34,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +42,8 @@ import android.view.MenuItem;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.span.ErrorSpan;
+import com.duy.ide.editor.theme.model.EditorTheme;
+import com.duy.ide.editor.theme.model.SyntaxStyle;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -52,7 +55,9 @@ import com.jecelyin.editor.v2.dialog.FinderDialog;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
+import org.gjt.sp.jedit.awt.Font;
 import org.gjt.sp.jedit.syntax.ModeProvider;
+import org.gjt.sp.jedit.syntax.Token;
 
 import java.io.File;
 import java.util.Locale;
@@ -445,7 +450,13 @@ public class EditorDelegate implements TextWatcher {
                 editableText.removeSpan(span);
             }
             if (startIndex < endIndex) {
-                editableText.setSpan(new ErrorSpan(Color.RED), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                EditorTheme editorTheme = mEditText.getEditorTheme();
+                SyntaxStyle color = editorTheme.getSyntaxStyles()[Token.INVALID];
+                Font font = color.getFont();
+                if (font != null){
+                    editableText.setSpan(new StyleSpan(font.getStyle()), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                editableText.setSpan(new ErrorSpan(color.getForegroundColor()), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }

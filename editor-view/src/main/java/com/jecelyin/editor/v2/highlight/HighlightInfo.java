@@ -18,15 +18,17 @@
 
 package com.jecelyin.editor.v2.highlight;
 
+import com.duy.ide.editor.theme.model.SyntaxStyle;
+
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class HighlightInfo {
     public int startOffset;
     public int endOffset;
-    public int color;
+    public SyntaxStyle color;
 
-    public HighlightInfo(int startOffset, int endOffset, int color) {
+    public HighlightInfo(int startOffset, int endOffset, SyntaxStyle color) {
         this.startOffset = startOffset;
         this.endOffset = endOffset;
         this.color = color;
