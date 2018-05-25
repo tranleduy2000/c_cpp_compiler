@@ -27,10 +27,12 @@ import com.jecelyin.editor.v2.Preferences;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class LayoutContext {
-    //line number paint
-    public Paint gutterForegroundPaint;
-    public Paint gutterDividerPaint;
-    public Paint gutterBackgroundPaint;
+    public static final float LINE_NUMBER_FACTOR = 0.8f;
+
+    //gutter, line number attrs
+    private Paint gutterForegroundPaint;
+    private Paint gutterDividerPaint;
+    private Paint gutterBackgroundPaint;
     public int gutterWidth;
 
     public Preferences preferences;

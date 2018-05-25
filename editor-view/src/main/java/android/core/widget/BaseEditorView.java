@@ -322,7 +322,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         mTransformation = null;
 
         int textColorHighlight = 0;
-//        ColorStateList textColor = null; //jec-
         ColorStateList textColor = ColorStateList.valueOf(Color.parseColor("#333333"));
         ColorStateList textColorHint = ColorStateList.valueOf(Color.parseColor("#808080"));
         ColorStateList textColorLink = null;
@@ -557,8 +556,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         if (mEditor != null) mEditor.prepareCursorControllers();
 
         // If not explicitly specified this view is important for accessibility.
-        if (getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+                setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+            }
         }
 
         init();
@@ -6775,17 +6776,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         preferences = layoutContext.preferences = Preferences.getInstance(getContext());
         preferences.registerOnSharedPreferenceChangeListener(this);
 
-        layoutContext.gutterForegroundPaint = new TextPaint(getPaint());
+        TextPaint gutterForegroundPaint = new TextPaint(getPaint());
+        gutterForegroundPaint.setTextSize(getTextSize() * LayoutContext.LINE_NUMBER_FACTOR);
+        layoutContext.setGutterForegroundPaint(gutterForegroundPaint);
+        layoutContext.setGutterDividerPaint(new Paint(getPaint()));
+        layoutContext.setGutterBackgroundPaint(new Paint(getPaint()));
 
-        Paint linePaint = new Paint();
-        linePaint.setColor(layoutContext.gutterForegroundPaint.getColor());
-        linePaint.setAntiAlias(false);
-        linePaint.setStyle(Paint.Style.STROKE);
-        layoutContext.gutterDividerPaint = linePaint;
-
-        Paint gutterBackgroundPaint = new Paint();
-        gutterBackgroundPaint.setColor(Color.LTGRAY);
-        layoutContext.gutterBackgroundPaint = gutterBackgroundPaint;
         setLineNumber(1);
         onTextSizeChanged();
         setTheme(ThemeLoader.loadDefault(getContext()));
@@ -6849,7 +6845,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     private void updateLayoutContext() {
         if (layoutContext.getGutterForegroundPaint() != null) {
-            layoutContext.getGutterForegroundPaint().setTextSize(getTextSize());
+            layoutContext.getGutterForegroundPaint().setTextSize(getTextSize() * LayoutContext.LINE_NUMBER_FACTOR);
         }
     }
 
@@ -6857,10 +6853,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Update tab width
      */
     private void updateTabChar() {
-
         float spaceWidth = mTextPaint.measureText(" ");
         float tabWidth = spaceWidth * (preferences == null ? 4 : preferences.getTabSize());
-
         Layout.TAB_INCREMENT = (int) tabWidth;
     }
 
@@ -6882,7 +6876,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         int numberPadding = SysUtils.dpAsPixels(getContext(), 2);
         int gutterPaddingRight = SysUtils.dpAsPixels(getContext(), 2);
 
-        float textWidth = layoutContext.gutterForegroundPaint.measureText(" ");
+        float textWidth = layoutContext.getGutterForegroundPaint().measureText(" ");
         double columnCount = Math.ceil(Math.log10(lineNumber)) + 2;
         columnCount = Math.max(1, columnCount);
 
@@ -6903,12 +6897,12 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         int width = getScrollX() + layoutContext.gutterWidth;
         int height = getScrollY() + getHeight();
-        canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.gutterBackgroundPaint);
-        canvas.drawLine(width, getScrollY(), width, height, layoutContext.gutterDividerPaint);
+        canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.getGutterBackgroundPaint());
+        canvas.drawLine(width, getScrollY(), width, height, layoutContext.getGutterDividerPaint());
 
         List<TextLineNumber.LineInfo> lines = layoutContext.textLineNumber.getLines();
         for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.gutterForegroundPaint);
+            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.getGutterForegroundPaint());
         }
     }
 
@@ -6930,9 +6924,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         setTextColor(editorTheme.getFgColor());
         setHighlightColor(editorTheme.getSelectionColor());
 
-        layoutContext.gutterForegroundPaint.setColor(editorTheme.getGutterStyle().getFgColor());
-        layoutContext.gutterBackgroundPaint.setColor(editorTheme.getGutterStyle().getBgColor());
-        layoutContext.gutterDividerPaint.setColor(editorTheme.getGutterStyle().getFoldColor());
+        layoutContext.getGutterForegroundPaint().setColor(editorTheme.getGutterStyle().getFgColor());
+        layoutContext.getGutterBackgroundPaint().setColor(editorTheme.getGutterStyle().getBgColor());
+        layoutContext.getGutterDividerPaint().setColor(editorTheme.getGutterStyle().getFoldColor());
+
         layoutContext.whiteSpaceColor = editorTheme.getWhiteSpaceStyle().getWhitespace();
         postInvalidate();
     }
