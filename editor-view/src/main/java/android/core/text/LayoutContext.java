@@ -27,6 +27,7 @@ import com.jecelyin.editor.v2.Preferences;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class LayoutContext {
+    //line number paint
     public Paint gutterForegroundPaint;
     public Paint gutterDividerPaint;
     public Paint gutterBackgroundPaint;

@@ -6775,13 +6775,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         preferences = layoutContext.preferences = Preferences.getInstance(getContext());
         preferences.registerOnSharedPreferenceChangeListener(this);
 
-        TextPaint lineNumberPaint = new TextPaint();
-        lineNumberPaint.setColor(Color.BLACK);
-        lineNumberPaint.setTypeface(getPaint().getTypeface());
-        lineNumberPaint.setTextSize(getPaint().getTextSize() * 0.5f);
-        lineNumberPaint.setTextAlign(Paint.Align.LEFT);
-        lineNumberPaint.setAntiAlias(true);
-        layoutContext.gutterForegroundPaint = lineNumberPaint;
+        layoutContext.gutterForegroundPaint = new TextPaint(getPaint());
 
         Paint linePaint = new Paint();
         linePaint.setColor(layoutContext.gutterForegroundPaint.getColor());
@@ -6846,9 +6840,22 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     private void onTextSizeChanged() {
+        updateLayoutContext();
         updateTabChar();
     }
 
+    /**
+     * Update text size of gutter paint, padding and some attrs
+     */
+    private void updateLayoutContext() {
+        if (layoutContext.getGutterForegroundPaint() != null) {
+            layoutContext.getGutterForegroundPaint().setTextSize(getTextSize());
+        }
+    }
+
+    /**
+     * Update tab width
+     */
     private void updateTabChar() {
 
         float spaceWidth = mTextPaint.measureText(" ");

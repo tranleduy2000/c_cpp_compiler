@@ -403,7 +403,7 @@ public abstract class Layout {
             if (layoutContext.preferences.isShowLineNumber()) {
                 int realLine = getRealLine(i);
                 if (realLine != 0) {
-                    layoutContext.textLineNumber.addLine(Integer.toString(realLine), lbottom);
+                    layoutContext.textLineNumber.addLine(Integer.toString(realLine), lbaseline);
                 }
             }
 

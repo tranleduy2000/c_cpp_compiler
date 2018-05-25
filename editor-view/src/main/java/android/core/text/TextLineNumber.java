@@ -32,8 +32,8 @@ public class TextLineNumber {
         lineInfoList.clear();
     }
 
-    public void addLine(String text, int y) {
-        lineInfoList.add(new LineInfo(text, y));
+    public void addLine(String text, int baseline) {
+        lineInfoList.add(new LineInfo(text, baseline));
     }
 
     public List<LineInfo> getLines() {
@@ -44,9 +44,9 @@ public class TextLineNumber {
         public String text;
         public int y;
 
-        public LineInfo(String text, int y) {
+        public LineInfo(String text, int baseline) {
             this.text = text;
-            this.y = y;
+            this.y = baseline;
         }
     }
 }
