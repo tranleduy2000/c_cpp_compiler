@@ -62,9 +62,9 @@ public class WhiteSpaceStyle extends ColorScheme {
     public enum Attr {
         WHITE_SPACE_BLOCK_COLOR("white-space.block-color"),
         WHITE_SPACE_FOLD_COLOR("white-space.fold-color"),
-        WHITE_SPACE_SPACE_COLOR("white-space.space-color"),
-        WHITE_SPACE_TAB_COLOR("white-space.tab-color"),
-        WHITE_SPACE_WHITESPACE_COLOR("white-space.whitespace-color");
+        SPACE_COLOR("white-space.space-color"),
+        TAB_COLOR("white-space.tab-color"),
+        WHITESPACE_COLOR("white-space.whitespace-color");
 
         private String key;
 

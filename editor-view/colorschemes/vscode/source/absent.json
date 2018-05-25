@@ -443,9 +443,9 @@
     "editor.background": "#252c33",
     "editorCursor.foreground": "#ffffff",
     "editor.foreground": "#aeb9c4",
-    "editorWhitespace.foreground": "#45525f",
     "editor.lineHighlightBackground": "#2b343c",
     "editor.selectionBackground": "#228a9655",
+
     "sideBar.background": "#303942",
     "sideBar.foreground": "#aeb9c4",
     "sideBarSectionHeader.background": "#36404b",
@@ -467,6 +467,7 @@
     "list.activeSelectionForeground": "#252c33",
     "list.inactiveSelectionBackground": "#252c33",
     "list.focusBackground": "#45525f",
+
     "editorLineNumber.foreground": "#505f6e",
     "editorIndentGuide.background": "#3a4551",
     "editorWhitespace.foreground": "#3a4551",

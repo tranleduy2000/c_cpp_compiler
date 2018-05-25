@@ -67,7 +67,7 @@ public class GutterStyle extends ColorScheme {
     }
 
 
-    private enum Attr {
+    public enum Attr {
         VIEW_GUTTER_BG_COLOR("view.gutter.bgColor"),
         VIEW_GUTTER_CURRENT_LINE_COLOR("view.gutter.currentLineColor"),
         VIEW_GUTTER_FG_COLOR("view.gutter.fgColor"),

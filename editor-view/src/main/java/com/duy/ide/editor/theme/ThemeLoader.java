@@ -20,7 +20,7 @@ import java.util.WeakHashMap;
 public class ThemeLoader {
     private static final String TAG = "ThemeLoader";
     private static final WeakHashMap<String, EditorTheme> CACHED = new WeakHashMap<>();
-    private static final String ASSET_PATH = "themes/v1";
+    private static final String ASSET_PATH = "themes/vscode";
 
     public static void init(Context context) {
         try {
@@ -52,9 +52,9 @@ public class ThemeLoader {
     }
 
     private static void loadTheme(Context context, String theme) {
-        if (CACHED.get(theme) != null) {
-            return;
-        }
+//        if (CACHED.get(theme) != null) {
+//            return;
+//        }
         EditorTheme editorTheme = loadFromAsset(context.getAssets(), ASSET_PATH + "/" + theme);
         CACHED.put(theme, editorTheme);
     }
