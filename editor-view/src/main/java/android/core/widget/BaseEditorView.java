@@ -789,10 +789,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
-    }
-
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -806,6 +802,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
+    }
+
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -4584,6 +4584,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         int width;
         int height;
 
+        layoutContext.setHeightMode(heightMode);
+        layoutContext.setWidthMode(widthMode);
+
         BoringLayout.Metrics boring = UNKNOWN_BORING;
         BoringLayout.Metrics hintBoring = UNKNOWN_BORING;
 
@@ -6927,7 +6930,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         postInvalidate();
     }
 
-    public EditorTheme getEditorTheme(){
+    public EditorTheme getEditorTheme() {
         return mEditorTheme;
     }
 

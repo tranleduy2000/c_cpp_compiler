@@ -35,6 +35,7 @@ import android.text.style.LineBackgroundSpan;
 import android.text.style.ParagraphStyle;
 import android.text.style.ReplacementSpan;
 import android.text.style.TabStopSpan;
+import android.view.View;
 
 import java.util.Arrays;
 
@@ -81,7 +82,7 @@ public abstract class Layout {
     private static final char LINE_FEED_SIGN = '\u00b6'; // \n or \u00AC
     public static int TAB_INCREMENT = 40;
     private final LayoutContext layoutContext;
-    TextPaint mWorkPaint;
+    private TextPaint mWorkPaint;
     private CharSequence mText;
     private TextPaint mPaint;
     private int mWidth;
@@ -669,7 +670,11 @@ public abstract class Layout {
      * Return the total height of this layout.
      */
     public int getHeight() {
-        return getLineTop(getLineCount()) + PADDING; //可以拉出底部空白处
+        if (layoutContext.getHeightMode() == View.MeasureSpec.EXACTLY) {
+            return getLineTop(getLineCount()) + layoutContext.getPaddingBottom();
+        } else {
+            return getLineTop(getLineCount());
+        }
     }
 
     /**

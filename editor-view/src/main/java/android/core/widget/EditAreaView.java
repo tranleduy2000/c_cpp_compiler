@@ -27,6 +27,7 @@ import android.core.view.InputMethodManagerCompat;
 import android.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
 import android.support.annotation.MainThread;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.method.KeyListener;
@@ -121,6 +122,7 @@ public class EditAreaView extends BaseEditorView {
     /**
      * Helper object that renders and controls the fast scroll thumb.
      */
+    @Nullable
     private FastScroller mFastScroller;
     private int mMinimumVelocity;
     private int mMaximumVelocity;

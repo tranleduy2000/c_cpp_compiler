@@ -32,7 +32,6 @@ public class LayoutContext {
     public Paint gutterBackgroundPaint;
     public int gutterWidth;
 
-
     public Preferences preferences;
 
     public int cursorThickness;
@@ -42,6 +41,30 @@ public class LayoutContext {
     public int lineNumber = -1;
     public int lineNumberX;
     public TextLineNumber textLineNumber = new TextLineNumber();
+
+    private int widthMode;
+    private int heightMode;
+    private int paddingBottom;
+
+    public LayoutContext() {
+        paddingBottom = 920;
+    }
+
+    public int getWidthMode() {
+        return widthMode;
+    }
+
+    public void setWidthMode(int widthMode) {
+        this.widthMode = widthMode;
+    }
+
+    public int getHeightMode() {
+        return heightMode;
+    }
+
+    public void setHeightMode(int heightMode) {
+        this.heightMode = heightMode;
+    }
 
     public int getWhiteSpaceColor() {
         return whiteSpaceColor;
@@ -129,5 +152,13 @@ public class LayoutContext {
 
     public void setTextLineNumber(TextLineNumber textLineNumber) {
         this.textLineNumber = textLineNumber;
+    }
+
+    public int getPaddingBottom() {
+        return paddingBottom;
+    }
+
+    public void setPaddingBottom(int paddingBottom) {
+        this.paddingBottom = paddingBottom;
     }
 }
