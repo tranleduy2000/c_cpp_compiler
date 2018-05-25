@@ -188,7 +188,7 @@ public class InstallActivity extends BaseActivity {
                 publishProgress("Test C compiler\n");
                 File file = new File(getCacheDir(), "tmp.c");
                 FileOutputStream output = new FileOutputStream(file);
-                IOUtils.write("#include <stdio.h>\n" + "int main(){ return 0; }", output);
+                IOUtils.write(/*"#include <stdio.h>\n" +*/ "int main(){ return 0; }", output);
                 output.close();
 
                 GCCCompiler compiler = new GCCCompiler(context, new CompileSetting(context));
@@ -201,7 +201,7 @@ public class InstallActivity extends BaseActivity {
                 //Check C++ compiler
                 publishProgress("Test C++ compiler\n");
                 output = new FileOutputStream(file);
-                IOUtils.write("#include <iostream>\n" + "using namespace std;\n" + "int main() { return 0; }", output);
+                IOUtils.write(/*"#include <iostream>\n" + "using namespace std;\n" +*/ "int main() { return 0; }", output);
                 output.close();
                 compiler = new GPlusPlusCompiler(context, new CompileSetting(context));
                 result = compiler.compile(new File[]{file});

@@ -26,7 +26,6 @@ public enum ThemeAttr {
     jdiff_selected_highlight_changed_color("jdiff.selected-highlight-changed-color"),
     jdiff_selected_highlight_deleted_color("jdiff.selected-highlight-deleted-color"),
     jdiff_selected_highlight_inserted_color("jdiff.selected-highlight-inserted-color"),
-    scheme_name("scheme.name"),
     tasklist_highlight_color("tasklist.highlight.color"),
 
     view_status_background("view.status.background"),

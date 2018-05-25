@@ -20,7 +20,7 @@ import java.util.WeakHashMap;
 public class ThemeLoader {
     private static final String TAG = "ThemeLoader";
     private static final WeakHashMap<String, EditorTheme> CACHED = new WeakHashMap<>();
-    private static final String ASSET_PATH = "themes";
+    private static final String ASSET_PATH = "themes/v1";
 
     public static void init(Context context) {
         try {
@@ -48,11 +48,11 @@ public class ThemeLoader {
 
     public static EditorTheme loadDefault(Context context) {
         AssetManager assets = context.getAssets();
-        return loadFromAsset(assets, "themes/Solarized-dark.properties");
+        return loadFromAsset(assets, "themes/v1/BlueDawn-thirdparty.properties");
     }
 
     private static void loadTheme(Context context, String theme) {
-        if (CACHED.containsKey(theme)) {
+        if (CACHED.get(theme) != null) {
             return;
         }
         EditorTheme editorTheme = loadFromAsset(context.getAssets(), ASSET_PATH + "/" + theme);

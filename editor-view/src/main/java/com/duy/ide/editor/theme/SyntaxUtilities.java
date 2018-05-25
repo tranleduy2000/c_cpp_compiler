@@ -94,6 +94,8 @@ public class SyntaxUtilities {
                         throw new IllegalArgumentException(
                                 "Invalid style: " + s);
                 }
+            } else if (s.startsWith("#")) {
+                fgColor = parseColor(s, defaultFgColor);
             } else
                 throw new IllegalArgumentException(
                         "Invalid directive: " + s);
@@ -124,15 +126,16 @@ public class SyntaxUtilities {
         SyntaxStyle[] styles = new SyntaxStyle[Token.ID_COUNT];
 
         // start at 1 not 0 to skip Token.NULL
+        SyntaxStyle prev = null;
         for (int i = 1; i < styles.length; i++) {
             String styleName = "view.style." + Token.tokenToString((byte) i).toLowerCase(Locale.ENGLISH);
             try {
                 String property = properties.getProperty(styleName);
-                if (DLog.DEBUG) DLog.d(TAG, "styleName = " + styleName);
-                if (DLog.DEBUG) DLog.d(TAG, "property = " + property);
                 styles[i] = parseStyle(property);
+                prev = styles[i];
             } catch (Exception e) {
-                if (DLog.DEBUG) DLog.e(TAG, "loadStyles: failed " + styleName);
+                if (DLog.DEBUG) DLog.w(TAG, "loadStyles: failed " + styleName);
+                styles[i] = prev;
             }
         }
 

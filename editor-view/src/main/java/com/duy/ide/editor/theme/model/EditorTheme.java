@@ -3,10 +3,11 @@ package com.duy.ide.editor.theme.model;
 import android.graphics.Color;
 
 import com.duy.ide.editor.theme.SyntaxUtilities;
-import com.duy.ide.editor.theme.ThemeAttr;
 import com.jecelyin.common.utils.DLog;
 
 import java.util.Properties;
+
+import static com.duy.ide.editor.theme.model.EditorTheme.Attr.SCHEME_NAME;
 
 
 public class EditorTheme extends ColorScheme {
@@ -68,6 +69,9 @@ public class EditorTheme extends ColorScheme {
     @Override
     public void load(Properties properties) {
         for (Attr attr : Attr.values()) {
+            if (attr == SCHEME_NAME){
+                continue;
+            }
             try {
                 String color = properties.getProperty(attr.getKey());
                 put(attr.getKey(), Color.parseColor(color));
@@ -75,13 +79,18 @@ public class EditorTheme extends ColorScheme {
                 if (DLog.DEBUG) DLog.w(TAG, "load: missing attr " + attr.key);
             }
         }
-        name = properties.getProperty(ThemeAttr.scheme_name.getKey());
+        name = properties.getProperty(SCHEME_NAME.getKey());
         gutterStyle.load(properties);
         whiteSpaceStyle.load(properties);
         syntaxStyles = SyntaxUtilities.loadStyles(properties);
     }
 
-    private enum Attr {
+    public String getName() {
+        return name;
+    }
+
+    public enum Attr {
+        SCHEME_NAME("scheme.name"),
         VIEW_BG_COLOR("view.bgColor"),
         VIEW_CARET_COLOR("view.caretColor"),
         VIEW_EOL_MARKER_COLOR("view.eolMarkerColor"),

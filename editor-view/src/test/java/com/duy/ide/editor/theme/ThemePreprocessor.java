@@ -19,7 +19,7 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class ThemePreprocessor extends TestCase {
-    public void test() throws IOException, ParserConfigurationException, SAXException {
+    public void testv2() throws IOException, ParserConfigurationException, SAXException {
         File dir = new File(System.getenv("user.dir"), "colorschemes/v2");
         File[] files = dir.listFiles();
         for (File file : files) {
@@ -28,7 +28,7 @@ public class ThemePreprocessor extends TestCase {
             FileInputStream input = new FileInputStream(file);
             String content = IOUtils.toString(input, "UTF-8");
             input.close();
-            content = clean(content);
+            content = convert(content);
 
             File outFile = new File(file.getParent(), "gen/" + file.getName());
             outFile.getParentFile().mkdir();
@@ -39,7 +39,27 @@ public class ThemePreprocessor extends TestCase {
         }
     }
 
-    private String clean(String content) throws IOException {
+    public void testv1() throws IOException, ParserConfigurationException, SAXException {
+        File dir = new File(System.getenv("user.dir"), "colorschemes/v1");
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            System.out.println("file = " + file);
+
+            FileInputStream input = new FileInputStream(file);
+            String content = IOUtils.toString(input, "UTF-8");
+            input.close();
+            content = convert(content);
+
+            File outFile = new File(file.getParent(), "gen/" + file.getName());
+            outFile.getParentFile().mkdir();
+            outFile.createNewFile();
+            FileOutputStream output = new FileOutputStream(outFile);
+            IOUtils.write(content, output);
+            output.close();
+        }
+    }
+
+    private String convert(String content) throws IOException {
         System.out.println("ThemePreprocessor.clean");
         System.out.println("content = " + content);
         Properties properties = new Properties();

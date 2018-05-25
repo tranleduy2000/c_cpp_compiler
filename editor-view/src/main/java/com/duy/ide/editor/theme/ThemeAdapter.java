@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.EditorTheme;
@@ -40,11 +41,13 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final EditorTheme editorTheme = mEditorThemes.get(position);
+
+        holder.mTxtName.setText(editorTheme.getName());
         EditAreaView editorView = holder.mEditorView;
 
         Buffer buffer = new Buffer();
         Highlighter highlighter = new Highlighter();
-        EditorTheme editorTheme = mEditorThemes.get(position);
         editorView.setTheme(editorTheme);
         editorView.setEnabled(false);
         editorView.setFocusable(false);
@@ -91,10 +94,12 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         EditAreaView mEditorView;
+        TextView mTxtName;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mEditorView = itemView.findViewById(R.id.editor_view);
+            mTxtName = itemView.findViewById(R.id.txt_name);
         }
     }
 }

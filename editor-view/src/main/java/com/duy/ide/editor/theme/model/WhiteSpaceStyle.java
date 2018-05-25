@@ -2,10 +2,13 @@ package com.duy.ide.editor.theme.model;
 
 import android.graphics.Color;
 
+import com.duy.common.DLog;
+
 import java.util.Properties;
 
 public class WhiteSpaceStyle extends ColorScheme {
 
+    private static final String TAG = "WhiteSpaceStyle";
     private int block;
     private int fold;
     private int space;
@@ -28,26 +31,21 @@ public class WhiteSpaceStyle extends ColorScheme {
         return block;
     }
 
-
     public int getFold() {
         return fold;
     }
-
 
     public int getSpace() {
         return space;
     }
 
-
     public int getTab() {
         return tab;
     }
 
-
     public int getWhitespace() {
         return whitespace;
     }
-
 
     @Override
     public void load(Properties properties) {
@@ -56,7 +54,7 @@ public class WhiteSpaceStyle extends ColorScheme {
                 String color = properties.getProperty(attr.getKey());
                 put(attr.getKey(), Color.parseColor(color));
             } catch (Exception ignored) {
-                ignored.printStackTrace();
+                if (DLog.DEBUG) DLog.w(TAG, "load: failed " + attr.key);
             }
         }
     }
