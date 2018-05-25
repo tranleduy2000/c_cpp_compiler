@@ -18,7 +18,6 @@
 
 package android.core.text;
 
-//import android.emoji.EmojiFactory;
 
 import android.core.util.ArrayUtils;
 import android.core.util.GrowingArrayUtils;
@@ -38,10 +37,6 @@ import android.text.style.ReplacementSpan;
 import android.text.style.TabStopSpan;
 
 import java.util.Arrays;
-
-//import android.text.TextUtils;
-//import com.android.internal.util.ArrayUtils;
-//import com.android.internal.util.GrowingArrayUtils;
 
 /**
  * A base class that manages text layout in visual elements on

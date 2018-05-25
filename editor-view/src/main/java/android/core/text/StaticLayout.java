@@ -947,11 +947,6 @@ public class StaticLayout extends Layout {
     }
 
     @Override
-    public int getHeight() {
-        return getLineTop(getLineCount());
-    }
-
-    @Override
     public int getEllipsisCount(int line) {
         if (mColumns < COLUMNS_ELLIPSIZE) {
             return 0;
