@@ -9,42 +9,34 @@ import java.util.Properties;
 public class WhiteSpaceStyle extends ColorScheme {
 
     private static final String TAG = "WhiteSpaceStyle";
-    private int block = Color.TRANSPARENT;
-    private int fold = Color.TRANSPARENT;
-    private int space = Color.TRANSPARENT;
-    private int tab = Color.TRANSPARENT;
-    private int whitespace = Color.TRANSPARENT;
 
     public WhiteSpaceStyle() {
 
     }
 
-    public WhiteSpaceStyle(int block, int fold, int space, int tab, int whitespace) {
-        this.block = block;
-        this.fold = fold;
-        this.space = space;
-        this.tab = tab;
-        this.whitespace = whitespace;
-    }
 
     public int getBlock() {
-        return block;
+        return getColor(Attr.BLOCK_COLOR.getKey());
     }
 
     public int getFold() {
-        return fold;
+        return getColor(Attr.FOLD_COLOR.getKey());
+
     }
 
     public int getSpace() {
-        return space;
+        return getColor(Attr.SPACE_COLOR.getKey());
+
     }
 
     public int getTab() {
-        return tab;
+        return getColor(Attr.TAB_COLOR.getKey());
+
     }
 
     public int getWhitespace() {
-        return whitespace;
+        return getColor(Attr.WHITESPACE_COLOR.getKey());
+
     }
 
     @Override
