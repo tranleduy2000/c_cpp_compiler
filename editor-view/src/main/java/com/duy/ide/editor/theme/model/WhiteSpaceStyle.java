@@ -9,11 +9,11 @@ import java.util.Properties;
 public class WhiteSpaceStyle extends ColorScheme {
 
     private static final String TAG = "WhiteSpaceStyle";
-    private int block;
-    private int fold;
-    private int space;
-    private int tab;
-    private int whitespace;
+    private int block = Color.TRANSPARENT;
+    private int fold = Color.TRANSPARENT;
+    private int space = Color.TRANSPARENT;
+    private int tab = Color.TRANSPARENT;
+    private int whitespace = Color.TRANSPARENT;
 
     public WhiteSpaceStyle() {
 
@@ -60,8 +60,8 @@ public class WhiteSpaceStyle extends ColorScheme {
     }
 
     public enum Attr {
-        WHITE_SPACE_BLOCK_COLOR("white-space.block-color"),
-        WHITE_SPACE_FOLD_COLOR("white-space.fold-color"),
+        BLOCK_COLOR("white-space.block-color"),
+        FOLD_COLOR("white-space.fold-color"),
         SPACE_COLOR("white-space.space-color"),
         TAB_COLOR("white-space.tab-color"),
         WHITESPACE_COLOR("white-space.whitespace-color");

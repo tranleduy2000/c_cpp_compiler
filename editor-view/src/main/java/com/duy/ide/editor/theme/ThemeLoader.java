@@ -48,7 +48,7 @@ public class ThemeLoader {
 
     public static EditorTheme loadDefault(Context context) {
         AssetManager assets = context.getAssets();
-        return loadFromAsset(assets, "themes/v1/BlueDawn-thirdparty.properties");
+        return loadFromAsset(assets, "themes/vscode/absent-contrast.json.properties");
     }
 
     private static void loadTheme(Context context, String theme) {

@@ -1,10 +1,10 @@
 package com.duy.ide.editor.theme;
 
 import android.content.Context;
+import android.core.text.SpannableStringBuilder;
 import android.core.widget.EditAreaView;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;

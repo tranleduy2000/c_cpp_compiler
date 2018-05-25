@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardUseCompatPadding="true">
+    android:layout_marginTop="4dp"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txt_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/txt_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+    <android.core.widget.EditAreaView
+        android:id="@+id/editor_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <android.core.widget.EditAreaView
-            android:id="@+id/editor_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    </android.core.widget.EditAreaView>
+</LinearLayout>
 
-        </android.core.widget.EditAreaView>
-    </LinearLayout>
-
-</android.support.v7.widget.CardView>

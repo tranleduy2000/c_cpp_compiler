@@ -255,11 +255,9 @@ public class VsCodeThemePreprocessor extends TestCase {
         //view.style.literal1=color:#990099
         properties.put(SyntaxStyle.Attr.view_style_literal1.getKey(),
                 parseColor(tokenColors, "scope", "string", "settings"));
-
         //view.style.literal2=color:#522c2c
         properties.put(SyntaxStyle.Attr.view_style_literal2.getKey(),
                 parseColor(tokenColors, "scope", "constant.language", "settings"));
-
         //view.style.literal3=color:#9900cc
         properties.put(SyntaxStyle.Attr.view_style_literal3.getKey(),
                 parseColor(tokenColors, "scope", "constant.character", "settings"));
@@ -269,9 +267,11 @@ public class VsCodeThemePreprocessor extends TestCase {
         //view.style.operator=color:#003399 style:b todo
 
         //view.wrapGuideColor=#8080ff todo
-        //white-space.block-color=#000000 todo
-        //white-space.fold-color=#cccccc todo
 
+        //white-space.block-color=#000000
+        properties.put(WhiteSpaceStyle.Attr.BLOCK_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
+        //white-space.fold-color=#cccccc
+        properties.put(WhiteSpaceStyle.Attr.FOLD_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
         //white-space.space-color=#bcbcbc
         properties.put(WhiteSpaceStyle.Attr.SPACE_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
         //white-space.tab-color=#bcbcbc

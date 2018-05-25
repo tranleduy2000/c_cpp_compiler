@@ -66,10 +66,15 @@ public class EditorTheme extends ColorScheme {
         return whiteSpaceStyle;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public void load(Properties properties) {
+        setName(properties.getProperty(SCHEME_NAME.getKey()));
         for (Attr attr : Attr.values()) {
-            if (attr == SCHEME_NAME){
+            if (attr == SCHEME_NAME) {
                 continue;
             }
             try {
@@ -79,7 +84,7 @@ public class EditorTheme extends ColorScheme {
                 if (DLog.DEBUG) DLog.w(TAG, "load: missing attr " + attr.key);
             }
         }
-        name = properties.getProperty(SCHEME_NAME.getKey());
+
         gutterStyle.load(properties);
         whiteSpaceStyle.load(properties);
         syntaxStyles = SyntaxUtilities.loadStyles(properties);
