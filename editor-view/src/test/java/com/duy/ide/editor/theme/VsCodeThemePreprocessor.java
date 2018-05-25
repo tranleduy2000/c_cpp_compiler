@@ -175,7 +175,8 @@ public class VsCodeThemePreprocessor extends TestCase {
         JSONObject colors = theme.getJSONObject("colors");
 
         Properties properties = new Properties();
-        properties.put(EditorTheme.Attr.SCHEME_NAME.getKey(), theme.getString("name"));
+        properties.put(EditorTheme.ThemeAttr.SCHEME_NAME.getKey(), theme.getString("name"));
+        properties.put(EditorTheme.ThemeAttr.TYPE.getKey(), theme.getString("type"));
 
         //view.bgColor=#ffffff
         properties.put(EditorTheme.Attr.VIEW_BG_COLOR.getKey(), colors.getString("editor.background"));
@@ -197,7 +198,8 @@ public class VsCodeThemePreprocessor extends TestCase {
         properties.put(GutterStyle.Attr.VIEW_GUTTER_FG_COLOR.getKey(), colors.getString("editorLineNumber.foreground"));
 
         //view.gutter.focusBorderColor=#0099cc todo
-        //view.gutter.foldColor=#8eb58e todo
+        //view.gutter.foldColor=#8eb58e
+        properties.put(GutterStyle.Attr.VIEW_GUTTER_FOLD_COLOR.getKey(), colors.getString("editorIndentGuide.background"));
         //view.gutter.highlightColor=#000099 todo
         //view.gutter.markerColor=#deedfd todo
         //view.gutter.noFocusBorderColor=#ffffff todo
@@ -206,7 +208,6 @@ public class VsCodeThemePreprocessor extends TestCase {
 
         //view.lineHighlightColor=#e5f9ff
         properties.put(EditorTheme.Attr.VIEW_SELECTION_COLOR.getKey(), colors.getString("editor.lineHighlightBackground"));
-
         //view.selectionColor=#ccccff
         properties.put(EditorTheme.Attr.VIEW_SELECTION_COLOR.getKey(), colors.getString("editor.selectionBackground"));
 
@@ -236,7 +237,6 @@ public class VsCodeThemePreprocessor extends TestCase {
         //view.style.function=color:#996600
         properties.put(SyntaxStyle.Attr.view_style_function.getKey(),
                 parseColor(tokenColors, "scope", "entity.name.function", "settings"));
-
         //view.style.invalid=color:#ff6600 bgColor:#ffffcc style:b
         properties.put(SyntaxStyle.Attr.view_style_invalid.getKey(),
                 parseColor(tokenColors, "scope", "invalid", "settings"));
@@ -244,16 +244,20 @@ public class VsCodeThemePreprocessor extends TestCase {
         //view.style.keyword1=color:#cc3300 style:b
         properties.put(SyntaxStyle.Attr.view_style_keyword1.getKey(),
                 parseColor(tokenColors, "scope", "keyword", "settings"));
-
         //view.style.keyword2=color:#006699 style:b
         properties.put(SyntaxStyle.Attr.view_style_keyword2.getKey(),
+                parseColor(tokenColors, "scope", "keyword", "settings"));
+        //view.style.keyword3=color:#660066 style:b todo
+        properties.put(SyntaxStyle.Attr.view_style_keyword3.getKey(),
+                parseColor(tokenColors, "scope", "keyword", "settings"));
+        //view.style.keyword4=color:#66ccff style:b todo
+        properties.put(SyntaxStyle.Attr.view_style_keyword4.getKey(),
                 parseColor(tokenColors, "scope", "keyword.other", "settings"));
 
-        //view.style.keyword3=color:#660066 style:b todo
-        //view.style.keyword4=color:#66ccff style:b todo
 
-        //view.style.label=color:#990033 style:ib todo
-
+        //view.style.label=color:#990033 style:ib
+        properties.put(SyntaxStyle.Attr.view_style_label.getKey(),
+                parseColor(tokenColors, "scope", "entity.name.class", "settings"));
         //view.style.literal1=color:#990099
         properties.put(SyntaxStyle.Attr.view_style_literal1.getKey(),
                 parseColor(tokenColors, "scope", "string", "settings"));
@@ -263,13 +267,16 @@ public class VsCodeThemePreprocessor extends TestCase {
         //view.style.literal3=color:#9900cc
         properties.put(SyntaxStyle.Attr.view_style_literal3.getKey(),
                 parseColor(tokenColors, "scope", "constant.character", "settings"));
-
-        //view.style.literal4=color:#6600cc todo
-        //view.style.markup=color:#0099cc todo
-        //view.style.operator=color:#003399 style:b todo
-
-        //view.wrapGuideColor=#8080ff todo
-
+        //view.style.literal4=color:#6600cc
+        properties.put(SyntaxStyle.Attr.view_style_literal4.getKey(),
+                parseColor(tokenColors, "scope", "constant.character", "settings"));
+        //view.style.markup=color:#0099cc
+        properties.put(SyntaxStyle.Attr.view_style_markup.getKey(), colors.getString("editorCursor.foreground"));
+        //view.style.operator=color:#003399 style:b
+        properties.put(SyntaxStyle.Attr.view_style_operator.getKey(),
+                parseColor(tokenColors, "scope", "variable.parameter", "settings"));
+        //view.wrapGuideColor=#8080ff
+        properties.put(EditorTheme.Attr.VIEW_WRAP_GUIDE_COLOR.getKey(), colors.getString("editorIndentGuide.background"));
         //white-space.block-color=#000000
         properties.put(WhiteSpaceStyle.Attr.BLOCK_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
         //white-space.fold-color=#cccccc

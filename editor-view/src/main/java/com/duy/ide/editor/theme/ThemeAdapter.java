@@ -61,7 +61,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         editorView.setFocusable(false);
         editorView.setFocusableInTouchMode(false);
 
-        buffer.setMode(Catalog.getModeByName("C"), mContext);
+        buffer.setMode(Catalog.getModeByName("C++"), mContext);
         editorView.setText(new SpannableStringBuilder());
         editorView.getText().insert(0, getSampleData());
         buffer.setEditable(editorView.getText());
@@ -79,22 +79,35 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     }
 
     private CharSequence getSampleData() {
-        return "// C Program to Access Elements of an Array Using Pointer\n" +
+        return "// C++ Program to Find Largest Element of an Array\n" +
                 "\n" +
-                "// This program declares the array of five element and the elements of that array are accessed using pointer.\n" +
+                "// This program takes n number of element from user (where, n is specified by user) and stores data in an array. Then, this program displays the largest element of that array using loops.\n" +
                 "\n" +
-                "#include <stdio.h>\n" +
+                "#include <iostream>\n" +
+                "\n" +
+                "using namespace std;\n" +
                 "\n" +
                 "int main() {\n" +
-                "    int data[5], i;\n" +
-                "    printf(\"Enter elements: \");\n" +
+                "    int i, n;\n" +
+                "    float arr[100];\n" +
                 "\n" +
-                "    for (i = 0; i < 5; ++i)\n" +
-                "        scanf(\"%d\", data + i);\n" +
+                "    cout << \"Enter total number of elements(1 to 100): \";\n" +
+                "    cin >> n;\n" +
+                "    cout << endl;\n" +
                 "\n" +
-                "    printf(\"You entered: \\n\");\n" +
-                "    for (i = 0; i < 5; ++i)\n" +
-                "        printf(\"%d\\n\", *(data + i));\n" +
+                "    // Store number entered by the user\n" +
+                "    for (i = 0; i < n; ++i) {\n" +
+                "        cout << \"Enter Number \" << i + 1 << \" : \";\n" +
+                "        cin >> arr[i];\n" +
+                "    }\n" +
+                "\n" +
+                "    // Loop to store largest number to arr[0]\n" +
+                "    for (i = 1; i < n; ++i) {\n" +
+                "        // Change < to > if you want to find the smallest element\n" +
+                "        if (arr[0] < arr[i])\n" +
+                "            arr[0] = arr[i];\n" +
+                "    }\n" +
+                "    cout << \"Largest element = \" << arr[0];\n" +
                 "\n" +
                 "    return 0;\n" +
                 "}";

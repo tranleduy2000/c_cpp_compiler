@@ -7,8 +7,6 @@ import com.jecelyin.common.utils.DLog;
 
 import java.util.Properties;
 
-import static com.duy.ide.editor.theme.model.EditorTheme.Attr.SCHEME_NAME;
-
 
 public class EditorTheme extends ColorScheme {
     private static final String TAG = "EditorTheme";
@@ -68,17 +66,10 @@ public class EditorTheme extends ColorScheme {
         return whiteSpaceStyle;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public void load(Properties properties) {
-        setName(properties.getProperty(SCHEME_NAME.getKey()));
+        setName(properties.getProperty(ThemeAttr.SCHEME_NAME.getKey()));
         for (Attr attr : Attr.values()) {
-            if (attr == SCHEME_NAME) {
-                continue;
-            }
             try {
                 String color = properties.getProperty(attr.getKey());
                 put(attr.getKey(), Color.parseColor(color));
@@ -96,8 +87,27 @@ public class EditorTheme extends ColorScheme {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public enum ThemeAttr {
+        SCHEME_NAME("theme.name"),
+        TYPE("theme.type"),
+        STATUS_BAR_BACKGROUND("theme.statusbar.background"),
+        STATUS_BAR_FOREGROUND("theme.statusbar.foreground");
+        private String key;
+
+        ThemeAttr(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return key;
+        }
+    }
+
     public enum Attr {
-        SCHEME_NAME("scheme.name"),
         VIEW_BG_COLOR("view.bgColor"),
         VIEW_CARET_COLOR("view.caretColor"),
         VIEW_EOL_MARKER_COLOR("view.eolMarkerColor"),
