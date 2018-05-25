@@ -26,6 +26,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.ide.editor.editor.R;
@@ -62,7 +63,7 @@ public class Document implements ReadFileListener, TextWatcher {
     private final Preferences mPreferences;
     private final Buffer mBuffer;
     @SuppressLint("UseSparseArrays")
-    private final HashMap<Integer, ArrayList<ForegroundColorSpan>> mColorSpanMap = new HashMap<>();
+    private final HashMap<Integer, ArrayList<? extends CharacterStyle>> mColorSpanMap = new HashMap<>();
     private int mLineCount;
     private String mEncoding = "UTF-8";
     private byte[] mSourceMD5;

@@ -27,7 +27,7 @@ public class Highlighter {
     }
 
     public void highlight(Buffer buffer, EditorTheme editorTheme,
-                          HashMap<Integer, ArrayList<CharacterStyle>> colorsMap,
+                          HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap,
                           Spannable spannable,
                           int startLine, int endLine) {
         if (!buffer.isCanHighlight())
@@ -49,10 +49,10 @@ public class Highlighter {
     }
 
     private void addTokenSpans(Spannable spannable, int line, ArrayList<HighlightInfo> mergerArray,
-                               HashMap<Integer, ArrayList<CharacterStyle>> colorsMap) {
+                               HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap) {
         CharacterStyle fcs;
 
-        ArrayList<CharacterStyle> oldSpans = colorsMap.remove(line);
+        ArrayList<? extends CharacterStyle> oldSpans = colorsMap.remove(line);
         if (oldSpans != null) {
             for (CharacterStyle span : oldSpans) {
                 spannable.removeSpan(span);

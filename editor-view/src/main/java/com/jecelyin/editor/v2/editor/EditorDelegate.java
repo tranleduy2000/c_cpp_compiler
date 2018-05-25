@@ -453,7 +453,7 @@ public class EditorDelegate implements TextWatcher {
                 EditorTheme editorTheme = mEditText.getEditorTheme();
                 SyntaxStyle color = editorTheme.getSyntaxStyles()[Token.INVALID];
                 Font font = color.getFont();
-                if (font != null){
+                if (font != null) {
                     editableText.setSpan(new StyleSpan(font.getStyle()), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 editableText.setSpan(new ErrorSpan(color.getForegroundColor()), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

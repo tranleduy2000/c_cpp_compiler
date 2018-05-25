@@ -5,7 +5,7 @@ import android.core.text.SpannableStringBuilder;
 import android.core.widget.EditAreaView;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.style.ForegroundColorSpan;
+import android.text.style.CharacterStyle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +67,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         buffer.setEditable(editorView.getText());
         buffer.insert(0, getSampleData());
 
-        HashMap<Integer, ArrayList<ForegroundColorSpan>> colorsMap = new HashMap<>();
+        HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap = new HashMap<>();
         int lineCount = buffer.getLineManager().getLineCount();
         highlighter.highlight(buffer, editorTheme, colorsMap, editorView.getText(), 0, lineCount - 1);
     }
