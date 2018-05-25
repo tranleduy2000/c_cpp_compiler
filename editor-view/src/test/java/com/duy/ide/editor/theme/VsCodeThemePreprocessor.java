@@ -59,7 +59,6 @@ public class VsCodeThemePreprocessor extends TestCase {
             }
         });
         File assestDir = new File("D:\\github\\CCppCompiler\\editor-view\\src\\main\\assets\\themes\\vscode");
-        System.out.println("assestDir = " + assestDir.getPath());
         assestDir.mkdir();
         for (File file : files) {
             FileInputStream input = new FileInputStream(file);
@@ -71,7 +70,7 @@ public class VsCodeThemePreprocessor extends TestCase {
         }
     }
 
-    private void removeDuplicateKeys() throws IOException {
+    private void removeDuplicateKeys() throws IOException, JSONException {
         File sourceDir = new File(mRootDir, "source");
         sourceDir.mkdir();
         File[] files = sourceDir.listFiles(new FileFilter() {
@@ -94,11 +93,18 @@ public class VsCodeThemePreprocessor extends TestCase {
             input.close();
             content = removeDuplicateKeys(content);
 
+//            JSONObject jsonObject = new JSONObject(content);
+//            content = jsonObject.toString();
+
             File outFile = new File(outDir, file.getName());
             FileOutputStream output = new FileOutputStream(outFile);
             IOUtils.write(content, output);
             output.close();
         }
+    }
+
+    private void sort(JSONObject jsonObject) {
+
     }
 
     private String removeDuplicateKeys(String content) {
@@ -123,7 +129,7 @@ public class VsCodeThemePreprocessor extends TestCase {
         }
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
-            if (keep[i]) {
+            if (keep[i] && !line.isEmpty()) {
                 result.append(line).append("\n");
             }
         }
@@ -167,7 +173,6 @@ public class VsCodeThemePreprocessor extends TestCase {
 
     //https://vscode-doc-jp.github.io/docs/getstarted/theme-color-reference.html
     private String convert(String content) throws IOException, JSONException {
-        System.out.println("VsCodeThemePreprocessor.convert");
         JSONObject theme = new JSONObject(content);
         JSONArray tokenColors = theme.getJSONArray("tokenColors");
         JSONObject colors = theme.getJSONObject("colors");

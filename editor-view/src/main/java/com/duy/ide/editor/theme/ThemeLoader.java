@@ -13,13 +13,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.WeakHashMap;
 
 public class ThemeLoader {
     private static final String TAG = "ThemeLoader";
-    private static final WeakHashMap<String, EditorTheme> CACHED = new WeakHashMap<>();
+    private static final HashMap<String, EditorTheme> CACHED = new HashMap<>();
     private static final String ASSET_PATH = "themes/vscode";
 
     public static void init(Context context) {

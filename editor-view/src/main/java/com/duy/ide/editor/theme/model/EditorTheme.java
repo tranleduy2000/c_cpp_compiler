@@ -12,9 +12,11 @@ import static com.duy.ide.editor.theme.model.EditorTheme.Attr.SCHEME_NAME;
 
 public class EditorTheme extends ColorScheme {
     private static final String TAG = "EditorTheme";
+
     private GutterStyle gutterStyle = new GutterStyle();
     private WhiteSpaceStyle whiteSpaceStyle = new WhiteSpaceStyle();
     private SyntaxStyle[] syntaxStyles;
+
     private String name;
 
     public SyntaxStyle[] getSyntaxStyles() {

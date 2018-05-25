@@ -19,6 +19,8 @@ import com.jecelyin.editor.v2.highlight.Buffer;
 import org.gjt.sp.jedit.Catalog;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> {
@@ -29,6 +31,12 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         mContext = context;
         ThemeLoader.init(context);
         mEditorThemes = ThemeLoader.getAll();
+        Collections.sort(mEditorThemes, new Comparator<EditorTheme>() {
+            @Override
+            public int compare(EditorTheme o1, EditorTheme o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
     }
 
 
