@@ -3,4 +3,5 @@
     <string name="pref_key_fullscreen" translatable="false">fullscreen_mode</string>
     <string name="pref_auto_save" translatable="false">pref_auto_save</string>
     <string name="pref_current_theme" translatable="false">pref_current_theme</string>
+    <string name="pref_theme_editor_theme">pref_key_editor_theme</string>
 </resources>

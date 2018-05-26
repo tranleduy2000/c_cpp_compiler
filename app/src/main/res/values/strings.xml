@@ -32,5 +32,7 @@
         2. Editor color schemes\n
         3. Change editor fonts
     </string>
+
     <string name="button_purchase_restore">Restore</string>
+    <string name="selected_theme">Selected %s</string>
 </resources>

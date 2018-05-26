@@ -385,6 +385,10 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         return getTheme() == 0;
     }
 
+    public void setEditorTheme(String name) {
+        preferences.edit().putString(context.getString(R.string.pref_theme_editor_theme), name).apply();
+    }
+
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
     public @interface ScreenOrientation {
     }

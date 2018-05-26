@@ -27,6 +27,8 @@ import java.util.HashMap;
 public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
     private final ArrayList<EditorTheme> mEditorThemes;
     private Context mContext;
+    private OnThemeSelectListener onThemeSelectListener;
+
 
     public ThemeAdapter(Context context) {
         mContext = context;
@@ -40,7 +42,6 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         });
     }
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -52,7 +53,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final EditorTheme editorTheme = mEditorThemes.get(position);
 
-        String title = makeTitle(position, editorTheme);
+        final String title = makeTitle(position, editorTheme);
         holder.mTxtName.setText(title);
         EditAreaView editorView = holder.mEditorView;
 
@@ -72,6 +73,15 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap = new HashMap<>();
         int lineCount = buffer.getLineManager().getLineCount();
         highlighter.highlight(buffer, editorTheme, colorsMap, editorView.getText(), 0, lineCount - 1);
+
+        holder.mBtnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onThemeSelectListener != null){
+                    onThemeSelectListener.onThemeSelected(editorTheme);
+                }
+            }
+        });
     }
 
     private String makeTitle(int position, EditorTheme editorTheme) {
@@ -96,7 +106,6 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         }
         return builder.toString();
     }
-
 
     @Override
     public int getItemCount() {
@@ -144,7 +153,16 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         return mEditorThemes.get(position).getName();
     }
 
+    public void setOnThemeSelectListener(OnThemeSelectListener onThemeSelectListener) {
+        this.onThemeSelectListener = onThemeSelectListener;
+    }
+
+    public interface OnThemeSelectListener {
+        void onThemeSelected(EditorTheme theme);
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
+         View mBtnSelect;
         EditAreaView mEditorView;
         TextView mTxtName;
 
@@ -152,6 +170,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
             super(itemView);
             mEditorView = itemView.findViewById(R.id.editor_view);
             mTxtName = itemView.findViewById(R.id.txt_name);
+            mBtnSelect = itemView.findViewById(R.id.btn_select);
         }
     }
 }

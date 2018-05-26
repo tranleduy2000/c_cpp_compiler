@@ -166,6 +166,10 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             case R.id.action_premium:
                 clickUpgrade();
                 break;
+
+            case R.id.action_editor_color_scheme:
+                startActivity(new Intent(this, EditorThemeActivity.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
