@@ -40,7 +40,7 @@ You can use this app to code and compile C/C++ project without Internet.
 - Dark/Light Themes
 
 ## Android install
-- For arm devices: download ``app-arch_armeabi_v7a-release.apk`` in release
+- For arm devices: download ``app-arch_arm7-release.apk`` in release
 - For x86 devices: download ``app-arch_x86-release.apk`` in release
 
 ## TODO
@@ -51,9 +51,11 @@ You can use this app to code and compile C/C++ project without Internet.
 
 ## Pull request always welcomed.
 
-![Screenshot](google-play-store/screenshots/Screenshot_20180527-003844.jpg)
-![Screenshot](google-play-store/screenshots/Screenshot_20180527-003909.jpg)
-![Screenshot](google-play-store/screenshots/Screenshot_20180527-003925.jpg)
+## Screenshots
+
+<img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/>
+<img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/>
+<img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/>
 
 ## License
 GNU GPL V3.0
