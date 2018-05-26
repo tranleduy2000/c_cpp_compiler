@@ -50,6 +50,7 @@ import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
+import com.kobakei.ratethisapp.RateThisApp;
 import com.pdaxrom.cctools.BuildConstants;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -93,6 +94,9 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 .replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
                 .commit();
         mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
+
+        // Monitor launch times and interval from installation
+        RateThisApp.onCreate(this);
     }
 
     @Override
@@ -282,8 +286,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 return;
             }
         }
-        super.onBackPressed();
 
+
+        // If the condition is satisfied, "Rate this app" dialog will be shown
+        if (!RateThisApp.showRateDialogIfNeeded(this)) {
+            super.onBackPressed();
+        }
     }
 
     @Override
