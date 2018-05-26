@@ -44,7 +44,7 @@ import java.util.StringTokenizer;
  */
 public class SysUtils {
 
-    public static int dpAsPixels(Context context, int dp) {
+    public static int dpToPixels(Context context, int dp) {
         Resources resources = context.getResources();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
     }

@@ -33,12 +33,6 @@ public class PremiumDialog extends AbstractDialog {
                 dialog.cancel();
             }
         });
-        builder.setNeutralButton(R.string.button_purchase_restore, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mPurchaseHelper.restorePurchase();
-            }
-        });
         builder.create().show();
     }
 }

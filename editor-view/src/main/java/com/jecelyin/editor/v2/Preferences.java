@@ -288,7 +288,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         if (width == 0)
             return 0;
 
-        return SysUtils.dpAsPixels(context, width);
+        return SysUtils.dpToPixels(context, width);
     }
 
     public boolean isReadOnly() {

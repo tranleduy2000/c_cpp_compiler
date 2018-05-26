@@ -16,7 +16,7 @@ import java.util.Properties;
 
 public class ThemeLoader {
     private static final String ASSET_PATH = "themes/vscode";
-    private static final String DEFAULT_EDITOR_THEME_LIGHT = "absent-light.json.properties";
+    private static final String DEFAULT_EDITOR_THEME_LIGHT = "bold-light.json.properties";
     private static final HashMap<String, EditorTheme> CACHED = new HashMap<>();
 
     public static void init(Context context) {

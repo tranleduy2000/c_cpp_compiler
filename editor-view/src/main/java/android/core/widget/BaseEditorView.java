@@ -122,7 +122,6 @@ import android.widget.RemoteViews.RemoteView;
 import android.widget.Scroller;
 
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.theme.ThemeLoader;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.SysUtils;
@@ -6877,8 +6876,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
             return;
         }
 
-        int numberPadding = SysUtils.dpAsPixels(getContext(), 2);
-        int gutterPaddingRight = SysUtils.dpAsPixels(getContext(), 2);
+        int numberPadding = SysUtils.dpToPixels(getContext(), 2);
+        int gutterPaddingRight = SysUtils.dpToPixels(getContext(), 2);
 
         float textWidth = layoutContext.getGutterForegroundPaint().measureText(" ");
         double columnCount = Math.ceil(Math.log10(lineNumber)) + 2;

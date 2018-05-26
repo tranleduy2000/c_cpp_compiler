@@ -60,7 +60,7 @@ public class EditorToolbar extends Toolbar {
         // Get the secondary text color of the theme
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = context.getTheme();
-        theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true);
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
         TypedArray arr = context.obtainStyledAttributes(typedValue.data, new int[]{
                 android.R.attr.textColorSecondary});
         int textColor = arr.getColor(0, Color.WHITE);
@@ -68,7 +68,7 @@ public class EditorToolbar extends Toolbar {
 
         mTitlePaint = new TextPaint();
         mTitlePaint.setColor(textColor);
-        mTitlePaint.setTextSize(SysUtils.spToPixels(getContext(), 10));
+        mTitlePaint.setTextSize(SysUtils.dpToPixels(getContext(), 9));
         mTitlePaint.setTextAlign(Paint.Align.LEFT);
         mTitlePaint.setAntiAlias(true);
     }
@@ -92,8 +92,8 @@ public class EditorToolbar extends Toolbar {
             return;
         }
         Paint.FontMetrics fontMetrics = mTitlePaint.getFontMetrics();
-        int x = SysUtils.dpAsPixels(getContext(), 16);
-        int y = (int) (getHeight() - (fontMetrics.bottom)) - SysUtils.dpAsPixels(getContext(), 2);
+        int x = SysUtils.dpToPixels(getContext(), 16);
+        int y = (int) (getHeight() - (fontMetrics.bottom)) - SysUtils.dpToPixels(getContext(), 2);
         canvas.drawText(title, 0, title.length(), x, y, mTitlePaint);
     }
 }
