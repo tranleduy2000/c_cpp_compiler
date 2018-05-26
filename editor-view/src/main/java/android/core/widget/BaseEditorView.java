@@ -6771,6 +6771,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     private void init() {
+        if(isInEditMode()){
+            return;
+        }
+
         setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
         preferences = layoutContext.preferences = Preferences.getInstance(getContext());

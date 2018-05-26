@@ -216,7 +216,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     /**
      * theme index of {@link #THEMES}
-     *
      */
     public void setTheme(int theme) {
         preferences.edit().putInt(context.getString(R.string.pref_current_theme), theme).apply();
@@ -380,6 +379,10 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public void setLastTab(int index) {
         preferences.edit().putInt(KEY_LAST_TAB, index).apply();
         map.put(KEY_LAST_TAB, index);
+    }
+
+    public boolean isUseLightTheme() {
+        return getTheme() == 0;
     }
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})

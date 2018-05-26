@@ -15,6 +15,7 @@ import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.editor.Highlighter;
 import com.jecelyin.editor.v2.highlight.Buffer;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import org.gjt.sp.jedit.Catalog;
 
@@ -23,7 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> {
+public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
     private final ArrayList<EditorTheme> mEditorThemes;
     private Context mContext;
 
@@ -51,7 +52,8 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final EditorTheme editorTheme = mEditorThemes.get(position);
 
-        holder.mTxtName.setText(editorTheme.getName());
+        String title = makeTitle(position, editorTheme);
+        holder.mTxtName.setText(title);
         EditAreaView editorView = holder.mEditorView;
 
         Buffer buffer = new Buffer();
@@ -70,6 +72,29 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap = new HashMap<>();
         int lineCount = buffer.getLineManager().getLineCount();
         highlighter.highlight(buffer, editorTheme, colorsMap, editorView.getText(), 0, lineCount - 1);
+    }
+
+    private String makeTitle(int position, EditorTheme editorTheme) {
+        StringBuilder builder = new StringBuilder(String.valueOf(position + 1));
+        builder.append(". ");
+        builder.append(editorTheme.getName());
+        for (int i = 0; i < builder.length(); i++) {
+            if (builder.charAt(i) == ' ' && i + 1 < builder.length()) {
+                builder.setCharAt(i + 1, Character.toUpperCase(builder.charAt(i + 1)));
+            }
+        }
+        return builder.toString();
+    }
+
+    private String refine(String name) {
+        StringBuilder builder = new StringBuilder(name);
+        builder.insert(9, " ");
+        for (int i = 0; i < builder.length(); i++) {
+            if (builder.charAt(i) == ' ' && i + 1 < builder.length()) {
+                builder.setCharAt(i + 1, Character.toUpperCase(builder.charAt(i + 1)));
+            }
+        }
+        return builder.toString();
     }
 
 
@@ -111,6 +136,12 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
                 "\n" +
                 "    return 0;\n" +
                 "}";
+    }
+
+    @NonNull
+    @Override
+    public String getSectionName(int position) {
+        return mEditorThemes.get(position).getName();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
