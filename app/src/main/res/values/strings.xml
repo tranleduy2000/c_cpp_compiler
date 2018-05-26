@@ -32,8 +32,9 @@
         3. Change editor fonts (5+ fonts)\n
         4. Terminal themes (10 themes)
     </string>
-
     <string name="button_purchase_restore">Restore</string>
+
+    <string name="editor_theme">Editor theme (Pro)</string>
     <string name="selected_editor_theme">Selected %s. Restart app to apply theme.</string>
     <string name="terminal">Terminal</string>
 </resources>

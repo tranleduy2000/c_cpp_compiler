@@ -219,5 +219,4 @@
     <string name="cannot_create_new_file">Cannot create file</string>
     <string name="not_a_text_file">The file %s seem like is not a text file. Do you want to open it?</string>
     <string name="home">Home</string>
-    <string name="editor_theme">Editor theme [Pro]</string>
 </resources>

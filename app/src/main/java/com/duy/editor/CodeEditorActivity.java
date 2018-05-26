@@ -110,6 +110,8 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_premium, 0, R.string.title_premium_version)
                     .setIcon(R.drawable.baseline_lock_open_24);
         }
+        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_editor_color_scheme, 0, R.string.editor_theme)
+                .setIcon(R.drawable.ic_color_lens_white_24dp);
 
         menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
