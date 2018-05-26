@@ -37,17 +37,23 @@ import javax.xml.transform.TransformerException;
 
 public class ExampleTest extends TestCase {
 
+    private File outDir;
+
+    public ExampleTest() {
+        outDir = new File(System.getenv("user.dir"), "examples");
+        outDir.mkdir();
+    }
+
     public void testGetExampleC() throws IOException, InterruptedException, ParserConfigurationException, TransformerException {
         String baseLocation = "https://www.programiz.com/c-programming/examples";
-        String language = "C";
-//        getExamples(baseLocation, language, "c");
+        String language = "c";
+        getExamples(baseLocation, language, "c");
     }
 
     public void testGetExampleCPlusPLus() throws IOException, TransformerException, ParserConfigurationException {
         String baseLocation = "https://www.programiz.com/cpp-programming/examples";
         String language = "cpp";
-//        getExamples(baseLocation, language, "cpp");
-
+        getExamples(baseLocation, language, "cpp");
     }
 
     private void getExamples(String baseLocation, String language, String ext) throws ParserConfigurationException, IOException, TransformerException {
@@ -70,9 +76,9 @@ public class ExampleTest extends TestCase {
         }
         xmlBuilder.append("</examples>");
 
-        File f = new File("./app/src/main/assets/example/" + language + "/" + "index.xml");
+        File f = new File(outDir, language + "/" + "index.xml");
         f.getParentFile().mkdirs();
-        f.createNewFile();
+
         FileOutputStream fileOutputStream = new FileOutputStream(f);
         fileOutputStream.write(xmlBuilder.toString().getBytes());
     }
@@ -92,11 +98,12 @@ public class ExampleTest extends TestCase {
         codeBuilder.append("// ").append(desc.replace("\n", "\n// "));
         codeBuilder.append("\n\n");
         codeBuilder.append(code.text());
+        codeBuilder.append("\n\n");
+        codeBuilder.append("// ").append(link);
         System.out.println(codeBuilder);
 
-        File file = new File("./app/src/main/assets/example/" + language + "/" + link.substring(link.lastIndexOf("/")) + "." + ext);
+        File file = new File(outDir, language + "/" + link.substring(link.lastIndexOf("/")) + "." + ext);
         file.getParentFile().mkdirs();
-        file.createNewFile();
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(codeBuilder.toString().getBytes());
 

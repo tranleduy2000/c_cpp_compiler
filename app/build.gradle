@@ -114,6 +114,8 @@ android {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
