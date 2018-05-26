@@ -9,11 +9,14 @@ public abstract class ColorScheme {
     private HashMap<String, Integer> colors = new HashMap<>();
 
     protected int getColor(String attr) {
-        Integer integer = colors.get(attr);
-        if (integer == null) {
+        Integer color = colors.get(attr);
+        if (color == null) {
             return Color.BLACK;
         }
-        return integer;
+        if (Color.alpha(color) == 0 && color != Color.TRANSPARENT) {
+            return Color.rgb(Color.red(color), Color.green(color), Color.blue(color));
+        }
+        return color;
     }
 
     protected void put(String key, int color) {

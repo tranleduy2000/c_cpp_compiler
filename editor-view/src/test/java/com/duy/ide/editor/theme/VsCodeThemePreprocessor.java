@@ -246,10 +246,10 @@ public class VsCodeThemePreprocessor extends TestCase {
                 parseColor(tokenColors, "scope", "keyword", "settings"));
         //view.style.keyword2=color:#006699 style:b
         properties.put(SyntaxStyle.Attr.view_style_keyword2.getKey(),
-                parseColor(tokenColors, "scope", "keyword", "settings"));
+                parseColor(tokenColors, "scope", "storage.type", "settings"));
         //view.style.keyword3=color:#660066 style:b todo
         properties.put(SyntaxStyle.Attr.view_style_keyword3.getKey(),
-                parseColor(tokenColors, "scope", "keyword", "settings"));
+                parseColor(tokenColors, "scope", "storage", "settings"));
         //view.style.keyword4=color:#66ccff style:b todo
         properties.put(SyntaxStyle.Attr.view_style_keyword4.getKey(),
                 parseColor(tokenColors, "scope", "keyword.other", "settings"));
