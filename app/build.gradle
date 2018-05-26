@@ -15,21 +15,22 @@ android {
         versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
 
     flavorDimensions "cpuArch"
     productFlavors {
+//        arch_arm7 {
+//            dimension 'cpuArch'
+//            versionNameSuffix "-armeabi-v7a"
+//            versionCode 2
+//            ndk.abiFilter "armeabi-v7a"
+//        }
         arch_x86 {
             dimension 'cpuArch'
             versionNameSuffix "-x86"
             versionCode 1
             ndk.abiFilter "x86"
-        }
-        arch_arm7 {
-            dimension 'cpuArch'
-            versionNameSuffix "-armeabi-v7a"
-            versionCode 2
-            ndk.abiFilter "armeabi-v7a"
         }
     }
     sourceSets {

@@ -17,6 +17,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?selectableItemBackground"
     android:orientation="vertical">
 
@@ -30,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/baseline_warning_black_18"
+            app:srcCompat="@drawable/baseline_warning_black_18"
             tools:tint="#d50000" />
 
         <android.support.v7.widget.AppCompatTextView

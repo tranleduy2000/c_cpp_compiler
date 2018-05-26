@@ -22,7 +22,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,13 +74,9 @@ public abstract class ThemeSupportActivity extends AppCompatActivity implements 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setTheme(Preferences.getInstance(this).getAppTheme());
         setFullScreenMode(isFullScreenMode());
-    }
-
-    protected void setupToolbar(Toolbar toolbar) {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     protected boolean isFullScreenMode() {
