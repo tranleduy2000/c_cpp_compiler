@@ -1,30 +1,27 @@
-package com.duy.editor;
+package com.duy.editor.theme;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
-import com.duy.ide.editor.theme.ThemeAdapter;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
-public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAdapter.OnThemeSelectListener {
-    private RecyclerView mRecyclerView;
-    private ThemeAdapter mThemeAdapter;
-    private Spinner mSpinner;
+public class ThemeActivity extends ThemeSupportActivity implements EditorThemeAdapter.OnThemeSelectListener {
     private Preferences mPreferences;
     private InAppPurchaseHelper mInAppPurchaseHelper;
 
@@ -35,20 +32,14 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("");
-        mPreferences = Preferences.getInstance(this);
 
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        mThemeAdapter = new ThemeAdapter(this);
-        mThemeAdapter.setOnThemeSelectListener(this);
-        mRecyclerView.setAdapter(mThemeAdapter);
-        mRecyclerView.scrollToPosition(findThemeIndex(mPreferences.getEditorTheme()));
+        mPreferences = Preferences.getInstance(this);
+        mInAppPurchaseHelper = new InAppPurchaseHelper(this);
 
         boolean useLightTheme = mPreferences.isUseLightTheme();
-        mSpinner = findViewById(R.id.spinner_themes);
-        mSpinner.setSelection(useLightTheme ? 0 : 1);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Spinner spinner = findViewById(R.id.spinner_themes);
+        spinner.setSelection(useLightTheme ? 0 : 1);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 useLightTheme(position == 0);
@@ -59,19 +50,41 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
 
             }
         });
-
-        mInAppPurchaseHelper = new InAppPurchaseHelper(this);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
-    }
 
-    private int findThemeIndex(EditorTheme editorTheme) {
-        int position = mThemeAdapter.getPosition(editorTheme);
-        if (position < 0) {
-            return 0;
-        }
-        return position;
-    }
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return new EditorThemeFragment();
+                    case 1:
+                        return new TerminalThemeFragment();
+                }
+                return null;
+            }
 
+            @Nullable
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return getString(R.string.editor);
+                    case 1:
+                        return getString(R.string.terminal);
+                }
+                return "";
+            }
+
+            @Override
+            public int getCount() {
+                return 2;
+            }
+        });
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+    }
 
     private void useLightTheme(boolean useLightTheme) {
         if (mPreferences.isUseLightTheme() != useLightTheme) {
@@ -96,10 +109,11 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
         if (Premium.isPremiumUser(this)) {
             mPreferences.setEditorTheme(theme.getFileName());
             String text = getString(R.string.selected_theme, theme.getName());
-            Snackbar.make(mRecyclerView, text, Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
         } else {
             PremiumDialog premiumDialog = new PremiumDialog(this, mInAppPurchaseHelper);
             premiumDialog.show();
         }
     }
+
 }

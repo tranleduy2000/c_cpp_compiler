@@ -36,4 +36,5 @@
 
     <string name="button_purchase_restore">Restore</string>
     <string name="selected_theme">Selected %s. Restart app to apply theme.</string>
+    <string name="terminal">Terminal</string>
 </resources>

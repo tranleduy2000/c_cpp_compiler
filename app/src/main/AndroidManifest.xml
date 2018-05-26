@@ -125,7 +125,7 @@
         <activity
             android:name="jackpal.androidterm.TermPreferencesActivity"
             android:label="@string/preferences" />
-        <activity android:name="com.duy.editor.EditorThemeActivity" />
+        <activity android:name="com.duy.editor.theme.ThemeActivity" />
     </application>
 
 </manifest>

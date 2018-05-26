@@ -41,6 +41,7 @@ import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.common.DLog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
+import com.duy.editor.theme.ThemeActivity;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.filemanager.SaveListener;
 import com.jecelyin.common.utils.UIUtils;
@@ -168,7 +169,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 break;
 
             case R.id.action_editor_color_scheme:
-                startActivity(new Intent(this, EditorThemeActivity.class));
+                startActivity(new Intent(this, ThemeActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

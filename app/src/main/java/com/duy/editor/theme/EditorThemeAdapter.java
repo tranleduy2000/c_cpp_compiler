@@ -1,4 +1,4 @@
-package com.duy.ide.editor.theme;
+package com.duy.editor.theme;
 
 import android.content.Context;
 import android.core.text.SpannableStringBuilder;
@@ -11,7 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.duy.ide.editor.editor.R;
+import com.duy.ccppcompiler.R;
+import com.duy.ide.editor.theme.ThemeLoader;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.editor.Highlighter;
 import com.jecelyin.editor.v2.highlight.Buffer;
@@ -24,14 +25,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
+public class EditorThemeAdapter extends RecyclerView.Adapter<EditorThemeAdapter.ViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
     private final ArrayList<EditorTheme> mEditorThemes;
     private Context mContext;
     private OnThemeSelectListener onThemeSelectListener;
 
-    public ThemeAdapter(Context context) {
+    public EditorThemeAdapter(Context context) {
         mContext = context;
-        ThemeLoader.init(context);
         mEditorThemes = ThemeLoader.getAll(context);
         Collections.sort(mEditorThemes, new Comparator<EditorTheme>() {
             @Override
