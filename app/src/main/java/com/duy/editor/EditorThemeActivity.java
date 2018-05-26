@@ -17,7 +17,6 @@ import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.ide.editor.theme.ThemeAdapter;
-import com.duy.ide.editor.theme.ThemeLoader;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
@@ -32,13 +31,11 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_editor_theme);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("");
-
-        ThemeLoader.init(this);
+        mPreferences = Preferences.getInstance(this);
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -46,7 +43,7 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
         mThemeAdapter = new ThemeAdapter(this);
         mThemeAdapter.setOnThemeSelectListener(this);
         mRecyclerView.setAdapter(mThemeAdapter);
-        mPreferences = Preferences.getInstance(this);
+        mRecyclerView.scrollToPosition(findThemeIndex(mPreferences.getEditorTheme()));
 
         boolean useLightTheme = mPreferences.isUseLightTheme();
 
@@ -67,6 +64,15 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
         mInAppPurchaseHelper = new InAppPurchaseHelper(this);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
     }
+
+    private int findThemeIndex(EditorTheme editorTheme) {
+        int position = mThemeAdapter.getPosition(editorTheme);
+        if (position < 0) {
+            return 0;
+        }
+        return position;
+    }
+
 
     private void useLightTheme(boolean useLightTheme) {
         if (mPreferences.isUseLightTheme() != useLightTheme) {

@@ -1,10 +1,12 @@
 package com.duy.ide.editor.theme.model;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 
 import com.duy.ide.editor.theme.SyntaxUtilities;
 import com.jecelyin.common.utils.DLog;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 
@@ -92,8 +94,19 @@ public class EditorTheme extends ColorScheme {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(@NonNull String name) {
+        if (name.isEmpty()){
+            return;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(name.replace("-", " "));
+        builder.setCharAt(0, Character.toUpperCase(builder.charAt(0)));
+        for (int i = 0; i < builder.length(); i++) {
+            if (builder.charAt(i) == ' ' && i + 1 < builder.length()) {
+                builder.setCharAt(i + 1, Character.toUpperCase(builder.charAt(i + 1)));
+            }
+        }
+        this.name = builder.toString();
     }
 
     public String getFileName() {
@@ -102,6 +115,34 @@ public class EditorTheme extends ColorScheme {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EditorTheme)) return false;
+
+        EditorTheme that = (EditorTheme) o;
+
+        if (getGutterStyle() != null ? !getGutterStyle().equals(that.getGutterStyle()) : that.getGutterStyle() != null)
+            return false;
+        if (getWhiteSpaceStyle() != null ? !getWhiteSpaceStyle().equals(that.getWhiteSpaceStyle()) : that.getWhiteSpaceStyle() != null)
+            return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(getSyntaxStyles(), that.getSyntaxStyles())) return false;
+        if (getFileName() != null ? !getFileName().equals(that.getFileName()) : that.getFileName() != null)
+            return false;
+        return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getGutterStyle() != null ? getGutterStyle().hashCode() : 0;
+        result = 31 * result + (getWhiteSpaceStyle() != null ? getWhiteSpaceStyle().hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(getSyntaxStyles());
+        result = 31 * result + (getFileName() != null ? getFileName().hashCode() : 0);
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        return result;
     }
 
     public enum ThemeAttr {

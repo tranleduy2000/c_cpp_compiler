@@ -29,7 +29,6 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     private Context mContext;
     private OnThemeSelectListener onThemeSelectListener;
 
-
     public ThemeAdapter(Context context) {
         mContext = context;
         ThemeLoader.init(context);
@@ -40,6 +39,10 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
                 return o1.getName().compareTo(o2.getName());
             }
         });
+    }
+
+    public int getPosition(EditorTheme editorTheme) {
+        return mEditorThemes.indexOf(editorTheme);
     }
 
     @NonNull
@@ -77,7 +80,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         holder.mBtnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onThemeSelectListener != null){
+                if (onThemeSelectListener != null) {
                     onThemeSelectListener.onThemeSelected(editorTheme);
                 }
             }
@@ -85,15 +88,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     }
 
     private String makeTitle(int position, EditorTheme editorTheme) {
-        StringBuilder builder = new StringBuilder(String.valueOf(position + 1));
-        builder.append(". ");
-        builder.append(editorTheme.getName());
-        for (int i = 0; i < builder.length(); i++) {
-            if (builder.charAt(i) == ' ' && i + 1 < builder.length()) {
-                builder.setCharAt(i + 1, Character.toUpperCase(builder.charAt(i + 1)));
-            }
-        }
-        return builder.toString();
+        return (position + 1) + ". " + editorTheme.getName();
     }
 
     @Override
@@ -151,7 +146,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-         View mBtnSelect;
+        View mBtnSelect;
         EditAreaView mEditorView;
         TextView mTxtName;
 
