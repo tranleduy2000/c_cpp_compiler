@@ -53,9 +53,7 @@ You can use this app to code and compile C/C++ project without Internet.
 
 ## Screenshots
 
-<img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/>
-<img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/>
-<img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/>
+<img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/> <img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/> <img src="google-play-store/screenshots/Screenshot_20180527-003844.jpg" alt="google-play" width="200"/>
 
 ## License
 GNU GPL V3.0
