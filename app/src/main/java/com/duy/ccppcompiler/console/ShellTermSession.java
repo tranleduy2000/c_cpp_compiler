@@ -30,10 +30,10 @@ import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import jackpal.androidterm.TermSettings;
 import jackpal.androidterm.emulatorview.ColorScheme;
 import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.emulatorview.UpdateCallback;
-import jackpal.androidterm.TermSettings;
 
 public class ShellTermSession extends TermSession {
     public static final int PROCESS_EXITED = 1;
@@ -54,7 +54,7 @@ public class ShellTermSession extends TermSession {
             setPtyUTF8Mode(getUTF8Mode());
         }
     };
-
+    private OnProcessExitListener onProcessExitListener;
     @SuppressLint("HandlerLeak")
     private Handler mMsgHandler = new Handler() {
         @Override
@@ -157,6 +157,9 @@ public class ShellTermSession extends TermSession {
     }
 
     private void onProcessExit(int result) {
+        if (onProcessExitListener != null) {
+            onProcessExitListener.onProcessExit(result);
+        }
         onProcessExit();
     }
 
@@ -234,11 +237,18 @@ public class ShellTermSession extends TermSession {
         }
     }
 
-
     /**
      * @return true, if failing to operate on file descriptor deserves an exception (never the case for ATE own shell)
      */
     boolean isFailFast() {
         return false;
+    }
+
+    public void setOnProcessExitListener(OnProcessExitListener onProcessExitListener) {
+        this.onProcessExitListener = onProcessExitListener;
+    }
+
+    public interface OnProcessExitListener {
+        void onProcessExit(int exitCode);
     }
 }

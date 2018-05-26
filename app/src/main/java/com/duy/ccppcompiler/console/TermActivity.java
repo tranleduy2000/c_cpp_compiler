@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -61,7 +62,7 @@ import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
 import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
 import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
 
-public class TermActivity extends ThemeSupportActivity implements SharedPreferences.OnSharedPreferenceChangeListener, TermSession.FinishCallback {
+public class TermActivity extends ThemeSupportActivity implements SharedPreferences.OnSharedPreferenceChangeListener, TermSession.FinishCallback, ShellTermSession.OnProcessExitListener {
     private static final String TAG = "TermActivity";
     private final static int SELECT_TEXT_ID = 0;
     private final static int COPY_ALL_ID = 1;
@@ -116,7 +117,8 @@ public class TermActivity extends ThemeSupportActivity implements SharedPreferen
         TermSettings settings = new TermSettings(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
 
         ShellTermSession shellTermSession = new ShellTermSession(settings, argv, envp, workdir);
-        shellTermSession.setProcessExitMessage(getString(R.string.console_finished));
+        shellTermSession.setOnProcessExitListener(this);
+//        shellTermSession.setProcessExitMessage(getString(R.string.console_finished));
 
         return shellTermSession;
     }
@@ -125,13 +127,17 @@ public class TermActivity extends ThemeSupportActivity implements SharedPreferen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.title_menu_terminal);
+            actionBar.setSubtitle(R.string.console_executing);
+        }
         String fileName = getIntent().getStringExtra(BuildConstants.EXTRA_FILE_NAME);
         String workDir = getIntent().getStringExtra(BuildConstants.EXTRA_WORK_DIR);
 
-        setTitle(R.string.title_menu_terminal);
 
         mSession = createShellTermSession(fileName, workDir);
         mSession.setFinishCallback(this);
@@ -437,6 +443,11 @@ public class TermActivity extends ThemeSupportActivity implements SharedPreferen
     @Override
     public void onSessionFinish(TermSession session) {
         finish();
+    }
+
+    @Override
+    public void onProcessExit(int exitCode) {
+        getSupportActionBar().setSubtitle(R.string.console_finished);
     }
 
 
