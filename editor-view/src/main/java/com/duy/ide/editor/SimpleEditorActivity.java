@@ -383,7 +383,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
         } else if (id == R.id.action_goto_line) {
             new GotoLineDialog(this).show();
 
-        } else if (id == R.id.m_history) {
+        } else if (id == R.id.action_file_history) {
             RecentFilesManager rfm = new RecentFilesManager(this);
             rfm.setOnFileItemClickListener(new RecentFilesManager.OnFileItemClickListener() {
                 @Override

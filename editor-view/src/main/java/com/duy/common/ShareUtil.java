@@ -17,6 +17,7 @@
 package com.duy.common;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -51,11 +52,14 @@ public class ShareUtil {
     }
 
     public static void shareText(Context context, CharSequence text) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, text);
-        intent.setType("text/plain");
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, text);
+            intent.setType("text/plain");
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+        }
     }
 
     public static void shareApp(Activity context, String appId) {

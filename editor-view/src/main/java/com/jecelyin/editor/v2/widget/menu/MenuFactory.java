@@ -41,6 +41,7 @@ import static com.jecelyin.editor.v2.common.Command.CommandEnum.OPEN;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.REDO;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.SAVE;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.SAVE_AS;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.SHARE_CODE;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.UNDO;
 
 /**
@@ -114,8 +115,9 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_open, OPEN, R.drawable.ic_folder_open_white_24dp, R.string.open));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save, SAVE, R.drawable.ic_save_white_24dp, R.string.save));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_all, NONE, R.drawable.ic_save_white_24dp, R.string.save_all));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_save_as, SAVE_AS, R.drawable.ic_save_white_24dp, R.string.save_as));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.m_history, NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_save_as, SAVE_AS, R.drawable.ic_save_white_24dp, R.string.save_as));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.FILE, R.id.action_file_history, NONE, R.drawable.ic_history_white_24dp, R.string.recent_files));
+
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_undo, UNDO, R.drawable.ic_undo_white_24dp, R.string.undo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_redo, REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_wrap, CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
@@ -125,6 +127,7 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_goto_line, GOTO_INDEX, R.drawable.m_goto_line, R.string.goto_line));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_back, CURSOR_BACK, R.drawable.ic_arrow_back_white_24dp, R.string.cursor_back));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_forward, CURSOR_FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.cursor_forward));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_share_code, SHARE_CODE, R.drawable.baseline_share_24, R.string.share_code));
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_encoding, NONE, R.drawable.m_encoding, R.string.encoding));

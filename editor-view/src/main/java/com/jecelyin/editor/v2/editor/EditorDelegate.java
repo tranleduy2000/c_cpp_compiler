@@ -39,6 +39,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.duy.common.ShareUtil;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.span.ErrorSpan;
@@ -388,7 +389,14 @@ public class EditorDelegate implements TextWatcher {
             case CLEAR_ERROR:
                 clearErrorSpan();
                 break;
+            case SHARE_CODE:
+                shareCurrentContent();
+                break;
         }
+    }
+
+    private void shareCurrentContent() {
+        ShareUtil.shareText(mContext, mEditText.getText().toString());
     }
 
     /**

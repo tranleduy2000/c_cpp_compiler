@@ -61,5 +61,6 @@ public class Command {
         RELOAD_WITH_ENCODING,
         FULL_SCREEN,
         THEME, REQUEST_FOCUS, DELETE, HIGHLIGHT_ERROR, CLEAR_ERROR,
+        SHARE_CODE,
     }
 }
