@@ -93,7 +93,7 @@ public class TermSettings {
     private static final String ACTIONBAR_KEY = "actionbar";
     private static final String ORIENTATION_KEY = "orientation";
     private static final String FONTSIZE_KEY = "fontsize";
-    private static final String COLOR_KEY = "color";
+    private static final String COLOR_KEY = "pref_terminal_color";
     private static final String UTF8_KEY = "utf8_by_default";
     private static final String BACKACTION_KEY = "backaction";
     private static final String CONTROLKEY_KEY = "controlkey";

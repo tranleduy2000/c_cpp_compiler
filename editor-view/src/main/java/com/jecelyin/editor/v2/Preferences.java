@@ -402,16 +402,17 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public void setAppTheme(@IntRange(from = 0, to = 1) int index) {
-        preferences.edit().putInt(context.getString(R.string.pref_app_theme), index).apply();
-    }
-
-    public void setTerminalTheme(int index) {
-        preferences.edit().putInt(context.getString(R.string.pref_terminal_theme), index).apply();
+        preferences.edit().putString(context.getString(R.string.pref_app_theme), String.valueOf(index)).apply();
     }
 
     public boolean isUseLightTheme() {
         return getAppTheme() == THEMES[0];
     }
+
+    public void setTerminalTheme(int index) {
+        preferences.edit().putString("pref_terminal_color", String.valueOf(index)).apply();
+    }
+
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
     public @interface ScreenOrientation {
