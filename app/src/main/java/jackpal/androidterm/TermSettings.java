@@ -251,6 +251,7 @@ public class TermSettings {
         return COLOR_SCHEMES[mColorId];
     }
 
+
     public boolean defaultToUTF8Mode() {
         return mUTF8ByDefault;
     }

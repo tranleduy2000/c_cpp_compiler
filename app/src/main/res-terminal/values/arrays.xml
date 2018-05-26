@@ -67,7 +67,7 @@
         <item>288 pt</item>
     </string-array>
 
-    <string-array name="entries_color_preference">
+    <string-array name="entries_emulator_color_preference">
         <item>Black text on white</item>
         <item>White text on black</item>
         <item>White text on blue</item>

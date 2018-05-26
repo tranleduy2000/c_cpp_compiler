@@ -21,7 +21,8 @@ import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
-public class ThemeActivity extends ThemeSupportActivity implements EditorThemeAdapter.OnThemeSelectListener {
+public class ThemeActivity extends ThemeSupportActivity
+        implements EditorThemeFragment.EditorThemeAdapter.OnThemeSelectListener, TerminalThemeFragment.TerminalThemeAdapter.OnThemeSelectListener {
     private Preferences mPreferences;
     private InAppPurchaseHelper mInAppPurchaseHelper;
 
@@ -30,15 +31,13 @@ public class ThemeActivity extends ThemeSupportActivity implements EditorThemeAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor_theme);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("");
 
         mPreferences = Preferences.getInstance(this);
         mInAppPurchaseHelper = new InAppPurchaseHelper(this);
 
-        boolean useLightTheme = mPreferences.isUseLightTheme();
         Spinner spinner = findViewById(R.id.spinner_themes);
-        spinner.setSelection(useLightTheme ? 0 : 1);
+        spinner.setSelection(mPreferences.isUseLightTheme() ? 0 : 1);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
