@@ -1,5 +1,5 @@
---- Makefile.am-
-+++ Makefile.am
+--- s/Makefile.am-
++++ s/Makefile.am
 @@ -54,12 +54,12 @@
  include build-aux/local.mk
  include data/local.mk
@@ -15,3 +15,14 @@
  
  # See comments in build-aux/git-version-gen.  However, we make .version depend
  # on configure so that .version and VERSION/PACKAGE_VERSION stay in sync in the
+--- s/lib/fseterr.c-
++++ s/lib/fseterr.c
+@@ -31,6 +31,8 @@
+      fast macros.  */
+ #if defined _IO_ftrylockfile || __GNU_LIBRARY__ == 1 /* GNU libc, BeOS, Haiku, Linux libc5 */
+   fp->_flags |= _IO_ERR_SEEN;
++#elif defined __BIONIC__
++  fp->_flags |= __SERR;
+ #elif defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin */
+   fp_->_flags |= __SERR;
+ #elif defined __EMX__               /* emx+gcc */

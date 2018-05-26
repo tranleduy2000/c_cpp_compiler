@@ -1,0 +1,37 @@
+diff -Nur xkeyboard-config-2.6-orig/config.sub xkeyboard-config-2.6/config.sub
+--- xkeyboard-config-2.6-orig/config.sub	2012-04-18 05:39:00.000000000 +0700
++++ xkeyboard-config-2.6/config.sub	2014-12-23 13:23:29.072933494 +0600
+@@ -1326,6 +1326,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;
+diff -Nur xkeyboard-config-2.6-orig/Makefile.am xkeyboard-config-2.6/Makefile.am
+--- xkeyboard-config-2.6-orig/Makefile.am	2012-03-10 17:39:01.000000000 +0700
++++ xkeyboard-config-2.6/Makefile.am	2014-12-23 13:25:15.812935625 +0600
+@@ -2,7 +2,7 @@
+ 
+ SUBDIRS = compat geometry keycodes po rules symbols types docs man
+ 
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xkeyboard-config.pc
+ 
+ EXTRA_DIST=config.rpath COPYING CREDITS README \
+diff -Nur xkeyboard-config-2.6-orig/Makefile.in xkeyboard-config-2.6/Makefile.in
+--- xkeyboard-config-2.6-orig/Makefile.in	2012-05-30 05:43:13.000000000 +0700
++++ xkeyboard-config-2.6/Makefile.in	2014-12-23 13:25:26.904935847 +0600
+@@ -270,7 +270,7 @@
+ xkb_rules_symlink = @xkb_rules_symlink@
+ AUTOMAKE_OPTIONS = foreign
+ SUBDIRS = compat geometry keycodes po rules symbols types docs man
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xkeyboard-config.pc
+ EXTRA_DIST = config.rpath COPYING CREDITS README \
+        autogen.sh \

@@ -1,0 +1,135 @@
+--- gcc-6.4.0-orig/gcc/configure
++++ gcc-6.4.0-android/gcc/configure
+@@ -7658,7 +7658,7 @@
+       *)   PKGVERSION="($withval) " ;;
+      esac
+ else
+-  PKGVERSION="(GCC) "
++  PKGVERSION="(GCC)"
+ 
+ fi
+ 
+@@ -29505,6 +29505,9 @@
+ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    CXXFLAGS="$saved_CXXFLAGS"
+ fi
++
++gcc_cv_c_no_fpie=no
++
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gcc_cv_c_no_fpie" >&5
+ $as_echo "$gcc_cv_c_no_fpie" >&6; }
+ if test "$gcc_cv_c_no_fpie" = "yes"; then
+@@ -29533,6 +29536,9 @@
+     conftest$ac_exeext conftest.$ac_ext
+    LDFLAGS="$saved_LDFLAGS"
+ fi
++
++gcc_cv_no_pie=no
++
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gcc_cv_no_pie" >&5
+ $as_echo "$gcc_cv_no_pie" >&6; }
+ if test "$gcc_cv_no_pie" = "yes"; then
+--- gcc-6.4.0-orig/gcc/toplev.c
++++ gcc-6.4.0-android/gcc/toplev.c
+@@ -595,7 +595,7 @@
+       const char *pkg_version = "(GNU) ";
+       char *ident_str;
+ 
+-      if (strcmp ("(GCC) ", pkgversion_string))
++      if (strcmp ("(GCC)", pkgversion_string))
+ 	pkg_version = pkgversion_string;
+ 
+       ident_str = ACONCAT (("GCC: ", pkg_version, version_string, NULL));
+--- gcc-6.4.0-orig/libcpp/files.c
++++ gcc-6.4.0-android/libcpp/files.c
+@@ -731,7 +731,7 @@
+ 				     CPP_OPTION (pfile, input_charset),
+ 				     buf, size + 16, total,
+ 				     &file->buffer_start,
+-				     &file->st.st_size);
++				     (off_t *)&file->st.st_size);
+   file->buffer_valid = true;
+ 
+   return true;
+--- gcc-6.4.0-orig/libcpp/macro.c
++++ gcc-6.4.0-android/libcpp/macro.c
+@@ -263,7 +263,7 @@
+ 		struct tm *tb = NULL;
+ 		struct stat *st = _cpp_get_file_stat (file);
+ 		if (st)
+-		  tb = localtime (&st->st_mtime);
++		  tb = localtime ((const time_t *)&st->st_mtime);
+ 		if (tb)
+ 		  {
+ 		    char *str = asctime (tb);
+--- gcc-6.4.0-orig/libstdc++-v3/config/os/bionic/ctype_base.h
++++ gcc-6.4.0-android/libstdc++-v3/config/os/bionic/ctype_base.h
+@@ -28,6 +28,22 @@
+ 
+ // Information as gleaned from /usr/include/ctype.h
+ 
++#if defined (__ANDROID__)
++#if !defined(_U)
++#if !defined(_CTYPE_U)
++#error Bionic header ctype.h does not define either _U nor _CTYPE_U
++#endif
++#define _U _CTYPE_U
++#define _L _CTYPE_L
++#define _N _CTYPE_N
++#define _S _CTYPE_S
++#define _P _CTYPE_P
++#define _C _CTYPE_C
++#define _X _CTYPE_X
++#define _B _CTYPE_B
++#endif
++#endif /* __ANDROID__ */
++
+ namespace std _GLIBCXX_VISIBILITY(default)
+ {
+ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+--- gcc-6.4.0-orig/libstdc++-v3/libsupc++/guard.cc
++++ gcc-6.4.0-android/libstdc++-v3/libsupc++/guard.cc
+@@ -33,7 +33,11 @@
+ #if defined(__GTHREADS) && defined(__GTHREAD_HAS_COND) \
+   && (ATOMIC_INT_LOCK_FREE > 1) && defined(_GLIBCXX_HAVE_LINUX_FUTEX)
+ # include <climits>
++#if defined(__ANDROID__)
++# include <sys/syscall.h>
++#else
+ # include <syscall.h>
++#endif
+ # include <unistd.h>
+ # define _GLIBCXX_USE_FUTEX
+ # define _GLIBCXX_FUTEX_WAIT 0
+--- gcc-6.4.0-orig/libstdc++-v3/src/c++11/futex.cc
++++ gcc-6.4.0-android/libstdc++-v3/src/c++11/futex.cc
+@@ -27,7 +27,11 @@
+ #if defined(_GLIBCXX_HAVE_LINUX_FUTEX) && ATOMIC_INT_LOCK_FREE > 1
+ #include <chrono>
+ #include <climits>
++#ifdef __ANDROID__
++#include <sys/syscall.h>
++#else
+ #include <syscall.h>
++#endif
+ #include <unistd.h>
+ #include <sys/time.h>
+ #include <errno.h>
+--- gcc-6.4.0-orig/libstdc++-v3/src/filesystem/dir.cc
++++ gcc-6.4.0-android/libstdc++-v3/src/filesystem/dir.cc
+@@ -146,7 +146,15 @@
+ 
+   int err = std::exchange(errno, 0);
+   const auto entp = readdir(dirp);
++#ifdef __ANDROID__
++  {
++    int tmp = err;
++    err = errno;
++    errno = tmp;
++  }
++#else
+   std::swap(errno, err);
++#endif
+ 
+   if (entp)
+     {

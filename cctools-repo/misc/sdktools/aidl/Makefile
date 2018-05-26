@@ -22,7 +22,8 @@ CFLAGS = \
 	-DOS_PATH_SEPARATOR=\'/\'
 
 ifeq (arm,$(CPU))
-CFLAGS += -march=armv6
+#CFLAGS += -march=armv6
+CFLAGS += -march=armv5te
 endif
 
 CXXFLAGS = $(CFLAGS)

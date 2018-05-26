@@ -1,0 +1,552 @@
+diff -Nur gcc-4.9.orig/boehm-gc/include/bits/elfclass.h gcc-4.9/boehm-gc/include/bits/elfclass.h
+--- gcc-4.9.orig/boehm-gc/include/bits/elfclass.h	1970-01-01 04:00:00.000000000 +0400
++++ gcc-4.9/boehm-gc/include/bits/elfclass.h	2015-06-06 10:51:19.515904995 +0400
+@@ -0,0 +1,14 @@
++/* This file specifies the native word size of the machine, which indicates
++   the ELF file class used for executables and shared objects on this
++   machine.  */
++
++#ifndef _LINK_H
++# error "Never use <bits/elfclass.h> directly; include <link.h> instead."
++#endif
++
++#include <bits/wordsize.h>
++
++#define __ELF_NATIVE_CLASS __WORDSIZE
++
++/* The entries in the .hash table always have a size of 32 bits.  */
++typedef uint32_t Elf_Symndx;
+diff -Nur gcc-4.9.orig/boehm-gc/include/bits/link.h gcc-4.9/boehm-gc/include/bits/link.h
+--- gcc-4.9.orig/boehm-gc/include/bits/link.h	1970-01-01 04:00:00.000000000 +0400
++++ gcc-4.9/boehm-gc/include/bits/link.h	2015-06-06 10:51:19.515904995 +0400
+@@ -0,0 +1,66 @@
++/* Copyright (C) 2005, 2009 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#ifndef	_LINK_H
++# error "Never include <bits/link.h> directly; use <link.h> instead."
++#endif
++
++
++/* Registers for entry into PLT on ARM.  */
++typedef struct La_arm_regs
++{
++  uint32_t lr_reg[4];
++  uint32_t lr_sp;
++  uint32_t lr_lr;
++  /* Coprocessor registers used for argument passing.  The data
++     stored here depends on the coprocessors available in the
++     system which are used for function calls in the current ABI.
++     VFP uses eight 64-bit registers, and iWMMXt uses ten.  */
++  uint32_t lr_coproc[42];
++} La_arm_regs;
++
++/* Return values for calls from PLT on ARM.  */
++typedef struct La_arm_retval
++{
++  /* Up to four integer registers can be used for a return value in
++     some ABIs (APCS complex long double).  */
++  uint32_t lrv_reg[4];
++
++  /* Any coprocessor registers which might be used to return values
++     in the current ABI.  */
++  uint32_t lrv_coproc[12];
++} La_arm_retval;
++
++
++__BEGIN_DECLS
++
++extern Elf32_Addr la_arm_gnu_pltenter (Elf32_Sym *__sym, unsigned int __ndx,
++				       uintptr_t *__refcook,
++				       uintptr_t *__defcook,
++				       La_arm_regs *__regs,
++				       unsigned int *__flags,
++				       const char *__symname,
++				       long int *__framesizep);
++extern unsigned int la_arm_gnu_pltexit (Elf32_Sym *__sym, unsigned int __ndx,
++					uintptr_t *__refcook,
++					uintptr_t *__defcook,
++					const La_arm_regs *__inregs,
++					La_arm_retval *__outregs,
++					const char *__symname);
++
++__END_DECLS
+diff -Nur gcc-4.9.orig/boehm-gc/include/bits/wordsize.h gcc-4.9/boehm-gc/include/bits/wordsize.h
+--- gcc-4.9.orig/boehm-gc/include/bits/wordsize.h	1970-01-01 04:00:00.000000000 +0400
++++ gcc-4.9/boehm-gc/include/bits/wordsize.h	2015-06-06 10:51:19.515904995 +0400
+@@ -0,0 +1,19 @@
++/* Copyright (C) 1999 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#define __WORDSIZE	32
+diff -Nur gcc-4.9.orig/boehm-gc/include/link.h gcc-4.9/boehm-gc/include/link.h
+--- gcc-4.9.orig/boehm-gc/include/link.h	1970-01-01 04:00:00.000000000 +0400
++++ gcc-4.9/boehm-gc/include/link.h	2015-06-06 10:51:19.515904995 +0400
+@@ -0,0 +1,194 @@
++/* Data structure for communication from the run-time dynamic linker for
++   loaded ELF shared objects.
++   Copyright (C) 1995-2001, 2004, 2005, 2006 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#ifndef	_LINK_H
++#define	_LINK_H	1
++
++#include <features.h>
++#include <elf.h>
++#include <dlfcn.h>
++#include <sys/types.h>
++
++/* We use this macro to refer to ELF types independent of the native wordsize.
++   `ElfW(TYPE)' is used in place of `Elf32_TYPE' or `Elf64_TYPE'.  */
++#define ElfW(type)	_ElfW (Elf, __ELF_NATIVE_CLASS, type)
++#define _ElfW(e,w,t)	_ElfW_1 (e, w, _##t)
++#define _ElfW_1(e,w,t)	e##w##t
++
++#include <bits/elfclass.h>		/* Defines __ELF_NATIVE_CLASS.  */
++#include <bits/link.h>
++
++/* Rendezvous structure used by the run-time dynamic linker to communicate
++   details of shared object loading to the debugger.  If the executable's
++   dynamic section has a DT_DEBUG element, the run-time linker sets that
++   element's value to the address where this structure can be found.  */
++
++struct r_debug
++  {
++    int r_version;		/* Version number for this protocol.  */
++
++    struct link_map *r_map;	/* Head of the chain of loaded objects.  */
++
++    /* This is the address of a function internal to the run-time linker,
++       that will always be called when the linker begins to map in a
++       library or unmap it, and again when the mapping change is complete.
++       The debugger can set a breakpoint at this address if it wants to
++       notice shared object mapping changes.  */
++    ElfW(Addr) r_brk;
++    enum
++      {
++	/* This state value describes the mapping change taking place when
++	   the `r_brk' address is called.  */
++	RT_CONSISTENT,		/* Mapping change is complete.  */
++	RT_ADD,			/* Beginning to add a new object.  */
++	RT_DELETE		/* Beginning to remove an object mapping.  */
++      } r_state;
++
++    ElfW(Addr) r_ldbase;	/* Base address the linker is loaded at.  */
++  };
++
++/* This is the instance of that structure used by the dynamic linker.  */
++extern struct r_debug _r_debug;
++
++/* This symbol refers to the "dynamic structure" in the `.dynamic' section
++   of whatever module refers to `_DYNAMIC'.  So, to find its own
++   `struct r_debug', a program could do:
++     for (dyn = _DYNAMIC; dyn->d_tag != DT_NULL; ++dyn)
++       if (dyn->d_tag == DT_DEBUG)
++	 r_debug = (struct r_debug *) dyn->d_un.d_ptr;
++   */
++extern ElfW(Dyn) _DYNAMIC[];
++
++/* Structure describing a loaded shared object.  The `l_next' and `l_prev'
++   members form a chain of all the shared objects loaded at startup.
++
++   These data structures exist in space used by the run-time dynamic linker;
++   modifying them may have disastrous results.  */
++
++struct link_map
++  {
++    /* These first few members are part of the protocol with the debugger.
++       This is the same format used in SVR4.  */
++
++    ElfW(Addr) l_addr;		/* Base address shared object is loaded at.  */
++    char *l_name;		/* Absolute file name object was found in.  */
++    ElfW(Dyn) *l_ld;		/* Dynamic section of the shared object.  */
++    struct link_map *l_next, *l_prev; /* Chain of loaded objects.  */
++  };
++
++#ifdef __USE_GNU
++
++/* Version numbers for la_version handshake interface.  */
++#define LAV_CURRENT	1
++
++/* Activity types signaled through la_activity.  */
++enum
++  {
++    LA_ACT_CONSISTENT,		/* Link map consistent again.  */
++    LA_ACT_ADD,			/* New object will be added.  */
++    LA_ACT_DELETE		/* Objects will be removed.  */
++  };
++
++/* Values representing origin of name for dynamic loading.  */
++enum
++  {
++    LA_SER_ORIG = 0x01,		/* Original name.  */
++    LA_SER_LIBPATH = 0x02,	/* Directory from LD_LIBRARY_PATH.  */
++    LA_SER_RUNPATH = 0x04,	/* Directory from RPATH/RUNPATH.  */
++    LA_SER_CONFIG = 0x08,	/* Found through ldconfig.  */
++    LA_SER_DEFAULT = 0x40,	/* Default directory.  */
++    LA_SER_SECURE = 0x80	/* Unused.  */
++  };
++
++/* Values for la_objopen return value.  */
++enum
++  {
++    LA_FLG_BINDTO = 0x01,	/* Audit symbols bound to this object.  */
++    LA_FLG_BINDFROM = 0x02	/* Audit symbols bound from this object.  */
++  };
++
++/* Values for la_symbind flags parameter.  */
++enum
++  {
++    LA_SYMB_NOPLTENTER = 0x01,	/* la_pltenter will not be called.  */
++    LA_SYMB_NOPLTEXIT = 0x02,	/* la_pltexit will not be called.  */
++    LA_SYMB_STRUCTCALL = 0x04,	/* Return value is a structure.  */
++    LA_SYMB_DLSYM = 0x08,	/* Binding due to dlsym call.  */
++    LA_SYMB_ALTVALUE = 0x10	/* Value has been changed by a previous
++				   la_symbind call.  */
++  };
++
++struct dl_phdr_info
++  {
++    ElfW(Addr) dlpi_addr;
++    const char *dlpi_name;
++    const ElfW(Phdr) *dlpi_phdr;
++    ElfW(Half) dlpi_phnum;
++
++    /* Note: Following members were introduced after the first
++       version of this structure was available.  Check the SIZE
++       argument passed to the dl_iterate_phdr callback to determine
++       whether or not each later member is available.  */
++
++    /* Incremented when a new object may have been added.  */
++    unsigned long long int dlpi_adds;
++    /* Incremented when an object may have been removed.  */
++    unsigned long long int dlpi_subs;
++
++    /* If there is a PT_TLS segment, its module ID as used in
++       TLS relocations, else zero.  */
++    size_t dlpi_tls_modid;
++
++    /* The address of the calling thread's instance of this module's
++       PT_TLS segment, if it has one and it has been allocated
++       in the calling thread, otherwise a null pointer.  */
++    void *dlpi_tls_data;
++  };
++
++__BEGIN_DECLS
++
++extern int dl_iterate_phdr (int (*__callback) (struct dl_phdr_info *,
++					       size_t, void *),
++			    void *__data);
++
++
++/* Prototypes for the ld.so auditing interfaces.  These are not
++   defined anywhere in ld.so but instead have to be provided by the
++   auditing DSO.  */
++extern unsigned int la_version (unsigned int __version);
++extern void la_activity (uintptr_t *__cookie, unsigned int __flag);
++extern char *la_objsearch (const char *__name, uintptr_t *__cookie,
++			   unsigned int __flag);
++extern unsigned int la_objopen (struct link_map *__map, Lmid_t __lmid,
++				uintptr_t *__cookie);
++extern void la_preinit (uintptr_t *__cookie);
++extern uintptr_t la_symbind32 (Elf32_Sym *__sym, unsigned int __ndx,
++			       uintptr_t *__refcook, uintptr_t *__defcook,
++			       unsigned int *__flags, const char *__symname);
++extern uintptr_t la_symbind64 (Elf64_Sym *__sym, unsigned int __ndx,
++			       uintptr_t *__refcook, uintptr_t *__defcook,
++			       unsigned int *__flags, const char *__symname);
++extern unsigned int la_objclose (uintptr_t *__cookie);
++
++__END_DECLS
++
++#endif
++
++#endif /* link.h */
+diff -Nur gcc-4.9.orig/gcc/configure gcc-4.9/gcc/configure
+--- gcc-4.9.orig/gcc/configure	2015-06-06 00:33:17.000000000 +0400
++++ gcc-4.9/gcc/configure	2015-06-06 10:51:19.523904995 +0400
+@@ -3360,7 +3360,7 @@
+     if test x$host != x$target; then
+        libstdcxx_incdir="$target_alias/$libstdcxx_incdir"
+     fi
+-    gcc_gxx_include_dir="\$(libsubdir)/\$(libsubdir_to_prefix)$libstdcxx_incdir"
++    gcc_gxx_include_dir="\$(libsubdir)/\$(libsubdir_to_prefix)\$(target_noncanonical)/$libstdcxx_incdir"
+   fi
+ fi
+ 
+diff -Nur gcc-4.9.orig/gcc/configure.ac gcc-4.9/gcc/configure.ac
+--- gcc-4.9.orig/gcc/configure.ac	2015-06-06 00:33:17.000000000 +0400
++++ gcc-4.9/gcc/configure.ac	2015-06-06 10:51:19.523904995 +0400
+@@ -140,7 +140,7 @@
+     if test x$host != x$target; then
+        libstdcxx_incdir="$target_alias/$libstdcxx_incdir"
+     fi
+-    gcc_gxx_include_dir="\$(libsubdir)/\$(libsubdir_to_prefix)$libstdcxx_incdir"
++    gcc_gxx_include_dir="\$(libsubdir)/\$(libsubdir_to_prefix)\$(target_noncanonical)/$libstdcxx_incdir"
+   fi
+ fi
+ 
+diff -Nur gcc-4.9.orig/gcc/system.h gcc-4.9/gcc/system.h
+--- gcc-4.9.orig/gcc/system.h	2015-06-06 00:33:18.000000000 +0400
++++ gcc-4.9/gcc/system.h	2015-06-06 10:51:19.527904995 +0400
+@@ -70,7 +70,7 @@
+    extensions and need to be prototyped by hand (since we do not
+    define _GNU_SOURCE).  */
+ 
+-#if defined HAVE_DECL_PUTC_UNLOCKED && HAVE_DECL_PUTC_UNLOCKED
++#if defined HAVE_DECL_PUTC_UNLOCKED && HAVE_DECL_PUTC_UNLOCKED && !__BIONIC__
+ 
+ # ifdef HAVE_PUTC_UNLOCKED
+ #  undef putc
+diff -Nur gcc-4.9.orig/libcpp/charset.c gcc-4.9/libcpp/charset.c
+--- gcc-4.9.orig/libcpp/charset.c	2015-06-06 00:33:19.000000000 +0400
++++ gcc-4.9/libcpp/charset.c	2015-06-06 10:51:19.527904995 +0400
+@@ -1700,7 +1700,7 @@
+ uchar * 
+ _cpp_convert_input (cpp_reader *pfile, const char *input_charset,
+ 		    uchar *input, size_t size, size_t len,
+-		    const unsigned char **buffer_start, off_t *st_size)
++		    const unsigned char **buffer_start, loff_t *st_size)
+ {
+   struct cset_converter input_cset;
+   struct _cpp_strbuf to;
+diff -Nur gcc-4.9.orig/libcpp/internal.h gcc-4.9/libcpp/internal.h
+--- gcc-4.9.orig/libcpp/internal.h	2015-06-06 00:33:19.000000000 +0400
++++ gcc-4.9/libcpp/internal.h	2015-06-06 10:51:19.527904995 +0400
+@@ -735,7 +735,7 @@
+ extern void _cpp_destroy_iconv (cpp_reader *);
+ extern unsigned char *_cpp_convert_input (cpp_reader *, const char *,
+ 					  unsigned char *, size_t, size_t,
+-					  const unsigned char **, off_t *);
++					  const unsigned char **, loff_t *);
+ extern const char *_cpp_default_encoding (void);
+ extern cpp_hashnode * _cpp_interpret_identifier (cpp_reader *pfile,
+ 						 const unsigned char *id,
+diff -Nur gcc-4.9.orig/libcpp/macro.c gcc-4.9/libcpp/macro.c
+--- gcc-4.9.orig/libcpp/macro.c	2015-06-06 00:33:19.000000000 +0400
++++ gcc-4.9/libcpp/macro.c	2015-06-06 10:51:19.527904995 +0400
+@@ -250,7 +250,7 @@
+ 		struct tm *tb = NULL;
+ 		struct stat *st = _cpp_get_file_stat (file);
+ 		if (st)
+-		  tb = localtime (&st->st_mtime);
++		  tb = localtime ((const time_t *)&st->st_mtime);
+ 		if (tb)
+ 		  {
+ 		    char *str = asctime (tb);
+diff -Nur gcc-4.9.orig/libiberty/getpagesize.c gcc-4.9/libiberty/getpagesize.c
+--- gcc-4.9.orig/libiberty/getpagesize.c	2015-06-06 00:33:19.000000000 +0400
++++ gcc-4.9/libiberty/getpagesize.c	2015-06-06 10:51:19.527904995 +0400
+@@ -60,11 +60,13 @@
+ # endif /* PAGESIZE */
+ #endif /* GNU_OUR_PAGESIZE */
+ 
++#ifndef __BIONIC__
+ int
+ getpagesize (void)
+ {
+   return (GNU_OUR_PAGESIZE);
+ }
++#endif
+ 
+ #else /* VMS */
+ 
+diff -Nur gcc-4.9.orig/libstdc++-v3/src/Makefile.in gcc-4.9/libstdc++-v3/src/Makefile.in
+--- gcc-4.9.orig/libstdc++-v3/src/Makefile.in	2015-06-06 00:33:27.000000000 +0400
++++ gcc-4.9/libstdc++-v3/src/Makefile.in	2015-06-06 10:51:19.527904995 +0400
+@@ -343,7 +343,7 @@
+ SUBDIRS = c++98 c++11
+ 
+ # Cross compiler support.
+-toolexeclib_LTLIBRARIES = libgnustl_shared.la
++toolexeclib_LTLIBRARIES = libstdc++.la
+ @GLIBCXX_LDBL_COMPAT_FALSE@ldbl_compat_sources = 
+ @GLIBCXX_LDBL_COMPAT_TRUE@ldbl_compat_sources = compatibility-ldbl.cc
+ parallel_compat_sources = \
+@@ -554,7 +554,7 @@
+ libstdc++.la: $(libstdc___la_OBJECTS) $(libstdc___la_DEPENDENCIES) 
+ 	$(libstdc___la_LINK) -rpath $(toolexeclibdir) $(libstdc___la_OBJECTS) $(libstdc___la_LIBADD) $(LIBS)
+ 
+-libgnustl_shared.la: $(libstdc___la_OBJECTS) $(libstdc___la_DEPENDENCIES)
++libstdc++.la: $(libstdc___la_OBJECTS) $(libstdc___la_DEPENDENCIES)
+ 	$(libstdc___la_LINK) -rpath $(toolexeclibdir) $(libstdc___la_OBJECTS) $(libstdc___la_LIBADD) $(LIBS)
+ 
+ mostlyclean-compile:
+diff -Nur gcc-4.9.orig/gcc/gcov-tool.c gcc-4.9/gcc/gcov-tool.c
+--- gcc-4.9.orig/gcc/gcov-tool.c	2015-06-06 00:33:18.000000000 +0400
++++ gcc-4.9/gcc/gcov-tool.c	2015-06-06 13:53:06.880383435 +0400
+@@ -36,7 +36,7 @@
+ #include <stdio.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#if !defined(_WIN32)
++#if !defined(_WIN32) && !defined(__BIONIC__)
+ #include <ftw.h>
+ #endif
+ #include <getopt.h>
+@@ -84,7 +84,7 @@
+ 
+ /* Remove file NAME if it has a gcda suffix. */
+ 
+-#if !defined(_WIN32)
++#if !defined(_WIN32) && !defined(__BIONIC__)
+ static int
+ unlink_gcda_file (const char *name,
+                   const struct stat *status ATTRIBUTE_UNUSED,
+@@ -110,7 +110,7 @@
+ static int
+ unlink_profile_dir (const char *path)
+ {
+-#if !defined(_WIN32)
++#if !defined(_WIN32) && !defined(__BIONIC__)
+     return nftw(path, unlink_gcda_file, 64, FTW_DEPTH | FTW_PHYS);
+ #else
+     return 0;
+diff -Nur gcc-4.9.orig/libgcc/libgcov-util.c gcc-4.9/libgcc/libgcov-util.c
+--- gcc-4.9.orig/libgcc/libgcov-util.c	2015-06-06 00:33:19.000000000 +0400
++++ gcc-4.9/libgcc/libgcov-util.c	2015-06-06 14:17:36.964447918 +0400
+@@ -53,9 +53,9 @@
+ 
+ #include "obstack.h"
+ #include <unistd.h>
+-#if !defined (_WIN32)
++#if !defined (_WIN32) && !defined(__BIONIC__)
+ #include <ftw.h>
+-#else
++#elif defined(_WIN32)
+ #include <windows.h>
+ #endif
+ 
+@@ -586,7 +586,7 @@
+ }
+ 
+ 
+-#if !defined(_WIN32)
++#if !defined(_WIN32) && !defined(__BIONIC__)
+ /* This will be called by ftw(). It opens and reads a gcda file FILENAME.
+    Return a non-zero value to stop the tree walk.  */
+ 
+@@ -602,7 +602,7 @@
+   return read_file_handler (filename);
+ }
+ 
+-#else /* _WIN32 */
++#elif defined(_WIN32) /* _WIN32 */
+ 
+ /* Funtion to find all the gcda files recursively in DIR.  */
+ static void
+@@ -696,9 +696,9 @@
+     }
+   source_profile_dir = getcwd (NULL, 0);
+ 
+-#if !defined(_WIN32)
++#if !defined(_WIN32) && !defined(__BIONIC__)
+   ftw (".", ftw_read_file, 50);
+-#else
++#elif defined(_WIN32)
+   myftw (".", "*.gcda",read_file_handler);
+ #endif
+   ret = chdir (pwd);
+--- gcc-4.9.orig/libiberty/strtod.c	2015-07-18 10:33:04.723078888 -0700
++++ gcc-4.9/libiberty/strtod.c	2015-07-18 10:36:38.703085265 -0700
+@@ -41,7 +41,50 @@
+ #include "ansidecl.h"
+ #include "safe-ctype.h"
+ 
++#ifndef __BIONIC__
+ extern double atof (const char *);
++#else
++double atof(char *s)
++{
++    double a = 0.0;
++    int e = 0;
++    int c;
++    while ((c = *s++) != '\0' && ISDIGIT(c)) {
++        a = a*10.0 + (c - '0');
++    }
++    if (c == '.') {
++        while ((c = *s++) != '\0' && ISDIGIT(c)) {
++            a = a*10.0 + (c - '0');
++            e = e-1;
++        }
++    }
++    if (c == 'e' || c == 'E') {
++        int sign = 1;
++        int i = 0;
++        c = *s++;
++        if (c == '+')
++            c = *s++;
++        else if (c == '-') {
++            c = *s++;
++        sign = -1;
++	}
++	while (ISDIGIT(c)) {
++	    i = i*10 + (c - '0');
++	    c = *s++;
++	}
++	e += i*sign;
++    }
++    while (e > 0) {
++        a *= 10.0;
++        e--;
++    }
++    while (e < 0) {
++        a *= 0.1;
++        e++;
++    }
++    return a;
++}
++#endif
+ 
+ /* Disclaimer: this is currently just used by CHILL in GDB and therefore
+    has not been tested well.  It may have been tested for nothing except
+--- gcc-4.9-orig/gcc/BASE-VER	2016-08-03 09:58:44.000000000 +0400
++++ gcc-4.9/gcc/BASE-VER	2016-08-03 16:40:28.390576654 +0400
+@@ -1 +1 @@
+-4.9.x
++4.9

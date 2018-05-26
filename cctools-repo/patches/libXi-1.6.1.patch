@@ -1,0 +1,13 @@
+diff -Nur libXi-1.6.1-orig/config.sub libXi-1.6.1/config.sub
+--- libXi-1.6.1-orig/config.sub	2010-08-03 05:57:01.000000000 +0700
++++ libXi-1.6.1/config.sub	2014-12-23 03:25:52.952217535 +0600
+@@ -1326,6 +1326,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

@@ -1,0 +1,13 @@
+diff -Nur inputproto-2.2-orig/config.sub inputproto-2.2/config.sub
+--- inputproto-2.2-orig/config.sub	2009-10-02 08:38:55.000000000 +0700
++++ inputproto-2.2/config.sub	2014-12-22 11:20:31.045130152 +0600
+@@ -1307,6 +1307,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

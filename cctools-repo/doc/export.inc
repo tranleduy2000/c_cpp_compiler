@@ -1,0 +1,5 @@
+export LD_LIBRARY_PATH='/data/data/com.pdaxrom.cctools/root/cctools/lib:/system/lib'
+export PATH='/data/data/com.pdaxrom.cctools/root/cctools/sbin:/data/data/com.pdaxrom.cctools/root/cctools/bin:/system/xbin:/system/bin:/data/data/com.pdaxrom.cctools/root/cctools/bin:/data/data/com.pdaxrom.cctools/root/cctools/sbin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin'
+export TEMPDIR='/data/data/com.pdaxrom.cctools/root/cctools/home/tmp'
+export TERM='xterm'
+export TMPDIR='/data/data/com.pdaxrom.cctools/root/cctools/home/tmp'

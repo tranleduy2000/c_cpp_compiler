@@ -1,0 +1,24 @@
+diff -Nur xwininfo-1.1.2-orig/xwininfo.c xwininfo-1.1.2/xwininfo.c
+--- xwininfo-1.1.2-orig/xwininfo.c	2011-06-19 00:20:51.000000000 +0700
++++ xwininfo-1.1.2/xwininfo.c	2014-12-23 13:29:41.572940932 +0600
+@@ -76,7 +76,9 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <locale.h>
+-#include <langinfo.h>
++#ifndef __BIONIC__
++# include <langinfo.h>
++#endif
+ #ifdef HAVE_ICONV
+ # include <iconv.h>
+ #endif
+@@ -439,7 +441,9 @@
+ 
+     if (!setlocale (LC_ALL, ""))
+ 	fprintf (stderr, "%s: can not set locale properly\n", program_name);
++#ifndef __BIONIC__
+     user_encoding = nl_langinfo (CODESET);
++#endif
+     if (user_encoding == NULL)
+ 	user_encoding = "unknown encoding";
+ 

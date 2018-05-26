@@ -1,11 +1,11 @@
 build_gcc_mingw32() {
     PKG=gcc-mingw-w64
-    PKG_VERSION=$gcc_version
-    PKG_SUBVERSION=-1
+    PKG_VERSION=$gcc_mingw_version
+    PKG_URL="http://mirrors-usa.go-parts.com/gcc/releases/gcc-${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.bz2"
     PKG_DESC="The GNU C compiler (cross compiler for mingw32)"
-    O_DIR=$SRC_PREFIX/gcc/gcc-${PKG_VERSION}
-    S_DIR=$src_dir/gcc-${PKG_VERSION}
-    B_DIR=$build_dir/${PKG}-${1}
+    O_FILE=$SRC_PREFIX/gnu/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2
+    S_DIR=$src_dir/gnu/gcc-${PKG_VERSION}
+    B_DIR=$build_dir/${PKG}-mingw32-${1}
 
     c_tag ${PKG}-${1} && return
 
@@ -13,7 +13,7 @@ build_gcc_mingw32() {
 
     pushd .
 
-    preparesrc $O_DIR $S_DIR
+#    preparesrc $O_DIR $S_DIR
 
 #    copysrc $O_DIR $S_DIR
 
@@ -49,9 +49,11 @@ build_gcc_mingw32() {
 	--with-mpfr-version=$mpfr_version \
 	--with-mpc-version=$mpc_version \
 	--with-gmp-version=$gmp_version \
-	--with-gcc-version=$gcc_version \
+	--with-gcc-version=$gcc_mingw_version \
 	--with-cloog-version=$cloog_version \
 	--with-isl-version=$isl_version \
+	--disable-libquadmath-support \
+	--disable-libcilkrts \
 	|| error "configure"
 
     $MAKE $MAKEARGS || error "make $MAKEARGS"
@@ -78,15 +80,15 @@ build_gcc_mingw32() {
     rm -f  ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/lib/libiberty.a
 
     ln -sf ${1}-g++ ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/bin/${1}-c++
-    ln -sf ${1}-gcc-${gcc_version} ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/bin/${1}-gcc
-    ln -sf ${1}-gcc-${gcc_version} ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/bin/${1}-cc
+    ln -sf ${1}-gcc-${gcc_mingw_version} ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/bin/${1}-gcc
+    ln -sf ${1}-gcc-${gcc_mingw_version} ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/bin/${1}-cc
 
     $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/bin/*
-    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/libexec/gcc/${1}/${gcc_version}/*
-    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/libexec/gcc/${1}/${gcc_version}/plugin/*
-    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/libexec/gcc/${1}/${gcc_version}/install-tools/*
+    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/libexec/gcc/${1}/${gcc_mingw_version}/*
+    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/libexec/gcc/${1}/${gcc_mingw_version}/plugin/*
+    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/libexec/gcc/${1}/${gcc_mingw_version}/install-tools/*
 
-    cp -f ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/lib/gcc/${1}/lib/*.a ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/lib/gcc/${1}/${gcc_version}/
+    cp -f ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/lib/gcc/${1}/lib/*.a ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/lib/gcc/${1}/${gcc_mingw_version}/
     rm -rf ${TMPINST_DIR}/${PKG}-${WARCH}/cctools/lib/gcc/${1}/lib
 
     local f
@@ -101,6 +103,7 @@ build_gcc_mingw32() {
     local filename="${PKG}-${WARCH}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG}-${WARCH} $filename ${PKG}-${WARCH} ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC"
     cd ${TMPINST_DIR}/${PKG}-${WARCH}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename *
 
     popd

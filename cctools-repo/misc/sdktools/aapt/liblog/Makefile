@@ -23,7 +23,8 @@ CFLAGS += -I../include
 #	-DHAVE_ENDIAN_H \
 
 ifeq (arm,$(CPU))
-CFLAGS += -march=armv6
+#CFLAGS += -march=armv6
+CFLAGS += -march=armv5te
 endif
 
 ifeq (x86, $(CPU))

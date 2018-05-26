@@ -24,3 +24,75 @@ diff -Nur libiconv-1.14.orig/libcharset/build-aux/config.sub libiconv-1.14/libch
  	-linux*)
  		os=`echo $os | sed -e 's|linux|linux-gnu|'`
  		;;
+diff -Nur libiconv-1.14-orig/build-aux/config.guess libiconv-1.14/build-aux/config.guess
+--- libiconv-1.14-orig/build-aux/config.guess	2009-06-21 16:17:33.000000000 +0500
++++ libiconv-1.14/build-aux/config.guess	2016-08-10 12:30:37.168569420 +0400
+@@ -848,6 +848,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
+     arm*:Linux:*:*)
+ 	eval $set_cc_for_build
+ 	if echo __ARM_EABI__ | $CC_FOR_BUILD -E - 2>/dev/null \
+diff -Nur libiconv-1.14-orig/build-aux/config.sub libiconv-1.14/build-aux/config.sub
+--- libiconv-1.14-orig/build-aux/config.sub	2016-08-10 12:25:41.971273962 +0400
++++ libiconv-1.14/build-aux/config.sub	2016-08-10 12:31:21.465964203 +0400
+@@ -239,6 +239,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 | aarch64_be \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| am33_2.0 \
+@@ -318,6 +319,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* | aarch64_be-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \
+diff -Nur libiconv-1.14-orig/libcharset/build-aux/config.guess libiconv-1.14/libcharset/build-aux/config.guess
+--- libiconv-1.14-orig/libcharset/build-aux/config.guess	2009-06-21 16:17:33.000000000 +0500
++++ libiconv-1.14/libcharset/build-aux/config.guess	2016-08-10 12:30:37.168569420 +0400
+@@ -819,6 +819,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
+     arm*:Linux:*:*)
+ 	echo ${UNAME_MACHINE}-unknown-linux-gnu
+ 	exit ;;
+diff -Nur libiconv-1.14-orig/libcharset/build-aux/config.sub libiconv-1.14/libcharset/build-aux/config.sub
+--- libiconv-1.14-orig/libcharset/build-aux/config.sub	2016-08-10 12:25:41.971273962 +0400
++++ libiconv-1.14/libcharset/build-aux/config.sub	2016-08-10 12:31:26.774131339 +0400
+@@ -237,6 +237,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 | aarch64_be \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| am33_2.0 \
+@@ -313,6 +314,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* | aarch64_be-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \

@@ -1,0 +1,24 @@
+--- bash-4.4.12/parse.y
++++ bash-4.4.12-new/parse.y
+@@ -132,7 +132,10 @@
+ extern int bash_input_fd_changed;
+ #endif
+ 
++#ifndef __BIONIC__
+ extern int errno;
++#endif
++
+ /* **************************************************************** */
+ /*								    */
+ /*		    "Forward" declarations			    */
+--- bash-4.4.12/bashline.c
++++ bash-4.4.12-new/bashline.c
+@@ -2465,7 +2465,7 @@
+      const char *text;
+      int state;
+ {
+-#if defined (__WIN32__) || defined (__OPENNT) || !defined (HAVE_GRP_H)
++#if defined (__WIN32__) || defined (__OPENNT) || !defined (HAVE_GRP_H) || defined(__BIONIC__)
+   return ((char *)NULL);
+ #else
+   static char *gname = (char *)NULL;

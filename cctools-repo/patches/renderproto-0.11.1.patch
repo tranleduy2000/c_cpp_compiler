@@ -1,0 +1,13 @@
+diff -Nur renderproto-0.11.1-orig/config.sub renderproto-0.11.1/config.sub
+--- renderproto-0.11.1-orig/config.sub	2010-08-10 21:11:53.000000000 +0700
++++ renderproto-0.11.1/config.sub	2014-12-22 11:21:37.797131485 +0600
+@@ -1326,6 +1326,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

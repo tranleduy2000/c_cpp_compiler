@@ -1,0 +1,13 @@
+diff -Nur windowswmproto-1.0.4-orig/config.sub windowswmproto-1.0.4/config.sub
+--- windowswmproto-1.0.4-orig/config.sub	2009-10-03 10:18:41.000000000 +0700
++++ windowswmproto-1.0.4/config.sub	2014-12-22 11:23:13.261133391 +0600
+@@ -1307,6 +1307,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

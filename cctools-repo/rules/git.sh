@@ -1,9 +1,9 @@
 build_git() {
     PKG=git
-    PKG_VERSION=1.8.1.2
+    PKG_VERSION=2.10.0
     PKG_SUBVERSION="-1"
     PKG_DESC="Git is a distributed revision control and source code management (SCM) system with an emphasis on speed.[3] Git was initially designed and developed by Linus Torvalds for Linux kernel development; it has since been adopted by many other projects."
-    PKG_URL=http://git-core.googlecode.com/files/${PKG}-${PKG_VERSION}.tar.gz
+    PKG_URL=https://www.kernel.org/pub/software/scm/git/${PKG}-${PKG_VERSION}.tar.gz
     O_FILE=$SRC_PREFIX/$PKG/$PKG-$PKG_VERSION.tar.gz
     S_DIR=$src_dir/$PKG-$PKG_VERSION
     B_DIR=$build_dir/$PKG
@@ -19,7 +19,7 @@ build_git() {
     tar zxf $O_FILE -C $src_dir || error "tar zxf $O_FILE"
 
     cd $S_DIR
-#    patch -p1 < $patch_dir/$PKG-$PKG_VERSION.patch || error "patch"
+    patch -p1 < $patch_dir/$PKG-$PKG_VERSION.patch || error "patch"
 
 #    mkdir -p $B_DIR
     copysrc $S_DIR  $B_DIR
@@ -34,14 +34,14 @@ build_git() {
 	--without-iconv \
 	--without-tcltk --without-python || error "configure"
 
-    $MAKE $MAKEARGS NEEDS_SSL_WITH_CURL=1 NEEDS_CRYPTO_WITH_SSL=1 || error "make"
+    $MAKE $MAKEARGS NEEDS_SSL_WITH_CURL=1 NEEDS_CRYPTO_WITH_SSL=1 NEEDS_LIBRT=0 || error "make"
 
     #$MAKE install NEEDS_SSL_WITH_CURL=1 NEEDS_CRYPTO_WITH_SSL=1 NO_INSTALL_HARDLINKS=1 || error "make install"
 
     rm -rf ${TMPINST_DIR}/${PKG}
     rm -rf ${TMPINST_DIR}/${PKG}-tmp
 
-    $MAKE install NEEDS_SSL_WITH_CURL=1 NEEDS_CRYPTO_WITH_SSL=1 NO_INSTALL_HARDLINKS=1 DESTDIR=${TMPINST_DIR}/${PKG}-tmp || error "package install"
+    $MAKE install NEEDS_SSL_WITH_CURL=1 NEEDS_CRYPTO_WITH_SSL=1 NEEDS_LIBRT=0 NO_INSTALL_HARDLINKS=1 DESTDIR=${TMPINST_DIR}/${PKG}-tmp || error "package install"
 
     mkdir -p ${TMPINST_DIR}/${PKG}/cctools
 
@@ -57,9 +57,12 @@ build_git() {
     #mv ${TMPINST_DIR}/${PKG}/cctools/include ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/
     #mv ${TMPINST_DIR}/${PKG}/cctools/lib     ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/
 
+    fix_bionic_shell ${TMPINST_DIR}/${PKG}/cctools
+
     local filename="${PKG}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename $PKG ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC" "ca-certificates"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
     popd

@@ -1,0 +1,118 @@
+diff -Nur libX11-1.5.0-orig/include/X11/Xlib.h libX11-1.5.0/include/X11/Xlib.h
+--- libX11-1.5.0-orig/include/X11/Xlib.h	2012-06-02 13:37:17.000000000 +0700
++++ libX11-1.5.0/include/X11/Xlib.h	2014-12-28 17:36:21.701070776 +0600
+@@ -66,9 +66,16 @@
+ #endif
+ #endif
+ 
++#ifdef __BIONIC__
++#define wctomb		_Xwctomb
++#undef mblen
++#define mblen		_Xmblen
++#define mbtowc		_Xmbtowc
++#endif
++
+ extern int
+ _Xmblen(
+-#ifdef ISC
++#if defined(ISC) || defined(__BIONIC__)
+     char const *str,
+     size_t len
+ #else
+@@ -3995,7 +4002,7 @@
+ 
+ extern int _Xmbtowc(
+     wchar_t *			/* wstr */,
+-#ifdef ISC
++#if defined(ISC) || defined(__BIONIC__)
+     char const *		/* str */,
+     size_t			/* len */
+ #else
+diff -Nur libX11-1.5.0-orig/ltmain.sh libX11-1.5.0/ltmain.sh
+--- libX11-1.5.0-orig/ltmain.sh	2012-06-02 13:37:28.000000000 +0700
++++ libX11-1.5.0/ltmain.sh	2014-12-28 17:36:21.705070776 +0600
+@@ -2963,8 +2963,8 @@
+ 	  # At present, this check doesn't affect windows .dll's that
+ 	  # are installed into $libdir/../bin (currently, that works fine)
+ 	  # but it's something to keep an eye on.
+-	  test "$inst_prefix_dir" = "$destdir" && \
+-	    func_fatal_error "error: cannot install \`$file' to a directory not ending in $libdir"
++	  #test "$inst_prefix_dir" = "$destdir" && \
++	  #    func_fatal_error "error: cannot install \`$file' to a directory not ending in $libdir"
+ 
+ 	  if test -n "$inst_prefix_dir"; then
+ 	    # Stick the inst_prefix_dir data into the link command.
+diff -Nur libX11-1.5.0-orig/src/GetDflt.c libX11-1.5.0/src/GetDflt.c
+--- libX11-1.5.0-orig/src/GetDflt.c	2012-06-02 13:37:19.000000000 +0700
++++ libX11-1.5.0/src/GetDflt.c	2014-12-28 17:36:21.705070776 +0600
+@@ -95,19 +95,21 @@
+     char *dest,
+     int len)
+ {
+-#ifdef WIN32
++#if defined(WIN32) || defined(__BIONIC__)
+     register char *ptr1 = NULL;
+     register char *ptr2 = NULL;
+     int len1 = 0, len2 = 0;
+ 
+     if ((ptr1 = getenv("HOME"))) {	/* old, deprecated */
+ 	len1 = strlen (ptr1);
++#ifndef __BIONIC__
+     } else if ((ptr1 = getenv("HOMEDRIVE")) && (ptr2 = getenv("HOMEDIR"))) {
+ 	len1 = strlen (ptr1);
+ 	len2 = strlen (ptr2);
+     } else if ((ptr2 = getenv("USERNAME"))) {
+ 	len1 = strlen (ptr1 = "/users/");
+ 	len2 = strlen (ptr2);
++#endif
+     }
+     if ((len1 + len2 + 1) < len)
+ 	sprintf (dest, "%s%s", ptr1, (ptr2) ? ptr2 : "");
+diff -Nur libX11-1.5.0-orig/src/util/Makefile.in libX11-1.5.0/src/util/Makefile.in
+--- libX11-1.5.0-orig/src/util/Makefile.in	2012-06-02 13:37:33.000000000 +0700
++++ libX11-1.5.0/src/util/Makefile.in	2014-12-28 17:36:21.709070777 +0600
+@@ -321,9 +321,9 @@
+ 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+ 	echo " rm -f" $$list; \
+ 	rm -f $$list
+-makekeys$(EXEEXT): $(makekeys_OBJECTS) $(makekeys_DEPENDENCIES) 
++makekeys$(EXEEXT):
+ 	@rm -f makekeys$(EXEEXT)
+-	$(AM_V_CCLD)$(makekeys_LINK) $(makekeys_OBJECTS) $(makekeys_LDADD) $(LIBS)
++	$${HOST_CC-gcc} $(makekeys_CFLAGS) $(abs_srcdir)/$(makekeys_SOURCES) -o $@
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+diff -Nur libX11-1.5.0-orig/src/xlibi18n/lcStd.c libX11-1.5.0/src/xlibi18n/lcStd.c
+--- libX11-1.5.0-orig/src/xlibi18n/lcStd.c	2012-06-02 13:37:19.000000000 +0700
++++ libX11-1.5.0/src/xlibi18n/lcStd.c	2014-12-28 17:36:21.717070777 +0600
+@@ -199,7 +199,7 @@
+ int
+ _Xmbtowc(
+     wchar_t *wstr,
+-#ifdef ISC
++#if defined(ISC) || defined(__BIONIC__)
+     char const *str,
+     size_t len
+ #else
+@@ -213,7 +213,7 @@
+ 
+ int
+ _Xmblen(
+-#ifdef ISC
++#if defined(ISC) || defined(__BIONIC__)
+     char const *str,
+     size_t len
+ #else
+diff -Nur libX11-1.5.0-orig/src/xlibi18n/lcWrap.c libX11-1.5.0/src/xlibi18n/lcWrap.c
+--- libX11-1.5.0-orig/src/xlibi18n/lcWrap.c	2012-06-02 13:37:19.000000000 +0700
++++ libX11-1.5.0/src/xlibi18n/lcWrap.c	2014-12-28 22:34:15.157427666 +0600
+@@ -257,6 +257,8 @@
+ 
+     if (name == NULL) {
+ 	name = setlocale (LC_CTYPE, (char *)NULL);
++	if (name == NULL)
++	    return NULL;
+ #if !defined(X_LOCALE)
+         /*
+          * _XlMapOSLocaleName will return the same string or a substring

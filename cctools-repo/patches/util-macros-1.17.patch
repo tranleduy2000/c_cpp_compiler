@@ -1,0 +1,24 @@
+diff -Nur util-macros-1.17-orig/Makefile.am util-macros-1.17/Makefile.am
+--- util-macros-1.17-orig/Makefile.am	2011-03-11 02:50:42.000000000 +0600
++++ util-macros-1.17/Makefile.am	2014-12-22 16:21:43.357491012 +0600
+@@ -29,7 +29,7 @@
+ install-data-hook:
+ 	rm -f $(DESTDIR)$(aclocaldir)/xorgversion.m4
+ 
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xorg-macros.pc
+ 
+ .PHONY: ChangeLog
+diff -Nur util-macros-1.17-orig/Makefile.in util-macros-1.17/Makefile.in
+--- util-macros-1.17-orig/Makefile.in	2012-03-14 06:44:05.000000000 +0700
++++ util-macros-1.17/Makefile.in	2014-12-22 16:22:12.681491597 +0600
+@@ -183,7 +183,7 @@
+ aclocaldir = $(datadir)/aclocal
+ aclocal_DATA = xorg-macros.m4
+ dist_pkgdata_DATA = INSTALL
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xorg-macros.pc
+ all: all-am
+ 

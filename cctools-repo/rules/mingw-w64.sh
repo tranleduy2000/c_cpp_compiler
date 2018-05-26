@@ -71,6 +71,7 @@ build_mingw_w64() {
     local filename="${PKG}-${WARCH}-dev_${PKG_VERSION}${PKG_SUBVERSION}_all.zip"
     build_package_desc ${TMPINST_DIR}/${PKG}-${WARCH}-dev $filename ${PKG}-${WARCH}-dev ${PKG_VERSION}${PKG_SUBVERSION} all "$PKG_DESC" "$PKG_DEPS"
     cd ${TMPINST_DIR}/${PKG}-${WARCH}-dev
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename *
 
     popd

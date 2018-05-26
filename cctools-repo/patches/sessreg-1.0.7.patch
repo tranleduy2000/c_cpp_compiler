@@ -1,0 +1,32 @@
+diff -Nur sessreg-1.0.7-orig/sessreg.c sessreg-1.0.7/sessreg.c
+--- sessreg-1.0.7-orig/sessreg.c	2011-09-27 06:01:11.000000000 +0700
++++ sessreg-1.0.7/sessreg.c	2014-12-23 12:31:30.520871224 +0600
+@@ -315,6 +315,7 @@
+ 			endutxent ();
+ 		}
+ #endif
++#ifndef __BIONIC__
+ #ifdef USE_UTMP
+ # ifdef HAVE_PUTUTLINE
+ 		utmpname (utmp_file);
+@@ -332,6 +333,7 @@
+ 		}
+ # endif
+ #endif /* USE_UTMP */
++#endif
+ 	}
+ 	if (!wtmp_none) {
+ #ifdef USE_UTMPX
+diff -Nur sessreg-1.0.7-orig/sessreg.h sessreg-1.0.7/sessreg.h
+--- sessreg-1.0.7-orig/sessreg.h	2011-06-26 23:30:31.000000000 +0700
++++ sessreg-1.0.7/sessreg.h	2014-12-23 11:55:42.272828329 +0600
+@@ -106,3 +106,9 @@
+ #ifndef TTYS_FILE
+ # define TTYS_FILE	"/etc/ttys"
+ #endif
++
++#ifdef HAVE_STRUCT_UTMP_UT_TYPE
++# ifdef __BIONIC__
++#  define DEAD_PROCESS	8	/* Terminated process.  */
++# endif
++#endif

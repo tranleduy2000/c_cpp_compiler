@@ -1,0 +1,10 @@
+--- llvm-3.6.orig/clang/lib/Driver/Tools.cpp	2015-06-06 15:08:08.176580879 +0400
++++ llvm-3.6/clang/lib/Driver/Tools.cpp	2015-06-06 15:12:28.704592307 +0400
+@@ -7567,6 +7567,7 @@
+   const bool IsPIE =
+     !Args.hasArg(options::OPT_shared) &&
+     !Args.hasArg(options::OPT_static) &&
++    !Args.hasArg(options::OPT_nopie)  &&
+     (Args.hasArg(options::OPT_pie) || ToolChain.isPIEDefault() ||
+      // On Android every code is PIC so every executable is PIE
+      // Cannot use isPIEDefault here since otherwise

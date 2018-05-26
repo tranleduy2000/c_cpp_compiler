@@ -11,3 +11,39 @@ diff -Nur fastjar-0.98-orig/config.sub fastjar-0.98/config.sub
  	# First accept the basic system types.
  	# The portable systems comes first.
  	# Each alternative MUST END IN A *, to match a version number.
+diff -Nur fastjar-0.98-orig/config.guess fastjar-0.98/config.guess
+--- fastjar-0.98-orig/config.guess	2008-10-16 13:15:15.000000000 +0500
++++ fastjar-0.98/config.guess	2016-09-06 08:55:02.454355267 +0400
+@@ -835,6 +835,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
+     arm*:Linux:*:*)
+ 	eval $set_cc_for_build
+ 	if echo __ARM_EABI__ | $CC_FOR_BUILD -E - 2>/dev/null \
+diff -Nur fastjar-0.98-orig/config.sub fastjar-0.98/config.sub
+--- fastjar-0.98-orig/config.sub	2016-09-06 08:53:23.915276426 +0400
++++ fastjar-0.98/config.sub	2016-09-06 08:55:28.983184203 +0400
+@@ -238,6 +238,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| am33_2.0 \
+@@ -314,6 +315,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \

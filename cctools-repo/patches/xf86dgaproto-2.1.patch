@@ -1,0 +1,13 @@
+diff -Nur xf86dgaproto-2.1-orig/config.sub xf86dgaproto-2.1/config.sub
+--- xf86dgaproto-2.1-orig/config.sub	2009-10-01 16:53:19.000000000 +0700
++++ xf86dgaproto-2.1/config.sub	2014-12-22 11:24:26.453134853 +0600
+@@ -1307,6 +1307,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

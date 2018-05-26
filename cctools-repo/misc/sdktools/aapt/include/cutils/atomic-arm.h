@@ -17,6 +17,7 @@
 #ifndef ANDROID_CUTILS_ATOMIC_ARM_H
 #define ANDROID_CUTILS_ATOMIC_ARM_H
 
+#include <machine/cpu-features.h>
 #include <stdint.h>
 
 #ifndef ANDROID_ATOMIC_INLINE
@@ -79,6 +80,9 @@ extern ANDROID_ATOMIC_INLINE
 int android_atomic_cas(int32_t old_value, int32_t new_value,
                        volatile int32_t *ptr)
 {
+#ifndef __ARM_HAVE_LDREX_STREX
+    return __sync_val_compare_and_swap(ptr, old_value, new_value) != old_value;
+#else
     int32_t prev, status;
     do {
         __asm__ __volatile__ ("ldrex %0, [%3]\n"
@@ -93,6 +97,7 @@ int android_atomic_cas(int32_t old_value, int32_t new_value,
                               : "cc");
     } while (__builtin_expect(status != 0, 0));
     return prev != old_value;
+#endif
 }
 
 extern ANDROID_ATOMIC_INLINE
@@ -115,6 +120,15 @@ int android_atomic_release_cas(int32_t old_value, int32_t new_value,
 extern ANDROID_ATOMIC_INLINE
 int32_t android_atomic_add(int32_t increment, volatile int32_t *ptr)
 {
+#ifndef __ARM_HAVE_LDREX_STREX
+    int32_t prev, status;
+    android_memory_barrier();
+    do {
+        prev = *ptr;
+        status = android_atomic_cas(prev, prev + increment, ptr);
+    } while (__builtin_expect(status != 0, 0));
+    return prev;
+#else
     int32_t prev, tmp, status;
     android_memory_barrier();
     do {
@@ -127,6 +141,7 @@ int32_t android_atomic_add(int32_t increment, volatile int32_t *ptr)
                               : "cc");
     } while (__builtin_expect(status != 0, 0));
     return prev;
+#endif
 }
 
 extern ANDROID_ATOMIC_INLINE int32_t android_atomic_inc(volatile int32_t *addr)
@@ -142,6 +157,15 @@ extern ANDROID_ATOMIC_INLINE int32_t android_atomic_dec(volatile int32_t *addr)
 extern ANDROID_ATOMIC_INLINE
 int32_t android_atomic_and(int32_t value, volatile int32_t *ptr)
 {
+#ifndef __ARM_HAVE_LDREX_STREX
+    int32_t prev, status;
+    android_memory_barrier();
+    do {
+        prev = *ptr;
+        status = android_atomic_cas(prev, prev & value, ptr);
+    } while (__builtin_expect(status != 0, 0));
+    return prev;
+#else
     int32_t prev, tmp, status;
     android_memory_barrier();
     do {
@@ -154,11 +178,21 @@ int32_t android_atomic_and(int32_t value, volatile int32_t *ptr)
                               : "cc");
     } while (__builtin_expect(status != 0, 0));
     return prev;
+#endif
 }
 
 extern ANDROID_ATOMIC_INLINE
 int32_t android_atomic_or(int32_t value, volatile int32_t *ptr)
 {
+#ifndef __ARM_HAVE_LDREX_STREX
+    int32_t prev, status;
+    android_memory_barrier();
+    do {
+        prev = *ptr;
+        status = android_atomic_cas(prev, prev | value, ptr);
+    } while (__builtin_expect(status != 0, 0));
+    return prev;
+#else
     int32_t prev, tmp, status;
     android_memory_barrier();
     do {
@@ -171,6 +205,7 @@ int32_t android_atomic_or(int32_t value, volatile int32_t *ptr)
                               : "cc");
     } while (__builtin_expect(status != 0, 0));
     return prev;
+#endif
 }
 
 #endif /* ANDROID_CUTILS_ATOMIC_ARM_H */

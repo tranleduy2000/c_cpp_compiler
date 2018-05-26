@@ -8,7 +8,18 @@ It may be embedded or used as a general-purpose, stand-alone language."
     O_FILE=$SRC_PREFIX/$PKG/$PKG-$PKG_VERSION.tar.gz
     S_DIR=$src_dir/$PKG-$PKG_VERSION
     B_DIR=$build_dir/$PKG
-    c_tag $PKG && return
+
+    c_tag $FUNCNAME && return
+
+    case "$TARGET_ARCH" in
+    arm*|mipsel*|i*86*|x86_64*)
+	;;
+    *)
+	echo "No LuaJit for $TARGET_ARCH"
+	s_tag $FUNCNAME
+	return
+	;;
+    esac
 
     banner "Build $PKG"
 
@@ -52,8 +63,9 @@ It may be embedded or used as a general-purpose, stand-alone language."
     local filename="${PKG}_${PKG_VERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename $PKG $PKG_VERSION $PKG_ARCH "$PKG_DESC"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
     popd
-    s_tag $PKG
+    s_tag $FUNCNAME
 }

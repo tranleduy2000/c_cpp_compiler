@@ -1,0 +1,13 @@
+diff -Nur xinput-1.6.0-orig/config.sub xinput-1.6.0/config.sub
+--- xinput-1.6.0-orig/config.sub	2008-04-16 13:09:08.000000000 +0700
++++ xinput-1.6.0/config.sub	2014-12-23 12:41:27.456883143 +0600
+@@ -1243,6 +1243,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

@@ -1,0 +1,96 @@
+<cctools-module
+    title="Android Java project"
+    title-ru="Android Java проект"
+    id="aproject">
+    <action
+	title="New Android Java application"
+	title-ru="Новое приложение">
+	<view type="dirpath"
+	    title="Project directory"
+	    title-ru="Директория"
+	    hint="Select directory for new project"
+	    hint-ru="для нового проекта"
+	    name="path" />
+	<view type="edit"
+	    title="Application name"
+	    title-ru="Название приложения"
+	    hint="My Android App"
+	    name="appname" />
+	<view type="edit"
+	    title="Project name"
+	    title-ru="Название проекта"
+	    hint="HelloWorld"
+	    name="name" />
+	<view type="edit"
+	    title="Activity name"
+	    title-ru="Название Activity"
+	    hint="MyAndroidAppActivity"
+	    name="activity" />
+	<view type="edit"
+	    title="Package"
+	    title-ru="Пакет"
+	    hint="com.example.HelloWorld"
+	    name="package" />
+	<command
+	    title="Create"
+	    title-ru="Создать"
+	    exec="aproject create project --gui --path @path@ --package @package@ --name @name@ --appname @appname@ --activity @activity@" />
+    </action>
+    <action
+	title="Build project"
+	title-ru="Сборка проекта">
+	<view type="dirpath"
+	    title="Directory"
+	    title-ru="Директория"
+	    hint="of Java project"
+	    hint-ru="Java проекта"
+	    name="path" />
+	<command
+	    title="Build"
+	    title-ru="Собрать"
+	    intent="BuildActivity">
+	    <extra name="cmdline" value="aproject build release" />
+	    <extra name="workdir" value="@path@" />
+	    <extra name="cctoolsdir" value="$root_dir$" />
+	    <extra name="tmpdir" value="$tmp_dir$" />
+	</command>
+    </action>
+    <action
+	title="Build and install application"
+	title-ru="Сборка и установка приложение">
+	<view type="dirpath"
+	    title="Directory"
+	    title-ru="Директория"
+	    hint="of Java project"
+	    hint-ru="Java проекта"
+	    name="path" />
+	<command
+	    title="Continue"
+	    title-ru="Продолжить"
+	    intent="BuildActivity">
+	    <extra name="cmdline" value="aproject build release --install" />
+	    <extra name="workdir" value="@path@" />
+	    <extra name="cctoolsdir" value="$root_dir$" />
+	    <extra name="tmpdir" value="$tmp_dir$" />
+	</command>
+    </action>
+    <action
+	title="Clean project"
+	title-ru="Очистка проекта">
+	<view type="dirpath"
+	    title="Directory"
+	    title-ru="Директория"
+	    hint="of Java project"
+	    hint-ru="Java проекта"
+	    name="path" />
+	<command
+	    title="Clean"
+	    title-ru="Очистить"
+	    intent="BuildActivity">
+	    <extra name="cmdline" value="aproject clean" />
+	    <extra name="workdir" value="@path@" />
+	    <extra name="cctoolsdir" value="$root_dir$" />
+	    <extra name="tmpdir" value="$tmp_dir$" />
+	</command>
+    </action>
+</cctools-module>

@@ -1,7 +1,7 @@
 build_sdk_android() {
     PKG=sdk-android
     PKG_VERSION=1.0
-    PKG_SUBVERSION=
+    PKG_SUBVERSION=2
     PKG_DESC="Android java sdk"
 
     c_tag $PKG && return

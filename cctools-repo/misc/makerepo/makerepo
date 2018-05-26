@@ -1,0 +1,46 @@
+#!/system/bin/sh
+
+WORKDIR="$PWD"
+
+if [ "$1" = "--gui" -o "$1" = "-g" ]; then
+    USE_GUIBOX="yes"
+    shift
+fi
+
+if [ "$1" = "--path" -o "$1" = "-p" ]; then
+    shift
+    WORKDIR="$1"
+fi
+
+cd $WORKDIR
+
+echo "<repo>" > Packages
+
+count=0
+
+for f in `find . -name "*.zip" -maxdepth 1`; do
+    unzip -o $f pkgdesc 2>/dev/null
+    size=`stat -c "%s" $f`
+    sed -i -e "s|@SIZE@|$size|" pkgdesc
+    cat pkgdesc >> Packages
+    rm -f pkgdesc
+    count=$((count + 1))
+done
+
+echo "</repo>" >> Packages
+
+if [ $count -eq 0 ]; then
+    rm -f Packages
+    if [ "$USE_GUIBOX" = "yes" ]; then
+	adialog --msgbox --title "Make repo" --message "Error!"  --text "No packages found in selected directory!"
+    else
+	echo "No packages found in selected directory!"
+    fi
+    exit 1
+fi
+
+if [ "$USE_GUIBOX" = "yes" ]; then
+    adialog --msgbox --title "Make repo" --message "Local repository created!" --text "$count package(s) added, local repository URL file://${WORKDIR}"
+else
+    echo "$count package(s) added, local repository URL file://${WORKDIR}"
+fi

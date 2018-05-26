@@ -1,7 +1,40 @@
-diff -Nur file-5.15-/config.sub file-5.15/config.sub
---- file-5.15-/config.sub	2013-09-24 22:22:11.000000000 +0700
-+++ file-5.15/config.sub	2013-10-29 01:45:09.850409216 +0700
-@@ -1330,6 +1330,9 @@
+diff -Nur file-5.15-orig/config.guess file-5.15/config.guess
+--- file-5.15-orig/config.guess	2013-09-24 19:22:11.000000000 +0400
++++ file-5.15/config.guess	2016-08-10 17:55:55.968423652 +0400
+@@ -858,6 +858,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
+     alpha:Linux:*:*)
+ 	case `sed -n '/^cpu model/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo` in
+ 	  EV5)   UNAME_MACHINE=alphaev5 ;;
+diff -Nur file-5.15-orig/config.sub file-5.15/config.sub
+--- file-5.15-orig/config.sub	2013-09-24 19:22:11.000000000 +0400
++++ file-5.15/config.sub	2016-08-10 17:56:27.025395267 +0400
+@@ -246,6 +246,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| am33_2.0 \
+@@ -328,6 +329,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \
+@@ -1330,6 +1332,9 @@
  	-linux-dietlibc)
  		os=-linux-dietlibc
  		;;
@@ -11,9 +44,9 @@ diff -Nur file-5.15-/config.sub file-5.15/config.sub
  	-linux*)
  		os=`echo $os | sed -e 's|linux|linux-gnu|'`
  		;;
-diff -Nur file-5.15-/src/file.c file-5.15/src/file.c
---- file-5.15-/src/file.c	2013-06-26 21:46:54.000000000 +0700
-+++ file-5.15/src/file.c	2013-10-29 02:11:25.858342938 +0700
+diff -Nur file-5.15-orig/src/file.c file-5.15/src/file.c
+--- file-5.15-orig/src/file.c	2013-06-26 18:46:54.000000000 +0400
++++ file-5.15/src/file.c	2016-08-10 17:55:55.968423652 +0400
 @@ -535,3 +535,7 @@
  	fprintf(stdout, "\nReport bugs to http://bugs.gw.com/\n");
  	exit(0);
@@ -22,9 +55,9 @@ diff -Nur file-5.15-/src/file.c file-5.15/src/file.c
 +#ifdef __BIONIC__
 +#include "getline.c"
 +#endif
-diff -Nur file-5.15-/src/magic.c file-5.15/src/magic.c
---- file-5.15-/src/magic.c	2013-09-11 02:57:14.000000000 +0700
-+++ file-5.15/src/magic.c	2013-10-29 02:14:23.182335481 +0700
+diff -Nur file-5.15-orig/src/magic.c file-5.15/src/magic.c
+--- file-5.15-orig/src/magic.c	2013-09-10 23:57:14.000000000 +0400
++++ file-5.15/src/magic.c	2016-08-10 17:55:55.968423652 +0400
 @@ -488,3 +488,7 @@
  {
  	return MAGIC_VERSION;
@@ -33,9 +66,9 @@ diff -Nur file-5.15-/src/magic.c file-5.15/src/magic.c
 +#ifdef __BIONIC__
 +#include "regex.c"
 +#endif
-diff -Nur file-5.15-/src/regcomp.c file-5.15/src/regcomp.c
---- file-5.15-/src/regcomp.c	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regcomp.c	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regcomp.c file-5.15/src/regcomp.c
+--- file-5.15-orig/src/regcomp.c	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regcomp.c	2016-08-10 17:55:55.968423652 +0400
 @@ -0,0 +1,3781 @@
 +/* Extended regular expression matching and search library.
 +   Copyright (C) 2002,2003,2004,2005,2006 Free Software Foundation, Inc.
@@ -3818,9 +3851,9 @@ diff -Nur file-5.15-/src/regcomp.c file-5.15/src/regcomp.c
 +	}
 +    }
 +}
-diff -Nur file-5.15-/src/regex.c file-5.15/src/regex.c
---- file-5.15-/src/regex.c	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regex.c	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regex.c file-5.15/src/regex.c
+--- file-5.15-orig/src/regex.c	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regex.c	2016-08-10 17:55:55.968423652 +0400
 @@ -0,0 +1,67 @@
 +/* Extended regular expression matching and search library.
 +   Copyright (C) 2002, 2003, 2005 Free Software Foundation, Inc.
@@ -3889,9 +3922,9 @@ diff -Nur file-5.15-/src/regex.c file-5.15/src/regex.c
 +#include "regex_internal.c"
 +#include "regcomp.c"
 +#include "regexec.c"
-diff -Nur file-5.15-/src/regexec.c file-5.15/src/regexec.c
---- file-5.15-/src/regexec.c	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regexec.c	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regexec.c file-5.15/src/regexec.c
+--- file-5.15-orig/src/regexec.c	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regexec.c	2016-08-10 17:55:55.972423778 +0400
 @@ -0,0 +1,4275 @@
 +/* Extended regular expression matching and search library.
 +   Copyright (C) 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
@@ -8168,9 +8201,9 @@ diff -Nur file-5.15-/src/regexec.c file-5.15/src/regexec.c
 +  sctx->last_str_idx = last_str_idx;
 +  re_node_set_init_empty (&sctx->limits);
 +}
-diff -Nur file-5.15-/src/regex.h file-5.15/src/regex.h
---- file-5.15-/src/regex.h	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regex.h	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regex.h file-5.15/src/regex.h
+--- file-5.15-orig/src/regex.h	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regex.h	2016-08-10 17:55:55.972423778 +0400
 @@ -0,0 +1,567 @@
 +/* Definitions for data structures and routines for the regular
 +   expression library.
@@ -8739,9 +8772,9 @@ diff -Nur file-5.15-/src/regex.h file-5.15/src/regex.h
 +__END_DECLS
 +
 +#endif /* regex.h */
-diff -Nur file-5.15-/src/regex_internal.c file-5.15/src/regex_internal.c
---- file-5.15-/src/regex_internal.c	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regex_internal.c	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regex_internal.c file-5.15/src/regex_internal.c
+--- file-5.15-orig/src/regex_internal.c	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regex_internal.c	2016-08-10 17:55:55.972423778 +0400
 @@ -0,0 +1,1642 @@
 +/* Extended regular expression matching and search library.
 +   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
@@ -10385,9 +10418,9 @@ diff -Nur file-5.15-/src/regex_internal.c file-5.15/src/regex_internal.c
 +    }
 +  return  newstate;
 +}
-diff -Nur file-5.15-/src/regex_internal.h file-5.15/src/regex_internal.h
---- file-5.15-/src/regex_internal.h	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regex_internal.h	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regex_internal.h file-5.15/src/regex_internal.h
+--- file-5.15-orig/src/regex_internal.h	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regex_internal.h	2016-08-10 17:55:55.972423778 +0400
 @@ -0,0 +1,704 @@
 +/* Extended regular expression matching and search library.
 +   Copyright (C) 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
@@ -11093,9 +11126,9 @@ diff -Nur file-5.15-/src/regex_internal.h file-5.15/src/regex_internal.h
 +#endif /* RE_ENABLE_I18N */
 +
 +#endif /*  _REGEX_INTERNAL_H */
-diff -Nur file-5.15-/src/regex_old.c file-5.15/src/regex_old.c
---- file-5.15-/src/regex_old.c	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regex_old.c	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regex_old.c file-5.15/src/regex_old.c
+--- file-5.15-orig/src/regex_old.c	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regex_old.c	2016-08-10 17:55:55.976423901 +0400
 @@ -0,0 +1,8269 @@
 +/* Extended regular expression matching and search library,
 +   version 0.12.
@@ -19366,9 +19399,9 @@ diff -Nur file-5.15-/src/regex_old.c file-5.15/src/regex_old.c
 +# undef WCHAR
 +
 +# define DEFINED_ONCE
-diff -Nur file-5.15-/src/regexp.h file-5.15/src/regexp.h
---- file-5.15-/src/regexp.h	1970-01-01 07:00:00.000000000 +0700
-+++ file-5.15/src/regexp.h	2013-10-29 01:49:53.000000000 +0700
+diff -Nur file-5.15-orig/src/regexp.h file-5.15/src/regexp.h
+--- file-5.15-orig/src/regexp.h	1970-01-01 04:00:00.000000000 +0400
++++ file-5.15/src/regexp.h	2016-08-10 17:55:55.976423901 +0400
 @@ -0,0 +1,232 @@
 +/* Copyright (C) 1996, 1997, 1998, 1999, 2004, 2008
 +   Free Software Foundation, Inc.

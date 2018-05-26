@@ -6,7 +6,7 @@ if [ "$TOPDIR" = "" ]; then
     TOPDIR="."
 fi
 
-TOPDIR=`realpath $TOPDIR`
+TOPDIR=$(realpath $TOPDIR)
 
 error() {
     echo "ERROR: $@"
@@ -31,11 +31,11 @@ usage_create() {
 usage() {
     echo
     echo "Usage:"
-    echo "create project [options]     - Creates a new Android project."
-    echo "create lib-project [options] - Creates a new Android library project."
-    echo "build [debug]                - Build a project."
-    echo "build relese                 - Build a release project."
-    echo "clean                        - Clean a project files."
+    echo "create project [options]     - Create a new Android project."
+    echo "create lib-project [options] - Create a new Android library project."
+    echo "build [debug][-i|--install]  - Debug build."
+    echo "build release[-i|--install]  - Release build."
+    echo "clean                        - Cleanup project files."
 
     usage_create
 }
@@ -51,7 +51,7 @@ if [ "$1" = "create" ]; then
     shift 2
 
     USE_GUIBOX=
-    O=`getopt -n aproject -l path:,package:,activity:,name:,appname:,target:,gui -o p:k:a:n:N:t:g -- "$@"` || exit 1
+    O=$(getopt -n aproject -l path:,package:,activity:,name:,appname:,target:,gui -o p:k:a:n:N:t:g -- "$@") || exit 1
     eval set -- "$O"
     while true; do
 	case "$1" in
@@ -104,7 +104,7 @@ if [ "$1" = "create" ]; then
     fi
 
     if [ "$PROJECT_TARGET" = "" ]; then
-	ANDROID_SDK_VER=`getprop ro.build.version.sdk`
+	ANDROID_SDK_VER=$(getprop ro.build.version.sdk)
     else
 	ANDROID_SDK_VER=$PROJECT_TARGET
     fi
@@ -129,7 +129,7 @@ if [ "$1" = "create" ]; then
     fi
 
     p="${PROJECT_PATH}/${PROJECT_NAME}"
-    p1="${p}/src/`echo $PROJECT_PACKAGE | tr '.' '/'`"
+    p1="${p}/src/$(echo $PROJECT_PACKAGE | tr '.' '/')"
 
     for d in drawable-hdpi drawable-ldpi drawable-mdpi drawable-xhdpi drawable-xxhdpi layout menu values xml; do
 	mkdir -p ${p}/res/$d
@@ -207,12 +207,36 @@ check_android_manifest() {
     fi
 }
 
-PROJECTNAME=`aproject-helper AppName 2>/dev/null`
+get_project_sdk_version() {
+    local SDK
+    local VERS=$(aproject-helper TargetSDK)
+
+    if [ "$VERS" = "" ]; then
+	VERS=$(aproject-helper MinSDK)
+    fi
+
+    if [ "$VERS" = "" ]; then
+	VERS=$(getprop ro.build.version.sdk)
+    fi
+
+    SDK="${CCTOOLSDIR}/sdk/android-${VERS}"
+
+    if [ ! -d "$SDK" ]; then
+	#
+	# FIXME: get all available versions from sdk directory
+	#
+	VERS="19"
+    fi
+
+    echo "$VERS"
+}
+
+PROJECTNAME=$(aproject-helper AppName 2>/dev/null)
 if [ "$PROJECTNAME" = "" ]; then
-    PROJECTNAME=`basename $TOPDIR`
+    PROJECTNAME=$(basename $TOPDIR)
 fi
 
-APROJECT_BIN=`realpath $0`
+APROJECT_BIN=$(realpath $0)
 
 VERBOSE_JAVAC=
 VERBOSE_JAR=
@@ -233,7 +257,7 @@ if [ "$1" = "clean" ]; then
     check_android_manifest
     echo "Cleaning $PROJECTNAME"
     rm -rf bin gen
-    for d in `get_ext_libdirs`; do
+    for d in $(get_ext_libdirs); do
 	cd $d && $APROJECT_BIN $VERBOSE_AAPT clean
 	cd $TOPDIR
     done
@@ -248,7 +272,7 @@ shift
 
 check_android_manifest
 
-for d in `get_ext_libdirs`; do
+for d in $(get_ext_libdirs); do
     cd $d
     $APROJECT_BIN $VERBOSE_AAPT build $@ || error "external library"
     cd $TOPDIR
@@ -259,6 +283,9 @@ echo "Build $PROJECTNAME"
 PROJECT_RELEASE="no"
 if [ "$1" = "release" ]; then
     PROJECT_RELEASE="yes"
+    shift
+elif [ "$1" = "debug" ]; then
+    shift
 fi
 
 mkdir -p bin/classes gen
@@ -266,16 +293,7 @@ mkdir -p bin/res
 
 cp -f AndroidManifest.xml bin/
 
-ANDROID_SDK_VER=`aproject-helper TargetSDK`
-if [ "$ANDROID_SDK_VER" = "" ]; then
-    ANDROID_SDK_VER=`aproject-helper MinSDK`
-fi
-
-if [ "$ANDROID_SDK_VER" = "" ]; then
-    echo "WARNING: No SDK version found in AndroidManifest.xml!"
-    ANDROID_SDK_VER=`getprop ro.build.version.sdk`
-    echo "WARNING: Use OS defined version $ANDROID_SDK_VER"
-fi
+ANDROID_SDK_VER=$(get_project_sdk_version)
 
 ANDROID_SDK=${CCTOOLSDIR}/sdk/android-${ANDROID_SDK_VER}
 
@@ -335,8 +353,8 @@ find_ext_libs_for_dex() {
     done
 }
 
-ACTIVITIES=`aproject-helper Activities`
-EXT_LIBDIRS=`get_ext_libdirs`
+ACTIVITIES=$(aproject-helper Activities)
+EXT_LIBDIRS=$(get_ext_libdirs)
 
 if [ "$PROJECT_RELEASE" = "yes" ]; then
     aproject-helper BuildConfig release
@@ -361,8 +379,8 @@ if [ "$IS_LIBRARY" = "true" -o "$ACTIVITIES" = "" ]; then
 	-F ${TOPDIR}/bin/resources.res \
 	-S ${TOPDIR}/bin/res \
 	-S ${TOPDIR}/res \
-	`get_ext_resources $EXT_LIBDIRS`\
-	`find_libs_for_aapt $ANDROID_SDK libs $ANDROID_LIBS` \
+	$(get_ext_resources $EXT_LIBDIRS) \
+	$(find_libs_for_aapt $ANDROID_SDK libs $ANDROID_LIBS) \
 	-J ${TOPDIR}/gen \
 	--generate-dependencies \
 	 || error "aapt"
@@ -376,8 +394,8 @@ else
 	-F ${TOPDIR}/bin/resources.res \
 	-S ${TOPDIR}/bin/res \
 	-S ${TOPDIR}/res \
-	`get_ext_resources $EXT_LIBDIRS`\
-	`find_libs_for_aapt $ANDROID_SDK libs $ANDROID_LIBS` \
+	$(get_ext_resources $EXT_LIBDIRS) \
+	$(find_libs_for_aapt $ANDROID_SDK libs $ANDROID_LIBS) \
 	-J ${TOPDIR}/gen \
 	--generate-dependencies \
 	 || error "aapt"
@@ -385,23 +403,23 @@ fi
 
 echo "Starting aidl..."
 
-find . -name "*.aidl" -exec aidl -Isrc `find_aidl_for_aidl $ANDROID_SDK $ANDROID_AIDL` -ogen {} \;
+find . -name "*.aidl" -exec aidl -Isrc $(find_aidl_for_aidl $ANDROID_SDK $ANDROID_AIDL) -ogen {} \;
 
 echo "Starting javac..."
 
 javac $VERBOSE_JAVAC \
     -d ${TOPDIR}/bin/classes \
-    -classpath ${TOPDIR}/bin/classes:`find_ext_libs_for_javac $EXT_LIBDIRS`:`find_libs_for_javac $ANDROID_SDK libs $ANDROID_LIBS` \
+    -classpath ${TOPDIR}/bin/classes:$(find_ext_libs_for_javac $EXT_LIBDIRS):$(find_libs_for_javac $ANDROID_SDK libs $ANDROID_LIBS) \
     -sourcepath ${TOPDIR}/src:${TOPDIR}/gen \
     -target 1.5 \
     -bootclasspath ${ANDROID_SDK}/android.jar \
     -encoding UTF-8 \
     -source 1.5 \
-    `find src -name "*.java"` \
-    `find gen -name "*.java"` \
+    $(find src -name "*.java") \
+    $(find gen -name "*.java") \
     || error "javac"
 
-IS_LIBRARY=`is_library`
+IS_LIBRARY=$(is_library)
 
 if [ "$IS_LIBRARY" = "true" -o "$ACTIVITIES" = "" ]; then
 
@@ -413,7 +431,7 @@ else
     mkdir -p ${TOPDIR}/bin/dexedLibs
     DEX_LIBS=
     DEXED_LIBS=
-    for f in `find_ext_libs_for_dex $EXT_LIBDIRS` `find_libs_for_dex libs`; do
+    for f in $(find_ext_libs_for_dex $EXT_LIBDIRS) $(find_libs_for_dex libs); do
 	for v in $DEX_LIBS; do
 	    if cmp -s $f $v; then
 		f=""
@@ -422,7 +440,7 @@ else
 	done
 	if [ ! "$f" = "" ]; then
 	    DEX_LIBS="$DEX_LIBS $f"
-	    fname=`basename $f`
+	    fname=$(basename $f)
 	    
 	    echo "Pre-dexing library ${fname}..."
 	    
@@ -441,7 +459,7 @@ else
 	$VERBOSE_DEX \
 	--no-strict \
 	--output=bin/${PROJECTNAME}.dex \
-	`find bin/classes -maxdepth 1 -not -path "bin/classes"` \
+	$(find bin/classes -maxdepth 1 -not -path "bin/classes") \
 	$DEXED_LIBS \
 	|| error "dx"
 
@@ -452,7 +470,7 @@ else
 
     echo "Starting apkbuilder..."
 
-    apkbuilder bin/${PROJECTNAME}.apk \
+    apkbuilder bin/${PROJECTNAME}-unsigned.apk \
 	$VERBOSE_APKBUILDER \
 	-u \
 	-z ./bin/resources.res \
@@ -462,5 +480,11 @@ else
 
     echo "Starting apksigner..."
 
-    apksigner bin/${PROJECTNAME}.apk bin/${PROJECTNAME}-signed.apk || error "apksigner"
+    apksigner bin/${PROJECTNAME}-unsigned.apk bin/${PROJECTNAME}.apk || error "apksigner"
+
+    if [ "$1" = "-i" -o "$1" = "--install" ]; then
+	#am start $(am 2>&1| grep -q '\-\-user' && echo '--user 0') -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://${PWD}/bin/${PROJECTNAME}.apk"
+	adialog --install "${PWD}/bin/${PROJECTNAME}.apk"
+    fi
+
 fi

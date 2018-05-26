@@ -1,0 +1,35 @@
+--- binutils-2.27/bfd/hosts/x86-64linux.h
++++ binutils-2.27-bionic/bfd/hosts/x86-64linux.h
+@@ -29,6 +29,17 @@
+ #include <sys/time.h>
+ #include <sys/types.h>
+ 
++#ifdef __BIONIC__
++#define ELF_PRARGSZ (80)
++
++struct elf_siginfo
++{
++    int	si_signo;			/* signal number */
++    int	si_code;			/* extra code */
++    int	si_errno;			/* errno */
++};
++#endif
++
+ /* We define here only the symbols differing from their 64-bit variant.  */
+ #include <sys/procfs.h>
+ 
+--- binutils-2.27/bfd/trad-core.c
++++ binutils-2.27-bionic/bfd/trad-core.c
+@@ -50,6 +50,12 @@
+ # define NBPG getpagesize()
+ #endif
+ 
++#ifdef __BIONIC__
++#define UPAGES			1
++#define HOST_TEXT_START_ADDR	(u.start_code)
++#define HOST_STACK_END_ADDR	(u.start_stack + u.u_ssize * NBPG)
++#endif
++
+ struct trad_core_struct
+ {
+   asection *data_section;

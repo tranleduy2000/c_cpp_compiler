@@ -119,7 +119,7 @@ void FdPrinter::printLine(const char* string) {
         return;
     }
 
-#ifndef USE_MINGW
+#if !defined(USE_MINGW) && !defined(__aarch64__)
     fdprintf(mFd, mFormatString, mPrefix, string);
 #endif
 }

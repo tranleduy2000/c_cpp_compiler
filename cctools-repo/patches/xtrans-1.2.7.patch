@@ -1,0 +1,24 @@
+diff -Nur xtrans-1.2.7-orig/Makefile.am xtrans-1.2.7/Makefile.am
+--- xtrans-1.2.7-orig/Makefile.am	2012-03-23 10:04:35.000000000 +0700
++++ xtrans-1.2.7/Makefile.am	2014-12-22 22:40:56.843876167 +0600
+@@ -14,7 +14,7 @@
+ aclocaldir = $(datadir)/aclocal
+ aclocal_DATA = xtrans.m4
+ 
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xtrans.pc
+ 
+ MAINTAINERCLEANFILES = ChangeLog INSTALL
+diff -Nur xtrans-1.2.7-orig/Makefile.in xtrans-1.2.7/Makefile.in
+--- xtrans-1.2.7-orig/Makefile.in	2012-03-23 10:04:40.000000000 +0700
++++ xtrans-1.2.7/Makefile.in	2014-12-22 22:41:12.931876488 +0600
+@@ -272,7 +272,7 @@
+ 
+ aclocaldir = $(datadir)/aclocal
+ aclocal_DATA = xtrans.m4
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xtrans.pc
+ MAINTAINERCLEANFILES = ChangeLog INSTALL
+ EXTRA_DIST = ${aclocal_DATA}

@@ -1,0 +1,131 @@
+#!/system/bin/sh
+
+usage() {
+    echo "Usage:"
+    echo "project-ctl [-b|-r|-h][Project path|Project file]"
+    echo "-b|--build    Build project."
+    echo "-r|--run      Run project."
+    echo "-c|--clean    Clean project."
+    echo "-h|--help     Show help."
+    exit 0
+}
+
+TOPDIR=$PWD
+
+P_RUN=
+P_BUILD=
+
+O=`getopt -n project-ctl -l build,run,clean,gui,help -o brcgh -- "$@"` || exit 1
+eval set -- "$O"
+while true; do
+    case "$1" in
+    -b|--build)
+	P_BUILD="yes"; shift;;
+    -r|--run)
+	P_RUN="yes"; shift;;
+    -c|--clean)
+	P_CLEAN="yes"; shift;;
+    -g|--gui)
+	USE_GUIBOX=yes; shift;;
+    -h|--help)
+	usage; shift;;
+    --)
+	shift; break;;
+    *)
+	echo Error; exit 1;;
+    esac
+done
+
+if [ -d "$1" ]; then
+    TOPDIR="$1"
+    shift
+elif [ -f "$1" ]; then
+    TOPDIR=$(dirname $1)
+    shift
+fi
+
+PROJECT_TYPE=""
+PROJECT_DIR=""
+
+find_project() {
+    local dir="$1"
+
+    while true; do
+	if [ -f "${dir}/AndroidManifest.xml" ]; then
+	    PROJECT_TYPE="aproject"
+	    PROJECT_DIR="$dir"
+	    break
+	fi
+
+	if [ -f "${dir}/project.properties" -o -f "default.properties" ]; then
+	    PROJECT_TYPE="jproject"
+	    PROJECT_DIR="$dir"
+	    break
+	fi
+
+	if [ "$dir" = "/" ]; then
+	    break
+	fi
+	dir=$(dirname $dir)
+    done
+}
+
+set_aproject_args() {
+    args=""
+    if [ "$P_BUILD" = "yes" ]; then
+	args="$args build"
+    fi
+    if [ "$P_RUN" = "yes" ]; then
+	if [ "$P_BUILD" = "yes" ]; then
+	    args="$args -i"
+	else
+	    args="build -i"
+	fi
+    fi
+    if [ "$P_CLEAN" = "yes" ]; then
+	args="clean"
+    fi
+    if [ "$args" = "" ]; then
+	args="build"
+    fi
+}
+
+set_jproject_args() {
+    args=""
+    if [ "$P_BUILD" = "yes" ]; then
+	args="$args build"
+    fi
+    if [ "$P_RUN" = "yes" ]; then
+	if [ "$P_BUILD" = "yes" ]; then
+	    args="$args -r"
+	else
+	    args="$args run"
+	fi
+    fi
+    if [ "$P_CLEAN" = "yes" ]; then
+	args="clean"
+    fi
+    if [ "$args" = "" ]; then
+	args="build"
+    fi
+}
+
+echo $TOPDIR
+
+find_project $TOPDIR
+
+case "$PROJECT_TYPE" in
+aproject)
+    cd "$PROJECT_DIR"
+    set_aproject_args
+    aproject $args $@
+    ;;
+jproject)
+    cd "$PROJECT_DIR"
+    set_jproject_args
+    jproject $args $@
+    ;;
+*)
+    echo "Project file not found :("
+    ;;
+esac

@@ -14,6 +14,14 @@ build_gcc_host() {
 
     preparesrc $O_DIR $S_DIR
 
+    if [ "$BUILD_PIE_COMPILER" = "yes" ]; then
+	cd $S_DIR
+	if [ ! -e ${S_DIR}/.pie_patched ]; then
+	    patch -p1 < ${patch_dir}/${PKG}-${PKG_VERSION}-pie.patch || error "No pie patch found!"
+	    touch ${S_DIR}/.pie_patched
+	fi
+    fi
+
     mkdir -p $B_DIR
     cd $B_DIR
 
@@ -21,6 +29,15 @@ build_gcc_host() {
 
     local EXTRA_CONF=
     case $TARGET_ARCH in
+    aarch64*)
+	EXTRA_CONF="--enable-fix-cortex-a53-835769"
+	;;
+    mips64el*)
+	EXTRA_CONF="--with-arch=mips64r6 --disable-fixed-point"
+	;;
+    x86_64*)
+	EXTRA_CONF="--with-arch=x86-64 --with-tune=intel --with-fpmath=sse --with-multilib-list=m32,m64,mx32 --disable-libcilkrts"
+	;;
     mips*)
 	EXTRA_CONF="--with-arch=mips32 --disable-threads --disable-fixed-point"
 	;;
@@ -29,7 +46,7 @@ build_gcc_host() {
 	#EXTRA_CONF="--with-arch=armv7-a --with-float=softfp --with-fpu=vfpv3-d16"
 	;;
     *86*)
-	EXTRA_CONF="--disable-libquadmath-support"
+	EXTRA_CONF="--disable-libquadmath-support --disable-libcilkrts"
 	;;
     *)
 	;;
@@ -43,6 +60,8 @@ build_gcc_host() {
 	--with-gnu-as \
 	--with-gnu-ld \
 	--enable-languages=c,c++,fortran,objc,obj-c++ \
+	--enable-bionic-libs \
+	--enable-libatomic-ifuncs=no \
 	--with-gmp=${TARGET_DIR}-host \
 	--with-mpfr=${TARGET_DIR}-host \
 	--with-mpc=${TARGET_DIR}-host \

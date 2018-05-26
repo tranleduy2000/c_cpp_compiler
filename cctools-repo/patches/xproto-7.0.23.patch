@@ -1,0 +1,75 @@
+diff -Nur xproto-7.0.23-orig/Xfuncs.h xproto-7.0.23/Xfuncs.h
+--- xproto-7.0.23-orig/Xfuncs.h	2012-03-16 13:11:44.000000000 +0700
++++ xproto-7.0.23/Xfuncs.h	2014-12-23 01:43:20.144094678 +0600
+@@ -57,8 +57,11 @@
+ #  ifndef _XFUNCS_H_INCLUDED_STRING_H
+ #   include <string.h>
+ #  endif
+-#  undef bzero
+-#  define bzero(b,len) memset(b,0,len)
++
++#  ifndef __BIONIC__
++#   undef bzero
++#   define bzero(b,len) memset(b,0,len)
++#  endif
+ 
+ #  if defined WIN32 && defined __MINGW32__
+ #   define bcopy(b1,b2,len) memmove(b2, b1, (size_t)(len))
+diff -Nur xproto-7.0.23-orig/Xosdefs.h xproto-7.0.23/Xosdefs.h
+--- xproto-7.0.23-orig/Xosdefs.h	2012-03-16 13:11:44.000000000 +0700
++++ xproto-7.0.23/Xosdefs.h	2014-12-23 01:43:20.144094678 +0600
+@@ -106,7 +106,7 @@
+ # endif
+ 
+ # if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__) \
+-	|| defined(__APPLE__) || defined(__DragonFly__)
++	|| defined(__APPLE__) || defined(__DragonFly__) || defined(__BIONIC__)
+ #  ifndef CSRG_BASED
+ #   define CSRG_BASED
+ #  endif
+diff -Nur xproto-7.0.23-orig/Xos.h xproto-7.0.23/Xos.h
+--- xproto-7.0.23-orig/Xos.h	2012-03-16 13:11:44.000000000 +0700
++++ xproto-7.0.23/Xos.h	2014-12-23 01:43:20.144094678 +0600
+@@ -60,8 +60,13 @@
+  */
+ 
+ # include <string.h>
+-# if defined(__SCO__) || defined(__UNIXWARE__) || defined(__sun) || defined(__CYGWIN__)
++# if defined(__SCO__) || defined(__UNIXWARE__) || defined(__sun) || defined(__CYGWIN__) || defined(__BIONIC__)
+ #  include <strings.h>
++# ifdef __BIONIC__
++#  ifndef rindex
++#   define rindex(s,c) (strrchr((s),(c)))
++#  endif
++# endif
+ # else
+ #  ifndef index
+ #   define index(s,c) (strchr((s),(c)))
+diff -Nur xproto-7.0.23-orig/Xos_r.h xproto-7.0.23/Xos_r.h
+--- xproto-7.0.23-orig/Xos_r.h	2012-03-16 13:11:44.000000000 +0700
++++ xproto-7.0.23/Xos_r.h	2014-12-23 01:51:39.000000000 +0600
+@@ -248,7 +248,7 @@
+  */
+ 
+ #if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || \
+-    defined(__APPLE__) || defined(__DragonFly__)
++    defined(__APPLE__) || defined(__DragonFly__) || defined(__BIONIC__)
+ static __inline__ void _Xpw_copyPasswd(_Xgetpwparams p)
+ {
+    memcpy(&(p).pws, (p).pwp, sizeof(struct passwd));
+@@ -261,6 +261,7 @@
+    (p).len = strlen((p).pwp->pw_passwd);
+    strcpy((p).pws.pw_passwd,(p).pwp->pw_passwd);
+ 
++#ifndef __BIONIC__
+    (p).pws.pw_class = (p).pws.pw_passwd + (p).len + 1;
+    (p).len = strlen((p).pwp->pw_class);
+    strcpy((p).pws.pw_class, (p).pwp->pw_class);
+@@ -272,6 +273,7 @@
+    (p).pws.pw_dir = (p).pws.pw_gecos + (p).len + 1;
+    (p).len = strlen((p).pwp->pw_dir);
+    strcpy((p).pws.pw_dir, (p).pwp->pw_dir);
++#endif
+ 
+    (p).pws.pw_shell = (p).pws.pw_dir + (p).len + 1;
+    (p).len = strlen((p).pwp->pw_shell);

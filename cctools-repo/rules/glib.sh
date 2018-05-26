@@ -7,7 +7,7 @@ build_glib() {
     S_DIR=$src_dir/${PKG}-${PKG_VERSION}
     B_DIR=$build_dir/${PKG}
 
-    c_tag $PKG && return
+    c_tag $FUNCNAME && return
 
     banner "Build $PKG"
 
@@ -26,7 +26,7 @@ build_glib() {
 
     local CONF_ARGS=
     case $TARGET_ARCH in
-    arm*)
+    arm*|aarch64*)
 	CONF_ARGS="
         glib_cv_stack_grows=no
 	glib_cv_uscore=no
@@ -35,7 +35,7 @@ build_glib() {
 	ac_cv_func_posix_getpwuid_r=no
 	ac_cv_func_posix_getgrgid_r=no"
 	;;
-    mips*)
+    mips*|mips64el*)
 	CONF_ARGS="
         glib_cv_stack_grows=no
 	glib_cv_uscore=no
@@ -44,7 +44,7 @@ build_glib() {
 	ac_cv_func_posix_getpwuid_r=no
 	ac_cv_func_posix_getgrgid_r=no"
 	;;
-    i*86*)
+    i*86*|x86_64*)
 	CONF_ARGS="
         glib_cv_stack_grows=no
 	glib_cv_uscore=no
@@ -68,24 +68,16 @@ build_glib() {
 #	LIBFFI_CFLAGS="-I${TMPINST_DIR}/include" \
 #	LIBFFI_LIBS="-L${TMPINST_DIR}/lib" \
 
+    patch -p0 < ${patch_dir}/libtool-glib-${PKG_VERSION}.patch || error "patching libtool"
+
     $MAKE $MAKEARGS G_THREAD_LIBS_FOR_GTHREAD="" || error "make $MAKEARGS"
 
     $MAKE install || error "make install"
 
-    $MAKE install DESTDIR=${TMPINST_DIR}/${PKG}-tmp || error "package install"
+    $MAKE install prefix=${TMPINST_DIR}/${PKG}/cctools || error "package install"
 
-    mkdir -p ${TMPINST_DIR}/${PKG}/cctools/bin
-    mkdir -p ${TMPINST_DIR}/${PKG}/cctools/lib
-
-    cp -a ${TMPINST_DIR}/${PKG}-tmp/${TMPINST_DIR}/lib/*.so*   ${TMPINST_DIR}/${PKG}/cctools/lib/
-
-    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}/cctools/lib/*.so*
-
-    local filename="lib${PKG}_${PKG_VERSION}_${PKG_ARCH}.zip"
-    build_package_desc ${TMPINST_DIR}/${PKG} $filename lib${PKG} $PKG_VERSION $PKG_ARCH "$PKG_DESC"
-    cd ${TMPINST_DIR}/${PKG}
-    rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
+    make_packages
 
     popd
-    s_tag $PKG
+    s_tag $FUNCNAME
 }

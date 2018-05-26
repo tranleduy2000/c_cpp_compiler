@@ -9,17 +9,22 @@ build_@PKG_NAME@() {
     S_DIR=$src_dir/${PKG}-${PKG_VERSION}
     B_DIR=$build_dir/${PKG}
 
-    c_tag $PKG && return
+    c_tag $FUNCNAME && return
 
     pushd .
 
     banner "Build $PKG"
 
-    download $PKG_URL $O_FILE
+    if [ ! -f $O_FILE ]; then
+	download $PKG_URL $O_FILE
+    fi
 
     unpack $src_dir $O_FILE
-
     patchsrc $S_DIR $PKG $PKG_VERSION
+
+    if [ "$USE_NATIVE_BUILD" = "yes" ]; then
+	fix_bionic_shell $S_DIR
+    fi
 
     mkdir -p $B_DIR
     cd $B_DIR
@@ -37,13 +42,8 @@ build_@PKG_NAME@() {
 
     $MAKE install prefix=${TMPINST_DIR}/${PKG}/cctools || error "package install"
 
-    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}/cctools/bin/*
-
-    local filename="${PKG}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
-    build_package_desc ${TMPINST_DIR}/${PKG} $filename $PKG ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC" "$PKG_DEPS"
-    cd ${TMPINST_DIR}/${PKG}
-    rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename *
+    make_packages
 
     popd
-    s_tag $PKG
+    s_tag $FUNCNAME
 }

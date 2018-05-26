@@ -1,6 +1,6 @@
 build_avr_libc() {
     PKG=avr-libc
-    PKG_VERSION=1.8.0
+    PKG_VERSION=2.0.0
     PKG_DESC="The C runtime library for the AVR family of microcontrollers."
     PKG_URL=http://download.savannah.gnu.org/releases/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2
     O_FILE=$SRC_PREFIX/$PKG/$PKG-$PKG_VERSION.tar.bz2

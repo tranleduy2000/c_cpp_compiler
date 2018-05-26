@@ -1,0 +1,41 @@
+diff -Nur rxvt-unicode-9.20-orig/libev/ev_select.c rxvt-unicode-9.20/libev/ev_select.c
+--- rxvt-unicode-9.20-orig/libev/ev_select.c	2012-05-29 22:20:25.000000000 +0700
++++ rxvt-unicode-9.20/libev/ev_select.c	2014-12-26 03:43:13.465413902 +0600
+@@ -47,7 +47,7 @@
+ #endif
+ 
+ #ifndef EV_SELECT_USE_FD_SET
+-# ifdef NFDBITS
++# if defined(NFDBITS) && !defined(__BIONIC__)
+ #  define EV_SELECT_USE_FD_SET 0
+ # else
+ #  define EV_SELECT_USE_FD_SET 1
+diff -Nur rxvt-unicode-9.20-orig/libptytty/src/logging.C rxvt-unicode-9.20/libptytty/src/logging.C
+--- rxvt-unicode-9.20-orig/libptytty/src/logging.C	2012-05-19 08:57:47.000000000 +0700
++++ rxvt-unicode-9.20/libptytty/src/logging.C	2014-12-26 17:26:03.258399696 +0600
+@@ -217,6 +217,11 @@
+ #endif
+ 
+ #ifdef HAVE_STRUCT_UTMP
++
++#ifdef __BIONIC__
++#define DEAD_PROCESS	8	/* Terminated process.  */
++#endif
++
+ static void
+ fill_utmp (struct utmp *ut, bool login, int pid, const char *line, const char *user, const char *host)
+ {
+@@ -317,10 +322,13 @@
+ 
+ #ifdef HAVE_STRUCT_UTMP
+ # ifdef HAVE_UTMP_PID
++//FIXME: sashz
++#ifndef __BIONIC__
+   setutent ();
+   if (login || ((tmput = getutid (&ut)) && tmput->ut_pid == cmd_pid))
+     pututline (&ut);
+   endutent ();
++#endif
+ # else
+   write_bsd_utmp (utmp_pos, &ut);
+ # endif

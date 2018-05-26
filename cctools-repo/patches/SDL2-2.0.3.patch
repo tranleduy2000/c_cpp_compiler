@@ -1,0 +1,22 @@
+diff -Nur /tmp/d/SDL2-2.0.1/src/file/SDL_rwops.c src/file/SDL_rwops.c
+--- SDL2-2.0.1-orig/src/file/SDL_rwops.c	2013-10-24 11:05:29.000000000 +0700
++++ SDL2-2.0.1/src/file/SDL_rwops.c	2014-12-07 15:23:54.718539911 +0600
+@@ -465,15 +465,12 @@
+ #if defined(ANDROID)
+ #ifdef HAVE_STDIO_H
+     /* Try to open the file on the filesystem first */
+-    if (*file == '/') {
+-        FILE *fp = fopen(file, mode);
+-        if (fp) {
+-            return SDL_RWFromFP(fp, 1);
+-        }
++    FILE *fp = fopen(file, mode);
++    if (fp) {
++        return SDL_RWFromFP(fp, 1);
+     } else {
+         /* Try opening it from internal storage if it's a relative path */
+         char *path;
+-        FILE *fp;
+ 
+         path = SDL_stack_alloc(char, PATH_MAX);
+         if (path) {

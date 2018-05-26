@@ -1,0 +1,66 @@
+diff -Nur xrandr-1.3.5-orig/xrandr.c xrandr-1.3.5/xrandr.c
+--- xrandr-1.3.5-orig/xrandr.c	2011-06-08 11:03:36.000000000 +0700
++++ xrandr-1.3.5/xrandr.c	2014-12-23 12:55:58.912900544 +0600
+@@ -261,7 +261,7 @@
+ typedef struct _crtc crtc_t;
+ typedef struct _output	output_t;
+ typedef struct _transform transform_t;
+-typedef struct _umode	umode_t;
++typedef struct _umode	_umode_t;
+ typedef struct _output_prop output_prop_t;
+ 
+ struct _transform {
+@@ -371,7 +371,7 @@
+ static output_t	*outputs = NULL;
+ static output_t	**outputs_tail = &outputs;
+ static crtc_t	*crtcs;
+-static umode_t	*umodes;
++static _umode_t	*umodes;
+ static int	num_crtcs;
+ static XRRScreenResources  *res;
+ static int	fb_width = 0, fb_height = 0;
+@@ -2568,7 +2568,7 @@
+ 	}
+ 	if (!strcmp ("--newmode", argv[i]))
+ 	{
+-	    umode_t  *m = malloc (sizeof (umode_t));
++	    _umode_t  *m = malloc (sizeof (_umode_t));
+ 	    double    clock;
+ 	    
+ 	    ++i;
+@@ -2609,7 +2609,7 @@
+ 	}
+ 	if (!strcmp ("--rmmode", argv[i]))
+ 	{
+-	    umode_t  *m = malloc (sizeof (umode_t));
++	    _umode_t  *m = malloc (sizeof (_umode_t));
+ 
+ 	    if (++i>=argc) usage ();
+ 	    set_name (&m->name, argv[i], name_string|name_xid);
+@@ -2622,7 +2622,7 @@
+ 	}
+ 	if (!strcmp ("--addmode", argv[i]))
+ 	{
+-	    umode_t  *m = malloc (sizeof (umode_t));
++	    _umode_t  *m = malloc (sizeof (_umode_t));
+ 
+ 	    if (++i>=argc) usage ();
+ 	    set_name (&m->output, argv[i], name_string|name_xid);
+@@ -2637,7 +2637,7 @@
+ 	}
+ 	if (!strcmp ("--delmode", argv[i]))
+ 	{
+-	    umode_t  *m = malloc (sizeof (umode_t));
++	    _umode_t  *m = malloc (sizeof (_umode_t));
+ 
+ 	    if (++i>=argc) usage ();
+ 	    set_name (&m->output, argv[i], name_string|name_xid);
+@@ -2692,7 +2692,7 @@
+ 	
+     if (has_1_2 && modeit)
+     {
+-	umode_t	*m;
++	_umode_t	*m;
+ 
+         get_screen (current);
+ 	get_crtcs();

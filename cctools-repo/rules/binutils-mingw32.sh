@@ -20,6 +20,7 @@ build_binutils_mingw32() {
     mkdir -p $B_DIR
     cd $B_DIR
 
+#    export ac_cv_func_strtod=no
     $S_DIR/configure \
 	--target=$1 \
 	--host=$TARGET_ARCH \
@@ -62,6 +63,7 @@ build_binutils_mingw32() {
     local filename="${PKG}-${WARCH}_${PKG_VERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG}-${WARCH} $filename ${PKG}-${WARCH} $PKG_VERSION $PKG_ARCH "$PKG_DESC"
     cd ${TMPINST_DIR}/${PKG}-${WARCH}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename *
 
     popd

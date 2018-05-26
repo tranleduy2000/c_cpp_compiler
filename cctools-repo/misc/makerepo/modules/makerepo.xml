@@ -1,0 +1,19 @@
+<cctools-module
+    title="Create local addons repository"
+    title-ru="Создание локального репозитория"
+    id="makerepo">
+    <action
+	title="Create local addons repository"
+	title-ru="Создание локального репозитория">
+	<view type="dirpath"
+	    title="Repo directory"
+	    title-ru="Директория"
+	    hint="Path to downloaded addons"
+	    hint-ru="с загруженными дополнениями"
+	    name="path" />
+	<command
+	    title="Process"
+	    title-ru="Создать"
+	    exec="makerepo --gui --path @path@" />
+    </action>
+</cctools-module>

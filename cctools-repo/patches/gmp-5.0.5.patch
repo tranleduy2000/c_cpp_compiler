@@ -1,5 +1,91 @@
---- s/mpn/arm/udiv.asm-	2013-08-13 22:58:48.493952292 +0300
-+++ s/mpn/arm/udiv.asm	2013-08-13 22:59:17.521953069 +0300
+diff -Nur gmp-5.0.5-orig/configfsf.guess gmp-5.0.5/configfsf.guess
+--- gmp-5.0.5-orig/configfsf.guess	2012-05-06 15:19:49.000000000 +0400
++++ gmp-5.0.5/configfsf.guess	2016-08-10 08:17:54.332608796 +0400
+@@ -861,6 +861,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
+     alpha:Linux:*:*)
+ 	case `sed -n '/^cpu model/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo` in
+ 	  EV5)   UNAME_MACHINE=alphaev5 ;;
+diff -Nur gmp-5.0.5-orig/configfsf.sub gmp-5.0.5/configfsf.sub
+--- gmp-5.0.5-orig/configfsf.sub	2012-05-06 15:19:49.000000000 +0400
++++ gmp-5.0.5/configfsf.sub	2016-08-10 08:16:00.233048705 +0400
+@@ -247,6 +247,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 | aarch64_be \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| am33_2.0 \
+@@ -352,6 +353,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* | aarch64_be-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \
+diff -Nur gmp-5.0.5-orig/cxx/ismpf.cc gmp-5.0.5/cxx/ismpf.cc
+--- gmp-5.0.5-orig/cxx/ismpf.cc	2012-05-06 15:19:49.000000000 +0400
++++ gmp-5.0.5/cxx/ismpf.cc	2016-08-10 03:19:25.728189988 +0400
+@@ -45,7 +45,11 @@
+   bool ok = false;
+ 
+   // C decimal point, as expected by mpf_set_str
++#ifdef __BIONIC__
++  const char *lconv_point = ".";
++#else
+   const char *lconv_point = localeconv()->decimal_point;
++#endif
+ 
+   // C++ decimal point
+ #if HAVE_STD__LOCALE
+diff -Nur gmp-5.0.5-orig/longlong.h gmp-5.0.5/longlong.h
+--- gmp-5.0.5-orig/longlong.h	2012-05-06 15:19:50.000000000 +0400
++++ gmp-5.0.5/longlong.h	2016-08-10 08:20:24.769302984 +0400
+@@ -521,6 +521,30 @@
+ #endif
+ #endif /* __arm__ */
+ 
++#if defined (__aarch64__) && W_TYPE_SIZE == 64
++/* FIXME: Extend the immediate range for the low word by using both
++   ADDS and SUBS, since they set carry in the same way.  */
++#define add_ssaaaa(sh, sl, ah, al, bh, bl) \
++  __asm__ ("adds\t%1, %x4, %5\n\tadc\t%0, %x2, %x3"			\
++	   : "=r" (sh), "=&r" (sl)					\
++	   : "rZ" ((UDItype)(ah)), "rZ" ((UDItype)(bh)),		\
++	     "%r" ((UDItype)(al)), "rI" ((UDItype)(bl)) __CLOBBER_CC)
++#define sub_ddmmss(sh, sl, ah, al, bh, bl) \
++  __asm__ ("subs\t%1, %x4, %5\n\tsbc\t%0, %x2, %x3"			\
++	   : "=r,r" (sh), "=&r,&r" (sl)					\
++	   : "rZ,rZ" ((UDItype)(ah)), "rZ,rZ" ((UDItype)(bh)),		\
++	     "r,Z"   ((UDItype)(al)), "rI,r"  ((UDItype)(bl)) __CLOBBER_CC)
++#define umul_ppmm(ph, pl, m0, m1) \
++  do {									\
++    UDItype __m0 = (m0), __m1 = (m1);					\
++    __asm__ ("umulh\t%0, %1, %2" : "=r" (ph) : "r" (__m0), "r" (__m1));	\
++    (pl) = __m0 * __m1;							\
++  } while (0)
++#define count_leading_zeros(count, x)  count_leading_zeros_gcc_clz(count, x)
++#define count_trailing_zeros(count, x)  count_trailing_zeros_gcc_ctz(count, x)
++#define COUNT_LEADING_ZEROS_0 64
++#endif /* __aarch64__ */
++
+ #if defined (__clipper__) && W_TYPE_SIZE == 32
+ #define umul_ppmm(w1, w0, u, v) \
+   ({union {UDItype __ll;						\
+diff -Nur gmp-5.0.5-orig/mpn/arm/udiv.asm gmp-5.0.5/mpn/arm/udiv.asm
+--- gmp-5.0.5-orig/mpn/arm/udiv.asm	2012-05-06 15:19:50.000000000 +0400
++++ gmp-5.0.5/mpn/arm/udiv.asm	2016-08-10 03:19:25.728189988 +0400
 @@ -48,7 +48,7 @@
  	teq	r12, #0
  	bne	L(oop)
@@ -18,17 +104,3 @@
  	mov	r0, n0			C quotient
  	ldmfd	sp!, { r8, pc }
  EPILOGUE(mpn_udiv_qrnnd)
---- s/cxx/ismpf.cc-	2013-08-13 23:34:35.834009796 +0300
-+++ s/cxx/ismpf.cc	2013-08-13 23:35:06.054010605 +0300
-@@ -45,7 +45,11 @@
-   bool ok = false;
- 
-   // C decimal point, as expected by mpf_set_str
-+#ifdef __BIONIC__
-+  const char *lconv_point = ".";
-+#else
-   const char *lconv_point = localeconv()->decimal_point;
-+#endif
- 
-   // C++ decimal point
- #if HAVE_STD__LOCALE

@@ -48,7 +48,8 @@ CFLAGS += -DALIGN_DOUBLE
 endif
 
 ifeq (arm,$(CPU))
-CFLAGS += -march=armv6
+#CFLAGS += -march=armv6
+CFLAGS += -march=armv5te
 endif
 
 ifeq (x86, $(CPU))

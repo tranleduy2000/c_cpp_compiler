@@ -1,0 +1,54 @@
+diff -Nur gcc-4.9-no-pie/gcc/common.opt gcc-4.9/gcc/common.opt
+--- gcc-4.9-no-pie/gcc/common.opt	2015-06-06 00:33:17.000000000 +0400
++++ gcc-4.9/gcc/common.opt	2015-06-06 10:57:51.075922170 +0400
+@@ -304,6 +304,9 @@
+ -no-warnings
+ Common Alias(w)
+ 
++-nopie
++Driver Alias(nopie)
++
+ -optimize
+ Common Alias(O)
+ 
+@@ -2889,6 +2892,10 @@
+ symbolic
+ Driver
+ 
++nopie
++Driver RejectNegative Negative(shared)
++Disable a position independent executable
++
+ pie
+ Driver RejectNegative Negative(shared)
+ Create a position independent executable
+diff -Nur gcc-4.9-no-pie/gcc/config/linux-android.h gcc-4.9/gcc/config/linux-android.h
+--- gcc-4.9-no-pie/gcc/config/linux-android.h	2015-06-06 00:33:27.000000000 +0400
++++ gcc-4.9/gcc/config/linux-android.h	2015-06-06 10:57:51.063922169 +0400
+@@ -38,10 +38,15 @@
+   "%{" NOANDROID "|tno-android-ld:" LINUX_SPEC ";:" ANDROID_SPEC "}"
+ 
+ #define ANDROID_LINK_SPEC \
++  "%{!nopie: %{!static: %{!A: %{!shared: %{!nostdlib: %{!nostartfiles:	\
++     %{!fno-PIE: %{!fno-pie: -pie} } } } } } } } %{pie: -pie} "		\
+   "%{shared: -Bsymbolic} -z noexecstack -z relro -z now"
+ 
+ #define ANDROID_CC1_SPEC(ANDROID_PIC_DEFAULT)				\
+   "%{!mglibc:%{!muclibc:%{!mbionic: -mbionic}}} "			\
++  "%{!D__KERNEL__: %{!static: %{!fno-PIC: %{!fno-pic: %{!shared:	\
++     %{!nostdlib: %{!nostartfiles: %{!fno-PIE: %{!fno-pie: %{!nopie:	\
++     %{!fPIC: %{!fpic:-fPIE} } } } } } } } } } } } "			\
+   "%{!fno-pic:%{!fno-PIC:%{!fpic:%{!fPIC: " ANDROID_PIC_DEFAULT "}}}}"
+ 
+ #define ANDROID_CC1PLUS_SPEC						\
+diff -Nur gcc-4.9-no-pie/gcc/gcc.c gcc-4.9/gcc/gcc.c
+--- gcc-4.9-no-pie/gcc/gcc.c	2015-06-06 00:33:18.000000000 +0400
++++ gcc-4.9/gcc/gcc.c	2015-06-06 10:57:51.079922170 +0400
+@@ -3135,6 +3135,7 @@
+   fputs (_("  -S                       Compile only; do not assemble or link\n"), stdout);
+   fputs (_("  -c                       Compile and assemble, but do not link\n"), stdout);
+   fputs (_("  -o <file>                Place the output into <file>\n"), stdout);
++  fputs (_("  -nopie                   Disable a position independent executable\n"), stdout);
+   fputs (_("  -pie                     Create a position independent executable\n"), stdout);
+   fputs (_("  -shared                  Create a shared library\n"), stdout);
+   fputs (_("\

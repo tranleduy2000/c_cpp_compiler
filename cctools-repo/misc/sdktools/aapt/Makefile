@@ -24,7 +24,8 @@ CFLAGS += -Wno-format-y2k
 CFLAGS += -DSTATIC_ANDROIDFW_FOR_TOOLS
 
 ifeq (arm,$(CPU))
-CFLAGS += -march=armv6
+#CFLAGS += -march=armv6
+CFLAGS += -march=armv5te
 endif
 
 ifeq (x86, $(CPU))

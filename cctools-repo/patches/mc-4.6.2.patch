@@ -1,6 +1,90 @@
+diff -Nur mc-4.6.2-orig/doc/es/Makefile.in mc-4.6.2/doc/es/Makefile.in
+--- mc-4.6.2-orig/doc/es/Makefile.in	2013-10-26 11:32:26.000000000 +0400
++++ mc-4.6.2/doc/es/Makefile.in	2016-03-20 12:48:11.685711430 +0400
+@@ -577,7 +577,7 @@
+ 
+ 
+ mc.hlp.es: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp.es
++	- $(top_builddir)/src/man2hlp$(NATIVE_SUFFIX) mc.1 $(srcdir)/xnc.hlp mc.hlp.es
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+diff -Nur mc-4.6.2-orig/doc/hu/Makefile.in mc-4.6.2/doc/hu/Makefile.in
+--- mc-4.6.2-orig/doc/hu/Makefile.in	2013-10-26 11:32:26.000000000 +0400
++++ mc-4.6.2/doc/hu/Makefile.in	2016-03-20 12:48:11.685711430 +0400
+@@ -577,7 +577,7 @@
+ 
+ 
+ mc.hlp.hu: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp.hu
++	- $(top_builddir)/src/man2hlp$(NATIVE_SUFFIX) mc.1 $(srcdir)/xnc.hlp mc.hlp.hu
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+diff -Nur mc-4.6.2-orig/doc/it/Makefile.in mc-4.6.2/doc/it/Makefile.in
+--- mc-4.6.2-orig/doc/it/Makefile.in	2013-10-26 11:32:26.000000000 +0400
++++ mc-4.6.2/doc/it/Makefile.in	2016-03-20 12:48:11.685711430 +0400
+@@ -577,7 +577,7 @@
+ 
+ 
+ mc.hlp.it: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp.it
++	- $(top_builddir)/src/man2hlp$(NATIVE_SUFFIX) mc.1 $(srcdir)/xnc.hlp mc.hlp.it
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+diff -Nur mc-4.6.2-orig/doc/Makefile.in mc-4.6.2/doc/Makefile.in
+--- mc-4.6.2-orig/doc/Makefile.in	2013-10-26 11:32:26.000000000 +0400
++++ mc-4.6.2/doc/Makefile.in	2016-03-20 12:48:11.685711430 +0400
+@@ -813,7 +813,7 @@
+ 
+ 
+ mc.hlp: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp
++	- $(top_builddir)/src/man2hlp$(NATIVE_SUFFIX) mc.1 $(srcdir)/xnc.hlp mc.hlp
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+diff -Nur mc-4.6.2-orig/doc/pl/Makefile.in mc-4.6.2/doc/pl/Makefile.in
+--- mc-4.6.2-orig/doc/pl/Makefile.in	2013-10-26 11:32:26.000000000 +0400
++++ mc-4.6.2/doc/pl/Makefile.in	2016-03-20 12:48:11.689711554 +0400
+@@ -577,7 +577,7 @@
+ 
+ 
+ mc.hlp.pl: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp.pl
++	- $(top_builddir)/src/man2hlp$(NATIVE_SUFFIX) mc.1 $(srcdir)/xnc.hlp mc.hlp.pl
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+diff -Nur mc-4.6.2-orig/doc/ru/Makefile.in mc-4.6.2/doc/ru/Makefile.in
+--- mc-4.6.2-orig/doc/ru/Makefile.in	2013-10-26 11:32:26.000000000 +0400
++++ mc-4.6.2/doc/ru/Makefile.in	2016-03-20 12:48:11.689711554 +0400
+@@ -577,7 +577,7 @@
+ 
+ 
+ mc.hlp.ru: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp.ru
++	- $(top_builddir)/src/man2hlp$(NATIVE_SUFFIX) mc.1 $(srcdir)/xnc.hlp mc.hlp.ru
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+diff -Nur mc-4.6.2-orig/doc/sr/Makefile.in mc-4.6.2/doc/sr/Makefile.in
+--- mc-4.6.2-orig/doc/sr/Makefile.in	2013-10-26 11:32:26.000000000 +0400
++++ mc-4.6.2/doc/sr/Makefile.in	2016-03-20 12:48:11.689711554 +0400
+@@ -626,7 +626,7 @@
+ 
+ 
+ mc.hlp.sr: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp.sr
++	- $(top_builddir)/src/man2hlp$(NATIVE_SUFFIX) mc.1 $(srcdir)/xnc.hlp mc.hlp.sr
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
 diff -Nur mc-4.6.2-orig/slang/slsignal.c mc-4.6.2/slang/slsignal.c
---- mc-4.6.2-orig/slang/slsignal.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/slang/slsignal.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/slang/slsignal.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/slang/slsignal.c	2016-03-20 12:48:11.689711554 +0400
 @@ -241,7 +241,11 @@
  	(void) sigprocmask (SIG_SETMASK, &save_mask, NULL);
  # endif
@@ -14,8 +98,8 @@ diff -Nur mc-4.6.2-orig/slang/slsignal.c mc-4.6.2/slang/slsignal.c
       }
     else
 diff -Nur mc-4.6.2-orig/slang/slutty.c mc-4.6.2/slang/slutty.c
---- mc-4.6.2-orig/slang/slutty.c	2013-10-26 10:43:33.000000000 +0300
-+++ mc-4.6.2/slang/slutty.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/slang/slutty.c	2013-10-26 11:43:33.000000000 +0400
++++ mc-4.6.2/slang/slutty.c	2016-03-20 12:48:11.689711554 +0400
 @@ -76,7 +76,7 @@
  int SLang_TT_Baud_Rate;
  
@@ -26,8 +110,8 @@ diff -Nur mc-4.6.2-orig/slang/slutty.c mc-4.6.2/slang/slutty.c
  # endif
  #endif
 diff -Nur mc-4.6.2-orig/src/cons.handler.c mc-4.6.2/src/cons.handler.c
---- mc-4.6.2-orig/src/cons.handler.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/src/cons.handler.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/src/cons.handler.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/src/cons.handler.c	2016-03-20 12:48:11.693711677 +0400
 @@ -131,7 +131,9 @@
  	    /* Close the extra pipe ends */
  	    close (pipefd1[1]);
@@ -53,8 +137,8 @@ diff -Nur mc-4.6.2-orig/src/cons.handler.c mc-4.6.2/src/cons.handler.c
  	    console_flag = 0;
  	    write (1, &console_flag, 1);
 diff -Nur mc-4.6.2-orig/src/ext.c mc-4.6.2/src/ext.c
---- mc-4.6.2-orig/src/ext.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/src/ext.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/src/ext.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/src/ext.c	2016-03-20 12:48:11.693711677 +0400
 @@ -107,7 +107,11 @@
  	return;
      }
@@ -80,8 +164,8 @@ diff -Nur mc-4.6.2-orig/src/ext.c mc-4.6.2/src/ext.c
  
      if (run_view) {
 diff -Nur mc-4.6.2-orig/src/main.c mc-4.6.2/src/main.c
---- mc-4.6.2-orig/src/main.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/src/main.c	2013-12-28 19:02:23.502395515 +0200
+--- mc-4.6.2-orig/src/main.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/src/main.c	2016-03-20 12:48:11.693711677 +0400
 @@ -1775,7 +1775,11 @@
             shell = g_strdup (pwd->pw_shell);
      }
@@ -108,8 +192,8 @@ diff -Nur mc-4.6.2-orig/src/main.c mc-4.6.2/src/main.c
  
      vfs_init ();
 diff -Nur mc-4.6.2-orig/src/pipethrough.c mc-4.6.2/src/pipethrough.c
---- mc-4.6.2-orig/src/pipethrough.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/src/pipethrough.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/src/pipethrough.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/src/pipethrough.c	2016-03-20 12:48:11.693711677 +0400
 @@ -271,7 +271,11 @@
  {
  	const char *shell = getenv("SHELL");
@@ -123,8 +207,8 @@ diff -Nur mc-4.6.2-orig/src/pipethrough.c mc-4.6.2/src/pipethrough.c
  
  	if (close(STDIN_FILENO) == -1
 diff -Nur mc-4.6.2-orig/src/subshell.c mc-4.6.2/src/subshell.c
---- mc-4.6.2-orig/src/subshell.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/src/subshell.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/src/subshell.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/src/subshell.c	2016-03-20 12:48:11.697711801 +0400
 @@ -127,7 +127,7 @@
  static char subshell_cwd[MC_MAXPATHLEN+1];  /* One extra char for final '\n' */
  
@@ -193,8 +277,8 @@ diff -Nur mc-4.6.2-orig/src/subshell.c mc-4.6.2/src/subshell.c
      return pty_master;
  }
 diff -Nur mc-4.6.2-orig/src/user.c mc-4.6.2/src/user.c
---- mc-4.6.2-orig/src/user.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/src/user.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/src/user.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/src/user.c	2016-03-20 12:48:11.697711801 +0400
 @@ -588,7 +588,11 @@
  	return;
      }
@@ -220,8 +304,8 @@ diff -Nur mc-4.6.2-orig/src/user.c mc-4.6.2/src/user.c
  	g_free(cmd);
      }
 diff -Nur mc-4.6.2-orig/src/utilunix.c mc-4.6.2/src/utilunix.c
---- mc-4.6.2-orig/src/utilunix.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/src/utilunix.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/src/utilunix.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/src/utilunix.c	2016-03-20 12:48:11.697711801 +0400
 @@ -268,11 +268,13 @@
  	/* Sanity check for existing directory */
  	if (!S_ISDIR (st.st_mode))
@@ -237,8 +321,8 @@ diff -Nur mc-4.6.2-orig/src/utilunix.c mc-4.6.2/src/utilunix.c
  	/* Need to create directory */
  	if (mkdir (buffer, S_IRWXU) != 0) {
 diff -Nur mc-4.6.2-orig/vfs/sfs.c mc-4.6.2/vfs/sfs.c
---- mc-4.6.2-orig/vfs/sfs.c	2009-02-01 21:30:21.000000000 +0200
-+++ mc-4.6.2/vfs/sfs.c	2013-12-28 18:27:41.370483078 +0200
+--- mc-4.6.2-orig/vfs/sfs.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/vfs/sfs.c	2016-03-20 12:48:11.697711801 +0400
 @@ -148,7 +148,11 @@
  
      g_free (pqname);
@@ -251,3 +335,24 @@ diff -Nur mc-4.6.2-orig/vfs/sfs.c mc-4.6.2/vfs/sfs.c
  	close_error_pipe (1, NULL);
  	return -1;
      }
+diff -Nur mc-4.6.2-orig/vfs/utilvfs.c mc-4.6.2/vfs/utilvfs.c
+--- mc-4.6.2-orig/vfs/utilvfs.c	2009-02-01 23:30:21.000000000 +0400
++++ mc-4.6.2/vfs/utilvfs.c	2016-03-20 12:54:34.545535691 +0400
+@@ -100,6 +100,7 @@
+ 	rest = pcopy;
+ 
+     if (!*user && !(flags & URL_ALLOW_ANON)) {
++#ifndef __BIONIC__
+ 	passwd_info = getpwuid (geteuid ());
+ 	if (passwd_info && passwd_info->pw_name)
+ 	    *user = g_strdup (passwd_info->pw_name);
+@@ -108,6 +109,9 @@
+ 	    *user = g_strdup ("anonymous");
+ 	}
+ 	endpwent ();
++#else
++	*user = g_strdup ("anonymous");
++#endif
+     }
+ 
+     /* Check if the host comes with a port spec, if so, chop it */

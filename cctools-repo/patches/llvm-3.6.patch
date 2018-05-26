@@ -1,0 +1,174 @@
+diff -Nur llvm-3.6.orig/clang/lib/Driver/ToolChains.cpp llvm-3.6/clang/lib/Driver/ToolChains.cpp
+--- llvm-3.6.orig/clang/lib/Driver/ToolChains.cpp	2015-06-06 00:33:23.000000000 +0400
++++ llvm-3.6/clang/lib/Driver/ToolChains.cpp	2015-06-06 14:53:38.832542746 +0400
+@@ -3263,6 +3263,13 @@
+   if (!getDriver().SysRoot.empty())
+     return getDriver().SysRoot;
+ 
++  std::string Path =
++    (GCCInstallation.getParentLibPath() +
++     "/../" + GCCInstallation.getTriple().str()).str();
++
++  if (llvm::sys::fs::exists(Path))
++    return Path;
++
+   // For Android, the sysroot will be either explicitly specified or implicitly
+   // auto-detected in Driver::BuildCompilation.  Thus, we don't have to detect
+   // sysroot in this function.
+@@ -3280,7 +3287,7 @@
+   const StringRef TripleStr = GCCInstallation.getTriple().str();
+   const Multilib &Multilib = GCCInstallation.getMultilib();
+ 
+-  std::string Path = (InstallDir + "/../../../../" + TripleStr + "/libc" +
++  Path = (InstallDir + "/../../../../" + TripleStr + "/libc" +
+                       Multilib.osSuffix()).str();
+ 
+   if (llvm::sys::fs::exists(Path))
+diff -Nur llvm-3.6.orig/clang/lib/Driver/Tools.cpp llvm-3.6/clang/lib/Driver/Tools.cpp
+--- llvm-3.6.orig/clang/lib/Driver/Tools.cpp	2015-06-06 00:33:23.000000000 +0400
++++ llvm-3.6/clang/lib/Driver/Tools.cpp	2015-06-06 14:56:11.608549448 +0400
+@@ -7726,7 +7726,8 @@
+ 
+         // FIXME: Exclude this for platforms with libgomp that don't require
+         // librt. Most modern Linux platforms require it, but some may not.
+-        CmdArgs.push_back("-lrt");
++        if (!isAndroid)
++          CmdArgs.push_back("-lrt");
+         break;
+       case LibIOMP5:
+         CmdArgs.push_back("-liomp5");
+diff -Nur llvm-3.6.orig/clang/Makefile llvm-3.6/clang/Makefile
+--- llvm-3.6.orig/clang/Makefile	2015-06-06 00:33:23.000000000 +0400
++++ llvm-3.6/clang/Makefile	2015-06-06 14:56:51.704551206 +0400
+@@ -14,7 +14,7 @@
+ 
+ IS_TOP_LEVEL := 1
+ CLANG_LEVEL := .
+-DIRS := utils/TableGen include lib tools runtime docs unittests
++DIRS := utils/TableGen include lib tools runtime docs
+ 
+ PARALLEL_DIRS :=
+ 
+diff -Nur llvm-3.6.orig/clang/tools/libclang/CIndexer.cpp llvm-3.6/clang/tools/libclang/CIndexer.cpp
+--- llvm-3.6.orig/clang/tools/libclang/CIndexer.cpp	2015-06-06 00:33:24.000000000 +0400
++++ llvm-3.6/clang/tools/libclang/CIndexer.cpp	2015-06-06 14:59:46.168558859 +0400
+@@ -70,6 +70,7 @@
+ 
+   LibClangPath += llvm::sys::path::parent_path(path);
+ #else
++#ifndef __BIONIC__
+   // This silly cast below avoids a C++ warning.
+   Dl_info info;
+   if (dladdr((void *)(uintptr_t)clang_createTranslationUnit, &info) == 0)
+@@ -77,6 +78,14 @@
+ 
+   // We now have the CIndex directory, locate clang relative to it.
+   LibClangPath += llvm::sys::path::parent_path(info.dli_fname);
++#else
++  char *clangLib = getenv("CCTOOLS_CLANG_LIB");
++
++  if (!clangLib)
++    llvm_unreachable("Call to getenv(\"CCTOOLS_CLANG_LIB\") failed");
++
++  LibClangPath += llvm::sys::path::parent_path(clangLib);
++#endif
+ #endif
+ 
+   llvm::sys::path::append(LibClangPath, "clang", CLANG_VERSION_STRING);
+diff -Nur llvm-3.6.orig/llvm/lib/Support/Unix/Path.inc llvm-3.6/llvm/lib/Support/Unix/Path.inc
+--- llvm-3.6.orig/llvm/lib/Support/Unix/Path.inc	2015-06-06 00:33:24.000000000 +0400
++++ llvm-3.6/llvm/lib/Support/Unix/Path.inc	2015-06-06 15:02:48.020566836 +0400
+@@ -389,6 +389,10 @@
+   return fillStatus(StatRet, Status, Result);
+ }
+ 
++#ifdef __BIONIC__
++#include <sys/syscall.h>
++#endif
++
+ std::error_code setLastModificationAndAccessTime(int FD, TimeValue Time) {
+ #if defined(HAVE_FUTIMENS) && !defined(DISABLE_FUTIMENS)
+   timespec Times[2];
+@@ -406,6 +410,14 @@
+   if (::futimes(FD, Times))
+     return std::error_code(errno, std::generic_category());
+   return std::error_code();
++#elif defined(__BIONIC__)
++  timeval Times[2];
++  Times[0].tv_sec = Time.toEpochTime();
++  Times[0].tv_usec = 0;
++  Times[1] = Times[0];
++  if (syscall(__NR_utimensat, FD, NULL, Times, 0))
++    return std::error_code(errno, std::generic_category());
++  return std::error_code();
+ #else
+ #warning Missing futimes() and futimens()
+   return make_error_code(errc::function_not_supported);
+diff -Nur llvm-3.6.orig/llvm/utils/unittest/Makefile llvm-3.6/llvm/utils/unittest/Makefile
+--- llvm-3.6.orig/llvm/utils/unittest/Makefile	2015-06-06 00:33:25.000000000 +0400
++++ llvm-3.6/llvm/utils/unittest/Makefile	2015-06-06 15:04:52.044572276 +0400
+@@ -8,6 +8,6 @@
+ ##===----------------------------------------------------------------------===##
+ 
+ LEVEL = ../..
+-PARALLEL_DIRS = googletest UnitTestMain
++PARALLEL_DIRS =
+ 
+ include $(LEVEL)/Makefile.common
+diff -Nur llvm-3.6.orig/llvm/include/llvm/Target/TargetLibraryInfo.h llvm-3.6/llvm/include/llvm/Target/TargetLibraryInfo.h
+--- llvm-3.6.orig/llvm/include/llvm/Target/TargetLibraryInfo.h	2015-06-06 00:33:24.000000000 +0400
++++ llvm-3.6/llvm/include/llvm/Target/TargetLibraryInfo.h	2015-06-07 12:29:55.449376619 +0400
+@@ -330,6 +330,9 @@
+       fsetpos,
+       /// int fstat(int fildes, struct stat *buf);
+       fstat,
++#if (fstat64 == fstat)
++#undef fstat64
++#endif
+       /// int fstat64(int filedes, struct stat64 *buf)
+       fstat64,
+       /// int fstatvfs(int fildes, struct statvfs *buf);
+@@ -421,6 +424,9 @@
+       logl,
+       /// int lstat(const char *path, struct stat *buf);
+       lstat,
++#if (lstat64 == lstat)
++#undef lstat64
++#endif
+       /// int lstat64(const char *path, struct stat64 *buf);
+       lstat64,
+       /// void *malloc(size_t size);
+@@ -566,6 +572,9 @@
+       sscanf,
+       /// int stat(const char *path, struct stat *buf);
+       stat,
++#if (stat64 == stat)
++#undef stat64
++#endif
+       /// int stat64(const char *path, struct stat64 *buf);
+       stat64,
+       /// int statvfs(const char *path, struct statvfs *buf);
+--- llvm-3.6.orig/llvm/lib/Support/Unix/Memory.inc	2015-07-19 12:55:04.611066875 -0700
++++ llvm-3.6/llvm/lib/Support/Unix/Memory.inc	2015-07-19 12:55:17.855067269 -0700
+@@ -340,7 +340,7 @@
+   __clear_cache(const_cast<char *>(Start), const_cast<char *>(End));
+ #  elif defined(__mips__)
+   const char *Start = static_cast<const char *>(Addr);
+-#    if defined(ANDROID)
++#    if defined(__BIONIC__)
+   // The declaration of "cacheflush" in Android bionic:
+   // extern int cacheflush(long start, long end, long flags);
+   const char *End = Start + Len;
+--- llvm-3.6.orig/llvm/lib/Support/Unix/Process.inc	2015-07-19 23:55:14.348724689 -0700
++++ llvm-3.6/llvm/lib/Support/Unix/Process.inc	2015-07-20 00:14:26.956759040 -0700
+@@ -236,6 +236,10 @@
+   return std::error_code();
+ }
+ 
++#if LLVM_ENABLE_THREADS
++#include <pthread.h>
++#endif
++
+ std::error_code Process::SafelyCloseFileDescriptor(int FD) {
+   // Create a signal set filled with *all* signals.
+   sigset_t FullSet;

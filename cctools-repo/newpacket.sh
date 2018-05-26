@@ -22,3 +22,4 @@ sed -i "s|@PKG_VERSION@|$version|"	${name}.sh
 sed -i "s|@PKG_URL@|$url|"		${name}.sh
 sed -i "s|@PKG_EXT@|$suffix|"		${name}.sh
 sed -i "s|@PKG_DESC@|$description|"	${name}.sh
+sed -i '/^build/s/-/_/g' ${name}.sh

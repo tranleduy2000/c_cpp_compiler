@@ -1,0 +1,38 @@
+diff -Nur xpr-1.0.4-orig/xpr.c xpr-1.0.4/xpr.c
+--- xpr-1.0.4-orig/xpr.c	2012-04-01 06:57:57.000000000 +0700
++++ xpr-1.0.4/xpr.c	2014-12-23 12:51:55.872895691 +0600
+@@ -1466,9 +1466,14 @@
+ 	    username ? username : "unknown");
+ #else
+     pswd = getpwuid (getuid ());
++#ifdef __BIONIC__
++    printf ("%%%%Creator: %s:%s\n", hostname,
++	    pswd->pw_name);
++#else
+     printf ("%%%%Creator: %s:%s (%s)\n", hostname,
+ 	    pswd->pw_name, pswd->pw_gecos);
+ #endif
++#endif
+     printf ("%%%%Title: %s (%s)\n", infilename,name);
+     printf ("%%%%CreationDate: %s",
+ 		(time (&clock), ctime (&clock)));
+@@ -2007,3 +2012,19 @@
+ 	data += bytes_read;
+ 	}
+ }
++
++#ifdef __BIONIC__
++int bcmp(const void *v1, const void *v2, size_t length)
++{
++    const char *b1 = v1;
++    const char *b2 = v2;
++    if (length) {
++	do {
++	    if (*b1++ != *b2++) {
++		break;
++	    }
++	} while (--length);
++    }
++    return(length);
++}
++#endif

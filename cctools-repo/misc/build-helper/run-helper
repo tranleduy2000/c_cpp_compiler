@@ -1,0 +1,18 @@
+#!/system/bin/sh
+
+in=$1
+out=$(basename $in)
+shift
+
+args="$@"
+
+mkdir -p ${CCTOOLSDIR}/tmp
+cp -f $in ${CCTOOLSDIR}/tmp/$out
+chmod 755 ${CCTOOLSDIR}/tmp/$out
+
+am start $(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools/.CCToolsActivity \
+    --es type terminal \
+    --es title "$out" \
+    --es cmdline "/system/bin/sh -c \"${CCTOOLSDIR}/tmp/$out $args\"" \
+    --es workdir $PWD &>/dev/null
+

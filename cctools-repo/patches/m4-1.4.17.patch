@@ -1,0 +1,38 @@
+--- m4-1.4.17-origin/lib/freadahead.c
++++ m4-1.4.17/lib/freadahead.c
+@@ -87,6 +87,9 @@
+ #elif defined SLOW_BUT_NO_HACKS     /* users can define this */
+   abort ();
+   return 0;
++#elif defined __BIONIC__
++  if ((fp->_flags & __SWR) != 0 || fp->_r < 0)
++    return 0;
+ #else
+  #error "Please port gnulib freadahead.c to your platform! Look at the definition of fflush, fread, ungetc on your system, then report this to bug-gnulib."
+ #endif
+--- m4-1.4.17-origin/lib/freading.c
++++ m4-1.4.17/lib/freading.c
+@@ -35,6 +35,8 @@
+   return ((fp->_flags & _IO_NO_WRITES) != 0
+           || ((fp->_flags & (_IO_NO_READS | _IO_CURRENTLY_PUTTING)) == 0
+               && fp->_IO_read_base != NULL));
++# elif defined __BIONIC__
++  return (fp->_flags & __SRD) != 0;
+ # elif defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin */
+   return (fp_->_flags & __SRD) != 0;
+ # elif defined __EMX__               /* emx+gcc */
+--- m4-1.4.17-origin/lib/fseeko.c
++++ m4-1.4.17/lib/fseeko.c
+@@ -99,6 +99,12 @@
+ #elif defined EPLAN9                /* Plan9 */
+   if (fp->rp == fp->buf
+       && fp->wp == fp->buf)
++#elif defined(__BIONIC__)
++  if (fp->_p == fp->_bf._base
++      && fp->_r == 0
++      && fp->_w == ((fp->_flags & (__SLBF | __SNBF | __SRD)) == 0 /* fully buffered and not currently reading? */
++                     ? fp->_bf._size
++                     : 0))
+ #elif FUNC_FFLUSH_STDIN < 0 && 200809 <= _POSIX_VERSION
+   /* Cross-compiling to some other system advertising conformance to
+      POSIX.1-2008 or later.  Assume fseeko and fflush work as advertised.

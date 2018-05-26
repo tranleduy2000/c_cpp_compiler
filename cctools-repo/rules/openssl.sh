@@ -7,7 +7,7 @@ build_openssl() {
     S_DIR=$src_dir/$PKG-$PKG_VERSION
     B_DIR=$build_dir/$PKG
 
-    c_tag $PKG && return
+    c_tag $FUNCNAME && return
 
     banner "Build $PKG"
 
@@ -25,11 +25,20 @@ build_openssl() {
     cd $B_DIR
 
     case $TARGET_ARCH in
+    aarch64*)
+	CC=${TARGET_ARCH}-gcc ./Configure no-shared linux-generic64
+	;;
     arm*)
 	CC=${TARGET_ARCH}-gcc ./Configure no-shared linux-armv4
 	;;
+    mips64*)
+	CC=${TARGET_ARCH}-gcc ./Configure no-shared linux-generic64
+	;;
     mips*)
 	CC=${TARGET_ARCH}-gcc ./Configure no-shared linux-generic32
+	;;
+    x86_64*)
+	CC=${TARGET_ARCH}-gcc ./Configure no-shared linux-x86_64
 	;;
     i*86*)
 	CC=${TARGET_ARCH}-gcc ./Configure no-shared linux-elf
@@ -41,19 +50,14 @@ build_openssl() {
     install -D -m 644 libcrypto.a ${TMPINST_DIR}/lib/libcrypto.a
     install -D -m 644 libssl.a    ${TMPINST_DIR}/lib/libssl.a
 
-    mkdir -p ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include
-    cp -RL include/openssl ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/openssl
-    install -D -m 644 libcrypto.a ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/libcrypto.a
-    install -D -m 644 libssl.a    ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/libssl.a
+    mkdir -p ${TMPINST_DIR}/${PKG}/cctools/include
+    cp -RL include/openssl ${TMPINST_DIR}/${PKG}/cctools/include/openssl
+    install -D -m 644 libcrypto.a ${TMPINST_DIR}/${PKG}/cctools/lib/libcrypto.a
+    install -D -m 644 libssl.a    ${TMPINST_DIR}/${PKG}/cctools/lib/libssl.a
     install -D -m 755 apps/openssl ${TMPINST_DIR}/${PKG}/cctools/bin/openssl
 
-    $TARGET_ARCH-strip ${TMPINST_DIR}/${PKG}/cctools/bin/*
-
-    local filename="${PKG}_${PKG_VERSION}_${PKG_ARCH}.zip"
-    build_package_desc ${TMPINST_DIR}/${PKG} $filename $PKG $PKG_VERSION $PKG_ARCH "$PKG_DESC"
-    cd ${TMPINST_DIR}/${PKG}
-    rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
+    make_packages
 
     popd
-    s_tag $PKG
+    s_tag $FUNCNAME
 }

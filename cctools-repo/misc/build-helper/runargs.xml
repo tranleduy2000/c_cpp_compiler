@@ -1,0 +1,23 @@
+<cctools-module
+    title="Run executable with args"
+    title-ru="Запуск с параметрами">
+    <action
+	title="Run $current_file$"
+	title-ru="Запуск $current_file$">
+	<view type="edit"
+	    title="Args"
+	    title-ru="Опции"
+	    hint="Optional arguments"
+	    hint-ru="Дополнительные опции"
+	    name="args" />
+	<command
+	    title="Run"
+	    title-ru="Выполнить"
+	    intent="CCToolsActivity">
+	    <extra name="type" value="build" />
+	    <extra name="cmdline" value="run-helper $current_file$ @args@" />
+	    <extra name="workdir" value="$current_dir$" />
+	    <extra name="name" value="$dialog_id$" />
+	</command>
+    </action>
+</cctools-module>

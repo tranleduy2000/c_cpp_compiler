@@ -1,0 +1,13 @@
+diff -Nur libXfixes-5.0-original/config.sub libXfixes-5.0/config.sub
+--- libXfixes-5.0-original/config.sub	2011-02-10 04:52:46.000000000 +0600
++++ libXfixes-5.0/config.sub	2014-12-23 02:56:02.096181776 +0600
+@@ -1326,6 +1326,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

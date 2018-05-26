@@ -1,0 +1,28 @@
+diff -Nur libxcb-1.11-orig/build-aux/ltmain.sh libxcb-1.11/build-aux/ltmain.sh
+--- libxcb-1.11-orig/build-aux/ltmain.sh	2014-08-01 21:04:55.000000000 +0700
++++ libxcb-1.11/build-aux/ltmain.sh	2014-12-22 22:24:10.103856065 +0600
+@@ -2963,8 +2963,8 @@
+ 	  # At present, this check doesn't affect windows .dll's that
+ 	  # are installed into $libdir/../bin (currently, that works fine)
+ 	  # but it's something to keep an eye on.
+-	  test "$inst_prefix_dir" = "$destdir" && \
+-	    func_fatal_error "error: cannot install \`$file' to a directory not ending in $libdir"
++	  #test "$inst_prefix_dir" = "$destdir" && \
++	  #    func_fatal_error "error: cannot install \`$file' to a directory not ending in $libdir"
+ 
+ 	  if test -n "$inst_prefix_dir"; then
+ 	    # Stick the inst_prefix_dir data into the link command.
+diff -Nur libxcb-1.11-orig/ltmain.sh libxcb-1.11/ltmain.sh
+--- libxcb-1.11-orig/ltmain.sh	2013-11-15 03:10:12.000000000 +0700
++++ libxcb-1.11/ltmain.sh	2014-12-22 22:24:03.263855928 +0600
+@@ -2963,8 +2963,8 @@
+ 	  # At present, this check doesn't affect windows .dll's that
+ 	  # are installed into $libdir/../bin (currently, that works fine)
+ 	  # but it's something to keep an eye on.
+-	  test "$inst_prefix_dir" = "$destdir" && \
+-	    func_fatal_error "error: cannot install \`$file' to a directory not ending in $libdir"
++	  #test "$inst_prefix_dir" = "$destdir" && \
++	  #    func_fatal_error "error: cannot install \`$file' to a directory not ending in $libdir"
+ 
+ 	  if test -n "$inst_prefix_dir"; then
+ 	    # Stick the inst_prefix_dir data into the link command.

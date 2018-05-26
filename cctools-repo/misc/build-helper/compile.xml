@@ -1,0 +1,47 @@
+<cctools-module
+    title="Compile source file"
+    title-ru="Компиляция исходного кода">
+    <action
+	title="Compile $current_file$"
+	title-ru="Компиляция $current_file$">
+	<view type="edit"
+	    title="Options"
+	    title-ru="Параметры"
+	    hint="Additional compiler options"
+	    hint-ru="Дополнительные параметры компилятора"
+	    name="args" />
+	<view type="checkbox"
+	    title="Native Activity"
+	    title-ru="Native Activity"
+	    hint="Native Activity application"
+	    hint-ru="Приложение Native Activity"
+	    name="native_activity" />
+	<view type="checkbox"
+	    title="Executable"
+	    title-ru="Исполняемый файл"
+	    hint="Build executable"
+	    hint-ru="Создать исполняемый файл"
+	    name="executable" />
+	<view type="checkbox"
+	    title="Run"
+	    title-ru="Запустить"
+	    hint="Execute after compilation (only for Executable or Native Activity)"
+	    hint-ru="Запустить после компиляции (только для Исполняемого файла или Native Activity)"
+	    name="run" />
+	<view type="checkbox"
+	    title="Ask for run args"
+	    title-ru="Спросить опции для запуска"
+	    hint="Ask optional arguments (only for Executable)"
+	    hint-ru="Спросить дополнительные аргументы для запуска исполняемого файла"
+	    name="runargs" />
+	<command
+	    title="Compile"
+	    title-ru="Компиляция"
+	    intent="CCToolsActivity">
+	    <extra name="type" value="build" />
+	    <extra name="cmdline" value="build-helper --dialogid $dialog_id$ --native @native_activity@ --executable @executable@ --run @run@ --runwindow @runargs@ $current_file$ @args@" />
+	    <extra name="workdir" value="$current_dir$" />
+	    <extra name="name" value="$dialog_id$" />
+	</command>
+    </action>
+</cctools-module>

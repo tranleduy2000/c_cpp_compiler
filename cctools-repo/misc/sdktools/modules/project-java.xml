@@ -1,0 +1,85 @@
+<cctools-module
+    title="Java project"
+    title-ru="Java проект"
+    id="jproject">
+    <action
+	title="New application"
+	title-ru="Новое приложение">
+	<view type="dirpath"
+	    title="Project directory"
+	    title-ru="Директория"
+	    hint="Select directory for new project"
+	    hint-ru="для нового проекта"
+	    name="path" />
+	<view type="edit"
+	    title="Project name"
+	    title-ru="Название проекта"
+	    hint="HelloWorld"
+	    name="name" />
+	<view type="edit"
+	    title="Package"
+	    title-ru="Пакет"
+	    hint="com.example.HelloWorld"
+	    name="package" />
+	<command
+	    title="Create"
+	    title-ru="Создать"
+	    exec="jproject create project --gui --path @path@ --package @package@ --name @name@" />
+    </action>
+    <action
+	title="Build project"
+	title-ru="Сборка проекта">
+	<view type="dirpath"
+	    title="Directory"
+	    title-ru="Директория"
+	    hint="of Java project"
+	    hint-ru="Java проекта"
+	    name="path" />
+	<command
+	    title="Build"
+	    title-ru="Собрать"
+	    intent="BuildActivity">
+	    <extra name="cmdline" value="jproject build" />
+	    <extra name="workdir" value="@path@" />
+	    <extra name="cctoolsdir" value="$root_dir$" />
+	    <extra name="tmpdir" value="$tmp_dir$" />
+	</command>
+    </action>
+    <action
+	title="Run application"
+	title-ru="Запустить приложение">
+	<view type="dirpath"
+	    title="Directory"
+	    title-ru="Директория"
+	    hint="of Java project"
+	    hint-ru="Java проекта"
+	    name="path" />
+	<command
+	    title="Run"
+	    title-ru="Запустить"
+	    intent="TermActivity">
+	    <extra name="filename" value="$root_dir$/bin/jproject run" />
+	    <extra name="workdir" value="@path@" />
+	    <extra name="cctoolsdir" value="$root_dir$" />
+	</command>
+    </action>
+    <action
+	title="Clean project"
+	title-ru="Очистка проекта">
+	<view type="dirpath"
+	    title="Directory"
+	    title-ru="Директория"
+	    hint="of Java project"
+	    hint-ru="Java проекта"
+	    name="path" />
+	<command
+	    title="Clean"
+	    title-ru="Очистить"
+	    intent="BuildActivity">
+	    <extra name="cmdline" value="jproject clean" />
+	    <extra name="workdir" value="@path@" />
+	    <extra name="cctoolsdir" value="$root_dir$" />
+	    <extra name="tmpdir" value="$tmp_dir$" />
+	</command>
+    </action>
+</cctools-module>

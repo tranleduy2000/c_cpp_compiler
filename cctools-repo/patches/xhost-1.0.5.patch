@@ -1,0 +1,31 @@
+diff -Nur xhost-1.0.5-orig/xhost.c xhost-1.0.5/xhost.c
+--- xhost-1.0.5-orig/xhost.c	2012-03-23 11:57:21.000000000 +0700
++++ xhost-1.0.5/xhost.c	2014-12-23 12:40:27.628881949 +0600
+@@ -195,6 +195,14 @@
+ 
+ static Display *dpy;
+ 
++#if defined(__CYGWIN__) || defined(__BIONIC__)
++void sethostent(int x)
++{}
++
++void endhostent()
++{}
++#endif
++
+ int
+ main(int argc, char *argv[])
+ {
+@@ -965,12 +973,3 @@
+     XmuPrintDefaultErrorMessage (dpy, rep, stderr);
+     return 0;
+ }
+-
+-#ifdef __CYGWIN__
+-void sethostent(int x)
+-{}
+-
+-void endhostent()
+-{}
+-#endif
+-

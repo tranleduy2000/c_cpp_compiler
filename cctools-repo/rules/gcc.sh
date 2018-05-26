@@ -1,7 +1,7 @@
 build_gcc() {
     PKG=gcc
     PKG_VERSION=$gcc_version
-    PKG_SUBVERSION="-2"
+    PKG_SUBVERSION="-1"
     PKG_DESC="The GNU C compiler"
     O_DIR=$SRC_PREFIX/$PKG/${PKG}-${PKG_VERSION}
     S_DIR=$src_dir/${PKG}-${PKG_VERSION}
@@ -15,16 +15,28 @@ build_gcc() {
 
     preparesrc $O_DIR $S_DIR
 
-    #copysrc $O_DIR $S_DIR
-
-    #cd $S_DIR
-    #patch -p1 < $patch_dir/gcc-$gcc_version.patch || error "patch"
+    if [ "$BUILD_PIE_COMPILER" = "yes" ]; then
+	cd $S_DIR
+	if [ ! -e ${S_DIR}/.pie_patched ]; then
+	    patch -p1 < ${patch_dir}/${PKG}-${PKG_VERSION}-pie.patch || error "No pie patch found!"
+	    touch ${S_DIR}/.pie_patched
+	fi
+    fi
 
     mkdir -p $B_DIR
     cd $B_DIR
 
     local EXTRA_CONF=
     case $TARGET_ARCH in
+    aarch64*)
+	EXTRA_CONF="--enable-fix-cortex-a53-835769"
+	;;
+    mips64el*)
+	EXTRA_CONF="--with-arch=mips64r6 --disable-fixed-point"
+	;;
+    x86_64*)
+	EXTRA_CONF="--with-arch=x86-64 --with-tune=intel --with-fpmath=sse --with-multilib-list=m32,m64,mx32 --disable-libcilkrts"
+	;;
     mips*)
 	EXTRA_CONF="--with-arch=mips32 --disable-threads --disable-fixed-point"
 	;;
@@ -32,7 +44,7 @@ build_gcc() {
 	EXTRA_CONF="--with-arch=armv5te --with-float=soft --with-fpu=vfp"
 	;;
     *86*)
-	EXTRA_CONF="--disable-libquadmath-support"
+	EXTRA_CONF="--disable-libquadmath-support --disable-libcilkrts"
 	;;
     esac
 
@@ -53,6 +65,8 @@ build_gcc() {
 	--with-gnu-as \
 	--with-gnu-ld \
 	--enable-languages=c,c++,fortran,objc,obj-c++ \
+	--enable-bionic-libs \
+	--enable-libatomic-ifuncs=no \
 	--with-gmp=$TMPINST_DIR \
 	--with-mpfr=$TMPINST_DIR \
 	--with-mpc=$TMPINST_DIR \
@@ -140,19 +154,23 @@ build_gcc() {
     rm -rf ${TMPINST_DIR}/libgfortran-dev
     rm -rf ${TMPINST_DIR}/libobjc-dev
 
-    cd ${TMPINST_DIR}/${PKG}/cctools/lib
-    find . -name "libstdc++.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libstdc++-dev/cctools/${TARGET_ARCH}/lib/{} \; -exec rm -f {} \;
-    find . -name "libsupc++.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libstdc++-dev/cctools/${TARGET_ARCH}/lib/{} \; -exec rm -f {} \;
+    cd ${TMPINST_DIR}/${PKG}/cctools
 
-    find . -name "libatomic.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgcc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
-    find . -name "libgomp.*"   -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgcc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
+    find . -name "*.la" -delete
+    find . -name "libgnustl_shared.a" -delete
 
-    find . -name "libgfortran.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgfortran-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
+    find . -name "libsupc++.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libstdc++-dev/cctools/${TARGET_ARCH}/{} \; -exec rm -f {} \;
 
-    find . -name "libobjc.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libobjc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
-    find . -name "libobjc_gc.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libobjc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
+    find . -name "libatomic.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgcc-dev/cctools/${TARGET_ARCH}/{} \; -exec rm -f {} \;
+    find . -name "libgomp.*"   -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgcc-dev/cctools/${TARGET_ARCH}/{} \; -exec rm -f {} \;
+
+    find . -name "libgfortran.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgfortran-dev/cctools/${TARGET_ARCH}/{} \; -exec rm -f {} \;
+
+    find . -name "libobjc.*"    -type f -exec install -D -m644 {} ${TMPINST_DIR}/libobjc-dev/cctools/${TARGET_ARCH}/{} \; -exec rm -f {} \;
+    find . -name "libobjc_gc.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libobjc-dev/cctools/${TARGET_ARCH}/{} \; -exec rm -f {} \;
 
     cd ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}
+
     find . -name "crt*.o"      -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgcc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
     find . -name "libgcc.*"    -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgcc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
     find . -name "libgcov.*"   -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgcc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
@@ -160,13 +178,17 @@ build_gcc() {
     find . -name "libgfortranbegin.*" -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgfortran-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
     find . -name "libcaf_single.*"    -type f -exec install -D -m644 {} ${TMPINST_DIR}/libgfortran-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/{} \; -exec rm -f {} \;
 
+    cd ${TMPINST_DIR}/${PKG}/cctools
+
+    find . -type d -empty -delete
+
     copysrc ${TMPINST_DIR}/${PKG}/cctools/include/c++ \
 		${TMPINST_DIR}/libstdc++-dev/cctools/${TARGET_ARCH}/include/c++
 
     rm -rf ${TMPINST_DIR}/${PKG}/cctools/include/c++
 
     copysrc ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/include/objc \
-		${TMPINST_DIR}/libobjc-dev/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/include/objc
+		${TMPINST_DIR}/libobjc-dev/cctools/${TARGET_ARCH}/include/objc
 
     rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/include/objc
 
@@ -226,6 +248,7 @@ EOF
     local filename="${PKG}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC" "libgcc-dev|libgcc-compact-dev libstdc++-dev|libstdc++-compact-dev"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename *
 
     popd
@@ -237,6 +260,7 @@ EOF
     local filename="${PKG}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC" "gcc libobjc-dev|libobjc-compact-dev"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
     PKG="gfortran"
@@ -262,6 +286,7 @@ EOF
     local filename="${PKG}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC" "gcc libgfortran-dev|libgfortran-compact-dev"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename *
 
     #
@@ -281,23 +306,6 @@ EOF
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG}-${PKG_ARCH} ${PKG_VERSION}${PKG_SUBVERSION} all "$PKG_DESC"
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
-    if [ "$PKG_ARCH" = "armel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "mipsel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "i686" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-    fi
-
-    rm -f ${REPO_DIR}/$filename
-
     #
     # LIBGCC-COMPACT
     #
@@ -311,12 +319,16 @@ EOF
     arm*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/thumb
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/armv7-a
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/thumb
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/armv7-a
+
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/thumb
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/armv7-a
 	;;
     mips*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r2
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r6
+
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr6
 	;;
     i*86*|x86*)
 	;;
@@ -334,6 +346,50 @@ EOF
     PKG="libstdc++-dev"
     PKG_DESC="GNU Standard C++ Library v3 (development files)"
 
+    local src_dir="${NDK_DIR}/sources/cxx-stl/gnu-libstdc++/$gcc_version"
+
+    case $TARGET_ARCH in
+    aarch64*)
+	OFORM="elf64-littleaarch64"
+	ANAME="arm64-v8a"
+	;;
+    mips64el*)
+	OFORM="elf64-tradlittlemips"
+	ANAME="mips64"
+	;;
+    x86_64*)
+	OFORM="elf64-x86-64"
+	ANAME="x86_64"
+	;;
+    mips*)
+	OFORM="elf32-tradlittlemips"
+	ANAME="mips"
+	;;
+    arm*)
+	OFORM="elf32-littlearm"
+	ANAME="armeabi"
+	;;
+    i*86*|x86*)
+	OFORM="elf32-i386"
+	ANAME="x86"
+	;;
+    esac
+
+    $INSTALL -D -m 644 $src_dir/libs/${ANAME}/libgnustl_shared.so ${TMPINST_DIR}/${PKG}/cctools/$TARGET_ARCH/lib/libgnustl_shared.so
+    $INSTALL -D -m 644 $src_dir/libs/${ANAME}/libgnustl_static.a  ${TMPINST_DIR}/${PKG}/cctools/$TARGET_ARCH/lib/libgnustl_static.a
+    mkdir -p ${TMPINST_DIR}/${PKG}/cctools/lib
+    ln -sf ../${TARGET_ARCH}/lib/libgnustl_shared.so ${TMPINST_DIR}/${PKG}/cctools/lib/
+
+    cat > ${TMPINST_DIR}/${PKG}/cctools/$TARGET_ARCH/lib/libstdc++.so <<EOF
+OUTPUT_FORMAT($OFORM)
+GROUP ( libgnustl_shared.so )
+EOF
+
+    cat > ${TMPINST_DIR}/${PKG}/cctools/$TARGET_ARCH/lib/libstdc++.a <<EOF
+OUTPUT_FORMAT($OFORM)
+GROUP ( libgnustl_static.a )
+EOF
+
     local filename="${PKG}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC" "" "libstdc++-compact-dev"
     cd ${TMPINST_DIR}/${PKG}
@@ -343,23 +399,6 @@ EOF
     local filename="${PKG}-${PKG_ARCH}_${PKG_VERSION}${PKG_SUBVERSION}_all.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG}-${PKG_ARCH} ${PKG_VERSION}${PKG_SUBVERSION} all "$PKG_DESC"
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
-
-    if [ "$PKG_ARCH" = "armel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "mipsel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "i686" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-    fi
-
-    rm -f ${REPO_DIR}/$filename
 
     #
     # LIBSTDC++-COMPACT
@@ -375,20 +414,16 @@ EOF
     arm*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/c++/${gcc_version}/${TARGET_ARCH}/thumb
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/c++/${gcc_version}/${TARGET_ARCH}/armv7-a
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/c++/${gcc_version}/${TARGET_ARCH}/thumb
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/c++/${gcc_version}/${TARGET_ARCH}/armv7-a
 
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/thumb
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/armv7-a
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/thumb
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/armv7-a
 	;;
     mips*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/c++/${gcc_version}/${TARGET_ARCH}/mips-r2
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/c++/${gcc_version}/${TARGET_ARCH}/mips-r2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/include/c++/${gcc_version}/${TARGET_ARCH}/mips-r6
 
-	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/mips-r2
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/mips-r2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr6
 	;;
     i*86*|x86*)
 	;;
@@ -417,23 +452,6 @@ EOF
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG}-${PKG_ARCH} ${PKG_VERSION}${PKG_SUBVERSION} all "$PKG_DESC"
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
-    if [ "$PKG_ARCH" = "armel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "mipsel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "i686" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-    fi
-
-    rm -f ${REPO_DIR}/$filename
-
     #
     # LIBGFORTRAN-COMPACT
     #
@@ -448,12 +466,16 @@ EOF
     arm*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/thumb
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/armv7-a
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/thumb
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/armv7-a
+
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/thumb
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/armv7-a
 	;;
     mips*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r2
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r6
+
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr6
 	;;
     i*86*|x86*)
 	;;
@@ -481,23 +503,6 @@ EOF
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG}-${PKG_ARCH} ${PKG_VERSION}${PKG_SUBVERSION} all "$PKG_DESC"
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
-    if [ "$PKG_ARCH" = "armel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "mipsel" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../x86/
-    fi
-
-    if [ "$PKG_ARCH" = "i686" ]; then
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../armeabi/
-	cp -f ${REPO_DIR}/$filename ${REPO_DIR}/../mips/
-    fi
-
-    rm -f ${REPO_DIR}/$filename
-
     #
     # LIBOBJC-COMPACT
     #
@@ -512,12 +517,16 @@ EOF
     arm*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/thumb
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/armv7-a
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/thumb
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/armv7-a
+
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/thumb
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/lib/armv7-a
 	;;
     mips*)
 	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r2
-	#ln -sf . ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/lib/gcc/${TARGET_ARCH}/${gcc_version}/mips-r6
+
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr2
+	rm -rf ${TMPINST_DIR}/${PKG}/cctools/${TARGET_ARCH}/libr6
 	;;
     i*86*|x86*)
 	;;
@@ -527,5 +536,4 @@ EOF
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC" "" "libobjc-dev"
     cd ${TMPINST_DIR}/${PKG}
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
-
 }

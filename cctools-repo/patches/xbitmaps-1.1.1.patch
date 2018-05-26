@@ -1,0 +1,21 @@
+diff -Nur xbitmaps-1.1.1-orig/Makefile.am xbitmaps-1.1.1/Makefile.am
+--- xbitmaps-1.1.1-orig/Makefile.am	2010-11-11 10:10:29.000000000 +0600
++++ xbitmaps-1.1.1/Makefile.am	2014-12-23 13:05:30.688911961 +0600
+@@ -1,4 +1,4 @@
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xbitmaps.pc
+ 
+ MAINTAINERCLEANFILES = ChangeLog INSTALL
+diff -Nur xbitmaps-1.1.1-orig/Makefile.in xbitmaps-1.1.1/Makefile.in
+--- xbitmaps-1.1.1-orig/Makefile.in	2010-12-09 12:26:17.000000000 +0600
++++ xbitmaps-1.1.1/Makefile.in	2014-12-23 13:05:46.164912270 +0600
+@@ -207,7 +207,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = xbitmaps.pc
+ MAINTAINERCLEANFILES = ChangeLog INSTALL
+ bitmapdir = $(includedir)/X11/bitmaps

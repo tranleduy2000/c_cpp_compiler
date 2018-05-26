@@ -1,0 +1,13 @@
+diff -Nur glproto-1.4.15-orig/config.sub glproto-1.4.15/config.sub
+--- glproto-1.4.15-orig/config.sub	2012-01-26 21:29:15.000000000 +0700
++++ glproto-1.4.15/config.sub	2014-12-22 11:19:33.261128998 +0600
+@@ -1329,6 +1329,9 @@
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;

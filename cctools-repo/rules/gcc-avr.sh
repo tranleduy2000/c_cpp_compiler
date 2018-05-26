@@ -1,11 +1,12 @@
 build_gcc_avr() {
     PKG=gcc-avr
     PKG_VERSION=$gcc_avr_version
-    PKG_SUBVERSION="-2"
+    PKG_SUBVERSION="-1"
+    PKG_URL="http://mirrors-usa.go-parts.com/gcc/releases/gcc-${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.bz2"
     PKG_DESC="The GNU C compiler (cross compiler for avr)"
-    O_DIR=$SRC_PREFIX/gcc/gcc-${PKG_VERSION}
-    S_DIR=$src_dir/gcc-${PKG_VERSION}
-    B_DIR=$build_dir/$PKG
+    O_FILE=$SRC_PREFIX/gnu/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2
+    S_DIR=$src_dir/gnu/gcc-${PKG_VERSION}
+    B_DIR=$build_dir/${PKG}-avr
 
     c_tag ${PKG} && return
 
@@ -13,7 +14,7 @@ build_gcc_avr() {
 
     pushd .
 
-    preparesrc $O_DIR $S_DIR
+#    preparesrc $O_DIR $S_DIR
 
 #    copysrc $O_DIR $S_DIR
 
@@ -34,6 +35,9 @@ build_gcc_avr() {
 	--with-gmp=$TMPINST_DIR \
 	--with-mpfr=$TMPINST_DIR \
 	--with-mpc=$TMPINST_DIR \
+	--with-cloog=$TMPINST_DIR \
+	--with-isl=$TMPINST_DIR \
+	--with-ppl=$TMPINST_DIR \
 	--enable-long-long \
 	--disable-libssp \
 	--disable-nls \
@@ -42,6 +46,8 @@ build_gcc_avr() {
 	--with-mpfr-version=$mpfr_version \
 	--with-mpc-version=$mpc_version \
 	--with-gmp-version=$gmp_version \
+	--with-cloog-version=$cloog_version \
+	--with-isl-version=$isl_version \
 	--with-gcc-version=$gcc_version \
 	--disable-bootstrap \
 	--disable-libquadmath \
@@ -69,6 +75,7 @@ build_gcc_avr() {
     local filename="${PKG}_${PKG_VERSION}${PKG_SUBVERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} ${PKG_VERSION}${PKG_SUBVERSION} $PKG_ARCH "$PKG_DESC"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
     popd

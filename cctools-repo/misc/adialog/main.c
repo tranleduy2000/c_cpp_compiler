@@ -31,6 +31,7 @@ enum {
     FUNC_YESNO,
     FUNC_MSGBOX,
     FUNC_EDITBOX,
+    FUNC_INSTALL
 };
 
 int send_command(tcp_channel *channel, char *cmd, char *title, char *message)
@@ -71,6 +72,11 @@ int main(int argc, char *argv[])
 	    argv++;
 	} else if (!strcmp(argv[1], "--text")) {
 	    text = argv[2];
+	    argc--;
+	    argv++;
+	} else if (!strcmp(argv[1], "--install")) {
+	    func = FUNC_INSTALL;
+	    title = argv[2];
 	    argc--;
 	    argv++;
 	} else {
@@ -126,17 +132,9 @@ int main(int argc, char *argv[])
 	}
     }
 
-/*
-    strcpy(buf, "Hello server!");
-
-    if ((r = tcp_write(server, (uint8_t *)buf, strlen(buf) + 1)) <= 0) {
-	fprintf(stderr, "tcp_write()\n");
+    if (func == FUNC_INSTALL) {
+	send_command(server, "install", title, message);
     }
-
-    if ((r = tcp_read(server, (uint8_t *)buf, BUF_SIZE)) > 0) {
-	fprintf(stderr, "buf[%d]=%s\n", r, buf);
-    }
-*/
 
     tcp_close(server);
 

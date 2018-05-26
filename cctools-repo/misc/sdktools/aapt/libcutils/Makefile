@@ -41,7 +41,8 @@ CFLAGS = \
 CFLAGS += -I../include
 
 ifeq (arm,$(CPU))
-CFLAGS += -march=armv6
+#CFLAGS += -march=armv6
+CFLAGS += -march=armv5te
 endif
 
 ifeq (x86, $(CPU))

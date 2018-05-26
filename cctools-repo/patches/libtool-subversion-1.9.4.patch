@@ -1,0 +1,13 @@
+--- libtool.orig	2016-09-05 20:43:34.792103563 +0400
++++ libtool	2016-09-05 20:44:14.885348667 +0400
+@@ -4796,8 +4796,8 @@
+ 	  # At present, this check doesn't affect windows .dll's that
+ 	  # are installed into $libdir/../bin (currently, that works fine)
+ 	  # but it's something to keep an eye on.
+-	  test "$inst_prefix_dir" = "$destdir" && \
+-	    func_fatal_error "error: cannot install '$file' to a directory not ending in $libdir"
++	  #test "$inst_prefix_dir" = "$destdir" && \
++	  #    func_fatal_error "error: cannot install '$file' to a directory not ending in $libdir"
+ 
+ 	  if test -n "$inst_prefix_dir"; then
+ 	    # Stick the inst_prefix_dir data into the link command.

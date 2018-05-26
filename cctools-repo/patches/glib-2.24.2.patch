@@ -1,7 +1,40 @@
-diff -Nur glib-2.24.2/config.sub glib-2.24.2-new/config.sub
---- glib-2.24.2/config.sub	2009-12-11 01:28:54.000000000 +0600
-+++ glib-2.24.2-new/config.sub	2013-10-26 14:05:28.959432891 +0700
-@@ -1329,6 +1329,9 @@
+diff -Nur glib-2.24.2-orig/config.guess glib-2.24.2/config.guess
+--- glib-2.24.2-orig/config.guess	2009-12-10 23:28:54.000000000 +0400
++++ glib-2.24.2/config.guess	2016-08-10 12:47:52.241162114 +0400
+@@ -857,6 +857,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
+     alpha:Linux:*:*)
+ 	case `sed -n '/^cpu model/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo` in
+ 	  EV5)   UNAME_MACHINE=alphaev5 ;;
+diff -Nur glib-2.24.2-orig/config.sub glib-2.24.2/config.sub
+--- glib-2.24.2-orig/config.sub	2009-12-10 23:28:54.000000000 +0400
++++ glib-2.24.2/config.sub	2016-08-10 12:47:27.196373547 +0400
+@@ -245,6 +245,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 | aarch64_be \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| am33_2.0 \
+@@ -327,6 +328,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* | aarch64_be-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \
+@@ -1329,6 +1331,9 @@
  	-linux-dietlibc)
  		os=-linux-dietlibc
  		;;
@@ -11,9 +44,9 @@ diff -Nur glib-2.24.2/config.sub glib-2.24.2-new/config.sub
  	-linux*)
  		os=`echo $os | sed -e 's|linux|linux-gnu|'`
  		;;
-diff -Nur glib-2.24.2/configure glib-2.24.2-new/configure
---- glib-2.24.2/configure	2010-08-09 01:50:04.000000000 +0700
-+++ glib-2.24.2-new/configure	2013-10-26 14:13:02.271413827 +0700
+diff -Nur glib-2.24.2-orig/configure glib-2.24.2/configure
+--- glib-2.24.2-orig/configure	2010-08-08 23:50:04.000000000 +0500
++++ glib-2.24.2/configure	2016-08-10 12:44:32.330867490 +0400
 @@ -8745,7 +8745,7 @@
  
  done
@@ -41,9 +74,9 @@ diff -Nur glib-2.24.2/configure glib-2.24.2-new/configure
  *** You must have either have gettext support in your C library, or use the
  *** GNU gettext library. (http://www.gnu.org/software/gettext/gettext.html
  " "$LINENO" 5
-diff -Nur glib-2.24.2/gio/glocalfileinfo.c glib-2.24.2-new/gio/glocalfileinfo.c
---- glib-2.24.2/gio/glocalfileinfo.c	2010-08-08 21:47:15.000000000 +0700
-+++ glib-2.24.2-new/gio/glocalfileinfo.c	2013-10-26 14:05:28.959432891 +0700
+diff -Nur glib-2.24.2-orig/gio/glocalfileinfo.c glib-2.24.2/gio/glocalfileinfo.c
+--- glib-2.24.2-orig/gio/glocalfileinfo.c	2010-08-08 19:47:15.000000000 +0500
++++ glib-2.24.2/gio/glocalfileinfo.c	2016-08-10 12:44:32.334867616 +0400
 @@ -1102,6 +1102,7 @@
        if (pwbufp->pw_name != NULL && pwbufp->pw_name[0] != 0)
  	data->user_name = convert_pwd_string_to_utf8 (pwbufp->pw_name);
@@ -60,9 +93,9 @@ diff -Nur glib-2.24.2/gio/glocalfileinfo.c glib-2.24.2-new/gio/glocalfileinfo.c
      }
  
    /* Default fallbacks */
-diff -Nur glib-2.24.2/gio/gresolver.c glib-2.24.2-new/gio/gresolver.c
---- glib-2.24.2/gio/gresolver.c	2010-08-08 21:47:15.000000000 +0700
-+++ glib-2.24.2-new/gio/gresolver.c	2013-10-26 14:05:28.959432891 +0700
+diff -Nur glib-2.24.2-orig/gio/gresolver.c glib-2.24.2/gio/gresolver.c
+--- glib-2.24.2-orig/gio/gresolver.c	2010-08-08 19:47:15.000000000 +0500
++++ glib-2.24.2/gio/gresolver.c	2016-08-10 12:44:32.334867616 +0400
 @@ -792,7 +792,24 @@
    return g_strdup (name);
  }
@@ -89,9 +122,9 @@ diff -Nur glib-2.24.2/gio/gresolver.c glib-2.24.2-new/gio/gresolver.c
  /* Private method to process a res_query response into GSrvTargets */
  GList *
  _g_resolver_targets_from_res_query (const gchar      *rrname,
-diff -Nur glib-2.24.2/gio/gthreadedresolver.c glib-2.24.2-new/gio/gthreadedresolver.c
---- glib-2.24.2/gio/gthreadedresolver.c	2010-08-08 21:47:15.000000000 +0700
-+++ glib-2.24.2-new/gio/gthreadedresolver.c	2013-10-26 14:05:28.963432891 +0700
+diff -Nur glib-2.24.2-orig/gio/gthreadedresolver.c glib-2.24.2/gio/gthreadedresolver.c
+--- glib-2.24.2-orig/gio/gthreadedresolver.c	2010-08-08 19:47:15.000000000 +0500
++++ glib-2.24.2/gio/gthreadedresolver.c	2016-08-10 12:44:32.334867616 +0400
 @@ -526,7 +526,9 @@
    DNS_RECORD *results;
  #endif
@@ -103,9 +136,9 @@ diff -Nur glib-2.24.2/gio/gthreadedresolver.c glib-2.24.2-new/gio/gthreadedresol
    len = res_query (req->u.service.rrname, C_IN, T_SRV, answer, sizeof (answer));
    herr = h_errno;
    req->u.service.targets = _g_resolver_targets_from_res_query (req->u.service.rrname, answer, len, herr, error);
-diff -Nur glib-2.24.2/gio/gunixresolver.c glib-2.24.2-new/gio/gunixresolver.c
---- glib-2.24.2/gio/gunixresolver.c	2010-08-08 21:47:15.000000000 +0700
-+++ glib-2.24.2-new/gio/gunixresolver.c	2013-10-26 14:05:28.963432891 +0700
+diff -Nur glib-2.24.2-orig/gio/gunixresolver.c glib-2.24.2/gio/gunixresolver.c
+--- glib-2.24.2-orig/gio/gunixresolver.c	2010-08-08 19:47:15.000000000 +0500
++++ glib-2.24.2/gio/gunixresolver.c	2016-08-10 12:44:32.334867616 +0400
 @@ -477,10 +477,12 @@
    GUnixResolverRequest *req;
    _g_asyncns_query_t *qy;
@@ -119,9 +152,9 @@ diff -Nur glib-2.24.2/gio/gunixresolver.c glib-2.24.2-new/gio/gunixresolver.c
  }
  
  static GList *
-diff -Nur glib-2.24.2/gio/libasyncns/asyncns.c glib-2.24.2-new/gio/libasyncns/asyncns.c
---- glib-2.24.2/gio/libasyncns/asyncns.c	2010-04-08 13:10:50.000000000 +0700
-+++ glib-2.24.2-new/gio/libasyncns/asyncns.c	2013-10-26 14:05:28.963432891 +0700
+diff -Nur glib-2.24.2-orig/gio/libasyncns/asyncns.c glib-2.24.2/gio/libasyncns/asyncns.c
+--- glib-2.24.2-orig/gio/libasyncns/asyncns.c	2010-04-08 11:10:50.000000000 +0500
++++ glib-2.24.2/gio/libasyncns/asyncns.c	2016-08-10 12:44:32.334867616 +0400
 @@ -595,6 +595,7 @@
                                         errno, h_errno);
          }
@@ -139,9 +172,9 @@ diff -Nur glib-2.24.2/gio/libasyncns/asyncns.c glib-2.24.2-new/gio/libasyncns/as
          case REQUEST_TERMINATE:
              /* Quit */
              return -1;
-diff -Nur glib-2.24.2/glib/gstrfuncs.c glib-2.24.2-new/glib/gstrfuncs.c
---- glib-2.24.2/glib/gstrfuncs.c	2010-08-08 21:47:15.000000000 +0700
-+++ glib-2.24.2-new/glib/gstrfuncs.c	2013-10-26 14:05:28.963432891 +0700
+diff -Nur glib-2.24.2-orig/glib/gstrfuncs.c glib-2.24.2/glib/gstrfuncs.c
+--- glib-2.24.2-orig/glib/gstrfuncs.c	2010-08-08 19:47:15.000000000 +0500
++++ glib-2.24.2/glib/gstrfuncs.c	2016-08-10 12:44:32.334867616 +0400
 @@ -428,8 +428,12 @@
  
    fail_pos = NULL;
@@ -168,9 +201,9 @@ diff -Nur glib-2.24.2/glib/gstrfuncs.c glib-2.24.2-new/glib/gstrfuncs.c
    decimal_point_len = strlen (decimal_point);
  
    g_assert (decimal_point_len != 0);
-diff -Nur glib-2.24.2/glib/gutils.c glib-2.24.2-new/glib/gutils.c
---- glib-2.24.2/glib/gutils.c	2010-08-08 21:47:15.000000000 +0700
-+++ glib-2.24.2-new/glib/gutils.c	2013-10-26 14:05:28.963432891 +0700
+diff -Nur glib-2.24.2-orig/glib/gutils.c glib-2.24.2/glib/gutils.c
+--- glib-2.24.2-orig/glib/gutils.c	2010-08-08 19:47:15.000000000 +0500
++++ glib-2.24.2/glib/gutils.c	2016-08-10 12:44:32.334867616 +0400
 @@ -1681,14 +1681,19 @@
      
      if (!pw)

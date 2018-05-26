@@ -1,0 +1,201 @@
+#!/system/bin/sh
+
+openbuild=false
+native=false
+executable=false
+run=false
+buildwindow=false
+runwindow=false
+dialogid=""
+
+while true; do
+
+    if [ "$1" = "--openbuild" ]; then
+	openbuild=$2
+	shift 2
+	continue
+    elif [ "$1" = "--native" ]; then
+	native=$2
+	shift 2
+	continue
+    elif [ "$1" = "--executable" ]; then
+	executable=$2
+	shift 2
+	continue
+    elif [ "$1" = "--run" ]; then
+	run=$2
+	shift 2
+	continue
+    elif [ "$1" = "--buildwindow" ]; then
+	buildwindow=$2
+	shift 2
+	continue
+    elif [ "$1" = "--runwindow" ]; then
+	runwindow=$2
+	shift 2
+	continue
+    elif [ "$1" = "--dialogid" ]; then
+	dialogid=$2
+	shift 2
+	continue
+    fi
+    
+    break
+
+done
+
+if [ "$PWD" = "/" -o "$PWD" = "" ]; then
+    cd $(dirname "$1")
+fi
+
+if [ "$openbuild" = true ]; then
+    if [ "$dialogid" = "" ]; then
+	dialogid="$1"
+    fi
+
+    am start $(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools/.CCToolsActivity \
+	--es type build \
+	--es cmdline "build-helper --native $native --executable $executable --run $run --buildwindow $buildwindow --runwindow $runwindow --dialogid $dialogid $@" \
+	--es workdir "$PWD" \
+	--es name "$dialogid" &>/dev/null
+	exit 0
+fi
+
+src=$1
+
+ext=${src/*.}
+
+out=${src/.*}
+
+unsupported_file() {
+    echo "Unsupported extension $1."
+    exit 1
+}
+
+check_utility() {
+    if which $1 >/dev/null 2>/dev/null; then
+	return
+    fi
+    
+    echo "$2 $1 is not installed on your system."
+    exit 1
+}
+
+run_exec() {
+    if [ "$runwindow" != true ]; then
+	exec run-helper $1
+    else
+	for m in ${CCTOOLSDIR} ${EXTERNAL_STORAGE}/CCTools; do
+	    if [ -e ${m}/share/modules/runargs.xml ]; then
+		am start $(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools/.CCToolsActivity \
+		    --es type module \
+		    --es path ${m}/share/modules/runargs.xml \
+		    --es workdir $PWD \
+		    --es dialogid $dialogid \
+		    --es file $1 &>/dev/null
+		exit 0
+	    fi
+	done
+
+	echo ":( Run with args module not found."
+
+	exit 1
+    fi
+}
+
+run_gnu_compiler() {
+    local compiler=$1
+    shift
+
+    check_utility $compiler "$compiler compiler"
+
+    local params="$@"
+
+    if [ "$native" = "true" ]; then
+	params="$params -I$CCTOOLSDIR/sources/native_app_glue"
+	if [ "$executable" = "true" -o "$run" = "true" ]; then
+	    out="lib${out}.so"
+	    params="$params ${CCTOOLSDIR}/sources/native_app_glue/android_native_app_glue.c -Wl,-soname,$out -shared -Wl,--no-undefined -Wl,-z,noexecstack -llog -landroid -lm"
+	fi
+    fi
+
+    if [ "$executable" = "true" ]; then
+	echo "$compiler $params -o $out"
+	$compiler $params -o $out
+    else
+	echo "$compiler -c $params"
+	$compiler -c $params
+    fi
+    
+    local ret="$?"
+
+    if [ "$ret" = "0" ]; then
+	echo ":)"
+	if [ "$run" = "true" ]; then
+	    run_exec $out
+	fi
+	exit 0
+    fi
+    echo ":("
+}
+
+run_makefile() {
+    check_utility make "make utility"
+
+    make -f $@
+}
+
+run_java() {
+    check_utility project-ctl "project-ctl utility"
+
+    project-ctl -b -r $out
+}
+
+if [ "$dialogid" = "" ]; then
+    dialogid=$out
+fi
+
+if [ "$buildwindow" = "true" ]; then
+    for m in ${CCTOOLSDIR} ${EXTERNAL_STORAGE}/CCTools; do
+	if [ -e ${m}/share/modules/compile.xml ]; then
+	    am start $(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools/.CCToolsActivity \
+		--es type module \
+		--es path ${m}/share/modules/compile.xml \
+		--es workdir $PWD \
+		--es dialogid $dialogid \
+		--es file $src &>/dev/null
+	    exit 0
+	fi
+    done
+
+    echo "Compilation module not found."
+
+    exit 1
+fi
+
+case $ext in
+c)
+    run_gnu_compiler gcc $@
+    ;;
+m)
+    run_gnu_compiler gcc $@ -lobjc
+    ;;
+cpp|c++|cc|cxx)
+    run_gnu_compiler g++ $@
+    ;;
+mm)
+    run_gnu_compiler g++ $@ -lobjc
+    ;;
+f*)
+    run_gnu_compiler f77 $@
+    ;;
+Makefile|makefile|mk|mak)
+    run_makefile $@
+    ;;
+java)
+    run_java $@
+    ;;
+*)
+    unsupported_file $ext $src
+    ;;
+esac

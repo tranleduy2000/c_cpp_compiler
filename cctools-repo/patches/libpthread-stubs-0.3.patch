@@ -1,0 +1,13 @@
+diff -Nur libpthread-stubs-0.3-orig/config.sub libpthread-stubs-0.3/config.sub
+--- libpthread-stubs-0.3-orig/config.sub	2009-08-20 14:55:46.000000000 +0700
++++ libpthread-stubs-0.3/config.sub	2014-12-22 22:56:53.347895266 +0600
+@@ -1314,6 +1314,9 @@
+ 	-mac*)
+ 		os=`echo $os | sed -e 's|mac|macos|'`
+ 		;;
++	-android*)
++		os=-linux
++		;;
+ 	-linux-dietlibc)
+ 		os=-linux-dietlibc
+ 		;;

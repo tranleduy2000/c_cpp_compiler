@@ -19,6 +19,10 @@ build_android_pre_233_libc_fix() {
 
     copysrc ${TOPDIR}/misc/Android-pre-2.3.3-libc-fix/cctools ${TMPINST_DIR}/${PKG}/cctools
 
+    find ${TMPINST_DIR}/${PKG}/cctools -name "*.bin" | while read f; do
+	mv $f ${f/\.bin}
+    done
+
     local filename="${PKG}_${PKG_VERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} $PKG_VERSION $PKG_ARCH "$PKG_DESC"
     cd ${TMPINST_DIR}/${PKG}

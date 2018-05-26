@@ -1,6 +1,40 @@
---- s/config.sub-orig	2011-08-27 03:18:38.000000000 +0700
-+++ s/config.sub	2012-11-20 20:54:26.990945149 +0700
-@@ -1304,6 +1304,9 @@
+diff -Nur htop-1.0.2-orig/config.guess htop-1.0.2/config.guess
+--- htop-1.0.2-orig/config.guess	2011-08-27 01:18:38.000000000 +0500
++++ htop-1.0.2/config.guess	2016-08-10 15:19:07.102020474 +0400
+@@ -848,6 +848,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux
++	exit ;;
+     arm*:Linux:*:*)
+ 	eval $set_cc_for_build
+ 	if echo __ARM_EABI__ | $CC_FOR_BUILD -E - 2>/dev/null \
+diff -Nur htop-1.0.2-orig/config.sub htop-1.0.2/config.sub
+--- htop-1.0.2-orig/config.sub	2011-08-27 01:18:38.000000000 +0500
++++ htop-1.0.2/config.sub	2016-08-10 15:21:40.486829644 +0400
+@@ -238,6 +238,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| am33_2.0 \
+@@ -316,6 +317,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \
+@@ -1304,6 +1306,9 @@
  	-linux*)
  		os=`echo $os | sed -e 's|linux|linux-gnu|'`
  		;;
@@ -10,8 +44,9 @@
  	-sunos5*)
  		os=`echo $os | sed -e 's|sunos5|solaris2|'`
  		;;
---- s/Process.c-orig	2012-11-20 21:09:09.186968774 +0700
-+++ s/Process.c	2012-11-20 21:15:02.746978242 +0700
+diff -Nur htop-1.0.2-orig/Process.c htop-1.0.2/Process.c
+--- htop-1.0.2-orig/Process.c	2012-10-20 05:44:44.000000000 +0400
++++ htop-1.0.2/Process.c	2016-08-10 14:51:19.877763314 +0400
 @@ -32,6 +32,11 @@
  #include <hwloc/linux.h>
  #endif

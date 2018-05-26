@@ -1,0 +1,20 @@
+diff -Nur apr-1.5.2-orig/Makefile.in apr-1.5.2/Makefile.in
+--- apr-1.5.2-orig/Makefile.in	2014-04-25 14:51:11.000000000 +0400
++++ apr-1.5.2/Makefile.in	2016-09-05 20:29:55.598662712 +0400
+@@ -129,13 +129,9 @@
+ etags:
+ 	etags `find . -name '*.[ch]'`
+ 
+-OBJECTS_gen_test_char = tools/gen_test_char.lo $(LOCAL_LIBS)
+-tools/gen_test_char.lo: tools/gen_test_char.c
+-	$(APR_MKDIR) tools
+-	$(LT_COMPILE)
+-
+-tools/gen_test_char@EXEEXT@: $(OBJECTS_gen_test_char)
+-	$(LINK_PROG) $(OBJECTS_gen_test_char) $(ALL_LIBS)
++#tools/gen_test_char@EXEEXT@:
++#	mkdir tools
++#	gcc tools/gen_test_char.c -o $@
+ 
+ include/private/apr_escape_test_char.h: tools/gen_test_char@EXEEXT@
+ 	$(APR_MKDIR) include/private

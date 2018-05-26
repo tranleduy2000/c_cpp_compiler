@@ -34,6 +34,8 @@
 #include <sys/termios.h>
 #endif
 
+#include <stdio.h>
+
 #include <netinet/tcp.h>
 
 #if defined(__APPLE__) || defined(__FreeBSD__) || \
@@ -81,7 +83,6 @@
 #include <netinet/ip.h>		/* IPOPT_LSRR, header stuff */
 #include <netdb.h>		/* hostent, gethostby*, getservby* */
 #include <arpa/inet.h>		/* inet_ntoa */
-#include <stdio.h>
 #include <string.h>		/* strcpy, strchr, yadda yadda */
 #include <errno.h>
 #include <signal.h>

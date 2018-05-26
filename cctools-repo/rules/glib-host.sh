@@ -5,9 +5,9 @@ build_glib_host() {
     PKG_DESC="GLib library of C routines"
     O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2
     S_DIR=$src_dir/${PKG}-${PKG_VERSION}
-    B_DIR=$build_dir/${PKG}-host
+    B_DIR=$build_dir/host-${PKG}
 
-    c_tag ${PKG}-host && return
+    c_tag $FUNCNAME && return
 
     banner "Build $PKG-host"
 
@@ -35,5 +35,5 @@ build_glib_host() {
     $MAKE install || error "make install"
 
     popd
-    s_tag ${PKG}-host
+    s_tag $FUNCNAME
 }

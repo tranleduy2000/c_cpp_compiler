@@ -22,12 +22,13 @@ build_binutils() {
     mkdir -p $B_DIR
     cd $B_DIR
 
+#    export ac_cv_func_strtod=no
     $S_DIR/configure \
 	--host=$TARGET_ARCH \
 	--prefix=$TARGET_DIR \
 	--target=$TARGET_ARCH \
 	--with-sysroot=$SYSROOT \
-	--enable-targets=arm-linux-androideabi,mipsel-linux-android,i686-linux-android \
+	--enable-targets=arm-linux-androideabi,mipsel-linux-android,i686-linux-android,aarch64-linux-android,mips64el-linux-android,x86_64-linux-android \
 	--enable-multilib \
 	--disable-nls \
 	--disable-static \
@@ -55,6 +56,7 @@ build_binutils() {
     local filename="${PKG}_${PKG_VERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} $PKG_VERSION $PKG_ARCH "$PKG_DESC" "" "binutils-compact"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 
     popd
@@ -90,5 +92,6 @@ build_binutils() {
     local filename="${PKG}_${PKG_VERSION}_${PKG_ARCH}.zip"
     build_package_desc ${TMPINST_DIR}/${PKG} $filename ${PKG} $PKG_VERSION $PKG_ARCH "$PKG_DESC" "" "binutils"
     cd ${TMPINST_DIR}/${PKG}
+    remove_rpath cctools
     rm -f ${REPO_DIR}/$filename; zip -r9y ${REPO_DIR}/$filename cctools pkgdesc
 }

@@ -1,0 +1,13 @@
+diff -Nur libXfont-1.4.5-orig/src/util/fontxlfd.c libXfont-1.4.5/src/util/fontxlfd.c
+--- libXfont-1.4.5-orig/src/util/fontxlfd.c	2011-11-12 11:15:22.000000000 +0700
++++ libXfont-1.4.5/src/util/fontxlfd.c	2014-12-23 03:12:33.332201568 +0600
+@@ -43,6 +43,9 @@
+ #if defined(sony) && !defined(SYSTYPE_SYSV) && !defined(_SYSTYPE_SYSV)
+ #define NO_LOCALE
+ #endif
++#ifdef __BIONIC__
++#define NO_LOCALE
++#endif
+ #ifndef NO_LOCALE
+ #include	<locale.h>
+ #endif

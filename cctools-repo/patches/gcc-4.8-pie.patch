@@ -1,0 +1,51 @@
+--- gcc-4.8/gcc/config/linux-android.h.gcc.original	2014-06-30 16:18:00.882166810 +0400
++++ gcc-4.8/gcc/config/linux-android.h	2014-06-30 16:21:51.848981087 +0400
+@@ -38,10 +38,15 @@
+   "%{" NOANDROID "|tno-android-ld:" LINUX_SPEC ";:" ANDROID_SPEC "}"
+ 
+ #define ANDROID_LINK_SPEC \
++  "%{!nopie: %{!static: %{!A: %{!shared: %{!nostdlib: %{!nostartfiles:	\
++     %{!fno-PIE: %{!fno-pie: -pie} } } } } } } } %{pie: -pie} "		\
+   "%{shared: -Bsymbolic} -z noexecstack -z relro -z now"
+ 
+ #define ANDROID_CC1_SPEC(ANDROID_PIC_DEFAULT)				\
+   "%{!mglibc:%{!muclibc:%{!mbionic: -mbionic}}} "			\
++  "%{!D__KERNEL__: %{!static: %{!fno-PIC: %{!fno-pic: %{!shared:	\
++     %{!nostdlib: %{!nostartfiles: %{!fno-PIE: %{!fno-pie: %{!nopie:	\
++     %{!fPIC: %{!fpic:-fPIE} } } } } } } } } } } } "			\
+   "%{!fno-pic:%{!fno-PIC:%{!fpic:%{!fPIC: " ANDROID_PIC_DEFAULT "}}}}"
+ 
+ #define ANDROID_CC1PLUS_SPEC						\
+--- gcc-4.8/gcc/common.opt.gcc.original	2014-06-30 21:51:25.265515546 +0400
++++ gcc-4.8/gcc/common.opt	2014-06-30 22:14:55.862455642 +0400
+@@ -293,6 +293,9 @@
+ -no-warnings
+ Common Alias(w)
+ 
++-nopie
++Driver Alias(nopie)
++
+ -optimize
+ Common Alias(O)
+ 
+@@ -2570,6 +2573,10 @@
+ symbolic
+ Driver
+ 
++nopie
++Driver RejectNegative Negative(shared)
++Disable a position independent executable
++
+ pie
+ Driver RejectNegative Negative(shared)
+ Create a position independent executable
+--- gcc-4.8/gcc/gcc.c.gcc.original	2014-06-30 22:07:23.401338234 +0400
++++ gcc-4.8/gcc/gcc.c	2014-06-30 22:08:50.503862980 +0400
+@@ -3099,6 +3099,7 @@
+   fputs (_("  -S                       Compile only; do not assemble or link\n"), stdout);
+   fputs (_("  -c                       Compile and assemble, but do not link\n"), stdout);
+   fputs (_("  -o <file>                Place the output into <file>\n"), stdout);
++  fputs (_("  -nopie                   Disable a position independent executable\n"), stdout);
+   fputs (_("  -pie                     Create a position independent executable\n"), stdout);
+   fputs (_("  -shared                  Create a shared library\n"), stdout);
+   fputs (_("\

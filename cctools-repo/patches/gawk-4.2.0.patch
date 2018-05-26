@@ -1,0 +1,22 @@
+--- gawk-4.2.0/awklib/eg/lib/pwcat.c
++++ gawk-4.2.0-bionic/awklib/eg/lib/pwcat.c
+@@ -25,6 +25,7 @@
+ {
+     struct passwd *p;
+ 
++#ifndef __BIONIC__
+     while ((p = getpwent()) != NULL)
+ #ifdef HAVE_STRUCT_PASSWD_PW_PASSWD
+         printf("%s:%s:%ld:%ld:%s:%s:%s\n",
+@@ -37,5 +38,11 @@
+ #endif
+ 
+     endpwent();
++
+     return 0;
++#else
++
++    return -1;
++
++#endif
+ }
