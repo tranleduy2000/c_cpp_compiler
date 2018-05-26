@@ -6770,7 +6770,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     private void init() {
-        if(isInEditMode()){
+        if (isInEditMode()) {
             return;
         }
 
@@ -6849,6 +6849,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private void updateLayoutContext() {
         if (layoutContext.getGutterForegroundPaint() != null) {
             layoutContext.getGutterForegroundPaint().setTextSize(getTextSize() * LayoutContext.LINE_NUMBER_FACTOR);
+            updateGutterSize();
         }
     }
 
@@ -6865,28 +6866,25 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      * Calculate padding line number padding
      */
     public void setLineNumber(int lineNumber) {
-        if (layoutContext.getLineNumber() == lineNumber) {
-            return;
-        }
-        layoutContext.setLineNumber(lineNumber);
-
         if (!layoutContext.preferences.isShowLineNumber()) {
             //invalidate
             setPaddingRelative(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
             return;
         }
+        layoutContext.setLineNumber(lineNumber);
+        updateGutterSize();
+    }
 
+    private void updateGutterSize() {
         int numberPadding = SysUtils.dpToPixels(getContext(), 2);
-        int gutterPaddingRight = SysUtils.dpToPixels(getContext(), 2);
 
         float textWidth = layoutContext.getGutterForegroundPaint().measureText(" ");
-        double columnCount = Math.ceil(Math.log10(lineNumber)) + 2;
-        columnCount = Math.max(1, columnCount);
+        double columnCount = Math.ceil(Math.log10(layoutContext.getLineNumber())) + 2;
+        layoutContext.setGutterWidth(((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/);
+        layoutContext.setLineNumberX(numberPadding);
 
-        layoutContext.gutterWidth = ((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/;
-        layoutContext.lineNumberX = numberPadding;
-
-        int newPaddingLeft = layoutContext.gutterWidth + gutterPaddingRight;
+        int gutterPaddingRight = SysUtils.dpToPixels(getContext(), 2);
+        int newPaddingLeft = layoutContext.getGutterWidth() + gutterPaddingRight;
         if (getPaddingLeft() != newPaddingLeft) {
             setPaddingRelative(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
         }

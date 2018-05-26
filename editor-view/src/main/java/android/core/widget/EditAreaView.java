@@ -143,6 +143,11 @@ public class EditAreaView extends BaseEditorView {
     private FlingRunnable mFlingRunnable;
     private KeyListener keyListener;
 
+    /**
+     * When user zoom in/zoom out, disable long click event
+     */
+    private boolean isTextScaling = false;
+
     public EditAreaView(Context context) {
         this(context, null);
     }
@@ -211,7 +216,6 @@ public class EditAreaView extends BaseEditorView {
             mFastScroller.onSizeChanged(w, h, oldw, oldh);
         }
     }
-
 
     public void setReadOnly(boolean readOnly) {
         if (readOnly) {
@@ -360,7 +364,6 @@ public class EditAreaView extends BaseEditorView {
     public int realLineToVirtualLine(int realLine) {
         return getLayout().realLineToVirtualLine(realLine);
     }
-
 
     /**
      * Move cursor to realLine: column
@@ -768,6 +771,13 @@ public class EditAreaView extends BaseEditorView {
         return true;
     }
 
+    @Override
+    public boolean performLongClick() {
+        if (isTextScaling) {
+            return true;
+        }
+        return super.performLongClick();
+    }
 
     public static interface OnEditorSizeChangedListener {
         void onEditorSizeChanged(int w, int h, int oldw, int oldh);
@@ -784,11 +794,24 @@ public class EditAreaView extends BaseEditorView {
         }
 
         @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            isTextScaling = true;
+            return super.onScaleBegin(detector);
+        }
+
+        @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float size = getTextSize() * detector.getScaleFactor();
             size = Math.max(minSize, Math.min(size, maxSize * 2));
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+
             return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            super.onScaleEnd(detector);
+            isTextScaling = false;
         }
     }
 }
