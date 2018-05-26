@@ -107,7 +107,7 @@ public class ThemeActivity extends ThemeSupportActivity
     public void onEditorThemeSelected(EditorTheme theme) {
         if (Premium.isPremiumUser(this)) {
             mPreferences.setEditorTheme(theme.getFileName());
-            String text = getString(R.string.selected_theme, theme.getName());
+            String text = getString(R.string.selected_editor_theme, theme.getName());
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
         } else {
             PremiumDialog premiumDialog = new PremiumDialog(this, mInAppPurchaseHelper);
@@ -119,7 +119,7 @@ public class ThemeActivity extends ThemeSupportActivity
     public void onTerminalThemeSelected(String name, int index) {
         if (Premium.isPremiumUser(this)) {
             mPreferences.setTerminalTheme(index);
-            String text = getString(R.string.selected_theme, name);
+            String text = getString(R.string.selected_editor_theme, name);
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
         } else {
             PremiumDialog premiumDialog = new PremiumDialog(this, mInAppPurchaseHelper);

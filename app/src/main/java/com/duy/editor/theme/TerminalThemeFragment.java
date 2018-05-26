@@ -2,7 +2,6 @@ package com.duy.editor.theme;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -40,26 +39,24 @@ public class TerminalThemeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPreferences = Preferences.getInstance(getContext());
+
+        mAdapter = new TerminalThemeAdapter(getContext());
+        mAdapter.setOnThemeSelectListener((TerminalThemeAdapter.OnThemeSelectListener) getActivity());
+
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        mAdapter = new TerminalThemeAdapter(getContext());
-        mAdapter.setOnThemeSelectListener((TerminalThemeAdapter.OnThemeSelectListener) getActivity());
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
     public static class TerminalThemeAdapter extends RecyclerView.Adapter<TerminalThemeAdapter.ViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
         private final String[] mThemes;
         private OnThemeSelectListener onThemeSelectListener;
-        private TermSettings mTermSettings;
         private Context mContext;
 
         public TerminalThemeAdapter(Context context) {
             mContext = context;
             mThemes = context.getResources().getStringArray(R.array.entries_emulator_color_preference);
-            mTermSettings = new TermSettings(context.getResources(),
-                    PreferenceManager.getDefaultSharedPreferences(context));
         }
 
         @NonNull
@@ -73,7 +70,7 @@ public class TerminalThemeFragment extends Fragment {
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             EmulatorView termView = holder.mTermView;
             TermSession session = new TermSession();
-            session.setTermIn(new StringBufferInputStream(mThemes[position]));
+            session.setTermIn(new StringBufferInputStream(makeTitle(position, mThemes[position])));
             termView.attachSession(session);
             termView.setDensity(mContext.getResources().getDisplayMetrics());
             termView.setTextSize(16);
@@ -119,6 +116,7 @@ public class TerminalThemeFragment extends Fragment {
 
             ViewHolder(View itemView) {
                 super(itemView);
+                setIsRecyclable(false);
                 mTermView = itemView.findViewById(R.id.term_view);
                 mBtnSelect = itemView.findViewById(R.id.btn_select);
             }
