@@ -62,7 +62,7 @@ public class EditorToolbar extends Toolbar {
         Resources.Theme theme = context.getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
         TypedArray arr = context.obtainStyledAttributes(typedValue.data, new int[]{
-                android.R.attr.textColorSecondary});
+                android.R.attr.textColorPrimary});
         int textColor = arr.getColor(0, Color.WHITE);
         arr.recycle();
 
