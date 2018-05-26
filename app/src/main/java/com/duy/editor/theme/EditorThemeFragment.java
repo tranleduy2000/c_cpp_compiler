@@ -121,7 +121,7 @@ public class EditorThemeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (onThemeSelectListener != null) {
-                        onThemeSelectListener.onThemeSelected(editorTheme);
+                        onThemeSelectListener.onEditorThemeSelected(editorTheme);
                     }
                 }
             });
@@ -182,7 +182,7 @@ public class EditorThemeFragment extends Fragment {
         }
 
         public interface OnThemeSelectListener {
-            void onThemeSelected(EditorTheme theme);
+            void onEditorThemeSelected(EditorTheme theme);
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {

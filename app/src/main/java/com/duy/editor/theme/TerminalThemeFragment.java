@@ -2,6 +2,7 @@ package com.duy.editor.theme;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,16 +12,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.Preferences;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+
+import java.io.StringBufferInputStream;
 
 import jackpal.androidterm.TermSettings;
 import jackpal.androidterm.emulatorview.ColorScheme;
 import jackpal.androidterm.emulatorview.EmulatorView;
+import jackpal.androidterm.emulatorview.TermSession;
 
 public class TerminalThemeFragment extends Fragment {
     private RecyclerView mRecyclerView;
@@ -49,12 +51,15 @@ public class TerminalThemeFragment extends Fragment {
 
     public static class TerminalThemeAdapter extends RecyclerView.Adapter<TerminalThemeAdapter.ViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
         private final String[] mThemes;
-        private Context mContext;
         private OnThemeSelectListener onThemeSelectListener;
+        private TermSettings mTermSettings;
+        private Context mContext;
 
         public TerminalThemeAdapter(Context context) {
             mContext = context;
             mThemes = context.getResources().getStringArray(R.array.entries_emulator_color_preference);
+            mTermSettings = new TermSettings(context.getResources(),
+                    PreferenceManager.getDefaultSharedPreferences(context));
         }
 
         @NonNull
@@ -65,15 +70,27 @@ public class TerminalThemeFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            final String title = mThemes[position];
-            holder.mTxtName.setText(title);
+        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             EmulatorView termView = holder.mTermView;
+            TermSession session = new TermSession();
+            session.setTermIn(new StringBufferInputStream(mThemes[position]));
+            termView.attachSession(session);
+            termView.setDensity(mContext.getResources().getDisplayMetrics());
+            termView.setTextSize(16);
             termView.setColorScheme(new ColorScheme(TermSettings.COLOR_SCHEMES[position]));
+
+            holder.mBtnSelect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onThemeSelectListener != null){
+                        onThemeSelectListener.onTerminalThemeSelected(mThemes[position],position);
+                    }
+                }
+            });
         }
 
-        private String makeTitle(int position, EditorTheme editorTheme) {
-            return (position + 1) + ". " + editorTheme.getName();
+        private String makeTitle(int position, String name) {
+            return (position + 1) + ". " + name;
         }
 
         @Override
@@ -93,18 +110,16 @@ public class TerminalThemeFragment extends Fragment {
         }
 
         public interface OnThemeSelectListener {
-            void onThemeSelected(EditorTheme theme);
+            void onTerminalThemeSelected(String mTheme, int index);
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
             View mBtnSelect;
             EmulatorView mTermView;
-            TextView mTxtName;
 
-            public ViewHolder(View itemView) {
+            ViewHolder(View itemView) {
                 super(itemView);
                 mTermView = itemView.findViewById(R.id.term_view);
-                mTxtName = itemView.findViewById(R.id.txt_name);
                 mBtnSelect = itemView.findViewById(R.id.btn_select);
             }
         }

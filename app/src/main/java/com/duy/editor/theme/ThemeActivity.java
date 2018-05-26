@@ -104,7 +104,7 @@ public class ThemeActivity extends ThemeSupportActivity
     }
 
     @Override
-    public void onThemeSelected(EditorTheme theme) {
+    public void onEditorThemeSelected(EditorTheme theme) {
         if (Premium.isPremiumUser(this)) {
             mPreferences.setEditorTheme(theme.getFileName());
             String text = getString(R.string.selected_theme, theme.getName());
@@ -115,4 +115,15 @@ public class ThemeActivity extends ThemeSupportActivity
         }
     }
 
+    @Override
+    public void onTerminalThemeSelected(String name, int index) {
+        if (Premium.isPremiumUser(this)) {
+            mPreferences.setTerminalTheme(index);
+            String text = getString(R.string.selected_theme, name);
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        } else {
+            PremiumDialog premiumDialog = new PremiumDialog(this, mInAppPurchaseHelper);
+            premiumDialog.show();
+        }
+    }
 }

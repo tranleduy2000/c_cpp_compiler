@@ -87,7 +87,6 @@ public class ShellTermSession extends TermSession {
             }
         };
         mWatcherThread.setName("Process watcher");
-
     }
 
     public void updatePrefs(TermSettings settings) {
