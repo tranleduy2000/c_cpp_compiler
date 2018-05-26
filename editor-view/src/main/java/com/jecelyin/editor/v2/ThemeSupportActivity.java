@@ -74,10 +74,7 @@ public abstract class ThemeSupportActivity extends AppCompatActivity implements 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int theme = Preferences.getInstance(this).getTheme();
-        if (theme != 0) {
-            setTheme(Preferences.THEMES[theme]);
-        }
+        setTheme(Preferences.getInstance(this).getAppTheme());
         setFullScreenMode(isFullScreenMode());
     }
 

@@ -46,7 +46,6 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
         mRecyclerView.scrollToPosition(findThemeIndex(mPreferences.getEditorTheme()));
 
         boolean useLightTheme = mPreferences.isUseLightTheme();
-
         mSpinner = findViewById(R.id.spinner_themes);
         mSpinner.setSelection(useLightTheme ? 0 : 1);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -76,7 +75,7 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
 
     private void useLightTheme(boolean useLightTheme) {
         if (mPreferences.isUseLightTheme() != useLightTheme) {
-            mPreferences.setTheme(useLightTheme ? 0 : 1);
+            mPreferences.setAppTheme(useLightTheme ? 0 : 1);
             recreate();
         }
     }

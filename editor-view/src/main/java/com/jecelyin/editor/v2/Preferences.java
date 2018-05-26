@@ -23,7 +23,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.support.annotation.StyleableRes;
+import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
 import com.duy.ide.editor.editor.R;
@@ -45,31 +45,18 @@ import java.util.WeakHashMap;
 public class Preferences implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String KEY_FONT_SIZE = "pref_font_size";
     public static final String KEY_CURSOR_WIDTH = "pref_cursor_width";
-    public static final String KEY_TOUCH_TO_ADJUST_TEXT_SIZE = "pref_touch_to_adjust_text_size";
     public static final String KEY_WORD_WRAP = "pref_word_wrap";
     public static final String KEY_SHOW_LINE_NUMBER = "pref_show_linenumber";
     public static final String KEY_SHOW_WHITESPACE = "pref_show_whitespace";
     public static final String KEY_AUTO_INDENT = "pref_auto_indent";
-    public static final String KEY_INSERT_SPACE_FOR_TAB = "pref_insert_space_for_tab";
     public static final String KEY_TAB_SIZE = "pref_tab_size";
     public static final String KEY_SYMBOL = "pref_symbol";
     public static final String KEY_AUTO_CAPITALIZE = "pref_auto_capitalize";
-    public static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
-    public static final String KEY_REMEMBER_LAST_OPENED_FILES = "pref_remember_last_opened_files";
     public static final String KEY_SCREEN_ORIENTATION = "pref_screen_orientation";
     public static final String KEY_KEEP_SCREEN_ON = "pref_keep_screen_on";
-    public static final String KEY_TOOLBAR_ICONS = "pref_toolbar_icons";
-    public static final String KEY_PREF_AUTO_CHECK_UPDATES = "pref_auto_check_updates";
-    public static final String KEY_LAST_OPEN_PATH = "last_open_path";
     public static final String KEY_READ_ONLY = "readonly_mode";
-    public static final String KEY_SHOW_HIDDEN_FILES = "show_hidden_files";
-    public static final String KEY_FILE_SORT_TYPE = "show_file_sort";
-    public static final String KEY_FULL_SCREEN = "fullscreen_mode";
-    public static final String KEY_LAST_TAB = "last_tab";
-
     public static final int DEF_MIN_FONT_SIZE = 9;
     public static final int DEF_MAX_FONT_SIZE = 32;
-
     public static final int SCREEN_ORIENTATION_AUTO = 0;
     public static final int SCREEN_ORIENTATION_LANDSCAPE = 1;
     public static final int SCREEN_ORIENTATION_PORTRAIT = 2;
@@ -77,8 +64,18 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             , ",", ";", "'", "\"", "(", ")", "/", "\\", "%", "[", "]", "|", "#", "=", "$", ":"
             , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n"});
 
-    public static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
-
+    private static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
+    private static final String KEY_TOUCH_TO_ADJUST_TEXT_SIZE = "pref_touch_to_adjust_text_size";
+    private static final String KEY_INSERT_SPACE_FOR_TAB = "pref_insert_space_for_tab";
+    private static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
+    private static final String KEY_REMEMBER_LAST_OPENED_FILES = "pref_remember_last_opened_files";
+    private static final String KEY_TOOLBAR_ICONS = "pref_toolbar_icons";
+    private static final String KEY_PREF_AUTO_CHECK_UPDATES = "pref_auto_check_updates";
+    private static final String KEY_LAST_OPEN_PATH = "last_open_path";
+    private static final String KEY_SHOW_HIDDEN_FILES = "show_hidden_files";
+    private static final String KEY_FILE_SORT_TYPE = "show_file_sort";
+    private static final String KEY_FULL_SCREEN = "fullscreen_mode";
+    private static final String KEY_LAST_TAB = "last_tab";
     private static final Object mContent = new Object();
     private static Preferences instance;
 
@@ -212,16 +209,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         return (boolean) map.get(KEY_SHOW_WHITESPACE);
     }
 
-    public int getTheme() {
-        return getInt(context.getString(R.string.pref_app_theme), 0);
-    }
-
-    /**
-     * theme index of {@link #THEMES}
-     */
-    public void setTheme(int theme) {
-        preferences.edit().putInt(context.getString(R.string.pref_app_theme), theme).apply();
-    }
 
     public int getHighlightSizeLimit() {
         return 1024 * (int) map.get(KEY_HIGHLIGHT_FILE_SIZE_LIMIT);
@@ -332,7 +319,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
 
     public boolean isOpenLastFiles() {
-        return (boolean) map.get(KEY_REMEMBER_LAST_OPENED_FILES);
+        return getBoolean(context.getString(R.string.pref_remember_last_opened_files), true);
     }
 
     public int getTabSize() {
@@ -408,7 +395,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         preferences.edit().putString(context.getString(R.string.pref_theme_editor_theme), fileName).apply();
     }
 
-    @StyleableRes
+    @StyleRes
     public int getAppTheme() {
         int index = getInt(context.getString(R.string.pref_app_theme), 0);
         return THEMES[index];
@@ -423,7 +410,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public boolean isUseLightTheme() {
-        return getTheme() == 0;
+        return getAppTheme() == THEMES[0];
     }
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})

@@ -5,4 +5,19 @@
     <string name="pref_app_theme" translatable="false">pref_current_theme</string>
     <string name="pref_terminal_theme" translatable="false">pref_terminal_theme</string>
     <string name="pref_theme_editor_theme" translatable="false">pref_key_editor_theme</string>
+    <string name="pref_tab_size" translatable="false">pref_tab_size</string>
+    <string name="pref_insert_space_for_tab" translatable="false">pref_insert_space_for_tab</string>
+    <string name="pref_auto_indent" translatable="false">pref_auto_indent</string>
+    <string name="pref_show_whitespace" translatable="false">pref_show_whitespace</string>
+    <string name="pref_show_linenumber" translatable="false">pref_show_linenumber</string>
+    <string name="pref_word_wrap" translatable="false">pref_word_wrap</string>
+    <string name="pref_touch_to_adjust_text_size" translatable="false">pref_touch_to_adjust_text_size</string>
+    <string name="pref_cursor_width" translatable="false">pref_cursor_width</string>
+    <string name="pref_font_size" translatable="false">pref_font_size</string>
+    <string name="pref_auto_capitalize" translatable="false">pref_auto_capitalize</string>
+    <string name="pref_symbol" translatable="false">pref_symbol</string>
+    <string name="pref_highlight_file_size_limit" translatable="false">pref_highlight_file_size_limit</string>
+    <string name="pref_remember_last_opened_files" translatable="false">pref_remember_last_opened_files</string>
+    <string name="pref_keep_screen_on" translatable="false">pref_keep_screen_on</string>
+    <string name="pref_screen_orientation" translatable="false">pref_screen_orientation</string>
 </resources>
