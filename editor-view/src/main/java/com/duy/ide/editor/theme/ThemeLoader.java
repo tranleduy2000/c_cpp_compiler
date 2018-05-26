@@ -2,10 +2,8 @@ package com.duy.ide.editor.theme;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 
 import com.duy.ide.editor.theme.model.EditorTheme;
-import com.jecelyin.common.utils.DLog;
 
 import org.apache.commons.io.IOUtils;
 
@@ -14,13 +12,12 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 public class ThemeLoader {
-    private static final String TAG = "ThemeLoader";
-    private static final HashMap<String, EditorTheme> CACHED = new HashMap<>();
     private static final String ASSET_PATH = "themes/vscode";
+    private static final String DEFAULT_EDITOR_THEME_LIGHT = "absent-light.json.properties";
+    private static final HashMap<String, EditorTheme> CACHED = new HashMap<>();
 
     public static void init(Context context) {
         try {
@@ -33,42 +30,49 @@ public class ThemeLoader {
         }
     }
 
-    public static EditorTheme getTheme(Context context, String name) {
-        loadTheme(context, name);
-        return CACHED.get(name);
+    public static EditorTheme getTheme(Context context, String fileName) {
+        return loadTheme(context, fileName);
     }
 
-    public static ArrayList<EditorTheme> getAll() {
+    public static ArrayList<EditorTheme> getAll(Context context) {
         ArrayList<EditorTheme> themes = new ArrayList<>();
-        for (Map.Entry<String, EditorTheme> entry : CACHED.entrySet()) {
-            themes.add(entry.getValue());
+        try {
+            String[] names = context.getAssets().list(ASSET_PATH);
+            for (String name : names) {
+                EditorTheme theme = loadTheme(context, name);
+                themes.add(theme);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return themes;
     }
 
     public static EditorTheme loadDefault(Context context) {
-        AssetManager assets = context.getAssets();
-        return loadFromAsset(assets, "themes/vscode/absent.json.properties");
+        return loadTheme(context, DEFAULT_EDITOR_THEME_LIGHT);
     }
 
-    private static void loadTheme(Context context, String theme) {
-        if (CACHED.get(theme) != null) {
-            return;
+    private static EditorTheme loadTheme(Context context, String fileName) {
+        if (CACHED.get(fileName) != null) {
+            return CACHED.get(fileName);
         }
-        EditorTheme editorTheme = loadFromAsset(context.getAssets(), ASSET_PATH + "/" + theme);
-        CACHED.put(theme, editorTheme);
+        EditorTheme editorTheme = loadFromAsset(context.getAssets(), fileName);
+        CACHED.put(fileName, editorTheme);
+        return editorTheme;
     }
 
-    private static EditorTheme loadFromAsset(AssetManager assets, String propFile) {
+    private static EditorTheme loadFromAsset(AssetManager assets, String fileName) {
         try {
-            InputStream input = assets.open(propFile);
+            InputStream input = assets.open(ASSET_PATH + "/" + fileName);
             String content = IOUtils.toString(input);
             input.close();
 
             Properties properties = new Properties();
             properties.load(new StringReader(content));
 
-            return loadTheme(properties);
+            EditorTheme editorTheme = loadTheme(properties);
+            editorTheme.setFileName(fileName);
+            return editorTheme;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,20 +80,11 @@ public class ThemeLoader {
         return null;
     }
 
+
     private static EditorTheme loadTheme(Properties properties) {
         EditorTheme editorTheme = new EditorTheme();
         editorTheme.load(properties);
         return editorTheme;
-    }
-
-    private static int getColor(Properties properties, ThemeAttr attr, int defaultValue) {
-        try {
-            String str = properties.getProperty(attr.getKey());
-            return Color.parseColor(str);
-        } catch (Exception e) {
-            if (DLog.DEBUG) DLog.e(TAG, "getColor: ", e);
-            return defaultValue;
-        }
     }
 
 }

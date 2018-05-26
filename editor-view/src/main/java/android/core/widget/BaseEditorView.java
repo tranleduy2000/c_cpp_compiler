@@ -6788,7 +6788,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         setLineNumber(1);
         onTextSizeChanged();
-        setTheme(ThemeLoader.loadDefault(getContext()));
+        setTheme(preferences.getEditorTheme());
 
         onSharedPreferenceChanged(null, Preferences.KEY_FONT_SIZE);
         onSharedPreferenceChanged(null, Preferences.KEY_CURSOR_WIDTH);

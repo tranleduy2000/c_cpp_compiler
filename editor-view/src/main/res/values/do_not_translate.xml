@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_key_fullscreen" translatable="false">fullscreen_mode</string>
+    <string name="pref_key_fullscreen" translatable="false">pref_key_fullscreen</string>
     <string name="pref_auto_save" translatable="false">pref_auto_save</string>
-    <string name="pref_current_theme" translatable="false">pref_current_theme</string>
-    <string name="pref_theme_editor_theme">pref_key_editor_theme</string>
+    <string name="pref_app_theme" translatable="false">pref_current_theme</string>
+    <string name="pref_terminal_theme" translatable="false">pref_terminal_theme</string>
+    <string name="pref_theme_editor_theme" translatable="false">pref_key_editor_theme</string>
 </resources>

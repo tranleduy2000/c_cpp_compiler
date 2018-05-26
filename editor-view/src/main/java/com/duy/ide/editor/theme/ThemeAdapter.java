@@ -33,7 +33,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     public ThemeAdapter(Context context) {
         mContext = context;
         ThemeLoader.init(context);
-        mEditorThemes = ThemeLoader.getAll();
+        mEditorThemes = ThemeLoader.getAll(context);
         Collections.sort(mEditorThemes, new Comparator<EditorTheme>() {
             @Override
             public int compare(EditorTheme o1, EditorTheme o2) {
@@ -88,17 +88,6 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         StringBuilder builder = new StringBuilder(String.valueOf(position + 1));
         builder.append(". ");
         builder.append(editorTheme.getName());
-        for (int i = 0; i < builder.length(); i++) {
-            if (builder.charAt(i) == ' ' && i + 1 < builder.length()) {
-                builder.setCharAt(i + 1, Character.toUpperCase(builder.charAt(i + 1)));
-            }
-        }
-        return builder.toString();
-    }
-
-    private String refine(String name) {
-        StringBuilder builder = new StringBuilder(name);
-        builder.insert(9, " ");
         for (int i = 0; i < builder.length(); i++) {
             if (builder.charAt(i) == ' ' && i + 1 < builder.length()) {
                 builder.setCharAt(i + 1, Character.toUpperCase(builder.charAt(i + 1)));

@@ -126,7 +126,7 @@ public abstract class ThemeSupportActivity extends AppCompatActivity implements 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_key_fullscreen))) {
             setFullScreenMode(isFullScreenMode());
-        } else if (key.equals(getString(R.string.pref_current_theme))) {
+        } else if (key.equals(getString(R.string.pref_app_theme))) {
             if (DLog.DEBUG) DLog.d(TAG, "onSharedPreferenceChanged: change theme");
         }
     }

@@ -15,6 +15,11 @@ public class EditorTheme extends ColorScheme {
     private WhiteSpaceStyle whiteSpaceStyle = new WhiteSpaceStyle();
     private SyntaxStyle[] syntaxStyles;
 
+    /**
+     * File name in assets
+     */
+    private String fileName;
+
     private String name;
 
     public SyntaxStyle[] getSyntaxStyles() {
@@ -89,6 +94,14 @@ public class EditorTheme extends ColorScheme {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public enum ThemeAttr {

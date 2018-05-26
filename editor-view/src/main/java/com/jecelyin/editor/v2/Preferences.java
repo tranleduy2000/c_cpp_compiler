@@ -21,9 +21,14 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
+import android.support.annotation.StyleableRes;
 import android.text.TextUtils;
 
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.theme.ThemeLoader;
+import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 import com.jecelyin.common.utils.SysUtils;
@@ -72,10 +77,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             , ",", ";", "'", "\"", "(", ")", "/", "\\", "%", "[", "]", "|", "#", "=", "$", ":"
             , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n"});
 
-    public static final int[] THEMES = new int[]{
-            R.style.LightTheme,
-            R.style.DarkTheme
-    };
+    public static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
 
     private static final Object mContent = new Object();
     private static Preferences instance;
@@ -211,14 +213,14 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public int getTheme() {
-        return getInt(context.getString(R.string.pref_current_theme), 0);
+        return getInt(context.getString(R.string.pref_app_theme), 0);
     }
 
     /**
      * theme index of {@link #THEMES}
      */
     public void setTheme(int theme) {
-        preferences.edit().putInt(context.getString(R.string.pref_current_theme), theme).apply();
+        preferences.edit().putInt(context.getString(R.string.pref_app_theme), theme).apply();
     }
 
     public int getHighlightSizeLimit() {
@@ -243,6 +245,14 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             return preferences.getInt(key, def);
         } catch (ClassCastException e) {
             return Integer.parseInt(preferences.getString(key, String.valueOf(def)));
+        }
+    }
+
+    private String getString(String key, String def) {
+        try {
+            return preferences.getString(key, def);
+        } catch (ClassCastException e) {
+            return def;
         }
     }
 
@@ -381,12 +391,39 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_LAST_TAB, index);
     }
 
-    public boolean isUseLightTheme() {
-        return getTheme() == 0;
+    /**
+     * Theme and fonts
+     */
+    @NonNull
+    public EditorTheme getEditorTheme() {
+        String fileName = getString(context.getString(R.string.pref_theme_editor_theme), "");
+        EditorTheme theme = ThemeLoader.getTheme(context, fileName);
+        if (theme != null) {
+            return theme;
+        }
+        return ThemeLoader.loadDefault(context);
     }
 
-    public void setEditorTheme(String name) {
-        preferences.edit().putString(context.getString(R.string.pref_theme_editor_theme), name).apply();
+    public void setEditorTheme(String fileName) {
+        preferences.edit().putString(context.getString(R.string.pref_theme_editor_theme), fileName).apply();
+    }
+
+    @StyleableRes
+    public int getAppTheme() {
+        int index = getInt(context.getString(R.string.pref_app_theme), 0);
+        return THEMES[index];
+    }
+
+    public void setAppTheme(@IntRange(from = 0, to = 1) int index) {
+        preferences.edit().putInt(context.getString(R.string.pref_app_theme), index).apply();
+    }
+
+    public void setTerminalTheme(int index) {
+        preferences.edit().putInt(context.getString(R.string.pref_terminal_theme), index).apply();
+    }
+
+    public boolean isUseLightTheme() {
+        return getTheme() == 0;
     }
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})

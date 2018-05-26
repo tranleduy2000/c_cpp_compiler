@@ -89,7 +89,7 @@ public class EditorThemeActivity extends ThemeSupportActivity implements ThemeAd
     @Override
     public void onThemeSelected(EditorTheme theme) {
         if (Premium.isPremiumUser(this)) {
-            mPreferences.setEditorTheme(theme.getName());
+            mPreferences.setEditorTheme(theme.getFileName());
             String text = getString(R.string.selected_theme, theme.getName());
             Snackbar.make(mRecyclerView, text, Snackbar.LENGTH_SHORT).show();
         } else {

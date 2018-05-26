@@ -27,10 +27,11 @@
     <string name="title_premium_version">Premium version</string>
     <string name="button_purchase">Purchase 1$</string>
     <string name="message_premium">This app is free and no ads, it open source so you can build easily.
-        To support developer, you can buy premium version with 1$. With premium version, you can access some locked features: \n
+        To support developer, you can buy premium version with 1$. Some locked features: \n
         1. Dark theme\n
         2. Editor color schemes\n
         3. Change editor fonts
+        4. Terminal theme
     </string>
 
     <string name="button_purchase_restore">Restore</string>
