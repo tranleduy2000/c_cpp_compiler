@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -113,19 +114,22 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_editor_color_scheme, 0, R.string.editor_theme)
                 .setIcon(R.drawable.ic_color_lens_white_24dp);
 
-        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
+        SubMenu codeMenu = menu.addSubMenu(R.string.code);
+        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
-        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
+        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
-        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
+        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
                 .setIcon(R.drawable.ic_terminal_black);
         if (BuildConfig.DEBUG) {
-            menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
+            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
                     .setIcon(R.drawable.baseline_extension_24);
         }
-        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_term_preferences, 0, R.string.title_term_preferences)
+
+        SubMenu settingMenu = menu.addSubMenu(R.string.settings);
+        settingMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_term_preferences, 0, R.string.title_term_preferences)
                 .setIcon(R.drawable.ic_settings_white_24dp);
-        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_compiler_setting, 0, R.string.compiler_setting)
+        settingMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_compiler_setting, 0, R.string.compiler_setting)
                 .setIcon(R.drawable.ic_settings_white_24dp);
         super.onCreateNavigationMenu(menu);
     }
