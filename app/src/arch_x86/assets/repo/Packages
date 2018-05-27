@@ -13,57 +13,46 @@
     <package>
 	<name>apr</name>
 	<replaces></replaces>
-	<version>1.5.0</version>
+	<version>1.5.2</version>
 	<arch>i686</arch>
 	<description>The mission of the Apache Portable Runtime (APR) project is to create and maintain software libraries that provide a predictable and consistent interface to underlying platform-specific implementations.</description>
 	<depends></depends>
-	<size>1769905</size>
-	<file>apr_1.5.0_i686.zip</file>
-	<filesize>575261</filesize>
+	<size>321638</size>
+	<file>apr_1.5.2_i686.zip</file>
+	<filesize>87389</filesize>
+    </package>
+    <package>
+	<name>apr-dev</name>
+	<replaces></replaces>
+	<version>1.5.2</version>
+	<arch>i686</arch>
+	<description>The mission of the Apache Portable Runtime (APR) project is to create and maintain software libraries that provide a predictable and consistent interface to underlying platform-specific implementations. (development files)</description>
+	<depends>apr</depends>
+	<size>1466152</size>
+	<file>apr-dev_1.5.2_i686.zip</file>
+	<filesize>486002</filesize>
     </package>
     <package>
 	<name>apr-util</name>
 	<replaces></replaces>
-	<version>1.5.3</version>
+	<version>1.5.4</version>
 	<arch>i686</arch>
 	<description>The mission of the Apache Portable Runtime (APR) project is to create and maintain software libraries that provide a predictable and consistent interface to underlying platform-specific implementations.</description>
 	<depends></depends>
-	<size>967066</size>
-	<file>apr-util_1.5.3_i686.zip</file>
-	<filesize>341519</filesize>
+	<size>11949</size>
+	<file>apr-util_1.5.4_i686.zip</file>
+	<filesize>5097</filesize>
     </package>
     <package>
-	<name>autoconf</name>
+	<name>apr-util-dev</name>
 	<replaces></replaces>
-	<version>2.69</version>
+	<version>1.5.4</version>
 	<arch>i686</arch>
-	<description>automatic configure script builder</description>
-	<depends>m4</depends>
-	<size>3217286</size>
-	<file>autoconf_2.69_i686.zip</file>
-	<filesize>961603</filesize>
-    </package>
-    <package>
-	<name>automake</name>
-	<replaces></replaces>
-	<version>1.14</version>
-	<arch>i686</arch>
-	<description>Tool for generating GNU Standards-compliant Makefiles</description>
-	<depends>autoconf</depends>
-	<size>2087287</size>
-	<file>automake_1.14_i686.zip</file>
-	<filesize>743249</filesize>
-    </package>
-    <package>
-	<name>avr-libc</name>
-	<replaces></replaces>
-	<version>1.8.0</version>
-	<arch>i686</arch>
-	<description>The C runtime library for the AVR family of microcontrollers.</description>
-	<depends></depends>
-	<size>24748909</size>
-	<file>avr-libc_1.8.0_i686.zip</file>
-	<filesize>3809056</filesize>
+	<description>The mission of the Apache Portable Runtime (APR) project is to create and maintain software libraries that provide a predictable and consistent interface to underlying platform-specific implementations. (development files)</description>
+	<depends>apr-util</depends>
+	<size>969711</size>
+	<file>apr-util-dev_1.5.4_i686.zip</file>
+	<filesize>339727</filesize>
     </package>
     <package>
 	<name>binutils</name>
@@ -72,20 +61,9 @@
 	<arch>i686</arch>
 	<description>GNU assembler, linker and binary utilities</description>
 	<depends></depends>
-	<size>10941058</size>
+	<size>10936962</size>
 	<file>binutils_2.25_i686.zip</file>
-	<filesize>3167137</filesize>
-    </package>
-    <package>
-	<name>binutils-avr</name>
-	<replaces></replaces>
-	<version>2.25</version>
-	<arch>i686</arch>
-	<description>Binary utilities supporting Atmel's AVR targets</description>
-	<depends></depends>
-	<size>12732211</size>
-	<file>binutils-avr_2.25_i686.zip</file>
-	<filesize>5442582</filesize>
+	<filesize>3166901</filesize>
     </package>
     <package>
 	<name>binutils-compact</name>
@@ -94,75 +72,9 @@
 	<arch>i686</arch>
 	<description>GNU assembler and linker only, compact version</description>
 	<depends></depends>
-	<size>7901204</size>
+	<size>7897108</size>
 	<file>binutils-compact_2.25_i686.zip</file>
-	<filesize>1974080</filesize>
-    </package>
-    <package>
-	<name>binutils-mingw-w64-i686</name>
-	<replaces></replaces>
-	<version>2.25</version>
-	<arch>i686</arch>
-	<description>Cross-binutils for Win32 (i686) using MinGW-w64</description>
-	<depends></depends>
-	<size>18210717</size>
-	<file>binutils-mingw-w64-i686_2.25_i686.zip</file>
-	<filesize>7674092</filesize>
-    </package>
-    <package>
-	<name>bison</name>
-	<replaces></replaces>
-	<version>3.0.2</version>
-	<arch>i686</arch>
-	<description>YACC-compatible parser generator</description>
-	<depends>m4</depends>
-	<size>979220</size>
-	<file>bison_3.0.2_i686.zip</file>
-	<filesize>341238</filesize>
-    </package>
-    <package>
-	<name>build-essential-clang</name>
-	<replaces>build-essential-clang-compact</replaces>
-	<version>1.1</version>
-	<arch>i686</arch>
-	<description>Informational list of clang build-essential packages</description>
-	<depends>busybox project-ctl binutils libgcc-dev libstdc++-dev clang make ndk-misc ndk-sysroot-${HOSTNDKARCH}-${HOSTNDKVERSION} cctools-examples</depends>
-	<size></size>
-	<file>build-essential-clang_1.1_all.zip</file>
-	<filesize>595</filesize>
-    </package>
-    <package>
-	<name>build-essential-clang-compact</name>
-	<replaces>build-essential-clang</replaces>
-	<version>1.1</version>
-	<arch>i686</arch>
-	<description>Informational list of clang compact build-essential packages</description>
-	<depends>busybox project-ctl binutils-compact libgcc-compact-dev libstdc++-compact-dev clang make ndk-misc ndk-sysroot-${HOSTNDKARCH}-${HOSTNDKVERSION} cctools-examples</depends>
-	<size></size>
-	<file>build-essential-clang-compact_1.1_all.zip</file>
-	<filesize>604</filesize>
-    </package>
-    <package>
-	<name>build-essential-clang-objc</name>
-	<replaces>build-essential-clang-objc-compact</replaces>
-	<version>1.1</version>
-	<arch>i686</arch>
-	<description>Informational list of clang ObjC build-essential packages</description>
-	<depends>busybox project-ctl binutils libgcc-dev libstdc++-dev clang libobjc-dev make ndk-misc ndk-sysroot-${HOSTNDKARCH}-${HOSTNDKVERSION} cctools-examples gobjc-examples</depends>
-	<size></size>
-	<file>build-essential-clang-objc_1.1_all.zip</file>
-	<filesize>615</filesize>
-    </package>
-    <package>
-	<name>build-essential-clang-objc-compact</name>
-	<replaces>build-essential-clang-objc</replaces>
-	<version>1.1</version>
-	<arch>i686</arch>
-	<description>Informational list of clang ObjC compact build-essential packages</description>
-	<depends>busybox project-ctl binutils-compact libgcc-compact-dev libstdc++-compact-dev clang libobjc-compact-dev make ndk-misc ndk-sysroot-${HOSTNDKARCH}-${HOSTNDKVERSION} cctools-examples gobjc-examples</depends>
-	<size></size>
-	<file>build-essential-clang-objc-compact_1.1_all.zip</file>
-	<filesize>623</filesize>
+	<filesize>1974002</filesize>
     </package>
     <package>
 	<name>build-essential-fortran</name>
@@ -286,26 +198,26 @@
 	<filesize>519</filesize>
     </package>
     <package>
-	<name>build-essential-mingw-w64</name>
+	<name>build-helper</name>
 	<replaces></replaces>
-	<version>1.1</version>
+	<version>1.00</version>
 	<arch>i686</arch>
-	<description>Informational list of mingw-w64 i686 build-essential packages</description>
-	<depends>busybox project-ctl make binutils-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev mingw-w64-examples</depends>
-	<size></size>
-	<file>build-essential-mingw-w64_1.1_all.zip</file>
-	<filesize>547</filesize>
+	<description>CCTools helpers utilities and modules</description>
+	<depends></depends>
+	<size>6920</size>
+	<file>build-helper_1.00_i686.zip</file>
+	<filesize>4278</filesize>
     </package>
     <package>
 	<name>busybox</name>
 	<replaces></replaces>
-	<version>1.21.1-2</version>
+	<version>1.25.0-1</version>
 	<arch>i686</arch>
 	<description>BusyBox provides several stripped-down Unix tools in a single executable.</description>
 	<depends></depends>
-	<size>1189396</size>
-	<file>busybox_1.21.1-2_i686.zip</file>
-	<filesize>680612</filesize>
+	<size>697468</size>
+	<file>busybox_1.25.0-1_i686.zip</file>
+	<filesize>484175</filesize>
     </package>
     <package>
 	<name>ca-certificates</name>
@@ -314,9 +226,9 @@
 	<arch>i686</arch>
 	<description>Common CA certificates</description>
 	<depends></depends>
-	<size>274340</size>
+	<size>233394</size>
 	<file>ca-certificates_1.0_i686.zip</file>
-	<filesize>154394</filesize>
+	<filesize>135007</filesize>
     </package>
     <package>
 	<name>cctools-examples</name>
@@ -330,28 +242,6 @@
 	<filesize>12761</filesize>
     </package>
     <package>
-	<name>clang</name>
-	<replaces></replaces>
-	<version>3.4-1</version>
-	<arch>i686</arch>
-	<description>C, C++ and Objective-C compiler (LLVM based)</description>
-	<depends>libgcc-dev|libgcc-compact-dev libstdc++-dev|libstdc++-compact-dev</depends>
-	<size>39439334</size>
-	<file>clang_3.4-1_i686.zip</file>
-	<filesize>15194911</filesize>
-    </package>
-    <package>
-	<name>clang-utils</name>
-	<replaces></replaces>
-	<version>3.4-1</version>
-	<arch>i686</arch>
-	<description>clang utilities</description>
-	<depends></depends>
-	<size>31997164</size>
-	<file>clang-utils_3.4-1_i686.zip</file>
-	<filesize>12976652</filesize>
-    </package>
-    <package>
 	<name>cloog</name>
 	<replaces></replaces>
 	<version>0.18.0</version>
@@ -360,7 +250,7 @@
 	<depends>gmp isl</depends>
 	<size>185468</size>
 	<file>cloog_0.18.0_i686.zip</file>
-	<filesize>77876</filesize>
+	<filesize>77890</filesize>
     </package>
     <package>
 	<name>cloog-dev</name>
@@ -369,9 +259,9 @@
 	<arch>i686</arch>
 	<description>The CLooG Code Generator in the Polyhedral Model's Home (development files)</description>
 	<depends>cloog</depends>
-	<size>81199</size>
+	<size>81220</size>
 	<file>cloog-dev_0.18.0_i686.zip</file>
-	<filesize>28130</filesize>
+	<filesize>28142</filesize>
     </package>
     <package>
 	<name>cppcheck</name>
@@ -382,7 +272,7 @@
 	<depends>libpcre libstdc++-compact-dev</depends>
 	<size>2657645</size>
 	<file>cppcheck_1.64_i686.zip</file>
-	<filesize>923423</filesize>
+	<filesize>923382</filesize>
     </package>
     <package>
 	<name>cppcheck-module</name>
@@ -404,29 +294,62 @@
 	<depends></depends>
 	<size>3480457</size>
 	<file>curl_7.28.1_i686.zip</file>
-	<filesize>1439139</filesize>
+	<filesize>1439173</filesize>
     </package>
     <package>
 	<name>dropbear</name>
 	<replaces></replaces>
-	<version>0.52-2</version>
+	<version>2016.74</version>
 	<arch>i686</arch>
-	<description>Dropbear is a software package written by Matt Johnston that provides a Secure Shell-compatible server and client. It is designed as a replacement for standard OpenSSH for environments with low memory and processor resources, such as embedded systems.</description>
-	<depends>adialog</depends>
-	<size>3171519</size>
-	<file>dropbear_0.52-2_i686.zip</file>
-	<filesize>1559187</filesize>
+	<description>Small SSH client and server.</description>
+	<depends></depends>
+	<size>898525</size>
+	<file>dropbear_2016.74_i686.zip</file>
+	<filesize>402589</filesize>
+    </package>
+    <package>
+	<name>dropbear-man</name>
+	<replaces></replaces>
+	<version>2016.74</version>
+	<arch>i686</arch>
+	<description>Small SSH client and server. (manual files)</description>
+	<depends>dropbear</depends>
+	<size>14963</size>
+	<file>dropbear-man_2016.74_i686.zip</file>
+	<filesize>8605</filesize>
     </package>
     <package>
 	<name>expat</name>
 	<replaces></replaces>
-	<version>2.1.0</version>
+	<version>2.2.0</version>
 	<arch>i686</arch>
-	<description>Expat is an XML parser library written in C. It is a stream-oriented parser in which an application registers handlers for things the parser might find in the XML document (like start tags).</description>
+	<description>Expat XML Parser</description>
 	<depends></depends>
-	<size>603104</size>
-	<file>expat_2.1.0_i686.zip</file>
-	<filesize>213434</filesize>
+	<size>181488</size>
+	<file>expat_2.2.0_i686.zip</file>
+	<filesize>69254</filesize>
+    </package>
+    <package>
+	<name>expat-dev</name>
+	<replaces></replaces>
+	<version>2.2.0</version>
+	<arch>i686</arch>
+	<description>Expat XML Parser (development files)</description>
+	<depends>expat</depends>
+	<size>610907</size>
+	<file>expat-dev_2.2.0_i686.zip</file>
+	<filesize>216721</filesize>
+    </package>
+    <package>
+	<name>expat-man</name>
+	<replaces></replaces>
+	<version>2.2.0</version>
+	<arch>i686</arch>
+	<description>Expat XML Parser (manual files)</description>
+	<depends>expat</depends>
+	<size>8100</size>
+	<file>expat-man_2.2.0_i686.zip</file>
+	<filesize>4577</filesize>
     </package>
     <package>
 	<name>fastjar</name>
@@ -435,9 +358,9 @@
 	<arch>i686</arch>
 	<description>Fastjar is an implementation of Sun's jar utility that comes with the JDK, written entirely in C, and runs in a fraction of the time while being 100% feature compatible.</description>
 	<depends></depends>
-	<size>174394</size>
+	<size>175293</size>
 	<file>fastjar_0.98_i686.zip</file>
-	<filesize>88917</filesize>
+	<filesize>89560</filesize>
     </package>
     <package>
 	<name>file</name>
@@ -448,29 +371,7 @@
 	<depends></depends>
 	<size>2981272</size>
 	<file>file_5.15_i686.zip</file>
-	<filesize>282779</filesize>
-    </package>
-    <package>
-	<name>flex</name>
-	<replaces></replaces>
-	<version>2.5.37</version>
-	<arch>i686</arch>
-	<description>A fast lexical analyzer generator</description>
-	<depends>m4</depends>
-	<size>1540935</size>
-	<file>flex_2.5.37_i686.zip</file>
-	<filesize>797146</filesize>
-    </package>
-    <package>
-	<name>flex-dev</name>
-	<replaces></replaces>
-	<version>2.5.37</version>
-	<arch>i686</arch>
-	<description>A fast lexical analyzer generator (development files)</description>
-	<depends>flex</depends>
-	<size>15921</size>
-	<file>flex-dev_2.5.37_i686.zip</file>
-	<filesize>7162</filesize>
+	<filesize>282784</filesize>
     </package>
     <package>
 	<name>fontconfig</name>
@@ -479,9 +380,9 @@
 	<arch>i686</arch>
 	<description>generic font configuration library</description>
 	<depends>freetype libpng</depends>
-	<size>582372</size>
+	<size>582375</size>
 	<file>fontconfig_2.11.1_i686.zip</file>
-	<filesize>247972</filesize>
+	<filesize>248395</filesize>
     </package>
     <package>
 	<name>fontconfig-dev</name>
@@ -490,9 +391,9 @@
 	<arch>i686</arch>
 	<description>generic font configuration library (development files)</description>
 	<depends>fontconfig</depends>
-	<size>32871</size>
+	<size>32893</size>
 	<file>fontconfig-dev_2.11.1_i686.zip</file>
-	<filesize>11759</filesize>
+	<filesize>11765</filesize>
     </package>
     <package>
 	<name>freetype</name>
@@ -501,9 +402,9 @@
 	<arch>i686</arch>
 	<description>FreeType 2 font engine</description>
 	<depends>libpng</depends>
-	<size>652315</size>
+	<size>652334</size>
 	<file>freetype_2.5.4_i686.zip</file>
-	<filesize>331465</filesize>
+	<filesize>331474</filesize>
     </package>
     <package>
 	<name>freetype-dev</name>
@@ -512,9 +413,9 @@
 	<arch>i686</arch>
 	<description>FreeType 2 font engine (development files)</description>
 	<depends>freetype</depends>
-	<size>4446814</size>
+	<size>4447107</size>
 	<file>freetype-dev_2.5.4_i686.zip</file>
-	<filesize>1603198</filesize>
+	<filesize>1604101</filesize>
     </package>
     <package>
 	<name>freetype-man</name>
@@ -534,31 +435,9 @@
 	<arch>i686</arch>
 	<description>The GNU C compiler</description>
 	<depends>cloog gmp isl mpc mpfr libgcc-dev|libgcc-compact-dev libstdc++-dev|libstdc++-compact-dev</depends>
-	<size>66574320</size>
+	<size>67499004</size>
 	<file>gcc_4.9-1_i686.zip</file>
-	<filesize>24920926</filesize>
-    </package>
-    <package>
-	<name>gcc-avr</name>
-	<replaces></replaces>
-	<version>4.9.3-1</version>
-	<arch>i686</arch>
-	<description>The GNU C compiler (cross compiler for avr)</description>
-	<depends>cloog gmp isl mpc mpfr</depends>
-	<size>58056146</size>
-	<file>gcc-avr_4.9.3-1_i686.zip</file>
-	<filesize>18881893</filesize>
-    </package>
-    <package>
-	<name>gcc-mingw-w64-i686</name>
-	<replaces></replaces>
-	<version>4.9.3</version>
-	<arch>i686</arch>
-	<description>GNU C compiler for MinGW-w64 targeting Win32</description>
-	<depends>cloog gmp isl mpc mpfr</depends>
-	<size>98902821</size>
-	<file>gcc-mingw-w64-i686_4.9.3_i686.zip</file>
-	<filesize>34309802</filesize>
+	<filesize>25294538</filesize>
     </package>
     <package>
 	<name>gfortran</name>
@@ -569,7 +448,7 @@
 	<depends>cloog gmp isl mpc mpfr gcc libgfortran-dev|libgfortran-compact-dev</depends>
 	<size>19637800</size>
 	<file>gfortran_4.9-1_i686.zip</file>
-	<filesize>7764654</filesize>
+	<filesize>7764597</filesize>
     </package>
     <package>
 	<name>gfortran-examples</name>
@@ -589,9 +468,9 @@
 	<arch>i686</arch>
 	<description>Git is a distributed revision control and source code management (SCM) system with an emphasis on speed.[3] Git was initially designed and developed by Linus Torvalds for Linux kernel development; it has since been adopted by many other projects.</description>
 	<depends>ca-certificates</depends>
-	<size>32146568</size>
+	<size>32132250</size>
 	<file>git_2.10.0-1_i686.zip</file>
-	<filesize>14625508</filesize>
+	<filesize>14621143</filesize>
     </package>
     <package>
 	<name>glib</name>
@@ -600,9 +479,9 @@
 	<arch>i686</arch>
 	<description>GLib library of C routines</description>
 	<depends>libiconv</depends>
-	<size>2527798</size>
+	<size>2527810</size>
 	<file>glib_2.24.2_i686.zip</file>
-	<filesize>932845</filesize>
+	<filesize>932925</filesize>
     </package>
     <package>
 	<name>glib-dev</name>
@@ -611,9 +490,9 @@
 	<arch>i686</arch>
 	<description>GLib library of C routines (development files)</description>
 	<depends>glib</depends>
-	<size>1140173</size>
+	<size>1140286</size>
 	<file>glib-dev_2.24.2_i686.zip</file>
-	<filesize>349245</filesize>
+	<filesize>349318</filesize>
     </package>
     <package>
 	<name>glib-doc</name>
@@ -646,7 +525,7 @@
 	<depends></depends>
 	<size>502316</size>
 	<file>gmp_5.0.5_i686.zip</file>
-	<filesize>261163</filesize>
+	<filesize>261177</filesize>
     </package>
     <package>
 	<name>gmp-dev</name>
@@ -655,9 +534,9 @@
 	<arch>i686</arch>
 	<description>The GNU Multiple Precision Arithmetic Library (development files)</description>
 	<depends>gmp</depends>
-	<size>202786</size>
+	<size>202795</size>
 	<file>gmp-dev_5.0.5_i686.zip</file>
-	<filesize>31705</filesize>
+	<filesize>31723</filesize>
     </package>
     <package>
 	<name>gmp-info</name>
@@ -666,9 +545,9 @@
 	<arch>i686</arch>
 	<description>The GNU Multiple Precision Arithmetic Library (info files)</description>
 	<depends>gmp</depends>
-	<size>502123</size>
+	<size>502754</size>
 	<file>gmp-info_5.0.5_i686.zip</file>
-	<filesize>134014</filesize>
+	<filesize>134578</filesize>
     </package>
     <package>
 	<name>gobjc</name>
@@ -679,7 +558,7 @@
 	<depends>cloog gmp isl mpc mpfr gcc libobjc-dev|libobjc-compact-dev</depends>
 	<size>37091520</size>
 	<file>gobjc_4.9-1_i686.zip</file>
-	<filesize>14648277</filesize>
+	<filesize>14648437</filesize>
     </package>
     <package>
 	<name>gobjc-examples</name>
@@ -701,7 +580,7 @@
 	<depends></depends>
 	<size>328596</size>
 	<file>htop_1.0.2_i686.zip</file>
-	<filesize>139794</filesize>
+	<filesize>139803</filesize>
     </package>
     <package>
 	<name>isl</name>
@@ -712,7 +591,7 @@
 	<depends>gmp</depends>
 	<size>1511040</size>
 	<file>isl_0.11.1_i686.zip</file>
-	<filesize>590023</filesize>
+	<filesize>590032</filesize>
     </package>
     <package>
 	<name>isl-dev</name>
@@ -721,9 +600,9 @@
 	<arch>i686</arch>
 	<description>Integer Set Library (development files)</description>
 	<depends>isl</depends>
-	<size>208716</size>
+	<size>208734</size>
 	<file>isl-dev_0.11.1_i686.zip</file>
-	<filesize>45787</filesize>
+	<filesize>45799</filesize>
     </package>
     <package>
 	<name>java-examples</name>
@@ -781,26 +660,15 @@
 	<filesize>11027</filesize>
     </package>
     <package>
-	<name>libclang</name>
-	<replaces></replaces>
-	<version>3.4-1</version>
-	<arch>i686</arch>
-	<description>clang library</description>
-	<depends></depends>
-	<size>16210688</size>
-	<file>libclang_3.4-1_i686.zip</file>
-	<filesize>6400864</filesize>
-    </package>
-    <package>
 	<name>libgcc-compact-dev</name>
 	<replaces>libgcc-dev</replaces>
 	<version>4.9-1</version>
 	<arch>i686</arch>
 	<description>GCC support library, compact version (development files)</description>
 	<depends></depends>
-	<size>6210085</size>
+	<size>6211185</size>
 	<file>libgcc-compact-dev_4.9-1_i686.zip</file>
-	<filesize>3119421</filesize>
+	<filesize>3119900</filesize>
     </package>
     <package>
 	<name>libgcc-dev</name>
@@ -809,9 +677,9 @@
 	<arch>i686</arch>
 	<description>GCC support library (development files)</description>
 	<depends></depends>
-	<size>6210085</size>
+	<size>6211185</size>
 	<file>libgcc-dev_4.9-1_i686.zip</file>
-	<filesize>3119412</filesize>
+	<filesize>3119893</filesize>
     </package>
     <package>
 	<name>libgcc-dev-i686</name>
@@ -820,9 +688,9 @@
 	<arch>all</arch>
 	<description>GCC support library (development files)</description>
 	<depends></depends>
-	<size>6210085</size>
+	<size>6211185</size>
 	<file>libgcc-dev-i686_4.9-1_all.zip</file>
-	<filesize>3119408</filesize>
+	<filesize>3119888</filesize>
     </package>
     <package>
 	<name>libgfortran-compact-dev</name>
@@ -831,9 +699,9 @@
 	<arch>i686</arch>
 	<description>Runtime library for GNU Fortran applications, compact version (development files)</description>
 	<depends></depends>
-	<size>5503250</size>
+	<size>5506306</size>
 	<file>libgfortran-compact-dev_4.9-1_i686.zip</file>
-	<filesize>1225667</filesize>
+	<filesize>1227466</filesize>
     </package>
     <package>
 	<name>libgfortran-dev</name>
@@ -842,9 +710,9 @@
 	<arch>i686</arch>
 	<description>Runtime library for GNU Fortran applications (development files)</description>
 	<depends></depends>
-	<size>5503250</size>
+	<size>5506306</size>
 	<file>libgfortran-dev_4.9-1_i686.zip</file>
-	<filesize>1225659</filesize>
+	<filesize>1227458</filesize>
     </package>
     <package>
 	<name>libgfortran-dev-i686</name>
@@ -853,20 +721,9 @@
 	<arch>all</arch>
 	<description>Runtime library for GNU Fortran applications (development files)</description>
 	<depends></depends>
-	<size>5503250</size>
+	<size>5506306</size>
 	<file>libgfortran-dev-i686_4.9-1_all.zip</file>
-	<filesize>1225655</filesize>
-    </package>
-    <package>
-	<name>libglib</name>
-	<replaces></replaces>
-	<version>2.24.2</version>
-	<arch>i686</arch>
-	<description>GLib library of C routines</description>
-	<depends>libiconv</depends>
-	<size>2111428</size>
-	<file>libglib_2.24.2_i686.zip</file>
-	<filesize>790964</filesize>
+	<filesize>1227455</filesize>
     </package>
     <package>
 	<name>libiconv</name>
@@ -877,7 +734,7 @@
 	<depends></depends>
 	<size>978564</size>
 	<file>libiconv_1.14_i686.zip</file>
-	<filesize>694440</filesize>
+	<filesize>694464</filesize>
     </package>
     <package>
 	<name>libiconv-dev</name>
@@ -886,9 +743,9 @@
 	<arch>i686</arch>
 	<description>This library provides an iconv() implementation, for use on systems which don't have one, or whose implementation cannot convert from/to Unicode. (development files)</description>
 	<depends>libiconv</depends>
-	<size>29505</size>
+	<size>29523</size>
 	<file>libiconv-dev_1.14_i686.zip</file>
-	<filesize>13397</filesize>
+	<filesize>13426</filesize>
     </package>
     <package>
 	<name>libiconv-doc</name>
@@ -919,9 +776,9 @@
 	<arch>i686</arch>
 	<description>Runtime library for GNU Objective-C applications, compact version (development files)</description>
 	<depends></depends>
-	<size>1288471</size>
+	<size>1288951</size>
 	<file>libobjc-compact-dev_4.9-1_i686.zip</file>
-	<filesize>472522</filesize>
+	<filesize>472488</filesize>
     </package>
     <package>
 	<name>libobjc-dev</name>
@@ -930,9 +787,9 @@
 	<arch>i686</arch>
 	<description>Runtime library for GNU Objective-C applications (development files)</description>
 	<depends></depends>
-	<size>1288471</size>
+	<size>1288951</size>
 	<file>libobjc-dev_4.9-1_i686.zip</file>
-	<filesize>472513</filesize>
+	<filesize>472479</filesize>
     </package>
     <package>
 	<name>libobjc-dev-i686</name>
@@ -941,9 +798,9 @@
 	<arch>all</arch>
 	<description>Runtime library for GNU Objective-C applications (development files)</description>
 	<depends></depends>
-	<size>1288471</size>
+	<size>1288951</size>
 	<file>libobjc-dev-i686_4.9-1_all.zip</file>
-	<filesize>472511</filesize>
+	<filesize>472477</filesize>
     </package>
     <package>
 	<name>libpcre</name>
@@ -965,7 +822,7 @@
 	<depends>libpcre libstdc++-compact-dev</depends>
 	<size>33944</size>
 	<file>libpcrecpp_8.35_i686.zip</file>
-	<filesize>14869</filesize>
+	<filesize>14872</filesize>
     </package>
     <package>
 	<name>libpcrecpp-dev</name>
@@ -976,7 +833,7 @@
 	<depends></depends>
 	<size>77992</size>
 	<file>libpcrecpp-dev_8.35_i686.zip</file>
-	<filesize>26075</filesize>
+	<filesize>26077</filesize>
     </package>
     <package>
 	<name>libpcre-dev</name>
@@ -985,9 +842,9 @@
 	<arch>i686</arch>
 	<description>Perl 5 Compatible Regular Expression Library - development files</description>
 	<depends></depends>
-	<size>840969</size>
+	<size>841045</size>
 	<file>libpcre-dev_8.35_i686.zip</file>
-	<filesize>302598</filesize>
+	<filesize>302619</filesize>
     </package>
     <package>
 	<name>libpcreposix</name>
@@ -998,7 +855,7 @@
 	<depends>libpcre</depends>
 	<size>9340</size>
 	<file>libpcreposix_8.35_i686.zip</file>
-	<filesize>4462</filesize>
+	<filesize>4463</filesize>
     </package>
     <package>
 	<name>libpcreposix-dev</name>
@@ -1007,9 +864,9 @@
 	<arch>i686</arch>
 	<description>POSIX wrapper class for pcre (development)</description>
 	<depends></depends>
-	<size>21126</size>
+	<size>21130</size>
 	<file>libpcreposix-dev_8.35_i686.zip</file>
-	<filesize>10799</filesize>
+	<filesize>10804</filesize>
     </package>
     <package>
 	<name>libpng</name>
@@ -1029,9 +886,9 @@
 	<arch>i686</arch>
 	<description>Reference library for supporting the Portable Network Graphics (PNG) format (development files).</description>
 	<depends>libpng </depends>
-	<size>1103130</size>
+	<size>1103206</size>
 	<file>libpng-dev_1.6.8_i686.zip</file>
-	<filesize>455232</filesize>
+	<filesize>455482</filesize>
     </package>
     <package>
 	<name>libstdc++-compact-dev</name>
@@ -1040,9 +897,9 @@
 	<arch>i686</arch>
 	<description>GNU Standard C++ Library v3, compact version (development files)</description>
 	<depends></depends>
-	<size>24521542</size>
+	<size>24521782</size>
 	<file>libstdc++-compact-dev_4.9-1_i686.zip</file>
-	<filesize>6957709</filesize>
+	<filesize>6957792</filesize>
     </package>
     <package>
 	<name>libstdc++-dev</name>
@@ -1051,9 +908,9 @@
 	<arch>i686</arch>
 	<description>GNU Standard C++ Library v3 (development files)</description>
 	<depends></depends>
-	<size>24521542</size>
+	<size>24521782</size>
 	<file>libstdc++-dev_4.9-1_i686.zip</file>
-	<filesize>6957697</filesize>
+	<filesize>6957778</filesize>
     </package>
     <package>
 	<name>libstdc++-dev-i686</name>
@@ -1062,9 +919,9 @@
 	<arch>all</arch>
 	<description>GNU Standard C++ Library v3 (development files)</description>
 	<depends></depends>
-	<size>24521542</size>
+	<size>24521782</size>
 	<file>libstdc++-dev-i686_4.9-1_all.zip</file>
-	<filesize>6957697</filesize>
+	<filesize>6957777</filesize>
     </package>
     <package>
 	<name>libuuid</name>
@@ -1084,42 +941,9 @@
 	<arch>i686</arch>
 	<description>Portable uuid C library (development files)</description>
 	<depends>libuuid</depends>
-	<size>62037</size>
+	<size>62087</size>
 	<file>libuuid-dev_1.0.3_i686.zip</file>
-	<filesize>20800</filesize>
-    </package>
-    <package>
-	<name>llvm</name>
-	<replaces></replaces>
-	<version>3.4-1</version>
-	<arch>i686</arch>
-	<description>Low-Level Virtual Machine (LLVM), runtime library</description>
-	<depends></depends>
-	<size>221512789</size>
-	<file>llvm_3.4-1_i686.zip</file>
-	<filesize>76667095</filesize>
-    </package>
-    <package>
-	<name>luajit</name>
-	<replaces></replaces>
-	<version>2.0.0</version>
-	<arch>i686</arch>
-	<description>LuaJIT is a Just-In-Time Compiler (JIT) for the Lua programming language. Lua is a powerful, dynamic and light-weight programming language. It may be embedded or used as a general-purpose, stand-alone language.</description>
-	<depends></depends>
-	<size>1416313</size>
-	<file>LuaJIT_2.0.0_i686.zip</file>
-	<filesize>647113</filesize>
-    </package>
-    <package>
-	<name>m4</name>
-	<replaces></replaces>
-	<version>1.4.17</version>
-	<arch>i686</arch>
-	<description>a macro processing language</description>
-	<depends></depends>
-	<size>613574</size>
-	<file>m4_1.4.17_i686.zip</file>
-	<filesize>228746</filesize>
+	<filesize>20826</filesize>
     </package>
     <package>
 	<name>make</name>
@@ -1130,7 +954,7 @@
 	<depends></depends>
 	<size>224588</size>
 	<file>make_4.0_i686.zip</file>
-	<filesize>111455</filesize>
+	<filesize>111466</filesize>
     </package>
     <package>
 	<name>makerepo</name>
@@ -1146,46 +970,24 @@
     <package>
 	<name>mc</name>
 	<replaces></replaces>
-	<version>4.6.2-2</version>
+	<version>4.6.2-3</version>
 	<arch>i686</arch>
 	<description>Midnight Commander - a powerful file manager</description>
 	<depends>glib libiconv</depends>
-	<size>1914341</size>
-	<file>mc_4.6.2-2_i686.zip</file>
-	<filesize>585884</filesize>
+	<size>1914346</size>
+	<file>mc_4.6.2-3_i686.zip</file>
+	<filesize>585995</filesize>
     </package>
     <package>
 	<name>mc-man</name>
 	<replaces></replaces>
-	<version>4.6.2-2</version>
+	<version>4.6.2-3</version>
 	<arch>i686</arch>
 	<description>Midnight Commander - a powerful file manager (manual files)</description>
 	<depends>mc</depends>
-	<size>124421</size>
-	<file>mc-man_4.6.2-2_i686.zip</file>
-	<filesize>42934</filesize>
-    </package>
-    <package>
-	<name>mingw-w64-examples</name>
-	<replaces></replaces>
-	<version>1.0</version>
-	<arch>all</arch>
-	<description>Few C, C++ examples for MinGW W64 crosscompiler</description>
-	<depends>gcc-mingw-w64-i686 binutils-mingw-w64-i686 mingw-w64-i686-dev</depends>
-	<size>36747</size>
-	<file>mingw-w64-examples_1.0_all.zip</file>
-	<filesize>17600</filesize>
-    </package>
-    <package>
-	<name>mingw-w64-i686-dev</name>
-	<replaces></replaces>
-	<version>v3.0.0</version>
-	<arch>all</arch>
-	<description>Development files for MinGW-w64 targeting Win32</description>
-	<depends></depends>
-	<size>79328534</size>
-	<file>mingw-w64-i686-dev_v3.0.0_all.zip</file>
-	<filesize>9039819</filesize>
+	<size>124484</size>
+	<file>mc-man_4.6.2-3_i686.zip</file>
+	<filesize>42951</filesize>
     </package>
     <package>
 	<name>mpc</name>
@@ -1196,7 +998,7 @@
 	<depends>gmp mpfr</depends>
 	<size>99400</size>
 	<file>mpc_1.0.1_i686.zip</file>
-	<filesize>43996</filesize>
+	<filesize>43954</filesize>
     </package>
     <package>
 	<name>mpc-dev</name>
@@ -1205,9 +1007,9 @@
 	<arch>i686</arch>
 	<description>C library for the arithmetic of complex numbers with arbitrarily high precision and correct rounding of the result (development files)</description>
 	<depends>mpc</depends>
-	<size>13840</size>
+	<size>13852</size>
 	<file>mpc-dev_1.0.1_i686.zip</file>
-	<filesize>4542</filesize>
+	<filesize>4548</filesize>
     </package>
     <package>
 	<name>mpc-info</name>
@@ -1216,9 +1018,9 @@
 	<arch>i686</arch>
 	<description>C library for the arithmetic of complex numbers with arbitrarily high precision and correct rounding of the result (info files)</description>
 	<depends>mpc</depends>
-	<size>87613</size>
+	<size>88216</size>
 	<file>mpc-info_1.0.1_i686.zip</file>
-	<filesize>24094</filesize>
+	<filesize>24649</filesize>
     </package>
     <package>
 	<name>mpfr</name>
@@ -1229,7 +1031,7 @@
 	<depends>gmp</depends>
 	<size>406760</size>
 	<file>mpfr_3.1.1_i686.zip</file>
-	<filesize>190475</filesize>
+	<filesize>190507</filesize>
     </package>
     <package>
 	<name>mpfr-dev</name>
@@ -1238,9 +1040,9 @@
 	<arch>i686</arch>
 	<description>C library for multiple-precision floating-point computations with correct rounding (development files)</description>
 	<depends>mpfr</depends>
-	<size>58745</size>
+	<size>58754</size>
 	<file>mpfr-dev_3.1.1_i686.zip</file>
-	<filesize>13620</filesize>
+	<filesize>13625</filesize>
     </package>
     <package>
 	<name>mpfr-doc</name>
@@ -1260,20 +1062,9 @@
 	<arch>i686</arch>
 	<description>C library for multiple-precision floating-point computations with correct rounding (info files)</description>
 	<depends>mpfr</depends>
-	<size>213805</size>
+	<size>214485</size>
 	<file>mpfr-info_3.1.1_i686.zip</file>
-	<filesize>52170</filesize>
-    </package>
-    <package>
-	<name>nano</name>
-	<replaces></replaces>
-	<version>2.2.6-1</version>
-	<arch>i686</arch>
-	<description>small, friendly text editor inspired by Pico</description>
-	<depends></depends>
-	<size>454171</size>
-	<file>nano_2.2.6-1_i686.zip</file>
-	<filesize>208142</filesize>
+	<filesize>52747</filesize>
     </package>
     <package>
 	<name>ncurses</name>
@@ -1293,9 +1084,9 @@
 	<arch>i686</arch>
 	<description>Programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces in a terminal-independent manner (development files)</description>
 	<depends>ncurses</depends>
-	<size>4459011</size>
+	<size>4460609</size>
 	<file>ncurses-dev_5.9_i686.zip</file>
-	<filesize>1422897</filesize>
+	<filesize>1423597</filesize>
     </package>
     <package>
 	<name>ncurses-man</name>
@@ -1304,9 +1095,9 @@
 	<arch>i686</arch>
 	<description>Programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces in a terminal-independent manner (manual files)</description>
 	<depends>ncurses</depends>
-	<size>334816</size>
+	<size>334889</size>
 	<file>ncurses-man_5.9_i686.zip</file>
-	<filesize>523984</filesize>
+	<filesize>524056</filesize>
     </package>
     <package>
 	<name>ndk-misc</name>
@@ -1465,13 +1256,46 @@
     <package>
 	<name>neon</name>
 	<replaces></replaces>
-	<version>0.29.6</version>
+	<version>0.30.1</version>
 	<arch>i686</arch>
 	<description>neon is an HTTP and WebDAV client library, with a C interface.</description>
 	<depends></depends>
-	<size>779651</size>
-	<file>neon_0.29.6_i686.zip</file>
-	<filesize>325911</filesize>
+	<size>1899</size>
+	<file>neon_0.30.1_i686.zip</file>
+	<filesize>2049</filesize>
+    </package>
+    <package>
+	<name>neon-dev</name>
+	<replaces></replaces>
+	<version>0.30.1</version>
+	<arch>i686</arch>
+	<description>neon is an HTTP and WebDAV client library, with a C interface. (development files)</description>
+	<depends>neon</depends>
+	<size>790683</size>
+	<file>neon-dev_0.30.1_i686.zip</file>
+	<filesize>328683</filesize>
+    </package>
+    <package>
+	<name>neon-doc</name>
+	<replaces></replaces>
+	<version>0.30.1</version>
+	<arch>i686</arch>
+	<description>neon is an HTTP and WebDAV client library, with a C interface. (doc files)</description>
+	<depends>neon</depends>
+	<size>259395</size>
+	<file>neon-doc_0.30.1_i686.zip</file>
+	<filesize>92108</filesize>
+    </package>
+    <package>
+	<name>neon-man</name>
+	<replaces></replaces>
+	<version>0.30.1</version>
+	<arch>i686</arch>
+	<description>neon is an HTTP and WebDAV client library, with a C interface. (manual files)</description>
+	<depends>neon</depends>
+	<size>126710</size>
+	<file>neon-man_0.30.1_i686.zip</file>
+	<filesize>71531</filesize>
     </package>
     <package>
 	<name>netcat</name>
@@ -1487,35 +1311,24 @@
     <package>
 	<name>openssl</name>
 	<replaces></replaces>
-	<version>1.0.1c-2</version>
+	<version>1.0.1c-3</version>
 	<arch>i686</arch>
 	<description>The OpenSSL Project is a collaborative effort to develop a robust, commercial-grade, full-featured, and Open Source toolkit implementing the Secure Sockets Layer (SSL v2/v3) and Transport Layer Security (TLS v1) protocols as well as a full-strength general purpose cryptography library.</description>
 	<depends></depends>
 	<size>2941748</size>
-	<file>openssl_1.0.1c-2_i686.zip</file>
-	<filesize>1202834</filesize>
+	<file>openssl_1.0.1c-3_i686.zip</file>
+	<filesize>1202833</filesize>
     </package>
     <package>
 	<name>openssl-dev</name>
 	<replaces></replaces>
-	<version>1.0.1c-2</version>
+	<version>1.0.1c-3</version>
 	<arch>i686</arch>
 	<description>The OpenSSL Project is a collaborative effort to develop a robust, commercial-grade, full-featured, and Open Source toolkit implementing the Secure Sockets Layer (SSL v2/v3) and Transport Layer Security (TLS v1) protocols as well as a full-strength general purpose cryptography library. (development files)</description>
 	<depends>openssl</depends>
 	<size>5937030</size>
-	<file>openssl-dev_1.0.1c-2_i686.zip</file>
-	<filesize>1824800</filesize>
-    </package>
-    <package>
-	<name>perl</name>
-	<replaces></replaces>
-	<version>5.18.1</version>
-	<arch>i686</arch>
-	<description>Larry Wall's Practical Extraction and Report Language</description>
-	<depends></depends>
-	<size>37525532</size>
-	<file>perl_5.18.1_i686.zip</file>
-	<filesize>12341673</filesize>
+	<file>openssl-dev_1.0.1c-3_i686.zip</file>
+	<filesize>1825052</filesize>
     </package>
     <package>
 	<name>pkgman</name>
@@ -1531,46 +1344,46 @@
     <package>
 	<name>ppl</name>
 	<replaces></replaces>
-	<version>1.0</version>
+	<version>1.1</version>
 	<arch>i686</arch>
 	<description>The Parma Polyhedra Library</description>
 	<depends>gmp</depends>
-	<size>4463008</size>
-	<file>ppl_1.0_i686.zip</file>
-	<filesize>1663711</filesize>
+	<size>4446624</size>
+	<file>ppl_1.1_i686.zip</file>
+	<filesize>1657364</filesize>
     </package>
     <package>
 	<name>ppl-dev</name>
 	<replaces></replaces>
-	<version>1.0</version>
+	<version>1.1</version>
 	<arch>i686</arch>
 	<description>The Parma Polyhedra Library (development files)</description>
 	<depends>ppl</depends>
-	<size>3838471</size>
-	<file>ppl-dev_1.0_i686.zip</file>
-	<filesize>584844</filesize>
+	<size>3889085</size>
+	<file>ppl-dev_1.1_i686.zip</file>
+	<filesize>587039</filesize>
     </package>
     <package>
 	<name>ppl-doc</name>
 	<replaces></replaces>
-	<version>1.0</version>
+	<version>1.1</version>
 	<arch>i686</arch>
 	<description>The Parma Polyhedra Library (doc files)</description>
 	<depends>ppl</depends>
-	<size>23212993</size>
-	<file>ppl-doc_1.0_i686.zip</file>
-	<filesize>9881547</filesize>
+	<size>20506476</size>
+	<file>ppl-doc_1.1_i686.zip</file>
+	<filesize>10146766</filesize>
     </package>
     <package>
 	<name>ppl-man</name>
 	<replaces></replaces>
-	<version>1.0</version>
+	<version>1.1</version>
 	<arch>i686</arch>
 	<description>The Parma Polyhedra Library (manual files)</description>
 	<depends>ppl</depends>
-	<size>27464</size>
-	<file>ppl-man_1.0_i686.zip</file>
-	<filesize>13649</filesize>
+	<size>27480</size>
+	<file>ppl-man_1.1_i686.zip</file>
+	<filesize>13652</filesize>
     </package>
     <package>
 	<name>project-ctl</name>
@@ -1584,26 +1397,15 @@
 	<filesize>1538</filesize>
     </package>
     <package>
-	<name>sdk-android-10</name>
+	<name>sdk-android-14</name>
 	<replaces></replaces>
 	<version>1.02</version>
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>9967679</size>
-	<file>sdk-android-10_1.02_all.zip</file>
-	<filesize>6263183</filesize>
-    </package>
-    <package>
-	<name>sdk-android-14</name>
-	<replaces></replaces>
-	<version>1.0</version>
-	<arch>all</arch>
-	<description>Android java sdk</description>
-	<depends></depends>
-	<size>17851956</size>
-	<file>sdk-android-14_1.0_all.zip</file>
-	<filesize>12728986</filesize>
+	<size>17835528</size>
+	<file>sdk-android-14_1.02_all.zip</file>
+	<filesize>12723288</filesize>
     </package>
     <package>
 	<name>sdk-android-15</name>
@@ -1612,9 +1414,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>17251958</size>
+	<size>17235030</size>
 	<file>sdk-android-15_1.02_all.zip</file>
-	<filesize>11980210</filesize>
+	<filesize>11974411</filesize>
     </package>
     <package>
 	<name>sdk-android-16</name>
@@ -1623,9 +1425,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>18458467</size>
+	<size>18441542</size>
 	<file>sdk-android-16_1.02_all.zip</file>
-	<filesize>12894757</filesize>
+	<filesize>12888964</filesize>
     </package>
     <package>
 	<name>sdk-android-17</name>
@@ -1634,9 +1436,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>19166229</size>
+	<size>19149304</size>
 	<file>sdk-android-17_1.02_all.zip</file>
-	<filesize>13161537</filesize>
+	<filesize>13155743</filesize>
     </package>
     <package>
 	<name>sdk-android-18</name>
@@ -1645,9 +1447,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>19435442</size>
+	<size>19418517</size>
 	<file>sdk-android-18_1.02_all.zip</file>
-	<filesize>13261298</filesize>
+	<filesize>13255504</filesize>
     </package>
     <package>
 	<name>sdk-android-19</name>
@@ -1656,9 +1458,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>21918698</size>
+	<size>21901769</size>
 	<file>sdk-android-19_1.02_all.zip</file>
-	<filesize>13813727</filesize>
+	<filesize>13807929</filesize>
     </package>
     <package>
 	<name>sdk-android-20</name>
@@ -1667,9 +1469,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>21392260</size>
+	<size>21375331</size>
 	<file>sdk-android-20_1.02_all.zip</file>
-	<filesize>13746291</filesize>
+	<filesize>13740493</filesize>
     </package>
     <package>
 	<name>sdk-android-21</name>
@@ -1678,9 +1480,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>26644135</size>
+	<size>26627208</size>
 	<file>sdk-android-21_1.02_all.zip</file>
-	<filesize>15250382</filesize>
+	<filesize>15244589</filesize>
     </package>
     <package>
 	<name>sdk-android-22</name>
@@ -1689,9 +1491,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>26823906</size>
+	<size>26806983</size>
 	<file>sdk-android-22_1.02_all.zip</file>
-	<filesize>15275732</filesize>
+	<filesize>15269943</filesize>
     </package>
     <package>
 	<name>sdk-android-23</name>
@@ -1700,9 +1502,9 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>24746960</size>
+	<size>24729987</size>
 	<file>sdk-android-23_1.02_all.zip</file>
-	<filesize>14627806</filesize>
+	<filesize>14622000</filesize>
     </package>
     <package>
 	<name>sdk-android-24</name>
@@ -1711,31 +1513,53 @@
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>37956320</size>
+	<size>37938794</size>
 	<file>sdk-android-24_1.02_all.zip</file>
-	<filesize>20255333</filesize>
+	<filesize>20244200</filesize>
     </package>
     <package>
-	<name>sdk-android-8</name>
+	<name>sdk-android-25</name>
 	<replaces></replaces>
 	<version>1.02</version>
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>5502634</size>
-	<file>sdk-android-8_1.02_all.zip</file>
-	<filesize>4808045</filesize>
+	<size>38298808</size>
+	<file>sdk-android-25_1.02_all.zip</file>
+	<filesize>20311197</filesize>
     </package>
     <package>
-	<name>sdk-android-n</name>
+	<name>sdk-android-26</name>
 	<replaces></replaces>
 	<version>1.02</version>
 	<arch>all</arch>
 	<description>Android java sdk</description>
 	<depends></depends>
-	<size>37297255</size>
-	<file>sdk-android-N_1.02_all.zip</file>
-	<filesize>19960957</filesize>
+	<size>30569063</size>
+	<file>sdk-android-26_1.02_all.zip</file>
+	<filesize>19638016</filesize>
+    </package>
+    <package>
+	<name>sdk-android-27</name>
+	<replaces></replaces>
+	<version>1.02</version>
+	<arch>all</arch>
+	<description>Android java sdk</description>
+	<depends></depends>
+	<size>33649460</size>
+	<file>sdk-android-27_1.02_all.zip</file>
+	<filesize>19885032</filesize>
+    </package>
+    <package>
+	<name>sdk-android-p</name>
+	<replaces></replaces>
+	<version>1.02</version>
+	<arch>all</arch>
+	<description>Android java sdk</description>
+	<depends></depends>
+	<size>36115025</size>
+	<file>sdk-android-P_1.02_all.zip</file>
+	<filesize>20163392</filesize>
     </package>
     <package>
 	<name>sdktools</name>
@@ -1746,7 +1570,7 @@
 	<depends>libstdc++-compact-dev fastjar</depends>
 	<size>1599784</size>
 	<file>sdktools_1.1_i686.zip</file>
-	<filesize>613489</filesize>
+	<filesize>613280</filesize>
     </package>
     <package>
 	<name>sdl2</name>
@@ -1755,9 +1579,9 @@
 	<arch>i686</arch>
 	<description>Simple DirectMedia Layer</description>
 	<depends></depends>
-	<size>1314168</size>
+	<size>1314104</size>
 	<file>sdl2_2.0.3_i686.zip</file>
-	<filesize>427530</filesize>
+	<filesize>428296</filesize>
     </package>
     <package>
 	<name>sdl2-dev</name>
@@ -1766,64 +1590,108 @@
 	<arch>i686</arch>
 	<description>Simple DirectMedia Layer (development files)</description>
 	<depends>sdl2</depends>
-	<size>8443783</size>
+	<size>8444330</size>
 	<file>sdl2-dev_2.0.3_i686.zip</file>
-	<filesize>2425121</filesize>
+	<filesize>2432109</filesize>
     </package>
     <package>
 	<name>sqlite</name>
 	<replaces></replaces>
-	<version>3071502</version>
+	<version>3140100</version>
 	<arch>i686</arch>
 	<description>SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine.</description>
 	<depends></depends>
-	<size>4539433</size>
-	<file>sqlite_3071502_i686.zip</file>
-	<filesize>1829648</filesize>
+	<size>1077932</size>
+	<file>sqlite_3140100_i686.zip</file>
+	<filesize>549335</filesize>
+    </package>
+    <package>
+	<name>sqlite-dev</name>
+	<replaces></replaces>
+	<version>3140100</version>
+	<arch>i686</arch>
+	<description>SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. (development files)</description>
+	<depends>sqlite</depends>
+	<size>4821824</size>
+	<file>sqlite-dev_3140100_i686.zip</file>
+	<filesize>1778781</filesize>
+    </package>
+    <package>
+	<name>sqlite-man</name>
+	<replaces></replaces>
+	<version>3140100</version>
+	<arch>i686</arch>
+	<description>SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. (manual files)</description>
+	<depends>sqlite</depends>
+	<size>8928</size>
+	<file>sqlite-man_3140100_i686.zip</file>
+	<filesize>4831</filesize>
     </package>
     <package>
 	<name>subversion</name>
 	<replaces></replaces>
-	<version>1.7.14</version>
+	<version>1.9.4</version>
 	<arch>i686</arch>
-	<description>Subversion exists to be universally recognized and adopted as an open-source, centralized version control system characterized by its reliability as a safe haven for valuable data; the simplicity of its model and usage; and its ability to support the needs of a wide variety of users and projects, from individuals to large-scale enterprise operations.</description>
+	<description>Advanced version control system</description>
 	<depends></depends>
-	<size>23797532</size>
-	<file>subversion_1.7.14_i686.zip</file>
-	<filesize>10471500</filesize>
+	<size>5892372</size>
+	<file>subversion_1.9.4_i686.zip</file>
+	<filesize>2354886</filesize>
     </package>
     <package>
-	<name>unzip</name>
+	<name>subversion-dev</name>
 	<replaces></replaces>
-	<version>6.0</version>
+	<version>1.9.4</version>
 	<arch>i686</arch>
-	<description>De-archiver for .zip files</description>
-	<depends></depends>
-	<size>293513</size>
-	<file>unzip_6.0_i686.zip</file>
-	<filesize>134250</filesize>
+	<description>Advanced version control system (development files)</description>
+	<depends>subversion</depends>
+	<size>17585290</size>
+	<file>subversion-dev_1.9.4_i686.zip</file>
+	<filesize>6521276</filesize>
     </package>
     <package>
-	<name>vim</name>
+	<name>subversion-man</name>
 	<replaces></replaces>
-	<version>7.4-1</version>
+	<version>1.9.4</version>
 	<arch>i686</arch>
-	<description>Vi IMproved - enhanced vi editor</description>
-	<depends>libiconv</depends>
-	<size>22225675</size>
-	<file>vim_7.4-1_i686.zip</file>
-	<filesize>8328907</filesize>
+	<description>Advanced version control system (manual files)</description>
+	<depends>subversion</depends>
+	<size>25001</size>
+	<file>subversion-man_1.9.4_i686.zip</file>
+	<filesize>15102</filesize>
     </package>
     <package>
 	<name>wget</name>
 	<replaces></replaces>
-	<version>1.15</version>
+	<version>1.18</version>
 	<arch>i686</arch>
 	<description>GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals without X-Windows support, etc.</description>
-	<depends></depends>
-	<size>2444175</size>
-	<file>wget_1.15_i686.zip</file>
-	<filesize>1028797</filesize>
+	<depends>libiconv</depends>
+	<size>2696561</size>
+	<file>wget_1.18_i686.zip</file>
+	<filesize>1131113</filesize>
+    </package>
+    <package>
+	<name>wget-info</name>
+	<replaces></replaces>
+	<version>1.18</version>
+	<arch>i686</arch>
+	<description>GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals without X-Windows support, etc. (info files)</description>
+	<depends>wget</depends>
+	<size>227483</size>
+	<file>wget-info_1.18_i686.zip</file>
+	<filesize>71595</filesize>
+    </package>
+    <package>
+	<name>wget-man</name>
+	<replaces></replaces>
+	<version>1.18</version>
+	<arch>i686</arch>
+	<description>GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals without X-Windows support, etc. (manual files)</description>
+	<depends>wget</depends>
+	<size>108748</size>
+	<file>wget-man_1.18_i686.zip</file>
+	<filesize>36381</filesize>
     </package>
     <package>
 	<name>zip</name>

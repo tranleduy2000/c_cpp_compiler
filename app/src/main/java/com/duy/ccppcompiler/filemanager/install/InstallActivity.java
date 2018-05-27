@@ -144,6 +144,8 @@ public class InstallActivity extends ThemeSupportActivity {
     }
 
     private void installCompiler() {
+        mTxtMessage.append("\nStart install GNU compiler");
+
         Intent intent = new Intent(InstallActivity.this, PackageManagerActivity.class);
         intent.putExtra(PackageManagerActivity.EXTRA_CMD, PackageManagerActivity.ACTION_INSTALL);
         intent.putExtra(PackageManagerActivity.EXTRA_DATA, "build-essential-gcc-compact");
