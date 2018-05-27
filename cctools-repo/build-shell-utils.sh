@@ -22,8 +22,6 @@ gcc_mingw_version="4.9.3"
 
 TARGET_INST_DIR="/data/data/com.duy.c.cpp.compiler/root/cctools"
 APPLICATION_ID="com.duy.c.cpp.compiler"
-#TARGET_INST_DIR="/data/data/com.pdaxrom.cctools/root/cctools"
-#TARGET_INST_DIR="/data/data/com.pdaxrom.cctools/cache/cctools"
 
 SRC_PREFIX="$1"
 TARGET_ARCH="$2"
