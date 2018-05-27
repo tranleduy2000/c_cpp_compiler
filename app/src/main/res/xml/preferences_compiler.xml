@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
     <PreferenceCategory
         android:summary="Add the commands when calling the compiler"
         android:title="General">
@@ -47,5 +48,35 @@
             android:title="Language standard (-std)" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Warnings">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_option_w_warning"
+            android:summary="lnhibit all warning messages"
+            android:title="-w">
 
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_option_wall_warning"
+            android:summary="Show most warnings"
+            android:title="-Wall">
+
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_option_wextra_warning"
+            android:summary="Show some more warnings"
+            android:title="-Wextra">
+
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_option_werror"
+            android:summary="Make all warnings into errors"
+            android:title="-Werror">
+
+        </CheckBoxPreference>
+
+    </PreferenceCategory>
 </PreferenceScreen>

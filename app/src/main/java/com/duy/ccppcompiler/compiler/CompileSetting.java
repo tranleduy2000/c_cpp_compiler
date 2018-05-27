@@ -67,28 +67,42 @@ public class CompileSetting implements ICompileSetting {
     private String getGCCFlags() {
         CommandBuilder builder = new CommandBuilder();
 
-
         //-ansi
-        builder.addFlags(mPref.getBoolean(mContext.getString(R.string.pref_c_options_ansi), false)
-                ? "-ansi" : "");
+        boolean ansi = mPref.getBoolean(mContext.getString(R.string.pref_c_options_ansi), false);
+        builder.addFlags(ansi ? "-ansi" : "");
+
         //-fno-asm
-        builder.addFlags(mPref.getBoolean(mContext.getString(R.string.pref_c_options_fno_asm), false)
-                ? "-fno-asm" : "");
+        boolean noAsm = mPref.getBoolean(mContext.getString(R.string.pref_c_options_fno_asm), false);
+        builder.addFlags(noAsm ? "-fno-asm" : "");
+
         //-traditional-cpp
-        builder.addFlags(mPref.getBoolean(mContext.getString(R.string.pref_c_options_ansi), false)
-                ? "-traditional-cpp" : "");
+        boolean traditionalCpp = mPref.getBoolean(mContext.getString(R.string.pref_c_options_traditional_cpp), false);
+        builder.addFlags(traditionalCpp ? "-traditional-cpp" : "");
 
         //optimize
         String optimize = mPref.getString(mContext.getString(R.string.pref_option_optimization_level), "");
-        if (!optimize.isEmpty()) {
-            builder.addFlags("-O" + optimize);
-        }
+        if (!optimize.isEmpty()) builder.addFlags("-O" + optimize);
 
         //language standard
         String std = mPref.getString(mContext.getString(R.string.pref_option_language_standard), "");
-        if (!std.isEmpty()) {
-            builder.addFlags("-std=" + std);
-        }
+        if (!std.isEmpty()) builder.addFlags("-std=" + std);
+
+        //-w
+        boolean w = mPref.getBoolean(mContext.getString(R.string.pref_option_w_warning), false);
+        if (!w) builder.addFlags("-w");
+
+        //-wall
+        boolean wall = mPref.getBoolean(mContext.getString(R.string.pref_option_wall_warning), false);
+        if (!wall) builder.addFlags("-wall");
+
+        //Wextra
+        boolean wExtra = mPref.getBoolean(mContext.getString(R.string.pref_option_wextra_warning), false);
+        if (!wExtra) builder.addFlags("-Wextra");
+
+        //Werror
+        boolean Werror = mPref.getBoolean(mContext.getString(R.string.pref_option_werror), false);
+        if (!Werror) builder.addFlags("-Werror");
+
         return builder.buildCommand();
     }
 
