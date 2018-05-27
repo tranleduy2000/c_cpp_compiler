@@ -1,0 +1,5028 @@
+// Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+// Copyright (C) 2010-2013 BUGSENG srl (http://bugseng.com)
+//
+// This document describes the Parma Polyhedra Library (PPL).
+//
+// Permission is granted to copy, distribute and/or modify this document
+// under the terms of the GNU Free Documentation License, Version 1.2
+// or any later version published by the Free Software Foundation;
+// with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+// The license is included, in various formats, in the `doc' subdirectory
+// of each distribution of the PPL in files named `fdl.*'.
+//
+// The PPL is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 3 of the License, or (at your
+// option) any later version.  The license is included, in various
+// formats, in the `doc' subdirectory of each distribution of the PPL in
+// files named `gpl.*'.
+//
+// The PPL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+//
+// If you have not received a copy of one or both the above mentioned
+// licenses along with the PPL, write to the Free Software Foundation,
+// Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+//
+// For the most up-to-date information see the Parma Polyhedra Library
+// site: http://bugseng.com/products/ppl/ .
+
+
+/*!
+  \defgroup PPL_CXX_interface C++ Language Interface
+  \brief
+  The core implementation of the Parma Polyhedra Library
+  is written in C++.
+
+  See Namespace, Hierarchical and Compound indexes
+  for additional information about each single data type.
+*/
+
+/*! \mainpage General Information on the PPL
+\section preamble The Main Features
+
+The Parma Polyhedra Library (PPL) is a modern C++ library for the
+manipulation of numerical information that can be represented by
+points in some \f$n\f$-dimensional vector space. For instance, one of
+the key domains the PPL supports is that of rational convex polyhedra
+(Section \ref convex_polys). Such domains
+are employed in several systems for the analysis and verification of
+hardware and software components, with applications spanning
+imperative, functional and logic programming languages, synchronous
+languages and synchronization protocols, real-time and hybrid systems.
+Even though the PPL library is not meant to target a particular
+problem, the design of its interface has been largely influenced by
+the needs of the above class of applications.  That is the reason why
+the library implements a few operators that are more or less specific
+to static analysis applications, while lacking some other operators
+that might be useful when working, e.g., in the field of computational
+geometry.
+
+The main features of the library are the following:
+- it is user friendly:
+  you write <CODE>x + 2*y + 5*z \<= 7</CODE> when you mean it;
+- it is fully dynamic:
+  available virtual memory is the only limitation to the
+  dimension of anything;
+- it provides full support for the manipulation of convex polyhedra
+  that are not topologically closed;
+- it is written in standard C++: meant to be portable;
+- it is exception-safe: never leaks resources or leaves invalid object
+  fragments around;
+- it is rather efficient: and we hope to make it even more so;
+- it is thoroughly documented:
+  perhaps not literate programming but close enough;
+- it has interfaces to other programming languages: including C, Java, OCaml
+  and a number of Prolog systems;
+- it is free software: distributed under the terms of the
+  GNU General Public License.
+
+In the following section we describe all the domains available to the PPL user.
+More detailed descriptions of these domains and the operations provided
+will be found in subsequent sections.
+
+In the final section of this chapter (Section \ref use_of_library),
+we provide some additional advice on the use of the library.
+
+\subsection Semantic_Geometric_Descriptors Semantic Geometric Descriptors
+
+A <EM>semantic geometric descriptor</EM> is a subset of \f$ \Rset^n \f$.
+The PPL provides several classes of semantic GDs.  These are
+identified by their C++ class name, together with the class template
+parameters, if any. These classes include the <EM>simple classes</EM>:
+  - \link Parma_Polyhedra_Library::C_Polyhedron \c C_Polyhedron \endlink,
+  - \link Parma_Polyhedra_Library::NNC_Polyhedron \c NNC_Polyhedron \endlink,
+  - \link Parma_Polyhedra_Library::BD_Shape \c BD_Shape\<T\> \endlink,
+  - \link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape\<T\> \endlink,
+  - \link Parma_Polyhedra_Library::Box \c Box\<ITV\> \endlink, and
+  - \link Parma_Polyhedra_Library::Grid \c Grid \endlink,
+
+where:
+  - \c T is a numeric type chosen among
+    \c mpz_class, \c mpq_class,
+    <CODE>signed char</CODE>, \c short, \c int, \c long, \c long long
+    (or any of the C99 exact width integer equivalents \c int8_t, int16_t,
+    and so forth); and
+  - \c ITV is an instance of the
+    \link Parma_Polyhedra_Library::Interval \c Interval \endlink
+    template class.
+
+Other semantic GDs, the <EM>compound classes</EM>, can be constructed
+(also recursively) from all the GDs classes.
+These include:
+  - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PSET\> \endlink,
+  - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE> \endlink,
+  .
+where \c PSET, \c D1 and \c D2 can be any semantic GD classes and \c R is the
+reduction operation to be applied to the component domains of the
+product class.
+
+A uniform set of operations is provided for creating, testing and
+maintaining each of the semantic GDs.  However, as many of these
+depend on one or more syntactic GDs, we first describe the syntactic GDs.
+
+
+\subsection Syntactic_Geometric_Descriptors Syntactic Geometric Descriptors
+
+A <EM>syntactic geometric descriptor</EM> is for defining, modifying
+and inspecting a semantic GD.  There are three kinds of
+<EM>syntactic GDs</EM>: <EM>basic GDs</EM>, <EM>constraint GDs</EM> and
+<EM>generator GDs</EM>.
+Some of these are <EM>generic</EM> and some <EM>specific</EM>.
+A generic syntactic GD can be used (in the appropriate context)
+with any semantic GD; clearly, different semantic GDs will usually
+provide different levels of support for the different subclasses
+of generic GDs. In contrast, the use of a specific GD may be
+restricted to apply to a given subset of the semantic GDs
+(i.e., some semantic GDs provide no support at all for them).
+
+
+\subsubsection Basic_Geometric_Descriptors Basic Geometric Descriptors
+
+The following basic GDs currently supported by the PPL are:
+  - space dimension;
+  - variable and variable set;
+  - coefficient;
+  - linear expression;
+  - relation symbol;
+  - vector point.
+
+These classes, which are all generic syntactic GDs, are used
+to build the constraint and generator GDs as
+well as support many generic operations on the semantic GDs.
+
+
+\subsubsection Constraint_Geometric_Descriptors Constraint Geometric Descriptors
+
+The PPL currently supports the following classes of \e generic constraint GDs:
+  - linear constraint;
+  - linear congruence.
+
+Each linear constraint can be further classified to belong to one or more
+of the following syntactic subclasses:
+  - inconsistent constraints (e.g., \f$0 \geq 2\f$);
+  - tautological constraints (e.g., \f$0 \leq 2\f$);
+  - interval constraints (e.g., \f$x \leq 2\f$);
+  - bounded-difference constraints (e.g., \f$x - y \leq 2\f$);
+  - octagonal constraints (e.g., \f$x + y \leq 2\f$);
+  - linear equality constraints (e.g., \f$x = 2\f$);
+  - non-strict linear inequality constraints (e.g., \f$x - 3y \leq 2\f$);
+  - strict linear inequality constraints (e.g., \f$x - 3y < 2\f$).
+
+Note that the subclasses are not disjoint.
+
+Similarly, each linear congruence can be classified to belong
+to one or more of the following syntactic subclasses:
+  - inconsistent congruences (e.g., \f$0 \equiv_2 1\f$);
+  - tautological congruences (e.g., \f$0 \equiv_2 2\f$);
+  - linear equality, i.e., non-proper congruences
+    (e.g., \f$x + 3y \equiv_0 0\f$);
+  - proper congruences (e.g., \f$x + 3y \equiv_5 0\f$).
+
+The library also supports systems, i.e., finite collections, of either
+linear constraints or linear congruences (but see the note below).
+
+Each semantic GD provides \e optimal support for some of the subclasses
+of generic syntactic GDs listed above: here, the word "optimal" means that
+the considered semantic GD computes the <em>best upward approximation</em>
+of the exact meaning of the linear constraint or congruence.
+When a semantic GD operation is applied to a syntactic GD that is not
+optimally supported, it will either indicate its unsuitability
+(e.g., by throwing an exception) or it will apply an upward approximation
+semantics (possibly not the best one).
+
+For instance, the semantic GD of topologically closed convex polyhedra
+provides optimal support for non-strict linear inequality and equality
+constraints, but it does not provide optimal support for strict inequalities.
+Some of its operations (e.g., \c add_constraint and \c add_congruence)
+will throw an exception if supplied with a non-trivial strict inequality
+constraint or a proper congruence; some other operations
+(e.g., \c refine_with_constraint or \c refine_with_congruence)
+will compute an over-approximation.
+
+Similarly, the semantic GD of rational boxes (i.e., multi-dimensional
+intervals) having integral values as interval boundaries provides optimal
+support for all interval constraints: even though the interval constraint
+\f$2x \leq 5\f$ cannot be represented exactly, it will be optimally
+approximated by the constraint \f$x \leq 3\f$.
+
+\note
+When providing an upward approximation for a constraint or congruence,
+we consider it in isolation: in particular, the approximation of each
+element of a system of GDs is independent from the other elements;
+also, the approximation is independent from the current value of
+the semantic GD.
+
+
+\subsubsection Generator_Geometric_Descriptors Generator Geometric Descriptors
+
+The PPL currently supports two classes of generator GDs:
+  - polyhedra generator: these are polyhedra points, rays and lines;
+  - grid generator: these are grid points, parameters and lines.
+
+Rays, lines and parameters are specific of the mentioned semantic GDs
+and, therefore, they cannot be used by other semantic GDs.
+In contrast, as already mentioned above, points are basic geometric
+descriptors since they are also used in <EM>generic</EM> PPL operations.
+
+
+\subsection Generic_Operations_on_Semantic_Geometric_Descriptors Generic Operations on Semantic Geometric Descriptors
+
+<OL>
+<LI>
+  Constructors of a universe or empty semantic GD with the given
+  space dimension.
+</LI>
+<LI>
+  Operations on a semantic GD that do not depend on the syntactic GDs.
+  <UL>
+  <LI>
+    <CODE>is_empty()</CODE>, <CODE>is_universe()</CODE>,
+    <CODE>is_topologically_closed()</CODE>, <CODE>is_discrete()</CODE>,
+    <CODE>is_bounded()</CODE>, <CODE>contains_integer_point()</CODE>
+
+    test for the named properties of the semantic GD.
+  </LI>
+  <LI>
+    <CODE>%total_memory_in_bytes()</CODE>,
+    <CODE>%external_memory_in_bytes()</CODE>
+
+    return the total and external memory size in bytes.
+  </LI>
+  <LI>
+    <CODE>OK()</CODE>
+
+    checks that the semantic GD has a valid internal representation.
+    (Some GDs provide this method with an optional Boolean argument
+    that, when true, requires to also check for non-emptiness.)
+  </LI>
+  <LI>
+    <CODE>space_dimension()</CODE>, <CODE>affine_dimension()</CODE>
+
+    return, respectively, the space and affine dimensions of the GD.
+  </LI>
+  <LI>
+    <CODE>add_space_dimensions_and_embed()</CODE>,
+    <CODE>add_space_dimensions_and_project()</CODE>,
+    <CODE>expand_space_dimension()</CODE>,
+    <CODE>remove_space_dimensions()</CODE>,
+    <CODE>fold_space_dimensions()</CODE>, <CODE>map_space_dimensions()</CODE>
+
+    modify the space dimensions of the semantic GD; where, depending on the
+    operation, the arguments can include the number of space dimensions
+    to be added or removed a variable or set of variables denoting the
+    actual dimensions to be used and a partial function defining a mapping
+    between the dimensions.
+  </LI>
+  <LI>
+    <CODE>contains()</CODE>, <CODE>strictly_contains()</CODE>,
+    <CODE>is_disjoint_from()</CODE>
+
+    compare the semantic GD with an argument semantic GD of the same class.
+  </LI>
+  <LI>
+    <CODE>topological_closure_assign()</CODE>,
+    <CODE>intersection_assign()</CODE>,
+    <CODE>upper_bound_assign()</CODE>, <CODE>difference_assign()</CODE>,
+    <CODE>time_elapse_assign()</CODE>, <CODE>widening_assign()</CODE>,
+    <CODE>concatenate_assign()</CODE>, <CODE>m_swap()</CODE>
+
+    modify the semantic GD, possibly with an argument semantic GD of
+    the same class.
+  </LI>
+  <LI>
+    <CODE>constrains()</CODE>, <CODE>bounds_from_above()</CODE>,
+    <CODE>bounds_from_below()</CODE>, <CODE>maximize()</CODE>,
+    <CODE>minimize()</CODE>.
+
+    These find information about the bounds of the semantic GD where
+    the argument variable or linear expression define the direction
+    of the bound.
+  </LI>
+  <LI>
+    <CODE>affine_image()</CODE>, <CODE>affine_preimage()</CODE>,
+    <CODE>generalized_affine_image()</CODE>,
+    <CODE>generalized_affine_preimage()</CODE>,
+    <CODE>bounded_affine_image()</CODE>,
+    <CODE>bounded_affine_preimage()</CODE>.
+
+    These perform several variations of the affine image and preimage
+    operations where, depending on the operation, the arguments can
+    include a variable representing the space dimension to which the
+    transformation will be applied and linear expressions
+    with possibly a relation symbol and denominator value
+    that define the exact form of the transformation.
+  </LI>
+  <LI>
+    <CODE>ascii_load()</CODE>, <CODE>ascii_dump()</CODE>
+
+    are the ascii input and output operations.
+  </UL>
+</LI>
+<LI>
+  Constructors of a semantic GD of one class from a semantic GD of any
+  other class.
+  These constructors obey an <EM>upward approximation semantics</EM>,
+  meaning that the constructed semantic GD is guaranteed to contain
+  all the points of the source semantic GD, but possibly more.
+  Some of these constructors provide a complexity parameter with which
+  the application can control the complexity/precision trade-off
+  for the construction operation: by using the complexity parameter,
+  it is possible to keep the construction operation in the polynomial
+  or the simplex worst-case complexity class, possibly incurring into
+  a further upward approximation if the precise constructor is based
+  on an algorithm having exponential complexity.
+</LI>
+<LI>
+  Constructors of a semantic GD from a constraint GD;
+  either a linear constraint system or a linear congruence system.
+  These constructors assume that the given semantic GD provides optimal
+  support for the argument syntactic GD: if that is not the case,
+  an invalid argument exception is thrown.
+</LI>
+<LI>
+  Other interaction between the semantic GDs and constraint GDs.
+  <UL>
+  <LI>
+    <CODE>add_constraint()</CODE>, <CODE>add_constraints()</CODE>,
+    <CODE>add_recycled_constraints()</CODE>,
+    <CODE>add_congruence()</CODE>, <CODE>add_congruences()</CODE>,
+    <CODE>add_recycled_congruences()</CODE>.
+
+    These methods assume that the given semantic GD provides optimal
+    support for the argument syntactic GD: if that is not the case,
+    an invalid argument exception is thrown.
+
+    For <CODE>add_recycled_constraints()</CODE> and
+    <CODE>add_recycled_congruences()</CODE>,
+    the only assumption that can be made on the constraint GD
+    after return (successful or exceptional) is that
+    it can be safely destroyed.
+  </LI>
+  <LI>
+    <CODE>refine_with_constraint()</CODE>,
+    <CODE>refine_with_constraints()</CODE>,
+    <CODE>refine_with_congruence()</CODE>,
+    <CODE>refine_with_congruences()</CODE>.
+
+    If the argument constraint GD is optimally supported by the
+    semantic GD, the methods behave the same as the corresponding
+    \c add_* methods listed above.  Otherwise the constraint GD
+    is used only to a limited extent to refine the semantic GD;
+    possibly not at all.  Notice that, while repeating an add operation
+    is pointless, this is not true for the refine operations.
+    For example, in those cases where
+\code
+      Semantic_GD.add_constraint(c)
+\endcode
+    raises an exception, a fragment of the form
+\code
+      Semantic_GD.refine_with_constraint(c)
+      // Other add_constraint(s) or refine_with_constraint(s) operations
+      // on Semantic_GD.
+      Semantic_GD.refine_with_constraint(c)
+\endcode
+    may give more precise results than a single
+\code
+      Semantic_GD.refine_with_constraint(c).
+      // Other add_constraint(s) or refine_with_constraint(s) operations
+      // on Semantic_GD.
+\endcode
+  </LI>
+  <LI>
+    <CODE>constraints()</CODE>, <CODE>minimized_constraints()</CODE>,
+    <CODE>congruences()</CODE>, <CODE>minimized_congruences()</CODE>.
+
+    Returns the indicated system of constraint GDs satisfied by
+    the semantic GD.
+  </LI>
+  <LI>
+    <CODE>can_recycle_constraint_systems()</CODE>,
+    <CODE>can_recycle_congruence_systems()</CODE>.
+
+    Return true if and only if the semantic GD can recycle the
+    indicated constraint GD.
+  </LI>
+  <LI>
+    <CODE>relation_with()</CODE>.
+
+    This takes a constraint GD as an argument and returns the relations holding
+    between the semantic GD and the constraint GD.
+    The possible relations are:
+    <CODE>IS_INCLUDED()</CODE>, <CODE>SATURATES()</CODE>,
+    <CODE>STRICTLY_INTERSECTS()</CODE>, <CODE>IS_DISJOINT()</CODE>
+    and <CODE>NOTHING()</CODE>.
+    This operator also can take a polyhedron generator GD as an argument
+    and returns the relation <CODE>SUBSUMES()</CODE> or <CODE>NOTHING()</CODE>
+    that holds between the generator GD and the semantic GD.
+  </LI>
+  </UL>
+</LI>
+</OL>
+
+
+\section Upward_Approximation Upward Approximation
+
+The Parma Polyhedra Library, for those cases where an exact result
+cannot be computed within the specified complexity limits, computes an
+<EM>upward approximation</EM> of the exact result.  For semantic GDs this
+means that the computed result is a possibly strict superset of the set of
+points of \f$ \Rset^n \f$ that constitutes the exact result.  Notice
+that the PPL does not provide direct support to compute <EM>downward
+approximations</EM> (i.e., possibly strict subsets of the exact
+results).  While downward approximations can often be computed from
+upward ones, the required algorithms and the conditions upon which
+they are correct are outside the current scope of the PPL.
+Beware, in particular, of the following possible pitfall:
+the library provides methods to compute upward approximations
+of set-theoretic difference, which is antitone in its second
+argument.  Applying a difference method to a second argument
+that is not an exact representation or a downward approximation of
+reality, would yield a result that, of course, is not an upward
+approximation of reality.  It is the responsibility of the
+library user to provide the PPL's method with approximations of reality
+that are consistent with respect to the desired results.
+
+
+\section Approximating_Integers Approximating Integers
+
+The Parma Polyhedra Library provides support for approximating
+integer computations using the geometric descriptors it provides.
+In this section we briefly explain these facilities.
+
+
+\subsection Dropping_Non_Integer_Points Dropping Non-Integer Points
+
+When a geometric descriptor is used to approximate integer quantities,
+all the points with non-integral coordinates represent an imprecision
+of the description.  Of course, removing all these points may be
+impossible (because of convexity) or too expensive.  The PPL provides
+the operator <CODE>drop_some_non_integer_points</CODE> to possibly
+tighten a descriptor by dropping some points with non-integer
+coordinates, using algorithms whose complexity is bounded by
+a parameter.  The set of dimensions that represent integer quantities
+can be optionally specified.  It is worth to stress the role of
+<EM>some</EM> in the operator name: in general no optimality guarantee
+is provided.
+
+
+\subsection Approximating_Bounded_Integers Approximating Bounded Integers
+
+The Parma Polyhedra Library provides services that allow to compute
+correct approximations of bounded arithmetic as available in widespread
+programming languages.  Supported bit-widths are 8, 16, 32 and 64 bits,
+with some limited support for 128 bits.
+Supported representations are binary unsigned and two's complement signed.
+Supported overflow behaviors are:
+<DL>
+  <DT>Wrapping:</DT>
+  <DD>
+    this means that, for a \f$w\textrm{-bit}\f$ bounded integer, the
+    computation
+    happens modulo \f$2^w\f$.  In turn, this signifies that the computation
+    happens <EM>as if</EM> the unbounded arithmetic result was computed
+    and then wrapped.  For unsigned integers, the wrapping function is
+    simply \f$x \bmod 2^w\f$, most conveniently defined as
+    \f[
+      \mathrm{wrap}^\mathrm{u}_w(x)
+        \defeq
+          x - 2^w \lfloor x/2^w \rfloor.
+    \f]
+    For signed integers the wrapping function is, instead,
+    \f[
+      \mathrm{wrap}^\mathrm{s}_w(x)
+        \defeq
+          \begin{cases}
+            \mathrm{wrap}^\mathrm{u}_w(x),
+              &\text{if $\mathrm{wrap}^\mathrm{u}_w(x) < 2^{w-1}$;} \\
+            \mathrm{wrap}^\mathrm{u}_w(x) - 2^w,
+              &\text{otherwise.}
+          \end{cases}
+    \f]
+  </DD>
+  <DT>Undefined:</DT>
+  <DD>
+    this means that the result of the operation resulting in an
+    overflow can take any value.  This is useful to partially
+    model systems where overflow has unspecified effects on
+    the computed result.
+    Even though something more serious can happen in the system
+    being analyzed ---due to, e.g., C's undefined behavior---, here we
+    are only concerned with the results of arithmetic operations.
+    It is the responsibility of the analyzer to ensure that other
+    manifestations of undefined behavior are conservatively approximated.
+  </DD>
+  <DT>Impossible:</DT>
+  <DD>
+    this is for the analysis of languages where overflow is trapped
+    before it affects the state, for which, thus, any indication that
+    an overflow may have affected the state is necessarily due to
+    the imprecision of the analysis.
+  </DD>
+</DL>
+
+
+\subsubsection Wrapping_Operator Wrapping Operator
+
+One possibility for precisely approximating the semantics of programs that
+operate on bounded integer variables is to follow the approach described
+in \ref SK07 "[SK07]".  The idea is to associate space dimensions to the
+<EM>unwrapped values</EM> of bounded variables.  Suppose <CODE>j</CODE>
+is a \f$w\textrm{-bit}\f$, unsigned program variable associated to a space
+dimension
+labeled by the variable \f$x\f$.  If \f$x\f$ is constrained by some
+numerical abstraction to take values in a set \f$S \sseq \Rset\f$, then
+the program variable <CODE>j</CODE> can only take values in
+\f$\bigl\{\, \mathrm{wrap}^\mathrm{u}_w(z) \bigm| z \in S \,\bigr\}\f$.
+There are two reasons why this is interesting: firstly, this allows for
+the retention of relational information by using a single numerical abstraction
+tracking multiple program variables.  Secondly, the integers modulo
+\f$2^w\f$ form a ring of equivalence classes on which addition
+and multiplication are well defined.  This means, e.g., that assignments
+with affine right-hand sides and involving only variables with the same
+bit-width and representation can be safely modeled by affine images.
+While upper bounds and widening can be used without any precaution,
+anything that can be reconducted to intersection requires a preliminary
+<EM>wrapping</EM> phase, where the dimensions corresponding to bounded
+integer types are brought back to their natural domain.
+This necessity arises naturally for the analysis of conditionals
+and conversion operators, as well as in the realization of domain
+combinations.
+
+The PPL provides a general wrapping operator that is parametric with
+respect to the set of space dimensions (variables) to be wrapped,
+the width, representation and overflow behavior of all these variables.
+An optional constraint system can, when given, improve the
+precision.  This constraint system, which must only depend on variables
+with respect to which wrapping is performed, is assumed to represent
+the conditional or looping construct guard with respect to which
+wrapping is performed.  Since wrapping requires the computation of
+upper bounds and due to non-distributivity of constraint refinement
+over upper bounds, passing a constraint system in this way can be more
+precise than refining the result of the wrapping operation afterwards.
+The general wrapping operator offered by the PPL also allows control of
+the complexity/precision ratio by means of two additional parameters:
+an unsigned integer encoding a complexity threshold, with higher values
+resulting in possibly improved precision; and a Boolean controlling
+whether space dimensions should be wrapped individually, something that
+results in much greater efficiency to the detriment of precision,
+or collectively.
+
+Note that the PPL assumes that any space dimension subject to wrapping
+is being used to capture the value of bounded integer values.  As a
+consequence the library is free to drop, from the involved numerical
+abstraction, any point having a non-integer coordinate that corresponds
+to a space dimension subject to wrapping.  It must be stressed that
+freedom to drop such points does not constitute an obligation to remove
+all of them (especially because this would be extraordinarily expensive
+on some numerical abstractions).
+The PPL provides operators for the more systematic
+\ref Dropping_Non_Integer_Points
+"removal of points with non-integral coordinates".
+
+The wrapping operator will only remove some of these points
+as a by-product of its main task and only when this comes at a negligible
+extra cost.
+
+
+\section convex_polys Convex Polyhedra
+
+In this section we introduce convex polyhedra,
+as considered by the library, in more detail.
+For more information about the definitions and results stated here see
+\ref BRZH02b "[BRZH02b]",
+\ref Fuk98 "[Fuk98]",
+\ref NW88 "[NW88]", and
+\ref Wil93 "[Wil93]".
+
+\subsection Vectors_Matrices_and_Scalar_Products Vectors, Matrices and Scalar Products
+
+We denote by \f$\Rset^n\f$ the \f$n\textrm{-dimensional}\f$ vector space on the field
+of real numbers \f$\Rset\f$, endowed with the standard topology.
+The set of all non-negative reals is denoted by \f$\nonnegRset\f$.
+For each \f$i \in \{0, \ldots, n-1\}\f$, \f$v_i\f$ denotes
+the \f$i\textrm{-th}\f$ component of the (column) vector
+\f$\vect{v} = (v_0, \ldots, v_{n-1})^\transpose \in \Rset^n\f$.
+We denote by \f$\vect{0}\f$ the vector of \f$\Rset^n\f$,
+called <EM>the origin</EM>, having all components equal to zero.
+A vector \f$\vect{v} \in \Rset^n\f$ can be also interpreted
+as a matrix in \f$\Rset^{n \times 1}\f$ and manipulated accordingly
+using the usual definitions for addition, multiplication
+(both by a scalar and by another matrix), and transposition,
+denoted by \f$\vect{v}^\transpose\f$.
+
+The <EM>scalar product</EM> of \f$\vect{v},\vect{w} \in \Rset^n\f$,
+denoted \f$\langle \vect{v}, \vect{w} \rangle\f$,
+is the real number
+\f[
+  \vect{v}^\transpose \vect{w} = \sum_{i=0}^{n-1} v_i w_i.
+\f]
+
+For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
+\f$S_1\f$ and \f$S_2\f$ is:
+\f$S_1 + S_2 = \{\, \vect{v}_1 + \vect{v}_2 \mid
+                \vect{v}_1 \in S_1, \vect{v}_2 \in S_2 \,\}.\f$
+
+
+\subsection Affine_Hyperplanes_and_Half_spaces Affine Hyperplanes and Half-spaces
+
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+where \f$\vect{a} \neq \vect{0}\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+defines:
+- an affine hyperplane if it is an equality constraint,
+  i.e., if \f$\mathord{\relsym} \in \{ = \}\f$;
+- a topologically closed affine half-space if it is
+  a non-strict inequality constraint,
+  i.e., if \f$\mathord{\relsym} \in \{ \geq \}\f$;
+- a topologically open affine half-space if it is
+  a strict inequality constraint,
+  i.e., if \f$\mathord{\relsym} \in \{ > \}\f$.
+
+Note that each hyperplane \f$\langle \vect{a}, \vect{x} \rangle = b\f$
+can be defined as the intersection of the two closed affine half-spaces
+\f$\langle \vect{a}, \vect{x} \rangle \geq b\f$ and
+\f$\langle -\vect{a}, \vect{x} \rangle \geq -b\f$.
+Also note that, when \f$\vect{a} = \vect{0}\f$,
+the constraint \f$\langle \vect{0}, \vect{x} \rangle \relsym b\f$
+is either a tautology (i.e., always true)
+or inconsistent (i.e., always false), so that it defines
+either the whole vector space \f$\Rset^n\f$ or the empty set \f$\emptyset\f$.
+
+
+\subsection Convex_Polyhedra Convex Polyhedra
+
+The set \f$\cP \sseq \Rset^n\f$ is a
+<EM>not necessarily closed convex polyhedron</EM>
+(<EM>NNC polyhedron</EM>, for short) if and only if either
+\f$\cP\f$ can be expressed as the intersection of a finite number
+of (open or closed) affine half-spaces of \f$\Rset^n\f$
+or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+The set of all NNC polyhedra on the vector space \f$\Rset^n\f$
+is denoted \f$\Pset_n\f$.
+
+The set \f$\cP \in \Pset_n\f$ is a <EM>closed convex polyhedron</EM>
+(<EM>closed polyhedron</EM>, for short) if and only if either
+\f$\cP\f$ can be expressed as the intersection of a finite number
+of closed affine half-spaces of \f$\Rset^n\f$
+or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+The set of all closed polyhedra on the vector space \f$\Rset^n\f$
+is denoted \f$\CPset_n\f$.
+
+When ordering NNC polyhedra by the set inclusion relation,
+the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
+are, respectively, the smallest and the biggest elements of both
+\f$\Pset_n\f$ and \f$\CPset_n\f$.
+The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> polyhedron.
+
+In theoretical terms,
+\f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion and
+\f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
+
+\note
+In the following, we will usually specify operators on the domain
+\f$\Pset_n\f$ of NNC polyhedra. Unless an explicit distinction is
+made, these operators are provided with the same specification when
+applied to the domain \f$\CPset_n\f$ of topologically closed
+polyhedra.  The implementation maintains a clearer separation between
+the two domains of polyhedra
+(see \ref Topologies_and_Topological_compatibility "Topologies and Topological-compatibility"):
+while computing polyhedra in \f$\Pset_n\f$ may provide more precise
+results, polyhedra in \f$\CPset_n\f$ can be represented and
+manipulated more efficiently.  As a rule of thumb, if your application
+will only manipulate polyhedra that are topologically closed, then it
+should use the simpler domain \f$\CPset_n\f$. Using NNC polyhedra is
+only recommended if you are going to actually benefit from the
+increased accuracy.
+
+
+\subsection Bounded_Polyhedra Bounded Polyhedra
+
+An NNC polyhedron \f$\cP \in \Pset_n\f$ is <EM>bounded</EM>
+if there exists a \f$\lambda \in \nonnegRset\f$ such that:
+\f[
+  \cP
+    \sseq
+      \bigl\{\,
+        \vect{x} \in \Rset^n
+      \bigm|
+        - \lambda \leq x_j \leq \lambda \text{ for } j = 0, \ldots, n-1
+      \,\bigr\}.
+\f]
+A bounded polyhedron is also called a <EM>polytope</EM>.
+
+
+\section representation Representations of Convex Polyhedra
+
+NNC polyhedra can be specified by using two possible representations,
+the constraints (or implicit) representation and
+the generators (or parametric) representation.
+
+
+\subsection Constraints_Representation Constraints Representation
+
+In the sequel, we will simply write ``equality'' and ``inequality''
+to mean ``linear equality'' and ``linear inequality'', respectively;
+also, we will refer to either an equality or an inequality
+as a <EM>constraint</EM>.
+
+By definition, each polyhedron \f$\cP \in \Pset_n\f$ is the set of solutions
+to a <EM>constraint system</EM>, i.e., a finite number of constraints.
+By using matrix notation, we have
+\f[
+  \cP
+    \defeq
+      \{\,
+        \vect{x} \in \Rset^n
+      \mid
+        A_1 \vect{x} =    \vect{b}_1,
+        A_2 \vect{x} \geq \vect{b}_2,
+        A_3 \vect{x} >    \vect{b}_3
+      \,\},
+\f]
+where, for all \f$i \in \{1, 2, 3\}\f$,
+\f$A_i \in \Rset^{m_i} \times \Rset^n\f$ and \f$\vect{b}_i \in \Rset^{m_i}\f$,
+and \f$m_1, m_2, m_3 \in \Nset\f$ are
+the number of equalities,
+the number of non-strict inequalities, and
+the number of strict inequalities,
+respectively.
+
+
+\subsection Combinations_and_Hulls Combinations and Hulls
+
+Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
+be a finite set of vectors.
+For all scalars \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the vector \f$\vect{v} = \sum_{j=1}^k \lambda_j \vect{x}_j\f$
+is said to be a <EM>linear</EM> combination of the vectors in \f$S\f$.
+Such a combination is said to be
+- a <EM>positive</EM> (or <EM>conic</EM>) combination,
+  if \f$\forall j \in \{ 1, \ldots, k \} \itc \lambda_j \in \nonnegRset\f$;
+- an <EM>affine</EM> combination, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
+- a <EM>convex</EM> combination, if it is both positive and affine.
+
+We denote by \f$\linearhull(S)\f$
+(resp., \f$\conichull(S)\f$, \f$\affinehull(S)\f$, \f$\convexhull(S)\f$)
+the set of all the linear (resp., positive, affine, convex)
+combinations of the vectors in \f$S\f$.
+
+Let \f$P, C \sseq \Rset^n\f$, where \f$P \union C = S\f$.
+We denote by  \f$\NNChull(P, C)\f$ the set of all convex combinations
+of the vectors in \f$S\f$
+such that \f$\lambda_j > 0\f$ for some \f$\vect{x}_j \in P\f$
+(informally, we say that there exists a vector of \f$P\f$ that
+plays an active role in the convex combination).
+Note that \f$\NNChull(P, C) = \NNChull(P, P \union C)\f$
+so that, if \f$C \sseq P\f$,
+\f[
+   \convexhull(P)
+     = \NNChull(P, \emptyset)
+     = \NNChull(P, P)
+     = \NNChull(P, C).
+\f]
+It can be observed that
+\f$\linearhull(S)\f$ is an affine space,
+\f$\conichull(S)\f$ is a topologically closed convex cone,
+\f$\convexhull(S)\f$ is a topologically closed polytope, and
+\f$\NNChull(P, C)\f$ is an NNC polytope.
+
+
+\subsection Points_Closure_Points_Rays_and_Lines Points, Closure Points, Rays and Lines
+
+Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
+- a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
+- a vector \f$\vect{c} \in \Rset^n\f$ is called a
+  <EM>closure point</EM> of \f$\cP\f$ if it is a point
+  of the topological closure of \f$\cP\f$;
+- a vector \f$\vect{r} \in \Rset^n\f$, where \f$\vect{r} \neq \vect{0}\f$,
+  is called a <EM>ray</EM> (or direction of infinity) of \f$\cP\f$
+  if \f$\cP \neq \emptyset\f$ and \f$\vect{p} + \lambda \vect{r} \in \cP\f$,
+  for all points \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$;
+- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cP\f$
+  if both \f$\vect{l}\f$ and \f$-\vect{l}\f$ are rays of \f$\cP\f$.
+
+A point of an NNC polyhedron \f$\cP \in \Pset_n\f$ is a
+<EM>vertex</EM> if and only if
+it cannot be expressed as a convex combination of any other pair of
+distinct points in \f$\cP\f$.
+A ray \f$\vect{r}\f$ of a polyhedron \f$\cP\f$ is an <EM>extreme ray</EM>
+if and only if it cannot be expressed as
+a positive combination of any other pair
+\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ of rays of \f$\cP\f$,
+where
+\f$\vect{r} \neq \lambda \vect{r}_1\f$,
+\f$\vect{r} \neq \lambda \vect{r}_2\f$ and
+\f$\vect{r}_1 \neq \lambda \vect{r}_2\f$
+for all \f$\lambda \in \nonnegRset\f$
+(i.e., rays differing by a positive scalar factor are considered
+to be the same ray).
+
+
+\subsection Generators_Representation Generators Representation
+
+Each NNC polyhedron \f$\cP \in \Pset_n\f$ can be represented by
+finite sets of lines \f$L\f$, rays \f$R\f$,
+points \f$P\f$ and closure points \f$C\f$ of \f$\cP\f$.
+The 4-tuple \f$\cG = (L, R, P, C)\f$ is said to be
+a <EM>generator system</EM> for \f$\cP\f$,
+in the sense that
+\f[
+  \cP = \linearhull(L) + \conichull(R) + \NNChull(P, C),
+\f]
+where the symbol '\f$+\f$' denotes the Minkowski's sum.
+
+When \f$\cP \in \CPset_n\f$ is a closed polyhedron,
+then it can be represented by
+finite sets of lines \f$L\f$, rays \f$R\f$ and
+points \f$P\f$ of \f$\cP\f$.
+In this case, the 3-tuple \f$\cG = (L, R, P)\f$ is said to be
+a <EM>generator system</EM> for \f$\cP\f$ since we have
+\f[
+  \cP = \linearhull(L) + \conichull(R) + \convexhull(P).
+\f]
+Thus, in this case,
+every closure point of \f$\cP\f$ is a point of \f$\cP\f$.
+
+For any \f$\cP \in \Pset_n\f$ and generator system \f$\cG = (L, R, P, C)\f$
+for \f$\cP\f$, we have
+ \f$\cP = \emptyset\f$ if and only if \f$P = \emptyset\f$.
+Also \f$P\f$ must contain all the vertices of \f$\cP\f$
+although \f$\cP\f$ can be non-empty and have no vertices.
+In this case, as \f$P\f$ is necessarily non-empty, it must
+contain points of \f$\cP\f$ that are <EM>not</EM> vertices.
+For instance, the half-space of \f$\Rset^2\f$ corresponding to the single
+constraint \f$y \geq 0\f$ can be represented by the generator system
+\f$\cG = (L, R, P, C)\f$ such that
+\f$L = \bigl\{ (1, 0)^\transpose \bigr\}\f$,
+\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$,
+\f$P = \bigl\{ (0, 0)^\transpose \bigr\}\f$, and
+\f$C = \emptyset\f$.
+It is also worth noting that the only ray in \f$R\f$
+is <EM>not</EM> an extreme ray of \f$\cP\f$.
+
+\subsection Minimized_Representations Minimized Representations
+
+A constraints system \f$\cC\f$ for an NNC polyhedron \f$\cP \in \Pset_n\f$
+is said to be <EM>minimized</EM> if no proper subset of \f$\cC\f$ is
+a constraint system for \f$\cP\f$.
+
+Similarly, a generator system \f$\cG = (L, R, P, C)\f$
+for an NNC polyhedron \f$\cP \in \Pset_n\f$ is said to be <EM>minimized</EM>
+if there does not exist a generator system
+\f$\cG' = (L', R', P', C') \neq \cG\f$ for \f$\cP\f$
+such that \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
+\f$C' \sseq C\f$.
+
+
+\subsection Double_Description Double Description
+
+Any NNC polyhedron \f$\cP\f$ can be described by using
+a constraint system \f$\cC\f$, a generator system \f$\cG\f$, or
+both by means of the <EM>double description pair (DD pair)</EM>
+\f$(\cC, \cG)\f$.
+The <EM>double description method</EM> is a collection
+of well-known as well as novel theoretical results showing that,
+given one kind of representation, there are algorithms
+for computing a representation of the other kind
+and for minimizing both representations by removing
+redundant constraints/generators.
+
+Such changes of representation form a key step
+in the implementation of many operators on NNC polyhedra:
+this is because some operators, such as intersections and poly-hulls,
+are provided with a natural and efficient implementation
+when using one of the representations in a DD pair,
+while being rather cumbersome when using the other.
+
+
+\subsection Topologies_and_Topological_compatibility Topologies and Topological-compatibility
+
+As indicated above, when an NNC polyhedron \f$\cP\f$ is necessarily closed,
+we can ignore the closure points contained in its generator system
+\f$\cG = (L, R, P, C)\f$ (as every closure point is also a point)
+and represent \f$\cP\f$ by the triple \f$(L, R, P)\f$.
+Similarly, \f$\cP\f$ can be represented by a constraint system
+that has no strict inequalities.
+Thus a necessarily closed polyhedron can have a smaller representation
+than one that is not necessarily closed.
+Moreover, operators restricted to work on closed polyhedra only
+can be implemented more efficiently.
+For this reason the library provides two alternative
+``topological kinds'' for a polyhedron, <EM>NNC</EM> and <EM>C</EM>.
+We shall abuse terminology by referring to the topological kind of
+a polyhedron as its <EM>topology</EM>.
+
+In the library, the topology of each polyhedron object is fixed
+once for all at the time of its creation and must be respected
+when performing operations on the polyhedron.
+
+Unless it is otherwise stated,
+all the polyhedra, constraints and/or generators in any library operation
+must obey the following <EM>topological-compatibility</EM> rules:
+- polyhedra are topologically-compatible if and only if they have
+  the same topology;
+- all constraints except for strict inequality constraints
+  and all generators except for closure points are
+  topologically-compatible with both C and NNC polyhedra;
+- strict inequality constraints and closure points are
+  topologically-compatible with a polyhedron if and only if it is NNC.
+
+Wherever possible,
+the library provides methods that, starting from a polyhedron of
+a given topology, build the corresponding polyhedron having
+the other topology.
+
+
+\subsection Space_Dimensions_and_Dimension_Compatibility Space Dimensions and Dimension Compatibility
+
+The <EM>space dimension</EM> of an NNC polyhedron \f$\cP \in \Pset_n\f$
+(resp., a C polyhedron \f$\cP \in \CPset_n\f$) is the dimension
+\f$n \in \Nset\f$ of the corresponding vector space \f$\Rset^n\f$.
+The space dimension of constraints, generators and other objects
+of the library is defined similarly.
+
+Unless it is otherwise stated,
+all the polyhedra, constraints and/or generators in any library operation
+must obey the following (space) <EM>dimension-compatibility</EM> rules:
+- polyhedra are dimension-compatible if and only if they have
+  the same space dimension;
+- the constraint
+  \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+  where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$
+  and \f$\vect{a}, \vect{x} \in \Rset^m\f$, is dimension-compatible
+  with a polyhedron having space dimension \f$n\f$
+  if and only if \f$m \leq n\f$;
+- the generator \f$\vect{x} \in \Rset^m\f$ is dimension-compatible
+  with a polyhedron having space dimension \f$n\f$
+  if and only if \f$m \leq n\f$;
+- a system of constraints (resp., generators) is dimension-compatible with
+  a polyhedron if and only if all the constraints (resp., generators)
+  in the system are dimension-compatible with the polyhedron.
+
+While the space dimension of a constraint, a generator or a system thereof
+is automatically adjusted when needed, the space dimension of a polyhedron
+can only be changed by explicit calls to operators provided for that
+purpose.
+
+\subsection Affine_Independence_and_Affine_Dimension Affine Independence and Affine Dimension
+
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
+<EM>affinely independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the system of equations
+\f[
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
+    \quad
+  \sum_{i = 1}^k \lambda_i = 0
+\f]
+implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
+
+The maximum number of affinely independent points in \f$\Rset^n\f$
+is \f$n + 1\f$.
+
+A <EM>non-empty</EM> NNC polyhedron \f$\cP \in \Pset_n\f$ has
+<EM>affine dimension</EM> \f$k \in \Nset\f$, denoted by \f$\pdim(\cP) = k\f$,
+if the maximum number of affinely independent points in \f$\cP\f$ is
+\f$k + 1\f$.
+
+We remark that the above definition only applies to polyhedra
+that are not empty, so that \f$0 \leq \pdim(\cP) \leq n\f$.
+By convention, the affine dimension of an empty polyhedron is 0
+(even though the ``natural'' generalization of the definition above
+would imply that the affine dimension of an empty polyhedron is \f$-1\f$).
+
+\note
+The affine dimension \f$k \leq n\f$ of an NNC polyhedron \f$\cP \in \Pset_n\f$
+must not be confused with the space dimension \f$n\f$ of \f$\cP\f$,
+which is the dimension of the enclosing vector space \f$\Rset^n\f$.
+In particular, we can have \f$\pdim(\cP) \neq \pdim(\cQ)\f$ even though
+\f$\cP\f$ and \f$\cQ\f$ are dimension-compatible;
+and vice versa, \f$\cP\f$ and \f$\cQ\f$ may be dimension-incompatible
+polyhedra even though \f$\pdim(\cP) = \pdim(\cQ)\f$.
+
+
+\subsection Rational_Polyhedra Rational Polyhedra
+
+An NNC polyhedron is called <EM>rational</EM>
+if it can be represented by a constraint system where
+all the constraints have rational coefficients.
+It has been shown that an NNC polyhedron is rational
+if and only if it can be represented by a generator system where
+all the generators have rational coefficients.
+
+The library only supports rational polyhedra.
+The restriction to rational numbers applies not only to polyhedra,
+but also to the other numeric arguments that may be required
+by the operators considered, such as the coefficients defining
+(rational) affine transformations.
+
+
+\section Operations_on_Convex_Polyhedra Operations on Convex Polyhedra
+
+In this section we briefly describe operations on NNC polyhedra
+that are provided by the library.
+
+\subsection Intersection_and_Convex_Polyhedral_Hull Intersection and Convex Polyhedral Hull
+
+For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
+the <EM>intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$,
+defined as the set intersection \f$\cP_1 \inters \cP_2\f$,
+is the biggest NNC polyhedron included in both \f$\cP_1\f$ and \f$\cP_2\f$;
+similarly, the <EM>convex polyhedral hull</EM> (or <EM>poly-hull</EM>)
+of \f$\cP_1\f$ and \f$\cP_2\f$, denoted by \f$\cP_1 \uplus \cP_2\f$,
+is the smallest NNC polyhedron that includes both
+\f$\cP_1\f$ and \f$\cP_2\f$.
+The intersection and poly-hull of any pair of closed polyhedra
+in \f$\CPset_n\f$ is also closed.
+
+In theoretical terms,
+the intersection and poly-hull operators defined above
+are the binary <EM>meet</EM> and the binary <EM>join</EM>
+operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
+
+\subsection Convex_Polyhedral_Difference Convex Polyhedral Difference
+
+For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
+the <EM>convex polyhedral difference</EM> (or <EM>poly-difference</EM>)
+of \f$\cP_1\f$ and \f$\cP_2\f$ is defined as the smallest
+convex polyhedron containing the set-theoretic difference
+of \f$\cP_1\f$ and \f$\cP_2\f$.
+
+In general, even though \f$\cP_1, \cP_2 \in \CPset_n\f$
+are topologically closed polyhedra, their poly-difference may be
+a convex polyhedron that is not topologically closed.
+For this reason, when computing the poly-difference of two
+C polyhedra, the library will enforce the topological closure
+of the result.
+
+\subsection Concatenating_Polyhedra Concatenating Polyhedra
+
+Viewing a polyhedron as a set of tuples (its points), it is sometimes
+useful to consider the set of tuples obtained by concatenating
+an ordered pair of polyhedra.
+Formally, the <EM>concatenation</EM> of the polyhedra
+\f$\cP \in \Pset_n\f$ and \f$\cQ \in \Pset_m\f$ (taken in this order)
+is the polyhedron \f$\cR \in \Pset_{n+m}\f$ such that
+\f[
+  \cR
+    \defeq
+      \Bigl\{\,
+        (x_0, \ldots, x_{n-1}, y_0, \ldots, y_{m-1})^\transpose
+          \in \Rset^{n+m}
+      \Bigm|
+        (x_0, \ldots, x_{n-1})^\transpose \in \cP,
+        (y_0, \ldots, y_{m-1})^\transpose \in \cQ
+      \,\Bigl\}.
+\f]
+Another way of seeing it is as follows: first embed polyhedron \f$\cP\f$
+into a vector space of dimension \f$n+m\f$ and then add a suitably
+renamed-apart version of the constraints defining \f$\cQ\f$.
+
+\subsection Adding_New_Dimensions_to_the_Vector_Space Adding New Dimensions to the Vector Space
+
+The library provides two operators for adding a number \f$i\f$ of
+space dimensions to an NNC polyhedron \f$\cP \in \Pset_n\f$,
+therefore transforming it into a new NNC polyhedron
+\f$\cQ \in \Pset_{n+i}\f$.
+In both cases, the added dimensions of the vector space
+are those having the highest indices.
+
+The operator <CODE>add_space_dimensions_and_embed</CODE>
+\e embeds the polyhedron \f$\cP\f$ into the new vector space of
+dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
+defined by all and only the constraints defining \f$\cP\f$
+(the variables corresponding to the added dimensions are unconstrained).
+For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
+and adding a third space dimension, the result will be the polyhedron
+\f[
+ \cQ = \bigl\{\,
+         (x_0, x_1, x_2)^\transpose \in \Rset^3
+       \bigm|
+         (x_0, x_1)^\transpose \in \cP
+       \,\bigr\}.
+\f]
+
+In contrast, the operator  <CODE>add_space_dimensions_and_project</CODE>
+\e projects the polyhedron \f$\cP\f$ into the new vector space of
+dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
+whose constraint system, besides the constraints defining \f$\cP\f$,
+will include additional constraints on the added dimensions.
+Namely, the corresponding variables are all constrained to be equal to 0.
+For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
+and adding a third space dimension, the result will be the polyhedron
+\f[
+  \cQ = \bigl\{\,
+          (x_0, x_1, 0)^\transpose \in \Rset^3
+        \bigm|
+          (x_0, x_1)^\transpose \in \cP
+        \,\bigr\}.
+\f]
+
+\subsection Removing_Dimensions_from_the_Vector_Space Removing Dimensions from the Vector Space
+
+The library provides two operators for removing
+space dimensions from an NNC polyhedron \f$\cP \in \Pset_n\f$,
+therefore transforming it into a new NNC polyhedron
+\f$\cQ \in \Pset_m\f$ where \f$m \leq n\f$.
+
+Given a set of variables, the operator <CODE>remove_space_dimensions</CODE>
+removes all the space dimensions specified by the variables in the set.
+For instance, letting \f$\cP \in \Pset_4\f$ be the singleton set
+\f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$,
+then after invoking this operator with the set of variables
+\f$\{x_1, x_2\}\f$ the resulting polyhedron is
+\f[
+  \cQ = \bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2.
+\f]
+
+Given a space dimension \f$m\f$ less than or equal to that of the polyhedron,
+the operator <CODE>remove_higher_space_dimensions</CODE> removes
+the space dimensions having indices greater than or equal to \f$m\f$.
+For instance, letting \f$\cP \in \Pset_4\f$ defined as before,
+by invoking this operator with \f$m = 2\f$ the resulting polyhedron
+will be
+\f[
+  \cQ = \bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2.
+\f]
+
+\subsection Mapping_the_Dimensions_of_the_Vector_Space Mapping the Dimensions of the Vector Space
+
+The operator <CODE>map_space_dimensions</CODE> provided by the library
+maps the dimensions of the vector space \f$\Rset^n\f$ according
+to a partial injective function \f$\pard{\rho}{\{0, \ldots, n-1\}}{\Nset}\f$
+such that \f$\rho\bigl(\{0, \ldots, n-1\}\bigr) = \{0, \ldots, m-1\}\f$
+with \f$m \leq n\f$.
+Dimensions corresponding to indices that are not mapped
+by \f$\rho\f$ are removed.
+
+If \f$m = 0\f$, i.e., if the function \f$\rho\f$ is undefined everywhere,
+then the operator projects the argument polyhedron \f$\cP \in \Pset_n\f$
+onto the zero-dimension space \f$\Rset^0\f$;
+otherwise the result is \f$\cQ \in \Pset_m\f$ given by
+\f[
+  \cQ
+    \defeq
+      \Bigl\{\,
+        \bigl(v_{\rho^{-1}(0)}, \ldots, v_{\rho^{-1}(m-1)}\bigr)^\transpose
+      \Bigm|
+        (v_0, \ldots, v_{n-1})^\transpose \in \cP
+      \,\Bigr\}.
+\f]
+
+\anchor expand_space_dimension
+\subsection Expanding_One_Dimension_of_the_Vector_Space_to_Multiple_Dimensions Expanding One Dimension of the Vector Space to Multiple Dimensions
+
+The operator <CODE>expand_space_dimension</CODE> provided by the library
+adds \f$m\f$ new space dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
+with \f$n > 0\f$, so that dimensions
+\f$n\f$, \f$n+1\f$, \f$\ldots\f$, \f$n+m-1\f$
+of the result \f$\cQ\f$ are exact copies of the \f$i\f$-th space dimension
+of \f$\cP\f$.  More formally,
+\f[
+  \cQ
+    \defeq
+      \sset{
+        \vect{u} \in \Rset^{n+m}
+      }{
+        \exists \vect{v}, \vect{w} \in \cP
+          \st u_i = v_i \\
+          \qquad \mathord{} \land \forall j = n, n+1, \ldots, n+m-1
+                                     \itc u_j = w_i \\
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
+                                     \itc k \neq i \implies u_k = v_k = w_k
+      }.
+\f]
+This operation has been proposed in \ref GDDetal04 "[GDDetal04]".
+
+
+\anchor fold_space_dimensions
+\subsection Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension Folding Multiple Dimensions of the Vector Space into One Dimension
+
+The operator <CODE>fold_space_dimensions</CODE> provided by the library,
+given a polyhedron \f$\cP \in \Pset_n\f$, with \f$n > 0\f$,
+folds a set of space dimensions \f$J = \{ j_0, \ldots, j_{m-1} \}\f$,
+with \f$m < n\f$ and \f$j < n\f$ for each \f$j \in J\f$,
+into space dimension \f$i < n\f$, where \f$i \notin J\f$.
+The result is given by
+\f[
+  \cQ \defeq \biguplus_{d = 0}^m \cQ_d
+\f]
+where
+\f[
+  \cQ_m
+    \defeq
+      \sset{
+        \vect{u} \in \Rset^{n-m}
+      }{
+        \exists \vect{v} \in \cP
+          \st u_{i'} = v_i \\
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
+                                     \itc k \neq i \implies u_{k'} = v_k
+      }
+\f]
+and, for \f$ d = 0 \f$, \f$ \ldots \f$, \f$ m-1 \f$,
+\f[
+  \cQ_d
+    \defeq
+      \sset{
+        \vect{u} \in \Rset^{n-m}
+      }{
+        \exists \vect{v} \in \cP
+          \st u_{i'} = v_{j_d} \\
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
+                                     \itc k \neq i \implies u_{k'} = v_k
+      },
+\f]
+and, finally, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
+\f[
+  k'
+    \defeq
+      k - \card \{\, j \in J \mid k > j \,\},
+\f]
+(\f$\card S\f$ denotes the cardinality of the finite set \f$S\f$).
+
+This operation has been proposed in \ref GDDetal04 "[GDDetal04]".
+
+
+\anchor affine_relation
+\subsection Images_and_Preimages_of_Affine_Transfer_Relations Images and Preimages of Affine Transfer Relations
+
+For each relation \f$\reld{\phi}{\Rset^n}{\Rset^m}\f$,
+we denote by \f$\phi(S) \sseq \Rset^m\f$ the <EM>image</EM>
+under \f$\phi\f$ of the set \f$S \sseq \Rset^n\f$; formally,
+\f[
+  \phi(S)
+    \defeq
+      \bigl\{\,
+        \vect{w} \in \Rset^m
+      \bigm|
+        \exists \vect{v} \in S \st
+          (\vect{v}, \vect{w}) \in \phi
+      \,\bigr\}.
+\f]
+Similarly, we denote by \f$\phi^{-1}(S') \sseq \Rset^n\f$
+the <EM>preimage</EM> under \f$\phi\f$ of \f$S' \sseq \Rset^m\f$,
+that is
+\f[
+  \phi^{-1}(S')
+    \defeq
+      \bigl\{\,
+        \vect{v} \in \Rset^n
+      \bigm|
+        \exists \vect{w} \in S' \st
+          (\vect{v}, \vect{w}) \in \phi
+      \,\bigr\}.
+\f]
+If \f$n = m\f$, then the relation \f$\phi\f$ is said to be
+<EM>space dimension preserving</EM>.
+
+The relation \f$\reld{\phi}{\Rset^n}{\Rset^m}\f$
+is said to be an <EM>affine relation</EM>
+if there exists \f$\ell \in \Nset\f$ such that
+\f[
+  \forall \vect{v} \in \Rset^n, \vect{w} \in \Rset^m
+    \itc
+      (\vect{v}, \vect{w}) \in \phi
+        \iff
+          \bigland_{i=1}^{\ell}
+            \bigl(
+              \langle \vect{c}_i, \vect{w} \rangle
+                \relsym_i
+                  \langle \vect{a}_i, \vect{v} \rangle + b_i
+            \bigr),
+\f]
+where
+\f$\vect{a}_i \in \Rset^n\f$,
+\f$\vect{c}_i \in \Rset^m\f$,
+\f$b_i \in \Rset\f$ and
+\f$\mathord{\relsym}_i \in \{ <, \leq, =, \geq, > \}\f$,
+for each \f$i = 1, \ldots, \ell\f$.
+
+As a special case, the relation \f$\reld{\phi}{\Rset^n}{\Rset^m}\f$
+is an <EM>affine function</EM> if and only if there exist
+a matrix \f$A \in \Rset^m \times \Rset^n\f$ and
+a vector \f$\vect{b} \in \Rset^m\f$ such that,
+\f[
+  \forall \vect{v} \in \Rset^n, \vect{w} \in \Rset^m
+    \itc
+      (\vect{v}, \vect{w}) \in \phi
+        \iff
+          \vect{w} = A\vect{v} + \vect{b}.
+\f]
+
+The set \f$\Pset_n\f$ of NNC polyhedra is closed under the application
+of images and preimages of any space dimension preserving affine relation.
+The same property holds for the set \f$\CPset_n\f$ of closed polyhedra,
+provided the affine relation makes no use of the strict relation symbols
+\f$<\f$ and \f$>\f$.
+Images and preimages of affine relations can be used to model
+several kinds of transition relations, including
+deterministic assignments of affine expressions,
+(affinely constrained) nondeterministic assignments and
+affine conditional guards.
+
+A space dimension preserving relation
+\f$\reld{\phi}{\Rset^n}{\Rset^n}\f$
+can be specified by means of a shorthand notation:
+ - the vector \f$\vect{x} = (x_0, \ldots, x_{n-1})^\transpose\f$
+   of <EM>unprimed</EM> variables is used to represent the
+   space dimensions of the domain of \f$\phi\f$;
+ - the vector \f$\vect{x}' = (x'_0, \ldots, x'_{n-1})^\transpose\f$
+   of <EM>primed</EM> variables is used to represent the
+   space dimensions of the range of \f$\phi\f$;
+ - any primed variable that ``does not occur'' in the shorthand
+   specification is meant to be <EM>unaffected</EM> by the relation;
+   namely, for each index \f$i \in \{0, \ldots, n-1\}\f$,
+   if in the syntactic specification of the relation
+   the primed variable \f$x'_i\f$ only occurs (if ever) with
+   coefficient 0, then it is assumed that the specification also
+   contains the constraint \f$x'_i = x_i\f$.
+
+As an example, assuming \f$\reld{\phi}{\Rset^3}{\Rset^3}\f$,
+the notation \f$x'_0 - x'_2 \geq 2 x_0 - x_1\f$, where the primed
+variable \f$x'_1\f$ does not occur, is meant to specify
+the affine relation defined by
+\f[
+  \forall \vect{v} \in \Rset^3, \vect{w} \in \Rset^3
+    \itc
+      (\vect{v}, \vect{w}) \in \phi
+        \iff
+          (w_0 - w_2 \geq 2 v_0 - v_1) \land (w_1 = v_1).
+\f]
+The same relation is specified by
+\f$x'_0 + 0 \cdot x'_1 - x'_2 \geq 2 x_0 - x_1\f$,
+since \f$x'_1\f$ occurs with coefficient 0.
+
+The library allows for the computation of images and preimages
+of polyhedra under restricted subclasses of space dimension preserving
+affine relations, as described in the following.
+
+\subsection Single_Update_Affine_Functions Single-Update Affine Functions.
+Given a primed variable \f$x'_k\f$ and an unprimed affine expression
+\f$\langle \vect{a}, \vect{x} \rangle + b\f$,
+the <EM>affine function</EM>
+\f$\fund{\phi = \bigl(x'_k = \langle \vect{a}, \vect{x} \rangle + b\bigr)}
+        {\Rset^n}{\Rset^n}\f$
+is defined by
+\f[
+  \forall \vect{v} \in \Rset^n \itc
+    \phi(\vect{v}) = A\vect{v} + \vect{b},
+\f]
+where
+\f[
+ A =
+   \begin{pmatrix}
+      1      &        &    0    &   0    & \cdots  & \cdots &    0    \\
+             & \ddots &         & \vdots &         &        & \vdots  \\
+      0      &        &    1    &   0    & \cdots  & \cdots &    0    \\
+     a_0     & \cdots & a_{k-1} &  a_k   & a_{k+1} & \cdots & a_{n-1} \\
+      0      & \cdots & \cdots  &   0    &   1     &        &    0    \\
+    \vdots   &        &         & \vdots &         & \ddots &         \\
+      0      & \cdots & \cdots  &   0    &   0     &        &    1
+   \end{pmatrix}, \qquad
+ \vect{b} =
+   \begin{pmatrix}
+     0      \\
+     \vdots \\
+     0      \\
+     b      \\
+     0      \\
+     \vdots \\
+     0
+   \end{pmatrix}
+\f]
+and the \f$a_i\f$ (resp., \f$b\f$) occur in the \f$(k+1)\f$st row
+in \f$A\f$ (resp., position in \f$\vect{b}\f$).
+Thus function \f$\phi\f$ maps any vector
+\f$(v_0, \ldots, v_{n-1})^\transpose\f$
+to
+\f[
+   \Bigl(v_0, \ldots,
+           \bigl(\textstyle{\sum_{i=0}^{n-1}} a_i v_i + b\bigr),
+             \ldots, v_{n-1}\Bigr)^\transpose.
+\f]
+
+The <EM>affine image</EM> operator computes the affine image
+of a polyhedron \f$\cP\f$ under
+\f$x'_k = \langle \vect{a}, \vect{x} \rangle + b\f$.
+For instance, suppose the polyhedron \f$\cP\f$
+to be transformed is the square in \f$\Rset^2\f$
+generated by the set of points
+\f$\bigl\{
+     (0, 0)^\transpose,
+     (0, 3)^\transpose,
+     (3, 0)^\transpose,
+     (3, 3)^\transpose
+   \bigr\}\f$.
+Then, if the primed variable is \f$x_0\f$ and
+the affine expression is \f$x_0 + 2 x_1 + 4\f$
+(so that \f$k = 0\f$, \f$a_0 = 1, a_1 = 2, b = 4\f$),
+the affine image operator will translate \f$\cP\f$
+to the parallelogram \f$\cP_1\f$ generated by the set of points
+\f$\bigl\{
+     (4, 0)^\transpose,
+     (10, 3)^\transpose,
+     (7, 0)^\transpose,
+     (13, 3)^\transpose
+   \bigr\}\f$
+with height equal to the side of the square
+and oblique sides parallel to the line \f$x_0 - 2 x_1\f$.
+If the primed variable is as before (i.e., \f$k = 0\f$)
+but the affine expression is \f$x_1\f$
+(so that \f$a_0 = 0, a_1 = 1, b = 0\f$),
+then the resulting polyhedron \f$\cP_2\f$
+is the positive diagonal of the square.
+
+The <EM>affine preimage</EM> operator computes the affine preimage
+of a polyhedron \f$\cP\f$ under
+\f$x'_k = \langle \vect{a}, \vect{x} \rangle + b\f$.
+For instance,
+suppose now that we apply the affine
+preimage operator as given in the first example
+using primed variable \f$x_0\f$
+and affine expression \f$x_0 + 2 x_1 + 4\f$
+to the parallelogram \f$\cP_1\f$;
+then we get the original square \f$\cP\f$ back.
+If, on the other hand, we apply the affine
+preimage operator as given in the second example
+using primed variable \f$x_0\f$ and affine expression \f$x_1\f$
+to \f$\cP_2\f$, then the resulting polyhedron is the stripe obtained
+by adding the line \f$(1, 0)^\transpose\f$ to polyhedron \f$\cP_2\f$.
+
+Observe that provided the coefficient \f$a_k\f$ of the considered variable
+in the affine expression is non-zero, the affine function is invertible.
+
+\subsection Single_Update_Bounded_Affine_Relations Single-Update Bounded Affine Relations.
+Given a primed variable \f$x'_k\f$ and
+two unprimed affine expressions
+\f$\mathrm{lb} = \langle \vect{a}, \vect{x} \rangle + b\f$ and
+\f$\mathrm{ub} = \langle \vect{c}, \vect{x} \rangle + d\f$,
+the <EM>bounded affine relation</EM>
+\f$\phi = (\mathrm{lb} \leq x'_k \leq \mathrm{ub})\f$
+is defined as
+\f[
+  \forall \vect{v} \in \Rset^n, \vect{w} \in \Rset^n
+    \itc
+      (\vect{v}, \vect{w}) \in \phi
+        \iff
+          \bigl(
+            \langle \vect{a}, \vect{v} \rangle + b
+              \leq w_k
+                \leq \langle \vect{c}, \vect{v} \rangle + d
+          \bigr)
+            \land
+          \Bigl(
+            \bigland_{0 \leq i < n, i \neq k}
+              w_i = v_i
+          \Bigr).
+\f]
+
+\subsection affine_form_relation Affine Form Relations.
+Let \f$\mathbb{F}_{\mathrm{f}}\f$ be the set of floating point numbers
+representables in a certain
+format \f$\mathrm{f}\f$ and let \f$\mathbb{I}_\mathrm{f}\f$ be the set of
+real intervals with bounds in \f$\mathbb{F}_{\mathrm{f}}\f$.
+We can define a <EM>floating-point interval linear form</EM>
+\f$\langle\vect{\alpha}, \vect{x}\rangle
+ + \beta\f$
+as:
+        \f[\left<\vect{\alpha}, \vect{x}\right> + \beta =
+        \alpha_0x_0 + \ldots +
+        \alpha_{n-1}x_{n-1} + \beta,\f]
+
+where \f$\beta\f$, \f$\vect{\alpha}_k \in \mathbb{I}_{\mathrm{f}}\f$
+for each \f$k = 0, \ldots, n - 1\f$.
+
+Given a such linear form \f$\mathrm{lf}\f$ and a primed variable \f$x'_k\f$ the
+<EM>affine form image</EM> operator computes the bounded affine image of a
+polyhedron \f$\cP\f$ under \f$\mathrm{lb} \leq x'_k \leq \mathrm{ub}\f$, where
+\f$\mathrm{lb}\f$ and \f$\mathrm{ub}\f$ are the upper and lower bound
+of \f$\mathrm{lf}\f$ respectively.
+
+\subsection Generalized_Affine_Relations Generalized Affine Relations.
+Similarly, the <EM>generalized affine relation</EM>
+\f$\phi = (\mathrm{lhs}' \relsym \mathrm{rhs})\f$, where
+\f$\mathrm{lhs} = \langle \vect{c}, \vect{x} \rangle + d\f$ and
+\f$\mathrm{rhs} = \langle \vect{a}, \vect{x} \rangle + b\f$
+are affine expressions and
+\f$\mathord{\relsym} \in \{ <, \leq, =, \geq, > \}\f$
+is a relation symbol, is defined as
+\f[
+  \forall \vect{v} \in \Rset^n, \vect{w} \in \Rset^n
+    \itc
+      (\vect{v}, \vect{w}) \in \phi
+        \iff
+          \bigl(
+            \langle \vect{c}, \vect{w} \rangle + d
+              \relsym \langle \vect{a}, \vect{v} \rangle + b
+          \bigr)
+            \land
+          \Bigl(
+            \bigland_{0 \leq i < n, c_i = 0}
+              w_i = v_i
+          \Bigr).
+\f]
+When \f$\mathrm{lhs} = x_k\f$ and \f$\mathord{\relsym} \in \{ = \}\f$,
+then the above affine relation becomes equivalent to the
+single-update affine function \f$x'_k = \mathrm{rhs}\f$
+(hence the name given to this operator).
+It is worth stressing that the notation is not symmetric, because
+the variables occurring in expression \f$\mathrm{lhs}\f$ are interpreted
+as primed variables, whereas those occurring in \f$\mathrm{rhs}\f$
+are unprimed; for instance, the transfer relations
+\f$\mathrm{lhs}' \leq \mathrm{rhs}\f$ and
+\f$\mathrm{rhs}' \geq \mathrm{lhs}\f$
+are not equivalent in general.
+
+\subsection Cylindrification Cylindrification Operator
+
+The operator <CODE>unconstrain</CODE> computes
+the <EM>cylindrification</EM> \ref HMT71 "[HMT71]"
+of a polyhedron with respect to one of its variables.
+Formally, the cylindrification \f$\cQ \in \Pset_n\f$
+of an NNC polyhedron \f$\cP \in \Pset_n\f$ with respect to
+variable index \f$i \in \{ 0, \ldots, n-1 \}\f$ is defined as follows:
+\f[
+  \cQ
+    = \bigl\{\,
+        \vect{w} \in \Rset^n
+      \bigm|
+        \exists \vect{v} \in \cP \st
+          \forall j \in \{0, \ldots, n-1\} \itc
+            j \neq i \implies w_j = v_j
+      \,\bigr\}.
+\f]
+Cylindrification is an idempotent operation; in particular, note that
+the computed result has the same space dimension of the original polyhedron.
+A variant of the operator above allows for the cylindrification of
+a polyhedron with respect to a finite set of variables.
+
+\subsection Time_Elapse_Operator Time-Elapse Operator
+
+The <EM>time-elapse</EM> operator has been defined in
+\ref HPR97 "[HPR97]".
+Actually, the time-elapse operator provided by the library
+is a slight generalization of that one,
+since it also works on NNC polyhedra.
+For any two NNC polyhedra \f$\cP, \cQ \in \Pset_n\f$,
+the time-elapse between \f$\cP\f$ and \f$\cQ\f$,
+denoted \f$ \cP \nearrow \cQ\f$,
+is the smallest NNC polyhedron containing the set
+\f[
+  \bigl\{\,
+    \vect{p} + \lambda \vect{q} \in \Rset^n
+  \bigm|
+    \vect{p} \in \cP, \vect{q} \in \cQ, \lambda \in \nonnegRset
+  \,\bigr\}.
+\f]
+Note that the above set might not be an NNC polyhedron.
+
+
+\subsection Positive_Time_Elapse_Operator Positive Time-Elapse Operator
+
+The <EM>positive time-elapse</EM> operator has been defined in
+\ref BFM11 "[BFM11,BFM13]".
+The operator provided by the library works on NNC
+polyhedra.  For any two NNC polyhedra \f$\cP, \cQ \in \Pset_n\f$, the
+positive time-elapse between \f$\cP\f$ and \f$\cQ\f$, denoted \f$ \cP
+\nearrow_{>0} \cQ\f$, is the NNC polyhedron containing exactly the set
+\f[
+  \bigl\{\,
+    \vect{p} + \lambda \vect{q} \in \Rset^n
+  \bigm|
+    \vect{p} \in \cP, \vect{q} \in \cQ, \lambda \in \Rset^{>0}
+  \,\bigr\},
+\f]
+where \f$\Rset^{>0}\f$ denotes the set of strictly positive
+reals. Notice that, differently from the case of the time-elapse
+operator, the set \f$ \cP \nearrow_{>0} \cQ\f$ is always an NNC
+polyhedron, if \f$\cP\f$ and \f$\cQ\f$ are.
+
+The exact version of the time-elapse operator \f$\cP \nearrow \cQ\f$
+defined in Section \ref Time_Elapse_Operator,
+which may not be an NNC polyhedron, can be computed as
+the union of two NNC polyhedra, according to the following equation:
+\f$\cP \nearrow \cQ = \cP \cup \left(\cP \nearrow_{>0} \cQ\right)\f$.
+
+
+\subsection Meet_Preserving_Simplification Meet-Preserving Enlargement and Simplification
+
+Let \f$\cP, \cQ, \cR \in \Pset_n\f$ be NNC polyhedra. Then:
+
+ - \f$\cR\f$ is <EM>meet-preserving</EM> with respect to \f$\cP\f$
+   using context \f$\cQ\f$ if \f$\cR \inters \cQ = \cP \inters \cQ\f$;
+
+ - \f$\cR\f$ is an <EM>enlargement</EM> of \f$\cP\f$ if \f$\cR \Sseq \cP\f$.
+
+ - \f$\cR\f$ is a <EM>simplification</EM> with respect to \f$\cP\f$
+   if \f$r \leq p\f$, where \f$r\f$ and \f$p\f$ are the cardinalities
+   of minimized constraint representations for \f$\cR\f$ and \f$\cP\f$,
+   respectively.
+
+Notice that an enlargement need not be a simplification, and vice versa;
+moreover, the identity function is (trivially)
+a meet-preserving enlargement and simplification.
+
+The library provides a binary operator (<CODE>simplify_using_context</CODE>)
+for the domain of NNC polyhedra that returns a polyhedron which is a
+meet-preserving enlargement simplification of its first argument
+using the second argument as context.
+
+The concept of meet-preserving enlargement and simplification also
+applies to the other basic domains (boxes, grids, BD and octagonal shapes).
+See below for a definition of the concept of
+\ref Powerset_Meet_Preserving_Simplification "meet-preserving simplification for powerset domains".
+
+\anchor relation_with
+\subsection Relation_With_Operators Relation-With Operators
+
+The library provides operators for checking the relation holding
+between an NNC polyhedron  and
+either a constraint or a generator.
+
+Suppose \f$\cP\f$ is an NNC polyhedron
+and \f$\cC\f$ an arbitrary constraint system representing \f$\cP\f$.
+Suppose also that
+\f$
+  c = \bigl(
+        \langle \vect{a}, \vect{x} \rangle \relsym b
+      \bigr)
+\f$
+is a constraint
+with \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$
+and \f$\cQ\f$ the set of points
+that satisfy \f$c\f$.
+The possible relations between \f$\cP\f$ and \f$c\f$ are as follows.
+- \f$\cP\f$ <EM>is disjoint</EM> from \f$c\f$ if
+  \f$\cP \inters \cQ = \emptyset\f$; that is, adding \f$c\f$
+  to \f$\cC\f$ gives us the empty polyhedron.
+- \f$\cP\f$ <EM>strictly intersects</EM> \f$c\f$ if
+  \f$\cP \inters \cQ \neq \emptyset\f$ and \f$\cP \inters \cQ \subset \cP\f$;
+  that is, adding \f$c\f$ to \f$\cC\f$
+  gives us a non-empty polyhedron strictly smaller than \f$\cP\f$.
+- \f$\cP\f$ <EM>is included</EM> in \f$c\f$ if \f$\cP \sseq \cQ\f$;
+  that is, adding \f$c\f$ to \f$\cC\f$
+  leaves \f$\cP\f$ unchanged.
+- \f$\cP\f$ <EM>saturates</EM> \f$c\f$ if \f$\cP \sseq \cH\f$,
+  where \f$\cH\f$ is the hyperplane induced by constraint \f$c\f$,
+  i.e., the set of points satisfying the equality constraint
+  \f$\langle \vect{a}, \vect{x} \rangle = b\f$;
+  that is, adding the constraint \f$\langle \vect{a}, \vect{x} \rangle = b\f$
+  to \f$\cC\f$ leaves \f$\cP\f$ unchanged.
+
+The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
+adding \f$g\f$ to any generator system representing \f$\cP\f$
+does not change \f$\cP\f$.
+
+\subsection Widening_Operators Widening Operators
+
+The library provides two widening operators for the domain of polyhedra.
+\anchor H79_widening
+The first one, that we call <EM>H79-widening</EM>, mainly
+follows the specification provided in the PhD thesis of N. Halbwachs
+\ref Hal79 "[Hal79]", also described in \ref HPR97 "[HPR97]".
+Note that in the computation of the H79-widening \f$\cP \widen \cQ\f$
+of two polyhedra \f$\cP, \cQ \in \CPset_n\f$ it is required as a
+precondition that \f$\cP \sseq \cQ\f$ (the same assumption was implicitly
+present in the cited papers).
+
+\anchor BHRZ03_widening
+The second widening operator, that we call <EM>BHRZ03-widening</EM>,
+is an instance of the specification provided in \ref BHRZ03a "[BHRZ03a]".
+This operator also requires as a precondition that \f$\cP \sseq \cQ\f$
+and it is guaranteed to provide a result which is at least as precise as
+the H79-widening.
+
+Both widening operators can be applied to NNC polyhedra.
+The user is warned that, in such a case, the results may not closely
+match the geometric intuition which is at the base of the
+specification of the two widenings. The reason is that, in the current
+implementation, the widenings are not directly applied to the NNC
+polyhedra, but rather to their internal representations.
+Implementation work is in progress and future versions of the library
+may provide an even better integration of the two widenings with the
+domain of NNC polyhedra.
+
+\note
+As is the case for the other operators on polyhedra, the
+implementation overwrites one of the two polyhedra arguments with the
+result of the widening application. To avoid trivial
+misunderstandings, it is worth stressing that if polyhedra \f$\cP\f$
+and \f$\cQ\f$ (where \f$\cP \sseq \cQ\f$) are identified by program
+variables <CODE>p</CODE> and <CODE>q</CODE>, respectively, then the
+call <CODE>q.H79_widening_assign(p)</CODE> will assign the polyhedron
+\f$\cP \widen \cQ\f$ to variable <CODE>q</CODE>.  Namely, it is the
+bigger polyhedron \f$\cQ\f$ which is overwritten by the result of the
+widening. The smaller polyhedron is not modified, so as to lead to an
+easier coding of the usual convergence test
+(\f$\cP \Sseq \cP \widen \cQ\f$ can be coded as <CODE>p.contains(q)</CODE>).
+Note that, in the above context, a call such as
+<CODE>p.H79_widening_assign(q)</CODE> is likely to result in undefined
+behavior, since the precondition \f$\cQ \sseq \cP\f$ will be missed
+(unless it happens that \f$\cP = \cQ\f$).
+The same observation holds for all flavors of widenings and extrapolation
+operators that are implemented in the library and for all the language
+interfaces.
+
+
+\subsection Widening_with_Tokens Widening with Tokens
+
+When approximating a fixpoint computation using widening operators,
+a common tactic to improve the precision of the final result is to delay
+the application of widening operators. The usual approach is to fix
+a parameter \f$k\f$ and only apply widenings starting from the
+\f$k\f$-th iteration.
+
+The library also supports an improved widening delay strategy,
+that we call <EM>widening with tokens</EM> \ref BHRZ03a "[BHRZ03a]".
+A token is a sort of wild card allowing for the replacement of the widening
+application by the exact upper bound computation: the token is used
+(and thus consumed) only when the widening would have resulted in an
+actual precision loss (as opposed to the <EM>potential</EM> precision loss
+of the classical delay strategy).
+Thus, all widening operators can be supplied with an optional argument,
+recording the number of available tokens, which is decremented when
+tokens are used. The approximated fixpoint computation will start with
+a fixed number \f$k\f$ of tokens, which will be used if and when needed.
+When there are no tokens left, the widening is always applied.
+
+\subsection Extrapolation_Operators Extrapolation Operators
+
+Besides the two widening operators, the library also implements several
+<EM>extrapolation</EM> operators, which differ from widenings in that
+their use along an upper iteration sequence does not ensure convergence
+in a finite number of steps.
+
+\anchor limited_extrapolation
+In particular, for each of the two widenings there is a corresponding
+<EM>limited</EM> extrapolation operator, which can be used to implement
+the <EM>widening ``up to''</EM> technique as described in
+\ref HPR97 "[HPR97]".
+Each limited extrapolation operator takes a constraint system as an
+additional parameter and uses it to improve the approximation yielded
+by the corresponding widening operator. Note that a convergence guarantee
+can only be obtained by suitably restricting the set of constraints that
+can occur in this additional parameter. For instance, in \ref HPR97 "[HPR97]"
+this set is fixed once and for all before starting the computation of
+the upward iteration sequence.
+
+\anchor bounded_extrapolation
+The <EM>bounded</EM> extrapolation operators further enhance each one
+of the limited extrapolation operators described above by
+intersecting the result of the limited extrapolation operation
+with the box obtained as a result of applying the
+\ref CC76_interval_widening "CC76-widening"
+to the smallest \ref Intervals_and_Boxes "boxes"
+enclosing the two argument polyhedra.
+
+\section Intervals_and_Boxes Intervals and Boxes
+
+The PPL provides support for computations on non-relational domains,
+called boxes, and also the interval domains used for their representation.
+
+\anchor intervals
+An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
+called <EM>lower</EM> and <EM>upper</EM>.
+Each bound can be either (1) <EM>closed and bounded</EM>,
+(2) <EM>open and bounded</EM>, or
+(3) <EM>open and unbounded</EM>.
+If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq, >\}\f$,
+the constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+is said to be a <EM>interval constraint</EM> if there exist an index
+\f$i \in \{ 0, \ldots, n-1 \}\f$ such that, for all
+\f$k \in \{ 0, \ldots, i-1, i+1, \ldots, n-1 \}\f$, \f$a_k = 0\f$.
+Thus each interval constraint that is not a tautology or
+inconsistent has the form
+\f$x = r\f$, \f$x \leq r\f$, \f$x \geq r\f$,
+\f$x < r\f$ or \f$x > r\f$, with \f$r \in \Rset\f$.
+
+Letting  \f$\cB\f$ be a sequence of
+\f$n\f$ intervals and \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
+be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
+and zeroes in every other position;
+if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
+is bounded, the corresponding interval constraint is defined as
+\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
+\f$\mathord{>}\f$ if it is an open bound.
+Similarly,
+if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
+the corresponding interval constraint is defined as
+\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
+\f$\mathord{<}\f$ if it is an open bound.
+
+A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be a
+<EM>box</EM> if and only if
+either \f$\cP\f$ is the set of solutions to a finite set
+of interval constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+Therefore any \f$n\f$-dimensional <EM>box</EM> \f$\cP\f$ in \f$\Rset^n\f$
+where \f$n > 0\f$ can be represented by a sequence of \f$n\f$ intervals
+\f$\cB\f$ in \f$\Rset\f$ and  \f$\cP\f$ is a closed polyhedron
+if every bound in the intervals in \f$\cB\f$
+is either closed and bounded or open and unbounded.
+
+\anchor CC76_interval_widening
+\subsection Widening_and_Extrapolation_Operators_on_Boxes Widening and Extrapolation Operators on Boxes
+
+The library provides a widening operator for boxes.
+Given two sequences of intervals defining two \f$n\f$-dimensional boxes, the
+<EM>CC76-widening</EM> applies, for each corresponding interval and bound, the
+interval constraint widening defined in \ref CC76 "[CC76]".
+For extra precision, this incorporates the widening with thresholds
+as defined in \ref BCCetal02 "[BCCetal02]" with
+\f$\{-2, -1, 0, 1, 2\}\f$ as the set of default threshold values.
+
+\section Weakly_Relational_Shapes Weakly-Relational Shapes
+
+The PPL provides support for computations on numerical domains that,
+in selected contexts, can achieve a better precision/efficiency ratio
+with respect to the corresponding computations on a ``fully
+relational'' domain of convex polyhedra.  This is achieved by
+restricting the syntactic form of the constraints that can be used to
+describe the domain elements.
+
+\subsection Bounded_Difference_Shapes Bounded Difference Shapes
+
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq\}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+is said to be a <EM>bounded difference</EM> if there exist two indices
+\f$i, j \in \{ 0, \ldots, n-1 \}\f$ such that:
+  - \f$a_i, a_j \in \{ -1, 0, 1 \}\f$ and \f$a_i \neq a_j\f$;
+  - \f$a_k = 0\f$, for all \f$k \notin \{ i, j \}\f$.
+
+A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be a
+<EM>bounded difference shape</EM> (BDS, for short) if and only if
+either \f$\cP\f$ can be expressed as the intersection of a finite number
+of bounded difference constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+
+\subsection Octagonal_Shapes Octagonal Shapes
+
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq\}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+is said to be an <EM>octagonal</EM> if there exist two indices
+\f$i, j \in \{ 0, \ldots, n-1 \}\f$ such that:
+  - \f$a_i, a_j \in \{ -1, 0, 1 \}\f$;
+  - \f$a_k = 0\f$, for all \f$k \notin \{ i, j \}\f$.
+
+A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be an
+<EM>octagonal shape</EM> (OS, for short) if and only if
+either \f$\cP\f$ can be expressed as the intersection of a finite number
+of octagonal constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+
+Note that, since any bounded difference is also an octagonal constraint,
+any BDS is also an OS. The name ``octagonal'' comes from the fact that,
+in a vector space of dimension 2, a bounded OS can have eight sides
+at most.
+
+\subsection Weakly_Relational_Shape_Interface Weakly-Relational Shapes Interface
+By construction, any BDS or OS is always topologically closed.
+Under the usual set inclusion ordering, the set of all BDSs (resp., OSs)
+on the vector space \f$\Rset^n\f$ is a lattice having the empty set
+\f$\emptyset\f$ and the universe \f$\Rset^n\f$ as the smallest and
+the biggest elements, respectively.
+In theoretical terms, it is a meet sub-lattice of \f$\CPset_n\f$;
+moreover, the lattice of BDSs is a meet sublattice of the lattice of OSs.
+The least upper bound of a finite set of BDSs (resp., OSs) is said to be
+their <EM>bds-hull</EM> (resp., <EM>oct-hull</EM>).
+
+As far as the representation of the rational inhomogeneous term of
+each bounded difference or octagonal constraint is concerned, several
+<EM>rounding-aware</EM> implementation choices are available, including:
+  - bounded precision integer types;
+  - bounded precision floating point types;
+  - unbounded precision integer and rational types, as provided by GMP.
+
+The user interface for BDSs and OSs is meant to be as similar as
+possible to the one developed for the domain of closed polyhedra: in
+particular, all operators on polyhedra are also available for the
+domains of BDSs and OSs, even though they are typically characterized
+by a lower degree of precision.
+For instance, the <EM>bds-difference</EM> and <EM>oct-difference</EM>
+operators return (the smallest) over-approximations of the set-theoretical
+difference operator on the corresponding domains.
+In the case of (generalized) images and preimages of affine relations,
+suitable (possibly not-optimal) over-approximations are computed when
+the considered relations cannot be precisely modeled by only using
+bounded differences or octagonal constraints.
+
+\subsection Widening_and_Extrapolation_Operators_on_WR_Shapes Widening and Extrapolation Operators on Weakly-Relational Shapes
+
+\anchor BHMZ05_widening
+For the domains of BDSs and OSs, the library provides a variant of
+the widening operator for convex polyhedra defined in \ref CH78 "[CH78]".
+The implementation follows the specification
+in \ref BHMZ05a "[BHMZ05a,BHMZ05b]",
+resulting in an operator which is well-defined on the corresponding domain
+(i.e., it does not depend on the internal representation of BDSs or OSs),
+while still ensuring convergence in a finite number of steps.
+
+\anchor CC76_extrapolation
+The library also implements an extension of the widening operator for
+intervals as defined in \ref CC76 "[CC76]". The reader is warned that
+such an extension, even though being well-defined on the domain of BDSs
+and OSs, is not provided with a convergence guarantee and is therefore an
+extrapolation operator.
+
+
+\section sect_rational_grids Rational Grids
+
+In this section we introduce rational grids
+as provided by the library.
+See also \ref BDHetal05 "[BDHetal05]" for a detailed description of this domain.
+
+The library supports two representations for the grids domain;
+<EM>congruence systems</EM> and <EM>grid generator systems</EM>.
+We first describe <EM>linear congruence relations</EM> which form the elements
+of a congruence system.
+
+\subsection Congruence_Relations Congruences and Congruence Relations
+
+For any \f$a, b, f \in \Rset\f$,
+\f$a \equiv_f b\f$ denotes the <EM>congruence</EM>
+\f$\exists \mu \in \Zset \st a - b = \mu f\f$.
+
+Let \f$\Sset \in \{ \Qset, \Rset \}\f$.
+For each vector
+\f$\vect{a} \in \Sset^n \setdiff \{\vect{0}\}\f$ and scalars
+\f$b, f \in \Sset\f$,
+the notation \f$\langle \vect{a}, \vect{x} \rangle \equiv_f b\f$
+stands for the <EM>linear congruence relation in \f$\Sset^n\f$</EM>
+defined by the set of vectors
+\f[
+  \bigl\{\,
+    \vect{v} \in \Rset^n
+  \bigm|
+    \exists \mu \in \Zset \st
+      \langle \vect{a}, \vect{v} \rangle = b + \mu f
+  \,\bigr\};
+\f]
+when \f$f \neq 0\f$, the relation is said to be
+<EM>proper</EM>;
+\f$\langle \vect{a}, \vect{x} \rangle \equiv_0 b\f$ (i.e., when \f$f = 0\f$)
+denotes the equality \f$\langle \vect{a}, \vect{x} \rangle = b\f$.
+\f$f\f$ is called the <EM>frequency</EM> or <EM>modulus</EM> and
+\f$b\f$ the <EM>base value</EM> of the relation.
+Thus, provided \f$\vect{a} \neq \vect{0}\f$,
+the relation \f$\langle \vect{a}, \vect{x} \rangle \equiv_f b\f$
+defines the set of affine hyperplanes
+\f[
+  \big\{\,
+    \bigl(\langle \vect{a}, \vect{x} \rangle = b + \mu f\bigr)
+  \bigm|
+    \mu \in \Zset
+  \,\bigr\};
+\f]
+if \f$b \equiv_f 0\f$, \f$\langle \vect{0}, \vect{x} \rangle \equiv_f b\f$
+defines the universe \f$\Rset^n\f$ and the empty set, otherwise.
+
+\subsection Rational_Grids Rational Grids
+
+The set \f$\cL  \sseq \Rset^n\f$ is a <EM>rational grid</EM>
+if and only if either \f$\cL\f$ is the set of vectors in
+\f$\Rset^n\f$ that satisfy
+a finite system \f$\cC\f$ of congruence relations in \f$\Qset^n\f$
+or \f$n = 0\f$ and \f$\cL = \emptyset\f$.
+
+We also say that  <EM>\f$\cL\f$ is described by \f$\cC\f$</EM>
+and that <EM>\f$\cC\f$ is a congruence system for \f$\cL\f$</EM>.
+
+The <EM>grid domain</EM> \f$\Gset_{n}\f$ is the set of all rational grids
+described by finite sets of congruence relations in \f$\Qset^n\f$.
+
+If the congruence system \f$\cC\f$ describes the \f$\emptyset\f$,
+the <EM>empty</EM> grid,
+then we say that \f$\cC\f$ is <EM>inconsistent</EM>.
+For example, the congruence systems
+\f$\bigl\{\langle\vect{0}, \vect{x}\rangle \equiv_0 1\bigr\}\f$
+meaning that \f$0 = 1\f$ and
+\f$\bigl\{\langle\vect{a}, \vect{x}\rangle \equiv_2 0,
+     \langle\vect{a}, \vect{x}\rangle \equiv_2 1\bigr\}\f$,
+for any \f$\vect{a} \in \Rset^n\f$,
+meaning that the value of an expression must be both even and odd
+are both inconsistent since both describe the empty grid.
+
+When ordering grids by the set inclusion relation,
+the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
+(which is described by the empty set of congruence relations)
+are, respectively, the smallest and the biggest elements of
+\f$\Gset_n\f$.
+The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> grid.
+
+In set theoretical terms,
+\f$\Gset_n\f$ is a <EM>lattice</EM> under set inclusion.
+
+\subsection Integer_Combinations Integer Combinations
+
+Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
+be a finite set of vectors.
+For all scalars \f$\mu_1, \ldots, \mu_k \in \Zset\f$,
+the vector \f$\vect{v} = \sum_{j=1}^k \mu_j \vect{x}_j\f$
+is said to be a <EM>integer</EM> combination of the vectors in \f$S\f$.
+
+We denote by \f$\inthull(S)\f$
+(resp., \f$\intaffinehull(S)\f$)
+the set of all the integer (resp., integer and affine)
+combinations of the vectors in \f$S\f$.
+
+\subsection Points_Parameters_Lines Points, Parameters and Lines
+
+Let \f$\cL\f$ be a grid.
+Then
+- a vector \f$\vect{p} \in \cL\f$ is called a <EM>grid point</EM> of \f$\cL\f$;
+- a vector \f$\vect{q} \in \Rset^n\f$, where \f$\vect{q} \neq \vect{0}\f$,
+  is called a <EM>parameter</EM> of \f$\cL\f$
+  if \f$\cL \neq \emptyset\f$ and \f$\vect{p} + \mu \vect{q} \in \cL\f$,
+  for all points \f$\vect{p} \in \cL\f$ and all \f$\mu \in \Zset\f$;
+- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>grid line</EM> of
+  \f$\cL\f$ if \f$\cL \neq \emptyset\f$ and
+  \f$\vect{p} + \lambda \vect{l} \in \cL\f$,
+  for all points \f$\vect{p} \in \cL\f$ and all \f$\lambda \in \Rset\f$.
+
+
+\subsection Grid_Generator_Representation The Grid Generator Representation
+
+We can generate any rational grid in \f$\Gset_n\f$
+from a finite subset of its points, parameters and lines;
+each point in a grid is obtained by adding a linear combination of
+its generating lines to an integral combination of its parameters
+and an integral affine combination of its generating points.
+
+If \f$L, Q, P\f$ are each finite subsets of \f$\Qset^n\f$ and
+\f[
+  \cL = \linearhull(L) + \inthull(Q) + \intaffinehull(P)
+\f]
+where the symbol '\f$+\f$' denotes the Minkowski's sum,
+then \f$\cL \in \Gset_n\f$ is a rational grid
+(see Section 4.4 in \ref Sch99 "[Sch99]" and
+also Proposition 8 in \ref BDHetal05 "[BDHetal05]").
+The 3-tuple \f$(L, Q, P)\f$
+is said to be a <EM>grid generator system</EM> for \f$\cL\f$
+and we write \f$\cL = \ggen(L, Q, P)\f$.
+
+Note that the grid \f$\cL = \ggen(L, Q, P) = \emptyset\f$
+if and only if the set of grid points \f$P = \emptyset\f$.
+If \f$P \neq \emptyset\f$, then
+\f$\cL = \ggen(L, \emptyset, Q_{\vect{p}} \union P)\f$
+where, for some \f$\vect{p} \in P\f$,
+\f$Q_{\vect{p}} = \{\, \vect{p} + \vect{q} \mid \vect{q} \in Q \,\}\f$.
+
+\subsection Grid_Minimized_Representations Minimized Grid Representations
+
+A <EM>minimized</EM> congruence system \f$\cC\f$ for \f$\cL\f$
+is such that, if \f$\cC'\f$ is another congruence system for \f$\cL\f$,
+then \f$\card \cC \leq \card \cC'\f$.
+Note that a minimized congruence system for a non-empty grid
+has at most \f$n\f$ congruence relations.
+
+Similarly, a <EM>minimized</EM> grid generator system
+\f$\cG = (L, Q, P)\f$ for \f$\cL\f$
+is such that, if \f$\cG' = (L', Q', P')\f$ is
+another grid generator system for \f$\cL\f$,
+then \f$\card L \leq \card L'\f$ and
+\f$\card Q + \card P \leq \card Q' + \card P'\f$.
+Note that a minimized grid generator system for a grid
+has no more than a total of \f$n+1\f$ grid lines, parameters and points.
+
+\subsection Grids_Double_Description_Grids Double Description for Grids
+
+As for convex polyhedra, any grid \f$\cL\f$ can be described by using
+a congruence system \f$\cC\f$ for \f$\cL\f$,
+a grid generator system \f$\cG\f$ for \f$\cL\f$, or
+both by means of the <EM>double description pair (DD pair)</EM>
+\f$(\cC, \cG)\f$.
+The <EM>double description method</EM> for grids is a collection of
+theoretical results very similar to those for convex polyhedra showing that,
+given one kind of representation, there are algorithms
+for computing a representation of the other kind
+and for minimizing both representations.
+
+As for convex polyhedra, such changes of representation form a key step
+in the implementation of many operators on grids such as, for example,
+intersection and grid join.
+
+\subsection Grid_Space_Dimensions Space Dimensions and Dimension-compatibility for Grids
+
+The <EM>space dimension</EM> of a grid \f$\cL \in \Gset_n\f$
+is the dimension
+\f$n \in \Nset\f$ of the corresponding vector space \f$\Rset^n\f$.
+The space dimension of congruence relations, grid generators and other objects
+of the library is defined similarly.
+
+\subsection Grid_Affine_Dimension Affine Independence and Affine Dimension for Grids
+
+A <EM>non-empty</EM> grid \f$\cL \in \Gset_n\f$ has
+<EM>affine dimension</EM> \f$k \in \Nset\f$, denoted by \f$\pdim(\cG) = k\f$,
+if the maximum number of affinely independent points in \f$\cG\f$ is
+\f$k + 1\f$.
+The affine dimension of an empty grid is defined to be 0.
+Thus we have \f$0 \leq \pdim(\cG) \leq n\f$.
+
+\section rational_grid_operations Operations on Rational Grids
+
+In general, the operations on rational grids are the same as those for the other
+PPL domains and the definitions of these can be found in
+Section \ref Operations_on_Convex_Polyhedra.
+Below we just describe those operations that have features or behavior
+that is in some way special to the grid domain.
+
+\subsection Grid_Affine_Transformation Affine Images and Preimages
+
+As for convex polyhedra (see \ref Single_Update_Affine_Functions
+"Single-Update Affine Functions"),
+the library provides affine image and preimage operators for grids:
+given a variable \f$x_k\f$ and
+linear expression \f$\mathrm{expr} = \langle \vect{a}, \vect{x} \rangle + b\f$,
+these determine the affine transformation
+\f$\fund{\phi = \bigl(x'_k = \langle \vect{a}, \vect{x} \rangle + b\bigr)}
+        {\Rset^n}{\Rset^n}\f$
+that transforms any point
+\f$(v_0, \ldots, v_{n-1})^\transpose\f$
+in a grid \f$\cL\f$ to
+\f[
+   \Bigl(v_0, \ldots, \bigl(\textstyle{\sum_{i=0}^{n-1}} a_i v_i + b\bigr),
+                   \ldots, v_{n-1}\Bigr)^\transpose.
+\f]
+
+The <EM>affine image</EM> operator computes the affine image
+of a grid \f$\cL\f$ under
+\f$x'_k = \langle \vect{a}, \vect{x} \rangle + b\f$.
+For instance,
+suppose the grid \f$\cL\f$
+to be transformed is the non-relational grid in \f$\Rset^2\f$
+generated by the set of grid points
+\f$\bigl\{
+     (0, 0)^\transpose,
+     (0, 3)^\transpose,
+     (3, 0)^\transpose
+   \bigr\}\f$.
+Then, if the considered variable is \f$x_0\f$ and
+the linear expression is \f$3x_0 + 2 x_1 + 1\f$
+(so that \f$k = 0\f$, \f$a_0 = 3, a_1 = 2, b = 1\f$),
+the affine image operator will translate \f$\cL\f$
+to the grid \f$\cL_1\f$ generated by the set of grid points
+\f$\bigl\{
+     (1, 0)^\transpose,
+     (7, 3)^\transpose,
+     (10, 0)^\transpose
+   \bigr\}\f$
+which is the grid generated by the grid point \f$(1, 0)\f$
+and parameters \f$(3, -3), (0, 9)\f$; or, alternatively defined by the
+congruence system \f$\{x \equiv_3 1, x + y \equiv_9 1\}\f$.
+If the considered variable is as before (i.e., \f$k = 0\f$)
+but the linear expression is  \f$x_1\f$
+(so that \f$a_0 = 0, a_1 = 1, b = 0\f$),
+then the resulting grid \f$\cL_2\f$
+is the grid containing all the points
+whose coordinates are integral multiples of 3 and lie on
+line \f$x = y\f$.
+
+The affine preimage operator computes the affine preimage
+of a grid \f$\cL\f$ under \f$\phi\f$.
+For instance,
+suppose now that we apply the affine
+preimage operator as given in the first example
+using variable \f$x_0\f$
+and linear expression \f$3x_0 + 2 x_1 + 1\f$
+to the grid \f$\cL_1\f$;
+then we get the original grid \f$\cL\f$ back.
+If, on the other hand, we apply the affine
+preimage operator as given in the second example
+using variable \f$x_0\f$ and linear expression \f$x_1\f$ to \f$\cL_2\f$,
+then the resulting grid will consist of
+all the points in \f$\Rset^2\f$ where the \f$y\f$
+coordinate is an integral multiple of 3.
+
+Observe that provided the coefficient \f$a_k\f$ of the considered variable
+in the linear expression is non-zero, the affine transformation is invertible.
+
+\subsection Grid_Generalized_Image Generalized Affine Images
+
+Similarly to convex polyhedra (see \ref Generalized_Affine_Relations
+"Generalized Affine Relations"), the library provides two other grid operators
+that are generalizations of the single update affine image and
+preimage operators for grids.
+The <EM>generalized affine image</EM> operator
+\f$\fund{\phi = (\mathrm{lhs}', \mathrm{rhs}, f)}{\Rset^n}{\Rset^n}\f$, where
+\f$\mathrm{lhs} = \langle \vect{c}, \vect{x} \rangle + d\f$ and
+\f$\mathrm{rhs} = \langle \vect{a}, \vect{x} \rangle + b\f$
+are affine expressions and \f$f \in \Qset\f$, is defined as
+\f[
+  \forall \vect{v} \in \Rset^n, \vect{w} \in \Rset^n
+    \itc
+      (\vect{v}, \vect{w}) \in \phi
+        \iff
+          \bigl(
+            \langle \vect{c}, \vect{w} \rangle + d
+              \equiv_f \langle \vect{a}, \vect{v} \rangle + b
+          \bigr)
+            \land
+          \Bigl(
+            \bigland_{0 \leq i < n, c_i = 0}
+              w_i = v_i
+          \Bigr).
+\f]
+Note that, when \f$\mathrm{lhs} = x_k\f$ and \f$f = 0\f$,
+so that the transfer function is an equality,
+then the above operator
+is equivalent to the application of the standard affine image
+of \f$\cL\f$ with respect to the variable \f$x_k\f$ and the
+affine expression \f$\mathrm{rhs}\f$.
+
+\subsection Grid_Frequency Frequency Operator
+
+Let \f$\cL \in \Gset_n\f$ be any non-empty grid and
+\f$\mathrm{expr} = \bigl(\langle \vect{a}, \vect{x} \rangle + b\bigr)\f$
+be a linear expression. Then if, for
+some \f$c, f \in \Rset\f$, all the points in \f$\cL\f$ satisfy the
+congruence \f$\cg = ( \mathrm{expr} \equiv_f c )\f$, then the maximum
+\f$f\f$ such that this holds is called the <EM>frequency</EM> of
+\f$\cL\f$ with respect to \f$\mathrm{expr}\f$.
+
+The frequency operator provided by the library returns both
+the frequency \f$f\f$ and a value
+\f$\mathrm{val} = \langle \vect{a}, \vect{w} \rangle + b\f$
+where \f$\vect{w} \in \cL\f$ and
+\f[
+  \lvert\mathrm{val}\rvert
+     = \min\Bigl\{\,
+             \bigl\lvert\langle \vect{a}, \vect{v} \rangle + b \bigr\rvert
+           \Bigm|
+             \vect{v} \in \cL
+           \,\Bigr\}.
+\f]
+
+Observe that the above definition is also applied to other simple objects in
+the library like polyhedra, octagonal shapes, bd-shapes and boxes
+and in such cases the definition of frequency can be simplified.
+For instance, the frequency for an object \f$\cP \in \Pset_n\f$ is
+defined if and only if there is a unique value \f$c\f$ such that
+\f$\cP\f$ saturates the equality \f$( \mathrm{expr} = c )\f$;
+in this case the frequency is \f$0\f$ and the value returned is \f$c\f$.
+
+\subsection Grid_Time_Elapse Time-Elapse Operator
+
+For any two grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
+the <EM>time-elapse</EM> between \f$\cL_1\f$ and \f$\cL_2\f$,
+denoted \f$ \cL_1 \nearrow \cL_2\f$,
+is the grid
+\f[
+  \bigl\{\,
+    \vect{p} + \mu \vect{q} \in \Rset^n
+  \bigm|
+    \vect{p} \in \cL_1, \vect{q} \in \cL_2, \mu \in \Zset
+  \,\bigr\}.
+\f]
+
+\subsection Grid_Relation_With Relation-with Operators
+
+The library provides operators for checking the relation holding
+between a grid  and
+a congruence, a grid generator, a constraint or a (polyhedron) generator.
+
+Suppose \f$\cL\f$ is a grid
+and \f$\cC\f$ an arbitrary congruence system representing \f$\cL\f$.
+Suppose also that
+\f$
+  \cg = \bigl(
+          \langle \vect{a}, \vect{x} \rangle \equiv_f b
+        \bigr)
+\f$
+is a congruence relation
+with \f$\cL_{\cg} = \gcon\bigl(\{\cg\}\bigr)\f$.
+The possible relations between \f$\cL\f$ and \f$\cg\f$ are as follows.
+- \f$\cL\f$ <EM>is disjoint</EM> from \f$\cg\f$ if
+  \f$\cL \inters \cL_{\cg} = \emptyset\f$; that is, adding \f$\cg\f$
+  to \f$\cC\f$ gives us the empty grid.
+- \f$\cL\f$ <EM>strictly intersects</EM> \f$\cg\f$ if
+  \f$\cL \inters \cL_{\cg} \neq \emptyset\f$ and
+  \f$\cL \inters \cL_{\cg} \subset \cL\f$;
+  that is, adding \f$\cg\f$ to \f$\cC\f$
+  gives us a non-empty grid strictly smaller than \f$\cL\f$.
+- \f$\cL\f$ <EM>is included</EM> in \f$\cg\f$ if \f$\cL \sseq \cL_{\cg}\f$;
+  that is, adding \f$\cg\f$ to \f$\cC\f$ leaves \f$\cL\f$ unchanged.
+- \f$\cL\f$ <EM>saturates</EM> \f$\cg\f$ if \f$\cL\f$ <EM>is included</EM>
+  in \f$\cg\f$ and \f$f = 0\f$, i.e., \f$\cg\f$ is an equality congruence.
+
+For the relation between \f$\cL\f$ and a constraint, suppose that
+\f$
+  c = \bigl(
+        \langle \vect{a}, \vect{x} \rangle \relsym b
+      \bigr)
+\f$
+is a constraint
+with \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$
+and \f$\cQ\f$ the set of points that satisfy \f$c\f$.
+The possible relations between \f$\cL\f$ and \f$c\f$ are as follows.
+- \f$\cL\f$ <EM>is disjoint</EM> from \f$c\f$ if
+  \f$\cL \inters \cQ = \emptyset\f$.
+- \f$\cL\f$ <EM>strictly intersects</EM> \f$c\f$ if
+  \f$\cL \inters \cQ \neq \emptyset\f$ and \f$\cL \inters \cQ \subset \cL\f$.
+- \f$\cL\f$ <EM>is included</EM> in \f$c\f$ if \f$\cL \sseq \cQ\f$.
+- \f$\cL\f$ <EM>saturates</EM> \f$c\f$ if \f$\cL\f$ <EM>is included</EM>
+  in \f$c\f$ and \f$\mathord{\relsym}\f$ is \f$=\f$.
+
+A grid \f$\cL\f$ <EM>subsumes</EM> a grid generator \f$g\f$
+if adding \f$g\f$ to any grid generator system representing \f$\cL\f$
+does not change \f$\cL\f$.
+
+A grid \f$\cL\f$ <EM>subsumes</EM> a (polyhedron) point or closure point
+\f$g\f$ if adding the corresponding grid point to any grid generator system
+representing \f$\cL\f$ does not change \f$\cL\f$.
+A grid \f$\cL\f$ <EM>subsumes</EM> a (polyhedron) ray or line
+\f$g\f$ if adding the corresponding grid line to any grid generator system
+representing \f$\cL\f$ does not change \f$\cL\f$.
+
+\subsection Grid_Wrapping_Operator Wrapping Operator
+
+The operator <CODE>wrap_assign</CODE> provided by the library, allows
+for the \ref Wrapping_Operator "wrapping" of a subset of the set of
+space dimensions so as to fit the given bounded integer type and have
+the specified overflow behavior.  In order to maximize the precision
+of this operator for grids, the exact behavior differs in some
+respects from the other simple classes of geometric descriptors.
+
+Suppose \f$\cL \in \Gset_n\f$ is a grid and \f$J\f$ a subset of the
+set of space dimensions \f$\{0, \ldots, n-1\}\f$.
+Suppose also that the width of the bounded integer type is \f$w\f$ so that
+the range of values \f$R = \{r \in \Rset \mid 0 \leq r < 2^w\}\f$
+if the type is unsigned
+and \f$R = \{r \in \Rset \mid -2^{w-1} \leq r < 2^{w-1}\}\f$ otherwise.
+Consider a space dimension \f$j \in J\f$ and a variable \f$v_j\f$
+for dimension \f$j\f$.
+
+If the value in \f$\cL\f$ for the variable \f$v_j\f$ is a constant in
+the range \f$R\f$, then it is unchanged.  Otherwise the result
+\f$\cL'\f$ of the operation on \f$\cL\f$ will depend on the specified
+overflow behavior.
+
+- Overflow impossible. In this case, it is known that no wrapping can
+  occur. If the grid \f$\cL\f$ has no value for the variable \f$v_j\f$ in the
+  range \f$R\f$, then \f$\cL\f$ is set empty. If \f$v_j\f$ has exactly
+  one value \f$a \in R\f$ in \f$\cL\f$, then \f$v_j\f$ is set
+  equal to \f$a\f$. Otherwise, \f$\cL' = \cL\f$.
+
+- Overflow undefined. In this case, for each value \f$a\f$ for
+  \f$v_j\f$ in the grid \f$\cL\f$, the wrapped value can be any value
+  \f$a + z \in R\f$ where \f$z \in \Zset\f$.
+  Therefore \f$\cL'\f$ is obtained by adding the parameter
+  \f$(0, \ldots, 0, v_j, 0, \ldots, 0)\f$,
+  where \f$v_j = 1\f$, to the generator system for \f$\cL\f$.
+
+- Overflow wraps. In this case, if \f$\cL\f$ already satisfies the
+  congruence \f$v_j = a \mod 2^w\f$, for some \f$a \in \Rset\f$, then
+  \f$v_j\f$ is set equal to \f$a'\f$ where \f$a' = a \mod 2^w\f$ and
+  \f$a'\in R\f$.  Otherwise, \f$\cL'\f$ is obtained by adding the
+  parameter \f$(0, \ldots, 0, v_j, 0, \ldots, 0)\f$, where
+  \f$v_j = 2^w\f$, to the generator system for \f$\cL\f$.
+
+\subsection Grid_Widening Widening Operators
+
+The library provides <EM>grid widening</EM> operators for the domain of grids.
+The congruence widening and generator widening
+follow the specifications provided in \ref BDHetal05 "[BDHetal05]".
+The third widening uses either
+the congruence or the generator widening, the exact rule governing this choice
+at the time of the call is left to the implementation.
+Note that, as for the widenings provided for convex polyhedra,
+all the operations provided by the library
+for computing a widening \f$\cL_1 \widen \cL_2\f$ of
+grids \f$\cL_1, \cL_2 \in \Gset_n\f$ require as a precondition that
+\f$\cL_1 \sseq \cL_2\f$.
+
+\note
+As is the case for the other operators on grids, the
+implementation overwrites one of the two grid arguments with the
+result of the widening application.
+It is worth stressing that, in any widening operation that computes the
+widening \f$\cL_1 \widen \cL_2\f$, the resulting grid will be assigned
+to overwrite the store containing the bigger grid \f$\cL_2\f$.
+The smaller grid \f$\cL_1\f$ is not modified.
+The same observation holds for all flavors of widenings and extrapolation
+operators that are implemented in the library and for all the language
+interfaces.
+
+\subsection Grid_Widening_with_Tokens Widening with Tokens
+
+This is as for \ref Widening_with_Tokens "widening with tokens"
+for convex polyhedra.
+
+\subsection Grid_Extrapolation Extrapolation Operators
+
+Besides the widening operators, the library also implements several
+<EM>extrapolation</EM> operators, which differ from widenings in that
+their use along an upper iteration sequence does not ensure convergence
+in a finite number of steps.
+
+In particular, for each grid widening that is provided,
+there is a corresponding
+<EM>limited</EM> extrapolation operator, which can be used to implement
+the <EM>widening ``up to''</EM> technique as described in
+\ref HPR97 "[HPR97]".
+Each limited extrapolation operator takes a congruence system as an
+additional parameter and uses it to improve the approximation yielded
+by the corresponding widening operator. Note that,
+as in the case for convex polyhedra, a convergence guarantee
+can only be obtained by suitably restricting the set of
+congruence relations that can occur in this additional parameter.
+
+\section powerset The Powerset Construction
+
+The PPL provides the finite powerset construction; this takes a
+pre-existing domain and upgrades it to one that can represent
+disjunctive information (by using a <EM>finite</EM> number of
+disjuncts).  The construction follows the approach described in
+\ref Bag98 "[Bag98]", also summarized in \ref BHZ04 "[BHZ04]" where there
+is an account of generic widenings for the powerset domain (some of
+which are supported in the pointset powerset domain instantiation
+of this construction described in Section \ref pointset_powerset).
+
+\anchor powerset_domain
+\subsection The_Powerset_Domain The Powerset Domain
+
+The domain is built from a pre-existing base-level domain
+\f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
+meet operation `\f$\mathord{\meet}\f$', a top element `\f$\true\f$' and
+bottom element `\f$\false\f$'.
+
+A set \f$\cS \in \wp(D)\f$ is called <EM>non-redundant</EM>
+with respect to `\f$\mathord{\entails}\f$' if and only if
+\f$\false \notin \cS\f$
+and \f$\forall d_1, d_2 \in \cS \itc d_1 \entails d_2 \implies d_1 = d_2\f$.
+The set of finite non-redundant subsets of \f$D\f$
+(with respect to `\f$\mathord{\entails}\f$')
+is denoted by \f$\wpfn{D}{\entails}\f$.
+The function
+\f$\fund{\nonredmap}{\wpf(D)}{\wpfn{D}{\entails}}\f$,
+called <EM>Omega-reduction</EM>,
+maps a finite set into its non-redundant counterpart;
+it is defined, for each \f$\cS \in \wpf(D)\f$, by
+\f[
+  \nonredmap(\cS)
+    \defeq
+      \cS \setdiff \{\,
+                   d \in \cS
+                 \mid
+                   d = \false \text{ or } \exists d' \in \cS \st d \sentails d'
+                 \,\}.
+\f]
+where \f$d \sentails d'\f$ denotes \f$d \entails d' \land d \ne d'\f$.
+
+As the intended semantics of a powerset domain element \f$\cS \in \wpf(D)\f$
+is that of disjunction of the semantics of \f$D\f$,
+the finite set \f$\cS\f$ is semantically equivalent
+to the non-redundant set \f$\nonredmap(\cS)\f$;
+and elements of \f$\cS\f$ will be called <EM>disjuncts</EM>.
+The restriction to the finite subsets reflects the fact that here
+disjunctions are implemented by explicit collections of disjuncts.
+As a consequence of this restriction, for any \f$\cS \in \wpf(D)\f$
+such that \f$\cS \neq \{ \false \}\f$, \f$\nonredmap(\cS)\f$ is the (finite)
+set of the maximal elements of \f$\cS\f$.
+
+The <EM>finite powerset domain</EM> over a domain \f$D\f$ is the set
+of all finite non-redundant sets of \f$D\f$ and denoted by \f$D_{\smallP}\f$.
+The domain includes an approximation ordering
+`\f$\mathord{\entailsP}\f$' defined so that,
+for any \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$,
+\f$\cS_1 \entailsP \cS_2\f$ if and only if
+\f[
+  \forall d_1 \in \cS_1 \itc
+    \exists d_2 \in \cS_2 \st
+      d_1 \entails d_2.
+\f]
+Therefore the top element is \f$\{\true\}\f$ and the bottom element is the
+emptyset.
+
+\note
+As far as Omega-reduction is concerned, the library adopts a
+<EM>lazy</EM> approach: an element of the powerset domain is
+represented by a potentially redundant sequence of disjuncts.
+Redundancies can be eliminated by explicitly invoking the operator
+<CODE>omega_reduce()</CODE>, e.g., before performing the output of a
+powerset element. Note that all the documented operators automatically
+perform Omega-reductions on their arguments, when needed or appropriate.
+
+\section ps_operations Operations on the Powerset Construction
+
+In this section we briefly describe the generic operations on Powerset Domains
+that are provided by the library for any given base-level domain \f$D\f$.
+
+\anchor ps_meet_upper_bound
+\subsection Meet_and_Upper_Bound Meet and Upper Bound
+
+Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
+<EM>meet</EM> and <EM>upper bound</EM> operators provided by the
+library returns the set
+\f$
+  \nonredmap
+    \bigl(
+      \{\,
+        d_1 \meet d_2
+      \mid
+        d_1 \in \cS_1, d_2 \in \cS_2
+      \,\}
+    \bigr)
+\f$
+and Omega-reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
+
+\anchor ps_add_disjunct
+\subsection Adding_a_Disjunct Adding a Disjunct
+
+Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
+element \f$d \in D\f$, the <EM>add disjunct</EM> operator provided by
+the library returns the powerset element
+\f$\nonredmap\bigl(\cS \union \{d\}\bigr)\f$.
+
+\anchor ps_collapse
+\subsection Collapsing_a_Powerset_Element Collapsing a Powerset Element
+
+If the given powerset element is not empty, then the
+<EM>collapse</EM> operator returns the
+singleton powerset consisting of an upper-bound of all the disjuncts.
+
+\section pointset_powerset The Pointset Powerset Domain
+
+The pointset powerset domain provided by the PPL is the finite
+powerset domain (defined in Section \ref powerset) whose base-level domain
+\f$D\f$ is one of the classes of semantic geometric descriptors listed in
+Section \ref Semantic_Geometric_Descriptors.
+
+In addition to the operations described for the generic powerset
+domain in Section \ref ps_operations, the PPL provides
+all the generic operations
+listed in \ref Generic_Operations_on_Semantic_Geometric_Descriptors.
+Here we just describe those operations that
+are particular to the pointset powerset domain.
+
+\subsection Powerset_Meet_Preserving_Simplification Meet-Preserving Simplification
+
+Let \f$\cS_1 = \{ d_1, \ldots, d_m \}\f$,
+\f$\cS_2 = \{ c_1, \ldots, c_n \}\f$ and
+\f$\cS = \{ s_1, \ldots, s_q \}\f$
+be Omega-reduced elements of a pointset powerset domain
+over the same base-level domain.
+Then:
+
+ - \f$\cS\f$ is <EM>powerset meet-preserving</EM>
+   with respect to \f$\cS_1\f$ using context \f$\cS_2\f$ if
+   the meet of \f$\cS\f$ and \f$\cS_2\f$
+   is equal to
+   the meet of \f$\cS_1\f$ and \f$\cS_2\f$;
+
+ - \f$\cS\f$ is a <EM>powerset simplification</EM> with respect to
+   \f$\cS_1\f$ if \f$q \leq m\f$.
+
+ - \f$\cS\f$ is a <EM>disjunct meet-preserving simplification</EM>
+    with respect to \f$\cS_1\f$
+    if, for each \f$s_k \in \cS\f$,
+    there exists \f$d_i \in \cS_1\f$ such that, for each \f$c_j \in \cS_2\f$,
+    \f$s_k\f$ is a meet-preserving enlargement and simplification
+    of \f$d_i\f$ using context \f$c_j\f$.
+
+The library provides a binary operator (<CODE>simplify_using_context</CODE>)
+for the pointset powerset domain that returns a powerset which is a
+powerset meet-preserving, powerset simplification and
+disjunct meet-preserving simplification
+of its first argument using the second argument as context.
+
+Notice that, due to the powerset simplification property, in general
+a meet-preserving powerset simplification is <em>not</em> an enlargement
+with respect to the ordering defined on the powerset lattice.
+Because of this, the operator provided by the library
+is only well-defined when the base-level domain
+is not itself a powerset domain.
+
+
+\anchor pps_geometric
+\subsection Geometric_Comparisons Geometric Comparisons
+
+Given the pointset powersets \f$\cS_1, \cS_2\f$ over the same base-level domain
+and with the same space dimension, then
+we say that \f$\cS_1\f$ <EM>geometrically covers</EM> \f$\cS_2\f$
+if every point (in some disjunct) of \f$\cS_2\f$ is also
+a point in a disjunct of \f$\cS_1\f$.
+If \f$\cS_1\f$ geometrically covers \f$\cS_2\f$
+and \f$\cS_2\f$ geometrically covers \f$\cS_1\f$,
+then we say that they are <EM>geometrically equal</EM>.
+
+
+\anchor pps_pairwise_merge
+\subsection Pairwise_Merge Pairwise Merge
+
+Given the pointset powerset \f$\cS\f$ over a base-level semantic GD domain
+\f$D\f$, then the
+<EM>pairwise merge</EM> operator takes pairs of distinct elements in
+\f$\cS\f$ whose upper bound (denoted here by \f$\uplus\f$) in \f$D\f$
+(using the PPL operator <CODE>upper_bound_assign()</CODE> for \f$D\f$)
+is the same as their set-theoretical union
+and replaces them by their union.  This replacement is done
+recursively so that, for each pair \f$c, d\f$ of distinct
+disjuncts in the result set, we have
+\f$c \uplus d \neq c \union d\f$.
+
+\anchor pps_bgp99_extrapolation
+\subsection Powerset_Extrapolation_Operators Powerset Extrapolation Operators
+
+The library implements a generalization of the extrapolation operator
+for powerset domains proposed in \ref BGP99 "[BGP99]".
+The operator <CODE>BGP99_extrapolation_assign</CODE> is made parametric
+by allowing for the specification of any PPL extrapolation operator
+for the base-level domain.
+Note that, even when the extrapolation operator for the
+base-level domain \f$D\f$ is known to be a widening on \f$D\f$,
+the <CODE>BGP99_extrapolation_assign</CODE> operator cannot guarantee the
+convergence of the iteration sequence in a finite number of steps
+(for a counter-example, see \ref BHZ04 "[BHZ04]").
+
+\anchor pps_certificate_widening
+\subsection Certificate_Based_Widenings Certificate-Based Widenings
+
+The PPL library provides support for the specification of proper widening
+operators on the pointset powerset domain. In particular,
+this version of the library implements an instance of the
+<EM>certificate-based widening framework</EM> proposed in
+\ref BHZ03b "[BHZ03b]".
+
+A <EM>finite convergence certificate</EM> for an extrapolation operator
+is a formal way of ensuring that such an operator is indeed a widening
+on the considered domain. Given a widening operator on the base-level
+domain \f$D\f$, together with the corresponding convergence certificate,
+the BHZ03 framework is able to lift this widening on \f$D\f$
+to a widening on the pointset powerset domain; ensuring
+convergence in a finite number of iterations.
+
+Being highly parametric, the BHZ03 widening framework can be
+instantiated in many ways. The current implementation provides
+the templatic operator
+<CODE>BHZ03_widening_assign\<Certificate, Widening\></CODE>
+which only exploits a fraction of this generality, by allowing the
+user to specify the base-level widening function and the corresponding
+certificate. The widening strategy is fixed and uses two extrapolation
+heuristics: first, the upper bound operator for the base-level domain
+is tried; second,
+the \ref pps_bgp99_extrapolation "BGP99 extrapolation operator" is tried,
+possibly applying \ref pps_pairwise_merge "pairwise merging".
+If both heuristics fail to converge according to the convergence
+certificate, then an attempt is made to apply the base-level widening
+to the upper bound of the two arguments, possibly improving the result
+obtained by means of the difference operator for the base-level domain.
+For more details and a justification of the overall approach,
+see \ref BHZ03b "[BHZ03b]" and \ref BHZ04 "[BHZ04]".
+
+The library provides several convergence certificates.
+Note that, for the domain of Polyhedra, while
+\ref Parma_Polyhedra_Library::BHRZ03_Certificate the "BHRZ03_Certificate"
+is compatible with both the BHRZ03 and the H79 widenings,
+\ref Parma_Polyhedra_Library::H79_Certificate "H79_Certificate"
+is only compatible with the latter.
+Note that using different certificates will change the results obtained,
+even when using the same base-level widening operator.
+It is also worth stressing that it is up to the user
+to see that the widening operator is actually compatible with
+a given convergence certificate. If such a requirement is not met,
+then an extrapolation operator will be obtained.
+
+\section floating_point Analysis of floating point computations
+
+This section describes the PPL abstract domains that are used for
+approximating floating point computations in software analysis. We follow
+the approch described in \ref Min04 "[Min04]" and more detailedly in
+\ref Min05 "[Min05]". We will denote by \f$\cV\f$ the set of all floating
+point variables in the analyzed program. We will also denote by
+\f$\mathbb{F}_a\f$ the set of floating point numbers in the format used by the
+analyzer (that is, the machine running the PPL) and by \f$\mathbb{F}_t\f$
+the set of floating point numbers in the format used by the machine that is
+expected to run the analyzed program. Recall that floating point numbers
+include the infinities \f$-\infty\f$ and \f$+\infty\f$.
+
+\subsection interval_linear_forms Linear forms with interval coefficients
+
+Generic concrete <EM>floating point expressions</EM> on
+\f$\mathbb{F}_t\f$ are represented by the
+\link Parma_Polyhedra_Library::Floating_Point_Expression \c Floating_Point_Expression \endlink
+abstract class. Its concrete derivate classes are:
+  - \link Parma_Polyhedra_Library::Cast_Floating_Point_Expression \c Cast_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c Constant_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c Variable_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c Opposite_Floating_Point_Expression \endlink,
+    that is the negation (unary minus) of a floating point expression,
+  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c Sum_Floating_Point_Expression \endlink,
+    that is the sum of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c Difference_Floating_Point_Expression \endlink,
+    that is the difference of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c Multiplication_Floating_Point_Expression \endlink,
+    that is the product of two floating point expressions, and
+  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c Division_Floating_Point_Expression \endlink,
+    that is the division of two floating point expressions.
+
+The set of all the possible values in \f$\mathbb{F}_t\f$ of a floating point
+expression at a given program point in a given abstract store can be
+overapproximated by a <EM>linear form</EM> with interval coefficients, that is
+a linear expression of this kind:
+
+\f[
+  i + \sum_{v \in \cV}i_{v}v,
+\f]
+
+where all \f$v\f$ are free floating point variables and \f$i\f$ and all
+\f$i_{v}\f$ are elements of \f$\mathbb{I}_a\f$, defined as the set of all
+intervals with boundaries in \f$\mathbb{F}_a\f$. This operation is called
+<EM>linearization</EM> and is performed by the method linearize of floating
+point expression classes.
+
+Even though the intervals may be open, we will always use closed intervals
+in the documentation for the sake of simplicity, with the exception of unbounded
+intervals that have \f$\infty\f$ boundaries. We denote the set of all linear
+forms on \f$\mathbb{F}_a\f$ by \f$\mathbb{L}_a\f$.
+
+The \link Parma_Polyhedra_Library::Linear_Form \c Linear_Form \endlink class
+provides common algebraic operations on linear forms: you can add or
+subtract two linear forms, and multiply or divide a linear form by a scalar.
+We are writing only about interval linear forms in this section, so our
+scalars will always be intervals with floating point boundaries.
+The operations on interval linear forms are intuitively defined as follows:
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \asifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \asifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \adifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  i
+  \amlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \amifp i'\right) +
+  \sum_{v \in V}\left(i \amifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adivlf
+  i'
+  \defeq
+  \left(i \adivifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adivifp i'\right)v.
+
+\f]
+
+Where \f$\asifp, \adifp, \amifp,\f$ and \f$\adivifp\f$ are the corresponding
+operations on intervals. Note that these operations always round the
+interval's lower bound towards \f$-\infty\f$ and the upper bound towards
+\f$+\infty\f$ in order to obtain a correct overapproximation.
+
+A <EM>(composite) floating point abstract store</EM> is used to associate each
+floating point variable with its currently known approximation. The store is
+composed by two parts:
+  - an <EM>interval abstract store</EM>
+    \f$\fund{\rho^{\#}}{\cV}{\mathbb{I}_a}\f$
+    associating each variable with its current approximating interval, and
+  - a <EM>linear form abstract store</EM>
+    \f$\fund{\rho^{\#}_l}{\cV}{\mathbb{L}_a}\f$
+    associating each variable with its current approximating linear form.
+
+An interval abstract store is represented by a
+\link Parma_Polyhedra_Library::Box \c Box \endlink with floating point
+boundaries, while a linear form abstract store is a map
+of the Standard Template Library. The <CODE>linearize</CODE> method requires
+both stores as its arguments. Please see the documentation of floating point
+expression classes for more information.
+
+The linearization of a floating point expression \f$e\f$ in the composite
+abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right \rrbracket\f$ will
+be denoted by \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$. There are two ways a linearization attempt can fail:
+  - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
+    and
+  - when we try to divide by an interval that contains \f$0\f$.
+
+\subsection fp_abstract_domains Use of other abstract domains for floating point analysis
+
+Three of the other abstract domains of the PPL (
+\link Parma_Polyhedra_Library::BD_Shape \c BD_Shape \endlink,
+\link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape \endlink,
+and \link Parma_Polyhedra_Library::Polyhedron \c Polyhedron \endlink)
+provide a few optimized methods to be used in the analysis of floating point
+computations. They are recognized by the fact that they take interval
+linear forms and/or an interval abstract stores as their parameters.
+
+Please see the methods' documentation for more information.
+
+\section use_of_library Using the Library
+
+\subsection A_Note_on_the_Implementation_of_the_Operators A Note on the Implementation of the Operators
+
+When adopting the double description method for the representation of
+convex polyhedra, the implementation of most of the operators may
+require an explicit conversion from one of the two representations
+into the other one, leading to algorithms having a worst-case
+exponential complexity.  However, thanks to the adoption of lazy and
+incremental computation techniques, the library turns out to be rather
+efficient in many practical cases.
+
+In earlier versions of the library, a number of operators were introduced
+in two flavors: a <EM>lazy</EM> version and an <EM>eager</EM> version,
+the latter having the operator name ending with <CODE>_and_minimize</CODE>.
+In principle, only the lazy versions should be used.
+The eager versions were added to help a knowledgeable user obtain better
+performance in particular cases. Basically, by invoking the eager version
+of an operator, the user is trading laziness to better exploit the
+incrementality of the inner library computations.
+Starting from version 0.5, the lazy and incremental computation techniques
+have been refined to achieve a better integration: as a consequence,
+the lazy versions of the operators are now almost always more efficient
+than the eager versions.
+
+One of the cases when an eager computation might still make sense
+is when the well-known <EM>fail-first</EM> principle comes into play.
+For instance, if you have to compute the intersection of several
+polyhedra and you strongly suspect that the result will become empty
+after a few of these intersections, then you may obtain a better
+performance by calling the eager version of the intersection operator,
+since the minimization process also enforces an emptiness check.
+Note anyway that the same effect can be obtained by interleaving
+the calls of the lazy operator with explicit emptiness checks.
+
+\warning
+For the reasons mentioned above, starting from version 0.10 of the
+library, the usage of the eager versions (i.e., the ones having a
+name ending with <CODE>_and_minimize</CODE>) of these operators is
+\em deprecated; this is in preparation of their complete removal,
+which will occur starting from version 0.11.
+
+\subsection On_Pointset_Powerset_and_Partially_Reduced_Product_Domains_A_Warning On Pointset_Powerset and Partially_Reduced_Product Domains: A Warning
+
+  For future versions of the PPL library all practical instantiations
+for the disjuncts for a pointset_powerset and component domains for
+the partially_reduced_product domains will be fully
+supported. However, for version 0.10, these compound domains should
+not themselves occur as one of their argument domains.  Therefore their
+use comes with the following warning.
+
+\warning
+The <CODE>Pointset_Powerset<PSET></CODE> and
+<CODE>Partially_Reduced_Product<D1, D2, R></CODE>
+should only be used with the following instantiations
+for the disjunct domain template \p PSET and component domain
+templates \p D1 and \p D2:
+<CODE>C_Polyhedron</CODE>,
+<CODE>NNC_Polyhedron</CODE>,
+<CODE>Grid</CODE>,
+<CODE>Octagonal_Shape<T></CODE>,
+<CODE>BD_Shape<T></CODE>,
+<CODE>Box<T></CODE>.
+
+\subsection On_Object_Orientation_and_Polymorphism_A_Disclaimer On Object-Orientation and Polymorphism: A Disclaimer
+
+The PPL library is mainly a collection of so-called ``concrete data
+types'': while providing the user with a clean and friendly interface,
+these types are not meant to --- i.e., they should not --- be used
+polymorphically (since, e.g., most of the destructors are not declared
+<CODE>virtual</CODE>). In practice, this restriction means that the
+library types should not be used as <EM>public base classes</EM> to be
+derived from. A user willing to extend the library types, adding new
+functionalities, often can do so by using <EM>containment</EM> instead
+of inheritance; even when there is the need to override a
+<CODE>protected</CODE> method, non-public inheritance should suffice.
+
+\subsection On_Const_Correctness_A_Warning_about_the_Use_of_References_and_Iterators On Const-Correctness: A Warning about the Use of References and Iterators
+
+Most operators of the library depend on one or more parameters
+that are declared ``const'', meaning that they will not be changed
+by the application of the considered operator.
+Due to the adoption of lazy computation techniques, in many cases
+such a const-correctness guarantee only holds at the semantic level,
+whereas it does not necessarily hold at the implementation level.
+For a typical example, consider the extraction from a polyhedron
+of its constraint system representation.
+While this operation is not going to change the polyhedron,
+it might actually invoke the internal conversion algorithm
+and modify the generators representation of the polyhedron object,
+e.g., by reordering the generators and removing those that are
+detected as redundant. Thus, any previously computed reference
+to the generators of the polyhedron (be it a direct reference object
+or an indirect one, such as an iterator) will no longer be valid.
+For this reason, code fragments such as the following should be
+avoided, as they may result in undefined behavior:
+\code
+// Find a reference to the first point of the non-empty polyhedron `ph'.
+const Generator_System& gs = ph.generators();
+Generator_System::const_iterator i = gs.begin();
+for (Generator_System::const_iterator gs_end = gs.end(); i != gs_end; ++i)
+  if (i->is_point())
+    break;
+const Generator& p = *i;
+// Get the constraints of `ph'.
+const Constraint_System& cs = ph.constraints();
+// Both the const iterator `i' and the reference `p'
+// are no longer valid at this point.
+cout << p.divisor() << endl;  // Undefined behavior!
+++i;                          // Undefined behavior!
+\endcode
+As a rule of thumb, if a polyhedron plays any role in a computation
+(even as a const parameter), then any previously computed reference
+to parts of the polyhedron may have been invalidated.
+Note that, in the example above, the computation of the constraint system
+could have been placed after the uses of the iterator <CODE>i</CODE>
+and the reference <CODE>p</CODE>.
+Anyway, if really needed, it is always possible to take a copy of,
+instead of a reference to, the parts of interest of the polyhedron;
+in the case above, one may have taken a copy of the generator system
+by replacing the second line of code with the following:
+\code
+Generator_System gs = ph.generators();
+\endcode
+The same observations, modulo syntactic sugar, apply to the operators
+defined in the C interface of the library.
+
+\section bibliography Bibliography
+
+<DL>
+
+<DT>[Anc91]</DT>
+<DD>
+\anchor Anc91
+C.&nbsp;Ancourt.
+ <em>G&eacute;n&eacute;ration automatique de codes de transfert pour
+  multiprocesseurs &agrave; m&eacute;moires locales</em>.
+ PhD thesis, Universit&eacute; de Paris VI, Paris, France, March 1991.
+
+</DD>
+
+
+<DT>[BA05]</DT>
+<DD>
+\anchor BA05
+J.&nbsp;M. Bjorndalen and O.&nbsp;Anshus.
+ Lessons learned in benchmarking - Floating point benchmarks: Can
+  you trust them?
+ In <em>Proceedings of the <em>Norsk informatikkonferanse 2005</em>
+  (NIK 2005)</em>, pages 89-100, Bergen, Norway, 2005. Tapir Akademisk Forlag.
+
+
+</DD>
+
+
+<DT>[Bag97]</DT>
+<DD>
+\anchor Bag97
+R.&nbsp;Bagnara.
+ <em>Data-Flow Analysis for Constraint Logic-Based Languages</em>.
+ PhD thesis, Dipartimento di Informatica, Universit&agrave; di Pisa, Pisa,
+  Italy, March 1997.
+ Printed as Report TD-1/97.
+
+</DD>
+
+
+<DT>[Bag98]</DT>
+<DD>
+\anchor Bag98
+R.&nbsp;Bagnara.
+ A hierarchy of constraint systems for data-flow analysis of
+  constraint logic-based languages.
+ <em>Science of Computer Programming</em>, 30(1-2):119-155, 1998.
+
+
+</DD>
+
+
+<DT>[BCC<sup>+</sup>02]</DT>
+<DD>
+\anchor BCCetal02
+B.&nbsp;Blanchet, P.&nbsp;Cousot, R.&nbsp;Cousot, J.&nbsp;Feret, L.&nbsp;Mauborgne, A.&nbsp;Min&eacute;,
+  D.&nbsp;Monniaux, and X.&nbsp;Rival.
+ Design and implementation of a special-purpose static program
+  analyzer for safety-critical real-time embedded software.
+ In T.&nbsp;&AElig;. Mogensen, D.&nbsp;A. Schmidt, and I.&nbsp;Hal Sudborough,
+  editors, <em>The Essence of Computation, Complexity, Analysis,
+  Transformation. Essays Dedicated to Neil D. Jones [on occasion of his 60th
+  birthday]</em>, volume 2566 of <em>Lecture Notes in Computer Science</em>, pages
+  85-108. Springer-Verlag, Berlin, 2002.
+
+</DD>
+
+
+<DT>[BDH<sup>+</sup>05]</DT>
+<DD>
+\anchor BDHetal05
+R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
+ A linear domain for analyzing the distribution of numerical values.
+ Report 2005.06, School of Computing, University of Leeds, UK, 2005.
+
+
+</DD>
+
+
+<DT>[BDH<sup>+</sup>06]</DT>
+<DD>
+\anchor BDHetal06
+R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
+ A practical tool for analyzing the distribution of numerical values,
+  2006.
+ Available at
+  <a href="http://www.comp.leeds.ac.uk/hill/Papers/papers.html">http://www.comp.leeds.ac.uk/hill/Papers/papers.html</a>.
+
+</DD>
+
+
+<DT>[BDH<sup>+</sup>07]</DT>
+<DD>
+\anchor BDHetal07
+R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
+ Grids: A domain for analyzing the distribution of numerical values.
+ In G.&nbsp;Puebla, editor, <em>Logic-based Program Synthesis and
+  Transformation, 16th International Symposium</em>, volume 4407 of <em>Lecture
+  Notes in Computer Science</em>, pages 219-235, Venice, Italy, 2007.
+  Springer-Verlag, Berlin.
+
+
+</DD>
+
+
+<DT>[BFM11]</DT>
+<DD>
+\anchor BFM11
+M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
+ Towards efficient exact synthesis for linear hybrid systems.
+ In <em>Proceedings of 2nd International Symposium on Games,
+  Automata, Logics and Formal Verification (GandALF 2011)</em>, volume&nbsp;54 of <em>
+  Electronic Proceedings in Theoretical Computer Science</em>, pages 263-277,
+  Minori, Amalfi Coast, Italy, 2011.
+
+</DD>
+
+
+<DT>[BFM13]</DT>
+<DD>
+\anchor BFM13
+M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
+ Automatic synthesis of switching controllers for linear hybrid
+  systems: Safety control.
+ <em>Theoretical Computer Science</em>, 493:116-138, 2013.
+
+</DD>
+
+
+<DT>[BFT00]</DT>
+<DD>
+\anchor BFT00
+A.&nbsp;Bemporad, K.&nbsp;Fukuda, and F.&nbsp;D. Torrisi.
+ Convexity recognition of the union of polyhedra.
+ Report AUT00-13, Automatic Control Laboratory, ETHZ, Zurich,
+  Switzerland, 2000.
+
+
+</DD>
+
+
+<DT>[BFT01]</DT>
+<DD>
+\anchor BFT01
+A.&nbsp;Bemporad, K.&nbsp;Fukuda, and F.&nbsp;D. Torrisi.
+ Convexity recognition of the union of polyhedra.
+ <em>Computational Geometry: Theory and Applications</em>,
+  18(3):141-154, 2001.
+
+</DD>
+
+
+<DT>[BGP99]</DT>
+<DD>
+\anchor BGP99
+T.&nbsp;Bultan, R.&nbsp;Gerber, and W.&nbsp;Pugh.
+ Model-checking concurrent systems with unbounded integer variables:
+  Symbolic representations, approximations, and experimental results.
+ <em>ACM Transactions on Programming Languages and Systems</em>,
+  21(4):747-789, 1999.
+
+
+</DD>
+
+
+<DT>[BHMZ04]</DT>
+<DD>
+\anchor BHMZ04
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
+ Widening operators for weakly-relational numeric abstractions.
+ Report <tt>arXiv:cs.PL/0412043</tt>, 2004.
+ Extended abstract. Contribution to the <em>International workshop
+  on &ldquo;Numerical &amp; Symbolic Abstract Domains&rdquo;</em> (NSAD'05, Paris, January 21,
+  2005). Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
+  <a href="http://bugseng.com/products/ppl/">http://bugseng.com/products/ppl/</a>.
+
+
+</DD>
+
+
+<DT>[BHMZ05a]</DT>
+<DD>
+\anchor BHMZ05a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
+ Widening operators for weakly-relational numeric abstractions.
+ Quaderno 399, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2005.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
+
+
+</DD>
+
+
+<DT>[BHMZ05b]</DT>
+<DD>
+\anchor BHMZ05b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
+ Widening operators for weakly-relational numeric abstractions.
+ In C.&nbsp;Hankin and I.&nbsp;Siveroni, editors, <em>Static Analysis:
+  Proceedings of the 12th International Symposium</em>, volume 3672 of <em>Lecture
+  Notes in Computer Science</em>, pages 3-18, London, UK, 2005. Springer-Verlag,
+  Berlin.
+
+</DD>
+
+
+<DT>[BHRZ03a]</DT>
+<DD>
+\anchor BHRZ03a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
+ Precise widening operators for convex polyhedra.
+ In R.&nbsp;Cousot, editor, <em>Static Analysis: Proceedings of the 10th
+  International Symposium</em>, volume 2694 of <em>Lecture Notes in Computer
+  Science</em>, pages 337-354, San Diego, California, USA, 2003. Springer-Verlag,
+  Berlin.
+
+
+</DD>
+
+
+<DT>[BHRZ03b]</DT>
+<DD>
+\anchor BHRZ03b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
+ Precise widening operators for convex polyhedra.
+ Quaderno 312, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2003.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
+
+</DD>
+
+
+<DT>[BHRZ05]</DT>
+<DD>
+\anchor BHRZ05
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
+ Precise widening operators for convex polyhedra.
+ <em>Science of Computer Programming</em>, 58(1-2):28-56, 2005.
+
+
+</DD>
+
+
+<DT>[BHZ02a]</DT>
+<DD>
+\anchor BHZ02a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ A new encoding and implementation of not necessarily closed convex
+  polyhedra.
+ Quaderno 305, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2002.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
+
+</DD>
+
+
+<DT>[BHZ02b]</DT>
+<DD>
+\anchor BHZ02b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ A new encoding of not necessarily closed convex polyhedra.
+ In M.&nbsp;Carro, C.&nbsp;Vacheret, and K.-K. Lau, editors, <em>Proceedings of
+  the 1st CoLogNet Workshop on Component-based Software Development and
+  Implementation Technology for Computational Logic Systems</em>, pages 147-153,
+  Madrid, Spain, 2002.
+ Published as TR Number CLIP4/02.0, Universidad Polit&eacute;cnica de
+  Madrid, Facultad de Inform&aacute;tica.
+
+
+</DD>
+
+
+<DT>[BHZ03a]</DT>
+<DD>
+\anchor BHZ03a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ A new encoding and implementation of not necessarily closed convex
+  polyhedra.
+ In M.&nbsp;Leuschel, S.&nbsp;Gruner, and S.&nbsp;Lo Presti, editors, <em>
+  Proceedings of the 3rd Workshop on Automated Verification of Critical
+  Systems</em>, pages 161-176, Southampton, UK, 2003.
+ Published as TR Number DSSE-TR-2003-2, University of Southampton.
+
+
+</DD>
+
+
+<DT>[BHZ03b]</DT>
+<DD>
+\anchor BHZ03b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Widening operators for powerset domains.
+ In B.&nbsp;Steffen and G.&nbsp;Levi, editors, <em>Verification, Model Checking
+  and Abstract Interpretation: Proceedings of the 5th International Conference
+  (VMCAI 2004)</em>, volume 2937 of <em>Lecture Notes in Computer Science</em>, pages
+  135-148, Venice, Italy, 2003. Springer-Verlag, Berlin.
+
+
+</DD>
+
+
+<DT>[BHZ04]</DT>
+<DD>
+\anchor BHZ04
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Widening operators for powerset domains.
+ Quaderno 349, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2004.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
+
+</DD>
+
+
+<DT>[BHZ05]</DT>
+<DD>
+\anchor BHZ05
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Not necessarily closed convex polyhedra and the double description
+  method.
+ <em>Formal Aspects of Computing</em>, 17(2):222-257, 2005.
+
+</DD>
+
+
+<DT>[BHZ06a]</DT>
+<DD>
+\anchor BHZ06a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ The Parma Polyhedra Library: Toward a complete set of numerical
+  abstractions for the analysis and verification of hardware and software
+  systems.
+ Quaderno 457, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2006.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
+  published as <tt>arXiv:cs.MS/0612085</tt>, available from
+  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ06b]</DT>
+<DD>
+\anchor BHZ06b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Widening operators for powerset domains.
+ <em>Software Tools for Technology Transfer</em>, 8(4/5):449-466, 2006.
+ In the printed version of this article, all the figures have been
+  improperly printed (rendering them useless). See
+  \ref BHZ07c "[BHZ07c]".
+
+
+</DD>
+
+
+<DT>[BHZ07a]</DT>
+<DD>
+\anchor BHZ07a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Applications of polyhedral computations to the analysis and
+  verification of hardware and software systems.
+ Quaderno 458, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2007.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
+  published as <tt>arXiv:cs.CG/0701122</tt>, available from
+  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ07b]</DT>
+<DD>
+\anchor BHZ07b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ An improved tight closure algorithm for integer octagonal
+  constraints.
+ Quaderno 467, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2007.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
+  published as <tt>arXiv:0705.4618v2 [cs.DS]</tt>, available from
+  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ07c]</DT>
+<DD>
+\anchor BHZ07c
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Widening operators for powerset domains.
+ <em>Software Tools for Technology Transfer</em>, 9(3/4):413-414, 2007.
+ Erratum to \ref BHZ06b "[BHZ06b]" containing all the figures properly
+  printed.
+
+</DD>
+
+
+<DT>[BHZ08a]</DT>
+<DD>
+\anchor BHZ08a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ An improved tight closure algorithm for integer octagonal
+  constraints.
+ In F.&nbsp;Logozzo, D.&nbsp;Peled, and L.&nbsp;Zuck, editors, <em>Verification,
+  Model Checking and Abstract Interpretation: Proceedings of the 9th
+  International Conference (VMCAI 2008)</em>, volume 4905 of <em>Lecture Notes in
+  Computer Science</em>, pages 8-21, San Francisco, USA, 2008. Springer-Verlag,
+  Berlin.
+
+
+</DD>
+
+
+<DT>[BHZ08b]</DT>
+<DD>
+\anchor BHZ08b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ The Parma Polyhedra Library: Toward a complete set of numerical
+  abstractions for the analysis and verification of hardware and software
+  systems.
+ <em>Science of Computer Programming</em>, 72(1-2):3-21, 2008.
+
+
+</DD>
+
+
+<DT>[BHZ09a]</DT>
+<DD>
+\anchor BHZ09a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Applications of polyhedral computations to the analysis and
+  verification of hardware and software systems.
+ <em>Theoretical Computer Science</em>, 410(46):4672-4691, 2009.
+
+
+</DD>
+
+
+<DT>[BHZ09b]</DT>
+<DD>
+\anchor BHZ09b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Exact join detection for convex polyhedra and other numerical
+  abstractions.
+ Quaderno 492, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2009.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. A corrected
+  and improved version (corrected an error in the statement of condition (3) of
+  Theorem&nbsp;3.6, typos corrected in statement and proof of Theorem&nbsp;6.8) has been
+  published in \ref BHZ09c "[BHZ09c]".
+
+
+</DD>
+
+
+<DT>[BHZ09c]</DT>
+<DD>
+\anchor BHZ09c
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Exact join detection for convex polyhedra and other numerical
+  abstractions.
+ Report <tt>arXiv:cs.CG/0904.1783</tt>, 2009.
+ Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
+  <a href="http://bugseng.com/products/ppl/">http://bugseng.com/products/ppl/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ09d]</DT>
+<DD>
+\anchor BHZ09d
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Weakly-relational shapes for numeric abstractions: Improved
+  algorithms and proofs of correctness.
+ <em>Formal Methods in System Design</em>, 35(3):279-323, 2009.
+
+
+</DD>
+
+
+<DT>[BHZ10]</DT>
+<DD>
+\anchor BHZ10
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Exact join detection for convex polyhedra and other numerical
+  abstractions.
+ <em>Computational Geometry: Theory and Applications</em>,
+  43(5):453-473, 2010.
+
+
+</DD>
+
+
+<DT>[BJT99]</DT>
+<DD>
+\anchor BJT99
+F.&nbsp;Besson, T.&nbsp;P. Jensen, and J.-P. Talpin.
+ Polyhedral analysis for synchronous languages.
+ In A.&nbsp;Cortesi and G.&nbsp;Fil&eacute;, editors, <em>Static Analysis:
+  Proceedings of the 6th International Symposium</em>, volume 1694 of <em>Lecture
+  Notes in Computer Science</em>, pages 51-68, Venice, Italy, 1999.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[BK89]</DT>
+<DD>
+\anchor BK89
+V.&nbsp;Balasundaram and K.&nbsp;Kennedy.
+ A technique for summarizing data access and its use in parallelism
+  enhancing transformations.
+ In B.&nbsp;Knobe, editor, <em>Proceedings of the ACM SIGPLAN'89
+  Conference on Programming Language Design and Implementation (PLDI)</em>, volume
+  24(7) of <em>ACM SIGPLAN Notices</em>, pages 41-53, Portland, Oregon, USA,
+  1989. ACM Press.
+
+</DD>
+
+
+<DT>[BMPZ10]</DT>
+<DD>
+\anchor BMPZ10
+R.&nbsp;Bagnara, F.&nbsp;Mesnard, A.&nbsp;Pescetti, and E.&nbsp;Zaffanella.
+ The automatic synthesis of linear ranking functions: The complete
+  unabridged version.
+ Quaderno 498, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2010.
+ Superseded by \ref BMPZ12a "[BMPZ12a]".
+
+</DD>
+
+
+<DT>[BMPZ12a]</DT>
+<DD>
+\anchor BMPZ12a
+R.&nbsp;Bagnara, F.&nbsp;Mesnard, A.&nbsp;Pescetti, and E.&nbsp;Zaffanella.
+ The automatic synthesis of linear ranking functions: The complete
+  unabridged version.
+ Report <tt>arXiv:cs.PL/1004.0944v2</tt>, 2012.
+ Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
+  <a href="http://bugseng.com/products/ppl/">http://bugseng.com/products/ppl/</a>. Improved version of
+  \ref BMPZ10 "[BMPZ10]".
+
+</DD>
+
+
+<DT>[BMPZ12b]</DT>
+<DD>
+\anchor BMPZ12b
+R.&nbsp;Bagnara, F.&nbsp;Mesnard, A.&nbsp;Pescetti, and E.&nbsp;Zaffanella.
+ A new look at the automatic synthesis of linear ranking functions.
+ <em>Information and Computation</em>, 215:47-67, 2012.
+
+</DD>
+
+
+<DT>[BRZH02a]</DT>
+<DD>
+\anchor BRZH02a
+R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
+ Possibly not closed convex polyhedra and the Parma Polyhedra
+  Library.
+ In M.&nbsp;V. Hermenegildo and G.&nbsp;Puebla, editors, <em>Static Analysis:
+  Proceedings of the 9th International Symposium</em>, volume 2477 of <em>Lecture
+  Notes in Computer Science</em>, pages 213-229, Madrid, Spain, 2002.
+  Springer-Verlag, Berlin.
+
+
+</DD>
+
+
+<DT>[BRZH02b]</DT>
+<DD>
+\anchor BRZH02b
+R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
+ Possibly not closed convex polyhedra and the Parma Polyhedra
+  Library.
+ Quaderno 286, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2002.
+ See also \ref BRZH02c "[BRZH02c]". Available at
+  <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
+
+</DD>
+
+
+<DT>[BRZH02c]</DT>
+<DD>
+\anchor BRZH02c
+R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
+ Errata for technical report &ldquo;Quaderno 286&rdquo;.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>,
+  2002.
+ See \ref BRZH02b "[BRZH02b]".
+
+</DD>
+
+
+<DT>[CC76]</DT>
+<DD>
+\anchor CC76
+P.&nbsp;Cousot and R.&nbsp;Cousot.
+ Static determination of dynamic properties of programs.
+ In B.&nbsp;Robinet, editor, <em>Proceedings of the Second International
+  Symposium on Programming</em>, pages 106-130, Paris, France, 1976. Dunod, Paris,
+  France.
+
+
+</DD>
+
+
+<DT>[CC79]</DT>
+<DD>
+\anchor CC79
+P.&nbsp;Cousot and R.&nbsp;Cousot.
+ Systematic design of program analysis frameworks.
+ In <em>Proceedings of the Sixth Annual ACM Symposium on Principles
+  of Programming Languages</em>, pages 269-282, San Antonio, TX, USA, 1979. ACM
+  Press.
+
+
+</DD>
+
+
+<DT>[CC92]</DT>
+<DD>
+\anchor CC92
+P.&nbsp;Cousot and R.&nbsp;Cousot.
+ Comparing the Galois connection and widening/narrowing approaches
+  to abstract interpretation.
+ In M.&nbsp;Bruynooghe and M.&nbsp;Wirsing, editors, <em>Proceedings of the 4th
+  International Symposium on Programming Language Implementation and Logic
+  Programming</em>, volume 631 of <em>Lecture Notes in Computer Science</em>, pages
+  269-295, Leuven, Belgium, 1992. Springer-Verlag, Berlin.
+
+
+</DD>
+
+
+<DT>[CH78]</DT>
+<DD>
+\anchor CH78
+P.&nbsp;Cousot and N.&nbsp;Halbwachs.
+ Automatic discovery of linear restraints among variables of a
+  program.
+ In <em>Conference Record of the Fifth Annual ACM Symposium on
+  Principles of Programming Languages</em>, pages 84-96, Tucson, Arizona, 1978.
+  ACM Press.
+
+
+</DD>
+
+
+<DT>[Che64]</DT>
+<DD>
+\anchor Che64
+N.&nbsp;V. Chernikova.
+ Algorithm for finding a general formula for the non-negative
+  solutions of system of linear equations.
+ <em>U.S.S.R. Computational Mathematics and Mathematical Physics</em>,
+  4(4):151-158, 1964.
+
+</DD>
+
+
+<DT>[Che65]</DT>
+<DD>
+\anchor Che65
+N.&nbsp;V. Chernikova.
+ Algorithm for finding a general formula for the non-negative
+  solutions of system of linear inequalities.
+ <em>U.S.S.R. Computational Mathematics and Mathematical Physics</em>,
+  5(2):228-233, 1965.
+
+</DD>
+
+
+<DT>[Che68]</DT>
+<DD>
+\anchor Che68
+N.&nbsp;V. Chernikova.
+ Algorithm for discovering the set of all solutions of a linear
+  programming problem.
+ <em>U.S.S.R. Computational Mathematics and Mathematical Physics</em>,
+  8(6):282-293, 1968.
+
+</DD>
+
+
+<DT>[Dan63]</DT>
+<DD>
+\anchor Dan63
+G.&nbsp;B. Dantzig.
+ <em>Linear Programming and Extensions</em>.
+ Princeton University Press, Princeton, NJ, 1963.
+
+</DD>
+
+
+<DT>[FCB07]</DT>
+<DD>
+\anchor FCB07
+P.&nbsp;Feautrier, J.-F. Collard, and C.&nbsp;Bastoul.
+ <em>PIP/PipLib: A Solver for Parametric Integer Programming
+  Problems</em>, 5.0 edition, July 2007.
+ Distributed with PIP/PipLib 1.4.0.
+
+</DD>
+
+
+<DT>[Fea88]</DT>
+<DD>
+\anchor Fea88
+P.&nbsp;Feautrier.
+ Parametric integer programming.
+ <em>RAIRO Recherche Op&eacute;rationnelle</em>, 22(3):243-268, 1988.
+
+</DD>
+
+
+<DT>[FP96]</DT>
+<DD>
+\anchor FP96
+K.&nbsp;Fukuda and A.&nbsp;Prodon.
+ Double description method revisited.
+ In M.&nbsp;Deza, R.&nbsp;Euler, and Y.&nbsp;Manoussakis, editors, <em>Combinatorics
+  and Computer Science, 8th Franco-Japanese and 4th Franco-Chinese Conference,
+  Brest, France, July 3-5, 1995, Selected Papers</em>, volume 1120 of <em>Lecture
+  Notes in Computer Science</em>, pages 91-111. Springer-Verlag, Berlin, 1996.
+
+
+</DD>
+
+
+<DT>[Fuk98]</DT>
+<DD>
+\anchor Fuk98
+K.&nbsp;Fukuda.
+ Polyhedral computation FAQ.
+ Swiss Federal Institute of Technology, Lausanne and Zurich,
+  Switzerland, available at
+  <a href="http://www.ifor.math.ethz.ch/~fukuda/polyfaq/polyfaq.html">http://www.ifor.math.ethz.ch/~fukuda/polyfaq/polyfaq.html</a>, 1998.
+
+</DD>
+
+
+<DT>[GDD<sup>+</sup>04]</DT>
+<DD>
+\anchor GDDetal04
+D.&nbsp;Gopan, F.&nbsp;DiMaio, N.&nbsp;Dor, T.&nbsp;W. Reps, and M.&nbsp;Sagiv.
+ Numeric domains with summarized dimensions.
+ In K.&nbsp;Jensen and A.&nbsp;Podelski, editors, <em>Tools and Algorithms for
+  the Construction and Analysis of Systems, 10th International Conference,
+  TACAS 2004</em>, volume 2988 of <em>Lecture Notes in Computer Science</em>, pages
+  512-529, Barcelona, Spain, 2004. Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[GJ00]</DT>
+<DD>
+\anchor GJ00
+E.&nbsp;Gawrilow and M.&nbsp;Joswig.
+ <tt>polymake</tt>: A framework for analyzing convex polytopes.
+ In G.&nbsp;Kalai and G.&nbsp;M. Ziegler, editors, <em>Polytopes -
+  Combinatorics and Computation</em>, pages 43-74. Birkh&auml;user, 2000.
+
+</DD>
+
+
+<DT>[GJ01]</DT>
+<DD>
+\anchor GJ01
+E.&nbsp;Gawrilow and M.&nbsp;Joswig.
+ <tt>polymake</tt>: An approach to modular software design in
+  computational geometry.
+ In <em>Proceedings of the 17th Annual Symposium on Computational
+  Geometry</em>, pages 222-231, Medford, MA, USA, 2001. ACM.
+
+</DD>
+
+
+<DT>[GR77]</DT>
+<DD>
+\anchor GR77
+D.&nbsp;Goldfarb and J.&nbsp;K. Reid.
+ A practical steepest-edge simplex algorithm.
+ <em>Mathematical Proramming</em>, 12(1):361-371, 1977.
+
+</DD>
+
+
+<DT>[Gra91]</DT>
+<DD>
+\anchor Gra91
+P.&nbsp;Granger.
+ Static analysis of linear congruence equalities among variables of a
+  program.
+ In S.&nbsp;Abramsky and T.&nbsp;S.&nbsp;E. Maibaum, editors, <em>TAPSOFT'91:
+  Proceedings of the International Joint Conference on Theory and Practice of
+  Software Development, Volume 1: Colloquium on Trees in Algebra and
+  Programming (CAAP'91)</em>, volume 493 of <em>Lecture Notes in Computer
+  Science</em>, pages 169-192, Brighton, UK, 1991. Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Gra97]</DT>
+<DD>
+\anchor Gra97
+P.&nbsp;Granger.
+ Static analyses of congruence properties on rational numbers
+  (extended abstract).
+ In P.&nbsp;Van Hentenryck, editor, <em>Static Analysis: Proceedings of
+  the 4th International Symposium</em>, volume 1302 of <em>Lecture Notes in
+  Computer Science</em>, pages 278-292, Paris, France, 1997. Springer-Verlag,
+  Berlin.
+
+</DD>
+
+
+<DT>[Hal79]</DT>
+<DD>
+\anchor Hal79
+N.&nbsp;Halbwachs.
+ <em>D&eacute;termination Automatique de Relations Lin&eacute;aires
+  V&eacute;rifi&eacute;es par les Variables d'un Programme</em>.
+ Th&egrave;se de 3&egrave;me cycle d'informatique,
+  Universit&eacute; scientifique et m&eacute;dicale de Grenoble, Grenoble, France, March
+  1979.
+
+</DD>
+
+
+<DT>[Hal93]</DT>
+<DD>
+\anchor Hal93
+N.&nbsp;Halbwachs.
+ Delay analysis in synchronous programs.
+ In C.&nbsp;Courcoubetis, editor, <em>Computer Aided Verification:
+  Proceedings of the 5th International Conference (CAV'93)</em>, volume 697 of <em>
+  Lecture Notes in Computer Science</em>, pages 333-346, Elounda, Greece, 1993.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[HH95]</DT>
+<DD>
+\anchor HH95
+T.&nbsp;A. Henzinger and P.-H. Ho.
+ A note on abstract interpretation strategies for hybrid automata.
+ In P.&nbsp;J. Antsaklis, W.&nbsp;Kohn, A.&nbsp;Nerode, and S.&nbsp;Sastry, editors, <em>
+  Hybrid Systems II</em>, volume 999 of <em>Lecture Notes in Computer Science</em>,
+  pages 252-264. Springer-Verlag, Berlin, 1995.
+
+
+</DD>
+
+
+<DT>[HHL90]</DT>
+<DD>
+\anchor HHL90
+L.&nbsp;Huelsbergen, D.&nbsp;Hahn, and J.&nbsp;Larus.
+ Exact dependence analysis using data access descriptors.
+ Technical Report 945, Department of Computer Science, University of
+  Wisconsin, Madison, 1990.
+
+</DD>
+
+
+<DT>[HKP95]</DT>
+<DD>
+\anchor HKP95
+N.&nbsp;Halbwachs, A.&nbsp;Kerbrat, and Y.-E. Proy.
+ <em>POLyhedra INtegrated Environment</em>.
+ Verimag, France, version 1.0 of POLINE edition, September 1995.
+ Documentation taken from source code.
+
+</DD>
+
+
+<DT>[HLW94]</DT>
+<DD>
+\anchor HLW94
+V.&nbsp;Van Dongen H.&nbsp;Le Verge and D.&nbsp;K. Wilde.
+ Loop nest synthesis using the polyhedral library.
+ <em>Publication interne</em> 830, IRISA, Campus de Beaulieu, Rennes,
+  France, 1994.
+
+</DD>
+
+
+<DT>[HMT71]</DT>
+<DD>
+\anchor HMT71
+L.&nbsp;Henkin, J.&nbsp;D. Monk, and A.&nbsp;Tarski.
+ <em>Cylindric Algebras: Part I</em>.
+ North-Holland, Amsterdam, 1971.
+
+</DD>
+
+
+<DT>[HPR94]</DT>
+<DD>
+\anchor HPR94
+N.&nbsp;Halbwachs, Y.-E. Proy, and P.&nbsp;Raymond.
+ Verification of linear hybrid systems by means of convex
+  approximations.
+ In B.&nbsp;Le Charlier, editor, <em>Static Analysis: Proceedings of the
+  1st International Symposium</em>, volume 864 of <em>Lecture Notes in Computer
+  Science</em>, pages 223-237, Namur, Belgium, 1994. Springer-Verlag, Berlin.
+
+
+</DD>
+
+
+<DT>[HPR97]</DT>
+<DD>
+\anchor HPR97
+N.&nbsp;Halbwachs, Y.-E. Proy, and P.&nbsp;Roumanoff.
+ Verification of real-time systems using linear relation analysis.
+ <em>Formal Methods in System Design</em>, 11(2):157-185, 1997.
+
+</DD>
+
+
+<DT>[HPWT01]</DT>
+<DD>
+\anchor HPWT01
+T.&nbsp;A. Henzinger, J.&nbsp;Preussig, and H.&nbsp;Wong-Toi.
+ Some lessons from the hytech experience.
+ In <em>Proceedings of the 40th Annual Conference on Decision and
+  Control</em>, pages 2887-2892. IEEE Computer Society Press, 2001.
+
+
+</DD>
+
+
+<DT>[Jea02]</DT>
+<DD>
+\anchor Jea02
+B.&nbsp;Jeannet.
+ <em>Convex Polyhedra Library</em>, release 1.1.3c edition, March 2002.
+ Documentation of the &ldquo;New Polka&rdquo; library.
+
+</DD>
+
+
+<DT>[JMSY94]</DT>
+<DD>
+\anchor JMSY94
+J.&nbsp;Jaffar, M.&nbsp;J. Maher, P.&nbsp;J. Stuckey, and R.&nbsp;H.&nbsp;C. Yap.
+ Beyond finite domains.
+ In A.&nbsp;Borning, editor, <em>Principles and Practice of Constraint
+  Programming: Proceedings of the Second International Workshop</em>, volume 874 of
+  <em>Lecture Notes in Computer Science</em>, pages 86-94, Rosario, Orcas Island,
+  Washington, USA, 1994. Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[KBB<sup>+</sup>06]</DT>
+<DD>
+\anchor KBBetal06
+L.&nbsp;Khachiyan, E.&nbsp;Boros, K.&nbsp;Borys, K.&nbsp;Elbassioni, and V.&nbsp;Gurvich.
+ Generating all vertices of a polyhedron is hard.
+ <em>Discrete and Computational Geometry</em>, 2006.
+ Invited contribution.
+
+</DD>
+
+
+<DT>[Kuh56]</DT>
+<DD>
+\anchor Kuh56
+H.&nbsp;W. Kuhn.
+ Solvability and consistency for linear equations and inequalities.
+ <em>American Mathematical Monthly</em>, 63:217-232, 1956.
+
+</DD>
+
+
+<DT>[Le 92]</DT>
+<DD>
+\anchor Le 92
+H.&nbsp;Le Verge.
+ A note on Chernikova's algorithm.
+ <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
+  France, 1992.
+
+
+</DD>
+
+
+<DT>[Loe99]</DT>
+<DD>
+\anchor Loe99
+V.&nbsp;Loechner.
+ <i>PolyLib</i>: A library for manipulating parameterized polyhedra.
+ Available at <a href="http://icps.u-strasbg.fr/~loechner/polylib/">http://icps.u-strasbg.fr/~loechner/polylib/</a>, March
+  1999.
+ Declares itself to be a continuation of \ref Wil93 "[Wil93]".
+
+</DD>
+
+
+<DT>[LW97]</DT>
+<DD>
+\anchor LW97
+V.&nbsp;Loechner and D.&nbsp;K. Wilde.
+ Parameterized polyhedra and their vertices.
+ <em>International Journal of Parallel Programming</em>, 25(6):525-549,
+  1997.
+
+</DD>
+
+
+<DT>[Mas92]</DT>
+<DD>
+\anchor Mas92
+F.&nbsp;Masdupuy.
+ Array operations abstraction using semantic analysis of trapezoid
+  congruences.
+ In <em>Proceedings of the 6th ACM International Conference on
+  Supercomputing</em>, pages 226-235, Washington, DC, USA, 1992. ACM Press.
+
+</DD>
+
+
+<DT>[Mas93]</DT>
+<DD>
+\anchor Mas93
+F.&nbsp;Masdupuy.
+ <em>Array Indices Relational Semantic Analysis Using Rational Cosets
+  and Trapezoids</em>.
+ Th&egrave;se d'informatique, &Eacute;cole Polytechnique, Palaiseau, France,
+  December 1993.
+
+</DD>
+
+
+<DT>[Min01a]</DT>
+<DD>
+\anchor Min01a
+A.&nbsp;Min&eacute;.
+ A new numerical abstract domain based on difference-bound matrices.
+ In O.&nbsp;Danvy and A.&nbsp;Filinski, editors, <em>Proceedings of the 2nd
+  Symposium on Programs as Data Objects (PADO 2001)</em>, volume 2053 of <em>
+  Lecture Notes in Computer Science</em>, pages 155-172, Aarhus, Denmark, 2001.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Min01b]</DT>
+<DD>
+\anchor Min01b
+A.&nbsp;Min&eacute;.
+ The octagon abstract domain.
+ In <em>Proceedings of the Eighth Working Conference on Reverse
+  Engineering (WCRE'01)</em>, pages 310-319, Stuttgart, Germany, 2001. IEEE
+  Computer Society Press.
+
+</DD>
+
+
+<DT>[Min02]</DT>
+<DD>
+\anchor Min02
+A.&nbsp;Min&eacute;.
+ A few graph-based relational numerical abstract domains.
+ In M.&nbsp;V. Hermenegildo and G.&nbsp;Puebla, editors, <em>Static Analysis:
+  Proceedings of the 9th International Symposium</em>, volume 2477 of <em>Lecture
+  Notes in Computer Science</em>, pages 117-132, Madrid, Spain, 2002.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Min04]</DT>
+<DD>
+\anchor Min04
+A.&nbsp;Min&eacute;.
+ Relational abstract domains for the detection of floating-point
+  run-time errors.
+ In D.&nbsp;Schmidt, editor, <em>Programming Languages and Systems:
+  Proceedings of the 13th European Symposium on Programming</em>, volume 2986 of
+  <em>Lecture Notes in Computer Science</em>, pages 3-17, Barcelona, Spain, 2004.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Min05]</DT>
+<DD>
+\anchor Min05
+A.&nbsp;Min&eacute;.
+ <em>Weakly Relational Numerical Abstract Domains</em>.
+ PhD thesis, &Eacute;cole Polytechnique, Paris, France, March 2005.
+
+</DD>
+
+
+<DT>[MRTT53]</DT>
+<DD>
+\anchor MRTT53
+T.&nbsp;S. Motzkin, H.&nbsp;Raiffa, G.&nbsp;L. Thompson, and R.&nbsp;M. Thrall.
+ The double description method.
+ In H.&nbsp;W. Kuhn and A.&nbsp;W. Tucker, editors, <em>Contributions to the
+  Theory of Games - Volume II</em>, number&nbsp;28 in Annals of Mathematics Studies,
+  pages 51-73. Princeton University Press, Princeton, New Jersey, 1953.
+
+</DD>
+
+
+<DT>[NF01]</DT>
+<DD>
+\anchor NF01
+T.&nbsp;Nakanishi and A.&nbsp;Fukuda.
+ Modulo interval arithmetic and its application to program analysis.
+ <em>Transactions of Information Processing Society of Japan</em>,
+  42(4):829-837, 2001.
+
+</DD>
+
+
+<DT>[NJPF99]</DT>
+<DD>
+\anchor NJPF99
+T.&nbsp;Nakanishi, K.&nbsp;Joe, C.&nbsp;D. Polychronopoulos, and A.&nbsp;Fukuda.
+ The modulo interval: A simple and practical representation for
+  program analysis.
+ In <em>Proceedings of the 1999 International Conference on Parallel
+  Architectures and Compilation Techniques</em>, pages 91-96, Newport Beach,
+  California, USA, 1999. IEEE Computer Society.
+
+</DD>
+
+
+<DT>[NO77]</DT>
+<DD>
+\anchor NO77
+G.&nbsp;Nelson and D.&nbsp;C. Oppen.
+ Fast decision algorithms based on Union and Find.
+ In <em>Proceedings of the 18th Annual Symposium on Foundations of
+  Computer Science (FOCS'77)</em>, pages 114-119, Providence, RI, USA, 1977. IEEE
+  Computer Society Press.
+ The journal version of this paper is \ref NO80 "[NO80]".
+
+</DD>
+
+
+<DT>[NO80]</DT>
+<DD>
+\anchor NO80
+G.&nbsp;Nelson and D.&nbsp;C. Oppen.
+ Fast decision procedures based on congruence closure.
+ <em>Journal of the ACM</em>, 27(2):356-364, 1980.
+ An earlier version of this paper is \ref NO77 "[NO77]".
+
+</DD>
+
+
+<DT>[NR00]</DT>
+<DD>
+\anchor NR00
+S.&nbsp;P.&nbsp;K. Nookala and T.&nbsp;Risset.
+ A library for Z-polyhedral operations.
+ <em>Publication interne</em> 1330, IRISA, Campus de Beaulieu, Rennes,
+  France, 2000.
+
+</DD>
+
+
+<DT>[NW88]</DT>
+<DD>
+\anchor NW88
+G.&nbsp;L. Nemhauser and L.&nbsp;A. Wolsey.
+ <em>Integer and Combinatorial Optimization</em>.
+ Wiley Interscience Series in Discrete Mathematics and Optimization.
+  John Wiley &amp; Sons, 1988.
+
+</DD>
+
+
+<DT>[Pra77]</DT>
+<DD>
+\anchor Pra77
+V.&nbsp;R. Pratt.
+ Two easy theories whose combination is hard.
+ Memo sent to Nelson and Oppen concerning a preprint of their paper
+  \ref NO77 "[NO77]", September 1977.
+
+</DD>
+
+
+<DT>[PS98]</DT>
+<DD>
+\anchor PS98
+C.&nbsp;H. Papadimitriou and K.&nbsp;Steiglitz.
+ <em>Combinatorial Optimization: Algorithms and Complexity</em>.
+ Dover Publications, second edition, 1998.
+
+</DD>
+
+
+<DT>[QRR96]</DT>
+<DD>
+\anchor QRR96
+P.&nbsp;Quinton, S.&nbsp;Rajopadhye, and T.&nbsp;Risset.
+ On manipulating Z-polyhedra.
+ Technical Report 1016, IRISA, Campus Universitaire de Bealieu,
+  Rennes, France, July 1996.
+
+</DD>
+
+
+<DT>[QRR97]</DT>
+<DD>
+\anchor QRR97
+P.&nbsp;Quinton, S.&nbsp;Rajopadhye, and T.&nbsp;Risset.
+ On manipulating Z-polyhedra using a canonic representation.
+ <em>Parallel Processing Letters</em>, 7(2):181-194, 1997.
+
+</DD>
+
+
+<DT>[QRW00]</DT>
+<DD>
+\anchor QRW00
+F.&nbsp;Quiller&eacute;, S.&nbsp;V. Rajopadhye, and D.&nbsp;Wilde.
+ Generation of efficient nested loops from polyhedra.
+ <em>International Journal of Parallel Programming</em>, 28(5):469-498,
+  2000.
+
+</DD>
+
+
+<DT>[RBL06]</DT>
+<DD>
+\anchor RBL06
+T.&nbsp;W. Reps, G.&nbsp;Balakrishnan, and J.&nbsp;Lim.
+ Intermediate-representation recovery from low-level code.
+ In J.&nbsp;Hatcliff and F.&nbsp;Tip, editors, <em>Proceedings of the 2006 ACM
+  SIGPLAN Workshop on Partial Evaluation and Semantics-based Program
+  Manipulation</em>, pages 100-111, Charleston, South Carolina, USA, 2006. ACM
+  Press.
+
+</DD>
+
+
+<DT>[Ric02]</DT>
+<DD>
+\anchor Ric02
+E.&nbsp;Ricci.
+ Rappresentazione e manipolazione di poliedri convessi per l'analisi e
+  la verifica di programmi.
+ Laurea dissertation, University of Parma, Parma, Italy, July 2002.
+ In Italian.
+
+
+</DD>
+
+
+<DT>[Sch99]</DT>
+<DD>
+\anchor Sch99
+A.&nbsp;Schrijver.
+ <em>Theory of Linear and Integer Programming</em>.
+ Wiley Interscience Series in Discrete Mathematics and Optimization.
+  John Wiley &amp; Sons, 1999.
+
+</DD>
+
+
+<DT>[Sho81]</DT>
+<DD>
+\anchor Sho81
+R.&nbsp;E. Shostak.
+ Deciding linear inequalities by computing loop residues.
+ <em>Journal of the ACM</em>, 28(4):769-779, 1981.
+
+</DD>
+
+
+<DT>[SK07]</DT>
+<DD>
+\anchor SK07
+A.&nbsp;Simon and A.&nbsp;King.
+ Taming the wrapping of integer arithmetic.
+ In H.&nbsp;Riis Nielson and G.&nbsp;Fil&eacute;, editors, <em>Static Analysis:
+  Proceedings of the 14th International Symposium</em>, volume 4634 of <em>Lecture
+  Notes in Computer Science</em>, pages 121-136, Kongens Lyngby, Denmark, 2007.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Sri93]</DT>
+<DD>
+\anchor Sri93
+D.&nbsp;Srivastava.
+ Subsumption and indexing in constraint query languages with linear
+  arithmetic constraints.
+ <em>Annals of Mathematics and Artificial Intelligence</em>,
+  8(3-4):315-343, 1993.
+
+
+</DD>
+
+
+<DT>[SS07a]</DT>
+<DD>
+\anchor SS07a
+R.&nbsp;Sen and Y.&nbsp;N. Srikant.
+ Executable analysis using abstract interpretation with circular
+  linear progressions.
+ In <em>Proceedings of the 5th IEEE/ACM International Conference on
+  Formal Methods and Models for Co-Design (MEMOCODE 2007)</em>, pages 39-48, Nice,
+  France, 2007. IEEE Computer Society Press.
+
+</DD>
+
+
+<DT>[SS07b]</DT>
+<DD>
+\anchor SS07b
+R.&nbsp;Sen and Y.&nbsp;N. Srikant.
+ Executable analysis with circular linear progressions.
+ Technical Report IISc-CSA-TR-2007-3, Department of Computer Science
+  and Automation, Indian Institute of Science, Bangalore, India, 2007.
+
+</DD>
+
+
+<DT>[SW70]</DT>
+<DD>
+\anchor SW70
+J.&nbsp;Stoer and C.&nbsp;Witzgall.
+ <em>Convexity and Optimization in Finite Dimensions I</em>.
+ Springer-Verlag, Berlin, 1970.
+
+</DD>
+
+
+<DT>[War03]</DT>
+<DD>
+\anchor War03
+H.&nbsp;S. Warren, Jr.
+ <em>Hacker's Delight</em>.
+ Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 2003.
+
+</DD>
+
+
+<DT>[Wey35]</DT>
+<DD>
+\anchor Wey35
+H.&nbsp;Weyl.
+ Elementare theorie der konvexen polyeder.
+ <em>Commentarii Mathematici Helvetici</em>, 7:290-306, 1935.
+ English translation in \ref Wey50 "[Wey50]".
+
+</DD>
+
+
+<DT>[Wey50]</DT>
+<DD>
+\anchor Wey50
+H.&nbsp;Weyl.
+ The elementary theory of convex polyhedra.
+ In H.&nbsp;W. Kuhn, editor, <em>Contributions to the Theory of Games -
+  Volume I</em>, number&nbsp;24 in Annals of Mathematics Studies, pages 3-18. Princeton
+  University Press, Princeton, New Jersey, 1950.
+ Translated from \ref Wey35 "[Wey35]" by H. W. Kuhn.
+
+</DD>
+
+
+<DT>[Wil93]</DT>
+<DD>
+\anchor Wil93
+D.&nbsp;K. Wilde.
+ A library for doing polyhedral operations.
+ Master's thesis, Oregon State University, Corvallis, Oregon,
+  December 1993.
+ Also published as IRISA <em>Publication interne</em> 785, Rennes,
+  France, 1993.
+
+
+</DD>
+</DL>
+
+
+\if Include_Implementation_Details
+
+\section prelims Further Notation and Terminology
+
+\subsection Linear_Independence Linear Independence
+
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
+is <EM>linearly independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the set of equations
+\f[
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
+\f]
+implies that, for each \f$i = 1\f$, \f$\ldots\f$, \f$k\f$,
+\f$\lambda_i = 0\f$.
+
+The maximum number of linearly independent points in \f$\Rset^n\f$ is \f$n\f$.
+Note that linear independence implies affine independence,
+but the converse is not true.
+
+<B><EM>Proposition</EM></B>
+
+If \f$A\f$ is an \f$m \times n\f$ matrix, the maximum number of
+linearly independent rows of \f$A\f$, viewed as vectors of \f$\Rset^n\f$,
+equals the maximum number of linearly independent columns of \f$A\f$,
+viewed as vectors of \f$\Rset^m\f$.
+
+\subsection Rank Rank
+
+The maximum number of linearly independent rows (columns) of a
+matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
+\f$\prank(A)\f$.
+
+<B><EM>Proposition</EM></B>
+
+A polyhedron is a convex set.
+
+\subsection Minkowskis_Theorem Minkowski's Theorem
+
+Let
+\f$\cP = \{\, \vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b} \,\}\f$
+be a non-empty polyhedron where \f$\prank(A) = n\f$.
+Let \f$V\f$ be the set of vertices and
+\f$R\f$ the set of extreme rays of \f$\cP\f$.
+Let also \f$\mathcal{V}\f$ be the set of convex combinations of \f$V\f$
+and \f$\mathcal{R}\f$ the set of positive combinations of \f$R\f$.
+Then
+\f[
+  \cP = \mathcal{V} + \mathcal{R}.
+\f]
+
+Informally, this theorem states that,
+whenever a polyhedron \f$\cP\f$ has a vertex,
+there exists a decomposition such that
+- \f$V\f$ is the set of all <EM>vertices</EM> of \f$\cP\f$;
+- \f$R\f$ is the set of all <EM>extreme</EM> rays of \f$\cP\f$; and
+- \f$L = \emptyset\f$.
+
+The conditions that \f$\cP\f$ is not empty and \f$\prank(A) = n\f$
+are equivalent to the condition that \f$\cP\f$ has a vertex.
+(See also Nemhauser and Wolsey - Integer and Combinatorial Optimization -
+propositions 4.1 and 4.2 on pages 92 and 93).
+
+<B><EM>Proposition</EM></B>
+
+Under the same hypotheses of Minkowski's theorem,
+if \f$\cP\f$ is a rational polyhedron then
+all the vertices in \f$V\f$ have rational coefficients and
+we can consider a set \f$R\f$ of extreme rays having
+rational coefficients only.
+
+The second theorem, called Weyl's theorem, states that any system of
+generators having rational coefficients defines a rational polyhedron:
+
+\subsection Weyls_Theorem Weyl's Theorem
+
+If \f$A\f$ is a rational \f$m \times n\f$ matrix,
+\f$B\f$ is a rational \f$m' \times n\f$ matrix and
+\f[
+  \cQ = \sset{
+          \vect{x} \in \Rset^n
+        }{
+          \vect{x}^\transpose = \vect{y}^\transpose A
+                                  + \vect{z}^\transpose B, \\
+          \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \nonnegRset^{m},
+          \sum_{k=0}^{m-1} y_k = 1, \\
+          \vect{z} \in \nonnegRset^{m'}
+        },
+\f]
+then \f$\cQ\f$ is a rational polyhedron.
+
+In fact, since \f$\cQ\f$ consists of the sum of convex combinations of
+the rows of \f$A\f$ with positive combinations of the rows of \f$B\f$,
+we can think of \f$A\f$ as the matrix of vertices and \f$B\f$ as
+the matrix of rays.
+
+\subsection Cone Cone
+
+A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
+\f[
+  \vect{x} \in C \Rightarrow \lambda \vect{x} \in C
+  \text{ for all } \lambda \in \nonnegRset.
+\f]
+
+\subsection Polyhedral_Cone Polyhedral Cone
+
+The polyhedron
+\f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$
+is a convex cone and is called <EM>polyhedral cone</EM>.
+
+A polyhedral cone is either <EM>pointed</EM>,
+having the origin as its only vertex, or has no vertices at all.
+
+\subsection Lineality_Space Lineality Space
+
+Given a polyhedron
+\f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
+the <EM>lineality space</EM> of \f$\cP\f$ is the set
+\f[
+  \{\, \vect{x} \in \cP \mid A\vect{x} = \vect{0} \,\}
+\f]
+and it is denoted by \f$\linspace(\cP)\f$.
+
+
+\section homogeneous Homogeneous Systems
+
+To simplify the operations on polyhedra,
+each polyhedron is first transformed to a homogeneous cone
+in which the original polyhedron is embedded.
+
+\subsection Corresponding_Polyhedral_Cone Corresponding Polyhedral Cone
+
+The transformation changes the inhomogeneous system of constraints
+in \f$n\f$ variables, representing a polyhedron \f$\cP \in \Rset^n\f$,
+into a homogeneous system in \f$n + 1\f$ variables, representing a
+polyhedral cone \f$C \in \Rset^{n + 1}\f$,
+so that each point \f$\vect{x} \in \cP\f$
+corresponds to a point
+\f$\vect{x}' = (\xi \vect{x}^\transpose, \xi)^\transpose \in C\f$
+where \f$\xi \geq 0\f$. That is,
+\f[
+  \cP = \{\,\vect{x} \mid A\vect{x} \geq \vect{b}\,\}
+      = \{\,\vect{x} \mid A\vect{x} - \vect{b} \geq \vect{0}\,\}
+\f]
+\f[
+  C = \{\,
+           (\xi \vect{x}^\transpose, \xi)^\transpose
+      \mid
+           \xi A\vect{x} - \xi \vect{b}
+           \geq \vect{0}, \xi \geq 0
+      \,\}
+    = \{\,\vect{x}' \mid A'\vect{x}' \geq \vect{0}\,\}
+\f]
+where:
+\f$\vect{x}' = (\xi \vect{x}^\transpose, \xi)^\transpose \in \Rset^{n + 1}\f$;
+\f$A'\f$ is the \f$(m+1) \times (n+1)\f$ matrix having, for
+its first \f$m\f$ rows, the submatrix
+\f$(A, -\vect{b}) \in \Rset^m \times \Rset^{n + 1}\f$;
+and, for the (\f$m + 1\f$)'st row,
+\f$(\vect{0}^\transpose, 1)\f$ where \f$\vect{0} \in \Rset^n\f$.
+We call  \f$C\f$ the
+<EM>corresponding polyhedral cone for \f$\cP\f$</EM>.
+
+The (\f$m+1\f$)'st row
+\f$(\vect{0}^\transpose, 1)\f$
+represents the <EM>positivity constraint</EM> \f$1 \geq 0\f$.
+
+Note that \f$\cP\f$ is contained in \f$C\f$
+since the intersection of \f$C\f$ with
+the hyperplane defined by the equality \f$\xi = 1\f$ is \f$\cP\f$.
+Therefore, it is always possible to
+transform  a polyhedron \f$\cP\f$ to its corresponding polyhedral cone
+\f$C\f$ and then recover \f$\cP\f$ by means of this intersection.
+
+As  \f$C\f$ always includes the origin and, hence, is non-empty,
+by Minkowski's theorem,
+it can also be represented by a system of generators.
+
+The systems of generators for \f$\cP\f$ and \f$C\f$ are such that:
+- Each vertex \f$\vect{v}\f$ in \f$\cP\f$
+  corresponds to a ray \f$(\vect{v}^\transpose, d)^\transpose\f$
+  with \f$d \neq 0\f$, in \f$C\f$.
+- Each ray \f$\vect{r}\f$ in \f$\cP\f$
+  corresponds to the ray \f$(\vect{r}^\transpose, 0)^\transpose\f$
+  in \f$C\f$.
+- Every ray in \f$C\f$ corresponds to a vertex or ray in \f$\cP\f$.
+- The origin in \f$\Rset^{n+1}\f$ is a point in \f$C\f$.
+
+Thus, in the cone \f$C\f$, a ray derived from a vertex
+in \f$\cP\f$ differs from a ray derived from a ray in \f$\cP\f$
+only in that, for a vertex,
+the (\f$n+1\f$)'st term is different from zero and,
+for a ray, it is zero.
+
+\subsection Devref_Double_Description Double Description
+
+Let \f$\cP \in \Rset^n \f$ be a polyhedron and  \f$C \in \Rset^{n+1} \f$
+the corresponding polyhedral cone.
+Then the dual representations, the systems of constraints
+and generators representing \f$C\f$, form the
+<EM>double description</EM> for \f$\cP\f$.
+
+Note that, in a double description for a non-empty polyhedron,
+the system of constraints subsumes the positivity constraint \f$1 \geq 0\f$
+while the system of generators (which has only rays and lines
+corresponding to the vertices, rays and lines for \f$\cP\f$)
+implicitly assumes the origin in \f$\Rset^{n+1}\f$
+as a point so that the cone \f$C\f$ represented by the generators is non-empty.
+
+\subsection PPL_Polyhedron_Representation PPL Polyhedron Representation
+
+In the PPL,
+a polyhedron is represented by one or both of the representations in
+its double description.
+Thus, in the sequel, by <EM>PPL representation of a polyhedra</EM>,
+we are referring to the corresponding representation of
+its corresponding polyhedral cone.
+
+\subsection Valid_Linear_Inequalities Valid Linear Inequalities
+
+Let \f$\cP\f$ be a convex polyhedron (or polytope) in
+\f$\Rset^n\f$. For a real \f$n\f$-vector \f$\vect{c}\f$ and a real number
+\f$b\f$, a linear inequality \f$\langle \vect{c}, \vect{x} \rangle \geq b\f$
+(briefly denoted by \f$(\vect{c},b)\f$) is called <EM>valid</EM>
+for \f$\cP\f$ if it is satisfied by all points \f$\vect{x} \in \cP\f$.
+
+\subsection Redundancy Redundancy
+
+-# In a system of equalities, if an equality is a linear combination
+   of the others, it is said to be <EM>dependent</EM> upon them;
+   the dependent equality is called <EM>redundant</EM>.
+   A system containing no redundant equality is called <EM>independent</EM>.
+-# In a system of inequalities, an inequality is said to be <EM>redundant</EM>
+   if it can be eliminated from the system obtaining a system
+   equivalent to the previous one, i.e., having the same solutions.
+
+Given a polyhedron \f$\cP\f$ generated by \f$V\f$ vertices,
+\f$R\f$ rays and \f$L\f$ lines, we say that:
+
+-# \f$L\f$ is <EM>irredundant</EM> if
+  \f$L\f$ is a set of linearly independent lines; and
+-# a ray \f$\vect{r}_1\in R\f$ is <EM>redundant</EM>
+  if there exists another ray \f$\vect{r}_2 \in R\f$ and
+  there exists \f$\lambda \in \Rset, \lambda > 0\f$
+  such that \f$\vect{r}_1 = \lambda \vect{r}_2\f$.
+
+Note that, in the PPL representation of a polyhedron \f$\cP\f$,
+vertices are represented as rays so that
+this concept of a redundant ray also applies to the vertices of \f$\cP\f$.
+
+
+\subsection Face Face
+
+If \f$(\vect{c},b)\f$ is a valid inequality for \f$\cP\f$, and
+\f$F = \{\,\vect{x} \in \cP \mid \langle \vect{c}, \vect{x} \rangle = b\,\}\f$,
+\f$F\f$ is called a <EM>face</EM> of \f$\cP\f$ and we say that the inequality
+represents \f$F\f$.
+A face \f$F\f$ is said to be <EM>proper</EM> if \f$F \neq \emptyset\f$ and
+\f$F \neq \cP\f$.
+
+When \f$F\f$ is non-empty, we say that \f$(\vect{c},b)\f$ <EM>supports</EM>
+\f$\cP\f$.
+
+The empty polyhedron and the universe polyhedron both have no proper faces,
+because the only face of an empty polyhedron is itself, while the faces of
+the universe polyhedron are itself and the emptyset.
+
+Let \f$\cP\f$ be a non-empty polyhedron. The set
+\f[
+  F = \{ \vect{p} \} + \linspace(\cP),
+\f]
+where \f$\vect{p}\f$ is a point of \f$\cP\f$ and the symbol
+'\f$+\f$' denotes the Minkowski's sum, is a <EM>minimal proper face</EM> of
+the polyhedron if \f$F\f$ is a proper face of \f$\cP\f$.
+
+\subsection Facet Facet
+
+A proper face \f$F\f$ of \f$\cP\f$ is a <EM>facet</EM> (or <EM>maximal proper
+face</EM>) of \f$\cP\f$ if it is not strictly included into any other proper
+face of \f$\cP\f$.
+The affine dimension of a facet is equal to \f$\pdim(\cP) - 1\f$.
+
+<B><EM>Proposition</EM></B>
+
+Let \f$\cP\f$ a polyhedron in \f$\Rset^n\f$. The set of all faces is a lattice
+under inclusion: the minimal face is the emptyset, while the maximal face
+is the polyhedron.
+
+<B><EM>Proposition</EM></B>
+
+Let \f$\cP \neq \emptyset\f$ be a polyhedron in \f$\Rset^n\f$ and
+\f$C\f$ be the polyhedral cone in \f$\Rset^{n+1}\f$ obtained from \f$\cP\f$
+by homogenization, then:
+-# the only <EM>minimal proper face</EM> of \f$C\f$ is
+   \f$\linspace(C)\f$;
+-# let \f$\vect{y} \in C\f$ be different from \f$\vect{0}\f$ and
+   \f$\cone\{\vect{y}\}\f$ be defined as
+   \f$\{\, \lambda \vect{y} \mid \lambda \geq 0 \,\}\f$. If the set
+   \f$F = \cone\{\vect{y}\} + \linspace(C)\f$ is
+   a proper face of \f$C\f$, then \f$\vect{y}\f$ is an <EM>extremal ray</EM>
+   of \f$C\f$.
+
+\subsection Ray_Space Ray Space
+
+Given the decomposition \f$\mathcal{V} + \mathcal{R} + \mathcal{L}\f$
+of a polyhedron \f$\cP\f$ the set \f$\mathcal{V} + \mathcal{R}\f$
+is called the <EM>ray space</EM> of \f$\cP\f$
+and denoted by \f$\mathop{\mathrm{ray space}}(\cP)\f$.
+
+Thus a polyhedron \f$\cP\f$ can be always decomposed in its
+\f$\linspace\f$ and its \f$\mathop{\mathrm{ray space}}\f$.
+
+Note that, since \f$\linspace(\cP)\f$ and
+\f$\mathop{\mathrm{ray space}}(\cP)\f$ are polyhedra, their
+affine dimensions can be computed using the definition of affine
+dimension given for polyhedra.
+
+The spaces defined are connected by some consistency rules shown below.
+
+\subsection Dimensionality_Rules Dimensionality Rules
+
+In \f$\Rset^n\f$
+
+- The dimension of the \f$\linspace\f$
+  is the rank of any set of lines that span the space.
+- The dimension of the polyhedron is the dimension of the
+  \f$\mathop{\mathrm{ray space}}\f$ plus the dimension of the
+  \f$\linspace\f$.
+- The dimension of the \f$\mathop{\mathrm{ray space}}\f$
+  is \f$n\f$ minus the number of irredundant
+  lines minus the number of irredundant equalities.
+
+The proofs of these properties can be obtained considering the definitions of
+affine dimension and the decomposition of a polyhedron.
+
+\subsection Saturation Saturation
+
+Let us consider a ray \f$\vect{r} \in \Rset^n\f$ and an inequality
+\f$(\vect{a}, 0)\f$ where \f$\vect{a} \in \Rset^n\f$.
+Then we say that:
+- \f$r\f$ <EM>saturates</EM> the inequality
+  if \f$\langle \vect{a}, \vect{r} \rangle = 0\f$;
+- \f$r\f$ <EM>verifies</EM>  the inequality
+  if \f$\langle \vect{a}, \vect{r} \rangle > 0\f$;
+- \f$r\f$ <EM>violates</EM>  the inequality
+  if \f$\langle \vect{a}, \vect{r} \rangle < 0\f$.
+
+Similarly, considering an equality
+\f$\langle \vect{a}, \vect{x} \rangle = 0\f$:
+- \f$\vect{r}\f$ <EM>saturates</EM> the equality
+if \f$\langle \vect{a}, \vect{r} \rangle = 0\f$;
+- \f$\vect{r}\f$ <EM>does not verify</EM> the equality
+if \f$\langle \vect{a}, \vect{r} \rangle \neq 0\f$.
+
+A constraint (i.e., an equality or an inequality) is
+<EM>satisfied</EM> by a ray if the ray saturates or verifies the constraint.
+
+<B><EM>Proposition</EM></B>
+
+Let \f$C \sseq \Rset^n\f$ be a polyhedral cone and
+\f$\vect{y}_1, \vect{y}_2 \in C\f$. If the sets
+\f$F_i = \cone\{\vect{y}_i\} + \linspace(C)\f$ with
+\f$i = 1, 2\f$ are proper faces of \f$C\f$, \f$F_1\f$ is equal to \f$F_2\f$
+if and only if the set of constraints that are saturated by \f$\vect{y}_1\f$
+is equal to the set of constraints that are saturated by \f$\vect{y}_2\f$.
+
+
+\subsection Saturation_Matrix Saturation Matrix
+
+A <EM>saturation matrix</EM> is a bit matrix that represents
+the connection between constraints and generators of a polyhedron.
+There are two kinds of saturation matrices, one having rows indexed
+by constraints and columns indexed by generators (<EM>sat_g</EM>),
+and one (that is the transposed version of the previous one) having
+rows indexed by generators and columns indexed by constraints (<EM>sat_c</EM>).
+
+For instance, in the saturation matrix sat_g, the elements are defined
+as follows:
+\f[
+s_{ij} =
+\begin{cases}
+0, \text{if the constraint indexed by } i \text{ is saturated by
+   the generator indexed by } j;\\
+1, \text{if the constraint indexed by } i \text{ is only
+  verified by the generator indexed by } j.
+\end{cases}
+\f]
+For efficiency reasons, the PPL uses both the sat_g and sat_c matrices.
+
+\subsection Saturation_Rule Saturation Rule
+
+In an \f$n\f$-dimensional \f$\mathop{\mathrm{ray space}}\f$,
+-# Every inequality must be saturated by at least \f$n\f$ vertices/rays.
+-# Every vertex must saturate at least \f$n\f$ inequalities and a ray
+   must saturate at least \f$n - 1\f$ inequalities plus the
+   positivity constraint.
+-# Every equality must be saturated by all lines and vertices/rays.
+-# Every line must saturate all equalities and inequalities.
+
+These rules are a consequence of the saturation concept.
+
+<B><EM>Proposition</EM></B>
+
+Let \f$C = \{\vect{x} \mid A\vect{x} \geq \vect{0}\}\f$ be a polyhedral cone.
+Then the minimal proper face of \f$C\f$ in an \f$n\f$-dimensional space can
+also be represented as
+\f$
+  F = \{\,\vect{x} \mid A\vect{x} = \vect{0}\,\}.
+\f$
+
+To see this, note that the minimal proper face of a polyhedral cone is equal
+to its lineality space. This for definition is composed by all \f$\vect{y}\f$
+of \f$C\f$ that satisfies \f$A \vect{x} = \vect{0}.\f$
+
+\subsection Adjacent_Rays Adjacent Rays
+
+Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
+and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
+\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are <EM>adjacent rays</EM> if
+-# there exists at least a row of \f$A\f$ (i.e., a constraint) that
+   is saturated by both \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
+-# and none of the rays of \f$Q\f$, except \f$\vect{r}_1\f$ and
+   \f$\vect{r}_2\f$, saturates all the constraints saturated by both
+   \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$.
+
+\subsection Independence_Rule Independence Rule
+
+-# No inequality is a positive combination of any other two inequalities
+   or equalities.
+-# No ray is a linear combination of any other two rays or lines.
+-# The set of equalities must be linearly independent.
+-# The set of lines must be linearly independent.
+
+To remove redundant constraints/generators we will use the following
+characterization:
+
+\subsection Redundancy_Rules Redundancy Rules
+
+- An inequality is not redundant if it
+  satisfies both point (1) of the saturation rule and point (1)
+  of the independence rule.
+- A vertex/ray is irredundant if it satisfies
+  both point (2) of the saturation rule and point (2) of the independence rule.
+
+It is useful to note that:
+- All rays saturate the positivity constraint and no vertex saturates
+  the positivity constraint; in fact in the homogeneous form
+  the positivity constraint is represented by the vector
+  \f$\vect{a}^\transpose = (0, \ldots, 0, 1)\f$, rays are of the form
+  \f$\vect{r} = (r_0, \ldots, r_{n-1}, 0)^\transpose\f$ and vertices
+  \f$\vect{v} = (v_0, \ldots, v_{n-1}, d)^\transpose\f$ with \f$d \neq 0\f$,
+  thus \f$\langle \vect{a}, \vect{r} \rangle = 0\f$ for each ray
+  \f$\vect{r}\f$ and \f$\langle \vect{a}, \vect{v} \rangle \neq 0\f$
+  for each vertex \f$\vect{v}\f$.
+- The positivity constraint will be irredundant if and only if
+  the size of the set
+  of rays is \f$\geq n\f$, where \f$n\f$ is the dimension of the ray space,
+  and the rank of the ray set is \f$n\f$; in fact a constraint is
+  irredundant if it is saturated by at least \f$n\f$ vertices/rays (see
+  above), but since only rays saturate the positivity constraint, then in
+  a system with \f$n\f$ vertices/rays the positivity constraint
+  is irredundant.
+
+\section integer_floats Integers Represented by Floating Point Numbers
+
+Floating point numbers can be used to represent finite families
+of integer numbers.  In this section we collect some closure properties
+of these families that are exploited in the PPL.
+
+In order not to depend on the particular family of floating point
+numbers considered, we consider an abstraction that is parametric
+in the number \f$b\f$ of bits in the mantissa and gives no limit
+to the magnitude of the exponent \f$e\f$.
+For \f$b \in \Nset \setminus \{ 0 \}\f$ let
+\f[
+\begin{aligned}
+  F_b^+
+    &=
+      \bigl\{\,
+        x \in \Nset
+      \bigm|
+        x = (1 + m / 2^b) \cdot 2^e,
+        e \in \Nset,
+        m \in \Nset \cap [0, 2^b - 1]
+      \,\bigr\}, \\
+  F_b
+    &=
+      F_b^+ \cup \{ 0 \} \cup \{\, -x \mid x \in F_b^+ \,\}.
+\end{aligned}
+\f]
+
+Let \f$\phi \colon \Rset \to \Zset\f$ denote the function defined by
+\f[
+  \phi(t)
+    =
+      \begin{cases}
+        \lfloor t \rfloor, & \text{if $t \ge 0$;} \\
+        \lceil  t \rceil,  & \text{if $t  <  0$.}
+      \end{cases}
+\f]
+Notice that \f$\phi\f$ is an <EM>odd</EM> function, that is, it satisfies
+\f$\phi(-t) = -\phi(t)\f$ for all \f$t \in \Rset\f$.
+For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we also write
+\f[
+\begin{aligned}
+  x \bdiv y &= \phi(x / y), \\
+  x \brem y &= x - (x \bdiv y) y.
+\end{aligned}
+\f]
+These are the integer division and remainder function as defined by
+the C99 standard
+[ISO/IEC 9899:1999(E), Programming Languages - C (ISO and ANSI C99 Standard)].
+
+<B><EM>Proposition A</EM></B>
+If \f$x\f$, \f$y \in F_b\f$ and \f$y \ne 0\f$, then \f$x \brem y \in F_b\f$.
+
+The proof is given in the next three lemmas.
+
+<B><EM>Lemma 1</EM></B>
+Let \f$G_b = \{\, n \in F_b^+ \mid \text{$n$ is odd} \,\}\f$.
+Then \f$G_b = \{ 1, 3, 5, \ldots, 2^{b + 1} - 1 \}\f$.
+Furthermore, if \f$x \in F_b^+\f$ then there exist \f$n \in G_b\f$ and
+\f$f \in \Nset\f$ such that \f$x = n \cdot 2^f\f$.
+
+<B><EM>Proof</EM></B>
+Let \f$n \in \{ 1, 3, 5, \ldots, 2^{b + 1} - 1 \}\f$.
+There is a non negative integer \f$\beta \le b\f$ such that
+\f$2^\beta \le n < 2^{\beta + 1}\f$.
+Then \f$n = (1 + m / 2^b) \cdot 2^e\f$ with
+\f$m = (n - 2^\beta) \cdot 2^{b - \beta}\f$ and \f$e = \beta\f$.
+Here \f$m < (2^{\beta + 1} - 2^\beta) \cdot 2^{b - \beta} = 2^b\f$
+so that \f$n \in G_b\f$.
+The same argument shows that odd integers larger than \f$2^{b+1}\f$ do not
+in fact belong to \f$G_b\f$, since the corresponding value of \f$m\f$ would
+exceed the bound \f$2^b - 1\f$ in the definition.
+
+For the second part, let \f$x = (1 + m / 2^b) \cdot 2^e \in F_b^+\f$.
+Let \f$m = 2^d \cdot m_1\f$ with \f$m_1\f$ odd and \f$d < b\f$.
+Then \f$n = 2^{b - d} + m_1\f$ is an odd integer that belongs to \f$G_b\f$
+since \f$2^{b - d} + m_1 \le 2^{b - d} + (2^b - 1) / 2^d < 2^{b - d + 1}
+\le 2^{b + 1}\f$, using the first part.
+Hence we may take \f$f = e + d - b\f$ which is non negative since
+otherwise \f$m \cdot 2^{e - b} = m_1 \cdot 2^{e + d - b}\f$ would not be
+an integer as assumed.
+
+<B><EM>Lemma 2</EM></B>
+If \f$x\f$, \f$y \in F_b^+\f$ and \f$y\f$ does not divide \f$x\f$, then
+\f$x \bmod y \in F_b^+\f$.
+
+<B><EM>Proof</EM></B>
+By Lemma 1 above we may assume that \f$x = n \cdot 2^e\f$ and
+\f$y = m \cdot 2^f\f$ with \f$n\f$, \f$m \in G_b\f$ odd integers, and \f$e\f$,
+\f$f \in \Nset\f$.
+Let \f$k = \lfloor x / y \rfloor\f$.
+The goal is to prove that \f$x - k y \in F_b^+\f$: we may assume that
+\f$k > 0\f$, that is, that \f$x > y\f$ for otherwise \f$x \bmod y = x\f$
+and there is nothing to prove.
+- If \f$e < f\f$ then \f$x - k y = 2^e (n - k m \cdot 2^{f - e})\f$.
+  The integer \f$n - k m \cdot 2^{f - e}\f$ is positive, odd and smaller
+  than \f$n\f$, and therefore belongs to \f$G_b\f$.
+- If \f$e = f\f$ then \f$x - k y = 2^e (n - k m)\f$.
+  The integer \f$n - k m\f$ is positive and smaller than \f$n\f$, and therefore
+  belongs to \f$F_b^+\f$.
+- If \f$e > f\f$ then \f$x - k y = 2^f (n \cdot 2^{e - f} - k m)\f$.
+  The integer \f$n \cdot 2^{e - f} - k m\f$ is positive and smaller
+  than \f$m\f$, and therefore belongs to \f$F_b^+\f$: in fact
+  \f[
+    n \cdot 2^{e - f} - k m
+    =
+    n \cdot 2^{e - f} - \Bigl\lfloor \frac xy \Bigr\rfloor m
+    =
+    n \cdot 2^{e - f} - \Bigl\lfloor \frac{n \cdot 2^{e - f}}m \Bigr\rfloor m.
+  \f]
+  In other words, this integer is \f$n \cdot 2^{e - f} \bmod m\f$ and
+  therefore it is smaller than \f$m\f$.
+
+In all cases, we wrote \f$x - k y\f$ as the product of a power of 2 and an
+element of \f$F_b^+\f$, and this product is another element of \f$F_b^+\f$.
+
+
+<B><EM>Lemma 3</EM></B>
+For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we have
+\f[
+  x \brem y
+  =
+  \begin{cases}
+       x  \brem \abs{y},  & \text{if $x \ge 0$;} \\
+    -(\abs{x} \brem \abs{y}), & \text{if $x  <  0$.}
+  \end{cases}
+\f]
+
+<B><EM>Proof</EM></B>
+Throughout the proof we write \f$x_0 = \abs{x}\f$ and \f$y_0 = \abs{y}\f$.
+First, assume that \f$x \ge 0\f$ and that \f$y < 0\f$.
+Let \f$k = \phi(x / y_0) = - \phi(x / y)\f$, by the property above.
+We have
+\f[
+  x \brem y
+  =
+  x - (x \bdiv y) y
+  =
+  x - (-k) y
+  =
+  x - k (-y)
+  =
+  x - k y_0.
+\f]
+Next, assume that \f$x < 0\f$ and that \f$y < 0\f$.
+Let \f$k = \phi(x_0 / y_0) = \phi(x / y)\f$.
+We have
+\f[
+  x \brem y
+  =
+  x - (x \bdiv y) y
+  =
+  x - k y
+  =
+  -( -x - k (-y))
+  =
+  -(x_0 - k y_0).
+\f]
+Finally, assume that \f$x < 0\f$ and that \f$y > 0\f$.
+Let \f$k = \phi(x_0 / y) = -\phi(x / y)\f$, again by the property above.
+We have
+\f[
+  x \brem y
+  =
+  x - (x \bdiv y) y
+  =
+  x - (-k) y
+  =
+  -( -x - k y)
+  =
+  -(x_0 - k y).
+\f]
+This completes the proof.
+
+<B><EM>Lemma 4</EM></B>
+If \f$x\f$, \f$y \in F_b^+\f$ then \f$\gcd(x, y) \in F_b^+\f$.
+
+<B><EM>Proof</EM></B>
+Let \f$x = n \cdot 2^e\f$ and \f$y = m \cdot 2^f\f$ with \f$n\f$, \f$m \in G_b\f$
+odd integers, and \f$e\f$, \f$f \in \Nset\f$.
+Then \f$\gcd(x, y) = \gcd(n, m) \cdot 2^{\min(e, f)}\f$, and therefore it
+belongs to \f$F_b^+\f$, since \f$\gcd(n, m) \le \min(n, m)\f$ so that it belongs
+to \f$G_b\f$.
+
+<B><EM>Lemma 5</EM></B>
+If \f$x\f$, \f$y \in F_b^+\f$, then \f$x / \gcd(x, y) \in F_b^+\f$.
+
+<B><EM>Proof</EM></B>
+With the same notation as in the previous Lemma, both \f$n\f$ and
+\f$\gcd(n, m) \in G_b\f$: but all positive odd integers up to and
+including \f$n\f$ belong to \f$G_b\f$, so that \f$n / \gcd(n, m)\f$
+does as well.
+By Lemma 1
+\f$x / \gcd(x, y) = n \cdot 2^e / (\gcd(n, m) \cdot 2^{\min(e, f)})
+                = (n / \gcd(n, m)) \cdot 2^{e - \min(e, f)} \in F_b^+\f$.
+
+\endif
+
+*/ /* \mainpage */

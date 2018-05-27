@@ -1,0 +1,12 @@
+* cube of side 2 centred at origin
+H-representation
+linearity 1 1
+begin
+6  4 rational
+1 -1 0 0
+1 0 -1 0
+1 0 0 -1
+1 1 0 0
+1 0 1 0
+1 0 0 1
+end

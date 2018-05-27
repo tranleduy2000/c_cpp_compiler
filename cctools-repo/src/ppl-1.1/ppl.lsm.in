@@ -1,0 +1,45 @@
+Begin4
+Title:		ppl
+Version:	@VERSION@
+Entered-date:	@ISODATE@
+Description:	The Parma Polyhedra Library (PPL) is a C++ library
+		for the manipulation of numerical abstractions.
+Keywords:	C++ library convex polyhedra verification
+Author:		Roberto Bagnara (BUGSENG srl and University of Parma)
+		Patricia M. Hill (BUGSENG srl and University of Leeds)
+		Enea Zaffanella (BUGSENG srl and University of Parma)
+		Abramo Bagnara (BUGSENG srl)
+		Elisa Ricci (former student of the University of Parma)
+		Marco Poletti (student of the University of Bologna)
+		Alessandro Zaccagnini (University of Parma)
+		Roberto Amadini (former student of the University of Parma)
+		Irene Bacchi (former student of the University of Parma)
+		Fabio Biselli (student of the University of Parma)
+		Fabio Bossi (former student of the University of Parma)
+		Danilo Bonardi (former student of the University of Parma)
+		Sara Bonini (former student of the University of Parma)
+		Andrea Cimino (former student of the University of Parma)
+		Katy Dobson (former student of the University of Leeds)
+		Giordano Fracasso (former student of the University of Parma)
+		Francois Galea (University of Versailles)
+		Maximiliano Marchesi (former student of the University of Parma)
+		Elena Mazzi (former student of the University of Parma)
+		David Merchat (formerly at the University of Parma)
+		Matthew Mundell (formerly at the University of Leeds)
+		Andrea Pescetti (former student of the University of Parma)
+		Barbara Quartieri (former student of the University of Parma)
+		Enric Rodriguez Carbonell (Technical University of Catalonia)
+		Angela Stazzone (former student of the University of Parma)
+		Fabio Trabucchi (University of Parma)
+		Claudio Trento (former student of the University of Pisa)
+		Tatiana Zolo (former student of the University of Parma)
+Maintained-by:	ppl-devel@cs.unipr.it (PPL developers)
+Primary-site:	metlab.unc.edu /pub/linux/libs
+		16788k ppl-@VERSION@.tar.gz
+		800 ppl.lsm
+Alternate-site:	
+Original-site:	http://bugseng.com/products/ppl/
+Platforms:      Portable; tested on Linux, FreeBSD, OpenBSD, Solaris,
+                IRIX64, Mac OS X, Cygwin, DEC OSF/1.
+Copying-policy:	GPL
+End

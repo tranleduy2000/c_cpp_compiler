@@ -1,0 +1,12 @@
+* trivial inequalities: the polyhedron is the whole space.
+H-representation
+begin
+    6   4    integer
+ 0  0  0  0
+ 0  0  0  0
+ 0  0  0  0
+ 0  0  0  0
+ 0  0  0  0
+ 0  0  0  0
+end
+

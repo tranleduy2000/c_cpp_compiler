@@ -1,0 +1,34 @@
+reconsult('ack.clpq').
+ack(3, 1, Z).
+
+reconsult('ackn.clpq').
+ack(X, Y, Z).
+
+reconsult('mc91.clpq').
+mc(112, Y).
+
+reconsult('fib.clpq').
+fib(5, Y).
+
+reconsult('smm.clpq').
+solve(S, E, N, D, M, O, R, Y).
+
+reconsult('sumto.clpq').
+sumto(X, 55).
+
+reconsult('schedule.clpq').
+test1(X).
+;
+;
+
+test2(X).
+
+schedule([task(S1, D1), task(S2, D2), task(S2, D3)], task(S, D)).
+;
+;
+;
+;
+;
+;
+;
+;

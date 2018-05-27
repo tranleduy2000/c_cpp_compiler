@@ -1,0 +1,226 @@
+.TH libppl "3" "June 2012" "PPL 1.0" "libppl overview"
+
+.SH NAME
+libppl \- the C++ interface of the Parma Polyhedra Library
+.SH SYNOPSIS
+.B #include <ppl.hh>
+.sp
+c++ file.cc
+.B -lppl
+
+.SH DESCRIPTION
+This is a short overview on how to use the Parma Polyhedra Library (PPL)
+in your C++ programs on Unix-like operating systems.
+Note that the PPL has interfaces also for C, Java, OCaml and a number
+of Prolog systems: look elsewhere for documentation on those.
+Note also that the present document does not describe the library
+functionality, its classes or its methods and functions: see
+.IR "The Parma Polyhedra Library User's Manual (version 1.0)"
+for this kind of information.
+
+.SH "INCLUDING THE HEADER FILE"
+The C++ interface of the PPL has only one header file, named
+\fIppl.hh\fP.  So your program should contain a directive of the form
+.sp
+.B #include <ppl.hh>
+.sp
+Of course, you must make sure you installed the PPL in a place where
+the compiler can find it, either by itself or with the help of a suitable
+.B -Idir
+command line option (see the file \fIINSTALL\fP for information
+on how to configure the library so that it is installed in the
+place of your choice).
+
+.SH "INITIALIZING AND FINALIZING THE LIBRARY"
+The mere inclusion of \fIppl.hh\fP in at least one file of your
+project will cause the automatic initialization and finalization
+of the library.
+However, there are situations in which automatic initialization
+and finalization is not desirable (e.g., if the application fiddles
+with the GMP's memory allocation functions).  In those cases,
+.B every
+inclusion of \fIppl.hh\fP must take the form
+.sp
+.nf
+.B #define PPL_NO_AUTOMATIC_INITIALIZATION
+.B #include <ppl.hh>
+.fi
+.sp
+When automatic initialization and finalization is disabled you must
+.B absolutely
+call the function
+.sp
+.B void Parma_Polyhedra_Library::initialize()
+.sp
+before using the library.
+It is also a good norm to call the function
+.sp
+.B void Parma_Polyhedra_Library::finalize()
+.sp
+when you are done with the library.
+
+.SH "USING THE LIBRARY"
+Keeping in mind that there is no substitute for a careful reading of
+.IR "The Parma Polyhedra Library User's Manual (version 1.0)",
+you can find many examples of use in the directories
+.B tests
+(see the
+.B README
+file in that directory)
+and
+.B demos/ppl_lcdd
+of the source distribution.
+
+.SH "LINKING WITH THE LIBRARY"
+Linking with the C++ interface of the Parma Polyhedra Library is best done
+using the C++ compiler itself: usually, specifying the
+.B -lppl
+command line option is enough.  In fact, if you use a shared version
+of the library, this automatically records the dependency from the GMP
+library, something that the linker ought to deal with gracefully.
+Otherwise you will have to add
+.B -lgmpxx -lgmp
+to the command line.
+Things are more complex if you installed the PPL into some nonstandard
+place.  In this case you will have to use the
+.B -Ldir
+option and, if you use a shared version of the library,
+possible take further steps: see the documentation of your system
+for more information on this subject
+(the
+.IR "Program Library HOWTO"
+is especially valuable for GNU/Linux users).
+
+.SH "IMPLEMENTING MEMORY-GUARDED COMPUTATIONS"
+One of the interesting features of the Parma Polyhedra Library is the
+possibility to implement memory-guarded computations.  The idea is that
+you can limit the amount of virtual memory available to the process,
+launch a PPL computation, and be ready to catch an
+.B std::bad_alloc
+exception.  Since the library is exception-safe, you can take the
+appropriate corrective measures (e.g., simplify the polyhedra and/or select
+less precise though less complex algorithms), and restart the computation.
+In order to do that, you should define alternative memory allocation functions
+for GMP that throw
+.B std::bad_alloc
+upon memory exhaustion.
+For instance:
+.sp
+.nf
+#include <new>
+#include <cstdlib>
+
+extern "C" void*
+cxx_malloc(size_t size) {
+  void* p = malloc(size);
+  if (p != 0 || size == 0)
+    return p;
+
+  throw std::bad_alloc();
+}
+
+extern "C" void*
+cxx_realloc(void* q, size_t, size_t new_size) {
+  void* p = realloc(q, new_size);
+  if (p != 0 || new_size == 0)
+    return p;
+
+  throw std::bad_alloc();
+}
+
+extern "C" void
+cxx_free(void* p, size_t) {
+  free(p);
+}
+.fi
+.sp
+Then you must install these functions and this can be done in two different
+ways:
+.IP (1)
+If your C++ compiler supports
+.B __attribute__ ((weak))
+and you do not have any other special needs, then you can simply link
+to your application a C function
+.B ppl_set_GMP_memory_allocation_functions(void)
+such as
+.sp
+.nf
+extern "C" void
+ppl_set_GMP_memory_allocation_functions(void) {
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+}
+.fi
+.sp
+This is all that you have to do, whether or not you use the automatic
+initialization feature of the library (see above): in any case
+the initialization procedure will automatically call
+.B ppl_set_GMP_memory_allocation_functions(void).
+.IP (2)
+If your C++ compiler does not support
+.B __attribute__ ((weak))
+then you cannot use the automatic initialization feature of the library
+(see above) and should write a main program of the form
+.sp
+.nf
+int main() {
+  // The ordering of the following function calls is important.
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+  Parma_Polyhedra_Library::initialize();
+  ...
+.fi
+.sp
+
+.SH "USING NATIVE FLOATING POINT NUMBERS"
+At initialization time, the Parma Polyhedra Library sets the FPU rounding
+mode in a way that allows its floating-point-based computations to be
+conservative (i.e., possibly approximated but correct) and reasonably
+efficient.  In case your application itself uses native floating point
+numbers and relies on a particular rounding mode (if you are in doubt,
+assume that it does rely on round-to-nearest to be in effect), you should
+use the function
+.sp
+.B void Parma_Polyhedra_Library::restore_pre_PPL_rounding()
+.sp
+after the PPL initialization and before using native floating point numbers
+in the application.
+If your application does not use any floating-point-based PPL abstraction,
+no further measure should be taken.
+Otherwise, it is imperative to call the function
+.sp
+.B void Parma_Polyhedra_Library::set_rounding_for_PPL()
+.sp
+before invoking any PPL interface related to such abstractions.
+
+
+.SH "SEE ALSO"
+.BR ppl-config(1)
+.sp
+Roberto Bagnara, Patricia M. Hill, and Enea Zaffanella.
+.IR "The Parma Polyhedra Library User's Manual (version 1.0)",
+available (in several formats) at
+\fBhttp://bugseng.com/products/ppl/\fR .
+.sp
+David A. Wheeler.
+.IR "Program Library HOWTO",
+available (in several formats) at
+\fBhttp://www.dwheeler.com/program-library/\fR .
+
+.SH AVAILABILITY
+The latest version of the Parma Polyhedra Library and all the documentation
+is available at \fBhttp://bugseng.com/products/ppl/\fR .
+
+.SH AUTHOR
+See the file \fBCREDITS\fR in the source distribution or use the command
+\fBppl\-config \-\-credits\fR for a list of contributors.
+
+.SH "REPORTING BUGS"
+Report bugs to <ppl\-devel@cs.unipr.it>.
+
+.SH "COPYRIGHT AND NO WARRANTY"
+Copyright (C) 2001\-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010\-2013 BUGSENG srl (http://bugseng.com)
+.br
+This is free software; see the file \fBCOPYING\fR in the source
+distribution or use the command \fBppl\-config \-\-copying\fR to
+obtain the copying conditions.  There is NO warranty; not even for
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

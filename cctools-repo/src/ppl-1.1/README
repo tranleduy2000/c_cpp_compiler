@@ -1,0 +1,1768 @@
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2013 BUGSENG srl (http://bugseng.com)
+See below for the copying conditions.
+
+
+Parma Polyhedra Library (Release 1.0)
+=====================================
+
+This is the release 1.0 of the Parma Polyhedra Library:
+a C++ library for (not necessarily closed) convex polyhedra
+and other numerical abstractions.
+
+To be more precise, the Parma Polyhedra Library (PPL) can handle:
+
+  + all the convex polyhedra that can be defined as the intersection
+    of a finite number of (open or closed) hyperspaces, each described
+    by an equality or a (strict or non-strict) inequality with rational
+    coefficients;
+
+  + some special classes of polyhedra shapes that offer interesting
+    complexity/precision tradeoffs: boxes, bounded difference shapes
+    and octagonal shapes defined over a wide choice of integer,
+    rational or floating point coefficients;
+
+  + all grids (or, equivalently, lattices): a grid is defined by a set
+    of congruence relations with rational coefficients and consists of
+    the set of all points that satisfy these relations;
+
+  + finite powersets and products of the above;
+
+  + linear programming problems, solved with an implementation of the
+    primal simplex algorithm using exact arithmetic;
+
+  + parametric integer programming problems;
+
+  + termination analysis problems, via the automatic synthesis of
+    linear ranking functions.
+
+The Parma Polyhedra Library is:
+
+  + user friendly:
+      you write `x + 2*y + 5*z <= 7' when you mean it;
+
+  + fully dynamic:
+      available virtual memory is the only limitation to the dimension
+      of anything;
+
+  + written in standard C++:
+      meant to be portable;
+
+  + exception-safe:
+      never leaks resources or leaves invalid object fragments around;
+
+  + rather efficient:
+      and we hope to make it even more so;
+
+  + thoroughly documented:
+      perhaps not ``literate programming'' but close enough;
+
+  + free software:
+      distributed under the terms of the GNU General Public License.
+
+See the file COPYING for licensing information.
+See the file INSTALL for generic build and installation instructions.
+See the file README.configure for more specific configuration instructions.
+See the file NEWS for recent project news.
+See the file BUGS for known bugs and how to report new ones.
+See the file CREDITS for a list of people, projects and organizations
+that made the PPL a reality.
+See http://bugseng.com/products/ppl/ for more information on the PPL.
+For any additional questions you might have, please do not hesitate to
+write to ppl-devel@cs.unipr.it.
+
+Here is the contents of the PPL 1.0 source distribution
+(41 directories, 1616 files):
+
+ppl-1.0
+|-- BUGS
+|-- COPYING
+|-- CREDITS
+|-- ChangeLog
+|-- ChangeLog_2001-2008
+|-- INSTALL
+|-- Makefile.am
+|-- Makefile.in
+|-- NEWS
+|-- README
+|-- README.alpha
+|-- README.arm
+|-- README.configure
+|-- README.solaris
+|-- STANDARDS
+|-- TODO
+|-- aclocal.m4
+|-- compile
+|-- config.guess
+|-- config.h.in
+|-- config.rpath
+|-- config.sub
+|-- configure
+|-- configure.ac
+|-- demos
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- ppl_lcdd
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- examples
+|   |   |   |-- 1d.ine
+|   |   |   |-- 1da.ine
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- README
+|   |   |   |-- allzero.ine
+|   |   |   |-- ccc4.ext
+|   |   |   |-- ccc5.ext
+|   |   |   |-- ccc6.ext
+|   |   |   |-- ccp4.ext
+|   |   |   |-- ccp5.ext
+|   |   |   |-- ccp6.ext
+|   |   |   |-- cp4.ext
+|   |   |   |-- cp4.ine
+|   |   |   |-- cp5.ext
+|   |   |   |-- cp5.ine
+|   |   |   |-- cp6.ext
+|   |   |   |-- cp6.ine
+|   |   |   |-- cp7.ext
+|   |   |   |-- cross10.ine
+|   |   |   |-- cross12.ine
+|   |   |   |-- cross4.ine
+|   |   |   |-- cross6.ine
+|   |   |   |-- cross8.ine
+|   |   |   |-- cube.ext
+|   |   |   |-- cube.ine
+|   |   |   |-- cube10.ine
+|   |   |   |-- cube12.ine
+|   |   |   |-- cube3.ine
+|   |   |   |-- cube6.ine
+|   |   |   |-- cube8.ine
+|   |   |   |-- cubetop.ine
+|   |   |   |-- cubocta.ine
+|   |   |   |-- cut16_11.ext
+|   |   |   |-- cut32_16.ext
+|   |   |   |-- cyc.ine
+|   |   |   |-- cyclic10-4.ext
+|   |   |   |-- cyclic12-6.ext
+|   |   |   |-- cyclic14-8.ext
+|   |   |   |-- cyclic16-10.ext
+|   |   |   |-- cyclic17_8.ine
+|   |   |   |-- cyclic25_13.ext
+|   |   |   |-- dcube10.ext
+|   |   |   |-- dcube12.ext
+|   |   |   |-- dcube3.ext
+|   |   |   |-- dcube6.ext
+|   |   |   |-- dcube8.ext
+|   |   |   |-- diamond.ine
+|   |   |   |-- dodeca_m.ine
+|   |   |   |-- ex1.ine
+|   |   |   |-- grcubocta.ine
+|   |   |   |-- hexocta.ine
+|   |   |   |-- icododeca_m.ine
+|   |   |   |-- in0.ine
+|   |   |   |-- in1.ine
+|   |   |   |-- in2.ine
+|   |   |   |-- in3.ine
+|   |   |   |-- in4.ine
+|   |   |   |-- in5.ine
+|   |   |   |-- in6.ine
+|   |   |   |-- in7.ine
+|   |   |   |-- infeas.ine
+|   |   |   |-- integralpoints.ine
+|   |   |   |-- irbox20-4.ext
+|   |   |   |-- irbox200-4.ext
+|   |   |   |-- kkd18_4.ine
+|   |   |   |-- kkd27_5.ine
+|   |   |   |-- kkd38_6.ine
+|   |   |   |-- kq20_11_m.ine
+|   |   |   |-- metric40_11.ine
+|   |   |   |-- metric80_16.ine
+|   |   |   |-- mit.ine
+|   |   |   |-- mit288-281.ine
+|   |   |   |-- mit31-20.ine
+|   |   |   |-- mit41-16.ine
+|   |   |   |-- mit708-9.ine
+|   |   |   |-- mit71-61.ine
+|   |   |   |-- mit90-86.ine
+|   |   |   |-- mp5.ext
+|   |   |   |-- mp5.ine
+|   |   |   |-- mp5a.ine
+|   |   |   |-- mp6.ine
+|   |   |   |-- nonfull.ine
+|   |   |   |-- origin.ine
+|   |   |   |-- prodst62.ext
+|   |   |   |-- project1_m.ine
+|   |   |   |-- project1res.ine
+|   |   |   |-- project2_m.ine
+|   |   |   |-- project2res.ine
+|   |   |   |-- rcubocta.ine
+|   |   |   |-- redcheck.ext
+|   |   |   |-- reg24-5.ext
+|   |   |   |-- reg24-5.ine
+|   |   |   |-- reg600-5_m.ext
+|   |   |   |-- rhomtria_m.ine
+|   |   |   |-- sample.ine
+|   |   |   |-- sampleh1.ine
+|   |   |   |-- sampleh2.ine
+|   |   |   |-- sampleh3.ine
+|   |   |   |-- sampleh4.ine
+|   |   |   |-- sampleh5.ine
+|   |   |   |-- sampleh6.ine
+|   |   |   |-- sampleh7.ine
+|   |   |   |-- sampleh8.ine
+|   |   |   |-- samplev1.ext
+|   |   |   |-- samplev2.ext
+|   |   |   |-- samplev3.ext
+|   |   |   |-- trunc10.ine
+|   |   |   |-- trunc7.ine
+|   |   |   |-- tsp5.ext
+|   |   |   `-- tsp5.ine
+|   |   |-- expected_int16
+|   |   |-- expected_int16_a
+|   |   |-- expected_int32
+|   |   |-- expected_int32_a
+|   |   |-- expected_int64
+|   |   |-- expected_int64_a
+|   |   |-- expected_int8
+|   |   |-- expected_int8_a
+|   |   |-- expected_mpz
+|   |   |-- expected_mpz_a
+|   |   |-- ppl_lcdd.1
+|   |   `-- ppl_lcdd.cc
+|   |-- ppl_lpsol
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- dummy.cc
+|   |   |-- examples
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- README
+|   |   |   |-- adlittle.mps
+|   |   |   |-- afiro.mps
+|   |   |   |-- bgprtr.mps
+|   |   |   |-- blend.mps
+|   |   |   |-- boeing1.mps
+|   |   |   |-- boeing2.mps
+|   |   |   |-- egout.mps
+|   |   |   |-- ex1.mps
+|   |   |   |-- ex12.mps
+|   |   |   |-- kb2.mps
+|   |   |   |-- lseu.mps
+|   |   |   |-- markshare1.mps
+|   |   |   |-- markshare2.mps
+|   |   |   |-- mas74.mps
+|   |   |   |-- mas76.mps
+|   |   |   |-- mip.mps
+|   |   |   |-- modglob.mps
+|   |   |   |-- noswot.mps
+|   |   |   |-- opt1217.mps
+|   |   |   |-- p0033.mps
+|   |   |   |-- pk1.mps
+|   |   |   |-- rout.mps
+|   |   |   |-- sample.mps
+|   |   |   |-- sc105.mps
+|   |   |   |-- sc50a.mps
+|   |   |   |-- sc50b.mps
+|   |   |   |-- ship08l.mps
+|   |   |   `-- unboundedmin.mps
+|   |   |-- expected_int16
+|   |   |-- expected_int16_a
+|   |   |-- expected_int32
+|   |   |-- expected_int32_a
+|   |   |-- expected_int64
+|   |   |-- expected_int64_a
+|   |   |-- expected_int8
+|   |   |-- expected_int8_a
+|   |   |-- expected_mpz
+|   |   |-- expected_mpz_a
+|   |   |-- glpk_set_d_eps.c
+|   |   |-- ppl_lpsol.1
+|   |   `-- ppl_lpsol.c
+|   `-- ppl_pips
+|       |-- Makefile.am
+|       |-- Makefile.in
+|       |-- examples
+|       |   |-- Makefile.am
+|       |   |-- Makefile.in
+|       |   |-- README
+|       |   |-- big.pip
+|       |   |-- brisebarre.pip
+|       |   |-- cg1.pip
+|       |   |-- esced.pip
+|       |   |-- ex2.pip
+|       |   |-- fimmel.pip
+|       |   |-- invert.dat
+|       |   |-- linear.dat
+|       |   |-- lineri.dat
+|       |   |-- loz.dat
+|       |   |-- max.dat
+|       |   |-- max.pip
+|       |   |-- maxb.dat
+|       |   |-- pairi.dat
+|       |   |-- petit.dat
+|       |   |-- rairoi.dat
+|       |   |-- sor1d.pip
+|       |   |-- square.pip
+|       |   |-- test02.dat
+|       |   `-- test12i.dat
+|       |-- expected_int16
+|       |-- expected_int16_a
+|       |-- expected_int32
+|       |-- expected_int32_a
+|       |-- expected_int64
+|       |-- expected_int64_a
+|       |-- expected_int8
+|       |-- expected_int8_a
+|       |-- expected_mpz
+|       |-- expected_mpz_a
+|       |-- ppl_pips.1
+|       `-- ppl_pips.cc
+|-- depcomp
+|-- doc
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- README.doc
+|   |-- bugseng_logo.pdf
+|   |-- definitions.dox
+|   |-- devref-language-interface.doxyconf.in
+|   |-- devref-language-interface.tex
+|   |-- devref.doxyconf-html.in
+|   |-- devref.doxyconf-latex.in
+|   |-- devref.tex
+|   |-- fdl.dox
+|   |-- fdl.pdf
+|   |-- fdl.ps.gz
+|   |-- fdl.tex
+|   |-- fdl.txt
+|   |-- gpl.dox
+|   |-- gpl.pdf
+|   |-- gpl.ps.gz
+|   |-- gpl.tex
+|   |-- gpl.txt
+|   |-- interfaces-html.sed
+|   |-- interfaces-latex.sed
+|   |-- libppl.3
+|   |-- libppl_c.3
+|   |-- ppl-config.1
+|   |-- ppl-user-1.0-html.tar.gz
+|   |-- ppl-user-1.0.pdf
+|   |-- ppl-user-1.0.ps.gz
+|   |-- ppl-user-c-interface-1.0-html.tar.gz
+|   |-- ppl-user-c-interface-1.0.pdf
+|   |-- ppl-user-c-interface-1.0.ps.gz
+|   |-- ppl-user-ocaml-interface-1.0-html.tar.gz
+|   |-- ppl-user-ocaml-interface-1.0.pdf
+|   |-- ppl-user-ocaml-interface-1.0.ps.gz
+|   |-- ppl-user-prolog-interface-1.0-html.tar.gz
+|   |-- ppl-user-prolog-interface-1.0.pdf
+|   |-- ppl-user-prolog-interface-1.0.ps.gz
+|   |-- ppl.bib
+|   |-- ppl.sty
+|   |-- ppl_citations.bib
+|   |-- ppl_logo.pdf
+|   |-- ppl_logo_no_ppl.pdf
+|   |-- user-language-interface.doxyconf.in
+|   |-- user-language-interface.tex
+|   |-- user.doxyconf-html.in
+|   |-- user.doxyconf-latex.in
+|   `-- user.tex
+|-- install-sh
+|-- instchk.hh
+|-- interfaces
+|   |-- C
+|   |   |-- C_interface.dox
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- ppl_c.h.dist
+|   |   |-- ppl_c_header.h
+|   |   |-- ppl_c_implementation_common.cc
+|   |   |-- ppl_c_implementation_common_defs.hh
+|   |   |-- ppl_c_implementation_common_inlines.hh
+|   |   |-- ppl_c_version.h.in
+|   |   |-- ppl_interface_generator_c_cc_code.m4
+|   |   |-- ppl_interface_generator_c_cc_files.m4
+|   |   |-- ppl_interface_generator_c_h.m4
+|   |   |-- ppl_interface_generator_c_h_code.m4
+|   |   |-- ppl_interface_generator_c_hh_files.m4
+|   |   |-- ppl_interface_generator_c_procedure_generators.m4
+|   |   `-- tests
+|   |       |-- Makefile.am
+|   |       |-- Makefile.in
+|   |       |-- formatted_output.c
+|   |       |-- pip_test.c
+|   |       |-- ppl_c_test.cc
+|   |       |-- ppl_c_test.h
+|   |       |-- print_to_buffer.c
+|   |       |-- print_to_buffer.h
+|   |       |-- watchdog1.c
+|   |       `-- weightwatch1.c
+|   |-- Java
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- README.java
+|   |   |-- jni
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- ppl_interface_generator_java_classes_cc_code.m4
+|   |   |   |-- ppl_interface_generator_java_classes_cc_files.m4
+|   |   |   |-- ppl_java_common.cc
+|   |   |   |-- ppl_java_common_defs.hh
+|   |   |   |-- ppl_java_common_inlines.hh
+|   |   |   `-- ppl_java_globals.cc
+|   |   |-- parma_polyhedra_library
+|   |   |   |-- Artificial_Parameter.java
+|   |   |   |-- Artificial_Parameter_Sequence.java
+|   |   |   |-- Bounded_Integer_Type_Overflow.java
+|   |   |   |-- Bounded_Integer_Type_Representation.java
+|   |   |   |-- Bounded_Integer_Type_Width.java
+|   |   |   |-- By_Reference.java
+|   |   |   |-- Coefficient.java
+|   |   |   |-- Complexity_Class.java
+|   |   |   |-- Congruence.java
+|   |   |   |-- Congruence_System.java
+|   |   |   |-- Constraint.java
+|   |   |   |-- Constraint_System.java
+|   |   |   |-- Control_Parameter_Name.java
+|   |   |   |-- Control_Parameter_Value.java
+|   |   |   |-- Degenerate_Element.java
+|   |   |   |-- Domain_Error_Exception.java
+|   |   |   |-- Fake_Class_for_Doxygen.java
+|   |   |   |-- Generator.java
+|   |   |   |-- Generator_System.java
+|   |   |   |-- Generator_Type.java
+|   |   |   |-- Grid_Generator.java
+|   |   |   |-- Grid_Generator_System.java
+|   |   |   |-- Grid_Generator_Type.java
+|   |   |   |-- IO.java
+|   |   |   |-- Invalid_Argument_Exception.java
+|   |   |   |-- Length_Error_Exception.java
+|   |   |   |-- Linear_Expression.java
+|   |   |   |-- Linear_Expression_Coefficient.java
+|   |   |   |-- Linear_Expression_Difference.java
+|   |   |   |-- Linear_Expression_Sum.java
+|   |   |   |-- Linear_Expression_Times.java
+|   |   |   |-- Linear_Expression_Unary_Minus.java
+|   |   |   |-- Linear_Expression_Variable.java
+|   |   |   |-- Logic_Error_Exception.java
+|   |   |   |-- MIP_Problem.java
+|   |   |   |-- MIP_Problem_Status.java
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- Optimization_Mode.java
+|   |   |   |-- Overflow_Error_Exception.java
+|   |   |   |-- PIP_Decision_Node.java
+|   |   |   |-- PIP_Problem.java
+|   |   |   |-- PIP_Problem_Control_Parameter_Name.java
+|   |   |   |-- PIP_Problem_Control_Parameter_Value.java
+|   |   |   |-- PIP_Problem_Status.java
+|   |   |   |-- PIP_Solution_Node.java
+|   |   |   |-- PIP_Tree_Node.java
+|   |   |   |-- PPL_Object.java
+|   |   |   |-- Pair.java
+|   |   |   |-- Parma_Polyhedra_Library.java
+|   |   |   |-- Partial_Function.java
+|   |   |   |-- Poly_Con_Relation.java
+|   |   |   |-- Poly_Gen_Relation.java
+|   |   |   |-- Relation_Symbol.java
+|   |   |   |-- Timeout_Exception.java
+|   |   |   |-- Variable.java
+|   |   |   |-- Variables_Set.java
+|   |   |   |-- ppl_interface_generator_java_classes_java.m4
+|   |   |   `-- ppl_interface_generator_java_classes_java_code.m4
+|   |   |-- ppl_interface_generator_java_procedure_generators.m4
+|   |   `-- tests
+|   |       |-- C_Polyhedron_test1.java
+|   |       |-- MIP_Problem_test1.java
+|   |       |-- Makefile.am
+|   |       |-- Makefile.in
+|   |       |-- NNC_Polyhedron_test1.java
+|   |       |-- PIP_Problem_test1.java
+|   |       |-- PPL_Test.java
+|   |       |-- Parma_Polyhedra_Library_test1.java
+|   |       |-- Parma_Polyhedra_Library_test2.java
+|   |       |-- Test_Executor.java
+|   |       |-- ppl_interface_generator_java_test_java.m4
+|   |       |-- ppl_interface_generator_java_test_java_code.m4
+|   |       `-- ppl_java_tests_common
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- OCaml
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- OCaml_interface.dox
+|   |   |-- README.ocaml
+|   |   |-- ppl_interface_generator_ocaml_cc_code.m4
+|   |   |-- ppl_interface_generator_ocaml_cc_files.m4
+|   |   |-- ppl_interface_generator_ocaml_hh_code.m4
+|   |   |-- ppl_interface_generator_ocaml_hh_files.m4
+|   |   |-- ppl_interface_generator_ocaml_ml.m4
+|   |   |-- ppl_interface_generator_ocaml_ml_code.m4
+|   |   |-- ppl_interface_generator_ocaml_mli.m4
+|   |   |-- ppl_interface_generator_ocaml_mli_code.m4
+|   |   |-- ppl_interface_generator_ocaml_procedure_generators.m4
+|   |   |-- ppl_ocaml_common.cc
+|   |   |-- ppl_ocaml_common_defs.hh
+|   |   |-- ppl_ocaml_common_inlines.hh
+|   |   |-- ppl_ocaml_globals.ml
+|   |   |-- ppl_ocaml_globals.mli
+|   |   `-- tests
+|   |       |-- Makefile.am
+|   |       |-- Makefile.in
+|   |       |-- ppl_interface_generator_ocaml_test_ml.m4
+|   |       |-- ppl_interface_generator_ocaml_test_ml_code.m4
+|   |       |-- ppl_ocaml_tests_common
+|   |       `-- test1.ml
+|   |-- Prolog
+|   |   |-- Ciao
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- README.ciao
+|   |   |   |-- ciao_cfli.hh
+|   |   |   |-- ciao_clpq.pl
+|   |   |   |-- ciao_clpq2.pl
+|   |   |   |-- ciao_efli.cc
+|   |   |   |-- ciao_efli.hh
+|   |   |   |-- ciao_pl_check.pl
+|   |   |   |-- ppl_interface_generator_ciao_pl.m4
+|   |   |   |-- ppl_interface_generator_ciao_prolog_generated_test_pl.m4
+|   |   |   `-- ppl_prolog_sysdep.hh
+|   |   |-- GNU
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- README.gprolog
+|   |   |   |-- gnu_pl_check.pl
+|   |   |   |-- gnu_prolog_generated_test.pl
+|   |   |   |-- gp_clpq.pl
+|   |   |   |-- gprolog_cfli.hh
+|   |   |   |-- gprolog_efli.cc
+|   |   |   |-- gprolog_efli.hh
+|   |   |   |-- ppl_interface_generator_gprolog_pl.m4
+|   |   |   `-- ppl_prolog_sysdep.hh
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- Prolog_configured_interface.dox
+|   |   |-- Prolog_interface.dox
+|   |   |-- Prolog_interface_compilation.dox
+|   |   |-- Prolog_interface_sysdep.dox
+|   |   |-- Prolog_interface_sysindep.dox
+|   |   |-- Prolog_interface_sysindep_domains.dox
+|   |   |-- SICStus
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- ppl_interface_generator_sicstus_sd_cc.m4
+|   |   |   |-- ppl_prolog_sysdep.hh
+|   |   |   |-- ppl_sicstus.pl
+|   |   |   |-- sicstus_cfli.cc
+|   |   |   |-- sicstus_cfli.h
+|   |   |   |-- sicstus_cfli.ic
+|   |   |   |-- sicstus_efli.cc
+|   |   |   |-- sicstus_efli.hh
+|   |   |   |-- sp_clpq.pl
+|   |   |   |-- sp_pl_check.pl
+|   |   |   `-- sp_prolog_generated_test.pl
+|   |   |-- SWI
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- README.swiprolog
+|   |   |   |-- pl_clpq.cc
+|   |   |   |-- pl_clpq.pl
+|   |   |   |-- ppl_interface_generator_swiprolog_cc.m4
+|   |   |   |-- ppl_pl.cc
+|   |   |   |-- ppl_prolog_sysdep.hh
+|   |   |   |-- ppl_swiprolog.pl
+|   |   |   |-- swi_cfli.hh
+|   |   |   |-- swi_efli.cc
+|   |   |   |-- swi_efli.hh
+|   |   |   |-- swi_pl_check.pl
+|   |   |   `-- swi_prolog_generated_test.pl
+|   |   |-- XSB
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- ppl_interface_generator_xsb_H.m4
+|   |   |   |-- ppl_interface_generator_xsb_cc.m4
+|   |   |   |-- ppl_interface_generator_xsb_hh.m4
+|   |   |   |-- ppl_interface_generator_xsb_prolog_generated_test_P.m4
+|   |   |   |-- ppl_prolog_sysdep.hh
+|   |   |   |-- xsb_cfli.hh
+|   |   |   |-- xsb_clpq.P
+|   |   |   |-- xsb_clpq2.P
+|   |   |   |-- xsb_efli.cc
+|   |   |   |-- xsb_efli.hh
+|   |   |   `-- xsb_pl_check.P
+|   |   |-- YAP
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- README.yap
+|   |   |   |-- ppl_interface_generator_yap_cc.m4
+|   |   |   |-- ppl_prolog_sysdep.hh
+|   |   |   |-- ppl_yap.pl
+|   |   |   |-- yap_cfli.hh
+|   |   |   |-- yap_clpq.pl
+|   |   |   |-- yap_clpq2.pl
+|   |   |   |-- yap_efli.cc
+|   |   |   |-- yap_efli.hh
+|   |   |   |-- yap_pl_check.pl
+|   |   |   `-- yap_prolog_generated_test.pl
+|   |   |-- ppl_interface_generator_prolog_cc_code.m4
+|   |   |-- ppl_interface_generator_prolog_cc_files.m4
+|   |   |-- ppl_interface_generator_prolog_dox.m4
+|   |   |-- ppl_interface_generator_prolog_dox_code.m4
+|   |   |-- ppl_interface_generator_prolog_hh_code.m4
+|   |   |-- ppl_interface_generator_prolog_hh_files.m4
+|   |   |-- ppl_interface_generator_prolog_procedure_generators.m4
+|   |   |-- ppl_interface_generator_prolog_systems.m4
+|   |   |-- ppl_prolog_common.cc
+|   |   |-- ppl_prolog_common_defs.hh
+|   |   |-- ppl_prolog_common_inlines.hh
+|   |   `-- tests
+|   |       |-- Makefile.am
+|   |       |-- Makefile.in
+|   |       |-- ack.clpq
+|   |       |-- ackn.clpq
+|   |       |-- clpq.pl
+|   |       |-- clpq2.pl
+|   |       |-- expected_clpq2_int16
+|   |       |-- expected_clpq2_int16_a
+|   |       |-- expected_clpq2_int32
+|   |       |-- expected_clpq2_int32_a
+|   |       |-- expected_clpq2_int64
+|   |       |-- expected_clpq2_int64_a
+|   |       |-- expected_clpq2_int8
+|   |       |-- expected_clpq2_int8_a
+|   |       |-- expected_clpq2_mpz
+|   |       |-- expected_clpq2_mpz_a
+|   |       |-- expected_clpq_int16
+|   |       |-- expected_clpq_int16_a
+|   |       |-- expected_clpq_int32
+|   |       |-- expected_clpq_int32_a
+|   |       |-- expected_clpq_int64
+|   |       |-- expected_clpq_int64_a
+|   |       |-- expected_clpq_int8
+|   |       |-- expected_clpq_int8_a
+|   |       |-- expected_clpq_mpz
+|   |       |-- expected_clpq_mpz_a
+|   |       |-- expected_pchk_int16
+|   |       |-- expected_pchk_int16_a
+|   |       |-- expected_pchk_int32
+|   |       |-- expected_pchk_int32_a
+|   |       |-- expected_pchk_int64
+|   |       |-- expected_pchk_int64_a
+|   |       |-- expected_pchk_int8
+|   |       |-- expected_pchk_int8_a
+|   |       |-- expected_pchk_mpz
+|   |       |-- expected_pchk_mpz_a
+|   |       |-- expected_pgt
+|   |       |-- fib.clpq
+|   |       |-- mc91.clpq
+|   |       |-- pl_check.pl
+|   |       |-- ppl_interface_generator_prolog_generated_test_pl.m4
+|   |       |-- ppl_interface_generator_prolog_generated_test_pl_code.m4
+|   |       |-- ppl_prolog_generated_test_common.pl
+|   |       |-- schedule.clpq
+|   |       |-- script_clpq
+|   |       |-- script_clpq2
+|   |       |-- script_clpq2_int8
+|   |       |-- smm.clpq
+|   |       |-- sumto.clpq
+|   |       `-- tak.clpq
+|   |-- interfaced_boxes.hh
+|   |-- marked_pointers.hh
+|   |-- ppl_interface_generator_common.m4
+|   |-- ppl_interface_generator_common_dat.m4
+|   |-- ppl_interface_generator_common_procedure_generators.m4
+|   `-- ppl_interface_generator_copyright
+|-- ltmain.sh
+|-- m4
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- ac_check_ciao.m4
+|   |-- ac_check_classpath.m4
+|   |-- ac_check_fpu_control.m4
+|   |-- ac_check_gmp.m4
+|   |-- ac_check_sicstus_prolog.m4
+|   |-- ac_check_swi_prolog.m4
+|   |-- ac_check_xsb_prolog.m4
+|   |-- ac_check_yap.m4
+|   |-- ac_cxx_attribute_weak.m4
+|   |-- ac_cxx_double_binary_format.m4
+|   |-- ac_cxx_float_binary_format.m4
+|   |-- ac_cxx_ieee_inexact_flag.m4
+|   |-- ac_cxx_limit_memory.m4
+|   |-- ac_cxx_long_double_binary_format.m4
+|   |-- ac_cxx_plain_char_is_signed.m4
+|   |-- ac_cxx_proper_long_double.m4
+|   |-- ac_cxx_zero_length_arrays.m4
+|   |-- ac_prog_jar.m4
+|   |-- ac_prog_java.m4
+|   |-- ac_prog_javac.m4
+|   |-- ac_prog_javah.m4
+|   |-- ac_text_md5sum.m4
+|   |-- libtool.m4
+|   |-- ltoptions.m4
+|   |-- ltsugar.m4
+|   |-- ltversion.m4
+|   |-- lt~obsolete.m4
+|   |-- m4.m4
+|   |-- ocaml.m4
+|   |-- ppl.m4
+|   `-- ppl_c.m4
+|-- missing
+|-- mkinstalldirs
+|-- ppl-config.h.in
+|-- ppl-config.sed
+|-- ppl.lsm.in
+|-- src
+|   |-- BDS_Status.idefs.hh
+|   |-- BDS_Status_inlines.hh
+|   |-- BD_Shape.cc
+|   |-- BD_Shape_defs.hh
+|   |-- BD_Shape_inlines.hh
+|   |-- BD_Shape_templates.hh
+|   |-- BD_Shape_types.hh
+|   |-- BHRZ03_Certificate.cc
+|   |-- BHRZ03_Certificate_defs.hh
+|   |-- BHRZ03_Certificate_inlines.hh
+|   |-- BHRZ03_Certificate_types.hh
+|   |-- BUGS.cc.dist
+|   |-- BUGS.hh.dist
+|   |-- Bit_Matrix.cc
+|   |-- Bit_Matrix_defs.hh
+|   |-- Bit_Matrix_inlines.hh
+|   |-- Bit_Matrix_types.hh
+|   |-- Bit_Row.cc
+|   |-- Bit_Row_defs.hh
+|   |-- Bit_Row_inlines.hh
+|   |-- Bit_Row_types.hh
+|   |-- Boundary_defs.hh
+|   |-- Box.cc
+|   |-- Box_defs.hh
+|   |-- Box_inlines.hh
+|   |-- Box_templates.hh
+|   |-- Box_types.hh
+|   |-- Box_Status.idefs.hh
+|   |-- Box_Status_inlines.hh
+|   |-- COPYING.cc.dist
+|   |-- COPYING.hh.dist
+|   |-- CO_Tree.cc
+|   |-- CO_Tree_defs.hh
+|   |-- CO_Tree_inlines.hh
+|   |-- CO_Tree_templates.hh
+|   |-- CO_Tree_types.hh
+|   |-- CREDITS.cc.dist
+|   |-- CREDITS.hh.dist
+|   |-- C_Integer.hh
+|   |-- C_Polyhedron.cc
+|   |-- C_Polyhedron_defs.hh
+|   |-- C_Polyhedron_inlines.hh
+|   |-- C_Polyhedron_types.hh
+|   |-- Cast_Floating_Point_Expression_defs.hh
+|   |-- Cast_Floating_Point_Expression_inlines.hh
+|   |-- Cast_Floating_Point_Expression_templates.hh
+|   |-- Cast_Floating_Point_Expression_types.hh
+|   |-- Checked_Number.cc
+|   |-- Checked_Number_defs.hh
+|   |-- Checked_Number_inlines.hh
+|   |-- Checked_Number_templates.hh
+|   |-- Checked_Number_types.hh
+|   |-- Coefficient.cc
+|   |-- Coefficient_defs.hh
+|   |-- Coefficient_inlines.hh
+|   |-- Coefficient_types.hh
+|   |-- Coefficient_traits_template.hh
+|   |-- Concrete_Expression.cc
+|   |-- Concrete_Expression_defs.hh
+|   |-- Concrete_Expression_inlines.hh
+|   |-- Concrete_Expression_types.hh
+|   |-- Congruence.cc
+|   |-- Congruence_defs.hh
+|   |-- Congruence_inlines.hh
+|   |-- Congruence_types.hh
+|   |-- Congruence_System.cc
+|   |-- Congruence_System_defs.hh
+|   |-- Congruence_System_inlines.hh
+|   |-- Congruence_System_types.hh
+|   |-- Constant_Floating_Point_Expression_defs.hh
+|   |-- Constant_Floating_Point_Expression_inlines.hh
+|   |-- Constant_Floating_Point_Expression_types.hh
+|   |-- Constraint.cc
+|   |-- Constraint_defs.hh
+|   |-- Constraint_inlines.hh
+|   |-- Constraint_types.hh
+|   |-- Constraint_System.cc
+|   |-- Constraint_System_defs.hh
+|   |-- Constraint_System_inlines.hh
+|   |-- Constraint_System_types.hh
+|   |-- DB_Matrix_defs.hh
+|   |-- DB_Matrix_inlines.hh
+|   |-- DB_Matrix_templates.hh
+|   |-- DB_Matrix_types.hh
+|   |-- DB_Row_defs.hh
+|   |-- DB_Row_inlines.hh
+|   |-- DB_Row_templates.hh
+|   |-- DB_Row_types.hh
+|   |-- Dense_Row.cc
+|   |-- Dense_Row_defs.hh
+|   |-- Dense_Row_inlines.hh
+|   |-- Dense_Row_templates.hh
+|   |-- Dense_Row_types.hh
+|   |-- Determinate_defs.hh
+|   |-- Determinate_inlines.hh
+|   |-- Determinate_types.hh
+|   |-- Difference_Floating_Point_Expression_defs.hh
+|   |-- Difference_Floating_Point_Expression_inlines.hh
+|   |-- Difference_Floating_Point_Expression_templates.hh
+|   |-- Difference_Floating_Point_Expression_types.hh
+|   |-- Division_Floating_Point_Expression_defs.hh
+|   |-- Division_Floating_Point_Expression_inlines.hh
+|   |-- Division_Floating_Point_Expression_templates.hh
+|   |-- Division_Floating_Point_Expression_types.hh
+|   |-- Doubly_Linked_Object_defs.hh
+|   |-- Doubly_Linked_Object_inlines.hh
+|   |-- Doubly_Linked_Object_types.hh
+|   |-- EList_defs.hh
+|   |-- EList_inlines.hh
+|   |-- EList_types.hh
+|   |-- EList_Iterator_defs.hh
+|   |-- EList_Iterator_inlines.hh
+|   |-- EList_Iterator_types.hh
+|   |-- Expression_Hide_Inhomo_defs.hh
+|   |-- Expression_Hide_Inhomo_inlines.hh
+|   |-- Expression_Hide_Inhomo_types.hh
+|   |-- Expression_Hide_Last_defs.hh
+|   |-- Expression_Hide_Last_inlines.hh
+|   |-- Expression_Hide_Last_types.hh
+|   |-- Float.cc
+|   |-- Float_defs.hh
+|   |-- Float_inlines.hh
+|   |-- Float_templates.hh
+|   |-- Floating_Point_Expression_defs.hh
+|   |-- Floating_Point_Expression_inlines.hh
+|   |-- Floating_Point_Expression_templates.hh
+|   |-- Floating_Point_Expression_types.hh
+|   |-- GMP_Integer_defs.hh
+|   |-- GMP_Integer_inlines.hh
+|   |-- GMP_Integer_types.hh
+|   |-- Generator.cc
+|   |-- Generator_defs.hh
+|   |-- Generator_inlines.hh
+|   |-- Generator_types.hh
+|   |-- Generator_System.cc
+|   |-- Generator_System_defs.hh
+|   |-- Generator_System_inlines.hh
+|   |-- Generator_System_types.hh
+|   |-- Grid_defs.hh
+|   |-- Grid_inlines.hh
+|   |-- Grid_templates.hh
+|   |-- Grid_types.hh
+|   |-- Grid_Certificate.cc
+|   |-- Grid_Certificate_defs.hh
+|   |-- Grid_Certificate_inlines.hh
+|   |-- Grid_Certificate_types.hh
+|   |-- Grid_Generator.cc
+|   |-- Grid_Generator_defs.hh
+|   |-- Grid_Generator_inlines.hh
+|   |-- Grid_Generator_types.hh
+|   |-- Grid_Generator_System.cc
+|   |-- Grid_Generator_System_defs.hh
+|   |-- Grid_Generator_System_inlines.hh
+|   |-- Grid_Generator_System_types.hh
+|   |-- Grid_Status.cc
+|   |-- Grid_Status.idefs.hh
+|   |-- Grid_Status_inlines.hh
+|   |-- Grid_chdims.cc
+|   |-- Grid_conversion.cc
+|   |-- Grid_nonpublic.cc
+|   |-- Grid_public.cc
+|   |-- Grid_simplify.cc
+|   |-- Grid_widenings.cc
+|   |-- H79_Certificate.cc
+|   |-- H79_Certificate_defs.hh
+|   |-- H79_Certificate_inlines.hh
+|   |-- H79_Certificate_types.hh
+|   |-- Handler_defs.hh
+|   |-- Handler_inlines.hh
+|   |-- Handler_types.hh
+|   |-- Has_Assign_Or_Swap.hh
+|   |-- Init.cc
+|   |-- Init_defs.hh
+|   |-- Init_inlines.hh
+|   |-- Init_types.hh
+|   |-- Integer_Interval.hh
+|   |-- Interval_defs.hh
+|   |-- Interval_inlines.hh
+|   |-- Interval_templates.hh
+|   |-- Interval_types.hh
+|   |-- Interval_Info_defs.hh
+|   |-- Interval_Info_inlines.hh
+|   |-- Interval_Info_types.hh
+|   |-- Linear_Expression.cc
+|   |-- Linear_Expression_defs.hh
+|   |-- Linear_Expression_inlines.hh
+|   |-- Linear_Expression_types.hh
+|   |-- Linear_Expression_Impl.cc
+|   |-- Linear_Expression_Impl_defs.hh
+|   |-- Linear_Expression_Impl_inlines.hh
+|   |-- Linear_Expression_Impl_templates.hh
+|   |-- Linear_Expression_Impl_types.hh
+|   |-- Linear_Expression_Interface.cc
+|   |-- Linear_Expression_Interface_defs.hh
+|   |-- Linear_Expression_Interface_types.hh
+|   |-- Linear_Form.cc
+|   |-- Linear_Form_defs.hh
+|   |-- Linear_Form_inlines.hh
+|   |-- Linear_Form_templates.hh
+|   |-- Linear_Form_types.hh
+|   |-- Linear_System_defs.hh
+|   |-- Linear_System_inlines.hh
+|   |-- Linear_System_templates.hh
+|   |-- Linear_System_types.hh
+|   |-- MIP_Problem.cc
+|   |-- MIP_Problem_defs.hh
+|   |-- MIP_Problem_inlines.hh
+|   |-- MIP_Problem_templates.hh
+|   |-- MIP_Problem_types.hh
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- Matrix_defs.hh
+|   |-- Matrix_inlines.hh
+|   |-- Matrix_templates.hh
+|   |-- Matrix_types.hh
+|   |-- Multiplication_Floating_Point_Expression_defs.hh
+|   |-- Multiplication_Floating_Point_Expression_inlines.hh
+|   |-- Multiplication_Floating_Point_Expression_templates.hh
+|   |-- Multiplication_Floating_Point_Expression_types.hh
+|   |-- NNC_Polyhedron.cc
+|   |-- NNC_Polyhedron_defs.hh
+|   |-- NNC_Polyhedron_inlines.hh
+|   |-- NNC_Polyhedron_types.hh
+|   |-- Numeric_Format_defs.hh
+|   |-- OR_Matrix_defs.hh
+|   |-- OR_Matrix_inlines.hh
+|   |-- OR_Matrix_templates.hh
+|   |-- OR_Matrix_types.hh
+|   |-- Octagonal_Shape.cc
+|   |-- Octagonal_Shape_defs.hh
+|   |-- Octagonal_Shape_inlines.hh
+|   |-- Octagonal_Shape_templates.hh
+|   |-- Octagonal_Shape_types.hh
+|   |-- Og_Status.idefs.hh
+|   |-- Og_Status_inlines.hh
+|   |-- Opposite_Floating_Point_Expression_defs.hh
+|   |-- Opposite_Floating_Point_Expression_inlines.hh
+|   |-- Opposite_Floating_Point_Expression_types.hh
+|   |-- PIP_Problem.cc
+|   |-- PIP_Problem_defs.hh
+|   |-- PIP_Problem_inlines.hh
+|   |-- PIP_Problem_templates.hh
+|   |-- PIP_Problem_types.hh
+|   |-- PIP_Tree.cc
+|   |-- PIP_Tree_defs.hh
+|   |-- PIP_Tree_inlines.hh
+|   |-- PIP_Tree_types.hh
+|   |-- Partial_Function.cc
+|   |-- Partial_Function_defs.hh
+|   |-- Partial_Function_inlines.hh
+|   |-- Partial_Function_types.hh
+|   |-- Partially_Reduced_Product_defs.hh
+|   |-- Partially_Reduced_Product_inlines.hh
+|   |-- Partially_Reduced_Product_templates.hh
+|   |-- Partially_Reduced_Product_types.hh
+|   |-- Pending_Element_defs.hh
+|   |-- Pending_Element_inlines.hh
+|   |-- Pending_Element_types.hh
+|   |-- Pending_List_defs.hh
+|   |-- Pending_List_inlines.hh
+|   |-- Pending_List_templates.hh
+|   |-- Pending_List_types.hh
+|   |-- Ph_Status.cc
+|   |-- Ph_Status.idefs.hh
+|   |-- Ph_Status_inlines.hh
+|   |-- Pointset_Powerset.cc
+|   |-- Pointset_Powerset_defs.hh
+|   |-- Pointset_Powerset_inlines.hh
+|   |-- Pointset_Powerset_templates.hh
+|   |-- Pointset_Powerset_types.hh
+|   |-- Poly_Con_Relation.cc
+|   |-- Poly_Con_Relation_defs.hh
+|   |-- Poly_Con_Relation_inlines.hh
+|   |-- Poly_Con_Relation_types.hh
+|   |-- Poly_Gen_Relation.cc
+|   |-- Poly_Gen_Relation_defs.hh
+|   |-- Poly_Gen_Relation_inlines.hh
+|   |-- Poly_Gen_Relation_types.hh
+|   |-- Polyhedron_defs.hh
+|   |-- Polyhedron_inlines.hh
+|   |-- Polyhedron_templates.hh
+|   |-- Polyhedron_types.hh
+|   |-- Polyhedron_chdims.cc
+|   |-- Polyhedron_chdims_templates.hh
+|   |-- Polyhedron_conversion_templates.hh
+|   |-- Polyhedron_minimize_templates.hh
+|   |-- Polyhedron_nonpublic.cc
+|   |-- Polyhedron_public.cc
+|   |-- Polyhedron_simplify_templates.hh
+|   |-- Polyhedron_widenings.cc
+|   |-- Powerset_defs.hh
+|   |-- Powerset_inlines.hh
+|   |-- Powerset_templates.hh
+|   |-- Powerset_types.hh
+|   |-- Ptr_Iterator_defs.hh
+|   |-- Ptr_Iterator_inlines.hh
+|   |-- Ptr_Iterator_types.hh
+|   |-- Rational_Box.hh
+|   |-- Rational_Interval.hh
+|   |-- Result_defs.hh
+|   |-- Result_inlines.hh
+|   |-- Rounding_Dir_defs.hh
+|   |-- Rounding_Dir_inlines.hh
+|   |-- Scalar_Products.cc
+|   |-- Scalar_Products_defs.hh
+|   |-- Scalar_Products_inlines.hh
+|   |-- Scalar_Products_types.hh
+|   |-- Slow_Copy.hh
+|   |-- Sparse_Row.cc
+|   |-- Sparse_Row_defs.hh
+|   |-- Sparse_Row_inlines.hh
+|   |-- Sparse_Row_templates.hh
+|   |-- Sparse_Row_types.hh
+|   |-- Sum_Floating_Point_Expression_defs.hh
+|   |-- Sum_Floating_Point_Expression_inlines.hh
+|   |-- Sum_Floating_Point_Expression_templates.hh
+|   |-- Sum_Floating_Point_Expression_types.hh
+|   |-- Swapping_Vector_defs.hh
+|   |-- Swapping_Vector_inlines.hh
+|   |-- Swapping_Vector_types.hh
+|   |-- Temp_defs.hh
+|   |-- Temp_inlines.hh
+|   |-- Temp_templates.hh
+|   |-- Threshold_Watcher.cc
+|   |-- Threshold_Watcher_defs.hh
+|   |-- Threshold_Watcher_inlines.hh
+|   |-- Threshold_Watcher_templates.hh
+|   |-- Threshold_Watcher_types.hh
+|   |-- Time.cc
+|   |-- Time_defs.hh
+|   |-- Time_inlines.hh
+|   |-- Time_types.hh
+|   |-- Topology_types.hh
+|   |-- Variable.cc
+|   |-- Variable_defs.hh
+|   |-- Variable_inlines.hh
+|   |-- Variable_types.hh
+|   |-- Variable_Floating_Point_Expression_defs.hh
+|   |-- Variable_Floating_Point_Expression_inlines.hh
+|   |-- Variable_Floating_Point_Expression_types.hh
+|   |-- Variables_Set.cc
+|   |-- Variables_Set_defs.hh
+|   |-- Variables_Set_inlines.hh
+|   |-- Variables_Set_types.hh
+|   |-- WRD_coefficient_types_defs.hh
+|   |-- WRD_coefficient_types_inlines.hh
+|   |-- Watchdog.cc
+|   |-- Watchdog_defs.hh
+|   |-- Watchdog_inlines.hh
+|   |-- Watchdog_types.hh
+|   |-- Weight_Profiler.cc
+|   |-- Weight_Profiler_defs.hh
+|   |-- Widening_Function_defs.hh
+|   |-- Widening_Function_inlines.hh
+|   |-- Widening_Function_types.hh
+|   |-- algorithms.hh
+|   |-- assert.cc
+|   |-- assert.hh
+|   |-- assign_or_swap.hh
+|   |-- c_streambuf.cc
+|   |-- c_streambuf_defs.hh
+|   |-- c_streambuf_inlines.hh
+|   |-- c_streambuf_types.hh
+|   |-- checked.cc
+|   |-- checked_defs.hh
+|   |-- checked_inlines.hh
+|   |-- checked_ext_inlines.hh
+|   |-- checked_float_inlines.hh
+|   |-- checked_int_inlines.hh
+|   |-- checked_mpq_inlines.hh
+|   |-- checked_mpz_inlines.hh
+|   |-- checked_numeric_limits.hh
+|   |-- compiler.hh
+|   |-- distances_defs.hh
+|   |-- distances_inlines.hh
+|   |-- distances_types.hh
+|   |-- fpu-c99_inlines.hh
+|   |-- fpu-ia32.cc
+|   |-- fpu-ia32_inlines.hh
+|   |-- fpu-none_inlines.hh
+|   |-- fpu-sparc_inlines.hh
+|   |-- fpu_defs.hh
+|   |-- fpu_types.hh
+|   |-- globals.cc
+|   |-- globals_defs.hh
+|   |-- globals_inlines.hh
+|   |-- globals_types.hh
+|   |-- initializer.hh
+|   |-- intervals_defs.hh
+|   |-- iterator_to_const_defs.hh
+|   |-- iterator_to_const_inlines.hh
+|   |-- iterator_to_const_types.hh
+|   |-- linearize.hh
+|   |-- math_utilities_defs.hh
+|   |-- math_utilities_inlines.hh
+|   |-- max_space_dimension.hh
+|   |-- meta_programming.hh
+|   |-- mp_std_bits.cc
+|   |-- mp_std_bits_defs.hh
+|   |-- mp_std_bits_inlines.hh
+|   |-- namespaces.hh
+|   |-- ppl-config.cc.in
+|   |-- ppl.hh.dist
+|   |-- ppl_header.hh
+|   |-- stdiobuf.cc
+|   |-- stdiobuf_defs.hh
+|   |-- stdiobuf_inlines.hh
+|   |-- stdiobuf_types.hh
+|   |-- swapping_sort_templates.hh
+|   |-- termination.cc
+|   |-- termination_defs.hh
+|   |-- termination_templates.hh
+|   |-- termination_types.hh
+|   |-- version.cc
+|   |-- version.hh.in
+|   |-- wrap_assign.hh
+|   |-- wrap_string.cc
+|   `-- wrap_string.hh
+|-- tests
+|   |-- BD_Shape
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- addconstraints1.cc
+|   |   |-- addspacedims1.cc
+|   |   |-- affinedimension1.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affineimage2.cc
+|   |   |-- affinepreimage1.cc
+|   |   |-- ascii_dump_load1.cc
+|   |   |-- bgp99extrapolation1.cc
+|   |   |-- bhmz05widening1.cc
+|   |   |-- bhz03widening1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundedaffineimage1.cc
+|   |   |-- boundedaffinepreimage1.cc
+|   |   |-- bounds1.cc
+|   |   |-- cc76extrapolation1.cc
+|   |   |-- cc76narrowing1.cc
+|   |   |-- closure1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruences1.cc
+|   |   |-- constrains1.cc
+|   |   |-- constraints1.cc
+|   |   |-- contains1.cc
+|   |   |-- containsintegerpoint1.cc
+|   |   |-- difference1.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- dropsomenonintegerpoints1.cc
+|   |   |-- empty1.cc
+|   |   |-- equality1.cc
+|   |   |-- expandspacedim1.cc
+|   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromgensys1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- fromspacedim1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- generalizedaffineimage2.cc
+|   |   |-- generalizedaffinepreimage1.cc
+|   |   |-- generalizedaffinepreimage2.cc
+|   |   |-- generalizedaffinepreimage3.cc
+|   |   |-- geomcovers1.cc
+|   |   |-- h79widening1.cc
+|   |   |-- integerupperboundifexact1.cc
+|   |   |-- intersection1.cc
+|   |   |-- limitedbhmz05extrapolation1.cc
+|   |   |-- limitedcc76extrapolation1.cc
+|   |   |-- limitedh79extrapolation1.cc
+|   |   |-- mapspacedims1.cc
+|   |   |-- max_min1.cc
+|   |   |-- max_min2.cc
+|   |   |-- maxspacedim1.cc
+|   |   |-- membytes1.cc
+|   |   |-- minconstraints1.cc
+|   |   |-- relations1.cc
+|   |   |-- relations2.cc
+|   |   |-- relations3.cc
+|   |   |-- relations4.cc
+|   |   |-- removespacedims1.cc
+|   |   |-- run_tests
+|   |   |-- simplifyusingcontext1.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- unconstrain1.cc
+|   |   |-- universe1.cc
+|   |   |-- upperbound1.cc
+|   |   |-- upperboundifexact1.cc
+|   |   |-- wrap1.cc
+|   |   `-- writebdshape1.cc
+|   |-- Box
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- addconstraints1.cc
+|   |   |-- addspacedims1.cc
+|   |   |-- affinedimension1.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affinepreimage1.cc
+|   |   |-- ascii_dump_load1.cc
+|   |   |-- bgp99extrapolation1.cc
+|   |   |-- bhz03widening1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundedaffineimage1.cc
+|   |   |-- boundedaffinepreimage1.cc
+|   |   |-- cc76narrowing1.cc
+|   |   |-- cc76widening.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruences1.cc
+|   |   |-- constrains1.cc
+|   |   |-- constraints1.cc
+|   |   |-- contains1.cc
+|   |   |-- containsintegerpoint1.cc
+|   |   |-- difference1.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- empty1.cc
+|   |   |-- equality1.cc
+|   |   |-- expandspacedim1.cc
+|   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromgensys1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- frompartiallyreducedproduct1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- frompolyhedron2.cc
+|   |   |-- fromspacedim1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- generalizedaffineimage2.cc
+|   |   |-- generalizedaffinepreimage1.cc
+|   |   |-- geomcovers1.cc
+|   |   |-- intersection1.cc
+|   |   |-- interval1.cc
+|   |   |-- limitedcc76extrapolation1.cc
+|   |   |-- mapspacedims1.cc
+|   |   |-- max_min1.cc
+|   |   |-- maxspacedim1.cc
+|   |   |-- membytes1.cc
+|   |   |-- minconstraints1.cc
+|   |   |-- propagateconstraints1.cc
+|   |   |-- propagateconstraints2.cc
+|   |   |-- refinewithcongruence1.cc
+|   |   |-- refinewithcongruences1.cc
+|   |   |-- refinewithconstraint1.cc
+|   |   |-- refinewithconstraint2.cc
+|   |   |-- refinewithconstraints1.cc
+|   |   |-- refinewithconstraints2.cc
+|   |   |-- relations1.cc
+|   |   |-- relations2.cc
+|   |   |-- relations3.cc
+|   |   |-- relations4.cc
+|   |   |-- removespacedims1.cc
+|   |   |-- run_tests
+|   |   |-- simplifyusingcontext1.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- topclosed1.cc
+|   |   |-- unconstrain1.cc
+|   |   |-- universe1.cc
+|   |   |-- upperbound1.cc
+|   |   |-- upperboundifexact1.cc
+|   |   |-- wrap1.cc
+|   |   `-- writebox1.cc
+|   |-- CO_Tree
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   `-- cotree1.cc
+|   |-- Concrete_Expression
+|   |   |-- C_Expr.cc
+|   |   |-- C_Expr_defs.hh
+|   |   |-- C_Expr_inlines.hh
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- bdshape1.cc
+|   |   |-- bdshape2.cc
+|   |   |-- digitalfilters1.cc
+|   |   |-- linearform1.cc
+|   |   |-- linearize.cc
+|   |   |-- octagonalshape1.cc
+|   |   |-- octagonalshape2.cc
+|   |   |-- polyhedron1.cc
+|   |   |-- polyhedron2.cc
+|   |   `-- run_tests
+|   |-- Grid
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- addcongruence1.cc
+|   |   |-- addcongruences1.cc
+|   |   |-- addconstraint1.cc
+|   |   |-- addconstraints1.cc
+|   |   |-- addgenerator1.cc
+|   |   |-- addgenerators1.cc
+|   |   |-- addspacedims1.cc
+|   |   |-- affinedim1.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affineimage2.cc
+|   |   |-- affinepreimage1.cc
+|   |   |-- affinepreimage2.cc
+|   |   |-- approximatepartition1.cc
+|   |   |-- asciidumpload1.cc
+|   |   |-- asciidumpload2.cc
+|   |   |-- asciidumpload3.cc
+|   |   |-- asciidumpload4.cc
+|   |   |-- asciidumpload5.cc
+|   |   |-- asciidumpload6.cc
+|   |   |-- bhz03widening1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundedaffineimage1.cc
+|   |   |-- boundedaffinepreimage1.cc
+|   |   |-- bounds1.cc
+|   |   |-- certificate1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruence1.cc
+|   |   |-- congruences1.cc
+|   |   |-- congruences2.cc
+|   |   |-- constraints1.cc
+|   |   |-- contains1.cc
+|   |   |-- containsintegerpoint1.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- dropnonintegerpoints1.cc
+|   |   |-- equals1.cc
+|   |   |-- expandspacedim1.cc
+|   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- generalizedaffineimage2.cc
+|   |   |-- generalizedaffineimage3.cc
+|   |   |-- generalizedaffinepreimage1.cc
+|   |   |-- generalizedaffinepreimage2.cc
+|   |   |-- generalizedaffinepreimage3.cc
+|   |   |-- generator1.cc
+|   |   |-- generators1.cc
+|   |   |-- generators2.cc
+|   |   |-- grid1.cc
+|   |   |-- grid2.cc
+|   |   |-- grid3.cc
+|   |   |-- griddifference1.cc
+|   |   |-- intersection1.cc
+|   |   |-- isempty1.cc
+|   |   |-- isuniverse1.cc
+|   |   |-- limitedextrapolation1.cc
+|   |   |-- limitedextrapolation2.cc
+|   |   |-- limitedextrapolation3.cc
+|   |   |-- mapspacedims1.cc
+|   |   |-- maxmin1.cc
+|   |   |-- membytes1.cc
+|   |   |-- mincongruences1.cc
+|   |   |-- mingenerators1.cc
+|   |   |-- outputoperator1.cc
+|   |   |-- outputoperator2.cc
+|   |   |-- outputoperator3.cc
+|   |   |-- partition1.cc
+|   |   |-- powersetdifference1.cc
+|   |   |-- powersetgeometricallycovers1.cc
+|   |   |-- powersetgeometricallyequals1.cc
+|   |   |-- refinewithcongruences1.cc
+|   |   |-- refinewithconstraints1.cc
+|   |   |-- relations1.cc
+|   |   |-- relations2.cc
+|   |   |-- relations3.cc
+|   |   |-- removespacedims1.cc
+|   |   |-- removespacedims2.cc
+|   |   |-- simplifyusingcontext1.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- topclosed1.cc
+|   |   |-- topclosure1.cc
+|   |   |-- unconstrain1.cc
+|   |   |-- upperbound1.cc
+|   |   |-- upperbound2.cc
+|   |   |-- widening1.cc
+|   |   |-- widening2.cc
+|   |   |-- widening3.cc
+|   |   |-- wrap1.cc
+|   |   `-- writecongruencesystem.cc
+|   |-- MIP_Problem
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- ascii_dump_load1.cc
+|   |   |-- exceptions1.cc
+|   |   |-- mipproblem1.cc
+|   |   |-- mipproblem2.cc
+|   |   |-- mipproblem3.cc
+|   |   `-- mipproblem4.cc
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- Octagonal_Shape
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- addspacedims1.cc
+|   |   |-- affinedimension1.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affineimage2.cc
+|   |   |-- affinepreimage1.cc
+|   |   |-- affinepreimage2.cc
+|   |   |-- ascii_dump_load1.cc
+|   |   |-- bhmz05widening1.cc
+|   |   |-- bhz03widening1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundedaffineimage1.cc
+|   |   |-- boundedaffinepreimage1.cc
+|   |   |-- bounds1.cc
+|   |   |-- cc76extrapolation1.cc
+|   |   |-- cc76narrowing1.cc
+|   |   |-- chinainit.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruences1.cc
+|   |   |-- constrains1.cc
+|   |   |-- constraints1.cc
+|   |   |-- contains1.cc
+|   |   |-- containsintegerpoint1.cc
+|   |   |-- difference1.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- dropsomenonintegerpoints1.cc
+|   |   |-- empty1.cc
+|   |   |-- expandspacedim1.cc
+|   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromgensys1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- fromspacedim1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- generalizedaffineimage2.cc
+|   |   |-- generalizedaffineimage3.cc
+|   |   |-- generalizedaffineimage4.cc
+|   |   |-- generalizedaffineimage5.cc
+|   |   |-- generalizedaffinepreimage1.cc
+|   |   |-- generalizedaffinepreimage2.cc
+|   |   |-- generalizedaffinepreimage3.cc
+|   |   |-- generalizedaffinepreimage4.cc
+|   |   |-- integerupperboundifexact1.cc
+|   |   |-- intersection1.cc
+|   |   |-- limitedbhmz05extrapolation1.cc
+|   |   |-- limitedcc76extrapolation1.cc
+|   |   |-- mapspacedims1.cc
+|   |   |-- max_min1.cc
+|   |   |-- max_min2.cc
+|   |   |-- maxspacedim1.cc
+|   |   |-- membytes1.cc
+|   |   |-- minconstraints1.cc
+|   |   |-- relatwithcons1.cc
+|   |   |-- relatwithcons2.cc
+|   |   |-- relatwithcons3.cc
+|   |   |-- relatwithgen1.cc
+|   |   |-- removespacedims1.cc
+|   |   |-- run_tests
+|   |   |-- simplifyusingcontext1.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- unconstrain1.cc
+|   |   |-- universe1.cc
+|   |   |-- upperbound1.cc
+|   |   |-- upperboundifexact1.cc
+|   |   |-- wrap1.cc
+|   |   `-- writeoctagon1.cc
+|   |-- PIP_Problem
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- ascii_dump_load1.cc
+|   |   |-- exceptions1.cc
+|   |   |-- pipproblem1.cc
+|   |   |-- pipproblem2.cc
+|   |   |-- pipproblem3.cc
+|   |   `-- weightwatch1.cc
+|   |-- Partially_Reduced_Product
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- addcongruences1.cc
+|   |   |-- affineimage1.cc
+|   |   |-- asciidumpload1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundedaffineimage1.cc
+|   |   |-- bounds1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruences1.cc
+|   |   |-- congruencesproduct1.cc
+|   |   |-- constraints1.cc
+|   |   |-- constraintsproduct1.cc
+|   |   |-- contains1.cc
+|   |   |-- difference1.cc
+|   |   |-- dimension1.cc
+|   |   |-- directproduct1.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- dropsomenonintegerpoints1.cc
+|   |   |-- equals1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- fromproduct1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- intersection1.cc
+|   |   |-- isempty1.cc
+|   |   |-- isuniverse1.cc
+|   |   |-- maxmin1.cc
+|   |   |-- partially_reduced_product_test.hh
+|   |   |-- refinewithcongruences1.cc
+|   |   |-- refinewithconstraints1.cc
+|   |   |-- relations1.cc
+|   |   |-- shapepreservingproduct1.cc
+|   |   |-- smashproduct1.cc
+|   |   |-- spacedims1.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- topclosed1.cc
+|   |   |-- topclosure1.cc
+|   |   `-- upperbound1.cc
+|   |-- Polyhedron
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- addcongruence1.cc
+|   |   |-- addcongruences1.cc
+|   |   |-- addconstraint1.cc
+|   |   |-- addconstraints1.cc
+|   |   |-- addconstraints2.cc
+|   |   |-- addgenerator1.cc
+|   |   |-- addgenerator2.cc
+|   |   |-- addgenerators1.cc
+|   |   |-- addgenerators2.cc
+|   |   |-- addspacedims1.cc
+|   |   |-- addspacedims2.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affineimage2.cc
+|   |   |-- affinepreimage1.cc
+|   |   |-- affinetrans.cc
+|   |   |-- append1.cc
+|   |   |-- append2.cc
+|   |   |-- ascii_dump_load1.cc
+|   |   |-- ascii_dump_load2.cc
+|   |   |-- ascii_dump_load3.cc
+|   |   |-- bgp99extrapolation1.cc
+|   |   |-- bgp99extrapolation2.cc
+|   |   |-- bhrz03widening1.cc
+|   |   |-- bhrz03widening2.cc
+|   |   |-- bhrz03widening3.cc
+|   |   |-- bhz03widening1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundedaffineimage1.cc
+|   |   |-- boundedaffinepreimage1.cc
+|   |   |-- boundedbhrz03extrapolation1.cc
+|   |   |-- boundedh79extrapolation1.cc
+|   |   |-- bounds1.cc
+|   |   |-- cnncconversion1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruences1.cc
+|   |   |-- constrains1.cc
+|   |   |-- constraints1.cc
+|   |   |-- contains1.cc
+|   |   |-- contains2.cc
+|   |   |-- containsintegerpoint1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- disjoint2.cc
+|   |   |-- dropsomenonintegerpoints1.cc
+|   |   |-- dropsomenonintegerpoints2.cc
+|   |   |-- dualhypercubes.cc
+|   |   |-- empty1.cc
+|   |   |-- equals1.cc
+|   |   |-- exceptions1.cc
+|   |   |-- exceptions2.cc
+|   |   |-- exceptions3.cc
+|   |   |-- expandspacedim1.cc
+|   |   |-- expandspacedim2.cc
+|   |   |-- foldspacedims1.cc
+|   |   |-- foldspacedims2.cc
+|   |   |-- frequency1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- frombox2.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- generalizedaffineimage2.cc
+|   |   |-- generalizedaffinepreimage1.cc
+|   |   |-- generalizedaffinepreimage2.cc
+|   |   |-- generators1.cc
+|   |   |-- geomcovers1.cc
+|   |   |-- h79widening1.cc
+|   |   |-- h79widening2.cc
+|   |   |-- hybrid.cc
+|   |   |-- intersection1.cc
+|   |   |-- limitedbhrz03extrapolation1.cc
+|   |   |-- limitedh79extrapolation1.cc
+|   |   |-- linearexpression1.cc
+|   |   |-- linearpartition1.cc
+|   |   |-- linearsystem1.cc
+|   |   |-- mapspacedims1.cc
+|   |   |-- matrix1.cc
+|   |   |-- max_min1.cc
+|   |   |-- maxspacedim1.cc
+|   |   |-- mc91.cc
+|   |   |-- membytes1.cc
+|   |   |-- memory1.cc
+|   |   |-- memory2.cc
+|   |   |-- minconstraints1.cc
+|   |   |-- minconstraints2.cc
+|   |   |-- mingenerators1.cc
+|   |   |-- mingenerators2.cc
+|   |   |-- nncminimize1.cc
+|   |   |-- nncminimize2.cc
+|   |   |-- numberinput1.cc
+|   |   |-- onepoint.cc
+|   |   |-- permute.cc
+|   |   |-- polydifference1.cc
+|   |   |-- polydifference2.cc
+|   |   |-- polyhull1.cc
+|   |   |-- polyhull2.cc
+|   |   |-- polyhullifexact1.cc
+|   |   |-- polyhullifexact2.cc
+|   |   |-- randphull1.cc
+|   |   |-- refinewithcongruence1.cc
+|   |   |-- refinewithcongruences1.cc
+|   |   |-- refinewithconstraint1.cc
+|   |   |-- refinewithconstraints1.cc
+|   |   |-- relations1.cc
+|   |   |-- relations2.cc
+|   |   |-- relations3.cc
+|   |   |-- removespacedims1.cc
+|   |   |-- removespacedims2.cc
+|   |   |-- simplifyusingcontext1.cc
+|   |   |-- smm1.cc
+|   |   |-- sparserow1.cc
+|   |   |-- termination1.cc
+|   |   |-- termination2.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- timeelapse2.cc
+|   |   |-- topclosed1.cc
+|   |   |-- topclosure1.cc
+|   |   |-- unconstrain1.cc
+|   |   |-- universe1.cc
+|   |   |-- universe2.cc
+|   |   |-- variablesset1.cc
+|   |   |-- watchdog1.cc
+|   |   |-- weightwatch1.cc
+|   |   |-- wrap1.cc
+|   |   |-- wrap2.cc
+|   |   |-- writeconsys1.cc
+|   |   |-- writegensys1.cc
+|   |   |-- writepolyhedron1.cc
+|   |   |-- writepolyhedron2.cc
+|   |   |-- writerelation1.cc
+|   |   `-- writevariable1.cc
+|   |-- Powerset
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- addcongruences1.cc
+|   |   |-- addconstraints1.cc
+|   |   |-- affinedimension1.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affinepreimage1.cc
+|   |   |-- bounded1.cc
+|   |   |-- bounds1.cc
+|   |   |-- closed1.cc
+|   |   |-- closure1.cc
+|   |   |-- collapse1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- contains1.cc
+|   |   |-- containsintegerpoint1.cc
+|   |   |-- difference1.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- disjunct1.cc
+|   |   |-- empty1.cc
+|   |   |-- entails1.cc
+|   |   |-- equals1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromcongruences1.cc
+|   |   |-- fromconstraints1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- fromspacedimension1.cc
+|   |   |-- intersection1.cc
+|   |   |-- maxmin1.cc
+|   |   |-- meet1.cc
+|   |   |-- membytes1.cc
+|   |   |-- powerset1.cc
+|   |   |-- reduce1.cc
+|   |   |-- refinewith1.cc
+|   |   |-- relationwith1.cc
+|   |   |-- simplifyusingcontext1.cc
+|   |   |-- size1.cc
+|   |   |-- spacedims1.cc
+|   |   |-- universe1.cc
+|   |   `-- upperbound1.cc
+|   |-- README
+|   |-- Random_Number_Generator_defs.hh
+|   |-- Random_Number_Generator_inlines.hh
+|   |-- Random_Number_Generator_types.hh
+|   |-- Watchdog
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   `-- watchdog1.cc
+|   |-- files.cc
+|   |-- files.hh
+|   |-- ppl_test.cc
+|   |-- ppl_test.hh
+|   `-- valgrind_suppressions
+`-- utils
+    |-- Makefile.am
+    |-- Makefile.in
+    |-- build_header.in
+    |-- cm_cleaner.sh
+    |-- cm_splitter.sh
+    |-- text2cxxarray.in
+    |-- timings.cc
+    `-- timings.hh
+
+
+--------
+
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2013 BUGSENG srl (http://bugseng.com)
+
+This document describes the Parma Polyhedra Library (PPL).
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+The license is included, in various formats, in the `doc' subdirectory
+of each distribution of the PPL in files named `fdl.*'.
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.  The license is included, in various
+formats, in the `doc' subdirectory of each distribution of the PPL in
+files named `gpl.*'.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ .

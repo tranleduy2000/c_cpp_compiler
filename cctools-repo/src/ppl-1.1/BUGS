@@ -1,0 +1,22 @@
+
+The PPL developers encourage you to report any bugs you find using the
+bug tracking system available at https://www.cs.unipr.it/mantis/ .
+Here `bug' should be interpreted in its broadest sense: outright
+software errors, misfeatures, bad interfaces, missing or unclear
+documentation... whatever is a subject for possible improvement.
+
+As far as software bugs are concerned, the best reports are those that
+are reproducible.  Including (or pointing us to) code that exhibits
+the reported misbehavior is the best thing you can do to help us fix
+the library.  Of course, this is not always possible and we will
+welcome any kind of bug report.  Anyway, you may be interested to read
+http://www.chiark.greenend.org.uk/~sgtatham/bugs.html on how to report
+bugs effectively.
+
+
+KNOWN BUGS
+==========
+
+All known bugs were resolved before the release.  It is likely that
+there are still bugs in the released version.  Any bugs found after
+the release will be listed at http://bugseng.com/products/ppl/Bugs/ .

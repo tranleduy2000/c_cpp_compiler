@@ -1,0 +1,10 @@
+V-representation
+begin
+6 4 rational
+1 0 0 1
+1 0 0 -1
+1 0 1 0
+1 0 -1 0
+1 1 0 0
+1 -1 0 0
+end

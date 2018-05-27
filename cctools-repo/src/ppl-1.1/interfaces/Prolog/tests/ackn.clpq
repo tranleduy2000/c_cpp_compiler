@@ -1,0 +1,6 @@
+ack(M, N, R) :-
+   { M = 0, R = N+1 }.
+ack(M, N, R) :-
+   { M >= 1, N = 0, M = M1+1 }, ack(M1, 1, R).
+ack(M, N, R) :-
+   { M >= 1, N >= 1, M = M1+1, N = N1+1 }, ack(M, N1, T), ack(M1, T, R).

@@ -1,0 +1,10 @@
+* Unit diamond centred at origin
+* Last two inequalities define vertex (-1/2,0)
+begin
+4 3 rational
+1/2 -1 -1
+1/2 -1  1
+1/2  1 -1
+1/2  1  1
+end
+

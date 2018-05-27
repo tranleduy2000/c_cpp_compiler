@@ -1,0 +1,519 @@
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2013 BUGSENG srl (http://bugseng.com)
+See below for the copying conditions.
+
+
+Configuration of the Parma Polyhedra Library
+============================================
+
+Contents
+--------
+
+ 1. The Standard Thing (configure, make, make install)
+ 2. Using the Right Version of GMP
+ 3. Using the Right C and C++ Compilers
+ 4. Enabling the Use of Alternative Coefficient Types
+ 5. Configuring the Language Interfaces
+ 6. Configuring for Optimized Performance
+ 7. Advanced Performance Tuning
+ 8. Configuring for Debugging
+ 9. Programs that Come with the Library
+10. Using the Git Sources
+
+
+1. The Standard Thing (configure, make, make install)
+-----------------------------------------------------
+
+In an ideal situation (i.e., on a more or less standard Un*x
+environment, with the right C++ compiler to compile the core library
+as well as the right compilers to compile all the enabled language
+interfaces, with the GMP library installed in a standard place and
+provided the user is satisfied with all the options we chose as
+defaults), a source distribution of the Parma Polyhedra Library (PPL)
+can be unpacked, configured, built and installed with the following,
+well-known procedure:
+
+  $ tar jxf ppl-x.y.tar.bz2
+  $ ./configure
+  $ make
+  $ su
+  Password: <root password>
+  $ make install
+
+After successful completion of these steps the PPL is completely
+installed on the system and can be used as expected.
+
+On the other hand, the PPL `configure' shell script provides many
+options to customize the build and installation process.  The
+`INSTALL' file gives a detailed description of the non PPL-specific
+aspects of the configuration, compilation and installation process and
+describes the basic options of the `configure' script.  For a compact
+summary of all the available configuration options, run the command
+
+  $ ./configure --help
+
+The PPL-specific aspects of the configuration, compilation and
+installation process are discussed in the following sections.
+
+
+2. Using the Right Version of GMP
+---------------------------------
+
+In order to use this version of the PPL you must make sure that:
+
+(1) GMP version 4.1.3 or later is installed on your system;
+(2) that this version was compiled with the C++ interface enabled;
+(3) that this C++ interface was compiled with the same compiler
+    version with which you will compile the PPL;
+(4) that your C and C++ compilers and your linker will find _that_
+    version of GMP and not others that may be present in your system.
+
+Some binary distributions of GMP may contain a version that was compiled
+with the C++ interface disabled, or compiled with a C++ compiler
+implementing a different ABI than the compiler you will use to compile
+the PPL.  In these (increasingly rare) cases the only reliable way to
+ensure points (1), (2) and (3) above is to visit GMP's home page at
+
+  http://gmplib.org/
+
+and download the last available version.  Then decide where to install
+it and call this place in your file system <GMP prefix>.  Then, unless
+you have special needs, you can invoke the GMP's configure script with
+the options
+
+  --prefix=<GMP prefix> --enable-cxx
+
+If the C++ compiler you will use to compile the PPL is not the default
+on your system then, in order to satisfy point (3) above, you should
+set the `CXX', `CXXFLAGS' and `CXXCPP' environment variables so as to
+use the intended compiler with the intended options.  See the file
+`INSTALL.autoconf' in the GMP distribution for more on this subject.
+
+If you want to use the PPL ability to recover from out-of-memory
+situations, you should use a version of GMP compiled with GCC (which
+implies you should then compile also the PPL with GCC) using the
+`-fexceptions' option.  To build such a version, you can use the
+`CPPFLAGS' environment variable, so that it contains (among possibly
+other compiler options) `-fexceptions'.  Again, see `INSTALL.autoconf'
+in the GMP distribution for more on using environment variables to
+influence the configure script.
+
+In order to achieve point (4) above, if the directory <GMP prefix>
+is not standard for your compiler and/or for your linker, you will
+have to make sure the configure script of the PPL is invoked with,
+among others, the option
+
+  --with-gmp=<GMP prefix>
+
+If you use shared libraries, consult the documentation of your dynamic
+linker/loader (`man ld.so' will do on most Un*x-like systems) to see
+how to make sure that GMP's shared library will be found at run-time
+(setting the environment variable `LD_LIBRARY_PATH' to
+"<GMP prefix>/lib:$LD_LIBRARY_PATH" or
+"<GMP prefix>/lib64:$LD_LIBRARY_PATH" is the most commonly used
+solution).
+
+It is also possible to use a non-installed build of GMP.  In order to
+do that you should configure the PPL with, among others, the option
+
+  --with-gmp-build=<GMP build directory>
+
+
+3. Using the Right C and C++ Compilers
+--------------------------------------
+
+The configure script of the PPL, as you can see by using its `--help'
+option, besides recognizing `CC', `CXX', `CFLAGS', `CXXFLAGS' and
+other environment variables, provides four switches with which you can
+select the compilers and compilers' options to use for building the
+library.  These switches are
+
+  --with-cc=XXX           use XXX as the C compiler
+  --with-cxx=XXX          use XXX as the C++ compiler
+  --with-cflags=XXX       add XXX to the options for the C compiler
+  --with-cxxflags=XXX     add XXX to the options for the C++ compiler
+
+Among other things, the ability to specify the C and C++ compilation
+flags allows you to use special compilation options ---such as
+`-fno-threadsafe-statics'--- that, while not safe for general use,
+may be adequate for your particular application.
+
+Let us take the occasion to stress, once again, the fact that you
+must use exactly the same C++ compiler to compile the C++ interface of GMP,
+the PPL and your application, if it uses the C++ interface of the PPL.
+It should be noted that no version of GCC prior to 4.0.3 is known to
+reliably compile PPL 0.10.
+
+Here is an example of a configuration that uses the Intel C/C++ compiler
+version 11.1.x.  Assuming you have configured GMP with a command like
+
+  CC=icc CXX=icpc /path/to/gmp-5.0.1/configure --enable-cxx \
+    --prefix=/opt/intel/Compiler/11.1/072 \
+    --libdir=/opt/intel/Compiler/11.1/072/lib/intel64
+
+you can configure the PPL with a command like
+
+  /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
+    --with-cxxflags=-pch \
+    --with-gmp=/opt/intel/Compiler/11.1/072
+
+Notice that the `--with-cxxflags' option is not essential here and is
+only included to show how extra compiler options can be passed to the
+configure script.
+
+As another example, here is how you can compile the PPL with
+Comeau C/C++ 4.3.10.1.  First configure GMP with a command like
+
+  CXX=como /path/to/gmp-5.0.1/configure --enable-cxx \
+    --disable-shared --prefix=/opt/comeau/local
+
+Then you can configure the PPL with a command like
+
+  /path/to/ppl/configure --with-cc="como --c" --with-cxx="como -tused" \
+    --with-cxxflags="-g++ --remarks --long_long \
+    --display_error_number --diag_suppress 340,401,679" \
+    --disable-shared --with-gmp=/opt/comeau/local
+
+Notice the use of the option `--disable-shared' both in the configuration
+of GMP and the configuration of the PPL.  This is due to the fact that
+Comeau C/C++ 4.3.10.1 does not support shared libraries.
+
+
+4. Enabling the Use of Alternative Coefficient Types
+----------------------------------------------------
+
+When speed is important and the numerical coefficients involved are
+likely to be small, you can configure the PPL to use checked native
+integers (8, 16, 32 or 64 bits wide) for the representation of the
+coefficients.  This is a safe strategy since, when using checked
+native integers, the library also performs systematic (yet efficient)
+overflow detection and, in case of overflow, an exception is raised.
+To enable the use of various kinds of coefficients, you can use
+the configure option
+
+  --enable-coefficients=TYPE
+
+where TYPE is one of
+
+  mpz,              use GMP unbounded integers (default);
+  checked-int8,     use  8-bit checked integers;
+  checked-int16,    use 16-bit checked integers;
+  checked-int32,    use 32-bit checked integers;
+  checked-int64,    use 64-bit checked integers.
+
+When using checked integers it is also wise to increase the
+optimization level, since their efficiency largely depends on the
+compiler and on the optimization options used.  See below for how
+to do that (in later releases we may try to make the choice of the
+optimization options automatic).
+
+If you want to test the overhead of checked integers with respect
+to plain, unchecked native integers and you are really sure of what
+you are doing, you may be interested to know that these additional
+choices for TYPE are available:
+
+  native-int8,     use  8-bit *unchecked* integers;
+  native-int16,    use 16-bit *unchecked* integers;
+  native-int32,    use 32-bit *unchecked* integers;
+  native-int64,    use 64-bit *unchecked* integers.
+
+
+5. Configuring the Language Interfaces
+--------------------------------------
+
+The PPL comes equipped with interfaces for several programming
+languages.  Some of these interfaces are enabled by default,
+meaning that, if the configuration script finds support for
+a certain programming language, these interfaces are compiled
+(with `make') and installed (with `make install').
+The set of enabled interface can be customized with the configure option
+
+  --enable-interfaces=INTERFACES
+
+The INTERFACES argument can be
+
+  none,            no language interface is enabled;
+  all,             all language interfaces are enabled;
+
+or any space-separated list of interface specifiers chosen among
+
+  cxx,             the C++ interface;
+  c,               the C interface;
+  java,            the Java interface;
+  ocaml,           the OCaml interface;
+  ciao_prolog,     the Ciao Prolog interface;
+  gnu_prolog,      the GNU Prolog interface;
+  sicstus_prolog,  the SICStus Prolog interface;
+  swi_prolog,      the SWI-Prolog interface;
+  xsb_prolog,      the XSB interface;
+  yap_prolog,      the YAP interface.
+
+Note that, in order to build any interface different from the C++ one,
+a recent enough version of GNU M4 is required (the configuration script
+searches for one and gives an error if it cannot find it).
+
+The instantiations for the domains for interfaces other than the main
+C++ interface can be customized via the `instantiations' option for
+the PPL `configure' shell script which is described below. Some
+interfaces depend on language implementations that are somewhat
+problematic, either because they tend to be installed in rather
+unpredictable places, or because some published versions have bugs
+that prevent the PPL interface to run correctly.  In these cases,
+information is given in a README.* file.  Presently we have:
+
+  README.java,
+  README.ocaml,
+  README.gprolog,
+  README.swiprolog,
+  README.yap.
+
+For the Java interface, the `--with-java=DIR' configure option allows
+to select the Java SDK root directory.  We have tested the Java interface
+with the Java SE Development Kit 6 and OpenJDK 1.6.
+
+For the OCaml interface, the `--with-mlgmp=DIR' configure option allows
+to specify the installation directory of the ML GMP package (which allows
+to use GMP numbers in OCaml programs).  By default, ML GMP is searched
+in the `gmp' subdirectory of the OCaml standard library directory.
+
+The C++ interface provides access to all the numerical abstractions
+provided by the PPL.  The majority of these (we are talking about
+hundreds of different numerical abstractions) are provided by means
+of C++ templates.  The other languages interfaced to the PPL, except
+Java, do not have this facility.  Moreover, at the time of writing
+we do not know if and to which extent C++ templates can be mapped
+onto Java generics.  As a result, for all the language interfaces
+but the C++ one, the instantiation of the template-based numerical
+abstractions must be done at library-compile-time (instead of
+application-compile-time).  A small set of instantiations is enabled
+by default.  Currently this set is given by
+
+  Polyhedron (which stands for both C_Polyhedron and NNC_Polyhedron),
+  Grid,
+  Rational_Box,
+  BD_Shape<mpz_class>,
+  BD_Shape<mpq_class>,
+  Octagonal_Shape<mpz_class>,
+  Octagonal_Shape<mpq_class>,
+  Constraints_Product<C_Polyhedron, Grid>,
+  Pointset_Powerset<C_Polyhedron>,
+  Pointset_Powerset<NNC_Polyhedron>,
+
+plus, if the host architecture supports double precision floating point
+numbers conforming to the IEEE 754 standard,
+
+  Double_Box,
+  BD_Shape<double>,
+  Octagonal_Shape<double>.
+
+To enable a different set of instantiations, the configure option
+
+  --enable-instantiations=INSTANTIATIONS
+
+The list of of possibilities for the `INSTANTIATIONS' argument can be
+obtained by omitting the argument, i.e., with the configure option
+
+  --enable-instantiations
+
+Note that the stand-alone `Polyhedron' instantiation must be specified
+without any topology `C_' or `NNC_' as they are added automatically
+and both the domains `C_Polyhedron' and `NNC_Polyhedron' will be
+generated.
+
+
+6. Configuring for Optimized Performance
+----------------------------------------
+
+By default, the PPL is compiled with all the optimizations provided
+by the compiler that do not involve a space-speed tradeoff (a.k.a.
+-O2 optimization).  The same optimization level can be obtained by
+using the configure options
+
+  --enable-optimization
+or
+  --enable-optimization=standard
+
+You can try to squeeze more speed from your compiler by using the
+`--enable-optimization=speed' compiler option (a.k.a. -O3
+optimization): this is recommended if you use the checked integers
+coefficients, even though it does not come with an 100% guarantee of
+extra performance.  With the `--enable-optimization=sspeed'
+optimization even more optimization is requested, possibly at the cost
+of making debugging impossible on some machines.  The
+`--enable-optimization=size' configure option instructs the compiler
+to optimize for size and for speed, but only for speed improvements do
+not increase code size.
+
+Further optimization can be requested at the expense of portability
+of the generated code.  This can be achieved by means of the configure option
+
+  --enable-arch[=ARCH]
+
+If the ARCH argument is omitted the configure script attempts to
+detect the architecture of the system.  Allowed values for ARCH can be
+found in the documentation of the `-march' option of the used C/C++
+compiler.
+
+For floating point computations, the option
+
+  --enable-fpmath=INSTRUCTION_SET
+
+allows for selecting, on the IA32 and x86_64, the floating point instruction
+set.  The allowed values for INSTRUCTION_SET are `sse', `sse2', `387,
+`sse+387', and `sse2+387', `default', and `no'.  The latter option, which
+is equivalent to specifying `--disable-fpmath', has the effect of disabling
+all floating point computation and, consequently, all the numerical
+abstractions based on floating point numbers.
+
+On the other hand, there are configure options to request lesser
+degrees of optimization for the sake of debugging.  These are,
+in decreasing order of optimization, `--enable-optimization=mild'
+(a.k.a. -O1 optimization), `--enable-optimization=no' or, equivalently
+`--disable-optimization', and `--enable-optimization=zero'
+(a.k.a. -O0 optimization).  See below for more information on the
+configure options that are useful for debugging purposes.
+
+
+7. Advanced Performance Tuning
+------------------------------
+
+Starting from version 1.0, the library fully supports two different
+representations for rows (i.e., sequences of coefficients):
+
+  - the "dense" representation is an array-like representation tailored
+    to sequences having most of their coefficients different from zero;
+
+  - the "sparse" representation saves memory space (as well as CPU
+    cycles) when most of the coefficients in the sequence are zero.
+
+A generic interface allows for a seamless interaction between the
+dense and the sparse row representation. Most library entities (linear
+expressions, constraints, generators, congruences, and their systems)
+can be built using either representation, specified as a constructor's
+argument. Reasonable default values for the row representation are
+provided for each library entity, automatically leading to significant
+memory space savings even in old client/library code, e.g., when
+dealing with constraint systems describing weakly relational
+abstractions such as boxes and octagonal shapes.
+
+If desired, these default values can be customized to user's needs by
+changing just a few lines of library code. For instance, the
+constraint systems stored inside C_Polyhedron and NNC_Polyhedron
+objects can be made to use the sparse representation by just changing
+the following line in Polyhedron_defs.hh:
+
+  static const Representation default_con_sys_repr = DENSE;
+
+to become
+
+  static const Representation default_con_sys_repr = SPARSE;
+
+
+8. Configuring for Debugging
+----------------------------
+
+By default, the PPL is configured with debugging information enabled.
+In case you are absolutely, definitely, positively sure that you will
+not need to engage in debugging sessions and wish to save some little
+disk space and compilation time/memory you can configure with the
+`--disable-debugging' option.
+
+When the results you obtain with the PPL surprise you and make you think
+there might be a bug somewhere, it is a good idea to build a version
+of the library using the `--enable-assertions' configure option.  This
+causes many run-time assertions to be checked and often result in the
+easier identification of bugs in your application or the library itself.
+Even more run-time assertions can be enabled with the
+`--enable-more-assertions': this causes some PPL objects to carry
+additional data fields for the purpose of making extra checks possible.
+Of course, this breaks the ABI of the library, so you should recompile
+the part of your application that depends on the PPL.
+
+If you are disappointed by performance of the library and would like
+to check where the computation time is being spent, you can use the
+`--enable-profiling' option to generate a version that writes profile
+information suitable for the `gprof' analysis program.
+
+The `--enable-valgrind-tests' causes most of the tests run by `make check'
+under Valgrind's Memcheck tool.  This will show you if the library has
+memory leaks.  At release time, we guarantee that Memcheck does not
+reveal any memory leak for tests using the C++ and the C interfaces.
+We are not able to make a similar guarantee for other interfaces because
+the corresponding language implementations (e.g., OCaml and SWI-Prolog)
+purposely do not deallocate all memory on exit.
+
+In order to assess the coverage of the PPL test suite, the
+`--enable-coverage' configure option is provided.  This causes instrumented
+code to be used in conjunction with the `gcov' coverage testing tool.
+
+
+9. Programs that Come with the Library
+--------------------------------------
+
+The PPL is shipped with two programs that are interesting per se, and
+allow to sanity-check the build as well as to obtain performance
+comparisons.  The first such program is `ppl_lpsol', which offers some
+of the functionality of GLPK's `glpsol' using the service of the
+PPL, including its simplex solver.  Since `ppl_lpsol' uses GLPK's
+input routines, it is only built if a suitable version of GLPK is
+available.  If you prefer `ppl_lpsol' not to be built, use the
+configure option
+
+  --disable-ppl_lpsol
+
+Another program that is built by default and is used for regression
+testing and build validation is `ppl_lcdd'.  This is a program for
+vertex/facet enumeration, accepting the same input format as the
+similar programs shipped with cddlib and lrslib.  If you prefer `ppl_lcdd'
+not to be built, use the configure option
+
+  --disable-ppl_lcdd
+
+Disabling these programs will shorten the compilation time by a few
+seconds, and the time spent in `make check' by a dozen of minutes.
+In exchange, you will give up an important opportunity to discover
+whether the version of PPL you have built has been miscompiled.
+
+
+10. Using the Git Sources
+-------------------------
+
+If you use the Git sources, then you need recent versions of Autoconf
+Automake and Libtool installed.  After a `git clone' or `git pull'
+you should run the `autoreconf' command.  In case you have fiddled
+around with some of the configuration files, or if you have problems
+you cannot explain otherwise, use `autoreconf -f'.
+
+
+--------
+
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2013 BUGSENG srl (http://bugseng.com)
+
+This document describes the Parma Polyhedra Library (PPL).
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+The license is included, in various formats, in the `doc' subdirectory
+of each distribution of the PPL in files named `fdl.*'.
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.  The license is included, in various
+formats, in the `doc' subdirectory of each distribution of the PPL in
+files named `gpl.*'.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ .

@@ -1,0 +1,111 @@
+
+Enhancements for PPL 1.1 or later versions
+==========================================
+
+- Make all the *affine*image() methods uniform as far as the
+  specification is concerned.
+- Add the domains of bounded integers and affine spaces.
+- Intervals are best instantiated with checked numbers with
+  particular policies: review all the interfaced boxes,
+  augment the testsuite, and update the documentation.
+- Make the library thread-safe.
+- Modify the Makefile.am's to extend silent mode to our own rules.
+- Reduce the number of FIXMEs to no more than 20.
+- Base the OCaml interface on Zarith
+  (http://forge.ocamlcore.org/projects/zarith/) instead of MLGMP.
+- Improve the OCaml interface by supporting dynamic loading.
+- Enhance the support for systems not providing support for the IEEE
+  inexact flag.
+- `make check' in ppl_lpsol must run also the incremental version
+  of the simplex solver.
+- Complete the implementation of the --enable-check configure option.
+  Explain it in README.configure.
+- Ensure the tests in tests/MIP_Problem/* cover every line of
+  code in MIP_Problem.*.
+- Suppose we want to sum three numbers, and suppose we do it by
+
+    add(T& to, const T& x, const T& y, const T& z) {
+      add(to, x, y);
+      add(to, to, z);
+    }
+
+  Now suppose that &to == &z, so that we compute the wrong result.
+  Perform a code audit to ensure that the above situation never happens.
+  In order to ensure that, ensure that the following rule (to be added
+  to STANDARDS) is always obeyed:
+
+    if an argument of type T and passed by reference is changed,
+    after the change no argument of type U and passed by const or
+    non-const reference should be read unless U is incompatible with T
+    or we are otherwise 100% sure that the changed argument and the
+    argument that is read afterward are not aliases (in the latter
+    case an assert(&to != &z) shall be added.
+- Improve the handling of the --enable-instantiations configure
+  option so that "closure by subdomain" is automatically implemented
+  (e.g., if Pointset_Powerset(X) is specified, X should be automatically
+  added in case it is not already present).
+- Add a "quick assign" function to checked numbers that allows
+  to efficiently assign small integer constants (like those in
+  the range [-2, 2]) that are guaranteed not to cause any
+  rounding or overflow problems.
+- Consider whether or not our interface for method time_elapse_assign()
+  is the one needed by users: in particular, see if it should take as
+  an argument a generator system, instead of an abstract element.
+- Provide a generic implementation for the `widening with tokens'.
+- Implement the extrapolation operators defined in HenzingerH95
+  and HenzingerPW01.
+- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
+- Provide support for strict inequalities in MIP problems.
+- Pointset_Powerset and Partially_Reduced_Product domains:
+  Improve and add to the existing methods for the powerset and product domains
+  so that they can be subdomains of themselves and of each other;
+  tidy the tests directories for these domains and ensure the code
+  with all likely instantiations is fully tested;
+  add the same functionaity to the C, Java, OCaml and Prolog interfaces.
+- Any_Pointset domain: check the interface for lacking or useless methods.
+
+
+Enhancements for PPL 1.2 or later versions
+==========================================
+
+- Find a way to let the GMP and checked-int versions of the PPL coexist
+  so as to allow using them in the same application.
+- Provide methods computing approximations of the integer convex hull
+  of semantic domains for the case where we are only interested in integral
+  solutions (as is the case, e.g., in many program analyses).  Then
+  cutting-plane methods (Gomory, Chvatal, ...) allow to shrink polyhedra
+  still not losing any integral solution.
+  See http://bugseng.com/products/ppl/Documentation/bibliography#NemhauserW88
+  Check the work by Kent Andersen and Gerard Cornuejols on
+  reduce-and-split cuts.
+- Consider the addition of "constraint-only" methods (e.g., computing
+  projections and upper bounds using the MIP solver).
+- Consider extending the MIP solver to handle Parametric Integer
+  Programming.
+- In the OK() methods, instead of having all those #ifndef NDEBUG,
+  it is probably worthwhile to use a suitable defined `barf' stream
+  that does the right thing.
+- Using meta_programming.hh it is possible to define all the swap functions
+  "automatically".  Consider whether it is worth doing it.
+- Provide a single, generic implementation to replace all our status
+  classes.
+- Provide optimized implementations of Polyhedron::expand_dimension()
+  Polyhedron::fold_dimensions().
+- Add an implementation of Minkowski addition.  Check the algorithm
+  described in
+
+    K. Fukuda.
+    From the zonotope construction to the Minkowski addition
+    of convex polytopes.
+    J. Symbolic Comput., 38(4):1261-1272, 2004.
+
+
+
+Efficiency Issues
+=================
+
+- There must be a more efficient way to implement
+  bool Polyhedron::is_disjoint_from(const Polyhedron&).
+- There must be a more efficient way to compute convex differences.
+- Provide a better implementation of computing squares in MIP_Problem's
+  steepest-edge to avoid big numbers.

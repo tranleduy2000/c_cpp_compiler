@@ -1,0 +1,4 @@
+sumto(N, S) :-
+  { N = 0, S = 0 }.
+sumto(N, S) :-
+  { N = N1+1, S = N+S1 }, sumto(N1, S1).

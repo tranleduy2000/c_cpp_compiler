@@ -1,0 +1,22 @@
+into(task(S1, D1), task(S2, D2)) :-
+  {S2 =< S1, S1 + D1 = SD1, S2 + D2 = SD2, SD1 =< SD2}.
+
+noOverlap(_, []).
+noOverlap(task(S1, D1), [task(S2, D2)|Tasks]) :-
+  (
+    {S1 + D1 = SD1, SD1 < S2}
+  ;
+    {S2 + D2 = SD2, SD2 < S1}
+  ),
+  noOverlap(task(S1, D1), Tasks).
+
+schedule([], _).
+schedule([Task|Tasks], Supertask) :-
+  into(Task, Supertask),
+  noOverlap(Task, Tasks),
+  schedule(Tasks, Supertask).
+
+test1(S) :-
+  schedule([task(0, 1), task(3, 1), task(S, 1)], task(0, 6)).
+test2(S) :-
+  schedule([task(0, 28), task(70, 40), task(S, 35)], task(0, 240)).
