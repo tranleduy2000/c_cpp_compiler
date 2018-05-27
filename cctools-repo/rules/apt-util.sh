@@ -2,7 +2,7 @@ build_apr_util() {
     PKG=apr-util
     PKG_VERSION=1.5.4
     PKG_SUBVERSION=
-    PKG_URL="http://www.eu.apache.org/dist/apr/${PKG}-${PKG_VERSION}.tar.bz2"
+    PKG_URL="http://archive.apache.org/dist/apr/${PKG}-${PKG_VERSION}.tar.bz2"
     PKG_DESC="The mission of the Apache Portable Runtime (APR) project is to create and maintain software libraries that provide a predictable and consistent interface to underlying platform-specific implementations."
     PKG_DEPS=""
     O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2

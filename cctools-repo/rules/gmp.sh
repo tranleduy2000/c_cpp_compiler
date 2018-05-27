@@ -5,7 +5,7 @@ build_gmp() {
     PKG_URL="https://gmplib.org/download/gmp/${PKG}-${PKG_VERSION}.tar.xz"
     PKG_DESC="The GNU Multiple Precision Arithmetic Library"
     PKG_DEPS=""
-    O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.xz
+    O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2
     S_DIR=$src_dir/${PKG}-${PKG_VERSION}
     B_DIR=$build_dir/${PKG}
 

@@ -2,7 +2,7 @@ build_dropbear() {
     PKG=dropbear
     PKG_VERSION=2016.74
     PKG_SUBVERSION=
-    PKG_URL="https://matt.ucc.asn.au/dropbear/${PKG}-${PKG_VERSION}.tar.bz2"
+    PKG_URL="https://matt.ucc.asn.au/dropbear/releases/${PKG}-${PKG_VERSION}.tar.bz2"
     PKG_DESC="Small SSH client and server."
     PKG_DEPS=""
     O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2

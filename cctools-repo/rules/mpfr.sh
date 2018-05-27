@@ -5,7 +5,7 @@ build_mpfr() {
     PKG_URL="http://www.mpfr.org/mpfr-${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.xz"
     PKG_DESC="C library for multiple-precision floating-point computations with correct rounding"
     PKG_DEPS=""
-    O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.xz
+    O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2
     S_DIR=$src_dir/${PKG}-${PKG_VERSION}
     B_DIR=$build_dir/${PKG}
 

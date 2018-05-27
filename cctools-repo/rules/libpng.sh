@@ -2,7 +2,7 @@ build_libpng() {
     PKG=libpng
     PKG_VERSION=1.6.8
     PKG_SUBVERSION=
-    PKG_URL="http://sourceforge.net/projects/libpng/files/libpng16/${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.xz"
+    PKG_URL="http://sourceforge.net/projects/libpng/files/libpng16/older-releases/${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.xz"
     PKG_DESC="Reference library for supporting the Portable Network Graphics (PNG) format."
     PKG_DEPS=""
     O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.xz

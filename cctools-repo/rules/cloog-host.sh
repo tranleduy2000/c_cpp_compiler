@@ -15,7 +15,7 @@ build_cloog_host() {
 
     banner "Build $PKG"
 
-    download $PKG_URL $O_FILE
+    #download $PKG_URL $O_FILE
 
     unpack $src_dir $O_FILE
 

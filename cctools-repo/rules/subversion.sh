@@ -2,7 +2,7 @@ build_subversion() {
     PKG=subversion
     PKG_VERSION=1.9.4
     PKG_SUBVERSION=
-    PKG_URL="http://www-us.apache.org/dist/subversion/${PKG}-${PKG_VERSION}.tar.bz2"
+    PKG_URL="https://archive.apache.org/dist/subversion/${PKG}-${PKG_VERSION}.tar.bz2"
     PKG_DESC="Advanced version control system"
     PKG_DEPS=""
     O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.bz2

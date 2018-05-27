@@ -2,7 +2,7 @@ build_neon() {
     PKG=neon
     PKG_VERSION=0.30.1
     PKG_SUBVERSION=
-    PKG_URL="http://www.webdav.org/neon/${PKG}-${PKG_VERSION}.tar.gz"
+    PKG_URL="http://repository.timesys.com/buildsources/n/neon/neon-${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.gz"
     PKG_DESC="neon is an HTTP and WebDAV client library, with a C interface."
     PKG_DEPS=""
     O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.gz

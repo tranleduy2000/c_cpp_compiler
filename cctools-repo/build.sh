@@ -13,11 +13,11 @@ WRKDIR=${WRKDIR}-pie
 # -------------------------------
 #
 
-SDKDIR=/home/sash/Android/android-sdk
-NDKDIR=/home/sash/Android/android-ndk
-NDKSRC=/home/sash/Android/ndk-src
+SDKDIR=/home/duy/Android/Sdk
+NDKDIR=/home/duy/Android/android-ndk-r12b
+NDKSRC=/home/duy/github
 
-for d in binutils gcc gmp mpc mpfr cloog isl ppl llvm-3.6; do
+for d in binutils gcc gmp mpc mpfr cloog isl ppl llvm; do
     ln -sf ${NDKSRC}/${d} src/
 done
 

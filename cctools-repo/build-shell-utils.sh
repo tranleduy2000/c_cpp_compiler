@@ -672,7 +672,7 @@ build_gmp_host
 build_mpfr_host
 build_mpc_host
 build_isl_host
-build_ppl_host
+#build_ppl_host
 build_cloog_host
 
 build_binutils_host
@@ -745,7 +745,7 @@ build_sqlite
 build_apr
 build_apr_util
 build_neon
-build_subversion
+#build_subversion
 build_curl
 build_wget
 build_git
@@ -757,11 +757,16 @@ build_dropbear
 ##build_nano
 ##build_emacs
 
-build_binutils_avr_host
-build_binutils_avr
-build_gcc_avr_host
-build_gcc_avr
-build_avr_libc
+#
+# Set true to build avr toolchains
+#
+if false; then
+    build_binutils_avr_host
+    build_binutils_avr
+    build_gcc_avr_host
+    build_gcc_avr
+    build_avr_libc
+fi
 
 build_netcat
 build_file_host
@@ -771,18 +776,24 @@ build_zip
 build_unzip
 
 # Bug fixes for firmware
-build_acer_a200_ics403_libc_fix
-build_android_pre_233_libc_fix
+# Set true to build fixes firmwar
+if false; then
+    build_acer_a200_ics403_libc_fix
+    build_android_pre_233_libc_fix
+fi
 
 # MinGW
-build_binutils_mingw32_host i686-w64-mingw32
-###build_binutils_mingw32_host x86_64-w64-mingw32
-build_gcc_mingw32_host i686-w64-mingw32
-###build_gcc_mingw32_host x86_64-w64-mingw32
-build_binutils_mingw32 i686-w64-mingw32
-build_gcc_mingw32 i686-w64-mingw32
-build_mingw_w64_examples
-build_build_essential_mingw_w64
+# Set true to build MinGW
+if false; then
+    build_binutils_mingw32_host i686-w64-mingw32
+    ###build_binutils_mingw32_host x86_64-w64-mingw32
+    build_gcc_mingw32_host i686-w64-mingw32
+    ###build_gcc_mingw32_host x86_64-w64-mingw32
+    build_binutils_mingw32 i686-w64-mingw32
+    build_gcc_mingw32 i686-w64-mingw32
+    build_mingw_w64_examples
+    build_build_essential_mingw_w64
+fi
 
 build_libpng
 build_pkgman
