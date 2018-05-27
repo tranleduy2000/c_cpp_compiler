@@ -60,7 +60,7 @@ build_fpc() {
 	OS_TARGET=linux			\
 	CROSSBINDIR="$crossbindir"	\
 	OPT=$opt			\
-	INSTALL_PREFIX=/data/data/com.pdaxrom.cctools/root/cctools || error "FPC build"
+	INSTALL_PREFIX=/data/data/${APPLICATION_ID}/root/cctools || error "FPC build"
 #	PP=fpc				
 
     make zipinstall			\
@@ -68,7 +68,7 @@ build_fpc() {
 	OS_TARGET=linux			\
 	CROSSBINDIR="$crossbindir"	\
 	OPT=$opt			\
-	INSTALL_PREFIX=/data/data/com.pdaxrom.cctools/root/cctools || error "FPC tgzinstall"
+	INSTALL_PREFIX=/data/data/${APPLICATION_ID}/root/cctools || error "FPC tgzinstall"
 #	PP=fpc				
 
     error "asd"

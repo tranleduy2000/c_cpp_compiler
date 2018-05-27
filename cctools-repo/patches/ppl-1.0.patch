@@ -1,0 +1,238 @@
+Index: ppl-1.0/src/CO_Tree.cc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ppl-1.0/src/CO_Tree.cc	(date 1527407516000)
++++ ppl-1.0/src/CO_Tree.cc	(date 1527407567000)
+@@ -933,7 +933,7 @@
+     --subtree_size;
+   }
+
+-  ptrdiff_t distance = first_unused_index - indexes;
++  std::ptrdiff_t distance = first_unused_index - indexes;
+   PPL_ASSERT(distance >= 0);
+   return static_cast<dimension_type>(distance);
+ }
+Index: ppl-1.0/src/CO_Tree.defs.hh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ppl-1.0/src/CO_Tree.defs.hh	(date 1527407516000)
++++ ppl-1.0/src/CO_Tree.defs.hh	(date 1527407567000)
+@@ -159,7 +159,7 @@
+
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef const data_type value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef data_type_const_reference reference;
+
+@@ -314,7 +314,7 @@
+
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef data_type value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef value_type& reference;
+
+Index: ppl-1.0/src/CO_Tree.inlines.hh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ppl-1.0/src/CO_Tree.inlines.hh	(date 1527407516000)
++++ ppl-1.0/src/CO_Tree.inlines.hh	(date 1527407567000)
+@@ -31,7 +31,7 @@
+   PPL_ASSERT(itr.current_index != 0);
+   PPL_ASSERT(itr.current_index >= indexes + 1);
+   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+-  const ptrdiff_t index = itr.current_index - indexes;
++  const std::ptrdiff_t index = itr.current_index - indexes;
+   return static_cast<dimension_type>(index);
+ }
+
+@@ -40,7 +40,7 @@
+   PPL_ASSERT(itr.current_index != 0);
+   PPL_ASSERT(itr.current_index >= indexes + 1);
+   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+-  const ptrdiff_t index = itr.current_index - indexes;
++  const std::ptrdiff_t index = itr.current_index - indexes;
+   return static_cast<dimension_type>(index);
+ }
+
+@@ -768,7 +768,7 @@
+   p -= (offset - 1);
+   while (*p == unused_index)
+     ++p;
+-  ptrdiff_t distance = p - tree.indexes;
++  std::ptrdiff_t distance = p - tree.indexes;
+   PPL_ASSERT(distance >= 0);
+   i = static_cast<dimension_type>(distance);
+   offset = least_significant_one_mask(i);
+@@ -783,7 +783,7 @@
+   p += (offset - 1);
+   while (*p == unused_index)
+     --p;
+-  ptrdiff_t distance = p - tree.indexes;
++  std::ptrdiff_t distance = p - tree.indexes;
+   PPL_ASSERT(distance >= 0);
+   i = static_cast<dimension_type>(distance);
+   offset = least_significant_one_mask(i);
+Index: ppl-1.0/src/Dense_Row.defs.hh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ppl-1.0/src/Dense_Row.defs.hh	(date 1527407516000)
++++ ppl-1.0/src/Dense_Row.defs.hh	(date 1527407567000)
+@@ -433,7 +433,7 @@
+
+   typedef std::bidirectional_iterator_tag iterator_category;
+   typedef Coefficient value_type;
+-  typedef ptrdiff_t difference_type;
++  typedef std::ptrdiff_t difference_type;
+   typedef value_type* pointer;
+   typedef value_type& reference;
+
+@@ -474,7 +474,7 @@
+ public:
+
+   typedef const Coefficient value_type;
+-  typedef ptrdiff_t difference_type;
++  typedef std::ptrdiff_t difference_type;
+   typedef value_type* pointer;
+   typedef Coefficient_traits::const_reference reference;
+
+Index: ppl-1.0/src/Linear_Expression.defs.hh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ppl-1.0/src/Linear_Expression.defs.hh	(date 1527407516000)
++++ ppl-1.0/src/Linear_Expression.defs.hh	(date 1527407567000)
+@@ -502,7 +502,7 @@
+   public:
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef const Coefficient value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef Coefficient_traits::const_reference reference;
+
+Index: ppl-1.0/src/Linear_Expression_Interface.defs.hh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ppl-1.0/src/Linear_Expression_Interface.defs.hh	(date 1527407516000)
++++ ppl-1.0/src/Linear_Expression_Interface.defs.hh	(date 1527407567000)
+@@ -65,7 +65,7 @@
+   public:
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef const Coefficient value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef Coefficient_traits::const_reference reference;
+
+Index: ppl-1.0/src/ppl.hh.dist
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ppl-1.0/src/ppl.hh.dist	(date 1527407516000)
++++ ppl-1.0/src/ppl.hh.dist	(date 1527407567000)
+@@ -20151,7 +20151,7 @@
+
+   typedef std::bidirectional_iterator_tag iterator_category;
+   typedef Coefficient value_type;
+-  typedef ptrdiff_t difference_type;
++  typedef std::ptrdiff_t difference_type;
+   typedef value_type* pointer;
+   typedef value_type& reference;
+
+@@ -20192,7 +20192,7 @@
+ public:
+
+   typedef const Coefficient value_type;
+-  typedef ptrdiff_t difference_type;
++  typedef std::ptrdiff_t difference_type;
+   typedef value_type* pointer;
+   typedef Coefficient_traits::const_reference reference;
+
+@@ -20974,7 +20974,7 @@
+
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef const data_type value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef data_type_const_reference reference;
+
+@@ -21129,7 +21129,7 @@
+
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef data_type value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef value_type& reference;
+
+@@ -22369,7 +22369,7 @@
+   PPL_ASSERT(itr.current_index != 0);
+   PPL_ASSERT(itr.current_index >= indexes + 1);
+   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+-  const ptrdiff_t index = itr.current_index - indexes;
++  const std::ptrdiff_t index = itr.current_index - indexes;
+   return static_cast<dimension_type>(index);
+ }
+
+@@ -22378,7 +22378,7 @@
+   PPL_ASSERT(itr.current_index != 0);
+   PPL_ASSERT(itr.current_index >= indexes + 1);
+   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+-  const ptrdiff_t index = itr.current_index - indexes;
++  const std::ptrdiff_t index = itr.current_index - indexes;
+   return static_cast<dimension_type>(index);
+ }
+
+@@ -23106,7 +23106,7 @@
+   p -= (offset - 1);
+   while (*p == unused_index)
+     ++p;
+-  ptrdiff_t distance = p - tree.indexes;
++  std::ptrdiff_t distance = p - tree.indexes;
+   PPL_ASSERT(distance >= 0);
+   i = static_cast<dimension_type>(distance);
+   offset = least_significant_one_mask(i);
+@@ -23121,7 +23121,7 @@
+   p += (offset - 1);
+   while (*p == unused_index)
+     --p;
+-  ptrdiff_t distance = p - tree.indexes;
++  std::ptrdiff_t distance = p - tree.indexes;
+   PPL_ASSERT(distance >= 0);
+   i = static_cast<dimension_type>(distance);
+   offset = least_significant_one_mask(i);
+@@ -24749,7 +24749,7 @@
+   public:
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef const Coefficient value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef Coefficient_traits::const_reference reference;
+
+@@ -27158,7 +27158,7 @@
+   public:
+     typedef std::bidirectional_iterator_tag iterator_category;
+     typedef const Coefficient value_type;
+-    typedef ptrdiff_t difference_type;
++    typedef std::ptrdiff_t difference_type;
+     typedef value_type* pointer;
+     typedef Coefficient_traits::const_reference reference;
+

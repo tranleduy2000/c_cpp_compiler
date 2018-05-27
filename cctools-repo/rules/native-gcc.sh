@@ -64,7 +64,7 @@ fi
 	;;
     *86*)
 	EXTRA_CONF="--disable-libquadmath-support --disable-libcilkrts"
-	SYSROOT="/data/data/com.pdaxrom.cctools/root/cctools/i686-linux-android"
+	SYSROOT="/data/data/${APPLICATION_ID}/root/cctools/i686-linux-android"
 	;;
     esac
 
@@ -121,9 +121,9 @@ fi
 	$EXTRA_CONF \
 	|| error "configure"
 
-#	--with-as=/data/data/com.pdaxrom.cctools/root/cctools/home/bin/as \
-#	--with-ld=/data/data/com.pdaxrom.cctools/root/cctools/home/bin/ld \
-#	--with-nm=/data/data/com.pdaxrom.cctools/root/cctools/home/bin/nm
+#	--with-as=/data/data/${APPLICATION_ID}/root/cctools/home/bin/as \
+#	--with-ld=/data/data/${APPLICATION_ID}/root/cctools/home/bin/ld \
+#	--with-nm=/data/data/${APPLICATION_ID}/root/cctools/home/bin/nm
 
 #	--with-binutils-version=$binutils_version \
 #	--with-mpfr-version=$mpfr_version \

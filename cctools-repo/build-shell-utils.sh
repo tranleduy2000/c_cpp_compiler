@@ -9,7 +9,7 @@ mpc_version="1.0.1"
 mpfr_version="3.1.1"
 cloog_version="0.18.0"
 isl_version="0.11.1"
-ppl_version="1.0"
+ppl_version="1.1"
 
 make_version="4.0"
 nano_version="2.2.6"
@@ -21,6 +21,7 @@ gcc_avr_version="4.9.3"
 gcc_mingw_version="4.9.3"
 
 TARGET_INST_DIR="/data/data/com.duy.c.cpp.compiler/root/cctools"
+APPLICATION_ID="com.duy.c.cpp.compiler"
 #TARGET_INST_DIR="/data/data/com.pdaxrom.cctools/root/cctools"
 #TARGET_INST_DIR="/data/data/com.pdaxrom.cctools/cache/cctools"
 

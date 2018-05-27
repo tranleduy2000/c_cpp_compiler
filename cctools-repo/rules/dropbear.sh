@@ -84,7 +84,7 @@ EOF
 
 fret=\${CCTOOLSDIR}/tmp/adialog\$\$
 
-am start \$(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools/.ADialog \\
+am start \$(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n ${APPLICATION_ID}/.ADialog \\
     --es type editbox \\
     --ez password true \\
     --es title "Dropbear SSH server" \\
@@ -115,7 +115,7 @@ if [ -f \${fret}.lock ]; then
     iface=\`ip r l | grep default | head -n1 | awk '{ for (i = 1; \$i != ""; i++) { if (\$i == "dev") print \$(i + 1) } }'\`
     ip=\`ifconfig \$iface | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}'\`
 
-    am start \$(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools/.ADialog \\
+    am start \$(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n ${APPLICATION_ID}/.ADialog \\
 	--es type textview \\
 	--es title "Dropbear SSH server" \\
 	--es message "SSH access to CCTools shell: ssh -p 22022 cctools@\${ip}" \\
