@@ -225,7 +225,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     private ColorStateList mTextColor;
     private ColorStateList mHintTextColor;
     private ColorStateList mLinkTextColor;
-    private int mCurTextColor;
+    private int mCurTextColor, mCurrCursorColor;
     private int mCurHintTextColor;
     private boolean mFreezesText;
     private boolean mTemporaryDetach;
@@ -789,6 +789,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
+    }
+
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -802,10 +806,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
-    }
-
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -3543,7 +3543,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                     }
 
                     // XXX should pass to skin instead of drawing directly
-                    highlightPaint.setColor(mCurTextColor);
+//                    highlightPaint.setColor(mCurTextColor);
+                    highlightPaint.setColor(mCurrCursorColor);
 //                    highlightPaint.setStyle(Paint.Style.STROKE); //jec-
                     highlightPaint.setStyle(Paint.Style.FILL); //实心
                     highlight = mHighlightPath;
@@ -6924,6 +6925,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         setBackgroundColor(editorTheme.getBgColor());
         setTextColor(editorTheme.getFgColor());
         setHighlightColor(editorTheme.getSelectionColor());
+        setCursorColor(editorTheme.getCaretColor());
 
         layoutContext.getGutterForegroundPaint().setColor(editorTheme.getGutterStyle().getFgColor());
         layoutContext.getGutterBackgroundPaint().setColor(editorTheme.getGutterStyle().getBgColor());
@@ -6931,6 +6933,11 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
         layoutContext.whiteSpaceColor = editorTheme.getWhiteSpaceStyle().getWhitespace();
         postInvalidate();
+    }
+
+    private void setCursorColor(int caretColor) {
+        mCurrCursorColor = caretColor;
+        invalidateCursor();
     }
 
     public EditorTheme getEditorTheme() {

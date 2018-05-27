@@ -376,16 +376,17 @@ public class EditAreaView extends BaseEditorView {
         EditorIndex index = getCursorIndex(realLine, column);
         if (index != null) {
             setSelection(index.offset);
-            scrollToLine(index.line, true);
+            scrollToLine(index.line, 2);
         }
     }
 
-    private void scrollToLine(int line, boolean center) {
-        int lineCount = getLineCount();
-        int y = (int) (((float) line) / (float) lineCount) * getHeight();
-        if (center) {
-//            y += SysUtils.dpAsPixels(getContext(), 200/*Padding bottom*/);
-        }
+    /**
+     * Scroll to line, easy for editing
+     * @param virtualLine
+     * @param paddingCount - number of line will be ignore
+     */
+    private void scrollToLine(int virtualLine, int paddingCount) {
+        int y = getLayout().getLineTop(virtualLine - paddingCount >= 0 ? virtualLine - paddingCount : virtualLine);
         scrollTo(getScrollX(), y);
     }
 

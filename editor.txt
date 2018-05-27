@@ -1,5 +1,6 @@
 Chào các bạn
-Phiên bản mới của CPP-N-IDE đã hỗ trợ make, hỗ trợ thêm các options khi compile.
+Phiên bản mới của CPP-N-IDE (1.1.2) đã hỗ trợ "make", hỗ trợ thêm các "options" khi compile. Trong tương lai mình sẽ hỗ trợ cả "GitHub, Svn" và nhiều tính năng đặc biệt khác.
+
 Các bạn có thể test thử hoặc góp ý, mình sẽ dần hoàn thiện ứng dụng.
 Ứng dụng này không quảng cáo, mình làm vì cộng đồng.
 
