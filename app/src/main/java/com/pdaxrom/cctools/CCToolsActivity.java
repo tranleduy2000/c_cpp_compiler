@@ -313,22 +313,7 @@ public class CCToolsActivity extends FlexiDialogActivity implements ActionBar.Ta
 
 
     public boolean onContextItemSelected(android.view.MenuItem item) {
-        switch (item.getItemId()) {
-            case TEXT_GOTO:
-                gotoDialog();
-                break;
-            case TEXT_FIND:
-                searchDialog();
-                break;
-            case TEXT_UNDO:
-                codeEditor.undo();
-                break;
-            case TEXT_REDO:
-                codeEditor.redo();
-                break;
-            default:
-                return super.onContextItemSelected(item);
-        }
+
         return true;
     }
 

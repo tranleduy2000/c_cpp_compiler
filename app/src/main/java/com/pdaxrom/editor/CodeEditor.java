@@ -28,9 +28,6 @@ import java.util.regex.Pattern;
 
 public class CodeEditor extends EditText {
     private final static String TAG = "cctools-codeEditor";
-    Rect drawingRect = new Rect();
-    Rect originalClipRect = new Rect();
-    private int TYPE_DELAY = 200;
     private String m_FileName = null;
     private boolean m_textHasChanged;
     private boolean m_textHasChangedPrev;
@@ -42,25 +39,16 @@ public class CodeEditor extends EditText {
     private Paint m_gutterLinePaint;
     private Paint m_gutterTextPaint;
     private FontMetrics fm;
-    private Handler m_Handler = new Handler();
     private SyntaxHighLighting mSyntax;
     private int m_lastSearchPos;
     private String m_lastSearchText;
     private EditHistory m_History;
-    private boolean m_IsUndoOrRedo;
     private boolean m_useAutoPair;
     private boolean m_useAutoIndent;
     private CodeEditorInterface m_codeEditorInterface = null;
     private int m_gutterTextColor;
     private int m_gutterLineColor;
     private int m_gutterPadding;
-    private Runnable mUpdateSyntaxTask = new Runnable() {
-        public void run() {
-            if (mSyntax != null) {
-                mSyntax.exec(getText());
-            }
-        }
-    };
 
     public CodeEditor(Context context) {
         super(context);
@@ -103,92 +91,6 @@ public class CodeEditor extends EditText {
 
         super.setPadding(m_gutterSize, m_gutterPadding, m_gutterPadding, m_gutterPadding);
         super.setHorizontallyScrolling(true);
-        addTextChangedListener(new TextWatcher() {
-            private CharSequence mmBeforeChange;
-            private CharSequence mmAfterChange;
-            private boolean disableAutoPairing = false;
-            private boolean braceLeftPressed = false;
-
-            public void afterTextChanged(Editable arg0) {
-                if (!m_highlightText) {
-                    return;
-                }
-                m_Handler.removeCallbacks(mUpdateSyntaxTask);
-                m_Handler.postDelayed(mUpdateSyntaxTask, TYPE_DELAY);
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                if (!m_IsUndoOrRedo) {
-                    mmBeforeChange = s.subSequence(start, start + count);
-                }
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                //Log.i(TAG, "onTextChanged " + start + " " + before + " " + count + " " + s.length() + "[" + s.subSequence(start, start + count) + "]");
-                m_textHasChanged = true;
-                if (m_codeEditorInterface != null && m_textHasChanged != m_textHasChangedPrev) {
-                    m_codeEditorInterface.textHasChanged(m_textHasChanged);
-                }
-                m_textHasChangedPrev = m_textHasChanged;
-
-                if (!m_IsUndoOrRedo) {
-                    mmAfterChange = s.subSequence(start, start + count);
-                    m_History.add(new EditItem(start, mmBeforeChange, mmAfterChange));
-
-                    if (mSyntax != null) {
-                        if (m_useAutoPair && mSyntax.isAutoPair()) {
-                            if (!disableAutoPairing) {
-                                char begChar[] = {'(', '[', '"', '\''};
-                                CharSequence endChar[] = {")", "]", "\"", "\'"};
-                                int i;
-                                for (i = 0; i < begChar.length; i++) {
-                                    if (count > 0 && mmAfterChange.charAt(0) == begChar[i]) {
-                                        disableAutoPairing = true;
-                                        getText().insert(start + 1, endChar[i]);
-                                        setSelection(start + 1);
-                                    }
-                                }
-                            } else {
-                                disableAutoPairing = false;
-                            }
-                        }
-
-                        if (m_useAutoIndent && mSyntax.isAutoIndent()) {
-                            if (count > 0 && mmAfterChange.charAt(0) == '\n') {
-                                int i;
-                                String addString = "";
-                                for (i = start - 1; i > 0 && getText().charAt(i) != '\n'; i--) {
-                                    char c = getText().charAt(i);
-                                    if (c == ' ' || c == '\t') {
-                                        addString = c + addString;
-                                    } else {
-                                        addString = "";
-                                    }
-                                }
-                                if (m_useAutoPair && mSyntax.isAutoPair() && braceLeftPressed) {
-                                    braceLeftPressed = false;
-                                    String endLine = "";
-                                    if (getText().length() - 1 == start) {
-                                        endLine = "\n";
-                                    }
-                                    getText().insert(start + 1, addString + "\t\n" + addString + "}" + endLine);
-                                    setSelection(start + 2 + addString.length());
-                                } else {
-                                    getText().insert(start + 1, addString);
-                                }
-                            }
-                            if (count > 0 && mmAfterChange.charAt(0) == '{') {
-                                braceLeftPressed = true;
-                            } else {
-                                braceLeftPressed = false;
-                            }
-                        }
-                    }
-                }
-            }
-        });
 
         setOnKeyListener(new OnKeyListener() {
 
@@ -262,7 +164,6 @@ public class CodeEditor extends EditText {
         } else {
             m_History.clean();
         }
-        m_IsUndoOrRedo = false;
     }
 
     public void setTextSize(float size) {
@@ -327,17 +228,10 @@ public class CodeEditor extends EditText {
         m_gutterSize = g;
     }
 
-    public boolean getAutoPair() {
-        return m_useAutoPair;
-    }
-
     public void setAutoPair(boolean val) {
         m_useAutoPair = val;
     }
 
-    public boolean getAutoIndent() {
-        return m_useAutoIndent;
-    }
 
     public void setAutoIndent(boolean val) {
         m_useAutoIndent = val;
@@ -414,38 +308,7 @@ public class CodeEditor extends EditText {
     }
 
     private void setSyntax(String file) {
-        mSyntax = null;
-        String main_file = (new File(file)).getName();
-        if (main_file.contentEquals("Makefile") || main_file.contentEquals("makefile")) {
-            mSyntax = new MakeSyntax();
-        } else if (file.lastIndexOf(".") != -1) {
-            String ext = file.substring(file.lastIndexOf("."));
-            //Log.i(TAG, "Extension " + ext);
-            if (ext.contentEquals(".mk") || ext.contentEquals(".mak")) {
-                mSyntax = new MakeSyntax();
-            } else if (ext.contentEquals(".sh")) {
-                mSyntax = new ShellSyntax();
-            } else if (ext.equals(".pl") || ext.equals(".pm")) {
-                mSyntax = new PerlSyntax();
-            } else if (ext.contentEquals(".lua")) {
-                mSyntax = new LuaSyntax();
-            } else if (ext.contentEquals(".java")) {
-                mSyntax = new JavaSyntax();
-            } else if (ext.contentEquals(".f") || ext.contentEquals(".f90") ||
-                    ext.contentEquals(".f95") || ext.contentEquals(".f03")) {
-                mSyntax = new FortranSyntax();
-            } else if (ext.contentEquals(".s") || ext.contentEquals(".S") ||
-                    ext.contentEquals(".asm")) {
-                mSyntax = new AsmSyntax();
-            } else if (ext.contentEquals(".c") || ext.contentEquals(".cpp") ||
-                    ext.contentEquals(".c++") ||
-                    ext.contentEquals(".h") || ext.contentEquals(".hpp") || ext.contentEquals(".h++")) {
-                mSyntax = new CSyntax();
-            }
-        }
-        if (mSyntax != null) {
-            mSyntax.exec(getText());
-        }
+
     }
 
     public void newFile() {
@@ -480,20 +343,7 @@ public class CodeEditor extends EditText {
     }
 
     public boolean saveFile(String file) {
-        m_FileName = file;
-        FileOutputStream fout;
-        try {
-            fout = new FileOutputStream(file);
-            fout.write(getText().toString().getBytes());
-            fout.close();
-            setSyntax(file);
-            resetTriggers();
-            return true;
-        } catch (FileNotFoundException e) {
-            Log.i(TAG, "File not found " + e);
-        } catch (IOException e) {
-            Log.i(TAG, "Error " + e);
-        }
+
         return false;
     }
 
@@ -509,9 +359,7 @@ public class CodeEditor extends EditText {
         Editable text = getText();
         int start = edit.mmIndex;
         int end = start + (edit.mmAfter != null ? edit.mmAfter.length() : 0);
-        m_IsUndoOrRedo = true;
         text.replace(start, end, edit.mmBefore);
-        m_IsUndoOrRedo = false;
         setSelection(edit.mmBefore == null ? start : (start + edit.mmBefore.length()));
         if (m_History.getPosition() == 0) {
             m_textHasChanged = false;
@@ -530,9 +378,7 @@ public class CodeEditor extends EditText {
         Editable text = getText();
         int start = edit.mmIndex;
         int end = start + (edit.mmBefore != null ? edit.mmBefore.length() : 0);
-        m_IsUndoOrRedo = true;
         text.replace(start, end, edit.mmAfter);
-        m_IsUndoOrRedo = false;
         setSelection(edit.mmAfter == null ? start : (start + edit.mmAfter.length()));
     }
 }
