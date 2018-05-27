@@ -9,7 +9,7 @@
      }
  
      my $ld_run_path_shell = "";
---- /data/data/com.pdaxrom.cctools/root/cctools/home/perl-5.18.1/Configure
+--- /data/data/com.duy.c.cpp.compiler/root/cctools/home/perl-5.18.1/Configure
 +++ s/Configure
 @@ -1347,7 +1347,7 @@
  
@@ -40,7 +40,7 @@
  foreach my $try ('/bin/pwd',
  		 '/usr/bin/pwd',
  		 '/QOpenSys/bin/pwd', # OS/400 PASE.
-+		 '/data/data/com.pdaxrom.cctools/root/cctools/bin/pwd',
++		 '/data/data/com.duy.c.cpp.compiler/root/cctools/bin/pwd',
  		) {
  
      if( -x $try ) {
