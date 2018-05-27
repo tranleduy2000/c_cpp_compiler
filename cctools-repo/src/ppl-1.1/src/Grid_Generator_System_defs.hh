@@ -277,7 +277,7 @@ public:
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
                            Grid_Generator,
-                           ptrdiff_t,
+                           std::ptrdiff_t,
                            const Grid_Generator*,
                            const Grid_Generator&> {
   public:

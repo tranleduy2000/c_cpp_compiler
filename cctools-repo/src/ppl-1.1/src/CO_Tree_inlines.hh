@@ -31,7 +31,7 @@ CO_Tree::dfs_index(const_iterator itr) const {
   PPL_ASSERT(itr.current_index != 0);
   PPL_ASSERT(itr.current_index >= indexes + 1);
   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
-  const ptrdiff_t index = itr.current_index - indexes;
+  const std::ptrdiff_t index = itr.current_index - indexes;
   return static_cast<dimension_type>(index);
 }
 
@@ -40,7 +40,7 @@ CO_Tree::dfs_index(iterator itr) const {
   PPL_ASSERT(itr.current_index != 0);
   PPL_ASSERT(itr.current_index >= indexes + 1);
   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
-  const ptrdiff_t index = itr.current_index - indexes;
+  const std::ptrdiff_t index = itr.current_index - indexes;
   return static_cast<dimension_type>(index);
 }
 
@@ -772,7 +772,7 @@ CO_Tree::tree_iterator::follow_left_children_with_value() {
   p -= (offset - 1);
   while (*p == unused_index)
     ++p;
-  const ptrdiff_t distance = p - tree.indexes;
+  const std::ptrdiff_t distance = p - tree.indexes;
   PPL_ASSERT(distance >= 0);
   i = static_cast<dimension_type>(distance);
   offset = least_significant_one_mask(i);
@@ -787,7 +787,7 @@ CO_Tree::tree_iterator::follow_right_children_with_value() {
   p += (offset - 1);
   while (*p == unused_index)
     --p;
-  const ptrdiff_t distance = p - tree.indexes;
+  const std::ptrdiff_t distance = p - tree.indexes;
   PPL_ASSERT(distance >= 0);
   i = static_cast<dimension_type>(distance);
   offset = least_significant_one_mask(i);

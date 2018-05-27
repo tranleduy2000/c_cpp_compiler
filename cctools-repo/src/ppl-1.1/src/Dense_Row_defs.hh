@@ -433,7 +433,7 @@ public:
 
   typedef std::bidirectional_iterator_tag iterator_category;
   typedef Coefficient value_type;
-  typedef ptrdiff_t difference_type;
+  typedef std::ptrdiff_t difference_type;
   typedef value_type* pointer;
   typedef value_type& reference;
 
@@ -474,7 +474,7 @@ class Parma_Polyhedra_Library::Dense_Row::const_iterator {
 public:
 
   typedef const Coefficient value_type;
-  typedef ptrdiff_t difference_type;
+  typedef std::ptrdiff_t difference_type;
   typedef value_type* pointer;
   typedef Coefficient_traits::const_reference reference;
 

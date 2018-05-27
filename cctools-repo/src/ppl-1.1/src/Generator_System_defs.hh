@@ -679,7 +679,7 @@ copy(gs.begin(), gs.end(), ostream_iterator<Generator>(cout, "\n"));
 class Parma_Polyhedra_Library::Generator_System_const_iterator
   : public std::iterator<std::forward_iterator_tag,
         Generator,
-        ptrdiff_t,
+        std::ptrdiff_t,
         const Generator*,
         const Generator&> {
 public:
