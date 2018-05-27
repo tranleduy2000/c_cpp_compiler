@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:summary="Add the commands when calling the compiler"
-        android:title="General">
+    <PreferenceCategory android:title="General">
         <EditTextPreference
             android:key="@string/pref_key_c_options"
+            android:summary="Add the commands when calling C the compiler"
             android:title="@string/pref_ccopts" />
 
         <EditTextPreference
             android:key="@string/pref_key_cxx_options"
+            android:summary="Add the commands when calling the C++ compiler"
             android:title="@string/pref_cxxopts" />
     </PreferenceCategory>
 

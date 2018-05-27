@@ -89,19 +89,19 @@ public class CompileSetting implements ICompileSetting {
 
         //-w
         boolean w = mPref.getBoolean(mContext.getString(R.string.pref_option_w_warning), false);
-        if (!w) builder.addFlags("-w");
+        if (w) builder.addFlags("-w");
 
         //-wall
         boolean wall = mPref.getBoolean(mContext.getString(R.string.pref_option_wall_warning), false);
-        if (!wall) builder.addFlags("-wall");
+        if (wall) builder.addFlags("-Wall");
 
         //Wextra
         boolean wExtra = mPref.getBoolean(mContext.getString(R.string.pref_option_wextra_warning), false);
-        if (!wExtra) builder.addFlags("-Wextra");
+        if (wExtra) builder.addFlags("-Wextra");
 
         //Werror
         boolean Werror = mPref.getBoolean(mContext.getString(R.string.pref_option_werror), false);
-        if (!Werror) builder.addFlags("-Werror");
+        if (Werror) builder.addFlags("-Werror");
 
         return builder.buildCommand();
     }
