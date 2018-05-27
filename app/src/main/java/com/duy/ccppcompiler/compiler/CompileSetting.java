@@ -21,28 +21,41 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 
 /**
  * Created by Duy on 17-May-18.
  */
 
 public class CompileSetting implements ICompileSetting {
-    private SharedPreferences mPreferences;
+    private SharedPreferences mPref;
     private Context mContext;
 
     public CompileSetting(Context context) {
         mContext = context;
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mPref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
     public String getCFlags() {
-        return mPreferences.getString(mContext.getString(R.string.pref_key_c_options), "");
+        CommandBuilder builder = new CommandBuilder();
+        builder.addFlags(getGCCFlags());
+
+        String cFlags = mPref.getString(mContext.getString(R.string.pref_key_c_options), "");
+        builder.addFlags(cFlags);
+
+        return builder.buildCommand();
     }
 
     @Override
     public String getCxxFlags() {
-        return mPreferences.getString(mContext.getString(R.string.pref_key_cxx_options), "");
+        CommandBuilder builder = new CommandBuilder();
+        builder.addFlags(getGCCFlags());
+
+        String cxxFlags = mPref.getString(mContext.getString(R.string.pref_key_cxx_options), "");
+        builder.addFlags(cxxFlags);
+
+        return builder.buildCommand();
 
     }
 
@@ -50,4 +63,33 @@ public class CompileSetting implements ICompileSetting {
     public String getMakeFlags() {
         return "";
     }
+
+    private String getGCCFlags() {
+        CommandBuilder builder = new CommandBuilder();
+
+
+        //-ansi
+        builder.addFlags(mPref.getBoolean(mContext.getString(R.string.pref_c_options_ansi), false)
+                ? "-ansi" : "");
+        //-fno-asm
+        builder.addFlags(mPref.getBoolean(mContext.getString(R.string.pref_c_options_fno_asm), false)
+                ? "-fno-asm" : "");
+        //-traditional-cpp
+        builder.addFlags(mPref.getBoolean(mContext.getString(R.string.pref_c_options_ansi), false)
+                ? "-traditional-cpp" : "");
+
+        //optimize
+        String optimize = mPref.getString(mContext.getString(R.string.pref_option_optimization_level), "");
+        if (!optimize.isEmpty()) {
+            builder.addFlags("-O" + optimize);
+        }
+
+        //language standard
+        String std = mPref.getString(mContext.getString(R.string.pref_option_language_standard), "");
+        if (!std.isEmpty()) {
+            builder.addFlags("-std=" + std);
+        }
+        return builder.buildCommand();
+    }
+
 }

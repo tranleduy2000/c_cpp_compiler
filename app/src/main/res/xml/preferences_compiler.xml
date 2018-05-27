@@ -1,11 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="@string/pref_key_c_options"
-        android:title="@string/pref_ccopts" />
+    <PreferenceCategory
+        android:summary="Add the commands when calling the compiler"
+        android:title="General">
+        <EditTextPreference
+            android:key="@string/pref_key_c_options"
+            android:title="@string/pref_ccopts" />
 
-    <EditTextPreference
-        android:key="@string/pref_key_cxx_options"
-        android:title="@string/pref_cxxopts" />
+        <EditTextPreference
+            android:key="@string/pref_key_cxx_options"
+            android:title="@string/pref_cxxopts" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="C setting">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_c_options_ansi"
+            android:summary="Support all ANSI standard C programs"
+            android:title="-ansi" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_c_options_fno_asm"
+            android:summary="Do not recognize asm, inline or typeof as a keyword"
+            android:title="-fno-asm" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_c_options_traditional_cpp"
+            android:summary="Imitate traditional C preprocessors"
+            android:title="-traditional-cpp" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Code generation">
+        <ListPreference
+            android:defaultValue="false"
+            android:entries="@array/optimization_level_entries"
+            android:entryValues="@array/optimization_level_entries_value"
+            android:key="@string/pref_option_optimization_level"
+            android:title="Optimization level (-Ox)" />
+
+        <ListPreference
+            android:entries="@array/language_standard_entries"
+            android:entryValues="@array/language_standard_entries_values"
+            android:key="@string/pref_option_language_standard"
+            android:title="Language standard (-std)" />
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

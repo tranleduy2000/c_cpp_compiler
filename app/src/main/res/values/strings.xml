@@ -38,4 +38,5 @@
     <string name="selected_editor_theme">Selected %s. Restart app to apply theme.</string>
     <string name="terminal">Terminal</string>
     <string name="code">Code</string>
+
 </resources>

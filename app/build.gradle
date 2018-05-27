@@ -42,7 +42,7 @@ android {
 
     signingConfigs {
         release {
-            def propFile = new File("signing.properties")
+            def propFile = new File(rootProject.projectDir, "signing.properties")
             if (propFile.exists()) {
                 Properties props = new Properties()
                 props.load(new FileInputStream(propFile))
@@ -57,7 +57,7 @@ android {
     // Map for the version code that gives each ABI a value.
     applicationVariants.all { variant ->
         Properties props = new Properties()
-        def propFile = new File("app/signing.properties")
+        def propFile = new File(rootProject.projectDir, "signing.properties")
         if (propFile.exists()) {
             props.load(new FileInputStream(propFile))
             buildConfigField "String", "BASE64_KEY", "\"" + props['BASE64_KEY'] + "\""

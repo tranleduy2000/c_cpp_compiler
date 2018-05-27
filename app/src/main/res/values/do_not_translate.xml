@@ -2,4 +2,10 @@
 <resources>
     <string name="pref_key_c_options" translatable="false">pref_key_c_options</string>
     <string name="pref_key_cxx_options" translatable="false">pref_key_cxx_options</string>
+
+    <string name="pref_c_options_ansi">pref_c_options_ansi</string>
+    <string name="pref_c_options_fno_asm">pref_c_options_fno_asm</string>
+    <string name="pref_c_options_traditional_cpp">pref_c_options_traditional_cpp</string>
+    <string name="pref_option_optimization_level">pref_option_optimization_level</string>
+    <string name="pref_option_language_standard">pref_option_language_standard</string>
 </resources>
