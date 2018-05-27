@@ -753,9 +753,9 @@ build_git
 build_ca_certificates
 build_dropbear
 
-##build_fpc
-##build_nano
-##build_emacs
+#build_fpc
+#build_nano
+#build_emacs
 
 #
 # Set true to build avr toolchains
