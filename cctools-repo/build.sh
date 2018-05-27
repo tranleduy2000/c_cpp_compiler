@@ -27,7 +27,7 @@ export PATH=~/bin/CodeSourcery/bin:$PATH
 
 #./build-shell-utils.sh ${PWD}/src mipsel-linux-android   ${WRKDIR}/mips-repo $NDKDIR $SDKDIR   || exit 1
 
-#./build-shell-utils.sh ${PWD}/src i686-linux-android     ${WRKDIR}/i686-repo $NDKDIR $SDKDIR   || exit 1
+./build-shell-utils.sh ${PWD}/src i686-linux-android     ${WRKDIR}/i686-repo $NDKDIR $SDKDIR   || exit 1
 
 #./build-shell-utils.sh ${PWD}/src aarch64-linux-android  ${WRKDIR}/arm64-repo $NDKDIR $SDKDIR  || exit 1
 

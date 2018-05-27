@@ -738,14 +738,14 @@ build_glib
 #build_slang
 build_mc
 build_htop
-build_luajit
+#build_luajit
 build_openssl
 build_expat
 build_sqlite
 build_apr
 build_apr_util
 build_neon
-#build_subversion
+build_subversion
 build_curl
 build_wget
 build_git
@@ -760,7 +760,8 @@ build_dropbear
 #
 # Set true to build avr toolchains
 #
-if false; then
+export BUILD_ARV_TOOLCHAINS=false
+if ${BUILD_ARV_TOOLCHAINS}; then
     build_binutils_avr_host
     build_binutils_avr
     build_gcc_avr_host
@@ -773,7 +774,7 @@ build_file_host
 build_file
 
 build_zip
-build_unzip
+#build_unzip
 
 # Bug fixes for firmware
 # Set true to build fixes firmware
@@ -784,7 +785,8 @@ fi
 
 # MinGW
 # Set true to build MinGW toolchains
-if false; then
+export BUILD_MINGW_TOOLCHAINS=false
+if ${BUILD_MINGW_TOOLCHAINS}; then
     build_binutils_mingw32_host i686-w64-mingw32
     ###build_binutils_mingw32_host x86_64-w64-mingw32
     build_gcc_mingw32_host i686-w64-mingw32
