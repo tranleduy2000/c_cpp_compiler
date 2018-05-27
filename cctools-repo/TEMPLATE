@@ -1,4 +1,4 @@
-build_@PKG_NAME@() {
+builc_cpp_compilerd_@PKG_NAME@() {
     PKG=@PKG_NAME@
     PKG_VERSION=@PKG_VERSION@
     PKG_SUBVERSION=
