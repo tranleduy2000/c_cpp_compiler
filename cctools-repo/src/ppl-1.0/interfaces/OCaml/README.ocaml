@@ -1,0 +1,55 @@
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+#
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without
+# modifications, as long as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.
+
+The Objective Caml interface of the Parma Polyhedra Library requires
+OCaml version 3.09 or higher and the MLGMP wrapper to the GMP library
+(http://caml.inria.fr/cgi-bin/hump.en.cgi?contrib=278).  Note that
+MLGMP, by default, requires the MPFR library (http://www.mpfr.org/) in
+addition to GMP.
+
+In order to install MLGMP you should make sure that GMP_INCLUDES and
+GMP_LIBDIR are correctly set (these variables are defined at the
+beginning of Makefile in the MLGMP's root directory).  A `make'
+followed by `make install' (using GNU Make) should now be enough.
+
+The Objective Caml interface provides the module Ppl_ocaml.
+The implementation of the module relies on a library of interface
+functions (libppl_ocaml.a): see the Makefile.am file in directory
+`tests' for an example of how to compile and link an OCaml program
+accessing the Parma Polyhedra Library via this interface.
+
+After installing the Parma Polyhedra Library in <PPL prefix>,
+the OCaml interface files will be installed in <PPL-OCaml libdir>,
+where either <PPL-OCaml libdir> = <PPL prefix>/lib/ppl or
+<PPL-OCaml libdir> = <PPL prefix>/lib64/ppl, depending on the
+architecture and on the system/distribution conventions.
+The OCaml compilation command for `my_program.ml' should then be
+something like:
+
+$ ocamlc -o my_program.cmo -c -I +gmp -I <PPL-OCaml libdir> my_program.ml
+
+A possible link command is the following (we refer the reader to the
+Objective Caml documentation for a reference to the many available
+linking options):
+
+$ ocamlc -o my_program -custom -cc g++ -I +gmp -I <PPL-OCaml libdir> \
+    -cclib -lppl -cclib -lm -cclib -lgmpxx -cclib -lgmp \
+    ppl_ocaml.cma gmp.cma my_program.cmo
+
+If native compilation of OCaml code is supported by the build platform,
+then `my_program.ml' can also be compiled/linked to native code as follows:
+
+$ ocamlopt -o my_program.cmx \
+    -c -I +gmp -I <PPL-OCaml libdir> my_program.ml
+$ ocamlopt -o my_program.opt -cc g++ -I +gmp -I <PPL-OCaml libdir> \
+    -cclib -lppl -cclib -lm -cclib -lgmpxx -cclib -lgmp \
+    ppl_ocaml.cmxa gmp.cmxa my_program.cmx

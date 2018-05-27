@@ -1,0 +1,6 @@
+fib(X, Y) :-
+  { X >= 0, X =< 1, Y = 1 }.
+fib(X, Y) :-
+  { X >= 2, Xm1 = X-1, Xm2 = X-2, Y = Y1+Y2 },
+  fib(Xm1, Y1),
+  fib(Xm2, Y2).

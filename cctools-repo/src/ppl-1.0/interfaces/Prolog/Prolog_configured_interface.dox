@@ -1,0 +1,63 @@
+/* Configuration Dependent Documentation for Prolog.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+/*!
+  \defgroup PPL_Prolog_interface Prolog Language Interface
+
+  The Parma Polyhedra Library comes equipped with an interface
+  for the Prolog language.
+*/
+
+/*! \mainpage Prolog Language Interface
+
+The Parma Polyhedra Library comes equipped with a Prolog interface.
+Despite the lack of standardization of Prolog's foreign language interfaces,
+the PPL Prolog interface supports several Prolog systems and, to the
+extent this is possible, provides a uniform view of the library from
+each such system.
+
+The structure of the Prolog interface manual is as follows:
+- System-Independent Features
+    - \ref prolog_interface_overview "Overview"
+    - \ref predicate_specifications "Predicate Specifications"
+    - \ref di_predicates "Domain Independent Predicates"
+    - \ref mip_predicates "Predicates for MIP_Problem"
+    - \ref pip_predicates "Predicates for PIP_Problem"
+    - \ref configured_domains_predicates "Predicates for Configured Domains"
+- \ref PI_Compilation "Compilation and Installation"
+- \ref PI_SD_Features "System-Dependent Features"
+    - \ref GNU_Prolog "GNU Prolog"
+    - \ref CIAO_Prolog "CIAO Prolog"
+    - \ref SICStus_Prolog "SICStus Prolog"
+    - \ref SWI_Prolog "SWI Prolog"
+    - \ref XSB_Prolog "XSB"
+    - \ref YAP_Prolog "YAP"
+
+In all the Prolog interface documentation pages,
+<CODE>prefix</CODE> is the prefix under which
+you have installed the library (typically <CODE>/usr</CODE>
+or <CODE>/usr/local</CODE>).
+
+*/ /* \mainpage */
+
+

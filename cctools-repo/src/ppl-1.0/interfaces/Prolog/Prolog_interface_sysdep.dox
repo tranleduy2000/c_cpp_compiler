@@ -1,0 +1,235 @@
+/* System-Dependent Documentation for Prolog.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+/*! \page PI_SD_Features Prolog Interface System-Dependent Features
+
+\anchor CIAO_Prolog
+<H2>CIAO Prolog</H2>
+
+The Ciao Prolog interface to the PPL is available
+both as ``PPL enhanced'' Ciao Prolog interpreter
+and as a library that can be linked to Ciao Prolog programs.
+Only Ciao Prolog versions 1.10 `#5 and later are supported.'
+
+So that it can be used with the Ciao Prolog PPL interface, the
+Ciao Prolog installation must be configured with the
+<CODE>--disable-regs</CODE> option.
+
+<H3>The <CODE>ppl_ciao</CODE> Executable</H3>
+
+If an appropriate version of Ciao Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_ciao</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_ciao</CODE> executable is simply the Ciao Prolog
+interpreter with the Parma Polyhedra Library linked in.
+The only thing you should do to use the library is to
+call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
+and to call <CODE>ppl_finalize/0</CODE> when you are done with the
+library.
+
+<H3>Linking the Library To Ciao Prolog Programs</H3>
+
+In order to allow linking Ciao Prolog programs to the PPL,
+the following files are installed in the directory
+<CODE>prefix/lib/ppl</CODE>:
+<CODE>ppl_ciao.pl</CODE> contains the required foreign declarations;
+<CODE>libppl_ciao.*</CODE> contain the executable code for the
+Ciao Prolog interface in various formats (static library, shared library,
+libtool library).
+If your Ciao Prolog program is constituted by, say, <CODE>source1.pl</CODE>
+and <CODE>source2.pl</CODE> and you want to create the executable
+<CODE>myprog</CODE>, your compilation command may look like
+\code
+ciaoc -o myprog prefix/lib/ppl/ppl_ciao.pl ciao_pl_check.pl \
+  -L '-Lprefix/lib/ppl -lppl_ciao -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
+\endcode
+
+\anchor GNU_Prolog
+<H2>GNU Prolog</H2>
+
+The GNU Prolog interface to the PPL is available both as a
+``PPL enhanced'' GNU Prolog interpreter and as a library that can be
+linked to GNU Prolog programs.
+The only GNU Prolog version that is known to work is a patched
+version of the ``unstable version'' tagged
+<A HREF="ftp://ftp.inria.fr/INRIA/Projects/contraintes/gprolog/unstable/gprolog-20040608.tgz">20040608</A>
+(which unpacks to a directory called <CODE>gprolog-1.2.18</CODE>).
+The patch is contained in the
+<CODE>interfaces/Prolog/GNU/README</CODE> file of the PPL's distribution.
+
+So that it can be used with the GNU Prolog PPL interface
+(and, for that matter, with any foreign code),
+the GNU Prolog installation must be configured with the
+<CODE>--disable-regs</CODE> option.
+
+<H3>The <CODE>ppl_gprolog</CODE> Executable</H3>
+
+If an appropriate version of GNU Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_gprolog</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_gprolog</CODE> executable is simply the GNU Prolog
+interpreter with the Parma Polyhedra Library linked in.
+The only thing you should do to use the library is to
+call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
+and to call <CODE>ppl_finalize/0</CODE> when you are done with the
+library.
+
+<H3>Linking the Library To GNU Prolog Programs</H3>
+
+In order to allow linking GNU Prolog programs to the PPL,
+the following files are installed in the directory
+<CODE>prefix/lib/ppl</CODE>:
+<CODE>ppl_gprolog.pl</CODE> contains the required foreign declarations;
+<CODE>libppl_gprolog.*</CODE> contain the executable code for the
+GNU Prolog interface in various formats (static library, shared library,
+libtool library).
+If your GNU Prolog program is constituted by, say, <CODE>source1.pl</CODE>
+and <CODE>source2.pl</CODE> and you want to create the executable
+<CODE>myprog</CODE>, your compilation command may look like
+\code
+gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
+\endcode
+
+GNU Prolog uses several stacks to execute a Prolog program each with a
+pre-defined default size.  If the size of a stack is too small for the
+application an overflow will occur.  To change the default size of a
+stack, the user has to set the value of the relevant environment
+variable; in particular, to execute some of the tests, we found it
+necessary to increase the size of GLOBALSZ.
+Thus, for the above example, the compilation command would be
+\code
+GLOBALSZ=32768 gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
+\endcode
+More information on
+adjusting the size of the stacks can be found in Section 3.3 in the
+<A HREF="http://www.gprolog.org/manual/gprolog.html">GNU Prolog
+Manual</A>
+
+\anchor SICStus_Prolog
+<H2>SICStus Prolog</H2>
+
+The SICStus Prolog interface to the PPL is available
+both as a statically linked module or as a dynamically linked one.
+Only SICStus Prolog versions 3.9.0 and later are supported.
+
+<H3>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H3>
+
+If an appropriate version of SICStus Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_sicstus</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_sicstus</CODE> executable is simply the SICStus Prolog
+system with the Parma Polyhedra Library statically linked.
+The only thing you should do to use the library is to
+load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
+
+<H3>Loading the SICStus Interface Dynamically</H3>
+
+In order to dynamically load the library from SICStus Prolog you should
+simply load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
+
+
+\anchor SWI_Prolog
+<H2>SWI-Prolog</H2>
+
+The SWI-Prolog interface to the PPL is available
+both as a statically linked module or as a dynamically linked one.
+Only SWI-Prolog version 5.6.0 and later versions are supported.
+
+<H3>The <CODE>ppl_pl</CODE> Executable</H3>
+
+If an appropriate version of SWI-Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_pl</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
+shell with the Parma Polyhedra Library statically linked:
+from within <CODE>ppl_pl</CODE> all the services of the library
+are available without further action.
+
+<H3>Loading the SWI-Prolog Interface Dynamically</H3>
+
+In order to dynamically load the library from SWI-Prolog you should
+simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
+This will invoke <CODE>ppl_initialize/0</CODE> and
+<CODE>ppl_finalize/0</CODE> automatically.
+Alternatively, you can load the library directly with
+\code
+:- load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
+\endcode
+This will call <CODE>ppl_initialize/0</CODE> automatically.
+Analogously,
+\code
+:- unload_foreign_library('prefix/lib/ppl/libppl_swiprolog').
+\endcode
+will, as part of the unload process, invoke <CODE>ppl_finalize/0</CODE>.
+
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
+
+
+\anchor XSB_Prolog
+<H2>XSB</H2>
+
+The XSB Prolog interface to the PPL is available
+as a dynamically linked module.
+Only some CVS versions of XSB starting from 2 July 2005 are known to work.
+CVS versions starting from 11 November 2005 are known not to work.
+
+In order to dynamically load the library from XSB you should
+load the <CODE>ppl_xsb</CODE> module and import the predicates
+you need.
+For things to work, you may have to copy the files
+<CODE>prefix/lib/ppl/ppl_xsb.xwam</CODE>
+and
+<CODE>prefix/lib/ppl/ppl_xsb.so</CODE>
+in your current directory or in one of the XSB library directories.
+
+
+\anchor YAP_Prolog
+<H2>YAP</H2>
+
+The YAP Prolog interface to the PPL is available
+as a dynamically linked module.
+Only YAP versions following 5.1.0 and CVS HEAD versions starting from
+4 January 2006 are supported.  Notice that support for unbounded
+integers in YAP is young and may have errors that could affect
+programs using the PPL (see, e.g.,
+<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007780.html">http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007780.html</A>).
+
+In order to dynamically load the library from YAP you should
+simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.
+This will invoke <CODE>ppl_initialize/0</CODE> automatically;
+it is the programmer's responsibility to call <CODE>ppl_finalize/0</CODE>
+when the PPL library is no longer needed.
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
+
+*/ /* \page PI_SD_Features */
+

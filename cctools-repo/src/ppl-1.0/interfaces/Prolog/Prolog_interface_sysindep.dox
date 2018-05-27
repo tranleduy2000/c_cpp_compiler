@@ -1,0 +1,949 @@
+/* Configuration Independent Documentation for Prolog.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+/*! \page PI_SI_Features System-Independent Features
+
+\anchor pi_si_features
+<H1>System-Independent Features</H1>
+
+The Prolog interface provides access to the numerical abstractions
+(convex polyhedra, BD shapes, octagonal shapes, etc.) implemented
+by the PPL library.
+A general introduction to the numerical abstractions,
+their representation in the PPL and the operations provided
+by the PPL is given in the main \extref{preamble, PPL user manual}.
+Here we just describe those aspects that are specific to the Prolog interface.
+
+\anchor prolog_interface_overview
+<H2>Overview</H2>
+
+First, here is a list of notes with general information and advice
+on the use of the interface.
+
+- The numerical abstract domains available to the Prolog user consist
+  of the <EM>simple</EM> domains, <EM>powersets</EM> of a simple domain and
+  <EM>products</EM> of simple domains.
+  - The simple domains are:
+     - convex polyhedra, which consist of C_Polyhedron and
+       NNC_Polyhedron;<BR>
+     - weakly relational, which consist of BD_Shape_N and
+       Octagonal_Shape_N
+       where N is one of the numeric types
+       int8, int16, int32, int64, mpz_class, mpq_class,
+       float, double, long_double;<BR>
+     - boxes which consist of
+       Int8_Box, Int16_Box,
+       Int32_Box, Int64_Box,
+       Uint8_Box, Uint16_Box,
+       Uint32_Box, Uint64_Box,
+       Double_Box, Long_Double_Box,
+       Z_Box, Rational_Box, Float_Box; and<BR>
+     - the Grid domain.
+  - The powerset domains are Pointset_Powerset_S where S is
+    a simple domain.
+  - The product domains consist of
+    Direct_Product_S_T,
+    Smash_Product_S_T,
+    Constraints_Product_S_T and
+    Shape_Preserving_Product_S_T where S
+    and T are simple domains.
+- In the following, any of the above numerical
+  abstract domains  is called a PPL <EM>domain</EM>
+  and any element of a PPL domain is called a <EM>PPL object</EM>.
+- The Prolog interface to the PPL is initialized and finalized by the
+  predicates <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>.
+  Thus the only interface predicates callable after
+  <CODE>ppl_finalize/0</CODE> are <CODE>ppl_finalize/0</CODE> itself
+  (this further call has no effect) and <CODE>ppl_initialize/0</CODE>,
+  after which the interface's services are usable again.
+  Some Prolog systems allow the specification of initialization
+  and deinitialization functions in their foreign language interfaces.
+  The corresponding incarnations of the Prolog interface
+  have been written so that <CODE>ppl_initialize/0</CODE> and/or
+  <CODE>ppl_finalize/0</CODE> are called automatically.
+  Section \ref PI_SD_Features "System-Dependent Features" will detail
+  in which cases initialization and finalization is automatically
+  performed or is left to the Prolog programmer's responsibility.
+  However, for portable applications, it is best
+  to invoke <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
+  explicitly: since they can be called multiple times without problems,
+  this will result in enhanced portability at a cost that is, by all means,
+  negligible.
+- A PPL object such as a polyhedron can only be accessed
+  by means of a Prolog term called a <EM>handle</EM>.
+  Note, however, that the data structure of a handle,
+  is implementation-dependent, system-dependent and
+  version-dependent, and, for this reason, deliberately left unspecified.
+  What we do guarantee is that the handle requires very little memory.
+- A Prolog term can be bound to a valid handle for a PPL object by using
+  predicates such as
+\code
+  ppl_new_C_Polyhedron_from_space_dimension/3,
+  ppl_new_C_Polyhedron_from_C_Polyhedron/2,
+  ppl_new_C_Polyhedron_from_constraints/2,
+  ppl_new_C_Polyhedron_from_generators/2,
+\endcode
+  These predicates will create or copy a PPL polyhedron
+  and construct a valid handle for referencing it.
+  The last argument is a Prolog term that is
+  unified with a new valid handle for accessing this polyhedron.
+
+- As soon as a PPL object is no longer required,
+  the memory occupied by it should be released
+  using the PPL predicate such as <CODE>ppl_delete_Polyhedron/1</CODE>.
+  To understand why this is important,
+  consider a Prolog program and a variable that is bound to
+  a Herbrand term.
+  When the variable dies (goes out of scope) or is uninstantiated
+  (on backtracking), the term it is bound to is amenable to garbage collection.
+  But this only applies for the standard domain of the language:
+  Herbrand terms.
+  In Prolog+PPL, when, for example,
+  a variable bound to a handle for a Polyhedron dies
+  or is uninstantiated,
+  the handle can be garbage-collected, but the polyhedron to which
+  the handle refers will not be released.
+  Once a handle has been used as an argument in
+  <CODE>ppl_delete_Polyhedron/1</CODE>,
+  it becomes invalid.
+- For a PPL object with space dimension \p k,
+  the identifiers used for the PPL variables
+  must lie between 0 and \f$k-1\f$ and correspond to the indices of the
+  associated Cartesian axes.
+  For example, when using the predicates that combine PPL polyhedra
+  or add constraints or generators to a representation of
+  a PPL polyhedron,
+  the polyhedra referenced and any constraints or generators in the call
+  should follow all the (space) dimension-compatibility rules stated in
+  Section \extref{representation, Representations of Convex Polyhedra}
+  of the main \extref{preamble, PPL user manual}.
+- As explained above, a polyhedron has a fixed topology C or NNC,
+  that is determined at the time of its initialization.
+  All subsequent operations on the polyhedron must respect all the
+  topological compatibility rules stated in Section
+  \extref{representation, Representations of Convex Polyhedra}
+  of the main \extref{preamble, PPL user manual}.
+- Any application using the PPL should make sure that only the
+  intended version(s) of the library are ever used.
+  Predicates
+\code
+  ppl_version_major/1,
+  ppl_version_minor/1,
+  ppl_version_revision/1,
+  ppl_version_beta/1,
+  ppl_version/1,
+  ppl_banner.
+\endcode
+  allow run-time checking of information about the version being used.
+
+\anchor predicate_specifications
+<H2>Predicate Specifications</H2>
+
+The PPL predicates provided by the Prolog interface are specified below.
+The specification uses the following grammar rules:
+\code
+
+ Number      --> unsigned integer	ranging from 0 to an upper bound
+					depending on the actual Prolog system.
+
+ C_int       --> Number | - Number	C integer
+
+ C_unsigned  --> Number			C unsigned integer
+
+ Coeff       --> Number			used in linear expressions;
+					the upper bound will depend on how
+					the PPL has been configured
+
+ Dimension_Type
+             --> Number			used for the number of affine and
+					space dimensions and the names of
+ 					the dimensions;
+					the upper bound will depend on
+					the maximum number of dimensions
+					allowed by the PPL
+					(see ppl_max_space_dimensions/1)
+
+ Boolean     --> true | false
+
+ Handle      --> Prolog term		used to identify a Polyhedron
+
+ Topology    --> c | nnc		Polyhedral kind;
+					c is closed and nnc is NNC
+
+ VarId       --> Dimension_Type 	variable identifier
+
+ PPL_Var     --> '$VAR'(VarId)		PPL variable
+
+ Lin_Expr    --> PPL_Var		PPL variable
+            | Coeff
+            | Lin_Expr			unary plus
+            | - Lin_Expr		unary minus
+            | Lin_Expr + Lin_Expr	addition
+            | Lin_Expr - Lin_Expr	subtraction
+            | Coeff * Lin_Expr	        multiplication
+            | Lin_Expr * Coeff	        multiplication
+
+ Relation_Symbol --> =			equals
+            | =< 			less than or equal
+            | >=			greater than or equal
+            | < 			strictly less than
+            | > 			strictly greater than
+
+ Constraint  --> Lin_Expr Relation_Symbol Lin_Expr
+					constraint
+
+ Constraint_System			list of constraints
+             --> []
+            | [Constraint | Constraint_System]
+
+ Modulus     --> Coeff | - Coeff
+
+ Congruence  --> Lin_Expr =:= Lin_Expr  congruence with modulo 1
+            | (Lin_Expr =:= Lin_Expr) / Modulus
+                                        congruence with modulo Modulus
+
+ Congruence_System			list of congruences
+             --> []
+            | [Congruence | Congruence_System]
+
+ Generator_Denominator --> Coeff	must be non-zero
+	    | - Coeff
+
+ Generator   --> point(Lin_Expr)	point
+            | point(Lin_Expr, Generator_Denominator)
+					point
+            | closure_point(Lin_Expr)	closure point
+            | closure_point(Lin_Expr, Generator_Denominator)
+					closure point
+            | ray(Lin_Expr)		ray
+            | line(Lin_Expr)		line
+
+ Generator_System			list of generators
+             --> []
+	    | [Generator | Generator_System]
+
+ Grid_Generator
+             --> grid_point(Lin_Expr)	grid point
+            | grid_point(Lin_Expr, Generator_Denominator)
+					grid point
+            | parameter(Lin_Expr)	parameter
+            | parameter(Lin_Expr, Generator_Denominator)
+                                        parameter
+            | grid_line(Lin_Expr)       grid line
+
+ Grid_Generator_System			list of grid generators
+             --> []
+	    | [Grid_Generator | Grid_Generator_System]
+
+ Artificial_Parameter  --> Lin_Expr / Coeff
+
+ Artificial_Parameter_List --> []
+	    | [Artificial_Parameter | Artificial_Parameter_List]
+
+ Atom        --> Prolog atom
+
+ Universe_or_Empty			PPL object
+             --> universe | empty
+
+ Poly_Relation --> is_disjoint          with a constraint or congruence
+	    | strictly_intersects	with a constraint or congruence
+	    | is_included		with a constraint or congruence
+	    | saturates			with a constraint or congruence
+            | subsumes			with a (grid) generator
+
+ Relation_List --> []
+	    | [Poly_Relation | Relation_List]
+
+ Complexity  --> polynomial | simplex | any
+
+ Vars_Pair   --> PPL_Var - PPL_Var      map relation
+
+ P_Func      --> []    			list of map relations
+            | [Vars_Pair | P_Func].
+
+ Width  --> bits_8 | bits_16 | bits_32 | bits_64 | bits_128
+
+ Representation  --> unsigned | signed_2_complement
+
+ Overflow  --> overflow_wraps | overflow_undefined | overflow_impossible
+
+ Optimization_Mode --> max | min
+
+ Problem_Status --> unfeasible
+            | unbounded
+            | optimized
+
+ Control_Parameter_Name --> pricing            for MIP problems
+                        | control_strategy     for PIP problems
+                        | pivot_row_strategy   for PIP problems
+
+ Control_Parameter_Value
+             --> pricing_steepest_edge_float
+            | pricing_steepest_edge_exact
+            | pricing_textbook
+            | control_strategy_first
+            | control_strategy_deepest
+            | control_strategy_all
+            | pivot_row_strategy_first
+            | pivot_row_strategy_max_column
+
+ Vars_List   --> []    			list of PPL variables
+            | [PPL_Var | Vars_List].
+\endcode
+
+\anchor predicate_descriptions
+<H2> Predicate Descriptions </H2>
+
+Below is a short description of many of the interface predicates.
+For full definitions of terminology used here,
+see the main \extref{preamble, PPL user manual}.
+
+\anchor di_predicates
+<H3> Domain Independent Predicates </H3>
+
+First we describe the domain independent predicates
+that are included with all instantiations of the Prolog interfaces.
+
+<P><CODE> ppl_version_major(?C_int) </CODE><BR>
+  <EM>Unifies <CODE>C_int</CODE> with the major number of the PPL version.</EM>
+
+<P><CODE> ppl_version_minor(?C_int) </CODE><BR>
+  <EM>Unifies <CODE>C_int</CODE> with the minor number of the PPL version.</EM>
+
+<P><CODE> ppl_version_revision(?C_int) </CODE><BR>
+  <EM>Unifies <CODE>C_int</CODE> with the revision number
+  of the PPL version.</EM>
+
+<P><CODE> ppl_version_beta(?C_int) </CODE><BR>
+  <EM>Unifies <CODE>C_int</CODE> with the beta number of the PPL version.</EM>
+
+<P><CODE> ppl_version(?Atom) </CODE><BR>
+  <EM>Unifies <CODE>Atom</CODE> with the PPL version.</EM>
+
+<P><CODE> ppl_banner(?Atom) </CODE><BR>
+  <EM>Unifies <CODE>Atom</CODE> with
+  information about the PPL version, the licensing, the lack of any
+  warranty whatsoever, the C++ compiler used to build the library,
+  where to report bugs and where to look for further information.</EM>
+
+<P><CODE> ppl_Coefficient_bits(?Bits) </CODE><BR>
+
+  <EM>Unifies <CODE>Bits</CODE> with the number of bits used to encode a
+  Coefficient in the C++ interface; 0 if unbounded.</EM>
+
+<P><CODE> ppl_Coefficient_is_bounded </CODE><BR>
+
+  <EM>Succeeds if and only if the Coefficients in the C++ interface are bounded.</EM>
+
+<P><CODE> ppl_Coefficient_max(Max) </CODE><BR>
+
+  <EM>If the Coefficients in the C++ interface are bounded,
+  then the maximum coefficient the C++ interface can handle is
+  unified with <CODE>Max</Code>.
+  If the Prolog system cannot handle this coefficient, then
+  an exception is thrown.
+  It fails if the Coefficients in the C++ interface are unbounded.</EM>
+
+<P><CODE> ppl_Coefficient_min(Min) </CODE><BR>
+
+  <EM>If the Coefficients in the C++ interface are bounded,
+  then the minimum coefficient the C++ interface can handle is
+  unified with <CODE>Min</Code>.
+  If the Prolog system cannot handle this coefficient, then
+  an exception is thrown.
+  It fails if the Coefficients in the C++ interface are unbounded.</EM>
+
+<P><CODE> ppl_max_space_dimension(?Dimension_Type) </CODE><BR>
+
+  <EM>Unifies <CODE>Dimension_Type</CODE> with the maximum space dimension
+  this library can handle.</EM>
+
+<P><CODE>
+  ppl_initialize
+ </CODE><BR>
+
+  <EM>Initializes the PPL interface.
+  Multiple calls to <CODE>ppl_initialize</CODE> does no harm.</EM>
+
+<P><CODE>
+  ppl_finalize
+ </CODE><BR>
+
+  <EM>Finalizes the PPL interface.
+  Once this is executed, the next call to an interface predicate must
+  either be to <CODE>ppl_initialize</CODE> or to <CODE>ppl_finalize</CODE>.
+  Multiple calls to <CODE>ppl_finalize</CODE> does no harm.</EM>
+
+<P><CODE> ppl_set_timeout_exception_atom(+Atom) </CODE><BR>
+
+   <EM>Sets the atom to be thrown by timeout exceptions
+   to <CODE>Atom</CODE>.
+   The default value is <CODE>time_out</CODE>.</EM>
+
+<P><CODE> ppl_timeout_exception_atom(?Atom) </CODE><BR>
+
+   <EM>The atom to be thrown by timeout exceptions
+   is unified with <CODE>Atom</CODE>.</EM>
+
+<P><CODE> ppl_set_timeout(+Csecs) </CODE><BR>
+
+   <EM>Computations taking exponential time will be interrupted
+   some time after <CODE>Csecs</CODE> centiseconds after that call.
+   If the computation is interrupted that way, the current timeout
+   exception atom will be thrown.
+   <CODE>Csecs</CODE> must be strictly greater than zero.</EM>
+
+<P><CODE> ppl_reset_timeout </CODE><BR>
+
+   <EM>Resets the timeout time so that the computation is not interrupted.</EM>
+
+<P><CODE> ppl_set_deterministic_timeout(+Unscaled_Weight, +Scale) </CODE><BR>
+
+   <EM>Computations taking exponential time will be interrupted
+   some time after reaching the complexity threshold
+   \f$\mathrm{Weight} = \mathrm{Unscaled\_Weight} \cdot 2^\mathrm{Scale}\f$.
+   If the computation is interrupted that way, the current timeout
+   exception atom will be thrown.
+   <CODE>Unscaled_Weight</CODE> must be strictly greater than zero;
+   <CODE>Scale</CODE> must be non-negative;
+   an exception is thrown if the computed weight threshold exceeds
+   the maximum allowed value.</EM>
+   <P>
+   <EM>NOTE:</EM> This "timeout" checking functionality is said to be
+   <EM>deterministic</EM> because it is not based on actual elapsed time.
+   Its behavior will only depend on (some of the) computations performed
+   in the PPL library and it will be otherwise independent from the
+   computation environment (CPU, operating system, compiler, etc.).
+   The weight mechanism is under beta testing: client applications
+   should be ready to reconsider the tuning of these weight thresholds
+   when upgrading to newer version of the PPL.
+
+<P><CODE> ppl_reset_deterministic_timeout </CODE><BR>
+
+   <EM>Resets the deterministic timeout so that the computation is not
+   interrupted.</EM>
+
+<P><CODE> ppl_set_rounding_for_PPL </CODE><BR>
+
+  <EM>Sets the FPU rounding mode so that the PPL abstractions based on
+  floating point numbers work correctly.
+  This is performed automatically at initialization-time.  Calling
+  this function is needed only if restore_pre_PPL_rounding() has
+  previously been called.</EM>
+
+
+<P><CODE> ppl_restore_pre_PPL_rounding </CODE><BR>
+
+  <EM>Sets the FPU rounding mode as it was before initialization of the PPL.
+  After calling this function it is absolutely necessary to call
+  set_rounding_for_PPL() before using any PPL abstractions based on
+  floating point numbers.
+  This is performed automatically at finalization-time.</EM>
+
+<P><CODE> ppl_irrational_precision(?Precision) </CODE><BR>
+
+  <EM>Unifies <CODE>Precision</CODE> with the precision parameter for
+  irrational calculations.</EM>
+
+<P><CODE> ppl_set_irrational_precision(+Precision) </CODE><BR>
+
+  <EM>Sets the precision parameter for irrational calculations to
+  <CODE>Precision</CODE>. In the following irrational calculations
+  returning an unbounded rational (e.g., when computing a square root),
+  the lesser between numerator and denominator will be limited to
+  <CODE>2**Precision</CODE>.</EM>
+
+
+\anchor mip_predicates
+<H3> Predicates for MIP_Problem </H3>
+Here we describe the predicates available for PPL objects
+defining mixed integer (linear) programming problems.
+
+<P><CODE>
+  ppl_new_MIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
+</CODE><BR>
+
+   <EM>Creates an MIP Problem \f$\mathrm{MIP}\f$ with the feasible region
+   the vector space of dimension <CODE>Dimension_Type</CODE>,
+   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.</EM>
+
+<P><CODE>
+  ppl_new_MIP_Problem(+Dimension_Type, +Constraint_System, +Lin_Expr,
+                      +Optimization_Mode, -Handle)
+</CODE><BR>
+
+   <EM>Creates an MIP Problem \f$\mathrm{MIP}\f$ with
+   the feasible region the vector space of dimension
+   <CODE>Dimension_Type</CODE>, represented by <CODE>Constraint_System</CODE>,
+   objective function <CODE>Lin_Expr</CODE> and optimization mode
+   <CODE>Optimization_Mode</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.</EM>
+
+<P><CODE>
+  ppl_new_MIP_Problem_from_MIP_Problem(+Handle_1, -Handle_2)
+</CODE><BR>
+
+   <EM>Creates an MIP Problem \f$\mathrm{MIP}\f$ from the MIP Problem
+   referenced by \c Handle_1.
+   \c Handle_2 is unified with the handle for \f$\mathrm{MIP}\f$.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_swap(+Handle_1, +Handle_2)
+</CODE><BR>
+
+   <EM>Swaps the MIP Problem referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.</EM>
+
+<P><CODE>
+  ppl_delete_MIP_Problem(+Handle)
+</CODE><BR>
+
+   <EM>Deletes the MIP Problem referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL MIP Problem.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_space_dimension(+Handle, ?Dimension_Type)
+</CODE><BR>
+
+   <EM>Unifies the dimension of the vector space in which the
+   MIP Problem referenced by <CODE>Handle</CODE> is embedded
+   with <CODE>Dimension_Type</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_integer_space_dimensions(+Handle, ?Vars_List)
+</CODE><BR>
+
+   <EM>Unifies <CODE>Vars_List</CODE> with a list of variables representing
+   the integer space dimensions of the MIP Problem
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_constraints(+Handle, -Constraint_System)
+</CODE><BR>
+
+   <EM>Unifies <CODE>Constraint_System</CODE> with a list of
+   the constraints in the constraints system
+   representing the feasible region for the MIP Problem
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_objective_function(+Handle, ?Lin_Expr)
+</CODE><BR>
+
+   <EM>Unifies <CODE>Lin_Expr</CODE> with the objective function
+   for the MIP Problem referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
+</CODE><BR>
+
+   <EM>Unifies <CODE>Optimization_Mode</CODE> with the optimization mode
+   for the MIP Problem referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_clear(+Handle)
+</CODE><BR>
+
+  <EM>Resets the MIP problem referenced by <CODE>Handle</CODE>
+  to be the trivial problem with
+  the feasible region the \f$0\f$-dimensional universe,
+  objective function \f$0\f$ and optimization mode <CODE>max</CODE>.</EM>
+
+<P><CODE> ppl_MIP_Problem_add_space_dimensions_and_embed(
+             +Handle, +Dimension_Type)
+ </CODE><BR>
+
+   <EM>Embeds the MIP problem referenced by <CODE>Handle</CODE>
+   in a space that is enlarged by <CODE>Dimension_Type</CODE> dimensions.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_add_to_integer_space_dimensions(+Handle, +Vars_List)
+</CODE><BR>
+
+   <EM>Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the variables in <CODE>Vars_List</CODE> are added to
+   the set of integer space dimensions.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_add_constraint(+Handle, +Constraint)
+</CODE><BR>
+
+   <EM>Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>Constraint</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_add_constraints(+Handle, +Constraint_System)
+</CODE><BR>
+
+   <EM>Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in
+   <CODE>Constraint_System</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_set_objective_function(+Handle, +Lin_Expr)
+</CODE><BR>
+
+   <EM>Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the objective function is changed to <CODE>Lin_Expr</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_set_control_parameter(+Handle, +Control_Parameter_Value)
+</CODE><BR>
+
+   <EM>Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the value for the relevant control parameter name is
+   changed to <CODE>Control_Parameter_Value</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_get_control_parameter(+Handle, +Control_Parameter_Name,
+                                        ?Control_Parameter_Value)
+</CODE><BR>
+
+   <EM>Unifies \c Control_Parameter_Value with the value of the
+   control parameter \c Control_Parameter_Name.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
+</CODE><BR>
+
+   <EM>Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the optimization mode is changed to
+   <CODE>Optimization_Mode</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_is_satisfiable(+Handle)
+</CODE><BR>
+
+  <EM>Succeeds if and only if the MIP Problem referenced by
+  <CODE>Handle</CODE> is satisfiable.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_solve(+Handle, ?MIP_Problem_Status)
+</CODE><BR>
+
+  <EM>Solves the MIP problem  referenced by
+  <CODE>Handle</CODE> and unifies <CODE>MIP_Problem_Status</CODE>
+  with:
+  <CODE>unfeasible</CODE>, if the MIP problem is not satisfiable;
+  <CODE>unbounded</CODE>, if the MIP problem is satisfiable but
+  there is no finite bound to the value of the objective function;
+  <CODE>optimized</CODE>, if the MIP problem admits an optimal solution.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_feasible_point(+Handle, ?Generator)
+</CODE><BR>
+
+  <EM>Unifies  <CODE>Generator</CODE> with a feasible point
+  for the MIP problem referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_optimizing_point(+Handle, ?Generator)
+</CODE><BR>
+
+  <EM>Unifies  <CODE>Generator</CODE> with an optimizing point for
+  the MIP problem referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_optimal_value(+Handle, ?Coeff_1, ?Coeff_2)
+</CODE><BR>
+
+  <EM>Unifies <CODE>Coeff_1</CODE> and <CODE>Coeff_2</CODE>
+  with the numerator and denominator, respectively, for the optimal value
+  for the MIP problem  referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_evaluate_objective_function(+Handle, +Generator,
+                                             ?Coeff_1, ?Coeff_2)
+</CODE><BR>
+  <EM>Evaluates the objective function of the MIP problem  referenced by
+  <CODE>Handle</CODE> at point <CODE>Generator</CODE>.
+  <CODE>Coefficient_1</CODE> is unified with the numerator and
+  <CODE>Coefficient_2</CODE> is unified with the denominator of the
+  objective function value at <CODE>Generator</CODE>.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_OK(+Handle)
+</CODE><BR>
+
+   <EM>Succeeds only if the MIP Problem referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.
+   Useful for debugging purposes.</EM>
+
+<P><CODE>
+  ppl_MIP_Problem_ascii_dump(+Handle)
+</CODE><BR>
+
+   <EM>Dumps an ascii representation of the PPL internal state for
+   the MIP problem referenced by <CODE>Handle</CODE> on
+   the standard output.</EM>
+
+<BR>
+
+\anchor pip_predicates
+<H3> Predicates for PIP_Problem </H3>
+Here we describe some functions available for PPL objects
+defining parametric integer programming problems.
+
+<P><CODE>
+  ppl_new_PIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
+</CODE><BR>
+
+   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ with the
+   feasible region the vector space of dimension <CODE>dimension</CODE>,
+   empty constraint_system and empty set of parametric variables.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
+
+<P><CODE>
+  ppl_new_PIP_Problem_from_PIP_Problem(+Handle_1, -Handle_2)
+</CODE><BR>
+   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ from the PIP Problem
+   referenced by \c Handle_1.
+   \c Handle_2 is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
+
+<P><CODE>
+  ppl_new_PIP_Problem(+Dimension_Type, +Constraint_System, +Vars_List,
+                      -Handle)
+</CODE><BR>
+
+   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ having space
+   dimension <CODE>dimension</CODE>, a feasible region represented by
+   <CODE>constraint_system</CODE> and parametric variables represented
+   by <CODE>Vars_List</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_swap(+Handle_1, +Handle_2)
+</CODE><BR>
+   <EM>Swaps the PIP Problem referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.</EM>
+
+<P><CODE>
+  ppl_delete_PIP_Problem(+Handle)
+</CODE><BR>
+   <EM>Deletes the PIP Problem referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL PIP Problem.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_space_dimension(+Handle, ?Dimension_Type)
+</CODE><BR>
+   <EM>Unifies the dimension of the vector space in which the
+   PIP Problem referenced by <CODE>Handle</CODE> is embedded
+   with <CODE>Dimension_Type</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_parameter_space_dimensions(+Handle, ?Vars_List)
+</CODE><BR>
+   <EM>Unifies <CODE>Vars_List</CODE> with a list of variables representing
+   the parameter space dimensions of the PIP Problem
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_constraints(+Handle, ?Constraint_System)
+</CODE><BR>
+   <EM>Unifies <CODE>Constraint_System</CODE> with a list of
+   the constraints in the constraints system
+   representing the feasible region for the PIP Problem
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_get_control_parameter(+Handle, +Control_Parameter_Name,
+                                        ?Control_Parameter_Value)
+</CODE><BR>
+
+   <EM>Unifies \c Control_Parameter_Value with the value of the
+   control parameter \c Control_Parameter_Name.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_clear(+Handle)
+</CODE><BR>
+  <EM>Resets the PIP problem referenced by <CODE>Handle</CODE>
+  to be the trivial problem with
+  the feasible region the \f$0\f$-dimensional universe.</EM>
+
+<P><CODE> ppl_PIP_Problem_add_space_dimensions_and_embed(
+             +Handle, +Dimension_Type1, +Dimension_Type2)
+ </CODE><BR>
+   <EM>Embeds the PIP problem referenced by <CODE>handle</CODE>
+   in a space that is enlarged by <CODE>dimension1</CODE> non-parameter
+   dimensions and <CODE>dimension2</CODE> parameter dimensions.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_add_to_parameter_space_dimensions(+Handle, +Vars_List)
+</CODE><BR>
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+   so that the variables in <CODE>Vars_List</CODE> are added to
+   the set of parameter space dimensions.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_add_constraint(+Handle, +Constraint)
+</CODE><BR>
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>Constraint</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_add_constraints(+Handle, +Constraint_System)
+</CODE><BR>
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in
+   <CODE>Constraint_System</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_set_control_parameter(+Handle, +Control_Parameter_Value)
+</CODE><BR>
+
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+   so that the value for the relevant control parameter name is
+   changed to <CODE>Control_Parameter_Value</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_is_satisfiable(+Handle)
+</CODE><BR>
+  <EM>Succeeds if and only if the PIP Problem referenced by
+  <CODE>Handle</CODE> is satisfiable.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_solve(+Handle, ?PIP_Problem_Status)
+</CODE><BR>
+  <EM>Solves the PIP problem  referenced by
+  <CODE>Handle</CODE> and unifies <CODE>PIP_Problem_Status</CODE>
+  with:
+  <CODE>unfeasible</CODE>, if the PIP problem is not satisfiable;
+  <CODE>optimized</CODE>, if the PIP problem admits an optimal solution.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_solution(+Handle1, ?Handle2)
+</CODE><BR>
+  <EM>Solves the PIP problem referenced by <CODE>Handle1</CODE> and
+  creates a PIP tree node \f$\mathrm{Node}\f$ representing this a solution
+  if it exists and bottom otherwise
+  \c Handle_2 is unified with the handle for \f$\mathrm{Sol}\f$.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_optimizing_solution(+Handle, ?PIP_Tree_Node)
+</CODE><BR>
+  <EM>Solves the PIP problem referenced by <CODE>Handle1</CODE> and
+  creates a PIP tree node \f$\mathrm{Node}\f$ representing this an optimizing
+  solution if a solution exists and bottom otherwise
+  \c Handle_2 is unified with the handle for \f$\mathrm{Sol}\f$.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_has_big_parameter_dimension(+Handle, +Dimension_Type)
+</CODE><BR>
+   <EM>Succeeds if and only if the PIP Problem referenced by
+       <CODE>Handle</CODE> has a dimension \p dim for the big parameter
+       and \p Dimension_Type unifies with \p dim.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_set_big_parameter_dimension(+Handle, +Dimension_Type)
+</CODE><BR>
+
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+       so that the dimension for the big parameter is \p Dimension_Type.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_OK(+Handle)
+</CODE><BR>
+   <EM>Succeeds only if the PIP Problem referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.
+   Useful for debugging purposes.</EM>
+
+<P><CODE>ppl_PIP_Problem_ascii_dump(+Handle)</CODE><BR>
+  <EM>Dumps an ascii representation of the PPL internal state for
+  the PIP problem referenced by \c Handle on the standard output.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_constraints(+Handle, ?Constraint_System)
+</CODE><BR>
+   <EM>Unifies <CODE>Constraint_System</CODE> with a list of
+   the parameter constraints in the PIP tree node
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_is_solution(+Handle)
+</CODE><BR>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents
+   a solution node.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_is_decision(+Handle)
+</CODE><BR>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents
+   a decision node.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_is_bottom(+Handle)
+</CODE><BR>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents bottom.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_artificials(+Handle, ?Artificial_Parameter_List)
+</CODE><BR>
+   <EM>Unifies <CODE>Artificial_Parameter_List</CODE> with a list of
+   the artificial parameters in the PIP tree node
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_OK(+Handle)
+</CODE><BR>
+   <EM>Succeeds only if the PIP tree node referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.
+   Useful for debugging purposes.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_parametric_values(+Handle, +Var, ?Lin_Expr)
+</CODE><BR>
+   <EM>Unifies \p Lin_Expr with a linear expression representing
+   the values of problem variable \p Var in the solution node
+   represented by <CODE>Handle</CODE>.
+   The  linear expression may involve problem parameters
+   as well as artificial parameters.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_true_child(+Handle1, ?Handle2)
+</CODE><BR>
+  <EM>If the PIP_Tree_Node represented by \p Handle1 is a decision node
+   unifies the PIP tree node referenced by <CODE>Handle2</CODE>
+   with the child on the true branch of the
+   PIP tree node represented by <CODE>Handle1</CODE>.
+   An exception is thrown if this is not a decision node.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_false_child(+Handle1, ?Handle2)
+</CODE><BR>
+  <EM>If the PIP_Tree_Node represented by \p Handle1 is a decision node
+   unifies the PIP tree node referenced by <CODE>Handle2</CODE>
+   with the child on the false branch of the
+   PIP tree node represented by <CODE>Handle1</CODE>.
+   An exception is thrown if this is not a decision node.</EM>
+
+*/ /* \page PI_SI_Features */

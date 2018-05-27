@@ -1,0 +1,9 @@
+Most of the examples in this directory have been taken from:
+  - the `lp' library of Netlib [1];
+  - the problem sets MIPLIB 3.0 [2] and MIPLIB 2003 [3].
+
+--------
+
+[1] http://www.netlib.org/lp/index.html
+[2] http://miplib.zib.de/miplib3/miplib3.html
+[3] http://miplib.zib.de/miplib2003.php

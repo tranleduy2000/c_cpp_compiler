@@ -1,0 +1,16 @@
+* test file for redundancy removal
+* the redundant rows: 2 4 5 6 7
+* the implicit linearities : 8 9
+V-representation
+begin
+  9  3  integer
+ 1 0 0
+ 1 2 0
+ 1 0 2
+ 1 1 1
+ 1 2 1
+ 1 1 2
+ 1 2 2
+ 0 1 0
+ 0 -1 0
+end

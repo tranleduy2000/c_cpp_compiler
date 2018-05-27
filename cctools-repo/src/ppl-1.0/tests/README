@@ -1,0 +1,117 @@
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+See below for the copying conditions.
+
+How To Use the Test Programs (If You Really Want To Use Them)
+=============================================================
+
+The programs in this directory are part of the extensive test suite of
+the Parma Polyhedra Library (PPL).  They have various origins:
+
+1) some have been written to test the expressivity of the library;
+2) some have been written to reproduce bugs that have now been fixed;
+3) some have been written in order to increase the proportion of the
+   library's code exercised by test suite.
+
+Regardless of their origin, they are only used for the regression
+testing of the library.  For this reason, we do not pay much attention
+to them; we simply keep adding new tests to the test suite and, once
+in, they stay there forever.  Despite any defects, they serve this
+purpose well.
+
+On the other hand, in order to get an idea of how to use the PPL,
+several new users have found it convenient to take one of these test
+programs, change it a bit, and then try to compile it.  If you want to
+do something similar, here is some advice that may help you get
+something working and completely self-contained in a matter of
+minutes:
+
+a) Replace the line
+
+     #include "ppl_test.hh"
+
+   with
+
+     #include <ppl.hh>
+
+b) Erase the line reading
+
+     set_handlers();
+
+c) Either remove the `TRY' and `CATCH' macro invocations from the program
+   or substitute `TRY' with `try' and `CATCH' with something like
+
+     catch (const std::exception& e) {
+       cerr << "std::exception caught: "
+            << e.what() << " (type == " << typeid(e).name() << ")"
+            << endl;
+       exit(1);
+     }
+     catch (...) {
+       cerr << "unknown exception caught"
+            << endl;
+       exit(1);
+     }
+
+d) If you want to print something make sure the expansion of the `NOISY'
+   macro evaluates to true; add the line
+
+     using namespace Parma_Polyhedra_Library::IO_Operators;
+
+   just after the other two using directives of the program; and then
+   use the PPL output facilities directly.  For instance, the effect of a
+   line like
+
+     print_constraints(ph, "*** ph ***");
+
+   can be obtained, more or less, by replacing it with
+
+     cout << "*** ph ***" << endl << ph.constraints() << endl;
+
+   Similarly, a line of the form
+
+     print_generators(ph, "*** ph ***");
+
+   can be replaced by
+
+     cout << "*** ph ***" << endl << ph.generators() << endl;
+
+e) Compile the program with a command like
+
+     g++ mytest.cc -o mytest -lppl -lgmpxx -lgmp
+
+f) Run `mytest' and enjoy!
+
+
+--------
+
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This document describes the Parma Polyhedra Library (PPL).
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+The license is included, in various formats, in the `doc' subdirectory
+of each distribution of the PPL in files named `fdl.*'.
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.  The license is included, in various
+formats, in the `doc' subdirectory of each distribution of the PPL in
+files named `gpl.*'.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ .

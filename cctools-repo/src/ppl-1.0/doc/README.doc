@@ -1,0 +1,167 @@
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+See below for the copying conditions.
+
+
+How To Get (More) PPL Documentation
+===================================
+
+Do you have all the documentation you need? If you don't or if you are
+unsure, the following is for you.
+
+There are two versions of the Parma Polyhedra Library's documentation:
+
+  + a `user' manual, containing all and only the information needed by
+    people wishing to use the library;
+  + a `devref' (developer reference) manual, also containing details
+    about the library implementation.
+
+Each of these versions can be obtained in several formats:
+
+  + a PDF file suitable for browsing on the screen;
+  + a (gzipped) PostScript file suitable for printing;
+  + a (tarred and gzipped) collection of HTML pages suitable for browsing.
+
+
+The Documentation You May Already Have
+======================================
+
+First of all, you may already have some documentation and all you need
+to do is to find it.
+
+If you have downloaded a source (tar or zip) archive for PPL version
+X.Y.Z, you will find in the doc subdirectory the following set of user
+manuals:
+
+  ppl-user-X.Y.Z.pdf
+  ppl-user-X.Y.Z.ps.gz
+
+If you have installed a binary RPM package, then you have the same set
+of manuals. You can find them with the command `rpm -ql ppl' which
+will print, among other things, something like
+
+  /usr/share/doc/ppl-X.Y.Z
+  /usr/share/doc/ppl-X.Y.Z/README
+  /usr/share/doc/ppl-X.Y.Z/ppl-user-X.Y.Z.pdf
+  /usr/share/doc/ppl-X.Y.Z/ppl-user-X.Y.Z.ps.gz
+
+
+The Documentation You May Download
+==================================
+
+If you are using the latest released version of the library, you will
+find all the documentation in all formats at
+http://bugseng.com/products/ppl/Documentation/ .
+
+
+The Documentation You May Build Yourself
+========================================
+
+When all else fails (which is the case, for example, when you are
+using a Git version [1]) then you may build the documentation by
+yourself. In order to do that, you should have a recent version of
+Doxygen [2] and, if you want to build the HTML documentation, a recent
+version of Graphviz [3].  When you have all the tools installed and
+running, you should follow the following procedure.
+
+First, you should determine which version of the library you are
+working with. The safest way is to go to the top source directory of
+the library and to locate the unique line in the file configure.ac
+containing the string "AC_INIT". This will look like
+
+  AC_INIT([the Parma Polyhedra Library], 0.6.3pre4, ppl-devel@cs.unipr.it, ppl)
+
+from which you determine that the version is 0.6.3pre4 (a.k.a. the 4th
+beta version before release 0.6.3).
+
+Then, if you have not yet done it, build the library itself (see the
+building instructions in the file INSTALL [4] in the top source
+directory.  The default build process, while essential in order to
+produce the documentation, will not generate it directly. For this
+reason you should go to the doc subdirectory of your build directory
+(i.e., the one where you compiled the library) and build all the
+documents you want by executing a command of the form
+
+  make doc1 doc2 ...
+
+Here, doc1, doc2 and so forth are the names of the documents to be built.
+Document names may be obtained from the following list by replacing
+X.Y.Z with the version number you have already determined, and by
+replacing KIND with either `user' or `devref':
+
+  ppl-KIND-X.Y.Z.pdf
+  ppl-KIND-X.Y.Z.ps.gz
+  ppl-KIND-X.Y.Z-html.tar.gz
+
+For example, the command
+
+  make ppl-user-0.6.3pre4.pdf ppl-devref-0.6.3pre4.pdf
+
+will build both kinds of manuals in a PDF format.  Alternatively, the
+command `make world' will build all the available documentation in all
+of the above formats.
+
+It is possible that, while compiling some PostScript or PDF
+documentation, TeX dies with a "TeX capacity exceeded" error
+message.  The error should contain the indication of the TeX buffer
+whose capacity has been exceeded, e.g.:
+
+  ! TeX capacity exceeded, sorry [save size=5000].
+
+You then need to edit the TeX configuration file that defines the
+buffer sizes so as to increase the value of the relevant buffer.
+Note: the actual name and location of the configuration file will vary
+depending on the available TeX distribution: possible names include
+texmf.cnf, texmf.cfg and 20sizes.cnf.  Continuing our example, we can
+double save_size by editing the configuration file so that the
+relevant line becomes
+
+  save_size = 10000        % for saving values outside current group
+
+Any change to such configuration files should be followed by running
+a command like
+
+  texconfig init
+
+for the change to become effective (on some systems the `texconfig-sys'
+command should be used to configure TeX system-wide).
+
+--------
+
+[1] http://bugseng.com/products/ppl/Download/Git
+[2] http://www.doxygen.org/
+[3] http://www.research.att.com/sw/tools/graphviz/
+
+
+--------
+
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This document describes the Parma Polyhedra Library (PPL).
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+The license is included, in various formats, in the `doc' subdirectory
+of each distribution of the PPL in files named `fdl.*'.
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.  The license is included, in various
+formats, in the `doc' subdirectory of each distribution of the PPL in
+files named `gpl.*'.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ .

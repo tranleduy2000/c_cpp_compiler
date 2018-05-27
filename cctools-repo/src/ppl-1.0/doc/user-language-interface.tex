@@ -1,0 +1,173 @@
+% Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+% Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+%
+% This document describes the Parma Polyhedra Library (PPL).
+%
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+% The license is included, in various formats, in the `doc' subdirectory
+% of each distribution of the PPL in files named `fdl.*'.
+%
+% The PPL is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation; either version 3 of the License, or (at your
+% option) any later version.  The license is included, in various
+% formats, in the `doc' subdirectory of each distribution of the PPL in
+% files named `gpl.*'.
+%
+% The PPL is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% If you have not received a copy of one or both the above mentioned
+% licenses along with the PPL, write to the Free Software Foundation,
+% Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+%
+% For the most up-to-date information see the Parma Polyhedra Library
+% site: http://bugseng.com/products/ppl/ .
+
+\documentclass[a4paper,twoside]{article}
+\usepackage{a4wide}
+\usepackage{makeidx}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{alltt}
+\usepackage{times}
+\usepackage{tocloft}
+\usepackage{ifpdf}
+\ifpdf
+\usepackage[pdftex,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\else
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\usepackage{pspicture}
+\fi
+\usepackage[utf8]{inputenc}
+\usepackage{doxygen}
+<PPL_SED_USEPACKAGE_OCAMLDOC>
+\usepackage{ppl}
+\makeindex
+\setcounter{tocdepth}{2}
+
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\includegraphics[height=0.4cm]{ppl_logo_no_ppl.pdf}}
+\fancyfoot[RE,LO]{\scriptsize The PPL <PPL_SED_LANGUAGE_NAME> Language Interface User's Manual (version $projectnumber). See \url{http://bugseng.com} for more information.}
+
+\setlength{\headheight}{24pt}
+
+\begin{document}
+\title{
+\includegraphics[height=9cm]{ppl_logo.pdf} \\
+\ \\
+The Parma Polyhedra Library \\
+<PPL_SED_LANGUAGE_NAME> Language Interface \\
+User's Manual\thanks{This work
+  has been partly supported by:
+  University of Parma's FIL scientific research project (ex 60\%)
+    ``Pure and Applied Mathematics'';
+  MURST project
+    ``Automatic Program Certification by Abstract Interpretation'';
+  MURST project
+    ``Abstract Interpretation, Type Systems and Control-Flow Analysis'';
+  MURST project
+    ``Automatic Aggregate- and Number-Reasoning for Computing: from
+      Decision Algorithms to Constraint Programming with Multisets,
+      Sets, and Maps'';
+  MURST project
+    ``Constraint Based Verification of Reactive Systems'';
+  MURST project
+    ``Abstract Interpretation: Design and Applications'';
+  EPSRC project
+    ``Numerical Domains for Software Analysis'';
+  EPSRC project
+    ``Geometric Abstractions for Scalable Program Analyzers''.
+  } \\
+(version $projectnumber)
+}
+\author{
+Roberto Bagnara\thanks{bagnara@cs.unipr.it,
+  Department of Mathematics, University of Parma, Italy,
+  and BUGSENG srl.} \\
+Patricia M. Hill\thanks{patricia.hill@bugseng.com,
+  BUGSENG srl.} \\
+Enea Zaffanella\thanks{zaffanella@cs.unipr.it,
+  Department of Mathematics, University of Parma, Italy,
+  and BUGSENG srl.} \\
+Abramo Bagnara\thanks{abramo.bagnara@bugseng.com,
+  BUGSENG srl.} \\
+}
+{\sffamily\maketitle}
+\thispagestyle{empty}
+\clearpage{\pagestyle{empty}\cleardoublepage}
+
+\newpage
+Copyright \copyright\ 2001--2010 Roberto Bagnara (bagnara@cs.unipr.it) \\
+Copyright \copyright\ 2010--2012 BUGSENG srl (http://bugseng.com)
+
+
+This document describes the Parma Polyhedra Library (PPL).
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the
+\href{http://www.fsf.org}{Free Software Foundation};
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled
+``\hyperlink{GFDL_GFDL}{GNU Free Documentation License}''.
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+\href{http://www.fsf.org}{Free Software Foundation}; either version 3
+of the License, or (at your option) any later version.
+A copy of the license is included in the section entitled
+``\hyperlink{GPL_GPL}{GNU GENERAL PUBLIC LICENSE}''.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site:
+\begin{center}
+\href{http://bugseng.com/products/ppl/}{\tt http://bugseng.com/products/ppl/}
+\end{center}
+\vfill
+\begin{center}
+\includegraphics[width=5cm]{bugseng_logo.pdf}
+\end{center}
+\vfill
+\clearpage{\pagestyle{empty}\cleardoublepage}
+
+% The following command is needed to have the right footer on
+% the first page of the TOC.
+\addtocontents{toc}{\protect\thispagestyle{fancy}}
+
+% Make sure there is enough space in the TOC for long subsection numbers.
+\addtolength{\cftsubsecnumwidth}{1em}
+
+\pagenumbering{roman}
+\tableofcontents
+\clearpage{\pagestyle{empty}\cleardoublepage}
+
+\pagenumbering{arabic}

@@ -1,0 +1,293 @@
+(* Common part of the OCaml generated tests.  -*- Tuareg -*-
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . *)
+
+open Ppl_ocaml
+open Printf
+open Gmp
+
+let print_string_if_very_noisy = function str ->
+  let less_noisy = "LESS_NOISY"
+  in let very_noisy = try Sys.getenv "PPL_VERY_NOISY_TESTS"
+    with Not_found -> less_noisy
+  in
+    if (very_noisy != less_noisy)
+    then print_string str;
+;;
+
+let print_string_if_noisy = function str ->
+  let quiet = "QUIET"
+  in let noisy = try Sys.getenv "PPL_NOISY_TESTS"
+    with Not_found -> quiet
+  in
+    if (noisy != quiet)
+    then print_string str
+    else print_string_if_very_noisy str;
+;;
+
+let print_int_if_very_noisy = function num ->
+  let less_noisy = "LESS_NOISY"
+  in let very_noisy = try Sys.getenv "PPL_VERY_NOISY_TESTS"
+    with Not_found -> less_noisy
+  in
+    if (very_noisy != less_noisy)
+    then print_int num;
+;;
+
+let print_int_if_noisy = function num ->
+  let quiet = "QUIET"
+  in let noisy = try Sys.getenv "PPL_NOISY_TESTS"
+    with Not_found -> quiet
+  in
+    if (noisy != quiet)
+    then print_int num
+    else print_int_if_very_noisy num;
+;;
+
+let print_bool_if_very_noisy = function b ->
+  let less_noisy = "LESS_NOISY"
+  in let very_noisy = try Sys.getenv "PPL_VERY_NOISY_TESTS"
+    with Not_found -> less_noisy
+  in
+    if (very_noisy != less_noisy)
+    then printf "%b" b;
+;;
+
+let print_bool_if_noisy = function b ->
+  let quiet = "QUIET"
+  in let noisy = try Sys.getenv "PPL_NOISY_TESTS"
+    with Not_found -> quiet
+  in
+    if (noisy != quiet)
+    then printf "%b" b
+    else print_bool_if_very_noisy b;
+;;
+
+let rec print_linear_expression = function
+    Variable v ->
+      print_string_if_noisy "V(";
+      print_int_if_noisy v;
+      print_string_if_noisy ")";
+  | Coefficient c ->
+      print_int_if_noisy(Z.to_int c)
+  | Unary_Minus e ->
+      print_string_if_noisy "-(";
+      print_linear_expression e;
+      print_string_if_noisy ")";
+  | Unary_Plus e ->
+      print_linear_expression e
+  | Plus (e1, e2) ->
+      print_string_if_noisy "(";
+      print_linear_expression e1;
+      print_string_if_noisy " + ";
+      print_linear_expression e2;
+      print_string_if_noisy ")";
+  | Minus (e1, e2) ->
+      print_string_if_noisy "(";
+      print_linear_expression e1;
+      print_string_if_noisy " - ";
+      print_linear_expression e2;
+      print_string_if_noisy ")";
+  | Times (c, e) ->
+      print_int_if_noisy(Z.to_int c);
+      print_string_if_noisy "*(";
+      print_linear_expression e;
+      print_string_if_noisy ")";
+;;
+
+let print_constraint = function
+    Less_Than (le1, le2) ->
+      print_linear_expression le1;
+      print_string_if_noisy " < ";
+      print_linear_expression le2;
+      print_string_if_noisy ", ";
+  | Less_Or_Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string_if_noisy " <= ";
+      print_linear_expression le2;
+      print_string_if_noisy ", ";
+  | Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string_if_noisy " == ";
+      print_linear_expression le2;
+      print_string_if_noisy ", ";
+  | Greater_Than (le1, le2) ->
+      print_linear_expression le1;
+      print_string_if_noisy " > ";
+      print_linear_expression le2;
+      print_string_if_noisy ", ";
+  | Greater_Or_Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string_if_noisy " >= ";
+      print_linear_expression le2;
+      print_string_if_noisy ", ";
+;;
+
+let print_generator = function
+    Ray (le1) ->
+      print_string_if_noisy "Ray: ";
+      print_linear_expression le1;
+      print_string_if_noisy ", ";
+  |  Line (le1) ->
+       print_string_if_noisy "Line: ";
+       print_linear_expression le1;
+       print_string_if_noisy ", ";
+  | Point (le1, c) ->
+      print_string_if_noisy "Point: ";
+      print_linear_expression le1;
+      print_string_if_noisy " den: ";
+      print_int_if_noisy(Z.to_int c);
+      print_string_if_noisy ", ";
+  | Closure_Point (le1, c) ->
+      print_string_if_noisy "Closure_Point: ";
+      print_linear_expression le1;
+      print_string_if_noisy " den: ";
+      print_int_if_noisy(Z.to_int c);
+      print_string_if_noisy ", ";;
+
+let print_congruence = function x,y,z ->
+  print_linear_expression x;
+  print_string_if_noisy " %= ";
+  print_linear_expression y;
+  print_string_if_noisy " mod ";
+  print_int_if_noisy(Z.to_int z);
+  print_string_if_noisy ", ";;
+
+
+let print_grid_generator = function
+  |  Grid_Line (le1) ->
+      print_string_if_noisy "Line: ";
+      print_linear_expression le1;
+      print_string_if_noisy ", ";
+  | Grid_Point (le1, c) ->
+      print_string_if_noisy "Point: ";
+      print_linear_expression le1;
+      print_string_if_noisy " den: ";
+      print_int_if_noisy(Z.to_int c);
+      print_string_if_noisy ", ";
+  | Grid_Parameter (le1, c) ->
+      print_string_if_noisy "Parameter: ";
+      print_linear_expression le1;
+      print_string_if_noisy " den: ";
+      print_int_if_noisy(Z.to_int c);
+      print_string_if_noisy ", ";;
+
+(* Build linear expressions the hard way. *)
+
+print_string_if_noisy "Build linear expressions manually:\n" ;;
+
+let rec v0 = Variable 0
+and v1 = Variable 1
+and v2 = Variable 2
+and n = Coefficient (Z.from_int 3)
+and e1 = Plus (v2, v2)
+and e2 = Times ((Z.from_int 7), v0)
+and e3 = Plus (n, v2)
+;;
+
+print_linear_expression v0; print_string_if_noisy "\n" ;;
+print_linear_expression v1; print_string_if_noisy "\n" ;;
+print_linear_expression v2; print_string_if_noisy "\n" ;;
+print_linear_expression n; print_string_if_noisy "\n" ;;
+print_linear_expression e1; print_string_if_noisy "\n" ;;
+print_linear_expression e2; print_string_if_noisy "\n" ;;
+
+(* See whether operators can make life better. *)
+
+print_string_if_noisy "Build linear expressions with operators:\n" ;;
+
+let linear_expression_of_int n = Coefficient (Z.of_int n) ;;
+let linear_expression_plus e1 e2 = Plus (e1, e2) ;;
+let linear_expression_minus e1 e2 = Minus (e1, e2) ;;
+let linear_expression_times v2 e = Times (v2, e) ;;
+let linear_constraint_eq e1 e2 = Equal (e1, e2) ;;
+let linear_constraint_lt e1 e2 = Less_Than (e1, e2) ;;
+let linear_constraint_gt e1 e2 = Greater_Than (e1, e2) ;;
+let linear_constraint_le e1 e2 = Less_Or_Equal (e1, e2) ;;
+let linear_constraint_ge e1 e2 = Greater_Or_Equal (e1, e2) ;;
+
+let ( +/ ) = linear_expression_plus
+let ( -/ ) = linear_expression_minus
+let ( */ ) = linear_expression_times
+let ( =/ ) = linear_constraint_eq
+let ( </ ) = linear_constraint_lt
+let ( >/ ) = linear_constraint_gt
+let ( <=/ ) = linear_constraint_le
+let ( >=/ ) = linear_constraint_ge
+
+let e3 =
+  (Z.of_int 3) */ v0
+  +/
+  (Z.of_int 4) */ v1
+  -/
+  (linear_expression_of_int 7)
+;;
+
+print_linear_expression e3; print_string_if_noisy "\n" ;;
+
+(* Probably the most convenient thing for the user will be to use the
+   the Camlp4 preprocessor: see
+   http://caml.inria.fr/pub/docs/manual-ocaml/manual003.html#htoc10 *)
+
+(* Build some PPL::C_Polyhedron. *)
+
+let constraint1 = (e2 >=/ e2);;
+let constraints1 = [e1 =/ n; e1 <=/ e1; e1 >=/ e1 -/ n] ;;
+let generator1 = Point (e3, (Z.from_int 1));;
+let generators1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
+let congruence1 = (e2, e2 , (Z.from_int 1));;
+let congruences1 = [e1, (linear_expression_of_int 5), (Z.from_int 0)];;
+let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
+let grid_generators1 = [Grid_Point (e3, (Z.from_int 1))];;
+
+let mip1 =  ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
+let objective_func = ppl_MIP_Problem_objective_function mip1;;
+print_string_if_noisy "\n";;
+print_linear_expression objective_func;;
+let i = ppl_MIP_Problem_space_dimension mip1;;
+print_string_if_noisy "\n";;
+print_int_if_noisy i;;
+let i = ppl_MIP_Problem_constraints mip1;;
+print_string_if_noisy "\n";;
+List.iter print_constraint i;;
+
+let constraint01 = (v0 >=/ (linear_expression_of_int 1));;
+let constraints01 = [(v0 >=/ (linear_expression_of_int 1));
+                     (v1 >=/ (linear_expression_of_int 1));
+                     (v2 >=/ (linear_expression_of_int 1))];;
+let constraints02 = [(v0 <=/ (linear_expression_of_int 1));
+                     (v1 >=/ (linear_expression_of_int 1))];;
+let constraints03 = [(v0 >=/ (linear_expression_of_int 2));
+                     (v1 >=/ (linear_expression_of_int 1));
+                     (v2 >=/ (linear_expression_of_int 1))];;
+let constraints04 = [(v0 >=/ (linear_expression_of_int 2))];;
+let congruence01 = (v0, (linear_expression_of_int 0), (Z.from_int 2));;
+let congruences01 = [(v0, (linear_expression_of_int 0), (Z.from_int 2));
+                    (v1, (linear_expression_of_int 0), (Z.from_int 1));
+                    (v2, (linear_expression_of_int 0), (Z.from_int 1))];;
+let congruences02 = [(v0, (linear_expression_of_int 1), (Z.from_int 3));
+                    (v1, (linear_expression_of_int 0), (Z.from_int 1));
+                    (v2, (linear_expression_of_int 0), (Z.from_int 1))];;
+let congruences03 = [(v0, (linear_expression_of_int 0), (Z.from_int 4));
+                    (v1, (linear_expression_of_int 0), (Z.from_int 1));
+                    (v2, (linear_expression_of_int 0), (Z.from_int 1))];;
+let congruences04 = [(v0, (linear_expression_of_int 0), (Z.from_int 4))];;

@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# Run the Floating_Point_Expression tests.
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+#
+# This file is part of the Parma Polyhedra Library (PPL).
+#
+# The PPL is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 3 of the License, or (at your
+# option) any later version.
+#
+# The PPL is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+#
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://bugseng.com/products/ppl/ .
+
+mpz_class_XFAIL_TESTS=
+mpq_class_XFAIL_TESTS=
+int8_t_XFAIL_TESTS=
+int16_t_XFAIL_TESTS=
+int32_t_XFAIL_TESTS=
+int64_t_XFAIL_TESTS=
+float_XFAIL_TESTS=
+double_XFAIL_TESTS=
+long_double_XFAIL_TESTS=
+
+if [ -z "$MAKE" ]
+then
+    MAKE=make
+fi
+
+instances=`MAKEFLAGS='' $MAKE -s print_INSTANCES`
+
+check_PROGRAMS=`MAKEFLAGS='' $MAKE -s print_check_PROGRAMS`
+
+for instance in $instances
+do
+  echo "**************************** " $instance " ****************************"
+  eval xfail_tests='"$'$instance'_XFAIL_TESTS"'
+  [ -f dirty_marker ] && $MAKE clean
+  touch dirty_marker
+  analyzer_fp_format=${instance%/*}
+  analyzed_fp_format=${instance#*/}
+  $MAKE check TESTS="$check_PROGRAMS" TESTS_ENVIRONMENT="$CHECKER" TEST_CPPFLAGS="-DANALYZER_FP_FORMAT=$analyzer_fp_format -DANALYZED_FP_FORMAT=$analyzed_fp_format" XFAIL_TESTS=$xfail_tests || exit 1
+  $MAKE clean && rm dirty_marker
+done
+exit 0

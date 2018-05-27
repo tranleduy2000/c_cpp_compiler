@@ -1,0 +1,200 @@
+/* Common code for the PPL Java interface tests.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Vector;
+import parma_polyhedra_library.*;
+
+public class ppl_java_generated_tests {
+    static {
+        try {
+            System.loadLibrary("ppl_java");
+        }
+        catch (UnsatisfiedLinkError  e) {
+            System.out.println("Unable to load the library");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+    }
+
+    // Success state.
+    static boolean globally_ok;
+
+    // Common stuff. We can add other objects if we need them later.
+    static Coefficient coeff_0;
+    static Coefficient coeff_5;
+    static Variable var_C;
+    static Variables_Set var_set_A;
+    static Linear_Expression le_A;
+
+    static Constraint constraint1;
+    static Constraint constraint2;
+    static Congruence congruence1;
+    static Generator generator1;
+    static Grid_Generator grid_generator1;
+
+    static Constraint_System constraints1;
+    static Constraint_System constraints2;
+    static Congruence_System congruences1;
+    static Congruence_System congruences2;
+    static Generator_System generators1;
+    static Grid_Generator_System grid_generators1;
+
+    static By_Reference<Boolean> bool_by_ref1;
+    static By_Reference<Boolean> bool_by_ref2;
+    static By_Reference<Integer> int_by_ref1;
+    static By_Reference<Integer> zero_by_ref1;
+
+    static Partial_Function partial_function;
+
+    // Common initialization.
+    public static void initialize() {
+
+        // Initialize output variables.
+        PPL_Test.initialize();
+
+	// Coefficient declaration.
+	coeff_0 = new Coefficient("0");
+        Coefficient coeff_1 = new Coefficient(1);
+        Coefficient coeff_2 = new Coefficient(2);
+        Coefficient coeff_4 = new Coefficient(4);
+	coeff_5 = new Coefficient("5");
+        Coefficient coeff_10 = new Coefficient("10");
+
+	// Variable declarations.
+	Variable A = new Variable(0);
+	Variable C = new Variable(2);
+	var_C = C;
+        var_set_A = new Variables_Set();
+        var_set_A.add(A);
+
+	// Linear_Expression declarations.
+	Linear_Expression le_0 = new Linear_Expression_Coefficient(coeff_0);
+	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
+	le_A = new Linear_Expression_Variable(A);
+	Linear_Expression le_2A = le_A.times(coeff_2);
+	Linear_Expression le_C = new Linear_Expression_Variable(C);
+	Linear_Expression le_2A_plus_C = le_2A.sum(le_C);
+	Linear_Expression le_40A_plus_10C = le_2A_plus_C.times(coeff_10);
+
+	PPL_Test.print_if_noisy("Printing a linear expression (2A + C): ");
+        PPL_Test.println_if_noisy(le_2A_plus_C.toString());
+
+	// Constraint declarations.
+	Constraint c_5_geq_0
+          = new Constraint(le_5, Relation_Symbol.GREATER_OR_EQUAL, le_0);
+	constraint1 = c_5_geq_0;
+	Constraint c_C_eq_5
+          = new Constraint(le_C, Relation_Symbol.EQUAL, le_5);
+	Constraint c_2A_eq_5
+          = new Constraint(le_2A, Relation_Symbol.EQUAL, le_5);
+	Constraint c_2A_plus_C_eq_2A
+          = new Constraint(le_2A_plus_C, Relation_Symbol.EQUAL, le_2A);
+	Constraint c_2A_plus_C_geq_5
+          = new Constraint(le_2A_plus_C,
+		           Relation_Symbol.GREATER_OR_EQUAL,
+			   le_5);
+	PPL_Test.print_if_noisy("Printing a constraint (2A + C >= 5): ");
+	PPL_Test.println_if_noisy(c_2A_plus_C_geq_5.toString());
+
+	Congruence cg_2A_eq_5 = new Congruence(le_2A, le_5, coeff_0);
+	Congruence cg_C_eq_5 = new Congruence(le_C, le_5, coeff_0);
+	Congruence cg_C_int = new Congruence(le_C, le_0, coeff_1);
+	congruence1 = cg_2A_eq_5;
+	PPL_Test.print_if_noisy("Printing a congruence (2A == 5): ");
+        PPL_Test.println_if_noisy(cg_2A_eq_5.toString());
+
+	// Constraint_System declarations.
+	constraints1 = new Constraint_System();
+	constraints1.add(c_5_geq_0);
+	constraints1.add(c_C_eq_5);
+	PPL_Test.print_if_noisy("Printing a constraint system (C == 5):");
+	PPL_Test.println_if_noisy(constraints1.toString());
+
+	constraints2 = new Constraint_System();
+	constraints2.add(c_2A_plus_C_eq_2A);
+	constraints2.add(c_2A_eq_5);
+
+	congruences1 = new Congruence_System();
+	congruences1.add(cg_2A_eq_5);
+	congruences1.add(cg_C_eq_5);
+	PPL_Test.print_if_noisy("Printing a congruence system: ");
+	PPL_Test.println_if_noisy(congruences1.toString());
+
+	congruences2 = new Congruence_System();
+	congruences2.add(cg_C_int);
+
+	// Generator declarations.
+	Generator g1 = Generator.point(le_40A_plus_10C, coeff_1);
+	generator1 = g1;
+	Generator g2 = Generator.point(le_40A_plus_10C, coeff_2);
+	Generator g4 = Generator.point(le_A, coeff_4);
+	PPL_Test.print_if_noisy("Printing a generator (p(40A + 10C)):");
+	PPL_Test.println_if_noisy(g1.toString());
+
+        // Generator_System declaration.
+        generators1 = new Generator_System();
+        generators1.add(g1);
+        generators1.add(g2);
+        generators1.add(g4);
+	PPL_Test.print_if_noisy("Printing a generator system: ");
+	PPL_Test.println_if_noisy(generators1.toString());
+
+	// Grid_Generator declarations.
+	Grid_Generator gg1
+          = Grid_Generator.grid_point(le_40A_plus_10C, coeff_1);
+	grid_generator1 = gg1;
+	Grid_Generator gg2
+          = Grid_Generator.grid_point(le_40A_plus_10C, coeff_2);
+ 	Grid_Generator gg4
+          = Grid_Generator.grid_point(le_A, coeff_4);
+
+	// Grid_Generator_System declaration.
+	grid_generators1 = new Grid_Generator_System();
+	grid_generators1.add(gg1);
+	grid_generators1.add(gg2);
+	grid_generators1.add(gg4);
+
+        bool_by_ref1 = new By_Reference<Boolean>(true);
+        bool_by_ref2 = new By_Reference<Boolean>(true);
+
+        int_by_ref1 = new By_Reference<Integer>(1);
+        zero_by_ref1 = new By_Reference<Integer>(0);
+
+        partial_function = new Partial_Function();
+	partial_function.insert(0, 2);
+	partial_function.insert(2, 0);
+	partial_function.insert(1, 1);
+    }
+
+    // Helper method.
+    static void report_success_or_failure(boolean locally_ok) {
+        if (locally_ok)
+            PPL_Test.println_if_noisy("Success");
+        else {
+            PPL_Test.println_if_noisy("Failure");
+            globally_ok = false;
+        }
+    }
+

@@ -1,0 +1,1754 @@
+/* Doxumentation for the C language interface.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+/*! \interface ppl_Polyhedron_tag
+  \brief
+  Types and functions for the domains of C and NNC convex polyhedra.
+
+  The types and functions for convex polyhedra provide a single interface
+  for accessing both topologically closed (C) and not necessarily closed
+  (NNC) convex polyhedra.
+  The distinction between C and NNC polyhedra need only be explicitly
+  stated when <em>creating</em> or <em>assigning</em> a polyhedron object,
+  by means of one of the functions <code>ppl_new_*</code> and
+  <code>ppl_assign_*</code>.
+
+  Having a single datatype does not mean that C and NNC polyhedra can be
+  freely interchanged: as specified in the main manual, most library
+  functions require their arguments to be topologically and/or
+  space-dimension compatible.
+*/
+
+#if !defined(PPL_DOXYGEN_CONFIGURED_MANUAL)
+
+/*! \brief Opaque pointer \ingroup Datatypes */
+typedef struct ppl_Polyhedron_tag* ppl_Polyhedron_t;
+
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Polyhedron_tag const* ppl_const_Polyhedron_t;
+
+#endif /* !defined(PPL_DOXYGEN_CONFIGURED_MANUAL) */
+
+/*! \brief \name Constructors and Assignment for C_Polyhedron */
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a C polyhedron of dimension \p d and writes an handle to it
+  at address \p pph. If \p empty is different from zero, the newly created
+  polyhedron will be empty; otherwise, it will be a universe polyhedron.
+*/
+int
+ppl_new_C_Polyhedron_from_space_dimension
+(ppl_Polyhedron_t* pph, ppl_dimension_type d, int empty);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a C polyhedron that is a copy of \p ph; writes a handle
+  for the newly created polyhedron at address \p pph.
+*/
+int
+ppl_new_C_Polyhedron_from_C_Polyhedron
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a C polyhedron that is a copy of \p ph;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument is ignored.
+*/
+int
+ppl_new_C_Polyhedron_from_C_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new C polyhedron from the system of constraints
+  \p cs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+*/
+int
+ppl_new_C_Polyhedron_from_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new C polyhedron recycling the system of constraints
+  \p cs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_C_Polyhedron_recycle_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new C polyhedron from the system of congruences \p cs
+  and writes a handle for the newly created polyhedron at address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+*/
+int
+ppl_new_C_Polyhedron_from_Congruence_System
+(ppl_Polyhedron_t* pph, ppl_const_Congruence_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new C polyhedron recycling the system of congruences
+  \p cs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+
+  \warning
+  This function modifies the congruence system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_C_Polyhedron_recycle_Congruence_System
+(ppl_Polyhedron_t* pph, ppl_Congruence_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns a copy of the C polyhedron \p src to the C polyhedron \p dst.
+*/
+int
+ppl_assign_C_Polyhedron_from_C_Polyhedron
+(ppl_Polyhedron_t dst, ppl_const_Polyhedron_t src);
+
+/*@}*/ /* Constructors and Assignment for C_Polyhedron */
+
+/*! \brief \name Constructors and Assignment for NNC_Polyhedron */
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds an NNC polyhedron of dimension \p d and writes an handle to it
+  at address \p pph. If \p empty is different from zero, the newly created
+  polyhedron will be empty; otherwise, it will be a universe polyhedron.
+*/
+int
+ppl_new_NNC_Polyhedron_from_space_dimension
+(ppl_Polyhedron_t* pph, ppl_dimension_type d, int empty);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds an NNC polyhedron that is a copy of \p ph; writes a handle
+  for the newly created polyhedron at address \p pph.
+*/
+int
+ppl_new_NNC_Polyhedron_from_NNC_Polyhedron
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds an NNC polyhedron that is a copy of \p ph;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument is ignored.
+*/
+int
+ppl_new_NNC_Polyhedron_from_NNC_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new NNC polyhedron from the system of constraints
+  \p cs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+*/
+int
+ppl_new_NNC_Polyhedron_from_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new NNC polyhedron recycling the system of constraints
+  \p cs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_NNC_Polyhedron_recycle_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new NNC polyhedron from the system of congruences
+  \p cs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+*/
+int
+ppl_new_NNC_Polyhedron_from_Congruence_System
+PPL_PROTO((ppl_Polyhedron_t* pph, ppl_const_Congruence_System_t cs));
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new NNC polyhedron recycling the system of congruences
+  \p cs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
+
+  \warning
+  This function modifies the congruence system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_NNC_Polyhedron_recycle_Congruence_System
+PPL_PROTO((ppl_Polyhedron_t* pph, ppl_Congruence_System_t cs));
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns a copy of the NNC polyhedron \p src to the NNC
+  polyhedron \p dst.
+*/
+int
+ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
+(ppl_Polyhedron_t dst, ppl_const_Polyhedron_t src);
+
+/*@}*/ /* Constructors and Assignment for NNC Polyhedron */
+
+/*! \name Constructors Behaving as Conversion Operators
+  Besides the conversions listed here below, the library also
+  provides conversion operators that build a semantic geometric
+  description starting from \b any other semantic geometric
+  description (e.g., ppl_new_Grid_from_C_Polyhedron,
+  ppl_new_C_Polyhedron_from_BD_Shape_mpq_class, etc.).
+  Clearly, the conversion operators are only available if both
+  the source and the target semantic geometric descriptions have
+  been enabled when configuring the library.
+  The conversions also taking as argument a complexity class
+  sometimes provide non-trivial precision/efficiency trade-offs.
+*/
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a C polyhedron that is a copy of the topological closure
+  of the NNC polyhedron \p ph; writes a handle for the newly created
+  polyhedron at address \p pph.
+*/
+int
+ppl_new_C_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
+					 ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a C polyhedron that approximates NNC_Polyhedron \p ph,
+  using an algorithm whose complexity does not exceed \p complexity;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument, which can take values
+  \c PPL_COMPLEXITY_CLASS_POLYNOMIAL, \c PPL_COMPLEXITY_CLASS_SIMPLEX
+  and \c PPL_COMPLEXITY_CLASS_ANY, is ignored since the exact constructor
+  has polynomial complexity.
+*/
+int
+ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds an NNC polyhedron that is a copy of the C polyhedron \p ph;
+  writes a handle for the newly created polyhedron at address \p pph.
+*/
+int
+ppl_new_NNC_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
+					 ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds an NNC polyhedron that approximates C_Polyhedron \p ph,
+  using an algorithm whose complexity does not exceed \p complexity;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument, which can take values
+  \c PPL_COMPLEXITY_CLASS_POLYNOMIAL, \c PPL_COMPLEXITY_CLASS_SIMPLEX
+  and \c PPL_COMPLEXITY_CLASS_ANY, is ignored since the exact constructor
+  has polynomial complexity.
+*/
+int
+ppl_new_NNC_Polyhedron_from_C_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
+
+/*@}*/ /* Constructors Behaving as Conversion Operators */
+
+/*! \brief \name Destructor for (C or NNC) Polyhedra */
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Invalidates the handle \p ph: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Polyhedron(ppl_const_Polyhedron_t ph);
+
+/*@}*/ /* Destructor for (C or NNC) Polyhedra */
+
+/*! \brief \name Functions that Do Not Modify the Polyhedron */
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes to \p m the dimension of the vector space enclosing \p ph.
+*/
+int
+ppl_Polyhedron_space_dimension
+(ppl_const_Polyhedron_t ph, ppl_dimension_type* m);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes to \p m the affine dimension of \p ph (not to be confused with the
+  dimension of its enclosing vector space) or 0, if \p ph is empty.
+*/
+int
+ppl_Polyhedron_affine_dimension
+(ppl_const_Polyhedron_t ph, ppl_dimension_type* m);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Checks the relation between the polyhedron \p ph and the constraint \p c.
+
+  If successful, returns a non-negative integer that is
+  obtained as the bitwise or of the bits (chosen among
+  PPL_POLY_CON_RELATION_IS_DISJOINT
+  PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS,
+  PPL_POLY_CON_RELATION_IS_INCLUDED, and
+  PPL_POLY_CON_RELATION_SATURATES) that describe the relation between
+  \p ph and \p c.
+*/
+int
+ppl_Polyhedron_relation_with_Constraint
+(ppl_const_Polyhedron_t ph, ppl_const_Constraint_t c);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Checks the relation between the polyhedron \p ph and the generator \p g.
+
+  If successful, returns a non-negative integer that is
+  obtained as the bitwise or of the bits (only
+  PPL_POLY_GEN_RELATION_SUBSUMES, at present) that describe the
+  relation between \p ph and \p g.
+*/
+int
+ppl_Polyhedron_relation_with_Generator
+(ppl_const_Polyhedron_t ph, ppl_const_Generator_t g);
+
+int
+ppl_Polyhedron_relation_with_Congruence
+(ppl_const_Polyhedron_t ph, ppl_const_Congruence_t c);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes a const handle to the constraint system defining the
+  polyhedron \p ph at address \p pcs.
+*/
+int
+ppl_Polyhedron_get_constraints
+(ppl_const_Polyhedron_t ph, ppl_const_Constraint_System_t* pcs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes at address \p pcs a const handle to a system of congruences
+  approximating the polyhedron \p ph.
+*/
+int
+ppl_Polyhedron_get_congruences
+(ppl_const_Polyhedron_t ph, ppl_const_Congruence_System_t* pcs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes a const handle to the minimized constraint system defining the
+  polyhedron \p ph at address \p pcs.
+*/
+int
+ppl_Polyhedron_get_minimized_constraints
+(ppl_const_Polyhedron_t ph, ppl_const_Constraint_System_t* pcs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes at address \p pcs a const handle to a system of minimized
+  congruences approximating the polyhedron \p ph.
+*/
+int
+ppl_Polyhedron_get_minimized_congruences
+(ppl_const_Polyhedron_t ph, ppl_const_Congruence_System_t* pcs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph is empty; returns 0 if \p ph is
+  not empty.
+*/
+int
+ppl_Polyhedron_is_empty(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph is a universe polyhedron;
+  returns 0 if it is not.
+*/
+int
+ppl_Polyhedron_is_universe(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph is bounded; returns 0 if \p ph is
+  unbounded.
+*/
+int
+ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph contains at least one integer
+  point; returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_contains_integer_point(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph is topologically closed;
+  returns 0 if \p ph is not topologically closed.
+*/
+int
+ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph is a discrete set;
+  returns 0 if \p ph is not a discrete set.
+*/
+int
+ppl_Polyhedron_is_discrete(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph constrains \p var;
+  returns 0 if \p ph does not constrain \p var.
+*/
+int
+ppl_Polyhedron_constrains
+(ppl_Polyhedron_t ph, ppl_dimension_type var);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p le is bounded from above in \p ph;
+  returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_bounds_from_above
+(ppl_const_Polyhedron_t ph, ppl_const_Linear_Expression_t le);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p le is bounded from below in \p ph;
+  returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_bounds_from_below
+(ppl_const_Polyhedron_t ph, ppl_const_Linear_Expression_t le);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph is not empty
+  and \p le is bounded from above in \p ph, in which case
+  the supremum value and a point where \p le reaches it are computed.
+
+  \param ph
+  The polyhedron constraining \p le;
+
+  \param le
+  The linear expression to be maximized subject to \p ph;
+
+  \param sup_n
+  Will be assigned the numerator of the supremum value;
+
+  \param sup_d
+  Will be assigned the denominator of the supremum value;
+
+  \param pmaximum
+  Will store 1 in this location if the supremum is also the maximum,
+  will store 0 otherwise;
+
+  \param point
+  Will be assigned the point or closure point where \p le reaches the
+  extremum value.
+
+  If \p ph is empty or \p le is not bounded from above,
+  0 will be returned and \p sup_n, \p sup_d, \p *pmaximum and \p point
+  will be left untouched.
+*/
+int
+ppl_Polyhedron_maximize_with_point
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t sup_n,
+ ppl_Coefficient_t sup_d,
+ int* pmaximum,
+ ppl_Generator_t point);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  The same as ppl_Polyhedron_maximize_with_point, but without the
+  output argument for the location where the supremum value is reached.
+*/
+int
+ppl_Polyhedron_maximize
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t sup_n,
+ ppl_Coefficient_t sup_d,
+ int* pmaximum);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if  \p ph is not empty
+  and \p le is bounded from below in \p ph, in which case
+  the infimum value and a point where \p le reaches it are computed.
+
+  \param ph
+  The polyhedron constraining \p le;
+
+  \param le
+  The linear expression to be minimized subject to \p ph;
+
+  \param inf_n
+  Will be assigned the numerator of the infimum value;
+
+  \param inf_d
+  Will be assigned the denominator of the infimum value;
+
+  \param pminimum
+  Will store 1 in this location if the infimum is also the minimum,
+  will store 0 otherwise;
+
+  \param point
+  Will be assigned the point or closure point where \p le reaches the
+  extremum value.
+
+  If \p ph is empty or \p le is not bounded from below,
+  0 will be returned and \p sup_n, \p sup_d, \p *pmaximum and \p point
+  will be left untouched.
+*/
+int
+ppl_Polyhedron_minimize_with_point
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t inf_n,
+ ppl_Coefficient_t inf_d,
+ int* pminimum,
+ ppl_Generator_t point);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  The same as ppl_Polyhedron_minimize_with_point, but without the
+  output argument for the location where the infimum value is reached.
+*/
+int
+ppl_Polyhedron_minimize_with_point
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t inf_n,
+ ppl_Coefficient_t inf_d,
+ int* pminimum);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p x contains or is equal to \p y;
+  returns 0 if it does not.
+*/
+int
+ppl_Polyhedron_contains_Polyhedron
+(ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p x strictly contains \p y; returns 0
+  if it does not.
+*/
+int
+ppl_Polyhedron_strictly_contains_Polyhedron
+(ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p x and \p y are disjoint; returns 0
+  if they are not.
+*/
+int
+ppl_Polyhedron_is_disjoint_from_Polyhedron
+(ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p x and \p y are the same polyhedron;
+  returns 0 if they are different.
+
+  Note that \p x and \p y may be topology- and/or dimension-incompatible
+  polyhedra: in those cases, the value 0 is returned.
+*/
+int
+ppl_Polyhedron_equals_Polyhedron
+(ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Returns a positive integer if \p ph is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p ph is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes to \p sz a lower bound to the size in bytes of the memory
+  managed by \p ph.
+*/
+int
+ppl_Polyhedron_external_memory_in_bytes
+(ppl_const_Polyhedron_t ph, size_t* sz);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes to \p sz a lower bound to the size in bytes of the memory
+  managed by \p ph.
+*/
+int
+ppl_Polyhedron_total_memory_in_bytes
+(ppl_const_Polyhedron_t ph, size_t* sz);
+
+/*@}*/ /* Functions that Do Not Modify the Polyhedron */
+
+
+/*! \brief \name Space Dimension Preserving Functions that May Modify the Polyhedron */
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds a copy of the constraint \p c to the system of constraints of \p ph.
+*/
+int
+ppl_Polyhedron_add_constraint
+(ppl_Polyhedron_t ph, ppl_const_Constraint_t c);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds a copy of the congruence \p c to polyhedron of \p ph.
+*/
+int
+ppl_Polyhedron_add_congruence
+(ppl_Polyhedron_t ph, ppl_const_Congruence_t c);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds a copy of the system of constraints \p cs to the system of
+  constraints of \p ph.
+*/
+int
+ppl_Polyhedron_add_constraints
+(ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds a copy of the system of congruences \p cs to the polyhedron \p ph.
+*/
+int
+ppl_Polyhedron_add_congruences
+(ppl_Polyhedron_t ph, ppl_const_Congruence_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds the system of constraints \p cs to the system of constraints of
+  \p ph.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_recycled_constraints
+(ppl_Polyhedron_t ph, ppl_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds the system of congruences \p cs to the polyhedron \p ph.
+
+  \warning
+  This function modifies the congruence system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_recycled_congruences
+(ppl_Polyhedron_t ph, ppl_Congruence_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Refines \p ph using constraint \p c.
+*/
+int
+ppl_Polyhedron_refine_with_constraint
+(ppl_Polyhedron_t ph, ppl_const_Constraint_t c);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Refines \p ph using congruence \p c.
+*/
+int
+ppl_Polyhedron_refine_with_congruence
+(ppl_Polyhedron_t ph, ppl_const_Congruence_t c);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Refines \p ph using the constraints in \p cs.
+*/
+int
+ppl_Polyhedron_refine_with_constraints
+(ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Refines \p ph using the congruences in \p cs.
+*/
+int
+ppl_Polyhedron_refine_with_congruences
+(ppl_Polyhedron_t ph, ppl_const_Congruence_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Intersects \p x with polyhedron \p y and assigns the result to \p x.
+*/
+int
+ppl_Polyhedron_intersection_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p x an upper bound of \p x and \p y.
+
+  For the domain of polyhedra, this is the same as
+  <CODE>ppl_Polyhedron_poly_hull_assign(x, y)</CODE>.
+*/
+int
+ppl_Polyhedron_upper_bound_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Same as ppl_Polyhedron_poly_difference_assign(x, y).
+*/
+int
+ppl_Polyhedron_difference_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p x the
+  \extref{Meet_Preserving_Simplification, meet-preserving simplification}
+  of \p x with respect to context \p y. Returns a positive integer if
+  \p x and \p y have a nonempty intersection; returns \c 0 if they
+  are disjoint.
+*/
+int
+ppl_Polyhedron_simplify_using_context_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p x the \extref{Time_Elapse_Operator, time-elapse} between
+  the polyhedra \p x and \p y.
+*/
+int
+ppl_Polyhedron_time_elapse_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph its topological closure.
+*/
+int
+ppl_Polyhedron_topological_closure_assign(ppl_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Modifies \p ph by \extref{Cylindrification, unconstraining}
+  the space dimension \p var.
+*/
+int
+ppl_Polyhedron_unconstrain_space_dimension
+(ppl_Polyhedron_t ph, ppl_dimension_type var);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Modifies \p ph by \extref{Cylindrification, unconstraining}
+  the space dimensions that are specified in the first \p n positions
+  of the array \p ds.
+  The presence of duplicates in \p ds is a waste but an innocuous one.
+*/
+int
+ppl_Polyhedron_unconstrain_space_dimensions
+(ppl_Polyhedron_t ph, ppl_dimension_type ds[], size_t n);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Transforms the polyhedron \p ph, assigning an affine expression
+  to the specified variable.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The variable to which the affine expression is assigned;
+
+  \param le
+  The numerator of the affine expression;
+
+  \param d
+  The denominator of the affine expression.
+*/
+int
+ppl_Polyhedron_affine_image
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Transforms the polyhedron \p ph, substituting an affine expression
+  to the specified variable.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The variable to which the affine expression is substituted;
+
+  \param le
+  The numerator of the affine expression;
+
+  \param d
+  The denominator of the affine expression.
+*/
+int
+ppl_Polyhedron_affine_preimage
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph the image of \p ph with respect to the
+  \extref{Generalized_Affine_Relations, generalized affine transfer relation}
+  \f$\frac{\mathrm{lb}}{\mathrm{d}}
+       \leq \mathrm{var}'
+         \leq \frac{\mathrm{ub}}{\mathrm{d}}\f$.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The variable bounded by the generalized affine transfer relation;
+
+  \param lb
+  The numerator of the lower bounding affine expression;
+
+  \param ub
+  The numerator of the upper bounding affine expression;
+
+  \param d
+  The (common) denominator of the lower and upper bounding affine expressions.
+*/
+int
+ppl_Polyhedron_bounded_affine_image
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t lb,
+ ppl_const_Linear_Expression_t ub,
+ ppl_const_Coefficient_t d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph the preimage of \p ph with respect to the
+  \extref{Generalized_Affine_Relations, generalized affine transfer relation}
+  \f$\frac{\mathrm{lb}}{\mathrm{d}}
+       \leq \mathrm{var}'
+         \leq \frac{\mathrm{ub}}{\mathrm{d}}\f$.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The variable bounded by the generalized affine transfer relation;
+
+  \param lb
+  The numerator of the lower bounding affine expression;
+
+  \param ub
+  The numerator of the upper bounding affine expression;
+
+  \param d
+  The (common) denominator of the lower and upper bounding affine expressions.
+*/
+int
+ppl_Polyhedron_bounded_affine_preimage
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t lb,
+ ppl_const_Linear_Expression_t ub,
+ ppl_const_Coefficient_t d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph the image of \p ph with respect to the
+  \extref{Generalized_Affine_Relations, generalized affine transfer relation}
+  \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
+  where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+  by \p relsym.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The left hand side variable of the generalized affine transfer relation;
+
+  \param relsym
+  The relation symbol;
+
+  \param le
+  The numerator of the right hand side affine expression;
+
+  \param d
+  The denominator of the right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_image
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph the preimage of \p ph with respect to the
+  \extref{Generalized_Affine_Relations, generalized affine transfer relation}
+  \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
+  where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+  by \p relsym.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The left hand side variable of the generalized affine transfer relation;
+
+  \param relsym
+  The relation symbol;
+
+  \param le
+  The numerator of the right hand side affine expression;
+
+  \param d
+  The denominator of the right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_preimage
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph the image of \p ph with respect to the
+  \extref{Generalized_Affine_Relations, generalized affine transfer relation}
+  \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param lhs
+  The left hand side affine expression;
+
+  \param relsym
+  The relation symbol;
+
+  \param rhs
+  The right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_image_lhs_rhs
+(ppl_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t lhs,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t rhs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph the preimage of \p ph with respect to the
+  \extref{Generalized_Affine_Relations, generalized affine transfer relation}
+  \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param lhs
+  The left hand side affine expression;
+
+  \param relsym
+  The relation symbol;
+
+  \param rhs
+  The right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
+(ppl_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t lhs,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t rhs);
+
+/*@}*/ /* Space Dimension Preserving Functions that May Modify [...] */
+
+
+/*! \brief \name Functions that May Modify the Dimension of the Vector Space */
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Seeing a polyhedron as a set of tuples (its points), assigns
+  to \p x all the tuples that can be obtained by concatenating,
+  in the order given, a tuple of \p x with a tuple of \p y.
+*/
+int
+ppl_Polyhedron_concatenate_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds \p d new dimensions to the space enclosing the polyhedron \p ph
+  and to \p ph itself.
+*/
+int
+ppl_Polyhedron_add_space_dimensions_and_embed
+(ppl_Polyhedron_t ph, ppl_dimension_type d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds \p d new dimensions to the space enclosing the polyhedron \p ph.
+*/
+int
+ppl_Polyhedron_add_space_dimensions_and_project
+(ppl_Polyhedron_t ph, ppl_dimension_type d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Removes from the vector space enclosing \p ph the space dimensions that
+  are specified in first \p n positions of the array \p ds.  The presence
+  of duplicates in \p ds is a waste but an innocuous one.
+*/
+int
+ppl_Polyhedron_remove_space_dimensions
+(ppl_Polyhedron_t ph, ppl_dimension_type ds[], size_t n);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Removes the higher dimensions from the vector space enclosing \p ph
+  so that, upon successful return, the new space dimension is \p d.
+*/
+int
+ppl_Polyhedron_remove_higher_space_dimensions
+(ppl_Polyhedron_t ph, ppl_dimension_type d);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Remaps the dimensions of the vector space according to a
+  \extref{Mapping_the_Dimensions_of_the_Vector_Space, partial function}.
+  This function is specified by means of the \p maps array,
+  which has \p n entries.
+
+  The partial function is defined on dimension <CODE>i</CODE>
+  if <CODE>i < n</CODE> and <CODE>maps[i] != ppl_not_a_dimension</CODE>;
+  otherwise it is undefined on dimension <CODE>i</CODE>.
+  If the function is defined on dimension <CODE>i</CODE>, then dimension
+  <CODE>i</CODE> is mapped onto dimension <CODE>maps[i]</CODE>.
+
+  The result is undefined if \p maps does not encode a partial
+  function with the properties described in the
+  \extref{Mapping_the_Dimensions_of_the_Vector_Space,
+          specification of the mapping operator}.
+*/
+int
+ppl_Polyhedron_map_space_dimensions
+(ppl_Polyhedron_t ph, ppl_dimension_type maps[], size_t n);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  \extref{expand_space_dimension, Expands} the \f$d\f$-th dimension of
+  the vector space enclosing \p ph to \p m new space dimensions.
+*/
+int
+ppl_Polyhedron_expand_space_dimension
+(ppl_Polyhedron_t ph, ppl_dimension_type d, ppl_dimension_type m);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Modifies \p ph by \extref{fold_space_dimensions, folding} the
+  space dimensions contained in the first \p n positions of the array \p ds
+  into dimension \p d.  The presence of duplicates in \p ds is a waste
+  but an innocuous one.
+*/
+int
+ppl_Polyhedron_fold_space_dimensions
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type ds[],
+ size_t n,
+ ppl_dimension_type d);
+
+/*@}*/ /* Functions that May Modify the Dimension of the Vector Space */
+
+/*! \brief \name Input/Output Functions */
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag
+  \brief Prints \p x to \c stdout.
+*/
+int
+ppl_io_print_Polyhedron(ppl_const_Polyhedron_t x);
+
+/*! \relates ppl_Polyhedron_tag
+  \brief Prints \p x to the given output \p stream.
+*/
+int
+ppl_io_fprint_Polyhedron(FILE* stream, ppl_const_Polyhedron_t x);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Prints \p x to a malloc-allocated string, a pointer to which
+  is returned via \p strp.
+*/
+int
+ppl_io_asprint_Polyhedron(char** strp, ppl_const_Polyhedron_t x);
+
+/*! \relates ppl_Polyhedron_tag
+  \brief Dumps an ascii representation of \p x on \p stream.
+*/
+int
+ppl_Polyhedron_ascii_dump(ppl_const_Polyhedron_t x, FILE* stream);
+
+/*! \relates ppl_Polyhedron_tag
+  \brief Loads an ascii representation of \p x from \p stream.
+*/
+int
+ppl_Polyhedron_ascii_load(ppl_Polyhedron_t x, FILE* stream);
+
+/*@}*/ /* Input-Output Functions */
+
+
+/*! \name Ad Hoc Functions for (C or NNC) Polyhedra
+  The functions listed here below, being specific of the polyhedron domains,
+  do not have a correspondence in other semantic geometric descriptions.
+*/
+/*@{*/
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new C polyhedron from the system of generators
+  \p gs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p gs.
+*/
+int
+ppl_new_C_Polyhedron_from_Generator_System
+(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new C polyhedron recycling the system of generators
+  \p gs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p gs.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_C_Polyhedron_recycle_Generator_System
+(ppl_Polyhedron_t* pph, ppl_Generator_System_t gs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new NNC polyhedron from the system of generators
+  \p gs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p gs.
+*/
+int
+ppl_new_NNC_Polyhedron_from_Generator_System
+(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds a new NNC polyhedron recycling the system of generators
+  \p gs and writes a handle for the newly created polyhedron at
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p gs.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_NNC_Polyhedron_recycle_Generator_System
+(ppl_Polyhedron_t* pph, ppl_Generator_System_t gs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes a const handle to the generator system defining the
+  polyhedron \p ph at address \p pgs.
+*/
+int
+ppl_Polyhedron_get_generators
+(ppl_const_Polyhedron_t ph, ppl_const_Generator_System_t* pgs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes a const handle to the minimized generator system defining the
+  polyhedron \p ph at address \p pgs.
+*/
+int
+ppl_Polyhedron_get_minimized_generators
+(ppl_const_Polyhedron_t ph, ppl_const_Generator_System_t* pgs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds a copy of the generator \p g to the system of generators of \p ph.
+*/
+int
+ppl_Polyhedron_add_generator
+(ppl_Polyhedron_t ph, ppl_const_Generator_t g);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds a copy of the system of generators \p gs to the system of
+  generators of \p ph.
+*/
+int
+ppl_Polyhedron_add_generators
+(ppl_Polyhedron_t ph, ppl_const_Generator_System_t gs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Adds the system of generators \p gs to the system of generators of
+  \p ph.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_recycled_generators
+(ppl_Polyhedron_t ph, ppl_Generator_System_t gs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p x the poly-hull of \p x and \p y.
+*/
+int
+ppl_Polyhedron_poly_hull_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p x the \extref{Convex_Polyhedral_Difference, poly-difference}
+  of \p x and \p y.
+*/
+int
+ppl_Polyhedron_poly_difference_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Assigns to \p ph the polyhedron obtained from \p ph by "wrapping" the vector
+  space defined by the first \p n space dimensions in \p ds[].
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param ds[]
+  Specifies the space dimensions to be wrapped.
+
+  \param n
+  The first \p n space dimensions in the array \p ds[] will be wrapped.
+
+  \param w
+  The width of the bounded integer type corresponding to
+  all the dimensions to be wrapped.
+
+  \param r
+  The representation of the bounded integer type corresponding to
+  all the dimensions to be wrapped.
+
+  \param o
+  The overflow behavior of the bounded integer type corresponding to
+  all the dimensions to be wrapped.
+
+  \param pcs
+  Possibly null pointer to a constraint system whose space dimensions
+  are the first \p n dimensions in \p ds[]. If <CODE>*pcs</CODE>
+  depends on variables not in \p vars, the behavior is undefined.
+  When non-null, the constraint system is assumed to
+  represent the conditional or looping construct guard with respect
+  to which wrapping is performed.  Since wrapping requires the
+  computation of upper bounds and due to non-distributivity of
+  constraint refinement over upper bounds, passing a constraint
+  system in this way can be more precise than refining the result of
+  the wrapping operation with the constraints in <CODE>cs</CODE>.
+
+  \param complexity_threshold
+  A precision parameter where higher values result in possibly improved
+  precision.
+
+  \param wrap_individually
+  Non-zero if the dimensions should be wrapped individually
+  (something that results in much greater efficiency to the detriment of
+  precision).
+  */
+  int wrap_assign(ppl_Polyhedron_t ph,
+                  ppl_dimension_type ds[],
+                  size_t n,
+                  ppl_enum_Bounded_Integer_Type_Width w,
+                  ppl_enum_Bounded_Integer_Type_Representation r,
+                  ppl_enum_Bounded_Integer_Type_Overflow o,
+                  const ppl_const_Constraint_System_t* pcs,
+                  unsigned complexity_threshold,
+                  int wrap_individually);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y.  If \p tp is not the null pointer, the
+  \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_BHRZ03_widening_assign_with_tokens
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y.  If \p tp is not the null pointer, the
+  \extref{Widening_with_Tokens, widening with tokens} delay technique is
+  applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_H79_widening_assign_with_tokens
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y.
+*/
+int
+ppl_Polyhedron_BHRZ03_widening_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y.
+*/
+int
+ppl_Polyhedron_H79_widening_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x.  If \p tp is not the null pointer,
+  the \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x. If \p tp is not the null
+  pointer, the \extref{Widening_with_Tokens, widening with tokens} delay
+  technique is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_limited_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p
+  x. If \p tp is not the null pointer,
+  the \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+  If \p tp is not the null pointer,
+  the \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
+
+/*@}*/ /* Ad Hoc Functions for (C or NNC) Polyhedra */
+
+/*! \interface ppl_Pointset_Powerset_C_Polyhedron_tag
+  \brief
+  Types and functions for the Pointset_Powerset of C_Polyhedron objects.
+
+  The powerset domains can be instantiated by taking as a base domain
+  any fixed semantic geometric description
+  (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
+  An element of the powerset domain represents a disjunctive collection
+  of base objects (its disjuncts), all having the same space dimension.
+
+  Besides the functions that are available in all semantic geometric
+  descriptions (whose documentation is not repeated here),
+  the powerset domain also provides several ad hoc functions.
+  In particular, the iterator types allow for the examination and
+  manipulation of the collection of disjuncts.
+*/
+
+#if !defined(PPL_DOXYGEN_CONFIGURED_MANUAL)
+
+/*! \brief Opaque pointer \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_tag*
+        ppl_Pointset_Powerset_C_Polyhedron_t;
+
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_tag const*
+        ppl_const_Pointset_Powerset_C_Polyhedron_t;
+
+/*! \interface ppl_Pointset_Powerset_C_Polyhedron_iterator_tag
+  \brief
+  Types and functions for iterating on the disjuncts of a
+  ppl_Pointset_Powerset_C_Polyhedron_tag.
+*/
+
+/*! \brief Opaque pointer \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_iterator_tag*
+        ppl_Pointset_Powerset_C_Polyhedron_iterator_t;
+
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_iterator_tag const*
+        ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t;
+
+/*! \interface ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag
+  \brief
+  Types and functions for iterating on the disjuncts of a
+  const ppl_Pointset_Powerset_C_Polyhedron_tag.
+*/
+
+/*! \brief Opaque pointer \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag*
+        ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t;
+
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag const*
+        ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t;
+
+#endif /* !defined(PPL_DOXYGEN_CONFIGURED_MANUAL) */
+
+/*! \brief \name Construction, Initialization and Destruction */
+/*@{*/
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Builds a new `iterator' and writes a handle to it
+  at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t* pit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Builds a copy of \p y and writes a handle to it at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_iterator_from_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t* pit,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Builds a new `const iterator' and writes a handle to it
+  at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_const_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t* pit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Builds a copy of \p y and writes a handle to it at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_const_iterator_from_const_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t* pit,
+ ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Assigns to \p psit an iterator "pointing" to the beginning of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_begin
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Assigns to \p psit a const iterator "pointing" to the beginning of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_begin
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Assigns to \p psit an iterator "pointing" past the end of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_end
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Assigns to \p psit a const iterator "pointing" past the end of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_end
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Invalidates the handle \p it: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Pointset_Powerset_C_Polyhedron_iterator
+(ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Invalidates the handle \p it: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Pointset_Powerset_C_Polyhedron_const_iterator
+(ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t it);
+
+/*@}*/ /* Construction, Initialization and Destruction */
+
+/*! \brief \name Dereferencing, Increment, Decrement and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Dereferences \p it writing a const handle to the resulting disjunct
+  at address \p d.
+
+  \note
+  Even though \p it is an non-const iterator, dereferencing it results
+  in a handle to a \b const disjunct. This is because mutable iterators
+  are meant to allow for the modification of the sequence of disjuncts
+  (e.g., by dropping elements), while preventing direct modifications
+  of the disjuncts they point to.
+
+  \warning
+  On exit, the disjunct \p d is still owned by the powerset object:
+  any function call on the owning powerset object may invalidate it.
+  Moreover, \p d should \b not be deleted directly: its resources will
+  be released when deleting the owning powerset.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_dereference
+(ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t it,
+ ppl_const_Polyhedron_t* d);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Dereferences \p it writing a const handle to the resulting disjunct
+  at address \p d.
+
+  \warning
+  On exit, the disjunct \p d is still owned by the powerset object:
+  any function call on the owning powerset object may invalidate it.
+  Moreover, \p d should \b not be deleted directly: its resources will
+  be released when deleting the owning powerset.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_dereference
+(ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t it,
+ ppl_const_Polyhedron_t* d);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Increments \p it so that it "points" to the next disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_increment
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Increments \p it so that it "points" to the next disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_increment
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Decrements \p it so that it "points" to the previous disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_decrement
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Decrements \p it so that it "points" to the previous disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_decrement
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_equal_test
+(ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_equal_test
+(ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t y);
+
+/*@}*/ /* Dereferencing, Increment, Decrement and Equality Testing */
+
+
+/*! \brief \name Ad Hoc Functions for Pointset_Powerset domains */
+/*@{*/
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Drops from the sequence of disjuncts in \p ps all the
+  non-maximal elements so that \p ps is non-redundant.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_omega_reduce
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Writes to \p sz the number of disjuncts in \p ps.
+
+  \note
+  If present, Omega-redundant elements will be counted too.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_size
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps, size_t* sz);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Returns a positive integer if powerset \p x geometrically covers
+  powerset \p y; returns 0 otherwise.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_geometrically_covers_Pointset_Powerset_C_Polyhedron
+(ppl_const_Pointset_Powerset_C_Polyhedron_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Returns a positive integer if powerset \p x is geometrically
+  equal to powerset \p y; returns 0 otherwise.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_geometrically_equals_Pointset_Powerset_C_Polyhedron
+(ppl_const_Pointset_Powerset_C_Polyhedron_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Adds to \p ps a copy of disjunct \p d.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_add_disjunct
+(ppl_Pointset_Powerset_C_Polyhedron_t ps, ppl_const_Polyhedron_t d);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Drops from \p ps the disjunct pointed to by \p cit,
+  assigning to \p it an iterator to the disjunct following \p cit.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_drop_disjunct
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t cit,
+ ppl_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Drops from \p ps all the disjuncts from \p first to \p last (excluded).
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_drop_disjuncts
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t first,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t last);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Modifies \p ps by (recursively) merging together the pairs of
+  disjuncts whose upper-bound is the same as their set-theoretical union.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_pairwise_reduce
+(ppl_Pointset_Powerset_C_Polyhedron_t ps);
+
+/*@}*/ /* Ad Hoc Functions for Pointset_Powerset domains */

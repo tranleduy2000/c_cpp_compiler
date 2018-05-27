@@ -1,0 +1,734 @@
+/* A program to enquire about the configuration of the PPL  -*- C++ -*-
+   and of the applications using it.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+#include "ppl.hh"
+#include "BUGS.hh"
+#include "COPYING.hh"
+#include "CREDITS.hh"
+
+namespace PPL = Parma_Polyhedra_Library;
+
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 8
+#error "PPL version 0.8 or following is required"
+#endif
+
+#include <cstdarg>
+#include <cstring>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <stdexcept>
+#include <string>
+
+#ifdef PPL_HAVE_GETOPT_H
+#include <getopt.h>
+
+// Try to accommodate non-GNU implementations of `getopt()'.
+#if !defined(no_argument) && defined(NO_ARG)
+#define no_argument NO_ARG
+#endif
+
+#if !defined(required_argument) && defined(REQUIRED_ARG)
+#define required_argument REQUIRED_ARG
+#endif
+
+#if !defined(optional_argument) && defined(OPTIONAL_ARG)
+#define optional_argument OPTIONAL_ARG
+#endif
+
+#endif // defined(PPL_HAVE_GETOPT_H)
+
+#ifdef PPL_HAVE_UNISTD_H
+// Include this for `getopt()': especially important if we do not have
+// <getopt.h>.
+#include <unistd.h>
+#endif
+
+
+namespace {
+
+enum Format {
+  NO_FORMAT,
+  PLAIN,
+  MAKEFILE,
+  SH,
+  CSH
+};
+
+enum Interface {
+  NO_INTERFACE,
+  CXX,
+  C,
+  CIAO_PROLOG,
+  GNU_PROLOG,
+  SICSTUS_PROLOG,
+  SWI_PROLOG,
+  XSB_PROLOG,
+  YAP_PROLOG,
+  OCAML,
+  JAVA
+};
+
+Format required_format = NO_FORMAT;
+
+Interface required_interface = NO_INTERFACE;
+
+#define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 3"
+
+std::string prefix;
+std::string exec_prefix;
+
+bool required_application = false;
+bool required_library = false;
+bool required_prefix = false;
+bool required_exec_prefix = false;
+bool required_configure_options = false;
+bool required_version = false;
+bool required_version_major = false;
+bool required_version_minor = false;
+bool required_version_revision = false;
+bool required_version_beta = false;
+bool required_banner = false;
+bool required_coefficients = false;
+bool required_includedir = false;
+bool required_bindir = false;
+bool required_libdir = false;
+bool required_cppflags = false;
+bool required_cflags = false;
+bool required_cxxflags = false;
+bool required_ldflags = false;
+bool required_license = false;
+bool required_copying = false;
+bool required_bugs = false;
+bool required_credits = false;
+
+unsigned num_required_items = 0;
+
+
+#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcur"
+
+const char* program_name = 0;
+
+void
+fatal(const char* format, ...) __attribute__((__noreturn__));
+
+void
+fatal(const char* format, ...) {
+  va_list ap;
+  va_start(ap, format);
+  fprintf(stderr, "%s: ", program_name);
+  vfprintf(stderr, format, ap);
+  fprintf(stderr, "\n");
+  va_end(ap);
+  exit(1);
+}
+
+void
+internal_error() __attribute__((__noreturn__));
+
+void
+internal_error() {
+  fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
+}
+
+inline char
+to_lower(char c) {
+  return
+    static_cast<char>(tolower(static_cast<int>(static_cast<unsigned char>(c))));
+}
+
+bool
+strcaseeq(const char* s1, const char* s2) {
+  while (*s1 != '\0') {
+    if (*s2 == '\0' || to_lower(*s1) != to_lower(*s2))
+      return false;
+    ++s1;
+    ++s2;
+  }
+  return *s2 == '\0';
+}
+
+void
+process_options(int argc, char* argv[]) {
+
+  bool exec_prefix_set = false;
+
+#ifdef PPL_HAVE_GETOPT_H
+struct option long_options[] = {
+  {"help",              no_argument,       0, 'h'},
+  {"format",            required_argument, 0, 'F'},
+  {"interface",         required_argument, 0, 'I'},
+  {"application",       no_argument,       0, 'A'},
+  {"library",           no_argument,       0, 'L'},
+  {"prefix",            optional_argument, 0, 'p'},
+  {"exec-prefix",       optional_argument, 0, 'e'},
+  {"configure-options", no_argument,       0, 'O'},
+  {"version",           no_argument,       0, 'V'},
+  {"version-major",     no_argument,       0, 'M'},
+  {"version-minor",     no_argument,       0, 'N'},
+  {"version-revision",  no_argument,       0, 'R'},
+  {"version-beta",      no_argument,       0, 'B'},
+  {"banner",            no_argument,       0, 'E'},
+  {"coefficients",      no_argument,       0, 'n'},
+  {"includedir",        no_argument,       0, 'i'},
+  {"bindir",            no_argument,       0, 'b'},
+  {"libdir",            no_argument,       0, 'l'},
+  {"cppflags",          no_argument,       0, 'P'},
+  {"cflags",            no_argument,       0, 'C'},
+  {"cxxflags",          no_argument,       0, 'X'},
+  {"ldflags",           no_argument,       0, 'D'},
+  {"license",           no_argument,       0, 'g'},
+  {"copying",           no_argument,       0, 'c'},
+  {"bugs",              no_argument,       0, 'u'},
+  {"credits",           no_argument,       0, 'r'},
+  {0, 0, 0, 0}
+};
+#endif
+
+  static const char* usage_string
+  = "Usage: %s [OPTION]...\n"
+"Displays information, in various formats, about an installation\n"
+"of the Parma Polyhedra Library.\n\n"
+"Options:\n"
+"  -h, --help               prints this help text to stdout\n"
+"  -FFMT, --format=FMT      sets the output format to FMT\n"
+"                           (one of `plain', `makefile', `sh' or `csh')\n"
+"  -IINT, --interface=INT   selects a library interface (one of `C++', `C',\n"
+"                           `Ciao-Prolog', `GNU-Prolog', `SICStus-Prolog',\n"
+"                           `SWI-Prolog', `XSB-Prolog', `YAP-Prolog',\n"
+"                           `OCaml' or `Java')\n"
+"  -A, --application        selects output for building an application\n"
+"  -L, --library            selects output for building a library\n"
+"  -p[PFX], --prefix[=PFX]  prints or sets library prefix information\n"
+"  -e[PFX], --exec-prefix[=PFX]\n"
+"                           prints or sets library exec-prefix information\n"
+"  -O, --configure-options  prints configuration options\n"
+"  -V, --version            prints version information\n"
+"  -M, --version-major      prints version major number\n"
+"  -N, --version-minor      prints version minor number\n"
+"  -R, --version-revision   prints version revision number\n"
+"  -B, --version-beta       prints version beta number\n"
+"  -E, --banner             prints library banner\n"
+"  -n, --coefficients       prints type of library coefficients\n"
+"  -i, --includedir         prints include files directory\n"
+"  -b, --bindir             prints binary executables directory\n"
+"  -l, --libdir             prints library files directory\n"
+"  -P, --cppflags           prints preprocessor flags\n"
+"  -C, --cflags             prints C compiler flags\n"
+"  -X, --cxxflags           prints C++ compiler flags\n"
+"  -D, --ldflags            prints linker flags\n"
+"  -g, --license            prints synthetic licensing information\n"
+"  -c, --copying            prints detailed licensing information\n"
+"  -u, --bugs               prints bug reporting information\n"
+"  -r, --credits            prints credits\n"
+#ifndef PPL_HAVE_GETOPT_H
+"\n"
+"NOTE: this version does not support long options.\n"
+#endif
+"\n"
+"Report bugs to <ppl-devel@cs.unipr.it>.\n";
+
+  while (true) {
+#ifdef PPL_HAVE_GETOPT_H
+    int option_index = 0;
+    int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
+			&option_index);
+#else
+    int c = getopt(argc, argv, OPTION_LETTERS);
+#endif
+
+    if (c == EOF)
+      break;
+
+    switch (c) {
+    case 0:
+      break;
+
+    case '?':
+    case 'h':
+      fprintf(stdout, usage_string, argv[0]);
+      exit(0);
+      break;
+
+      // --format
+    case 'F':
+      if (strcaseeq(optarg, "plain"))
+	required_format = PLAIN;
+      else if (strcaseeq(optarg, "makefile"))
+	required_format = MAKEFILE;
+      else if (strcaseeq(optarg, "sh"))
+	required_format = SH;
+      else if (strcaseeq(optarg, "csh"))
+	required_format = CSH;
+      else
+	fatal("invalid argument `%s' to --format: "
+	      "must be `plain', `makefile', `sh' or `csh'",
+	      optarg);
+      break;
+
+      // --interface
+    case 'I':
+      if (strcaseeq(optarg, "C++"))
+	required_interface = CXX;
+      else if (strcaseeq(optarg, "C"))
+	required_interface = C;
+      else if (strcaseeq(optarg, "Ciao-Prolog"))
+	required_interface = CIAO_PROLOG;
+      else if (strcaseeq(optarg, "GNU-Prolog"))
+	required_interface = GNU_PROLOG;
+      else if (strcaseeq(optarg, "SICStus-Prolog"))
+	required_interface = SICSTUS_PROLOG;
+      else if (strcaseeq(optarg, "SWI-Prolog"))
+	required_interface = SWI_PROLOG;
+      else if (strcaseeq(optarg, "XSB-Prolog"))
+	required_interface = XSB_PROLOG;
+      else if (strcaseeq(optarg, "YAP-Prolog"))
+	required_interface = YAP_PROLOG;
+      else if (strcaseeq(optarg, "OCaml"))
+	required_interface = OCAML;
+      else if (strcaseeq(optarg, "Java"))
+	required_interface = JAVA;
+      else
+	fatal("invalid argument `%s' to --interface: "
+	      "must be `C++', `C', `Ciao-Prolog', `GNU-Prolog', "
+              "`SICStus-Prolog', `SWI-Prolog', `XSB-Prolog', `YAP-Prolog', "
+	      "`OCaml' or `Java'",
+	      optarg);
+      break;
+
+      // --application
+    case 'A':
+      required_application = true;
+      break;
+
+      // --library
+    case 'L':
+      required_library = true;
+      break;
+
+      // --prefix
+    case 'p':
+      if (optarg != 0) {
+	prefix = optarg;
+	if (!exec_prefix_set) {
+	  exec_prefix = optarg;
+	  exec_prefix_set = true;
+	}
+      }
+      else {
+	required_prefix = true;
+	++num_required_items;
+      }
+      break;
+
+      // --exec_prefix
+    case 'e':
+      if (optarg != 0) {
+	exec_prefix = optarg;
+	exec_prefix_set = true;
+      }
+      else {
+	required_exec_prefix = true;
+	++num_required_items;
+      }
+      break;
+
+      // --configure-options
+    case 'O':
+      required_configure_options = true;
+      ++num_required_items;
+      break;
+
+      // --version
+    case 'V':
+      required_version = true;
+      ++num_required_items;
+      break;
+
+      // --version-major
+    case 'M':
+      required_version_major = true;
+      ++num_required_items;
+      break;
+
+      // --version-minor
+    case 'N':
+      required_version_minor = true;
+      ++num_required_items;
+      break;
+
+      // --version-revision
+    case 'R':
+      required_version_revision = true;
+      ++num_required_items;
+      break;
+
+      // --version-beta
+    case 'B':
+      required_version_beta = true;
+      ++num_required_items;
+      break;
+
+      // --banner
+    case 'E':
+      required_banner = true;
+      ++num_required_items;
+      break;
+
+      // --coefficients
+    case 'n':
+      required_coefficients = true;
+      ++num_required_items;
+      break;
+
+      // --includedir
+    case 'i':
+      required_includedir = true;
+      ++num_required_items;
+      break;
+
+      // --bindir
+    case 'b':
+      required_bindir = true;
+      ++num_required_items;
+      break;
+
+      // --libdir
+    case 'l':
+      required_libdir = true;
+      ++num_required_items;
+      break;
+
+      // --cppflags
+    case 'P':
+      required_cppflags = true;
+      ++num_required_items;
+      break;
+
+      // --cflags
+    case 'C':
+      required_cflags = true;
+      ++num_required_items;
+      break;
+
+      // --cxxflags
+    case 'X':
+      required_cxxflags = true;
+      ++num_required_items;
+      break;
+
+      // --ldflags
+    case 'D':
+      required_ldflags = true;
+      ++num_required_items;
+      break;
+
+      // --license
+    case 'g':
+      required_license = true;
+      ++num_required_items;
+      break;
+
+      // --copying
+    case 'c':
+      required_copying = true;
+      ++num_required_items;
+      break;
+
+      // --bugs
+    case 'u':
+      required_bugs = true;
+      ++num_required_items;
+      break;
+
+      // --credits
+    case 'r':
+      required_credits = true;
+      ++num_required_items;
+      break;
+
+    default:
+      abort();
+    }
+  }
+
+  if (argc != optind)
+    // We have a spurious argument.
+    fatal("no arguments besides options are accepted");
+
+  if (required_application && required_library)
+    fatal("the --application and --library are mutually exclusive");
+
+  if (!required_application && !required_library)
+    required_application = true;
+
+  if (required_format == NO_FORMAT)
+    required_format = PLAIN;
+
+  if (required_interface == NO_INTERFACE)
+    required_interface = CXX;
+}
+
+void
+portray_name(const char* name) {
+  const char* variable_prefix = "PPL_";
+  switch (required_format) {
+  case PLAIN:
+    if (num_required_items > 1)
+      std::cout << variable_prefix << name << ": ";
+    break;
+  case MAKEFILE:
+    std::cout << variable_prefix << name << '=';
+    break;
+  case SH:
+    std::cout << "export " << variable_prefix << name << '=';
+    break;
+  case CSH:
+    std::cout << "setenv " << variable_prefix << name << ' ';
+    break;
+  default:
+    internal_error();
+  }
+}
+
+void
+portray(const char* const array[]) {
+  for (unsigned i = 0; array[i] != 0; ++i)
+    std::cout << array[i] << std::endl;
+}
+
+void
+portray(const char* string) {
+  std::cout << string;
+}
+
+void
+portray(long n) {
+  std::cout << n;
+}
+
+void
+portray(const char* name, const char* const array[]) {
+  portray_name(name);
+  portray(array);
+  std::cout << std::endl;
+}
+
+void
+portray(const char* name, const char* string) {
+  portray_name(name);
+  portray(string);
+  std::cout << std::endl;
+}
+
+void
+portray(const char* name, std::string s) {
+  portray(name, s.c_str());
+}
+
+void
+portray(const char* name, long n) {
+  portray_name(name);
+  portray(n);
+  std::cout << std::endl;
+}
+
+void
+replace(std::string& s,
+	const std::string& pattern, const std::string& replacement) {
+  std::string::size_type pos = 0;
+  while (true) {
+    pos = s.find(pattern, pos);
+    if (pos == std::string::npos)
+      break;
+    s.replace(pos, pattern.size(), replacement);
+    pos += replacement.length();
+  }
+}
+
+void
+replace_prefixes(std::string& s) {
+  static const std::string prefix_reference = "${prefix}";
+  static const std::string exec_prefix_reference = "${exec_prefix}";
+  replace(s, prefix_reference, prefix);
+  replace(s, exec_prefix_reference, exec_prefix);
+}
+
+void
+portray_with_prefixes(const char* name, std::string s) {
+  replace_prefixes(s);
+  portray(name, s);
+}
+
+} // namespace
+
+int
+main(int argc, char* argv[]) try {
+  program_name = argv[0];
+
+  if (strcmp(PPL_VERSION, PPL::version()) != 0)
+    fatal("was compiled with PPL version %s, but linked with version %s",
+	  PPL_VERSION, PPL::version());
+
+  // Initialize prefixes.
+  prefix = "@prefix@";
+  exec_prefix = "@exec_prefix@";
+  replace_prefixes(prefix);
+  replace_prefixes(exec_prefix);
+
+  // Process command line options.
+  process_options(argc, argv);
+
+  if (required_prefix)
+    portray("PREFIX", prefix);
+
+  if (required_exec_prefix)
+    portray("EXEC_PREFIX", exec_prefix);
+
+  if (required_configure_options)
+    portray("CONFIGURE_OPTIONS", PPL_CONFIGURE_OPTIONS);
+
+  if (required_version)
+    portray("VERSION", PPL_VERSION);
+
+  if (required_version_major)
+    portray("VERSION_MAJOR", static_cast<long>(PPL_VERSION_MAJOR));
+
+  if (required_version_minor)
+    portray("VERSION_MINOR", static_cast<long>(PPL_VERSION_MINOR));
+
+  if (required_version_revision)
+    portray("VERSION_REVISION", static_cast<long>(PPL_VERSION_REVISION));
+
+  if (required_version_beta)
+    portray("VERSION_BETA", static_cast<long>(PPL_VERSION_BETA));
+
+  if (required_banner)
+    portray("BANNER", PPL::banner());
+
+  if (required_coefficients)
+    portray("COEFFICIENTS", "@coefficient_mnemonic@");
+
+  if (required_includedir)
+    portray_with_prefixes("INCLUDEDIR", "@includedir@");
+
+  if (required_bindir)
+    portray_with_prefixes("BINDIR", "@bindir@");
+
+  if (required_libdir)
+    portray_with_prefixes("LIBDIR", "@libdir@");
+
+  if (required_cppflags) {
+    if (required_application) {
+      std::string cppflags = "@CPPFLAGS@";
+      std::string s = "@includedir@";
+      replace_prefixes(s);
+      // `/usr/include' is the standard include directory:
+      // thus it needs not be specified.
+      if (s == "/usr/include")
+	s = cppflags;
+      else {
+	s = "-I" + s;
+	// Avoid duplicating the -I options.
+	if (cppflags.find(s) != std::string::npos)
+	  s = "";
+	if (s.length() > 0 && strlen("@CPPFLAGS@") > 0)
+	  s += ' ';
+	s += "@CPPFLAGS@";
+      }
+      if (s.length() > 0 && strlen("@extra_includes@") > 0)
+	  s += ' ';
+      s += "@extra_includes@";
+      portray("CPPFLAGS", s);
+    }
+    else
+      portray("CPPFLAGS", "@CPPFLAGS@");
+  }
+
+  if (required_cflags)
+    portray("CFLAGS", "@CFLAGS@");
+
+  if (required_cxxflags)
+    portray("CXXFLAGS", "@CXXFLAGS@");
+
+  if (required_ldflags) {
+    std::string s = "@libdir@";
+    replace_prefixes(s);
+    const std::string ldflags = "@LDFLAGS@";
+    // `/usr/lib' is the standard library directory:
+    // thus it needs not be specified.
+    if (s == "/usr/lib")
+      s = ldflags;
+    else {
+      s = "-L" + s;
+      // Avoid duplicating the -L options.
+      if (ldflags.find(s) != std::string::npos)
+	s = "";
+      if (s.length() > 0 && ldflags.length() > 0)
+	s += ' ';
+      s += ldflags;
+    }
+    if (required_library) {
+      if (s.length() > 0 && strlen("@extra_libraries@") > 0)
+	s += ' ';
+      s += "@extra_libraries@";
+    }
+    else {
+      assert(required_application);
+      if (s.length() > 0)
+	s += ' ';
+      s += "-lppl";
+      if (required_interface == C)
+	s += " -lppl_c";
+      s += " -lgmpxx -lgmp";
+    }
+    portray("LDFLAGS", s);
+  }
+
+  if (required_license)
+    portray("LICENSE", PPL_LICENSE);
+
+  if (required_copying)
+    portray("COPYING", COPYING_array);
+
+  if (required_bugs)
+    portray("BUGS", BUGS_array);
+
+  if (required_credits)
+    portray("CREDITS", CREDITS_array);
+
+  return 0;
+}
+catch (const std::bad_alloc&) {
+  fatal("out of memory");
+  exit(1);
+}
+catch (const std::overflow_error& e) {
+  fatal("arithmetic overflow (%s)", e.what());
+  exit(1);
+}
+catch (...) {
+  internal_error();
+}

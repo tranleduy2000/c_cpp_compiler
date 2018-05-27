@@ -1,0 +1,200 @@
+%% LaTeX package providing macros for typesetting the PPL manuals.
+%% Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+%% Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+%%
+%% This file is part of the Parma Polyhedra Library (PPL).
+%%
+%% The PPL is free software; you can redistribute it and/or modify it
+%% under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 3 of the License, or (at your
+%% option) any later version.
+%%
+%% The PPL is distributed in the hope that it will be useful, but WITHOUT
+%% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License
+%% along with this program; if not, write to the Free Software Foundation,
+%% Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+%%
+%% For the most up-to-date information see the Parma Polyhedra Library
+%% site: http://bugseng.com/products/ppl/ .
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ppl}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{stmaryrd}
+
+%% Calligraphic alphabet
+\newcommand*{\cA}{\ensuremath{\mathcal{A}}}
+\newcommand*{\cB}{\ensuremath{\mathcal{B}}}
+\newcommand*{\cC}{\ensuremath{\mathcal{C}}}
+\newcommand*{\cD}{\ensuremath{\mathcal{D}}}
+\newcommand*{\cE}{\ensuremath{\mathcal{E}}}
+\newcommand*{\cF}{\ensuremath{\mathcal{F}}}
+\newcommand*{\cG}{\ensuremath{\mathcal{G}}}
+\newcommand*{\cH}{\ensuremath{\mathcal{H}}}
+\newcommand*{\cI}{\ensuremath{\mathcal{I}}}
+\newcommand*{\cJ}{\ensuremath{\mathcal{J}}}
+\newcommand*{\cK}{\ensuremath{\mathcal{K}}}
+\newcommand*{\cL}{\ensuremath{\mathcal{L}}}
+\newcommand*{\cM}{\ensuremath{\mathcal{M}}}
+\newcommand*{\cN}{\ensuremath{\mathcal{N}}}
+\newcommand*{\cO}{\ensuremath{\mathcal{O}}}
+\newcommand*{\cP}{\ensuremath{\mathcal{P}}}
+\newcommand*{\cQ}{\ensuremath{\mathcal{Q}}}
+\newcommand*{\cR}{\ensuremath{\mathcal{R}}}
+\newcommand*{\cS}{\ensuremath{\mathcal{S}}}
+\newcommand*{\cT}{\ensuremath{\mathcal{T}}}
+\newcommand*{\cU}{\ensuremath{\mathcal{U}}}
+\newcommand*{\cV}{\ensuremath{\mathcal{V}}}
+\newcommand*{\cW}{\ensuremath{\mathcal{W}}}
+\newcommand*{\cX}{\ensuremath{\mathcal{X}}}
+\newcommand*{\cY}{\ensuremath{\mathcal{Y}}}
+\newcommand*{\cZ}{\ensuremath{\mathcal{Z}}}
+
+%% Special letters denoting sets and algebras.
+\providecommand*{\Nset}{\mathbb{N}}            % Naturals
+\newcommand*{\extNset}{\mathbb{N}_\infty}      % Extended naturals
+\providecommand*{\Oset}{\mathbb{O}}            % Ordinals
+\providecommand*{\Qset}{\mathbb{Q}}            % Rationals
+\providecommand*{\Rset}{\mathbb{R}}            % Reals
+\providecommand*{\nonnegRset}{\mathbb{R}_{\scriptscriptstyle{+}}}
+                                               % Non-negative reals
+\newcommand*{\extRset}{\Rset_\infty}           % Extended reals
+\providecommand*{\Zset}{\mathbb{Z}}            % Integers
+\providecommand*{\CPset}{\mathbb{CP}}          % Closed polyhedra
+\providecommand*{\Pset}{\mathbb{P}}            % (NNC) polyhedra
+\providecommand*{\Sset}{\mathbb{S}}            % Reals or rationals
+
+%% Grid notation
+\providecommand*{\Gset}{\mathbb{G}}            % Grid
+\providecommand*{\cg}{\mathord{\mathrm{cg}}}   % Congruence
+\newcommand*{\gcon}{\mathop{\mathrm{gcon}}\nolimits}
+                                               % Grid from congruence system
+\newcommand*{\ggen}{\mathop{\mathrm{ggen}}\nolimits}
+                                               % Grid from generator system
+
+%% Function notation
+\newcommand*{\fund}[3]{\mathord{#1}\colon#2\rightarrow#3}
+\newcommand*{\pard}[3]{\mathord{#1}\colon#2\rightarrowtail#3}
+
+%% Relation notation
+\newcommand*{\reld}[3]{\mathord{#1}\subseteq#2\times#3}
+
+%% Set theory.
+\renewcommand*{\emptyset}{\mathord{\varnothing}}
+\newcommand*{\sseq}{\subseteq}
+\newcommand*{\sseqf}{\mathrel{\subseteq_\mathrm{f}}}
+\newcommand*{\sslt}{\subset}
+\newcommand*{\Sseq}{\supseteq}
+\newcommand*{\Ssgt}{\supset}
+\newcommand*{\inters}{\cap}
+\newcommand*{\setdiff}{\setminus}
+\newcommand*{\union}{\cup}
+\newcommand*{\card}{\mathop{\#}\nolimits}
+\newcommand*{\sset}[2]{{\renewcommand*{\arraystretch}{1.2}
+                      \left\{\,#1 \,\left|\,
+                               \begin{array}{@{}l@{}}#2\end{array}
+                      \right.   \,\right\}}}
+\newcommand*{\meet}{\mathbin{\otimes}}
+\newcommand*{\join}{\mathbin{\oplus}}
+
+%% Logic notation.
+\newcommand*{\entails}{\mathrel{\vdash}}
+\newcommand*{\sentails}{\mathrel{\Vdash}}
+\newcommand*{\Nentails}{\mathrel{\nvdash}}
+\newcommand*{\Nsentails}{\mathrel{\nVdash}}
+\newcommand*{\entailss}[1]{\mathrel{\vdash_{#1}}}
+\newcommand*{\Entailss}[1]{\mathrel{\dashv_{#1}}}
+\newcommand*{\sentailss}[1]{\mathrel{\Vdash_{#1}}}
+\newcommand*{\Nentailss}[1]{\mathrel{\nvdash_{#1}}}
+\newcommand*{\bigland}{\mathop{\bigwedge}\limits}
+\newcommand*{\biglor}{\mathop{\bigvee}\limits}
+\newcommand*{\piff}{\mathrel{\leftrightarrow}}
+\newcommand*{\pimplies}{\mathrel{\rightarrow}}
+\newcommand*{\pimplied}{\mathrel{\leftarrow}}
+\newcommand*{\st}{\mathrel{.}}
+\newcommand*{\itc}{\mathrel{:}}
+
+%% Integer division and reminder binary operators.
+\newcommand*{\bdiv}{\mathbin{\mathrm{div}}}
+\newcommand*{\brem}{\mathbin{\mathrm{rem}}}
+
+
+%% True and false
+\newcommand*{\false}{\mathord{\textbf{\textup{0}}}}
+\newcommand*{\true}{\mathord{\textbf{\textup{1}}}}
+
+%% Things that hold by definition.
+\newcommand*{\defrel}[1]{\mathrel{\buildrel \mathrm{def} \over {#1}}}
+\newcommand*{\defeq}{\defrel{=}}
+\newcommand*{\defiff}{\defrel{\Longleftrightarrow}}
+
+% Arbitrary relation symbol.
+\newcommand*{\relsym}{\mathrel{\bowtie}}
+\newcommand*{\relsyms}[1]{\mathrel{\bowtie_{#1}}}
+
+% Absolute value.
+\newcommand*{\abs}[1]{\lvert #1 \rvert}
+
+% Vectors.
+\renewcommand*{\vec}[1]{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+{\mbox{\boldmath$\textstyle#1$}}
+{\mbox{\boldmath$\scriptstyle#1$}}
+{\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+\newcommand*{\vect}[1]{\vec{#1}}
+
+% Matrix functions.
+\newcommand*{\transpose}{\mathrm{T}}
+
+% Hulls.
+\newcommand*{\linearhull}{\mathop{\mathrm{linear.hull}}}
+\newcommand*{\conichull}{\mathop{\mathrm{conic.hull}}}
+\newcommand*{\affinehull}{\mathop{\mathrm{affine.hull}}}
+\newcommand*{\convexhull}{\mathop{\mathrm{convex.hull}}}
+\newcommand*{\NNChull}{\mathop{\mathrm{nnc.hull}}}
+\newcommand*{\inthull}{\mathop{\mathrm{int.hull}}}
+\newcommand*{\intaffinehull}{\mathop{\mathrm{int.affine.hull}}}
+
+% Polyhedron functions.
+\newcommand*{\prank}{\mathop{\mathrm{rank}}}
+\newcommand*{\pdim}{\mathop{\mathrm{dim}}}
+\newcommand*{\linspace}{\mathop{\mathrm{lin.space}}}
+\newcommand*{\cone}{\mathop{\mathrm{cone}}}
+
+% Widening
+\newcommand*{\widen}{\mathrel{\nabla}}
+
+% Powerset notation
+\newcommand*{\pnonredmap}{\mathop{\Omega^{\scriptscriptstyle\sseq}_{\scriptscriptstyle {\CPset_n}}}\nolimits}
+\newcommand*{\pnonredmapi}[1]{\mathop{\Omega^{\scriptscriptstyle\sseq}_{\scriptscriptstyle {\CPset_{#1}}}}\nolimits}
+\newcommand*{\nonredmap}{\mathop{\Omega^{\scriptscriptstyle\entails}_{\scriptscriptstyle D}}\nolimits}
+
+\newcommand*{\wpf}{\mathop{\wp_\mathrm{f}}\nolimits}
+\newcommand*{\wpfn}[2]{\mathord{\wp_\mathrm{fn}^{\scriptscriptstyle #2}}(#1)}
+
+\newcommand*{\smallP}{{\scriptscriptstyle\mathrm{P}}}
+\newcommand*{\entailsP}{\entailss{\smallP}}
+\newcommand*{\NentailsP}{\Nentailss{\smallP}}
+\newcommand*{\sentailsP}{\sentailss{\smallP}}
+
+
+% Interval floating point arithmetics
+
+\newcommand*{\asifp}{\oplus^{\#}}
+\newcommand*{\adifp}{\ominus^{\#}}
+\newcommand*{\adivifp}{\oslash^{\#}}
+\newcommand*{\amifp}{\otimes^{\#}}
+
+% Linear form arithmetics
+
+\newcommand*{\aslf}{\boxplus^{\#}}
+\newcommand*{\adlf}{\boxminus^{\#}}
+\newcommand*{\adivlf}{\boxslash^{\#}}
+\newcommand*{\amlf}{\boxtimes^{\#}}
+\newcommand*{\linexpr}[1]{\llparenthesis #1 \rrparenthesis}
+\newcommand*{\linexprenv}[3]{\llparenthesis #1 \rrparenthesis \left \llbracket #2, #3 \right \rrbracket}

@@ -1,0 +1,102 @@
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+this program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it
+under certain conditions.
+Type "copying" to see the conditions.
+There is ABSOLUTELY NO WARRANTY for this program.
+Type "warranty" for details.
+PPL clpq ?- yes
+PPL clpq ?- Z = 13
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- X = 0
+Z - Y = 1
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- Y = 102
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- Y = 8
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- 
+Error: an overflow has been detected by the PPL: Positive overflow.
+no
+PPL clpq ?- yes
+PPL clpq ?- 
+Error: an overflow has been detected by the PPL: Positive overflow.
+no
+PPL clpq ?- yes
+PPL clpq ?- X =< 5
+X > 4
+ more? X < 2
+X > 1
+ more? no
+PPL clpq ?- 
+Error: an overflow has been detected by the PPL: Positive overflow.
+no
+PPL clpq ?- -D2 > 0
+-S1 - D1 + S2 > 0
+S - S1 - D1 + D >= 0
+S + D - S2 - D2 >= 0
+-S + S2 >= 0
+S + D - S2 - D3 >= 0
+-S + S1 >= 0
+ more? -D3 > 0
+-S1 - D1 + S2 > 0
+S - S1 - D1 + D >= 0
+S + D - S2 - D3 >= 0
+-S + S2 >= 0
+S + D - S2 - D2 >= 0
+-S + S1 >= 0
+ more? S + D - S2 - D2 >= 0
+-S + S1 >= 0
+S - S1 - D1 + D >= 0
+-S + S2 >= 0
+S1 - S2 - D3 > 0
+-S1 - D1 + S2 > 0
+S + D - S2 - D3 >= 0
+-D2 > 0
+ more? -D3 > 0
+-S + S2 >= 0
+-S + S1 >= 0
+S1 - S2 - D3 > 0
+S - S1 - D1 + D >= 0
+S + D - S2 - D3 >= 0
+-S1 - D1 + S2 > 0
+S + D - S2 - D2 >= 0
+ more? -D2 > 0
+-S + S2 >= 0
+-S + S1 >= 0
+S1 - S2 - D2 > 0
+S - S1 - D1 + D >= 0
+S + D - S2 - D2 >= 0
+-S1 - D1 + S2 > 0
+S + D - S2 - D3 >= 0
+ more? S + D - S2 - D3 >= 0
+-S + S1 >= 0
+S - S1 - D1 + D >= 0
+-S + S2 >= 0
+S1 - S2 - D2 > 0
+-S1 - D1 + S2 > 0
+S + D - S2 - D2 >= 0
+-D3 > 0
+ more? S + D - S2 - D2 >= 0
+S1 - S2 - D2 > 0
+-D2 > 0
+-S + S1 >= 0
+-S + S2 >= 0
+S1 - S2 - D3 > 0
+S + D - S2 - D3 >= 0
+S - S1 - D1 + D >= 0
+ more? S1 - S2 - D3 > 0
+S + D - S2 - D3 >= 0
+S + D - S2 - D2 >= 0
+S1 - S2 - D2 > 0
+-D3 > 0
+-S + S1 >= 0
+-S + S2 >= 0
+S - S1 - D1 + D >= 0
+ more? no
+PPL clpq ?- 

@@ -1,0 +1,59 @@
+// Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+// Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+//
+// This document describes the Parma Polyhedra Library (PPL).
+//
+// Permission is granted to copy, distribute and/or modify this document
+// under the terms of the GNU Free Documentation License, Version 1.2
+// or any later version published by the Free Software Foundation;
+// with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+// The license is included, in various formats, in the `doc' subdirectory
+// of each distribution of the PPL in files named `fdl.*'.
+//
+// The PPL is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 3 of the License, or (at your
+// option) any later version.  The license is included, in various
+// formats, in the `doc' subdirectory of each distribution of the PPL in
+// files named `gpl.*'.
+//
+// The PPL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+//
+// If you have not received a copy of one or both the above mentioned
+// licenses along with the PPL, write to the Free Software Foundation,
+// Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+//
+// For the most up-to-date information see the Parma Polyhedra Library
+// site: http://bugseng.com/products/ppl/ .
+
+
+/*! \page PI_Compilation Compilation and Installation
+
+When the Parma Polyhedra Library is configured, it tests for the existence
+of each supported Prolog system.  If a supported Prolog system is
+correctly installed in a standard location, things are arranged
+so that the corresponding interface is built and installed.
+
+The Prolog interface files are all installed in the directory
+<CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
+dynamically loaded libraries, you must make your dynamic
+linker/loader aware of this fact.  If you use a GNU/Linux system,
+try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
+for more information.
+
+As an option, the Prolog interface can track the creation and disposal
+of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
+must be explicitly disposed and forgetting to do so is a very common mistake.
+To enable this option, configure the library adding
+<CODE>-DPROLOG_TRACK_ALLOCATION</CODE> to the options passed to the
+C++ compiler.
+Your configure command would then look like
+\code
+  path/to/configure --with-cxxflags="-DPROLOG_TRACK_ALLOCATION" ...
+\endcode
+
+*/ /* \page PROLOG_INTERFACE_COMPILATION */
+

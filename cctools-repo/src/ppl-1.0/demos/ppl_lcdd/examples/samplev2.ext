@@ -1,0 +1,11 @@
+* a 1-D cone in 3D space without any vertices
+V-representation
+linearity  1  3
+begin
+    3    4   integer
+  0  0  0  1
+  1  1  0  0
+  0  1 -1  0
+end
+
+

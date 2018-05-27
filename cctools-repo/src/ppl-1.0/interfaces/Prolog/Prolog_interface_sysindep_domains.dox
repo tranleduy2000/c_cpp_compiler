@@ -1,0 +1,914 @@
+/* Configuration Independent Documentation for Prolog.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+/*! \page domains_predicates Domains Predicates
+
+The structure of this section is as follows:
+  - \ref c_polyhedron_predicates "Predicates for C Polyhedra"
+  - \ref other_domains_predicates "Ad hoc Predicates for Other Domains"
+
+<BR>
+
+\anchor c_polyhedron_predicates
+<H1>Predicates for the C Polyhedron Domain</H1>
+  Here we provide a short description for each of the predicates
+  available for the domain of C polyhedra.
+Note that predicates for other domains will follow a similar pattern.
+
+<H2>Constructor, copy, conversion and destructor predicates</H2>
+<H3>Constructor predicates for C polyhedra</H3>
+The constructor predicates build a
+C polyhedron from a specification
+and binds the given variable to a handle for future referencing.
+The specification can be:
+- the number of space dimensions and an atom indicating if it
+  is to be the universe or empty element.
+- a representation for the particular class of semantic geometric
+  descriptors to which the element being built belongs.
+For example,
+  a C Polyhedron can be built from a list of
+  non-strict inequality or equality constraints or a list of equality
+  congruences or a list of generators that contains no closure points.
+
+<P><CODE>ppl_new_C_Polyhedron_from_space_dimension(+Dimension_Type, +Universe_or_Empty, -Handle)</CODE><BR>
+   <EM>Builds a new C polyhedron \f$\cP\f$
+   with \c Dimension_Type dimensions; it is empty
+   or the universe depending on whether \c Atom
+   is \c empty or \c universe, respectively.
+   \c Handle is unified with the handle for \f$\cP\f$.
+   Thus the query
+\code
+   ?- ppl_new_C_Polyhedron_from_space_dimension(3, universe, X).
+\endcode
+   creates the C polyhedron defining the
+   3-dimensional vector space
+   \f$\Rset^3\f$ with \c X bound to a valid handle for accessing it.</EM>
+
+<P><CODE>ppl_new_C_Polyhedron_from_constraints(+Constraint_System, -Handle)</CODE><BR>
+  <EM>Builds a new C polyhedron \p P from
+  \c Constraint_System.
+  \c Handle is unified with the handle for \p P.</EM>
+
+<P><CODE>ppl_new_C_Polyhedron_from_congruences(+Congruence_System, -Handle)</CODE><BR>
+  <EM>Builds a new C polyhedron \p P from
+  \c Congruence_System.
+  \c Handle is unified with the handle for \p P.</EM>
+
+<P><CODE>ppl_new_C_Polyhedron_from_generators(+Generator_System, -Handle)</CODE><BR>
+  <EM>Builds a new C polyhedron \p P from
+  \c Generator_System.
+  \c Handle is unified with the handle for \p P.</EM>
+
+
+<H3>Predicates that build new C polyhedra
+  by copying or converting from
+  other semantic geometric descriptions</H3>
+  Besides the constructors listed above, the library also
+  provides:
+- copy constructors that will copy an element belonging
+  to the same class of semantic geometric descriptions
+- conversion operators that build a new semantic geometric
+  description starting from a \b friend;
+  that is, a semantic geometric description in different class
+  (e.g., ppl_new_Grid_from_C_Polyhedron,
+  ppl_new_C_Polyhedron_from_BD_Shape_mpq_class, etc.).<BR>
+
+  The copy and conversion predicates have two versions,
+  one with arity 2 for the source and target handles and one
+  with an extra argument denoting the maximum complexity to be used
+  in the conversion;
+  this complexity argument is ignored when the
+  the friend and the element being built are in the same class.
+
+<P><CODE>ppl_new_C_Polyhedron_from_C_Polyhedron(+Handle_1, -Handle_2)</CODE><BR>
+  <EM>Builds a new C polyhedron \p P_1 from
+   the c polyhedron referenced by handle \c Handle_1.
+  \c Handle_2 is unified with the handle for \p P_1.</EM>
+
+<P><CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)</CODE><BR>
+  <EM>Builds a new C polyhedron \p P_1 from
+   the nnc polyhedron referenced by handle \c Handle_1.
+  \c Handle_2 is unified with the handle for \p P_1.</EM>
+
+<P><CODE>ppl_new_C_Polyhedron_from_C_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
+  <EM>Builds a new C polyhedron \p P_1 from
+   the c polyhedron referenced by handle \c Handle_1
+  using an algorithm whose complexity does not exceed \c Complexity;
+  \c Handle_2 is unified with the handle for \p P_1.</EM>
+
+<P><CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
+  <EM>Builds a new C polyhedron \p P_1 from
+   the nnc polyhedron referenced by handle \c Handle_1
+  using an algorithm whose complexity does not exceed \c Complexity;
+  \c Handle_2 is unified with the handle for \p P_1.</EM>
+
+
+<H3>Destructor predicate</H3>
+Below is the destructor predicate for the Polyhedron domain.
+
+<P><CODE>ppl_delete_Polyhedron(+Handle)</CODE><BR>
+  <EM>Invalidates the handle  referenced by \c Handle:
+  this makes sure the corresponding resources will eventually be released.</EM>
+
+
+<H2>Predicates that do not change the polyhedron</H2>
+<H3>Test Predicates</H3>
+These predicates test the polyhedron for different properties
+and succeed or fail depending on the outcome.
+
+<P><CODE>ppl_Polyhedron_is_empty(+Handle)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   \c Handle is empty.</EM>
+
+<P><CODE>ppl_Polyhedron_is_universe(+Handle)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   \c Handle is the universe.</EM>
+
+<P><CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   \c Handle is bounded.</EM>
+
+<P><CODE>ppl_Polyhedron_contains_integer_point(+Handle)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   \c Handle contains an integer point.</EM>
+
+<P><CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   \c Handle is topologically closed.</EM>
+
+<P><CODE>ppl_Polyhedron_is_discrete(+Handle)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   \c Handle is discrete.</EM>
+
+<P><CODE>ppl_Polyhedron_bounds_from_above(+Handle, +Lin_Expr)</CODE><BR>
+   <EM>Succeeds if and only if <CODE>Lin_Expr</CODE> is bounded from above
+   in the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_bounds_from_below(+Handle, +Lin_Expr)</CODE><BR>
+   <EM>Succeeds if and only if <CODE>Lin_Expr</CODE> is bounded from below
+   in the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle_2</CODE> is included in or equal to
+   the polyhedron referenced by <CODE>Handle_1</CODE>.</EM>
+
+<P><CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle_2</CODE> is included in but not equal to
+   the polyhedron referenced by <CODE>Handle_1</CODE>.</EM>
+
+<P><CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle_2</CODE> is disjoint from
+   the polyhedron referenced by <CODE>Handle_1</CODE>.</EM>
+
+<P><CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle_1</CODE> is
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.</EM>
+
+<P><CODE>ppl_Polyhedron_OK(+Handle)</CODE><BR>
+   <EM>Succeeds only if the polyhedron referenced by
+   \c Handle is well formed, i.e., if it
+   satisfies all its implementation invariants.
+   Useful for debugging purposes.</EM>
+
+<P><CODE>ppl_Polyhedron_constrains(+Handle, +PPL_Var)</CODE><BR>
+  <EM>Succeeds if and only if the polyhedron referenced by
+   \c Handle constrains the dimension \c PPL_Var.</EM>
+
+
+<H3>Predicates that return information about the polyhedron</H3>
+These predicates will obtain more detailed information about the
+polyhedron
+unifying some of their arguments with the results.
+
+<P><CODE>ppl_Polyhedron_space_dimension(+Handle, ?Dimension_Type)</CODE><BR>
+   <EM>Unifies \c Dimension_Type with the dimension of the vector space enclosing
+   the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_affine_dimension(+Handle, ?Dimension_Type)</CODE><BR>
+   <EM>Unifies \c Dimension_Type with the affine dimension of
+   the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint, ?Relation_List)</CODE><BR>
+  <EM>Unifies \c Relation_List with the list of relations the
+  polyhedron referenced by \c Handle has with \c Constraint.
+  The possible relations are listed in the
+  grammar rules above.</EM>
+
+<P><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator, ?Relation_List)</CODE><BR>
+  <EM>Unifies \c Relation_List with the list of relations the
+  polyhedron referenced by \c Handle has with \c Generator.
+  The possible relations are listed in the
+  grammar rules above.</EM>
+
+<P><CODE>ppl_Polyhedron_relation_with_congruence(+Handle, +Congruence, ?Relation_List)</CODE><BR>
+  <EM>Unifies \c Relation_List with the list of relations the
+  polyhedron referenced by \c Handle has with \c Congruence.
+  The possible relations are listed in the
+  grammar rules above.</EM>
+
+<P><CODE>ppl_Polyhedron_get_constraints(+Handle, ?Constraint_System)</CODE><BR>
+   <EM>Unifies \c Constraint_System with
+   the constraints (in the form of a list) in the constraint system
+   satisfied by the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_get_congruences(+Handle, ?Congruence_System)</CODE><BR>
+   <EM>Unifies \c Congruence_System with
+   the congruences (in the form of a list) in the congruence system
+   satisfied by the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_get_generators(+Handle, ?Generator_System)</CODE><BR>
+   <EM>Unifies \c Generator_System with
+   the generators (in the form of a list) in the generator system
+   for the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_get_minimized_constraints(+Handle, ?Constraint_System)</CODE><BR>
+   <EM>Unifies \c Constraint_System with
+   the constraints (in the form of a list)
+   in the minimized constraint system
+   satisfied by the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_get_minimized_congruences(+Handle, ?Congruence_System)</CODE><BR>
+   <EM>Unifies \c Congruence_System with
+   the congruences (in the form of a list)
+   in the minimized congruence system
+   for the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_get_minimized_generators(+Handle, ?Generator_System)</CODE><BR>
+   <EM>Unifies \c Generator_System with
+   the generators (in the form of a list)
+   in the minimized generator system
+   satisfied by the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_maximize(+Handle, +Lin_Expr, ?Coeff_1, ?Coeff_2, ?Boolean)</CODE><BR>
+  <EM>Succeeds if and only if polyhedron \p P referenced by \c Handle
+  is not empty and \c Lin_Expr is bounded from above in \p P.
+
+  \c Coeff_1 is unified with the numerator of the supremum value
+  and \c Coeff_2 with the denominator of the supremum value.
+  If the supremum is also the maximum, \c Boolean is unified
+  with the atom \c true and, otherwise, unified with
+  the atom \c false.</EM>
+
+<P><CODE>ppl_Polyhedron_minimize(+Handle, +Lin_Expr, ?Coeff_1, ?Coeff_2, ?Boolean)</CODE><BR>
+  <EM>Succeeds if and only if polyhedron \p P referenced by \c Handle
+  is not empty and \c Lin_Expr is bounded from below in \p P.
+
+  \c Coeff_1 is unified with the numerator of the infinum value
+  and \c Coeff_2 with the denominator of the infinum value.
+  If the infinum is also the minimum, \c Boolean is unified
+  with the atom \c true and, otherwise, unified with
+  the atom \c false.</EM>
+
+<P><CODE>ppl_Polyhedron_maximize_with_point(+Handle, +Lin_Expr, ?Coeff_1, ?Coeff_2, ?Boolean, ?Point)</CODE><BR>
+  <EM>Succeeds if and only if polyhedron \p P referenced by \c Handle
+  is not empty and \c Lin_Expr is bounded from above in \p P.
+
+  \c Coeff_1 is unified with the numerator of the supremum value
+  and \c Coeff_2 with the denominator of the supremum value
+  and \c Point with a point or closure point where \c Lin_Expr reaches
+  this value.
+  If the supremum is also the maximum, \c Boolean is unified
+  with the atom \c true and, otherwise, unified with the
+  atom \c false.</EM>
+
+<P><CODE>ppl_Polyhedron_minimize_with_point(+Handle, +Lin_Expr, ?Coeff_1, ?Coeff_2, ?Boolean, ?Point)</CODE><BR>
+  <EM>Succeeds if and only if polyhedron \p P referenced by \c Handle
+  is not empty and \c Lin_Expr is bounded from below in \p P.
+
+  \c Coeff_1 is unified with the numerator of the infinum value
+  and \c Coeff_2 with the denominator of the infinum value
+  and \c Point with a point or closure point where \c Lin_Expr reaches
+  this value.
+  If the infinum is also the minimum, \c Boolean is unified
+  with the atom \c true and, otherwise, unified with the
+  atom \c false.</EM>
+
+<P><CODE>ppl_Polyhedron_external_memory_in_bytes(+Handle, ?Number)</CODE><BR>
+<EM>Unifies \c Number with the size of the total memory in
+bytes occupied by the polyhedron referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Polyhedron_total_memory_in_bytes(+Handle, ?Number)</CODE><BR>
+<EM>Unifies \c Number with the size of the external memory in
+bytes occupied by the polyhedron referenced by \c Handle.</EM>
+
+
+<H3>Ascii dump predicate</H3>
+This output predicate is useful for debugging.
+
+<P><CODE>ppl_Polyhedron_ascii_dump(+Handle)</CODE><BR>
+  <EM>Dumps an ascii representation of the PPL internal state for
+  the polyhedron referenced by \c Handle on the standard output.</EM>
+
+
+<H2>Space-dimension preserving predicates that may change
+    the polyhedron</H2>
+These predicates may modify the polyhedron referred to
+by the handle in first argument;
+the (dimension of the) vector space in which it is embedded is unchanged.
+<H3>Predicates that may change the polyhedron by adding
+to its constraint or generator descriptions</H3>
+Note that there are two forms of these predicates
+differentiated in the names by the
+words "add" or "refine with";
+see Section \extref{Generic_Operations_on_Semantic_Geometric_Descriptors, Generic Operations on Semantic Geometric Descriptors} in the
+main \extref{preamble, PPL User Manual}
+for the differences in the semantics and therefore, the expected behavior,
+between these forms.
+
+<P><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by adding
+   \c Constraint to its constraint system.
+   For a C polyhedron, \c Constraint must be
+   an equality or a non-strict inequality.</EM>
+
+<P><CODE>ppl_Polyhedron_add_congruence(+Handle, +Congruence)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by adding
+   \c Congruence to its congruence system.
+   For a C polyhedron, \c Congruence must be
+   an equality.</EM>
+
+<P><CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by adding
+   \c Generator to its generator system.
+   For a C polyhedron, \c Generator must be
+   a line, ray or point.</EM>
+
+<P><CODE>ppl_Polyhedron_add_constraints(
+                  +Handle,
+                  +Constraint_System)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by adding to its constraint system the constraints in
+   \c Constraint_System.
+   For a C polyhedron, \c Constraints must be a list of
+   equalities and non-strict inequalities.</EM>
+
+<P><CODE>ppl_Polyhedron_add_congruences(
+                  +Handle,
+                  +Congruence_System)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by adding to its congruence system the congruences in
+   \c Congruence_System.
+   For a C polyhedron, \c Congruences must be a list of
+   equalities.</EM>
+
+<P><CODE>ppl_Polyhedron_add_generators(
+                  +Handle,
+                  +Generator_System)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by adding to its generator system the generators in
+   \c Generator_System.
+   For a C polyhedron, \c Generators must be a list of
+   lines, rays and points.</EM>
+
+<P><CODE>ppl_Polyhedron_refine_with_constraint(
+                  +Handle,
+                  +Constraint)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by refining its constraint system with
+   \c Constraint.</EM>
+
+<P><CODE>ppl_Polyhedron_refine_with_congruence(
+                  +Handle,
+                  +Congruence)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by refining its congruence system with
+   \c Congruence.</EM>
+
+<P><CODE>ppl_Polyhedron_refine_with_constraints(
+                  +Handle,
+                  +Constraint_System)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by refining its constraint system with
+   the constraints in \c Constraint_System.</EM>
+
+<P><CODE>ppl_Polyhedron_refine_with_congruences(
+                  +Handle,
+                  +Congruence_System)</CODE><BR>
+   <EM>Updates the polyhedron referenced by \c Handle to
+   one obtained by refining its congruence system with
+   the congruences in \c Congruence_System.</EM>
+
+
+<H3>Predicates that transform the polyhedron</H3>
+These predicates enable transformations
+such as taking the topological closure (which for the domain of
+C polyhedron is the identity transformation),
+unconstraining a specified dimension
+as explained in the
+main \extref{preamble, PPL User Manual} in Section
+\extref{Cylindrification, Cylindrification Operator}
+and several different image and preimage affine transfer relations;
+for details of the latter see Sections
+\extref{Images_and_Preimages_of_Affine_Transfer_Relations, Images and Preimages of Affine Transfer Relations}
+and
+\extref{Generalized_Affine_Relations, Generalized Affine Relations}
+<P><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE><BR>
+  <EM>Assigns to the polyhedron referenced by \c Handle
+  its topological closure.</EM>
+
+<P><CODE>ppl_Polyhedron_unconstrain_space_dimension(+Handle, +PPL_Var)</CODE><BR>
+  <EM>Modifies the polyhedron \p P referenced by \c Handle by unconstraining
+  the space dimension \c PPL_Var.</EM>
+
+<P><CODE>ppl_Polyhedron_unconstrain_space_dimensions(+Handle, +List_of_PPL_Var)</CODE><BR>
+  <EM>Modifies the polyhedron \p P referenced by \c Handle by unconstraining
+  the space dimensions that are specified in \c List_of_PPL_Var.
+  The presence of duplicates in \c List_of_PPL_Var is a waste
+  but an innocuous one.</EM>
+
+<P><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var, +Lin_Expr, +Coeff)</CODE><BR>
+   <EM>Transforms the polyhedron referenced by \c Handle
+   assigning the affine expression for \c Lin_Expr/\c Coeff to \c PPL_Var.</EM>
+
+<P><CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var, +Lin_Expr, +Coeff)</CODE><BR>
+   <EM>Transforms the polyhedron referenced by \c Handle
+   substituting the affine expression for \c Lin_Expr/\c Coeff to \c PPL_Var.</EM>
+
+<P><CODE>ppl_Polyhedron_bounded_affine_image(+Handle, +PPL_Var, +Lin_Expr_1, +Lin_Expr_2, +Coeff)</CODE><BR>
+  <EM>Assigns to polyhedron \p P referenced by \c Handle
+  the generalized image with respect to the
+  generalized affine transfer relation
+  \c Lin_Expr_1/Coeff
+    \f$\leq\f$ \c PPL_Var
+      \f$\leq\f$ \c Lin_Expr_2/Coeff.</EM>
+
+<P><CODE>ppl_Polyhedron_bounded_affine_preimage(+Handle, +PPL_Var, +Lin_Expr_1, +Lin_Expr_2, +Coeff)</CODE><BR>
+  <EM>Assigns to polyhedron \p P referenced by \c Handle
+  the generalized preimage with respect to the
+  generalized affine transfer relation
+  \c Lin_Expr_1/Coeff
+    \f$\leq\f$ \c PPL_Var
+      \f$\leq\f$ \c Lin_Expr_2/Coeff.</EM>
+
+<P><CODE>ppl_Polyhedron_generalized_affine_image(+Handle, +PPL_Var, +Relation_Symbol, +Lin_Expr, +Coeff)</CODE><BR>
+  <EM>Assigns to polyhedron \p P referenced by \c Handle
+  the generalized image with respect to the
+  generalized affine transfer relation
+   \c PPL_Var \f$\bowtie\f$ \c Lin_Expr/\c Coeff,
+   where \f$\bowtie\f$ is the symbol
+   represented by \c Relation_Symbol.</EM>
+
+<P><CODE>ppl_Polyhedron_generalized_affine_preimage(+Handle, +PPL_Var, +Relation_Symbol, +Lin_Expr, +Coeff)</CODE><BR>
+  <EM>Assigns to polyhedron \p P referenced by \c Handle
+  the generalized preimage with respect to the
+  generalized affine transfer relation
+   \c PPL_Var \f$\bowtie\f$ \c Lin_Expr/\c Coeff,
+   where \f$\bowtie\f$ is the symbol
+   represented by \c Relation_Symbol.</EM>
+
+<P><CODE>ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle, +Lin_Expr_1, +Relation_Symbol, +Lin_Expr_2)</CODE><BR>
+  <EM>Assigns to polyhedron \p P referenced by \c Handle
+  the generalized image with respect to the
+  generalized affine transfer relation
+   \c Lin_Expr_1 \f$\bowtie\f$ \c Lin_Expr_2,
+   where \f$\bowtie\f$ is the symbol
+   represented by \c Relation_Symbol.</EM>
+
+<P><CODE>ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(+Handle, +Lin_Expr_1, +Relation_Symbol, +Lin_Expr_2)</CODE><BR>
+  <EM>Assigns to polyhedron \p P referenced by \c Handle
+  the generalized preimage with respect to the
+  generalized affine transfer relation
+   \c Lin_Expr_1 \f$\bowtie\f$ \c Lin_Expr_2,
+   where \f$\bowtie\f$ is the symbol
+   represented by \c Relation_Symbol.</EM>
+
+
+<H3>Predicates whose results depend on more than one polyhedron</H3>
+These predicates include the binary operators which will assign to the
+polyhedron referred to by the first argument
+its combination with the polyhedron referred to by the second argument
+as described in the
+main \extref{preamble, PPL User Manual} in Sections
+\extref{Intersection_and_Convex_Polyhedral_Hull, Intersection and Convex Polyhedral Hull}
+and
+\extref{Convex_Polyhedral_Difference, Convex Polyhedral Difference};
+and a linear partitioning operator described below.
+
+<P><CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the intersection of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_upper_bound_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the upper bound of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_difference_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the difference of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_time_elapse_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the time elapse of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_poly_hull(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the poly-hull of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_poly_difference(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the poly-difference of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_upper_bound_assign_if_exact(+Handle_1, +Handle_2)</CODE><BR>
+    <EM>Succeeds if the least upper bound of the
+    polyhedron \p P_1 referenced by \c Handle_1
+    with the polyhedron referenced by \c Handle_2 is exact;
+    in which case the least upper bound is assigned
+    to \p P_1;
+    fails otherwise.</EM>
+
+<P><CODE>ppl_Polyhedron_poly_hull_assign_if_exact(+Handle_1, +Handle_2)</CODE><BR>
+    <EM>Succeeds if the least upper bound of the
+    polyhedron \p P_1 referenced by \c Handle_1
+    with the polyhedron referenced by \c Handle_2 is exact;
+    in which case the least upper bound is assigned
+    to \p P_1;
+    fails otherwise.</EM>
+
+<P><CODE>ppl_Polyhedron_simplify_using_context_assign(+Handle_1, +Handle_2, ?Boolean)</CODE><BR>
+    <EM>Succeeds if and only if the intersection of polyhedron \p P_1
+    referenced by \c Handle_1 and the polyhedron \p P_2 referenced by \c Handle_2
+    is non-empty.
+    Assigns to \p P_1 its meet-preserving simplification with
+    respect to \p P_2.</EM>
+
+<P><CODE>ppl_Polyhedron_linear_partition(+Handle_1, +Handle_2, -Handle_3,
+                                        -Handle_4)</CODE><BR>
+  <EM>\c Handle_1 and \c Handle_2 are handles for elements \p P_1 and \p P_2
+  in the Polyhedron domain. The predicate unifies handle
+  \c Handle_3 to a reference to the intersection of
+  \p P_1 and \p P_2 and \c Handle_4 to a reference to
+  a pointset powerset of nnc polyhedra \p P_4;
+  where \p P_4 is the linear partition of \p P_1 with respect to \p P_2.
+  This predicate is only provided if the
+  class \c Pointset_Powerset_NNC_Polyhedron
+  has been enabled when configuring the library.</EM>
+
+
+<H3>Predicates for widening and extrapolation</H3>
+In addition to the above binary operators, there are also a number
+of widening, extrapolation and narrowing operators
+as described in the
+main \extref{preamble, PPL User Manual} in Sections
+\extref{Widening_Operators, Widening Operators},
+\extref{Widening_with_Tokens, Widening with Tokens} and
+\extref{Extrapolation_Operators, Extrapolation Operators}.
+Note that for all these widening and extrapolation predicates
+to behave as specified
+the polyhedron referred to by the second argument has to be
+contained in (or equal to) the polyhedron referred to by the first argument.
+
+<P><CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(+Handle_1, +Handle_2, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the BHRZ03-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2.
+   The widening with tokens delay
+   technique is applied with \c C_unsigned_1 tokens;
+   \c C_unsigned_2 is unified with the number of tokens
+   remaining at the end of the operation.</EM>
+
+<P><CODE>ppl_Polyhedron_H79_widening_assign_with_tokens(+Handle_1, +Handle_2, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2.
+   The widening with tokens delay
+   technique is applied with \c C_unsigned_1 tokens;
+   \c C_unsigned_2 is unified with the number of tokens
+   remaining at the end of the operation.</EM>
+
+<P><CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the BHRZ03-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2.</EM>
+
+<P><CODE>ppl_Polyhedron_widening_assign_with_tokens(+Handle_1, +Handle_2, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+<EM>Same as predicate <CODE>ppl_Polyhedron_H79_widening_assign_with_tokens</CODE>/4</EM>
+
+<P><CODE>ppl_Polyhedron_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
+<EM>Same as predicate <CODE>ppl_Polyhedron_H79_widening_assign</CODE>/2</EM>
+
+<P><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the BHRZ03-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1.
+   The widening with tokens delay
+   technique is applied with \c C_unsigned_1 tokens;
+   \c C_unsigned_2 is unified with the number of tokens
+   remaining at the end of the operation.</EM>
+
+<P><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the BHRZ03-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.
+   The widening with tokens delay
+   technique is applied with \c C_unsigned_1 tokens;
+   \c C_unsigned_2 is unified with the number of tokens
+   remaining at the end of the operation.</EM>
+
+<P><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1.
+   The widening with tokens delay
+   technique is applied with \c C_unsigned_1 tokens;
+   \c C_unsigned_2 is unified with the number of tokens
+   remaining at the end of the operation.</EM>
+
+<P><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.
+   The widening with tokens delay
+   technique is applied with \c C_unsigned_1 tokens;
+   \c C_unsigned_2 is unified with the number of tokens
+   remaining at the end of the operation.</EM>
+
+<P><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the BHRZ03-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1.</EM>
+
+<P><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the BHRZ03-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.</EM>
+
+<P><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1.</EM>
+
+<P><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.</EM>
+
+
+<H2>Predicates that may modify the vector space</H2>
+These predicates enable the modification of the vector space
+of the polyhedron referred to in the first argument.
+<H3>Predicate for concatenation</H3>
+For more information on this operation, see Section
+\extref{Concatenating_Polyhedra, Concatenating Polyhedra},
+of the main \extref{preamble, PPL User Manual}.
+
+<P><CODE>ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the concatenation of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+
+<H3>Predicates for mapping dimensions or changing the vector space</H3>
+These predicates enable the modification of the vector space
+of the polyhedron referred to in the first argument.
+These predicates enable the modification of the vector space
+of the polyhedron referred to in the first argument.
+Detailed descriptions of these can be found in the
+main \extref{preamble, PPL User Manual} in Sections
+\extref{Adding_New_Dimensions_to_the_Vector_Space, Adding New Dimensions to the Vector Space},
+\extref{Removing_Dimensions_from_the_Vector_Space, Removing Dimensions from the Vector Space},
+\extref{Mapping_the_Dimensions_of_the_Vector_Space, Mapping the Dimensions of the Vector Space},
+\extref{expand_space_dimension, Expanding One Dimension of the Vector Space to Multiple Dimensions}
+and
+\extref{Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension, Folding Multiple Dimensions of the Vector Space into One Dimension}.
+
+<P><CODE>ppl_Polyhedron_add_space_dimensions_and_embed(+Handle, +Dimension_Type)</CODE><BR>
+  <EM>Adds \c Dimension_Type new dimensions to the space enclosing
+  the polyhedron \p P referenced by \c Handle
+  and and_embeds \p P in this space.</EM>
+
+<P><CODE>ppl_Polyhedron_add_space_dimensions_and_project(+Handle, +Dimension_Type)</CODE><BR>
+  <EM>Adds \c Dimension_Type new dimensions to the space enclosing
+  the polyhedron \p P referenced by \c Handle
+  and and_projects \p P in this space.</EM>
+
+<P><CODE>ppl_Polyhedron_remove_space_dimensions(+Handle, +List_of_PPL_Vars)</CODE><BR>
+  <EM>Removes from the vector space enclosing
+  the polyhedron \p P referenced by \c Handle the space dimensions that
+  are specified in \c List_of_PPL_Var.  The presence
+  of duplicates in  \c List_of_PPL_Var is a waste but an innocuous one.</EM>
+
+<P><CODE>ppl_Polyhedron_remove_higher_space_dimensions(+Handle, +Dimension_Type)</CODE><BR>
+  <EM>Removes the higher dimensions from the vector space enclosing
+  the polyhedron \p P referenced by \c Handle
+  so that, upon successful return, the new space dimension is
+  \c Dimension_Type.</EM>
+
+<P><CODE>ppl_Polyhedron_expand_space_dimension(+Handle, +PPL_Var, +Dimension_Type)</CODE><BR>
+  <EM>Expands the \c  PPL_Var-th
+  dimension of the vector space enclosing
+  the polyhedron referenced by \c Handle to
+  \c Dimension_Type new space dimensions.</EM>
+
+<P><CODE>ppl_Polyhedron_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var)</CODE><BR>
+  <EM>Modifies the polyhedron referenced by \c Handle
+  by folding the
+  space dimensions contained in \c List_of_PPL_Vars
+  into dimension \c PPL_Var.
+  The presence of duplicates in \c List_of_PPL_Vars is a waste
+  but an innocuous one.</EM>
+
+<P><CODE>ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func)</CODE><BR>
+  <EM>Remaps the dimensions of the vector space according to a
+  partial function.
+  This function is specified by means of the \c P_Func,
+  which has \p n entries.
+  The result is undefined if \c P_Func does not encode a partial
+  function.</EM>
+
+
+\anchor other_domains_predicates
+<H1>Ad hoc Predicates for Other Domains</H1>
+<H2>Extra Predicates Specifically for the Pointset Powerset Domains</H2>
+  The powerset domains can be instantiated by taking as a base domain
+  any fixed semantic geometric description
+  (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
+  An element of the powerset domain represents a disjunctive collection
+  of base objects (its disjuncts), all having the same space dimension.
+  For more information on this construct,
+  see Section \extref{The_Powerset_Domain, The Powerset Domain}
+  in the main \extref{preamble, PPL User Manual}.
+
+  Besides the predicates that are available in all semantic geometric
+  descriptions (whose documentation is not repeated here),
+  the powerset domain also provides several ad hoc predicates.
+  These are specified below, instantiated for the
+  PPL domain Pointset_Powerset_C_Polyhedron.
+  Note that predicates for other pointset powerset domains
+  will follow similar patterns.
+
+  <H3>Predicates for pointset powerset iterators and disjuncts.</H3>
+Iterators allow the user to examine and change individual elements
+(called here disjuncts) of a pointset powerset.
+Detailed descriptions for adding and removing disjuncts can be found in the
+main \extref{preamble, PPL User Manual} in Section
+\extref{Adding_a_Disjunct, Adding a Disjunct}.
+The following predicates support useful operations
+on these iterators and disjuncts via the usual handles.
+
+<P><CODE>ppl_new_Pointset_Powerset_C_Polyhedron_iterator_from_iterator(+Iterator_1, -Iterator_2)</CODE><BR>
+  <EM>Builds a new iterator \p it from the iterator referenced by
+  \c Iterator_1. <CODE>Iterator_2</CODE> is unified with the handle
+  for \p it.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_begin_iterator(+Handle, -Iterator)</CODE><BR>
+  <EM>Unifies \c Iterator with a handle to an iterator "pointing"
+  to the beginning of
+  the sequence of disjuncts of the powerset referred to by \c Handle.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_end_iterator(+Handle, -Iterator)</CODE><BR>
+  <EM>Unifies \c Iterator with a handle to an iterator "pointing"
+  to the end of
+  the sequence of disjuncts of the powerset referred to by \c Handle.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_iterator_equals_iterator(+Iterator_1, +Iterator_2)</CODE><BR>
+   <EM>Succeeds if and only if the iterator referenced by
+   \c Iterator_1 is equal to the iterator referenced by
+   \c Iterator_2.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_iterator_increment(+Iterator)</CODE><BR>
+  <EM>Increments the iterator referenced by \c Iterator
+  so that it "points" to the next disjunct.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_iterator_decrement(+Iterator)</CODE><BR>
+  <EM>Decrements the iterator referenced by \c Iterator
+  so that it "points" to the previous disjunct.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_iterator_get_disjunct(+Iterator, -Handle)</CODE><BR>
+  <EM>Unifies with \c Handle a reference to the disjunct referred
+  to by \c Iterator_1.</EM>
+
+<P><CODE>ppl_delete_Pointset_Powerset_C_Polyhedron_iterator(+Iterator)</CODE><BR>
+  <EM>Invalidates the handle referenced by <CODE>Iterator</CODE>:
+  this makes sure the corresponding resources
+  will eventually be released.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_add_disjunct(+Handle_1, +Handle_2)</CODE><BR>
+  <EM>Adds to the pointset powerset referenced by \c Handle_1 a disjunct
+  referred to by \c Handle_2.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjunct(+Handle, +Iterator)</CODE><BR>
+  <EM>If \p it is the iterator referred to by \c Iterator,
+  drops from the pointset powerset referenced by \c Handle
+  the disjunct pointed to by \p it and
+  assigns to \p it an iterator to the next disjunct.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjuncts(+Handle, +Iterator_1, +Iterator_2)</CODE><BR>
+  <EM>If \p it_1 and \p it_2 are the iterators referred to by \c Iterator_1
+  and \c Iterator_2, respectively,
+  drops from the pointset powerset referenced by \c Handle
+   all the disjuncts from \p it_1 to \p it_2 (excluded).</EM>
+
+  <H3>Other Ad Hoc Predicates for the pointset powerset domains.</H3>
+Collected here are some other predicates that are specific to
+pointset powersets of C polyhedra;
+these provide operations for
+simplifying the powerset,
+geometric comparisons
+and widening and extrapolation.
+Detailed descriptions of these can be found in the
+main \extref{preamble, PPL User Manual} in Sections
+\extref{Geometric_Comparisons, Geometric Comparisons},
+\extref{Certificate_Based_Widenings, Certificate-Based Widenings},
+\extref{Powerset_Extrapolation_Operators, Powerset Extrapolation Operators}.
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_pairwise_reduce(+Handle)</CODE><BR>
+   <EM>Assigns the result of pairwise reduction on
+   the pointset powerset referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_omega_reduce(+Handle)</CODE><BR>
+   <EM>Assigns the result of omega reduction on
+   the pointset powerset referenced by \c Handle.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_geometrically_covers_Pointset_Powerset_C_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Succeeds if and only if the pointset powerset referenced by
+   \c Handle_2 geometrically covers
+   the pointset powerset referenced by \c Handle_1;
+   see Section \extref{Geometric_Comparisons, Geometric Comparisons}
+  in the main \extref{preamble, PPL User Manual}.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_geometrically_equals_Pointset_Powerset_C_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Succeeds if and only if the pointset powerset referenced by
+   \c Handle_2 geometrically equals
+   the pointset powerset referenced by \c Handle_1;
+   see Section \extref{Geometric_Comparisons, Geometric Comparisons}
+  in the main \extref{preamble, PPL User Manual}.</EM>
+
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BHZ03_BHRZ03_BHRZ03_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the pointset powerset \p P_1 referenced by
+   \c Handle_1 the \extref{pps_certificate_widening, BHZ03-widening}
+    between \p P_1 and the pointset powerset referenced by
+   \c Handle_2, using the BHRZ03-widening
+    certified by the convergence certificate for BHRZ03.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BHZ03_H79_H79_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the pointset powerset \p P_1 referenced by
+   \c Handle_1 the \extref{pps_certificate_widening, BHZ03-widening}
+    between \p P_1 and the pointset powerset referenced by
+   \c Handle_2, using the H79-widening
+    certified by the convergence certificate for H79.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BGP99_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2, C_unsigned)</CODE><BR>
+    <EM>Assigns to the pointset powerset \p P_1 referenced by
+   \c Handle_1 the result of applying the
+    \extref{pps_bgp99_extrapolation, BGP99 extrapolation operator}
+    between \p P_1 and the pointset powerset referenced by
+   \c Handle_2, using the BHRZ03-widening
+    and the cardinality threshold \c C_unsigned.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BGP99_H79_extrapolation_assign(+Handle_1, +Handle_2, C_unsigned)</CODE><BR>
+    <EM>Assigns to the pointset powerset \p P_1 referenced by
+   \c Handle_1 the result of applying the
+    \extref{pps_bgp99_extrapolation, BGP99 extrapolation operator}
+    between \p P_1 and the pointset powerset referenced by
+   \c Handle_2, using the H79-widening
+    and the cardinality threshold \c C_unsigned.</EM>
+
+*/ /* \page domains_predicates */

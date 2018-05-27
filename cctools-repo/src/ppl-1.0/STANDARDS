@@ -1,0 +1,739 @@
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+See below for the copying conditions.
+
+
+Coding Standards for the Parma Polyhedra Library
+================================================
+
+Please read the first chapters of "Ada 95 Quality and Style:
+Guidelines for Professional Programmers" (you will find a link to it
+in the "Links" section of the PPL web site).
+
+
+Names
+-----
+
+Carefully choose names that clarify the nature or the intended use of
+the entity you are naming.  Do not be afraid of long identifiers, even
+though conciseness is always a good thing.  Do not use abbreviations
+when shorter synonyms exist.  Use underscores to separate words in a
+compound name.  By all means, avoid baStudlyCaps: write
+available_widening_tokens (if it is a variable) or
+Available_Widening_Tokens (if it is a class or enum); never write
+availableWideningTokens or AvailableWideningTokens.
+In general, we use:
+
+  lower_case for variables, methods, functions, typedefs;
+  UPPER_CASE for macros and enum values;
+  Mixed_Case for class names and template parameter names.
+
+
+Pre and post increment and decrement operators
+----------------------------------------------
+
+All other things being equal, always prefer preincrement and
+predecrement to postincrement and postdecrement.
+
+
+Swap specialization
+-------------------
+
+All library types should provide a publicly available swap method.
+Whenever appropriate for ensuring efficiency, the generic std::swap
+algorithm should be specialized to use the swap method.
+
+
+Limiting the visibility of variables, functions, macros and so forth
+--------------------------------------------------------------------
+
+Avoid using the keyword `static' to specify that global variables or
+functions should be visible only inside the current translation unit;
+use the anonymous namespace, instead. The keyword `static' should
+only appear inside class definitions or function bodies. As an example,
+
+static const char* s = "Not accessible by other translation units";
+
+static void f() {
+  // ... function body ...
+}
+
+should be replaced by
+
+namespace {
+
+const char* s = "Not accessible by other translation units";
+
+void f() {
+  // ... function body ...
+}
+
+} // namespace
+
+However, do not use anonymous namespaces in a header file
+(any file that is meant to be included in other translation units).
+Instead, define and use a new non-anonymous namespace that should
+be placed inside the namespace
+
+    Parma_Polyhedra_Library::Implementation
+
+Concerning macros and the implementation languages (such as C and Prolog)
+that have a flat identifiers namespace, make sure the library limits
+its impact as much as possible by naming objects in a conspicuous way
+and by limiting as much as possible the scope of declarations.
+This means
+
+- all C and C++ macros should have names prefixed by `PPL_';
+  those that are not meant to be directly accessible by the user should
+  be #undef'ed as soon as possible in the source file they are defined in;
+- all functions and types declared by the C interface should have
+  names prefixed by `ppl_';
+- all Prolog predicates declared by the Prolog interfaces should have
+  names prefixed by `ppl_'.
+
+
+Macros
+------
+
+Macros should be used only if really needed (in many cases, macros can
+be replaced by inline functions).
+
+
+Block closures
+--------------
+
+Try to make clear what is being closed.  For example:
+
+1)
+
+namespace Parma_Polyhedra_Library {
+
+...
+
+} // namespace Parma_Polyhedra_Library
+
+2)
+
+extern "C" {
+
+...
+
+} // extern "C"
+
+3)
+
+#ifndef PPL_Class_defs_hh
+
+...
+
+#endif // !defined(PPL_Class_defs_hh)
+
+
+Negation
+--------
+
+Use `!' to negate a value.
+
+For example, use
+
+	if (!ph.is_empty())
+	   std::cout << "ph contains at least one point" << endl;
+
+instead of
+
+	if (ph.is_empty() == false)
+	   std::cout << "ph contains at least one point" << endl;
+
+
+Comparison with zero
+--------------------
+
+Be explicit when comparing a value with zero in a conditional context.
+
+For example, use
+
+	assert(sys.num_rows() != 0);
+
+instead of
+
+	assert(sys.num_rows());
+
+
+Formatting Conventions
+======================
+
+Indent each level using two spaces.
+Insert a space: after each comma, before and after each operator, after
+if/do/while keywords. As an exception to this rule, spaces can be omitted near
+arithmetic multiplication and division operator, if they would harm
+readability.
+Don't insert spaces between the name of a function and the following
+parenthesis.
+Braces should be cuddled on the preceding/following line.
+Avoid, when possible, source lines longer than 78 characters.
+In a function declaration, the return type of a function and the modifiers
+must be placed alone in one line.
+In pointer and reference types, the * and & characters should be followed, but
+not preceded, by a space.
+
+This is bad:
+
+inline void C::f(int *x,int y)
+{
+if( x!=0 )
+{
+    int &z=y;
+    foo (x / 2+y * 3,z/bar(5));
+}
+}
+
+This is good:
+
+inline void
+C::f(int* x, int y) {
+  if (x != 0) {
+    int& z = y;
+    foo(x/2 + y*3, z / bar(5));
+  }
+}
+
+
+Namespace indentation
+---------------------
+
+The entire library is in its own namespace.  We sometimes specialize
+std::swap() and std::iter_swap().  Other namespaces may be involved
+but only in restricted contexts.  Therefore, we have unindented
+namespace-level declarations, thus saving some precious horizontal
+space.  For example:
+
+namespace Parma_Polyhedra_Library {
+
+non-empty lines here start at column 0;
+
+} // namespace Parma_Polyhedra_Library
+
+If you use Emacs, you may want to put the following two lines in your
+.emacs:
+
+;; Disable indentation when in namespace blocks.
+(c-set-offset 'innamespace 0)
+
+
+Trailing whitespace
+-------------------
+
+Always avoid trailing whitespace.
+If you use Emacs, then all the trailing whitespace in the current
+buffer can be removed by using the command
+
+  M-x delete-trailing-whitespace
+
+If you keep inserting trailing whitespace when coding, then you may
+want to put the following two lines in your .emacs:
+
+;; Show trailing whitespace.
+(setq-default show-trailing-whitespace t)
+
+
+Standards for Structuring the Source Code in Files
+==================================================
+
+Source code should be organized so as to ensure that:
+  - the contents of a file are strongly related;
+  - each file is of manageable size.
+
+As a rule of thumb, each type (class, struct, class template, etc.)
+named `Xtype' that is relevant on its own for the user or the
+developer of the library should be provided with a set of source files
+whose filenames start with `Xtype'. The source files for such a type
+should be named and populated as follows:
+
+a) Xtype.types.hh
+Contains the forward declarations of type names (in particular, the
+one for `Xtype') and other useful typedef's.
+
+b) Xtype.defs.hh
+Contains the definition of the type, together with the declaration of
+any function that, even though not being formally part of the type, is
+nonetheless related to it and should therefore be considered part of
+its interface.
+
+c) Xtype.inlines.hh
+Contains the definitions of inline functions.
+
+d) Xtype.templates.hh
+Contains the non-inline definitions of all class template members and
+all (member or non-member) function templates that are not fully
+specialized.
+
+e) Xtype.cc
+Contains the definitions of non-inline functions, including non-inline
+full specializations of templates.
+
+f) When appropriate, further *.cc files can be used to split huge
+source files into more manageable components (e.g., see the files
+Polyhedron_public.cc, Polyhedron_nonpublic.cc, Polyhedron_chdims.cc
+and Polyhedron_widenings.cc, or even conversion.cc, minimize.cc, etc.).
+
+Note that:
+  - all interface functions should be declared in Xtype.defs.hh;
+  - no function definition should be placed in Xtype.defs.hh;
+  - bare declarations should not be declared inline (i.e., inline directives
+    should be placed only in front of the definition of the functions);
+  - inner classes are usually kept in the same files as the outer class;
+  - functions having the anonymous namespace scope can be (and usually are)
+    only declared and defined in file Xtype.cc, regardless of whether or not
+    the inline directive is specified.
+
+
+Standards for Writing the Makefile.am Files
+===========================================
+
+How to clean what
+-----------------
+
+Cleaning in this context means removing files from the build directory.
+In order to clean files, they must be listed in one of three variables:
+MOSTLYCLEANFILES, CLEANFILES and DISTCLEANFILES.  The rules (believed to
+have been first formulated by Francois Pinard) are:
+
+  - If `make' built the file, and it is commonly something that one would
+    want to rebuild (such as an object file), then list the file in
+    MOSTLYCLEANFILES.
+  - Otherwise, if `make' built the file, then list it in CLEANFILES.
+  - Otherwise, if `configure' built the file, then list it in DISTCLEANFILES.
+
+When cleaning is more complex than a simple deletion, you can use the hooks
+mostlyclean-local, clean-local and distclean-local.
+
+
+Standards for Documenting the Project with Doxygen
+==================================================
+
+1) All code entities (classes, structs, enums, variables, methods,
+   functions, etc.) should be provided with a brief Doxygen comment.
+   Brief comments are normally obtained as follows:
+
+     //! Brief comment for class C.
+     class C {
+       ...
+     };
+
+   If the comment is multi-line, then the following syntax should be adopted:
+
+     /*! \brief
+       A brief comment for class C, that is a bit too long
+       to be placed in a single line.
+     */
+     class C {
+       ...
+     };
+
+2) A *friend* declaration of a function should NOT be provided with
+   a Doxygen comment. Rather, it is the very declaration of the function
+   (which should be found outside of the class) that has to be documented.
+
+3) When needed or useful, brief comments should be followed by detailed
+   Doxygen comments. If the brief comment spans a single line of text, then
+   the following syntax can be adopted:
+
+     //! Brief comment for class C.
+     /*!
+       More details on class C.
+       Even more details.
+     */
+     class C {
+       ...
+     };
+
+   Otherwise, if the brief comment spans multiple lines of text, the
+   following syntax should be adopted, where the brief and the detailed
+   documentation are merged in a single multiline comment block:
+
+     /*! \brief
+       Brief comment for class C.
+
+       More details on class C.
+       Even more details.
+     */
+     class C {
+       ...
+     };
+
+   The first paragraph break (in this case, the empty line) marks the
+   separation between the brief and the detailed part. Note that
+   all the uses of \param, \result and \exception special commands
+   will automatically cause a paragraph break, therefore starting
+   the detailed part. This will happen even when using the //! style
+   documentation blocks.
+
+4) In the produced documentation, the brief comment will be
+   automatically repeated just before the detailed comment,
+   so that bare repetitions should be avoided.
+
+5) In the source files, detailed comments should be placed together
+   with the brief ones, so that all the documentation pertinent to a
+   code entity is kept in a single file (typically, the *.defs.hh file).
+
+6) Brief Doxygen comments should be brief (indeed).
+   If more than two lines are required, then the comment should be
+   split into a brief part and a detailed part.
+
+7) Code entities or details that should not be visible to the end-user
+   (but that are useful for the developers) should be surrounded by
+
+     #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+	//! ... Doxygen comments ...
+     #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+
+   so that they will only appear in the developer's reference.
+   Note that the above preprocessing flags are not necessary
+   (and should therefore be avoided) when documenting:
+    - a private member of a class (because private members never
+      appear in the user manual);
+    - a public member of a class that is not documented
+      (because even the documented members of an undocumented
+      class are automatically filtered out of the user manual).
+
+8) Merging multiple comment blocks is not (fully) supported by Doxygen.
+   Thus, the technique described in point 4) above is useless
+   when we want an end-user comment block to be integrated,
+   in the developer's reference only, by further comments.
+   In such a case, a single comment block should be used as follows:
+
+     /*!
+       ... Doxygen comments for both user and developer ...
+       \if Include_Implementation_Details
+       ... Doxygen comments for developer only ...
+       \endif
+       ... Doxygen comments for both user and developer ...
+     */
+
+9) The documentation of those functions that are neither methods
+   nor friends of a given class, but are related in some way to that
+   class, should be made part of the documentation of the class.
+   This is obtained by using the Doxygen \relates special command
+   as follows:
+
+     /*! \relates Classname */
+
+   It seems that, in order to correctly match function declarations
+   and definitions, the \relates command should be placed in both places.
+   Typically, this will be the only kind of Doxygen command
+   occurring in *.inlines.hh and *.cc source files.
+
+   If Classname is a template class, the arguments of the template
+   (as well as the angle brackets) should be omitted.
+   The namespace qualification of the class can be omitted, provided
+   the comment block is included in the namespace scope.
+
+10)
+  If the \return or \param special commands are used, then these have to
+  be placed after the brief Doxygen comment.  The \return special
+  command, if present, should come before any \param command.  The
+  \exception special command, if present, should come after any \param
+  command. All the parameters of the function should be provided by the
+  corresponding \param command, respecting their textual order,
+  separating them with a blank line.  The documentation of each
+  parameter should start at the line immediately following the \param
+  command.  Typically, the list of parameters should be formatted as
+  follows, where the \return command is optional.
+
+  /*! \brief
+    The brief description.
+
+    The detailed description, if any.
+
+    \return
+    Documentation for the return value, if provided.
+
+    \param p1
+    Documentation for p1;
+
+    \param p2
+    Documentation for p2;
+    other documentation for p2;
+
+    \param p3
+    Documentation for p3.
+
+    \exception exception_type1
+    Documentation for the exceptions of type exception_type1;
+
+    \exception exception_type2
+    Documentation for the exceptions of type exception_type2.
+
+    Another piece of detailed description, if needed.
+  */
+  int foo(const bar& p1, const bar& p2, int p3);
+
+
+Standards for the Test Programs
+===============================
+
+o  Include the header file `ppl_test.hh' to include common declarations
+   for test code (see below).
+
+o  Place the test code in test functions that return a Boolean value.
+   Name the test functions test01, test02, etc.
+
+o  Each test program should contain no more than 20 test functions.
+
+o  The test functions should be written
+
+        // Comment describing the test...
+        bool
+        test10() {
+            // ... test code ...
+        }
+
+   where the 10 in `test10' indicates that it is the 10th test function
+   in the program.
+
+o  The test functions should return true if the test succeeds and false
+   if it fails.
+
+o  If a test requires auxiliary functions and/or classes, put them
+   in a namespace named, e.g., `test10_namespace', which in turn is
+   within the anonymous namespace.
+
+o  Following all the test functions, include:
+
+        BEGIN_MAIN
+          DO_TEST(test01);
+          DO_TEST(test02);
+          ...
+        END_MAIN
+
+   where every test function in the program is included in the list.
+
+o  If any of the tests is known to fail due to an overflow when the
+   library is configured to use some of the bounded-precision checked
+   integers, then the corresponding test function should be called,
+   e.g., as follows
+
+          DO_TEST_F32(test07);
+
+   where the subscript "_F32" means that the overflow is expected for
+   all checked integers having 32 bits at most (i.e., 64 bits checked
+   integers are not expected to overflow). As an alternative,
+
+          DO_TEST_F32A(test07);
+
+   means that the overflow is expected, as before, for all checked
+   integers having less than 32 bits but in the case of 32 bits checked
+   integers the overflow occurs only if assertions are enabled.
+   Hence, the possible subscripts for DO_TEST are:
+
+          _F8A, _F8, _F16A, _F16, _F32A, _F32, _F64A, _F64.
+
+o  If any of the tests _may_ fail due to an overflow (when the library
+   is configured to use some of the bounded-precision checked integers)
+   when a templatic shape domain is instantiated using inexact
+   coefficients (e.g., the typedef TBD_Shape stands for BD_Shape<float>),
+   then the corresponding test function should be called as follows
+
+          DO_TEST_MAY_OVERFLOW_IF_INEXACT(test07, TBD_Shape);
+
+o  If a definite overflow (i.e., independent from exactness) is expected
+   for some of the coefficient sizes, then the two macro names above
+   can be combined, e.g., as follows
+
+          DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test07, TBD_Shape);
+
+   meaning that the overflow is expected for 16 (or fewer) bits
+   configurations, while it may occur for configurations using more bits
+   if the shape domain is instantiated usng inexact coefficients.
+
+o  Normally, test code should produce no output at all (independently from
+   whether the test succeeded or failed). Output is only meant to help
+   during debugging. In order to support for the coding of conditional
+   output, the header file `ppl_test.hh' defines the output streams `nout'
+   and `vnout'. By default, any output directed to these streams will be
+   simply discarded. For example,
+
+        nout << "A message when noisy." << endl;
+        vnout << "A message when very noisy." << endl;
+
+   will produce no output at all. By default, the helper print functions
+   (e.g., print_constraints, print_generators, etc.) are directed to
+   stream `nout', so that they will normally discard the output too.
+
+o  By defining the environment variables `PPL_NOISY_TESTS' and/or
+   `PPL_VERY_NOISY_TESTS' to any value, the streams `nout' and `vnout'
+   will be redirected to standard output and become noisy.
+
+o  On very weird platforms the above mechanism may not be supported.
+   In these rare cases, the same effect can be obtained by defining
+   the preprocessor variables NOISY and/or VERY_NOISY to any value other
+   than zero and recompiling the test program.  Thus, if some output is
+   (locally and temporarily) needed for debugging purposes, one option
+   is to add
+
+      #define NOISY 1
+      #define VERY_NOISY 1
+
+   as the very first line of the test source file and recompile it.
+
+o  To avoid repeated namespace qualifications, the header file `ppl_test.hh'
+   adds a using directive for the whole PPL namespace. It also adds a
+   using declaration for `std::endl'. All the other objects defined in
+   the namespace `std' should be explicitly qualified in the test files
+   (typically, by adding a corresponding using declaration).
+
+o  If PPL stream input and output is required, then an explicit using
+   directive for the Parma_Polyhedra_Library::IO_Operators namespace
+   should be added to the test file.
+
+o  Refer to the existing tests for examples. Many tests are written along
+   the following schema:
+     a) create a PPL object and perform some computations with it;
+     b) create a second object in a different (maybe simpler) way, having
+        as value the expected result of the computations done in point a);
+     c) check for equivalence of the two objects.
+
+o  Ideally the tests should exercise every line of code in the library.
+   To help ensure that, the test-coverage facilities provided by GCC
+   are very useful.  They are described in Chapter 9 of the GCC manual
+   ("`gcov'---a Test Coverage Program").  For a simpler user interaction
+   with gcov, also including the generation of nicer HTML output, the
+   adoption of `lcov' is recommended (LCOV, the Linux Test Project GCOV
+   extension, http://ltp.sourceforge.net/coverage/lcov.php).
+   Here we summarize the steps needed to produce coverage information
+   using `lcov' (see below for a few hints on the direct use of `gcov').
+   The build tree under test must be configured with the
+   `--enable-coverage' and `--disable-optimization' options (and possibly
+   also with --enable-profiling). Furthermore, according to this thread
+       http://gcc.gnu.org/bugzilla/show_bug.cgi?id=12076
+   GCC performs NRV (Named Return Value) transformations even when
+   optimizations are turned off; hence, to avoid spurious zero counts
+   in return statements, the compilation flag `-fno-elide-constructors'
+   is recommended. For example:
+
+     $ configure --enable-coverage --enable-profiling \
+         --disable-optimization --with-cxxflags='-fno-elide-constructors' \
+         --enable-assertions --enable-more-assertions
+
+   Running the tests (with `make check') produces many .gcno and .gcda
+   files in src/.libs and in the test directories.  These are data
+   files for the `gcov' program. All the coverage data produced can be
+   automatically collected by `lcov' using the following command:
+
+     $ lcov --directory . --capture --output-file ppl-lcov.info
+
+   To generate HTML pages with the graphical view of the captured data,
+   use the `genhtml' command:
+
+     $ genhtml ppl-lcov.info --output-directory ppl-lcov-html
+
+   Coverage info can now be seen by pointing your favorite browser to
+   file ppl-lcov-html/index.html. The annotated sources will look like
+   the following (plus color information), where the value on the left
+   hand side of the colon is the number of executions of the corresponding
+   line of code (see also below on the use of coverage counters):
+
+    1636 :   PPL_DIRTY_TEMP(N, sum);
+    9828 :   for (dimension_type k = num_dimensions + 1; k-- > 0; ) {
+    6556 :     const DB_Row<N>& x_dbm_k = x.dbm[k];
+   39648 :     for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
+   26536 :       DB_Row<N>& x_dbm_i = x.dbm[i];
+   26536 :       const N& x_dbm_i_k = x_dbm_i[k];
+   26536 :       if (!is_plus_infinity(x_dbm_i_k))
+   55128 :         for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
+   36904 :           const N& x_dbm_k_j = x_dbm_k[j];
+   36904 :           if (!is_plus_infinity(x_dbm_k_j)) {
+         :             // Rounding upward for correctness.
+   12136 :             add_assign_r(sum, x_dbm_i_k, x_dbm_k_j, ROUND_UP);
+   12136 :             min_assign(x_dbm_i[j], sum);
+         :           }
+         :         }
+         :     }
+         :   }
+
+   Note that the collection of coverage information is incremental:
+   running again any tests will add to coverage counters (in order
+   to see the changes, coverage data has to be re-captured using the
+   `lcov' command and HTML pages re-generated using the `genhtml' command).
+   Coverage counters can be reset to zero by issuing the command:
+
+     $ lcov --directory . --zerocounters
+
+   As said above, `lcov' is just a wrapper on top of `gcov'. The direct
+   use of `gcov' produces plain-text based coverage information.
+   For example:
+
+     $ cd src
+     $ gcov -o .libs Grid_public.cc
+
+   will produce a file called Grid_public.cc.gcov containing the
+   coverage information for Grid_public.cc.  In a similar way
+
+     $ cd tests/Grid
+     $ gcov *.cc
+
+   will produce a file call tests/Grid/ppl.hh.gcov containing coverage
+   information for the header files.
+
+   Below is a section from a .gcov file.  The first column is the
+   number of times the line was run, the second is the line number of the
+   line in the source file.  Line 1006 has been run 48245 times.  Lines
+   1007, 1002 and 1013 have yet to be run.  It would be very difficult
+   to run line 1007, since this requires a Linear_System that does not
+   satisfy the invariants for its class and the PPL does everything it
+   can to make that impossible without fiddling with memory using raw
+   memory pointers.  Similarly for line 1013.  However, the fact that
+   line 1012 has never been run is suspicious and may indicate an area
+   that needs testing.
+
+        -: 1001:bool
+    48245: 1002:PPL::Generator_System::OK() const {
+        -: 1003:  // A Generator_System must be a valid Linear_System; do not check for
+        -: 1004:  // strong normalization, since this will be done when
+        -: 1005:  // checking each individual generator.
+    48245: 1006:  if (!Linear_System::OK(false))
+    #####: 1007:    return false;
+        -: 1008:
+        -: 1009:  // Checking each generator in the system.
+    48245: 1010:  const Generator_System& x = *this;
+    96490: 1011:  for (dimension_type i = num_rows(); i-- > 0; )
+    #####: 1012:    if (!x[i].OK())
+    #####: 1013:      return false;
+        -: 1014:
+        -: 1015:  // All checks passed.
+    48245: 1016:  return true;
+        -: 1017:}
+
+
+--------
+
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This document describes the Parma Polyhedra Library (PPL).
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+The license is included, in various formats, in the `doc' subdirectory
+of each distribution of the PPL in files named `fdl.*'.
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.  The license is included, in various
+formats, in the `doc' subdirectory of each distribution of the PPL in
+files named `gpl.*'.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ .

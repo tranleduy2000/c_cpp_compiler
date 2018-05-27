@@ -1,0 +1,36 @@
+* This input file is an example for generating
+* integral solutions to the following system of linear inequalities:
+* 10 x1 + 7 x2  <= 70
+* 11 x1 + 5 x2  >= 55
+*    x1 >= 0,  x2 >= 0
+* By using the fact that  0<=x1<=7 and 0<=x2<=10, we apply
+* the (binary representation) substitution:
+    x1 =         4 x13 + 2 x12 + x11  (all binary variables)
+    x2 = 8 x24 + 4 x23 + 2 x22 + x21  (all binary variables)
+* The reduced system of linear inequalities is the input data.
+* Since all integral (i.e. 0-1) solutions are extreme points,
+* the integral extreme points are in one-to-one correspondence
+* with the integral solutions to the original system.  In this
+* example, there are 194 extreme points among which 10 are
+* integral (0-1) solutions.
+
+H-representation
+begin
+ 16  8   integer
+ 0  1  0  0  0  0  0  0
+ 0  0  1  0  0  0  0  0
+ 0  0  0  1  0  0  0  0
+ 0  0  0  0  1  0  0  0
+ 0  0  0  0  0  1  0  0
+ 0  0  0  0  0  0  1  0
+ 0  0  0  0  0  0  0  1
+ 1 -1  0  0  0  0  0  0
+ 1  0 -1  0  0  0  0  0
+ 1  0  0 -1  0  0  0  0
+ 1  0  0  0 -1  0  0  0
+ 1  0  0  0  0 -1  0  0
+ 1  0  0  0  0  0 -1  0
+ 1  0  0  0  0  0  0 -1
+  70 -40 -20 -10 -56 -28 -14 -7
+ -55  44  22  11  40  20  10  5
+end

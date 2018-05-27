@@ -1,0 +1,50 @@
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+#
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without
+# modifications, as long as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.
+
+The SWI-Prolog interface to the Parma Polyhedra Library (PPL) is
+available both as a statically linked module or as a dynamically
+linked one.  Only SWI-Prolog version 5.6.0 and later versions are
+supported.
+
+
+The `ppl_pl' Executable
+-----------------------
+
+The `ppl_pl' executable is simply the SWI-Prolog shell with the PPL
+statically linked: from within `ppl_pl' all the services of the
+library are available without further action.
+Notice that, in case the PPL was configured with the
+`--disable-static' option, in order to use `ppl_pl' you must make sure
+your linker looks into the `<prefix>/lib/ppl' directory, where
+<prefix> is the root of your installation (`/usr' or `/usr/local' in
+most cases).
+
+
+Loading the SWI-Prolog Interface Dynamically
+--------------------------------------------
+
+In order to dynamically load the library from SWI-Prolog you should
+simply load `<prefix>/lib/ppl/ppl_swiprolog.pl'.
+This will invoke `ppl_initialize/0' and `ppl_finalize/0'
+automatically.  Alternatively, you can load the library directly with
+
+    :- load_foreign_library('<prefix>/lib/ppl/libppl_swiprolog.so').
+
+This will call `ppl_initialize/0' automatically.  Analogously,
+
+    :- unload_foreign_library('<prefix>/lib/ppl/libppl_swiprolog.so').
+
+will, as part of the unload process, invoke `ppl_finalize/0'.
+
+Notice that, for dynamic linking to work, you should have configured
+the library with the `--enable-shared' option (on most platforms this
+is the default).

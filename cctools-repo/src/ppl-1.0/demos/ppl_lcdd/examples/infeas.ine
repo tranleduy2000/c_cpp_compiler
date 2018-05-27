@@ -1,0 +1,18 @@
+* The empty polytope. No vertices and rays.
+H-representation
+begin
+   13   7   integer
+ 0  1  0  0  0  0  0
+ 0  0  1  0  0  0  0
+ 0  0  0  1  0  0  0
+ 0  0  0  0  1  0  0
+ 0  0  0  0  0  1  0
+ 0  0  0  0  0  0  1
+ 1 -1  0  0  0  0  0
+ 1  0 -1  0  0  0  0
+ 1  0  0 -1  0  0  0
+ 1  0  0  0 -1  0  0
+ 1  0  0  0  0 -1  0
+ 1  0  0  0  0  0  -1
+ -2 1  0  0  0  0   0
+end

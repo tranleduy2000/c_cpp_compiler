@@ -1,0 +1,59 @@
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+#
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without
+# modifications, as long as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.
+
+The GNU Prolog interface to the Parma Polyhedra Library (PPL)
+is available both as a PPL-enhanced GNU Prolog interpreter and as a
+library that can be linked to GNU Prolog programs.  Only GNU Prolog
+version 1.3.2(20100322) and later versions are supported.
+
+So that it can be used with the GNU Prolog PPL interface (and, for
+that matter, with any foreign code), the GNU Prolog installation must
+be configured with the `--disable-regs' option.
+
+
+Configuring the PPL for Building the GNU Prolog Interface
+---------------------------------------------------------
+
+To build and install the GNU Prolog interface, you will need to set
+the environment variable CPPFLAGS with the path to the GNU Prolog
+include directory: this is the directory containing the file
+`gprolog.h'.  Thus you need to configure the PPL with a command like
+
+  CPPFLAGS=-I/path/to/gprolog/include /path/to/ppl-x.y/configure \
+     --interfaces = "gnu-prolog ..." ...
+
+
+The `ppl_gprolog' Executable
+----------------------------
+
+The `ppl_gprolog' executable is simply the GNU Prolog interpreter with
+the PPL statically linked.  The only thing you should do to use the
+library is to call `ppl_initialize/0' before any other PPL predicate
+and to call `ppl_finalize/0' when you are done with the library.
+
+
+Linking the Library To GNU Prolog Programs
+------------------------------------------
+
+In order to allow linking GNU Prolog programs to the PPL, the
+following files are installed in the directory `<prefix>/lib/ppl',
+where <prefix> is the root of your installation (`/usr' or
+`/usr/local' in most cases): `ppl_gprolog.pl' contains the required
+foreign declarations; `libppl_gprolog.*' contain the executable code
+for the GNU Prolog interface in various formats (static library,
+shared library, libtool library).  If your GNU Prolog program is
+constituted by, say, `source1.pl' and `source2.pl' and you want to
+create the executable `myprog', your compilation command may look like
+
+    gplc -o myprog <prefix>/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+      -L '-Wl,-rpath=<prefix>/lib/ppl -L<prefix>/lib/ppl -lppl_gprolog \
+          -L<prefix>/lib -lppl -lgmpxx -lgmp -lstdc++'

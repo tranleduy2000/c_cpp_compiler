@@ -1,0 +1,20 @@
+%   Evan Tick (from Lisp version by R. P. Gabriel)
+%
+%   (almost) Takeuchi function (recursive arithmetic)
+
+tak(R) :- tak(18, 12, 6, R).
+
+tak(X, Y, Z, A) :-
+    {
+      X =< Y,
+      Z = A
+    }.
+
+tak(X, Y, Z, A) :-
+    {
+      X >= Y+1
+    },
+    tak(X-1, Y,   Z,  A1),
+    tak(Y-1, Z,   X,  A2),
+    tak(Z-1, X,   Y,  A3),
+    tak(A1,  A2,  A3, A ).

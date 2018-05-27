@@ -1,0 +1,18 @@
+reconsult('ack.clpq').
+ack(2, 1, Z).
+
+reconsult('ackn.clpq').
+ack(X, Y, Z).
+
+reconsult('mc91.clpq').
+mc(112, Y).
+
+reconsult('fib.clpq').
+fib(5, Y).
+
+reconsult('smm.clpq').
+solve(S, E, N, D, M, O, R, Y).
+
+reconsult('sumto.clpq').
+sumto(X, 55).
+

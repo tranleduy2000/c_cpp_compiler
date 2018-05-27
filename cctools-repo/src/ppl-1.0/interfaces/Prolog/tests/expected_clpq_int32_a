@@ -1,0 +1,36 @@
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+this program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it
+under certain conditions.
+Type "copying" to see the conditions.
+There is ABSOLUTELY NO WARRANTY for this program.
+Type "warranty" for details.
+PPL clpq ?- yes
+PPL clpq ?- Z = 5
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- X = 0
+Y - Z = -1
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- Y = 102
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- Y = 8
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- Y =< 9
+-E + Y >= 0
+E >= 0
+M = 1
+E + D - Y = 0
+E - N = 0
+O = 0
+S = 9
+R = 0
+ more? yes
+PPL clpq ?- yes
+PPL clpq ?- X = 10
+ more? yes
+PPL clpq ?- 

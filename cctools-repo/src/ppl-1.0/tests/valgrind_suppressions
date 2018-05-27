@@ -1,0 +1,18 @@
+{
+   1
+   Memcheck:Leak
+   fun:*
+   obj:/bin/bash
+}
+{
+   2
+   Memcheck:Leak
+   fun:*
+   obj:/bin/sed
+}
+{
+   3
+   Memcheck:Leak
+   fun:*
+   obj:/bin/rm
+}

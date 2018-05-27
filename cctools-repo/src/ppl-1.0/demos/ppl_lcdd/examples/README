@@ -1,0 +1,13 @@
+Most of the examples in this directory have been taken (sometimes with
+changes) from cddlib version 0.93c [1] and lrslib version 4.2 [2].
+The changes consisted in the removal of commands that are not
+implemented in `ppl_lcdd', the revision of some comments and, for some
+examples, in the conversion of floating point coefficients to integer
+or rational numbers.  In this last case, the name of the example has
+been changed from, e.g., `file.ine' to `file_m.ine'.
+
+
+--------
+
+[1] http://www.cs.mcgill.ca/~fukuda/soft/cdd_home/cdd.html
+[2] http://cgm.cs.mcgill.ca/~avis/C/lrs.html

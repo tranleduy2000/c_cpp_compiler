@@ -1,0 +1,1269 @@
+/* Documentation for the OCaml interface.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://bugseng.com/products/ppl/ . */
+
+/*!
+  \defgroup PPL_OCaml_interface OCaml Language Interface
+
+  The Parma Polyhedra Library comes equipped with an interface for the
+  OCaml language.
+*/
+
+/*! \mainpage OCaml Language Interface
+
+The Parma Polyhedra Library comes equipped with an interface for the
+OCaml language.
+
+The main features of the library are described in
+Section \ref OCaml_Features "OCaml Interface Features".
+Section \ref OCamldoc_Documentation "OCamldoc Documentation"
+lists all the functions available to the default generated domains
+in the OCaml interface.
+Section \ref OI_Compilation "Compilation and Installation"
+explains how the OCaml interface is compiled and installed.
+
+In the sequel, <CODE>prefix</CODE> is the prefix under which
+you have installed the library (typically <CODE>/usr</CODE>
+or <CODE>/usr/local</CODE>).
+
+
+\anchor OCaml_Features
+<H1>OCaml Interface Features</H1>
+
+The OCaml interface provides access to the numerical abstractions
+(convex polyhedra, BD shapes, octagonal shapes, etc.) implemented
+by the PPL library.
+A general introduction to the numerical abstractions,
+their representation in the PPL and the operations provided
+by the PPL is given in the main \extref{preamble, PPL user manual}.
+Here we just describe those aspects that are specific to the OCaml interface.
+
+\anchor OCaml_Interface_Overview
+<H2>Overview</H2>
+
+First, here is a list of notes with general information and advice
+on the use of the OCaml interface.
+
+- The numerical abstract domains available to the OCaml user consist
+  of the <EM>simple</EM> domains, <EM>powersets</EM> of a simple domain and
+  <EM>products</EM> of simple domains.
+  - The simple domains are:
+     - convex polyhedra, which consist of C_Polyhedron and
+       NNC_Polyhedron;<BR>
+     - weakly relational, which consist of BD_Shape_N and
+       Octagonal_Shape_N
+       where N is one of the numeric types
+       short, signed_char, int, long, long_long,
+       mpz_class, mpq_class;<BR>
+     - boxes which consist of
+       Int8_Box, Int16_Box,
+       Int32_Box, Int64_Box,
+       Uint8_Box, Uint16_Box,
+       Uint32_Box, Uint64_Box,
+       Double_Box, Long_Double_Box,
+       Z_Box, Rational_Box, Float_Box; and<BR>
+     - the Grid domain.
+  - The powerset domains are Pointset_Powerset_S where S is
+    a simple domain.
+  - The product domains consist of
+    Direct_Product_S_T,
+    Smash_Product_S_T and
+    Constraints_Product_S_T where S
+    and T are simple domains.
+- In the following, any of the above numerical
+  abstract domains  is called a PPL <EM>domain</EM>
+  and any element of a PPL domain is called a <EM>PPL object</EM>.
+- The OCaml interface files are all installed in the directory
+  <CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
+  dynamically loaded libraries, you must make your dynamic
+  linker/loader aware of this fact.  If you use a GNU/Linux system,
+  try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
+  for more information.
+- A PPL object such as a polyhedron can only be accessed
+  by means of a OCaml term called a <EM>handle</EM>.
+  Note, however, that the data structure of a handle,
+  is implementation-dependent, system-dependent and
+  version-dependent, and, for this reason, deliberately left unspecified.
+  What we do guarantee is that the handle requires very little memory.
+- An OCaml program can obtain a valid handle for a
+  PPL object by using functions such as
+\code
+  ppl_new_C_Polyhedron_from_space_dimension,
+  ppl_new_C_Polyhedron_from_C_Polyhedron,
+  ppl_new_C_Polyhedron_from_constraints,
+  ppl_new_C_Polyhedron_from_generators.
+\endcode
+  These functions will return a new handle for referencing a PPL polyhedron.
+- For a PPL object with space dimension \p k,
+  the identifiers used for the PPL variables
+  must lie between 0 and \f$k-1\f$ and correspond to the indices of the
+  associated Cartesian axes.
+  For example, when using the functions that combine PPL polyhedra
+  or add constraints or generators to a representation of
+  a PPL polyhedron,
+  the polyhedra referenced and any constraints or generators in the call
+  should follow all the (space) dimension-compatibility rules stated in
+  Section \extref{representation, Representations of Convex Polyhedra}
+  of the main PPL user manual.
+- As explained above, a polyhedron has a fixed topology C or NNC,
+  that is determined at the time of its initialization.
+  All subsequent operations on the polyhedron must respect all the
+  topological compatibility rules stated in Section
+  \extref{representation, Representations of Convex Polyhedra}
+  of the main PPL user manual.
+- Any application using the PPL should make sure that only the
+  intended version(s) of the library are ever used.
+  Functions
+\code
+  ppl_version_major,
+  ppl_version_minor,
+  ppl_version_revision,
+  ppl_version_beta,
+  ppl_version,
+  ppl_banner.
+\endcode
+  allow run-time checking of information about the version being used.
+
+\anchor OCaml_function_descriptions
+<H2> Function Descriptions </H2>
+
+Below is a short description of many of the interface functions.
+For full definitions of terminology used here, see the main PPL user manual.
+
+\anchor di_functions
+<H1> Domain Independent Functions </H1>
+
+First we describe some domain independent functions
+included with all instantiations of the OCaml interfaces.
+
+<H2><CODE> ppl_version_major </CODE></H2>
+  Returns the major number of the PPL version.
+
+<H2><CODE> ppl_version_minor </CODE></H2>
+  Returns the minor number of the PPL version.
+
+<H2><CODE> ppl_version_revision </CODE></H2>
+  Returns the revision number of the PPL version.
+
+<H2><CODE> ppl_version_beta </CODE></H2>
+  Returns the beta number of the PPL version.
+
+<H2><CODE> ppl_version </CODE></H2>
+  Returns the PPL version.
+
+<H2><CODE> ppl_banner </CODE></H2>
+  Returns information about the PPL version, the licensing, the lack of any
+  warranty whatsoever, the C++ compiler used to build the library,
+  where to report bugs and where to look for further information.
+
+<H2><CODE> ppl_max_space_dimension </CODE></H2>
+  Returns the maximum space dimension the C++ interface can handle.
+
+<H2><CODE> ppl_Coefficient_bits </CODE></H2>
+  Returns the number of bits used in the C++ interface for PPL coefficients;
+  0 if unbounded.
+
+<H2><CODE> ppl_Coefficient_is_bounded </CODE></H2>
+  Returns true if and only if the coefficients in the C++ interface
+  are bounded.
+
+<H2><CODE> ppl_Coefficient_max </CODE></H2>
+  If the coefficients are bounded, returns the maximum coefficient
+  the C++ interface can handle.
+
+<H2><CODE> ppl_Coefficient_min </CODE></H2>
+  If the coefficients are bounded, returns the minimum coefficient
+  the C++ interface can handle.
+
+<H2><CODE> ppl_io_wrap_string source_string indent_depth
+             preferred_first_line_length preferred_line_length </CODE></H2>
+  Utility function for the wrapping of lines of text.
+  The function wraps the lines of text stored in its first string argument
+  according to the next three integer arguments, which are interpreted as
+  the indentation depth, the preferred length for the first line and the
+  preferred length for all the other lines, respecively; it returns a
+  string containing the wrapped text.
+
+<H2><CODE> ppl_set_timeout csecs </CODE></H2>
+   Computations taking exponential time will be interrupted some time
+   after <CODE>csecs</CODE> centiseconds after that call.
+   If the computation is interrupted that way, a timeout exception
+   will be thrown.
+   An exception is immediately thrown if <CODE>csecs</CODE> is not strictly
+   greater than zero, or if the PPL Watchdog library is not enabled.
+
+<H2><CODE> ppl_reset_timeout </CODE></H2>
+   Resets the timeout time so that the computation is not interrupted.
+   An exception is thrown if the PPL Watchdog library is not enabled.
+
+<H2><CODE> ppl_set_deterministic_timeout unscaled_weight scale</CODE></H2>
+   Computations taking exponential time will be interrupted some time
+   after reaching the complexity threshold
+   \f$\mathrm{weight} = \mathrm{unscaled\_weight} \cdot 2^\mathrm{scale}\f$.
+   If the computation is interrupted that way, a timeout exception will
+   be thrown. <CODE>unscaled_weight</CODE> must be strictly greater than
+   zero; <CODE>scale</CODE> must be non-negative; an exception is thrown
+   if the computed weight threshold exceeds the maximum allowed value.
+   <EM>NOTE:</EM> This "timeout" checking functionality is said to be
+   <EM>deterministic</EM> because it is not based on actual elapsed time.
+   Its behavior will only depend on (some of the) computations performed
+   in the PPL library and it will be otherwise independent from the
+   computation environment (CPU, operating system, compiler, etc.).
+   The weight mechanism is under beta testing: client applications
+   should be ready to reconsider the tuning of these weight thresholds
+   when upgrading to newer version of the PPL.
+
+<H2><CODE> ppl_reset_deterministic_timeout </CODE></H2>
+   Resets the timeout time so that the computation is not interrupted.
+   An exception is thrown if the PPL Watchdog library is not enabled.
+
+<H2><CODE> ppl_set_rounding_for_PPL </CODE></H2>
+   Sets the FPU rounding mode so that the PPL abstractions based on
+   floating point numbers work correctly.
+   This is performed automatically at initialization-time.  Calling
+   this function is needed only if <CODE>restore_pre_PPL_rounding</CODE>
+   has previously been called.
+
+<H2><CODE> ppl_restore_pre_PPL_rounding </CODE></H2>
+   Sets the FPU rounding mode as it was before initialization of the PPL.
+   After calling this function it is absolutely necessary to call
+   <CODE>set_rounding_for_PPL</CODE> before using any PPL abstractions
+   based on floating point numbers.
+   This is performed automatically at finalization-time.
+
+<H2><CODE> ppl_irrational_precision </CODE></H2>
+   Returns the precision parameter for irrational calculations.
+
+<H2><CODE> ppl_set_irrational_precision </CODE></H2>
+   Sets the precision parameter <CODE>p</CODE> for irrational calculations.
+   In the following irrational calculations returning an unbounded
+   rational (e.g., when computing a square root), the lesser between
+   numerator and denominator will be limited to <CODE>2**p</CODE>.
+
+<BR>
+
+\anchor OCaml_mip_functions
+<H1> MIP Functions </H1>
+Here we describe some functions available for PPL objects
+defining mixed integer (linear) programming problems.
+
+<H2><CODE>
+  ppl_new_MIP_Problem_from_space_dimension dimension
+</CODE></H2>
+   Return a handle to an MIP Problem \f$\mathrm{MIP}\f$ with the
+   feasible region the vector space of dimension <CODE>dimension</CODE>,
+   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+
+<H2><CODE>
+  ppl_new_MIP_Problem dimension constraint_system lin_expr optimization_mode
+</CODE></H2>
+   Return a handle to an MIP Problem \f$\mathrm{MIP}\f$ having space
+   dimension <CODE>dimension</CODE>, a feasible region represented by
+   <CODE>constraint_system</CODE>, objective function <CODE>lin_expr</CODE>
+   and optimization mode <CODE>optimization_mode</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_get_control_parameter handle param_name
+</CODE></H2>
+   Returns the value of the control parameter named <CODE>param_name</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_set_control_parameter handle param_value
+</CODE></H2>
+   Sets control parameter value <CODE>param_value</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_swap handle_1 handle_2
+</CODE></H2>
+   Swaps the MIP Problem referenced by <CODE>handle_1</CODE>
+   with the one referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_space_dimension handle
+</CODE></H2>
+   Returns the dimension of the vector space in which the
+   MIP Problem referenced by <CODE>handle</CODE> is embedded.
+
+<H2><CODE>
+  ppl_MIP_Problem_integer_space_dimensions handle
+</CODE></H2>
+   Returns a list of variables representing
+   representing the integer space dimensions of the MIP Problem
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_constraints handle
+</CODE></H2>
+   Returns a list of the constraints in the constraints system
+   representing the feasible region for the MIP Problem
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_objective_function handle
+</CODE></H2>
+   Returns the objective function for the MIP Problem referenced
+   by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_optimization_mode handle
+</CODE></H2>
+   Returns the optimization mode
+   for the MIP Problem referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_clear handle
+</CODE></H2>
+  Resets the MIP problem referenced by <CODE>handle</CODE>
+  to be the trivial problem with
+  the feasible region the \f$0\f$-dimensional universe,
+  objective function \f$0\f$ and optimization mode <CODE>Maximization</CODE>.
+
+<H2><CODE> ppl_MIP_Problem_add_space_dimensions_and_embed
+             handle dimension
+ </CODE></H2>
+   Embeds the MIP problem referenced by <CODE>handle</CODE>
+   in a space that is enlarged by <CODE>dimension</CODE> dimensions,
+
+<H2><CODE>
+  ppl_MIP_Problem_add_to_integer_space_dimensions handle vars_list
+</CODE></H2>
+   Updates the MIP Problem referenced by <CODE>handle</CODE>
+   so that the variables in <CODE>vars_list</CODE> are added to
+   the set of integer space dimensions.
+
+<H2><CODE>
+  ppl_MIP_Problem_add_constraint handle constraint
+</CODE></H2>
+   Updates the MIP Problem referenced by <CODE>handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>constraint</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_add_constraints handle constraint_system
+</CODE></H2>
+   Updates the MIP Problem referenced by <CODE>handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in <CODE>constraint_system</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_set_objective_function handle lin_expr
+</CODE></H2>
+   Updates the MIP Problem referenced by <CODE>handle</CODE>
+   so that the objective function is changed to <CODE>lin_expr</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_set_optimization_mode handle optimization_mode
+</CODE></H2>
+   Updates the MIP Problem referenced by <CODE>handle</CODE>
+   so that the optimization mode is changed to <CODE>optimization_mode</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_is_satisfiable handle
+</CODE></H2>
+  Returns true if the MIP Problem referenced by
+  <CODE>handle</CODE> is satisfiable and false otherwise.
+
+<H2><CODE>
+  ppl_MIP_Problem_solve handle
+</CODE></H2>
+  Solves the MIP problem  referenced by
+  <CODE>handle</CODE> and returns 0, if the MIP problem is not satisfiable;
+  1, if the MIP problem is satisfiable but
+  there is no finite bound to the value of the objective function;
+  2, if the MIP problem admits an optimal solution.
+
+<H2><CODE>
+  ppl_MIP_Problem_feasible_point handle
+</CODE></H2>
+  Returns a feasible point for the MIP problem
+  referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_optimizing_point handle
+</CODE></H2>
+  Returns an optimizing point for the MIP problem
+  referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_optimal_value handle
+</CODE></H2>
+  Returns a pair of numbers, the first being the numerator and
+  the second the denominator, for the optimal value
+  for the MIP problem  referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_evaluate_objective_function handle generator
+</CODE></H2>
+  Evaluates the objective function of the MIP problem  referenced by
+  <CODE>handle</CODE> at point <CODE>generator</CODE>.
+  Returns a pair of numbers, the first being the numerator and
+  the second the denominator, for the objective function value
+  for the MIP problem  referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_OK handle
+</CODE></H2>
+   Returns true if the MIP Problem referenced by
+   <CODE>handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants and false,
+   otherwise.  Useful for debugging purposes.
+
+<H2><CODE>
+  ppl_MIP_Problem_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the MIP_Problem referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+<BR>
+
+\anchor OCaml_pip_functions
+<H1> PIP Functions </H1>
+Here we describe some functions available for PPL objects
+defining parametric integer programming problems.
+
+<H2><CODE>
+  ppl_new_PIP_Problem_from_space_dimension dimension
+</CODE></H2>
+   Return a handle to a PIP Problem \f$\mathrm{PIP}\f$ with the
+   feasible region the vector space of dimension <CODE>dimension</CODE>,
+   empty constraint_system and empty set of parametric variables.
+
+<H2><CODE>
+  ppl_new_PIP_Problem dimension constraint_system vars_list
+</CODE></H2>
+   Return a handle to a PIP Problem \f$\mathrm{PIP}\f$ having space
+   dimension <CODE>dimension</CODE>, a feasible region represented by
+   <CODE>constraint_system</CODE> and parametric variables represented
+   by <CODE>vars_list</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_get_control_parameter handle param_name
+</CODE></H2>
+   Returns the value of the control parameter named <CODE>param_name</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_set_control_parameter handle param_value
+</CODE></H2>
+   Sets control parameter value <CODE>param_value</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_swap handle_1 handle_2
+</CODE></H2>
+   Swaps the PIP Problem referenced by <CODE>handle_1</CODE>
+   with the one referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_space_dimension handle
+</CODE></H2>
+   Returns the dimension of the vector space in which the
+   PIP Problem referenced by <CODE>handle</CODE> is embedded.
+
+<H2><CODE>
+  ppl_PIP_Problem_parameter_space_dimensions handle
+</CODE></H2>
+   Returns a list of variables representing
+   representing the parameter space dimensions of the PIP Problem
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_constraints handle
+</CODE></H2>
+   Returns a list of the constraints in the constraints system
+   representing the feasible region for the PIP Problem
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_clear handle
+</CODE></H2>
+  Resets the PIP problem referenced by <CODE>handle</CODE>
+  to be the trivial problem with space dimension \f$0\f$.
+
+<H2><CODE> ppl_PIP_Problem_add_space_dimensions_and_embed
+             handle dimension_0 dimension_1
+ </CODE></H2>
+   Embeds the PIP problem referenced by <CODE>handle</CODE>
+   in a space that is enlarged by <CODE>dimension_0</CODE>
+   non-parameter dimensions and <CODE>dimension_1</CODE> parameter dimensions,
+
+<H2><CODE>
+  ppl_PIP_Problem_add_to_parameter_space_dimensions handle vars_list
+</CODE></H2>
+   Sets the space dimensions whose indexes are in \p vars_list
+   to be parameter space dimensions.
+
+<H2><CODE>
+  ppl_PIP_Problem_add_constraint handle constraint
+</CODE></H2>
+   Updates the PIP Problem referenced by <CODE>handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>constraint</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_add_constraints handle constraint_system
+</CODE></H2>
+   Updates the PIP Problem referenced by <CODE>handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in <CODE>constraint_system</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_set_big_parameter_dimension handle dimension
+</CODE></H2>
+   Sets the dimension for the big parameter to \p dimension.
+
+<H2><CODE>
+  ppl_PIP_Problem_get_big_parameter_dimension handle
+</CODE></H2>
+   Returns the dimension for the big parameter.
+   Exception is thrown if no big parameter dimension has been set.
+
+<H2><CODE>
+  ppl_PIP_Problem_has_big_parameter_dimension handle
+</CODE></H2>
+   Returns true if and only if the dimension for the big parameter has been set.
+
+<H2><CODE>
+  ppl_PIP_Problem_is_satisfiable handle
+</CODE></H2>
+  Returns true if the PIP Problem referenced by
+  <CODE>handle</CODE> is satisfiable and false otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_solve handle
+</CODE></H2>
+  Solves the PIP problem  referenced by
+  <CODE>handle</CODE> and returns
+    a status flag indicating the outcome of the optimization attempt:
+  \p Optimized_Pip_Problem if the optimization attempt succeeds;
+  \p Unfeasible_Pip_Problem otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_solution handle
+</CODE></H2>
+  Solves the PIP problem referenced by <CODE>handle</CODE> and
+  returns a handle to a PIP_Tree representing a feasible solution,
+  if it exists and bottom otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_optimizing_solution handle
+</CODE></H2>
+  Solves the PIP problem referenced by <CODE>handle</CODE> and
+  returns a handle to a PIP_Tree representing an optimizing_solution,
+  if it exists and bottom otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_OK handle
+</CODE></H2>
+   Returns true if the PIP Problem referenced by
+   <CODE>handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants and false,
+   otherwise.  Useful for debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Problem_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the PIP_Problem referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_swap handle_1 handle_2
+</CODE></H2>
+   Swaps the PIP tree node referenced by <CODE>handle_1</CODE>
+   with the one referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_OK handle
+</CODE></H2>
+   Returns true if the PIP tree node referenced by
+   <CODE>handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants and false,
+   otherwise.  Useful for debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the Pip tree node referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_constraints handle
+</CODE></H2>
+   Returns a list of the parameter constraints in the PIP tree node
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_artificials handle
+</CODE></H2>
+   Returns a list of the artificial parameters in the PIP
+   tree node referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_is_bottom handle
+</CODE></H2>
+   Returns true if and only if <CODE>handle</CODE> represents bottom.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_is_decision handle
+</CODE></H2>
+   Returns true if and only if <CODE>handle</CODE> represents a decision node.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_is_solution handle
+</CODE></H2>
+   Returns true if and only if <CODE>handle</CODE> represents a solution node.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_parametric_values handle var
+</CODE></H2>
+   Returns a linear expression representing the values of problem variable
+   \p var in the solution node represented by <CODE>handle</CODE>.
+   The returned linear expression may involve problem parameters
+   as well as artificial parameters.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_true_child handle var
+</CODE></H2>
+   Returns a handle to the child on the true branch of the
+   PIP tree node represented by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_false_child handle var
+</CODE></H2>
+   Returns a handle to the child on the false branch of the
+   PIP tree node represented by <CODE>handle</CODE>.
+
+<BR>
+
+\anchor main_OCaml_C_polyhedron_functions
+<H1> C_Polyhedron Functions </H1>
+Here we describe the main functions available for PPL objects
+defining convex and closed polyhedra.
+
+<H2><CODE>
+  ppl_new_C_Polyhedron_from_space_dimension space_dimension universe_or_empty
+</CODE>
+</H2>
+   Returns a handle to a C polyhedron \f$\cP\f$
+   with <CODE>space_dimension</CODE> dimensions; it is empty
+   or the universe polyhedron depending on whether
+   <CODE>universe_or_empty</CODE>
+   is <CODE>empty</CODE> or <CODE>universe</CODE>, respectively.
+
+<H2><CODE>
+ppl_new_C_Polyhedron_from_C_Polyhedron handle
+ </CODE></H2>
+   If <CODE>handle</CODE> refers to a C polyhedron \f$\cP_1\f$,
+   then the expression will returns a handle to a
+   copy \f$\cP_2\f$ of \f$\cP_1\f$.
+
+<H2><CODE>
+ppl_new_C_Polyhedron_from_NNC_Polyhedron handle
+ </CODE></H2>
+   If <CODE>handle</CODE> refers to an NNC polyhedron \f$\cP_1\f$,
+   then the expression returns a handle to a copy \f$\cP_2\f$ of \f$\cP_1\f$.
+
+   When using <CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron/2</CODE>,
+   care must be taken that the source polyhedron referenced by
+   <CODE>handle</CODE> is topologically closed.
+
+<H2><CODE>
+   ppl_new_C_Polyhedron_from_constraints constraint_system
+ </CODE></H2>
+   Returns a handle to a C polyhedron \f$\cP\f$ represented by
+   <CODE>constraint_system</CODE>.
+
+<H2><CODE>
+   ppl_new_C_Polyhedron_from_generators generator_system
+ </CODE></H2>
+   Returns a handle to a C polyhedron \f$\cP\f$ represented by
+   <CODE>generator_system</CODE>.
+
+<H2><CODE> ppl_Polyhedron_swap handle_1 handle_2 </CODE></H2>
+   Swaps the polyhedron \f$\cP\f$ referenced by <CODE>handle_1</CODE>
+   with the polyhedron \f$\cQ\f$ referenced by <CODE>handle_2</CODE>.
+   The polyhedra \f$\cP\f$ and \f$\cQ\f$ must have the same topology.
+
+<H2><CODE> ppl_Polyhedron_space_dimension handle </CODE></H2>
+   Returns the dimension of the vector space in which the
+   polyhedron referenced by
+   <CODE>handle</CODE> is embedded.
+
+<H2><CODE> ppl_Polyhedron_affine_dimension handle
+</CODE></H2>
+   Returns the actual dimension of the polyhedron referenced by
+   <CODE>handle</CODE>.
+
+<H2><CODE> ppl_Polyhedron_get_constraints handle
+ </CODE></H2>
+   Return a list of the constraints in the constraints system
+   representing the polyhedron referenced by <CODE>handle</CODE>.
+
+<H2><CODE> ppl_Polyhedron_get_minimized_constraints handle
+ </CODE></H2>
+   Returns a minimized list of the constraints in the constraints system
+   representing the polyhedron referenced by <CODE>handle</CODE>.
+
+<H2><CODE> ppl_Polyhedron_get_generators handle
+ </CODE></H2>
+   Returns a list of the generators in the generators system
+   representing the polyhedron referenced by <CODE>handle</CODE>.
+
+<H2><CODE> ppl_Polyhedron_get_minimized_generators handle
+ </CODE></H2>
+   Returns a minimized list of the generators in the generators system
+   representing the polyhedron referenced by <CODE>handle</CODE>.
+
+<H2><CODE> ppl_Polyhedron_relation_with_constraint handle constraint
+</CODE></H2>
+   Returns the list of relations the polyhedron referenced by
+   <CODE>handle</CODE> has with <CODE>constraint</CODE>.
+   The possible relations and their meaning is given in Section
+   \extref{relation_with, Relation-With Operators}
+   of the main PPL user manual.
+
+<H2><CODE> ppl_Polyhedron_relation_with_generator handle generator
+</CODE></H2>
+  Returns the list of relations the polyhedron referenced by
+   <CODE>handle</CODE> has with <CODE>generator</CODE>.
+   The possible relations and their meaning is given in Section
+   \extref{relation_with, Relation-With Operators}
+   of the main PPL user manual.
+
+<H2><CODE> ppl_Polyhedron_is_empty handle </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE> is empty and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_is_universe handle </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE> is the universe and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_is_bounded handle </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE> is bounded and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_contains_integer_point handle </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE> contains at least one integer point and false,
+   otherwise.
+
+<H2><CODE> ppl_Polyhedron_bounds_from_above handle lin_expr </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE>  is bounded from above by <CODE>lin_expr</CODE>
+   and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_bounds_from_below handle lin_expr </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE>  is bounded from below by <CODE>lin_expr</CODE>
+   and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_maximize handle lin_expr </CODE></H2>
+  Returns a record
+  <CODE>bool_1 * coefficient_1 * coefficient_2 * bool_2</CODE> where:
+  <CODE>bool_1</CODE> is true if the polyhedron \f$P\f$ referenced by
+  <CODE>handle</CODE> is not empty
+  and <CODE>lin_expr</CODE> is bounded from above in \f$P\f$ and
+  false, otherwise.
+  <CODE>coefficient_1</CODE> is the numerator of
+  the supremum value and <CODE>coefficient_2</CODE> the denominator
+  of the supremum value.
+  If the supremum is also the maximum, <CODE>bool_2</CODE> is true
+  and false, otherwise.
+
+<H2><CODE>
+  ppl_Polyhedron_maximize_with_point handle lin_expr
+ </CODE></H2>
+  Returns a record
+  <CODE>bool_1 * coefficient_1 * coefficient_2 * bool_2 * Point</CODE>
+  <CODE>bool_1</CODE> is true if the polyhedron \f$P\f$ referenced by
+  <CODE>handle</CODE> is not empty
+  and <CODE>lin_expr</CODE> is bounded from above in \f$P\f$ and
+  false, otherwise.
+  <CODE>coefficient_1</CODE> is the numerator of
+  the supremum value and <CODE>coefficient_2</CODE> the denominator
+  of the supremum value.
+  If the supremum is also the maximum, <CODE>bool_2</CODE> is true
+  and false, otherwise.
+  <CODE>Point</CODE> is the point or closure point where
+  <CODE>lin_expr</CODE> reaches the supremum.
+
+<H2><CODE>
+  ppl_Polyhedron_minimize handle lin_expr
+</CODE></H2>
+  Returns a record
+  <CODE>bool_1 * coefficient_1 * coefficient_2 * bool_2</CODE>
+  <CODE>bool_1</CODE> is true if the polyhedron \f$P\f$ referenced by
+  <CODE>handle</CODE> is not empty
+  and <CODE>lin_expr</CODE> is bounded from below in \f$P\f$ and
+  false, otherwise.
+  <CODE>coefficient_1</CODE> is the numerator of
+  the infinum value and <CODE>coefficient_2</CODE> the denominator
+  of the infinum value.
+  If the infinum is also the minimum, <CODE>bool_2</CODE> is true
+  and false, otherwise.
+
+<H2><CODE>
+  ppl_Polyhedron_minimize_with_point handle lin_expr
+</CODE></H2>
+  Returns a record
+  <CODE>bool_1 * coefficient_1 * coefficient_2 * bool_2</CODE>
+  <CODE>bool_1</CODE> is true if the polyhedron \f$P\f$ referenced by
+  <CODE>handle</CODE> is not empty
+  and <CODE>lin_expr</CODE> is bounded from below in \f$P\f$ and
+  false, otherwise.
+  <CODE>coefficient_1</CODE> is the numerator of
+  the infinum value and <CODE>coefficient_2</CODE> the denominator
+  of the infinum value.
+  If the infinum is also the minimum, <CODE>bool_2</CODE> is true
+  and false, otherwise.
+  <CODE>Point</CODE> is the point or closure point where
+  <CODE>lin_expr</CODE> reaches the infinum.
+
+<H2><CODE> ppl_Polyhedron_is_topologically_closed handle </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE> is topologically closed and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_contains_Polyhedron handle_1 handle_2
+</CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle_2</CODE>  is included in or
+   equal to the polyhedron referenced by <CODE>handle_1</CODE>
+   and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_strictly_contains_Polyhedron handle_1 handle_2
+</CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle_2</CODE>  is included in but not
+   equal to the polyhedron referenced by <CODE>handle_1</CODE>
+   and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_is_disjoint_from_Polyhedron handle_1 handle_2
+     </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle_1</CODE>  is disjoint from the polyhedron referenced by
+   <CODE>handle_2</CODE> and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_equals_Polyhedron handle_1 handle_2 </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle_1</CODE>  is equal to the polyhedron referenced by
+   <CODE>handle_2</CODE> and false, otherwise.
+
+<H2><CODE> ppl_Polyhedron_OK handle </CODE></H2>
+   Returns true if the polyhedron referenced by
+   <CODE>handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants and false, otherwise.
+   Useful for debugging purposes.
+
+<H2><CODE> ppl_Polyhedron_add_constraint handle constraint </CODE></H2>
+   Updates the polyhedron referenced by <CODE>handle</CODE> to
+   one obtained by adding
+   <CODE>constraint</CODE> to its constraint system.
+
+<H2><CODE> ppl_Polyhedron_add_generator handle generator </CODE></H2>
+   Updates the polyhedron referenced by <CODE>handle</CODE> to
+   one obtained by adding
+   <CODE>generator</CODE> to its generator system.
+
+<H2><CODE> ppl_Polyhedron_add_constraints handle constraint_system
+ </CODE></H2>
+   Updates the polyhedron referenced by <CODE>handle</CODE> to
+   one obtained by adding to its constraint system the constraints in
+   <CODE>constraint_system</CODE>.
+
+<H2><CODE> ppl_C_Polyhedron_add_generators handle generator_system
+ </CODE></H2>
+   Updates the polyhedron referenced by <CODE>handle</CODE> to
+   one obtained by adding to its generator system the generators in
+   <CODE>generator_system</CODE>.
+
+<H2><CODE> ppl_Polyhedron_intersection_assign handle_1 handle_2
+</CODE></H2>
+   Assigns to the polyhedron referenced by <CODE>handle_1</CODE>
+   its intersection with the polyhedron referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE> ppl_Polyhedron_poly_hull_assign handle_1 handle_2 </CODE></H2>
+   Assigns to the polyhedron referenced by <CODE>handle_1</CODE>
+   its poly-hull with the polyhedron referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE> ppl_Polyhedron_poly_difference_assign handle_1 handle_2
+</CODE></H2>
+   Assigns to the polyhedron referenced by <CODE>handle_1</CODE>
+   its poly-difference with the polyhedron referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE> ppl_Polyhedron_affine_image handle var
+                                       lin_expr coefficient
+</CODE></H2>
+   Transforms the polyhedron referenced by <CODE>handle</CODE>
+   assigning the affine expression
+   <CODE>lin_expr</CODE>/<CODE>coefficient</CODE> to <CODE>var</CODE>.
+
+<H2><CODE> ppl_Polyhedron_affine_preimage handle var
+                                          lin_expr coefficient
+</CODE></H2>
+This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
+
+<H2><CODE> ppl_Polyhedron_bounded_affine_image handle
+                                               var
+                                               lin_expr_1
+                                               lin_expr_2
+                                               coefficient
+</CODE></H2>
+   Transforms the polyhedron referenced by <CODE>handle</CODE>
+   assigning the image with respect to the transfer relation
+   <CODE>lin_expr_1/coefficient <= var <= lin_expr_2/coefficient</CODE>.
+
+<H2><CODE> ppl_Polyhedron_generalized_affine_image handle
+                                                   var
+                                                   Relation_Symbol
+                                                   lin_expr
+                                                   coefficient
+</CODE></H2>
+   Transforms the polyhedron referenced by <CODE>handle</CODE>
+   assigning the generalized
+   affine image with respect to the transfer function
+   <CODE>var</CODE> <CODE>Relation_Symbol</CODE>
+   <CODE>lin_expr</CODE>/<CODE>coefficient</CODE>.
+
+
+<H2><CODE> ppl_Polyhedron_generalized_affine_image_lhs_rhs handle
+                                                           lin_expr_1
+                                                           Relation_Symbol
+                                                           lin_expr_2
+</CODE></H2>
+   Transforms the polyhedron referenced by <CODE>handle</CODE>
+   assigning the generalized
+   affine image with respect to the transfer function
+   <CODE>lin_expr_1</CODE> <CODE>Relation_Symbol</CODE>
+   <CODE>lin_expr_2</CODE>.
+
+<H2><CODE> ppl_Polyhedron_time_elapse_assign handle_1 handle_2 </CODE></H2>
+   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>handle_1</CODE>
+   the time-elapse \f$ (\cP \nearrow \cQ)\f$
+   with the polyhedron \f$\cQ\f$ referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign handle_1 handle_2
+</CODE></H2>
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>handle_2</CODE>,
+   then <CODE>handle_1</CODE> will refer to
+   the BHRZ03-widening of \f$\cP_1\f$ with \f$\cP_2\f$.
+
+<H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign_with_tokens handle_1
+                                                             handle_2
+                                                             c_unsigned_1
+</CODE></H2>
+   It is assumed that the polyhedron \f$\cP_1\f$ referenced by
+   <CODE>handle_1</CODE> contains the polyhedron \f$\cP_2\f$
+   referenced by <CODE>handle_2</CODE>;
+   let \f$\cP\f$ denote the BHRZ03-widening of
+   \f$\cP_1\f$ with \f$\cP_2\f$,
+   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned_1</CODE>
+   is the number of tokens available,
+   Then this function will return the number of tokens remaining at the
+   end of the operation.
+
+<H2><CODE>
+   ppl_Polyhedron_limited_BHRZ03_extrapolation_assign handle_1
+                                                      handle_2
+                                                      constraint_system
+</CODE></H2>
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>handle_2</CODE>,
+   then <CODE>handle_1</CODE> will refer to
+   the BHRZ03-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
+   improved by enforcing the constraints in
+   <CODE>constraint_system</CODE>.
+
+<H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+               handle_1
+               handle_2
+               constraint_system
+               c_unsigned_1 </CODE></H2>
+   It is assumed that the polyhedron \f$\cP_1\f$ referenced by
+   <CODE>handle_1</CODE> contains the polyhedron \f$\cP_2\f$
+   referenced by <CODE>handle_2</CODE>;
+   let \f$\cP\f$ denote the BHRZ03-extrapolation of
+   \f$\cP_1\f$ with \f$\cP_2\f$,
+   improved by enforcing those constraints in <CODE>constraint_system</CODE>.
+   <BR>
+   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned_1</CODE>
+   is the number of tokens available,
+   then this function will return the number of tokens
+   \f$t_2\f$ remaining at the end of the operation.
+
+<H2><CODE> ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
+               handle_1
+               handle_2
+               constraint_system
+</CODE></H2>
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>handle_2</CODE>,
+   then <CODE>handle_1</CODE> will refer to
+   the BHRZ03-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
+   improved by enforcing the constraints in
+   <CODE>constraint_system</CODE> together with all constraints of
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by every point in \f$\cP_1\f$.
+
+<H2><CODE> ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+               handle_1
+               handle_2
+               constraint_system
+               c_unsigned_1
+</CODE></H2>
+   It is assumed that the polyhedron \f$\cP_1\f$ referenced by
+   <CODE>handle_1</CODE> contains the polyhedron \f$\cP_2\f$
+   referenced by <CODE>handle_2</CODE>;
+   let \f$\cP\f$ denote the BHRZ03-extrapolation of \f$\cP_1\f$ with
+   \f$\cP_2\f$ improved by enforcing those constraints in
+   <CODE>constraint_system</CODE> together with all constraints of
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by every point in \f$\cP_1\f$.
+   <BR>
+   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned_1</CODE>
+   is the number of tokens available,
+   this function will return the number of tokens
+   \f$t_2\f$ remaining at the end of the operation.
+
+<H2><CODE> ppl_Polyhedron_H79_widening_assign handle_1 handle_2
+</CODE></H2>
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>handle_2</CODE>,
+   then <CODE>handle_1</CODE> will refer to
+   the H79-widening of \f$\cP_1\f$ with \f$\cP_2\f$.
+
+<H2><CODE> ppl_Polyhedron_H79_widening_assign_with_tokens handle_1
+                                                          handle_2
+                                                          c_unsigned_1
+</CODE></H2>
+   It is assumed that the polyhedron \f$\cP_1\f$ referenced by
+   <CODE>handle_1</CODE> contains the polyhedron \f$\cP_2\f$
+   referenced by <CODE>handle_2</CODE>;
+   let \f$\cP\f$ denote the H79-widening of
+   \f$\cP_1\f$ with \f$\cP_2\f$,
+   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned_1</CODE>
+   is the number of tokens available,
+   Then this function will return the number of tokens remaining at the
+   end of the operation.
+
+<H2><CODE>
+   ppl_Polyhedron_limited_H79_extrapolation_assign handle_1
+                                                      handle_2
+                                                      constraint_system
+</CODE></H2>
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>handle_2</CODE>,
+   then <CODE>handle_1</CODE> will refer to
+   the H79-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
+   improved by enforcing the constraints in
+   <CODE>constraint_system</CODE>.
+
+<H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
+               handle_1
+               handle_2
+               constraint_system
+               c_unsigned_1 </CODE></H2>
+   It is assumed that the polyhedron \f$\cP_1\f$ referenced by
+   <CODE>handle_1</CODE> contains the polyhedron \f$\cP_2\f$
+   referenced by <CODE>handle_2</CODE>;
+   let \f$\cP\f$ denote the H79-extrapolation of
+   \f$\cP_1\f$ with \f$\cP_2\f$,
+   improved by enforcing those constraints in <CODE>constraint_system</CODE>.
+   <BR>
+   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned_1</CODE>
+   is the number of tokens available,
+   then this function will return the number of tokens
+   \f$t_2\f$ remaining at the end of the operation.
+
+<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign
+               handle_1
+               handle_2
+               constraint_system
+</CODE></H2>
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>handle_2</CODE>,
+   then <CODE>handle_1</CODE> will refer to
+   the H79-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
+   improved by enforcing the constraints in
+   <CODE>constraint_system</CODE> together with all constraints of
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by every point in \f$\cP_1\f$.
+
+<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+               handle_1
+               handle_2
+               constraint_system
+               c_unsigned_1
+</CODE></H2>
+   It is assumed that the polyhedron \f$\cP_1\f$ referenced by
+   <CODE>handle_1</CODE> contains the polyhedron \f$\cP_2\f$
+   referenced by <CODE>handle_2</CODE>;
+   let \f$\cP\f$ denote the H79-extrapolation of \f$\cP_1\f$ with
+   \f$\cP_2\f$, improved by enforcing those constraints in
+   <CODE>constraint_system</CODE> together with all constraints of
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by every point in \f$\cP_1\f$.
+   <BR>
+   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned_1</CODE>
+   is the number of tokens available,
+   this function will return the number of tokens
+   \f$t_2\f$ remaining at the end of the operation.
+
+<H2><CODE> ppl_Polyhedron_topological_closure_assign handle </CODE></H2>
+   Assigns to the polyhedron referenced by <CODE>handle</CODE>
+   its topological closure.
+
+<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_embed handle
+                                                         space_dimension
+ </CODE></H2>
+   Embeds the polyhedron  referenced by <CODE>handle</CODE>
+   in a space that is enlarged by <CODE>space_dimension</CODE> dimensions,
+
+<H2><CODE> ppl_Polyhedron_concatenate_assign handle_1 handle_2 </CODE></H2>
+   Updates the polyhedron \f$\cP_1\f$ referenced  by <CODE>handle_1</CODE>
+   by first embedding \f$\cP_1\f$ in a new space enlarged by
+   the space dimensions
+   of the polyhedron \f$\cP_2\f$ referenced by <CODE>handle_2</CODE>,
+   and then adds to its system of constraints
+   a renamed-apart version of the constraints of  \f$\cP_2\f$.
+
+<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_project handle
+                                                           space_dimension
+ </CODE></H2>
+
+   Projects the polyhedron  referenced by <CODE>handle</CODE>
+   onto a space that is enlarged by <CODE>space_dimension</CODE> dimensions,
+
+<H2><CODE> ppl_Polyhedron_remove_space_dimensions handle
+                                                  Int_List
+</CODE></H2>
+   Removes the space dimensions given by the identifiers of the
+   PPL variables in list <CODE>Int_List</CODE>
+   from the polyhedron  referenced by <CODE>handle</CODE>.
+   The identifiers for the remaining PPL variables are renumbered so that
+   they are consecutive and the maximum index is less than the number
+   of dimensions.
+
+<H2><CODE> ppl_Polyhedron_remove_higher_space_dimensions handle
+                                                         space_dimension
+</CODE></H2>
+   Projects the polyhedron  referenced to by <CODE>handle</CODE>
+   onto  the first <CODE>space_dimension</CODE> dimensions.
+
+<H2><CODE>
+  ppl_Polyhedron_expand_space_dimension handle var space_dimension
+</CODE></H2>
+   <CODE>space_dimension</CODE> copies of the space dimension referenced by
+   variable <CODE>var</CODE> are added to the polyhedron
+   referenced to by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_Polyhedron_fold_space_dimensions handle list_of_vars var
+</CODE></H2>
+   The space dimensions referenced by the PPL variables in list
+   <CODE>list_of_vars</CODE> are folded into the dimension referenced
+   by <CODE>var</CODE> and removed.
+   The result is undefined if <CODE>list_of_vars</CODE>
+   does not have the properties described in Section
+   \extref{fold_space_dimensions,
+   Folding Multiple Dimensions of the Vector Space into One Dimension}
+   of the main PPL user manual.
+
+<H2><CODE> ppl_Polyhedron_map_space_dimensions handle p_func </CODE></H2>
+   Maps the space dimensions of the polyhedron referenced by
+   <CODE>handle</CODE>
+   using the partial function defined by a list of pairs of integers
+   <CODE>p_func</CODE>.
+   The result is undefined if \p p_func does not encode a partial
+   function with the properties described in
+   Section \extref{Mapping_the_Dimensions_of_the_Vector_Space,
+   Mapping the Dimensions of the Vector Space}
+   of the main PPL user manual.
+
+<H2><CODE> ppl_Polyhedron_wrap_assign handle
+                                      list_of_vars
+                                      width
+                                      representation
+                                      overflow
+                                      constraint_system
+                                      complexity_threshold
+                                      wrap_indicator
+</CODE></H2>
+
+    Transforms the polyhedron referenced by <CODE>handle</CODE> by
+    wrapping the dimensions given by <CODE>list_of_vars</CODE> while
+    respecting the specified <CODE>width</CODE>,
+    <CODE>representation</CODE> and <CODE>overflow</CODE> behavior of
+    all these variables. The parameter <CODE>constraint_system</CODE>
+    represents the conditional or looping construct guard with respect
+    to which wrapping is performed.  The non-negative integer
+    <CODE>complexity_threshold</CODE> and Boolean
+    <CODE>wrap_indicator</CODE> allow control of the
+    complexity/precision ratio; higher values for
+    <CODE>complexity_threshold</CODE> will lead to possibly greater
+    precision while a true value for <CODE>wrap_indicator</CODE>
+    indicates that the space dimensions should be wrapped
+    individually.  See Section \extref{Wrapping_Operator, Wrapping
+    Operator} for a more detailed description of this operator.
+
+<H2><CODE>
+  ppl_Polyhedron_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the polyhedron referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+
+\anchor OCamldoc_Documentation
+<H1>OCamldoc Documentation</H1>
+
+\htmlonly
+For a list of the PPL functions available to the generated domains
+for the OCaml interface, see the
+<A HREF="ocamldoc/index.html">OCamldoc-generated documentation</a>.
+<P>
+\endhtmlonly
+
+<strong>NOTE:</strong>
+the complete documentation for module <code>Ppl_ocaml</code>, including
+all the types and functions that were enabled at configuration time, is
+only available in the <em>configuration dependent</em> OCamldoc
+documentation.
+The configuration independent OCamldoc documentation only contains
+those types and functions that are always enabled, which are grouped
+into module <code>Ppl_ocaml_globals</code>.
+Also note that module <code>Ppl_ocaml</code> automatically includes
+module <code>Ppl_ocaml_globals</code>.
+
+\latexonly
+\input ocamldoc.tex
+\endlatexonly
+
+\anchor OI_Compilation
+<H1>Compilation and Installation</H1>
+
+When the Parma Polyhedra Library is configured, it tests for the existence
+of the OCaml system.  If OCaml is correctly installed in a standard location,
+things are arranged so that the OCaml interface is built and installed.
+
+*/ /* \mainpage */

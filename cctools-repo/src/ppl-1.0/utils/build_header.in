@@ -1,0 +1,103 @@
+#! @PERL@
+# -*- Perl -*-
+# @generated_automatically@
+
+eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
+    if 0;
+
+# Builds a self-contained C++ header file by performing recursive inclusion.
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+#
+# This file is part of the Parma Polyhedra Library (PPL).
+#
+# The PPL is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 3 of the License, or (at your
+# option) any later version.
+#
+# The PPL is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+#
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://bugseng.com/products/ppl/ .
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+sub filter($$$$);
+sub filter($$$$) {
+    my ($file, $dirs, $level, $files) = @_;
+    return if (exists($$files{$file}));
+    $$files{$file} = undef;
+    my $fh;
+    open $fh, $file or die "Cannot open $file";
+    my $comment = 0;
+    my $copyright = 0;
+    my $print_from = 1;
+    while (my $line = <$fh>) {
+	my $iname;
+	if (($iname) = ($line =~ '^\s*#include\s+"([^"]+)"\s*\n$')) {
+	    my $lineno = $.;
+	    my $ifile;
+	    foreach my $idir (@$dirs) {
+		$ifile = $idir . '/' . $iname;
+		last if -e $ifile;
+	    }
+	    filter($ifile, $dirs, $level+1, $files);
+	    $print_from = 1;
+	    next;
+	}
+	if ($level > 0) {
+	    if ($print_from) {
+		print "/* Automatically generated from PPL source file $file line $.. */\n";
+		$print_from = 0;
+	    }
+	    next if ($line =~ '^\s*#ifndef\s+PPL_[A-Za-z0-9_]+_hh\s*$');
+	    next if ($line =~ '^\s*#define\s+PPL_[A-Za-z0-9_]+_hh(\s+1)?\s*$');
+	    next if ($line =~ '^\s*#endif\s*//\s*!defined\(PPL_[A-Za-z0-9_]+_hh\)\s*$');
+	    if ($line =~ '/\*') {
+		$comment = 1;
+	    }
+	    if ($comment && $line =~ 'Copyright.*Roberto Bagnara <bagnara@cs.unipr.it>') {
+		$copyright = 1;
+		print "*/\n" unless $line =~ '/\*';
+	    }
+	    if ($line =~ '\*/') {
+		$comment = 0;
+		if ($copyright) {
+		    $copyright = 0;
+		    next;
+		}
+	    }
+	    next if $copyright;
+	}
+	print $line;
+    }
+    close $fh;
+
+}
+
+
+my @dirs;
+
+unless (GetOptions("I=s" => \@dirs) && @ARGV == 1) {
+    print STDERR "Usage: $0 [-I dir]... file\n";
+    exit;
+}
+my $file = $ARGV[0];
+
+my ($dir, $name) = ($file =~ '^(?:(.*)/)?([^/]+)$');
+$dir = '.' unless defined($dir);
+unshift @dirs, $dir; 
+
+my %files;
+
+filter($file, \@dirs, 0, \%files);
