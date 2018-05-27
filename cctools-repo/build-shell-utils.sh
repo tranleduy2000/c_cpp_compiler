@@ -20,7 +20,8 @@ gcc_avr_version="4.9.3"
 
 gcc_mingw_version="4.9.3"
 
-TARGET_INST_DIR="/data/data/com.pdaxrom.cctools/root/cctools"
+TARGET_INST_DIR="/data/data/com.duy.c.cpp.compiler/root/cctools"
+#TARGET_INST_DIR="/data/data/com.pdaxrom.cctools/root/cctools"
 #TARGET_INST_DIR="/data/data/com.pdaxrom.cctools/cache/cctools"
 
 SRC_PREFIX="$1"
@@ -672,7 +673,7 @@ build_gmp_host
 build_mpfr_host
 build_mpc_host
 build_isl_host
-#build_ppl_host
+build_ppl_host
 build_cloog_host
 
 build_binutils_host
@@ -776,14 +777,14 @@ build_zip
 build_unzip
 
 # Bug fixes for firmware
-# Set true to build fixes firmwar
+# Set true to build fixes firmware
 if false; then
     build_acer_a200_ics403_libc_fix
     build_android_pre_233_libc_fix
 fi
 
 # MinGW
-# Set true to build MinGW
+# Set true to build MinGW toolchains
 if false; then
     build_binutils_mingw32_host i686-w64-mingw32
     ###build_binutils_mingw32_host x86_64-w64-mingw32
@@ -826,155 +827,155 @@ exit 0
 
 # Xorg
 if true; then
-build_util_macros
-build_xproto
-build_bigreqsproto
-build_compositeproto
-build_damageproto
-build_dmxproto
-build_dri2proto
-build_fixesproto
-build_fontsproto
-build_glproto
-build_inputproto
-build_kbproto
-build_randrproto
-build_recordproto
-build_renderproto
-build_resourceproto
-build_scrnsaverproto
-build_videoproto
-build_windowswmproto
-build_xcb_proto
-build_xcmiscproto
-build_xextproto
-build_xf86bigfontproto
-build_xf86dgaproto
-build_xf86driproto
-build_xf86vidmodeproto
-build_xineramaproto
+    build_util_macros
+    build_xproto
+    build_bigreqsproto
+    build_compositeproto
+    build_damageproto
+    build_dmxproto
+    build_dri2proto
+    build_fixesproto
+    build_fontsproto
+    build_glproto
+    build_inputproto
+    build_kbproto
+    build_randrproto
+    build_recordproto
+    build_renderproto
+    build_resourceproto
+    build_scrnsaverproto
+    build_videoproto
+    build_windowswmproto
+    build_xcb_proto
+    build_xcmiscproto
+    build_xextproto
+    build_xf86bigfontproto
+    build_xf86dgaproto
+    build_xf86driproto
+    build_xf86vidmodeproto
+    build_xineramaproto
 
-build_libpthread_stubs
-build_xtrans
-build_libXau
-build_libXdmcp
-build_libxcb
-build_libX11
-build_libXext
-build_libXxf86vm
-build_libfontenc
-build_libFS
-build_libICE
-build_libSM
-build_libXt
-build_libXpm
-build_libXfixes
-build_libXcomposite
-build_libXrender
-build_libXdamage
-build_libXcursor
-build_libXinerama
-build_libXfont
-build_libXft
-build_libXi
-build_libxkbfile
-build_libXrandr
-build_libXres
-build_libXtst
-build_libXv
-build_libXmu
-build_libXScrnSaver
-build_libXaw
-build_libXvMC
-build_libXxf86dga
-build_libdmx
-#build_libpciaccess
+    build_libpthread_stubs
+    build_xtrans
+    build_libXau
+    build_libXdmcp
+    build_libxcb
+    build_libX11
+    build_libXext
+    build_libXxf86vm
+    build_libfontenc
+    build_libFS
+    build_libICE
+    build_libSM
+    build_libXt
+    build_libXpm
+    build_libXfixes
+    build_libXcomposite
+    build_libXrender
+    build_libXdamage
+    build_libXcursor
+    build_libXinerama
+    build_libXfont
+    build_libXft
+    build_libXi
+    build_libxkbfile
+    build_libXrandr
+    build_libXres
+    build_libXtst
+    build_libXv
+    build_libXmu
+    build_libXScrnSaver
+    build_libXaw
+    build_libXvMC
+    build_libXxf86dga
+    build_libdmx
+    #build_libpciaccess
 
-build_xbitmaps
-build_xcursor_themes
-build_xkeyboard_config
+    build_xbitmaps
+    build_xcursor_themes
+    build_xkeyboard_config
 
-build_bdftopcf
-build_luit
-build_mkfontdir
-build_mkfontscale
-build_sessreg
-build_setxkbmap
-build_smproxy
-build_x11perf
-build_xauth
-build_xbacklight
-build_xcmsdb
-build_xcursorgen
-build_xdpyinfo
-#build_xdriinfo
-build_xev
-build_xgamma
-build_xhost
-build_xinput
-build_xkbcomp
-build_xkbevd
-build_xkbutils
-build_xkill
-build_xlsatoms
-build_xlsclients
-build_xmodmap
-build_xpr
-build_xprop
-build_xrandr
-build_xrdb
-build_xrefresh
-build_xset
-build_xsetroot
-build_xvinfo
-build_xwd
-build_xwininfo
-build_xwud
+    build_bdftopcf
+    build_luit
+    build_mkfontdir
+    build_mkfontscale
+    build_sessreg
+    build_setxkbmap
+    build_smproxy
+    build_x11perf
+    build_xauth
+    build_xbacklight
+    build_xcmsdb
+    build_xcursorgen
+    build_xdpyinfo
+    #build_xdriinfo
+    build_xev
+    build_xgamma
+    build_xhost
+    build_xinput
+    build_xkbcomp
+    build_xkbevd
+    build_xkbutils
+    build_xkill
+    build_xlsatoms
+    build_xlsclients
+    build_xmodmap
+    build_xpr
+    build_xprop
+    build_xrandr
+    build_xrdb
+    build_xrefresh
+    build_xset
+    build_xsetroot
+    build_xvinfo
+    build_xwd
+    build_xwininfo
+    build_xwud
 
-build_font_util
-build_font_encodings
-build_font_alias
-build_font_adobe_100dpi
-build_font_adobe_75dpi
-build_font_adobe_utopia_100dpi
-build_font_adobe_utopia_75dpi
-build_font_adobe_utopia_type1
-build_font_alias
-build_font_arabic_misc
-build_font_bh_100dpi
-build_font_bh_75dpi
-build_font_bh_lucidatypewriter_100dpi
-build_font_bh_lucidatypewriter_75dpi
-build_font_bh_ttf
-build_font_bh_type1
-build_font_bitstream_100dpi
-build_font_bitstream_75dpi
-build_font_bitstream_type1
-build_font_cronyx_cyrillic
-build_font_cursor_misc
-build_font_daewoo_misc
-build_font_dec_misc
-build_font_ibm_type1
-build_font_isas_misc
-build_font_jis_misc
-build_font_micro_misc
-build_font_misc_cyrillic
-build_font_misc_ethiopic
-build_font_misc_meltho
-build_font_misc_misc
-build_font_mutt_misc
-build_font_schumacher_misc
-build_font_screen_cyrillic
-build_font_sony_misc
-build_font_sun_misc
-build_font_util
-build_font_winitzki_cyrillic
-build_font_xfree86_type1
+    build_font_util
+    build_font_encodings
+    build_font_alias
+    build_font_adobe_100dpi
+    build_font_adobe_75dpi
+    build_font_adobe_utopia_100dpi
+    build_font_adobe_utopia_75dpi
+    build_font_adobe_utopia_type1
+    build_font_alias
+    build_font_arabic_misc
+    build_font_bh_100dpi
+    build_font_bh_75dpi
+    build_font_bh_lucidatypewriter_100dpi
+    build_font_bh_lucidatypewriter_75dpi
+    build_font_bh_ttf
+    build_font_bh_type1
+    build_font_bitstream_100dpi
+    build_font_bitstream_75dpi
+    build_font_bitstream_type1
+    build_font_cronyx_cyrillic
+    build_font_cursor_misc
+    build_font_daewoo_misc
+    build_font_dec_misc
+    build_font_ibm_type1
+    build_font_isas_misc
+    build_font_jis_misc
+    build_font_micro_misc
+    build_font_misc_cyrillic
+    build_font_misc_ethiopic
+    build_font_misc_meltho
+    build_font_misc_misc
+    build_font_mutt_misc
+    build_font_schumacher_misc
+    build_font_screen_cyrillic
+    build_font_sony_misc
+    build_font_sun_misc
+    build_font_util
+    build_font_winitzki_cyrillic
+    build_font_xfree86_type1
 
-build_cpufeatures
-build_pixman
+    build_cpufeatures
+    build_pixman
 
-build_xorg_server
+    build_xorg_server
 
-build_rxvt_unicode
+    build_rxvt_unicode
 fi
