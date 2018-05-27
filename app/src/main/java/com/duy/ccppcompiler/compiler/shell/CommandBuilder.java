@@ -55,12 +55,17 @@ public class CommandBuilder {
     @NonNull
     public String buildCommand() {
         StringBuilder sb = new StringBuilder();
-        sb.append(program).append(" ");
+        sb.append(program);
+        if (flags.size() == 0) {
+            return sb.toString();
+        }
+
+        sb.append(" ");
         for (int i = 0; i < flags.size(); i++) {
             String flag = flags.get(i);
             if (flag != null && !flag.isEmpty()) {
                 sb.append(flag);
-                if (i != flags.size() - 1) {
+                if (i != flags.size() - 1 && (sb.length() != 0)) {
                     sb.append(" ");
                 }
             }
