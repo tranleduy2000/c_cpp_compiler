@@ -14,12 +14,12 @@ This project is developed to help the community to learn C or C++ on the go.
 You can use this app to code and compile C/C++ project without Internet.
 
 ## Features
-- C compiler
-- C++ compiler
+- Native C compiler
+- Native C++ compiler
 - Terminal emulator
 - Diagnostic utility: auto jump to error position
-- Compiler output
-- Syntax highlighting
+- Compiler output: See stdout, stderr
+- Syntax highlighting: C/C++ language and very more language (only highlight without compile)
 - C/C++ examples from https://www.programiz.com/cpp-programming/examples
 - File manager
 - Multi Tab: you can open different files in different tabs to manage editing multiple files simultaneously with ease.
@@ -48,6 +48,7 @@ You can use this app to code and compile C/C++ project without Internet.
 - Real-time diagnostics (warnings, errors) and suggestion to fix it
 - Static code analysis
 - Code indention
+- Git support
 
 ## Pull request always welcomed.
 
