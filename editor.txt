@@ -1,0 +1,29 @@
+Chào các bạn
+Phiên bản mới của CPP-N-IDE đã hỗ trợ make, hỗ trợ thêm các options khi compile.
+Các bạn có thể test thử hoặc góp ý, mình sẽ dần hoàn thiện ứng dụng.
+Ứng dụng này không quảng cáo, mình làm vì cộng đồng.
+
+CPP N-IDE - Ứng dụng lập trình C/C++ trên Android
+Ứng dụng giúp các bạn có thể học và viết chương trình C/C++ trên chính chiếc điện thoại của mình.
+
+Link tải https://play.google.com/store/apps/details?id=com.duy.c.cpp.compiler
+
+Các tính năng chính
+- Trình biên dịch C/C++ GNU
+- Terminal emulator
+- Trình quản lý lỗi, phân tích cú pháp,..
+- Compiler output
+- Tô sáng cú pháp
+- các ví dụ C/C++ từ https://www.programiz.com/cpp-programming/examples
+- Quản lý file
+- Multi Tab: bạn có thể mở các tệp khác nhau trong các tab khác nhau để quản lý việc chỉnh sửa nhiều tệp cùng lúc một cách dễ dàng.
+- Thanh công cụ: bạn có thể nhanh chóng tạo tệp mới, mở, lưu, lưu dưới dạng, hoàn tác / làm lại, chèn một số biểu tượng thường được sử dụng, quay lại vị trí chỉnh sửa cuối cùng, v.v.
+- Danh sách các tệp đã mở gần đây
+- Tìm kiếm, thay thế hoặc thay thế tất cả
+- Thay đổi kiểu chữ và cỡ chữ
+- Hiển thị số dòng
+- Hiển thị các ký tự khoảng trống (tab, ngắt dòng)
+- Word wrap
+- Khóa hướng màn hình tự động, ngang hoặc dọc
+- Tự động thụt lề
+- Chủ đề tối / sáng

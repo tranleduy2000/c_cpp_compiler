@@ -1,37 +1,29 @@
-# c_cpp_compiler
+This project is developed to help the community to learn C or C++ on the go.
 
-C/C++ compiler for Android device using GCC compiler
+You can use this app to code and compile C/C++ project without Internet.
 
-This project develop to help community learn C or C++ language on the go.
-
-> I am developing this project, it not stable
-
-Pull request always wellcomed.
-GitHub https://github.com/tranleduy2000/c_cpp_compiler
-
-# Feature
-
-- C Compiler
-- C++ Compiler
-- Android Terminal
-- Diagnostic GUI: auto jump to error position
-- Syntax highligting
+## Features
+- Native C compiler
+- Native C++ compiler
+- Terminal emulator
+- Diagnostic utility: auto jump to error position
+- Compiler output: See stdout, stderr
+- Syntax highlighting: C/C++ language and very more language (only highlight without compile)
+- C/C++ examples from https://www.programiz.com/cpp-programming/examples
 - File manager
-- Multi Tab, you can open different files in different tabs to facilitate you in a different text of this switch to edit
-- Easy toolbar, you can quickly doing a new file, open, save, save as, undo/redo , and some commonly used symbols, back to last edit location, etc.
-- List of recently opened files history
+- Multi Tab: you can open different files in different tabs to manage editing multiple files simultaneously with ease.
+- Easy toolbar: you can quickly create a new file, open, save, save as, undo/redo, insert some commonly used symbols, go back to last edit location, etc.
+- List of recently opened files
 - Regular search, replace or replace all
-- Change the font and font size
+- Change the typeface and font size
 - Show line numbers
-- Show blank characters (tabs, line breaks)
-- List of recently opened files history
+- Show whitespace characters (tabs, line breaks)
 - Regular search, replace or replace all
-- Change the font and font size
 - "Word wrap" switch
-- Lock the screen orientation in: auto, horizontal or vertical
-- Remember the last open file
+- Lock the screen orientation in auto, horizontal or vertical
+- Remember the last opened file
 - Hide the soft keyboard, long press the edit area can be turn on
-- Long press the "edit area" you can convert selected text to uppercase or lowercase
-- Auto indent
-- Keep the screen in the awake state
-- Dark/Light Theme
+- Convert selected text to uppercase or lowercase by long pressing the "edit area"
+- Automatic indentation
+- Keep the screen awaken
+- Dark/Light Themes
