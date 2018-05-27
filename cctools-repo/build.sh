@@ -23,17 +23,17 @@ done
 
 export PATH=~/bin/CodeSourcery/bin:$PATH
 
-#./build-shell-utils.sh ${PWD}/src arm-linux-androideabi  ${WRKDIR}/arm-repo $NDKDIR $SDKDIR      || exit 1
+./build-shell-utils.sh ${PWD}/src arm-linux-androideabi  ${WRKDIR}/arm-repo $NDKDIR $SDKDIR      || exit 1
 
 #./build-shell-utils.sh ${PWD}/src mipsel-linux-android   ${WRKDIR}/mips-repo $NDKDIR $SDKDIR     || exit 1
 
-#./build-shell-utils.sh ${PWD}/src i686-linux-android     ${WRKDIR}/i686-repo $NDKDIR $SDKDIR     || exit 1
+./build-shell-utils.sh ${PWD}/src i686-linux-android     ${WRKDIR}/i686-repo $NDKDIR $SDKDIR     || exit 1
 
-./build-shell-utils.sh ${PWD}/src aarch64-linux-android  ${WRKDIR}/arm64-repo $NDKDIR $SDKDIR  || exit 1
+#./build-shell-utils.sh ${PWD}/src aarch64-linux-android  ${WRKDIR}/arm64-repo $NDKDIR $SDKDIR  || exit 1
 
 #./build-shell-utils.sh ${PWD}/src mips64el-linux-android ${WRKDIR}/mips64-repo $NDKDIR $SDKDIR || exit 1
 
-./build-shell-utils.sh ${PWD}/src x86_64-linux-android   ${WRKDIR}/x86_64-repo $NDKDIR $SDKDIR   || exit 1
+#./build-shell-utils.sh ${PWD}/src x86_64-linux-android   ${WRKDIR}/x86_64-repo $NDKDIR $SDKDIR   || exit 1
 
 test -e ${WRKDIR}/repo/armeabi-v7a || ln -sf armeabi ${WRKDIR}/repo/armeabi-v7a
 test -e ${WRKDIR}/repo/mips-r2     || ln -sf mips    ${WRKDIR}/repo/mips-r2

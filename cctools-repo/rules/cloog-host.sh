@@ -15,6 +15,11 @@ build_cloog_host() {
 
     banner "Build $PKG"
 
+    #Instead of download, using source from android repo (tag ndk_12_release)
+    CURRENT_DIR=`pwd`
+    cd $SRC_PREFIX/${PKG}/
+    tar -czvf $O_FILE ${PKG}-${PKG_VERSION}
+    cd $CURRENT_DIR
     #download $PKG_URL $O_FILE
 
     unpack $src_dir $O_FILE
