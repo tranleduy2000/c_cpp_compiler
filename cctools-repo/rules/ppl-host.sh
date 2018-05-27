@@ -2,10 +2,10 @@ build_ppl_host() {
     PKG=ppl
     PKG_VERSION=$ppl_version
     PKG_SUBVERSION=
-    PKG_URL="http://bugseng.com/products/ppl/download/ftp/releases/${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.xz"
+    PKG_URL="http://bugseng.com/products/ppl/download/ftp/releases/${PKG_VERSION}/${PKG}-${PKG_VERSION}.tar.gz"
     PKG_DESC="The Parma Polyhedra Library"
     PKG_DEPS=""
-    O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.xz
+    O_FILE=$SRC_PREFIX/${PKG}/${PKG}-${PKG_VERSION}.tar.gz
     S_DIR=$src_dir/${PKG}-${PKG_VERSION}
     B_DIR=$build_dir/host-${PKG}
 
