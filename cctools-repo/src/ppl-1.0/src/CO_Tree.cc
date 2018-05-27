@@ -933,7 +933,7 @@ PPL::CO_Tree
     --subtree_size;
   }
 
-  ptrdiff_t distance = first_unused_index - indexes;
+  std::ptrdiff_t distance = first_unused_index - indexes;
   PPL_ASSERT(distance >= 0);
   return static_cast<dimension_type>(distance);
 }
