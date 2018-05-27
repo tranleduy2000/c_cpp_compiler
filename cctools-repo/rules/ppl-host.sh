@@ -29,7 +29,6 @@ build_ppl_host() {
     ${S_DIR}/configure	\
 	--prefix=${TARGET_DIR}-host \
 	--with-gmp=${TARGET_DIR}-host \
-	--disable-werror \
 	--enable-static \
 	--disable-shared || error "Configure $PKG."
 

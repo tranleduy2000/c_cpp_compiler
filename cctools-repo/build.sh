@@ -23,7 +23,7 @@ done
 
 export PATH=~/bin/CodeSourcery/bin:$PATH
 
-./build-shell-utils.sh ${PWD}/src arm-linux-androideabi  ${WRKDIR}/arm-repo $NDKDIR $SDKDIR      || exit 1
+./build-shell-utils.sh ${PWD}/src arm-linux-androideabi  ${WRKDIR}/arm-repo $NDKDIR $SDKDIR  2> ${WRKDIR}/error.txt || exit 1
 
 #./build-shell-utils.sh ${PWD}/src mipsel-linux-android   ${WRKDIR}/mips-repo $NDKDIR $SDKDIR     || exit 1
 

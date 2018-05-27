@@ -114,7 +114,7 @@ echo "Build  arch: $BUILD_ARCH"
 banner() {
     echo
     echo "*********************************************************************************"
-    echo "$1" $TARGET_ARCH
+    echo "$1" "host=$HOST_ARCH target=$TARGET_ARCH"
     echo
     if [ "$TERM" = "xterm-color" -o "$TERM" = "xterm" ]; then
 	echo -ne "\033]0;${1}\007"
@@ -673,7 +673,7 @@ build_gmp_host
 build_mpfr_host
 build_mpc_host
 build_isl_host
-#build_ppl_host
+build_ppl_host
 build_cloog_host
 
 build_binutils_host
