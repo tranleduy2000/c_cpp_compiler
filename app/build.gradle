@@ -46,7 +46,7 @@ android {
             if (propFile.exists()) {
                 Properties props = new Properties()
                 props.load(new FileInputStream(propFile))
-                storeFile new File(props["RELEASE_STORE_FILE"])
+                storeFile new File(rootProject.projectDir, props["RELEASE_STORE_FILE"])
                 storePassword props["RELEASE_STORE_PASSWORD"]
                 keyAlias props["RELEASE_KEY_ALIAS"]
                 keyPassword props["RELEASE_KEY_PASSWORD"]
