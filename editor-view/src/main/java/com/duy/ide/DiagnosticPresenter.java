@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic;
+package com.duy.ide;
 
 import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
-import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
-import com.duy.editor.CodeEditorActivity;
+import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.editor.editor.R;
+import com.duy.ide.suggestion.ISuggestion;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
@@ -33,6 +32,7 @@ import com.jecelyin.editor.v2.manager.TabManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,13 +43,13 @@ import java.util.HashMap;
 
 public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
-    private final CodeEditorActivity mActivity;
+    private final SimpleEditorActivity mActivity;
     private final TabManager mTabManager;
     private ArrayList<Diagnostic> mDiagnostics;
     private DiagnosticContract.View mView;
     private HashMap<File, byte[]> mHashCode = new HashMap<>();
 
-    public DiagnosticPresenter(DiagnosticContract.View view, CodeEditorActivity activity, TabManager tabManager) {
+    public DiagnosticPresenter(DiagnosticContract.View view, SimpleEditorActivity activity, TabManager tabManager) {
         mActivity = activity;
         mTabManager = tabManager;
         mView = view;
@@ -162,19 +162,13 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     private boolean isSystemFile(File file) {
-        ArrayList<Diagnostic> result = new ArrayList<>();
-        String cCtoolsDir = Environment.getCCtoolsDir(mActivity);
-        //in android 6 or above, the data dir is a symbolic link
-        String cCtoolsDir2 = "/data/data/" + mActivity.getPackageName() + "/root/cctools";
-        if (file != null) {
-            if (file.getPath().startsWith(cCtoolsDir)) {
-                return true;
-            }
-            if (file.getPath().startsWith(cCtoolsDir2)) {
-                return true;
-            }
+        try {
+            File systemDir = mActivity.getFilesDir().getParentFile();
+            return !systemDir.getCanonicalPath().startsWith(file.getCanonicalPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     /**

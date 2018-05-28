@@ -19,11 +19,9 @@ package com.duy.editor;
 import android.content.Intent;
 import android.core.widget.EditAreaView;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-import android.view.View;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.BuildConfig;
@@ -33,8 +31,6 @@ import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
 import com.duy.ccppcompiler.console.TermActivity;
-import com.duy.ccppcompiler.diagnostic.DiagnosticPresenter;
-import com.duy.ccppcompiler.diagnostic.ui.DiagnosticFragment;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
@@ -65,35 +61,12 @@ import jackpal.androidterm.TermPreferencesActivity;
 public class CodeEditorActivity extends SimpleEditorActivity {
     private static final String TAG = "CodeEditorActivity";
 
-    public SlidingUpPanelLayout mSlidingUpPanelLayout;
-    private DiagnosticPresenter mDiagnosticPresenter;
     private InAppPurchaseHelper mPremiumHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPremiumHelper = new InAppPurchaseHelper(this);
-
-        final View toggleView = findViewById(R.id.btn_toggle_panel);
-        mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);
-        mSlidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                toggleView.animate().rotation(180 * slideOffset).start();
-            }
-        });
-
-
-        FragmentManager fm = getSupportFragmentManager();
-        String tag = DiagnosticFragment.class.getSimpleName();
-        DiagnosticFragment diagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(tag);
-        if (diagnosticFragment == null) {
-            diagnosticFragment = DiagnosticFragment.newInstance();
-        }
-        fm.beginTransaction()
-                .replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
-                .commit();
-        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
 
         // Monitor launch times and interval from installation
         RateThisApp.onCreate(this);
@@ -196,7 +169,6 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             @Override
             public void onSaveFailed(Exception e) {
                 UIUtils.alert(CodeEditorActivity.this, e.getMessage());
-                mDiagnosticPresenter.log(e.getMessage());
             }
 
             @Override

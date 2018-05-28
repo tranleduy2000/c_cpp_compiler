@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic;
+package com.duy.ide;
 
-import com.duy.ccppcompiler.diagnostic.model.SimpleDiagnostic;
-import com.duy.ccppcompiler.diagnostic.suggestion.DiagnosticSuggestion;
-import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ide.model.SimpleDiagnostic;
+import com.duy.ide.suggestion.DiagnosticSuggestion;
+import com.duy.ide.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.

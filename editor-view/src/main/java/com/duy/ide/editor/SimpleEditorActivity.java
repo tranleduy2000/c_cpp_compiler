@@ -29,6 +29,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -45,10 +46,12 @@ import android.widget.TextView;
 
 import com.duy.common.StoreUtil;
 import com.duy.file.explorer.FileExplorerActivity;
+import com.duy.ide.DiagnosticPresenter;
 import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.filemanager.FileManager;
+import com.duy.ide.ui.DiagnosticFragment;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
@@ -73,6 +76,7 @@ import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.widget.menu.MenuGroup;
 import com.jecelyin.editor.v2.widget.menu.MenuItemInfo;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
@@ -94,6 +98,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     private final static int RC_SAVE_AS = 3;
     private static final int RC_SETTINGS = 5;
 
+    public SlidingUpPanelLayout mSlidingUpPanelLayout;
     public Toolbar mToolbar;
     public ViewPager mEditorPager;
     public DrawerLayout mDrawerLayout;
@@ -101,6 +106,8 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     public TextView mVersionTextView;
     public SymbolBarLayout mSymbolBarLayout;
     protected TabManager mTabManager;
+
+    protected DiagnosticPresenter mDiagnosticPresenter;
     private Preferences mPreferences;
     private MenuManager mMenuManager;
     private long mExitTime;
@@ -151,7 +158,33 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
 
         mEditorPager.setVisibility(View.VISIBLE);
         initUI();
+        intiDiagnosticView();
         processIntent();
+    }
+
+    private void intiDiagnosticView() {
+
+        final View toggleView = findViewById(R.id.btn_toggle_panel);
+        mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);
+        mSlidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                toggleView.animate().rotation(180 * slideOffset).start();
+            }
+        });
+
+
+        FragmentManager fm = getSupportFragmentManager();
+        String tag = DiagnosticFragment.class.getSimpleName();
+        DiagnosticFragment diagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(tag);
+        if (diagnosticFragment == null) {
+            diagnosticFragment = DiagnosticFragment.newInstance();
+        }
+        fm.beginTransaction()
+                .replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
+                .commit();
+        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
+
     }
 
     private void bindPreferences() {

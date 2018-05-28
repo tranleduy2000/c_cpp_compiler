@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic;
+package com.duy.ide;
 
 public interface DiagnosticListener {
     /**

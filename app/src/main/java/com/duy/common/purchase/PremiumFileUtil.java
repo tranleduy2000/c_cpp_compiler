@@ -20,7 +20,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.duy.common.io.IoUtils;
+import com.duy.common.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +41,7 @@ class PremiumFileUtil {
     private static String readFile(File file) {
         try {
             FileInputStream inputStream = new FileInputStream(file);
-            String result = IoUtils.toString(inputStream);
+            String result = IOUtils.toString(inputStream);
             inputStream.close();
             return result;
         } catch (IOException e) {

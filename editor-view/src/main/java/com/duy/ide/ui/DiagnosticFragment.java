@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic.ui;
+package com.duy.ide.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,12 +30,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.diagnostic.DiagnosticClickListener;
-import com.duy.ccppcompiler.diagnostic.DiagnosticContract;
-import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
 import com.duy.common.DLog;
+import com.duy.ide.Diagnostic;
+import com.duy.ide.DiagnosticClickListener;
+import com.duy.ide.DiagnosticContract;
+import com.duy.ide.editor.editor.R;
+import com.duy.ide.suggestion.ISuggestion;
 
 import java.util.ArrayList;
 import java.util.List;

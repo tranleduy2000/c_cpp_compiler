@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic;
+package com.duy.ccppcompiler.compiler.shell;
+
+import com.duy.ide.Diagnostic;
+import com.duy.ide.DiagnosticFactory;
+import com.duy.ide.DiagnosticsCollector;
+import com.duy.ide.Kind;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.duy.ccppcompiler.diagnostic.Kind.OTHER;
+import static com.duy.ide.Kind.OTHER;
 
 /**
  * https://gcc.gnu.org/onlinedocs/gcc-3.3.5/gnat_ug_unx/Output-and-Error-Message-Control.html

@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.diagnostic.ui;
+package com.duy.ide.ui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.diagnostic.Diagnostic;
-import com.duy.ccppcompiler.diagnostic.DiagnosticClickListener;
+import com.duy.ide.Diagnostic;
+import com.duy.ide.DiagnosticClickListener;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DrawableUtils;
 
 import java.io.File;

@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic.suggestion;
+package com.duy.ide;
+
+import android.view.View;
+
+import com.duy.ide.suggestion.ISuggestion;
 
 /**
- * An empty replacement string indicates that the given range is to be removed. An empty range
- * (e.g. “45:3-45:3”) indicates that the string is to be inserted at the given position.
- * Otherwise replace
- * Created by Duy on 29-Apr-18.
+ * Created by Duy on 28-Apr-18.
  */
 
-public enum SuggestionKind {
-    INSERT, REPLACE, DELETE
+public interface DiagnosticClickListener {
+    void onDiagnosisClick(Diagnostic diagnostic, View view);
+
+    void onSuggestionClick(View v, Diagnostic diagnostic, ISuggestion suggestion);
 }

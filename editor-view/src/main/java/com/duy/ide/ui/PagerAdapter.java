@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.diagnostic.ui;
+package com.duy.ide.ui;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -8,7 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.ccppcompiler.R;
+import com.duy.ide.editor.editor.R;
+
 
 class PagerAdapter extends android.support.v4.view.PagerAdapter {
     private Fragment fragment;

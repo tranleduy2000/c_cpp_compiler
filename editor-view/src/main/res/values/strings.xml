@@ -220,4 +220,12 @@
     <string name="not_a_text_file">The file %s seem like is not a text file. Do you want to open it?</string>
     <string name="home">Home</string>
     <string name="share_code">Share code</string>
+
+
+    <string name="title_non_project_file">Non-Project Files Protection</string>
+    <string name="message_non_project_file">"This file does not belong to the project: (%s)"</string>
+    <string name="compiling">Compiling…</string>
+    <string name="diagnostic">Diagnostic</string>
+    <string name="compiler_output">Compiler output</string>
+
 </resources>

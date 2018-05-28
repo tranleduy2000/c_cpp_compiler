@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.diagnostic;
+package com.duy.ide;
 
 import android.support.annotation.MainThread;
 
-import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
+import com.duy.ide.suggestion.ISuggestion;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.filemanager.install;
+package com.duy.ccppcompiler.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

@@ -27,7 +27,7 @@ import java.io.Reader;
  * Created by Duy on 12-Apr-18.
  */
 
-public class IoUtils {
+public class IOUtils {
 
     public static String toString(InputStream inputStream) throws IOException {
         final int bufferSize = 1024;

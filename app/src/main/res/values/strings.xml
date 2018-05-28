@@ -14,15 +14,8 @@
     <string name="title_menu_cpp_example">C++ examples</string>
     <string name="title_term_preferences">Terminal Setting</string>
 
-    <string name="compiling">Compiling…</string>
-    <string name="diagnostic">Diagnostic</string>
-    <string name="compiler_output">Compiler output</string>
     <string name="compiler_setting">Compiler setting</string>
     <string name="message_program_finished">Program finished</string>
-
-    <string name="title_non_project_file">Non-Project Files Protection</string>
-    <string name="message_non_project_file">"This file does not belong to the project: (%s)"</string>
-
 
     <string name="title_premium_version">Premium version</string>
     <string name="button_purchase">Purchase</string>
