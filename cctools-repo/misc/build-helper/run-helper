@@ -10,7 +10,7 @@ mkdir -p ${CCTOOLSDIR}/tmp
 cp -f $in ${CCTOOLSDIR}/tmp/$out
 chmod 755 ${CCTOOLSDIR}/tmp/$out
 
-am start $(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools/.CCToolsActivity \
+am start $(am 2>&1 | grep -q '\-\-user' && echo '--user 0') -n com.duy.c.cpp.compiler/.CCToolsActivity \
     --es type terminal \
     --es title "$out" \
     --es cmdline "/system/bin/sh -c \"${CCTOOLSDIR}/tmp/$out $args\"" \
