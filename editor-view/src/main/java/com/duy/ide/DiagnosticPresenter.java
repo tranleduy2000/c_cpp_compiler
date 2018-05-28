@@ -163,8 +163,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     private boolean isSystemFile(File file) {
         try {
+            //data dir
             File systemDir = mActivity.getFilesDir().getParentFile();
-            return !systemDir.getCanonicalPath().startsWith(file.getCanonicalPath());
+            return systemDir.getCanonicalPath().startsWith(file.getCanonicalPath());
         } catch (IOException e) {
             e.printStackTrace();
             return false;
