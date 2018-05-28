@@ -17,7 +17,7 @@ You can use this app to code and compile C/C++ project without Internet.
 - Native C compiler
 - Native C++ compiler
 - C/C++ code formatter using AStyle http://astyle.sourceforge.net/astyle.html#_indent-classes
-- Terminal emulator
+- Terminal emulator: full-featured terminal
 - Diagnostic utility: auto jump to error position
 - Compiler output: See stdout, stderr
 - Syntax highlighting: C/C++ language and very more language (only highlight without compile)
@@ -48,7 +48,6 @@ You can use this app to code and compile C/C++ project without Internet.
 - Code completion
 - Real-time diagnostics (warnings, errors) and suggestion to fix it
 - Static code analysis
-- Code indention
 - Git support
 
 ## Pull request always welcomed.

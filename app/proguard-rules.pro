@@ -104,3 +104,4 @@
 -keep class com.pdaxrom.** { public *; }
 
 -keep class com.android.vending.billing.**
+-keep class com.duy.astyle.** { *; }
