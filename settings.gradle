@@ -1,2 +1,2 @@
-include ':app', ':style', ':editor-view', ':sdlplugin', ':apkbuilder'
+include ':app', ':style', ':editor', ':sdlplugin', ':apkbuilder'
 include ':emulatorview', ':libtermexec'
