@@ -26,7 +26,6 @@ import android.core.text.method.MovementMethod;
 import android.core.view.InputMethodManagerCompat;
 import android.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -365,28 +364,13 @@ public class EditAreaView extends BaseEditorView {
         return getLayout().realLineToVirtualLine(realLine);
     }
 
-    /**
-     * Move cursor to realLine: column
-     *
-     * @param realLine - the realLine, if realLine not exist, doesn't work, note that realLine start at 1
-     * @param column   - current column, if col < 0, cursor is start at realLine
-     */
-    @MainThread
-    public void gotoLine(int realLine, int column) {
-        EditorIndex index = getCursorIndex(realLine, column);
-        if (index != null) {
-            setSelection(index.offset);
-            scrollToLine(index.line, 2);
-        }
-    }
 
     /**
-     * Scroll to line, easy for editing
-     * @param virtualLine
-     * @param paddingCount - number of line will be ignore
+     * @param virtualLine scroll editor to virtualLine
      */
-    private void scrollToLine(int virtualLine, int paddingCount) {
-        int y = getLayout().getLineTop(virtualLine - paddingCount >= 0 ? virtualLine - paddingCount : virtualLine);
+    public void scrollToLine(int virtualLine) {
+        virtualLine = Math.max(0, Math.min(virtualLine, getLineCount() - 1));
+        int y = getLayout().getLineTop(virtualLine);
         scrollTo(getScrollX(), y);
     }
 

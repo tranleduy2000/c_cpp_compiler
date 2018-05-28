@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.core.widget.BaseEditorView;
 import android.core.widget.EditAreaView;
+import android.core.widget.model.EditorIndex;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -400,10 +401,17 @@ public class EditorDelegate implements TextWatcher {
     }
 
     /**
-     * @param realLine - real line in source code
+     * Move cursor to [realLine: column]
+     *
+     * @param realLine - real line in source code, note that realLine start at 1
+     * @param column   - current column, if col < 0, cursor is start at realLine
      */
     private void goToLine(int realLine, int column) {
-        mEditText.gotoLine(realLine, column);
+        EditorIndex index = mEditText.getCursorIndex(realLine, column);
+        if (index != null) {
+            mEditText.setSelection(index.offset);
+            mEditText.scrollToLine(index.line - 2);
+        }
     }
 
     private void clearErrorSpan() {
