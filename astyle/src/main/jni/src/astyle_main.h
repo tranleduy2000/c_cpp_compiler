@@ -28,8 +28,6 @@
 #else
 	#include <utime.h>
 	#include <sys/stat.h>
-#include <jni.h>
-
 #endif                         // end compiler checks
 
 #ifdef ASTYLE_JNI
@@ -409,16 +407,18 @@ private:
 // declarations for java native interface (JNI) build
 // they are called externally and are NOT part of the namespace
 //----------------------------------------------------------------------------
-void  JNICALL javaErrorHandler(int errorNumber, const char* errorMessage);
-char* JNICALL javaMemoryAlloc(unsigned long memoryNeeded);
+#ifdef ASTYLE_JNI
+void  STDCALL javaErrorHandler(int errorNumber, const char* errorMessage);
+char* STDCALL javaMemoryAlloc(unsigned long memoryNeeded);
 // the following function names are constructed from method names in the calling java program
-extern "C" JNIEXPORT
-jstring JNICALL Java_AStyleInterface_AStyleGetVersion(JNIEnv* env, jclass);
-extern "C" JNIEXPORT
-jstring JNICALL Java_AStyleInterface_AStyleMain(JNIEnv* env,
+extern "C" EXPORT
+jstring STDCALL Java_AStyleInterface_AStyleGetVersion(JNIEnv* env, jclass);
+extern "C" EXPORT
+jstring STDCALL Java_AStyleInterface_AStyleMain(JNIEnv* env,
                                                 jobject obj,
                                                 jstring textInJava,
                                                 jstring optionsJava);
+#endif //  ASTYLE_JNI
 
 //----------------------------------------------------------------------------
 // declarations for UTF-16 interface

@@ -3,12 +3,12 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_MODULE  := astyle
 
-LOCAL_SRC_FILES := ASBeautifier.cpp \
-                   ASEnhancer.cpp \
-                   ASFormatter.cpp \
-                   ASLocalizer.cpp \
-                   ASResource.cpp \
-                   astyle_main.cpp
+LOCAL_SRC_FILES := /src/ASBeautifier.cpp \
+                   /src/ASEnhancer.cpp \
+                   /src/ASFormatter.cpp \
+                   /src/ASLocalizer.cpp \
+                   /src/ASResource.cpp \
+                   /src/astyle_main.cpp
 
 LOCAL_LDLIBS := -llog
 LOCAL_CXX_FLAGS+=-std=c++11

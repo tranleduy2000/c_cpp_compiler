@@ -1187,10 +1187,10 @@ string ASConsole::getNumberFormat(int num, size_t) const
 
 	// get the locale info
 	struct lconv* lc;
-//	lc = localeconv();
+	lc = localeconv();
 
 	// format the number
-	return getNumberFormat(num,/* lc->grouping*/".", /*lc->thousands_sep*/ "");
+	return getNumberFormat(num, lc->grouping, lc->thousands_sep);
 }
 
 /**
