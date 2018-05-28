@@ -53,9 +53,8 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     public GccCommandResult compile(File[] sourceFiles) {
         File sourceFile = sourceFiles[0];
         String command = buildCommand(sourceFiles);
-        String workingDir = sourceFile.getParent();
 
-        GccCommandResult result = new GccCommandResult(execCommand(mContext, workingDir, command));
+        GccCommandResult result = new GccCommandResult(execCommand(mContext, sourceFile.getParent(), command));
         if (result.getResultCode() == 0) {
             if (mOutFile.exists()) {
                 try {
@@ -80,9 +79,12 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     }
 
     protected String buildCommand(File[] sourceFiles) {
-        File file = sourceFiles[0];
-        String fileName = file.getName();
-        mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
+        File source = sourceFiles[0];
+        String fileName = source.getName();
+
+        File buildDir = new File(source.getParent(), "build");
+        buildDir.mkdir();
+        mOutFile = new File(buildDir, fileName.substring(0, fileName.lastIndexOf(".")));
 
         CommandBuilder builder = new CommandBuilder(COMPILER_NAME);
         for (File sourceFile : sourceFiles) {

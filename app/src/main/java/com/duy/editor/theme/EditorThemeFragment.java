@@ -103,11 +103,11 @@ public class EditorThemeFragment extends Fragment {
             Buffer buffer = new Buffer();
             Highlighter highlighter = new Highlighter();
             editorView.setTheme(editorTheme);
-            editorView.setSelection(10);
 
             buffer.setMode(Catalog.getModeByName("C++"), mContext);
             editorView.setText(new SpannableStringBuilder());
             editorView.getText().insert(0, getSampleData());
+
             buffer.setEditable(editorView.getText());
             buffer.insert(0, getSampleData());
 

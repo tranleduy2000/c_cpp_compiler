@@ -143,12 +143,13 @@ public class Environment {
         final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         final TermSettings settings = new TermSettings(context.getResources(), pref);
         final String cctoolsDir = getCCtoolsDir(context);
+        final String tmpExeDir = getTmpExeDir(context);
 
         return new String[]{
-                "TMPDIR=" + getTmpExeDir(context),
-                "TMPEXEDIR=" + getTmpExeDir(context),
-                "TEMPDIR=" + getTmpExeDir(context),
-                "TEMP=" + getTmpExeDir(context),
+                "TMPDIR=" + tmpExeDir,
+                "TMPEXEDIR=" + tmpExeDir,
+                "TEMPDIR=" + tmpExeDir,
+                "TEMP=" + tmpExeDir,
                 "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
                 "HOME=" + getHomeDir(context),
 
