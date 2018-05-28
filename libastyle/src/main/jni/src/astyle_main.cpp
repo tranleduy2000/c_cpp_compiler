@@ -51,6 +51,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <android/log.h>
 
 #ifdef __VMS
                                                                                                                         #include <unixlib.h>
@@ -3117,26 +3118,27 @@ using namespace astyle;
                                                                                                                         // called by a java program to get the version number
 // the function name is constructed from method names in the calling java program
 extern "C"  EXPORT
-jstring STDCALL Java_AStyleInterface_AStyleGetVersion(JNIEnv* env, jclass)
+jstring STDCALL Java_com_duy_astyle_AStyleInterface_AStyleGetVersion(JNIEnv* env, jobject obj)
 {
 	return env->NewStringUTF(g_version);
 }
 
 // called by a java program to format the source code
 // the function name is constructed from method names in the calling java program
-extern "C"  EXPORT
-jstring STDCALL Java_AStyleInterface_AStyleMain(JNIEnv* env,
+extern "C" EXPORT
+jstring STDCALL Java_com_duy_astyle_AStyleInterface_AStyleMain(JNIEnv* env,
                                                 jobject obj,
                                                 jstring textInJava,
                                                 jstring optionsJava)
 {
-	g_env = env;                                // make object available globally
-	g_obj = obj;                                // make object available globally
+    LOGW("AStyleMain called");
+    g_env = env;                                // make object available globally
+	g_obj = obj;                              // make object available globally
 
 	jstring textErr = env->NewStringUTF("");    // zero length text returned if an error occurs
 
 	// get the method ID
-	jclass cls = env->GetObjectClass(obj);
+	jclass cls = env->FindClass("com/duy/astyle/AStyleInterface");
 	g_mid = env->GetMethodID(cls, "ErrorHandler", "(ILjava/lang/String;)V");
 	if (g_mid == 0)
 	{

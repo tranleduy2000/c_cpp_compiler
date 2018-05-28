@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.Toast;
 
+import com.duy.astyle.AStyleInterface;
 import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
@@ -67,9 +68,13 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPremiumHelper = new InAppPurchaseHelper(this);
-
         // Monitor launch times and interval from installation
         RateThisApp.onCreate(this);
+
+        String code = "int Foo(bool isBar){if (isBar)    {    bar();    return 1;    }else    return 0;}";
+        AStyleInterface aStyleInterface = new AStyleInterface();
+        String format = aStyleInterface.format(code, "--style=allman");
+        System.out.println("format = " + format);
     }
 
     @Override

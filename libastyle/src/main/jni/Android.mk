@@ -9,5 +9,5 @@ LOCAL_SRC_FILES := src/ASBeautifier.cpp \
                    src/ASLocalizer.cpp \
                    src/ASResource.cpp \
                    src/astyle_main.cpp
-
+LOCAL_LDLIBS := -lz -llog
 include $(BUILD_SHARED_LIBRARY)

@@ -6,6 +6,15 @@
 #ifndef ASTYLE_MAIN_H
 #define ASTYLE_MAIN_H
 
+#ifndef ASTYLE_JNI
+#define ASTYLE_JNI
+#endif
+
+#define  LOG_TAG    "astyle"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
 //----------------------------------------------------------------------------
 // headers
 //----------------------------------------------------------------------------
@@ -523,9 +532,9 @@ void  STDCALL javaErrorHandler(int errorNumber, const char* errorMessage);
 char* STDCALL javaMemoryAlloc(unsigned long memoryNeeded);
 // the following function names are constructed from method names in the calling java program
 extern "C" EXPORT
-jstring STDCALL Java_AStyleInterface_AStyleGetVersion(JNIEnv* env, jclass);
+jstring STDCALL Java_com_duy_astyle_AStyleInterface_AStyleGetVersion(JNIEnv* env, jobject obj);
 extern "C" EXPORT
-jstring STDCALL Java_AStyleInterface_AStyleMain(JNIEnv* env,
+jstring STDCALL Java_com_duy_astyle_AStyleInterface_AStyleMain(JNIEnv* env,
                                                 jobject obj,
                                                 jstring textInJava,
                                                 jstring optionsJava);
