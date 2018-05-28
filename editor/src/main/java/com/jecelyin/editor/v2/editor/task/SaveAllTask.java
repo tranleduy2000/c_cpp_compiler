@@ -22,7 +22,7 @@ import android.support.annotation.Nullable;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.filemanager.SaveListener;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.manager.TabManager;
 
 /**
@@ -50,7 +50,7 @@ public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... voids) {
         TabManager tabManager = editorActivity.getTabManager();
         EditorFragmentPagerAdapter editorPagerAdapter = tabManager.getEditorPagerAdapter();
-        for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
+        for (IEditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
             try {
                 editorDelegate.saveCurrentFile();
             } catch (Exception e) {
@@ -65,7 +65,7 @@ public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
         EditorFragmentPagerAdapter editorPagerAdapter = editorActivity.getTabManager().getEditorPagerAdapter();
-        for (EditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
+        for (IEditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
             editorDelegate.onDocumentChanged();
         }
         if (aBoolean) {

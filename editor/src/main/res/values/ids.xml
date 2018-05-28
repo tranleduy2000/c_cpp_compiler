@@ -39,4 +39,5 @@
     <item name="action_share" type="id">Share</item>
     <item name="action_rate" type="id" />
     <item name="action_share_code" type="id">Share code</item>
+    <item name="action_format_source" type="id" />
 </resources>

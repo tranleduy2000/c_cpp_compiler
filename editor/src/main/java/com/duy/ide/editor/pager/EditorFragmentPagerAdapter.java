@@ -25,6 +25,7 @@ import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.EditorFragment;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.nakama.arraypageradapter.ArrayFragmentStatePagerAdapter;
 
 import java.io.File;
@@ -115,8 +116,8 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
         }
     }
 
-    public ArrayList<EditorDelegate> getAllEditor() {
-        ArrayList<EditorDelegate> delegates = new ArrayList<>();
+    public ArrayList<IEditorDelegate> getAllEditor() {
+        ArrayList<IEditorDelegate> delegates = new ArrayList<>();
         for (int i = 0; i < getCount(); i++) {
             delegates.add(getEditorDelegateAt(i));
         }

@@ -65,6 +65,7 @@ import com.jecelyin.editor.v2.dialog.LangListDialog;
 import com.jecelyin.editor.v2.dialog.WrapCharDialog;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
@@ -537,7 +538,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     }
 
     public void doCommandForAllEditor(Command command) {
-        for (EditorDelegate editorDelegate : mTabManager.getEditorPagerAdapter().getAllEditor()) {
+        for (IEditorDelegate editorDelegate : mTabManager.getEditorPagerAdapter().getAllEditor()) {
             editorDelegate.doCommand(command);
         }
     }

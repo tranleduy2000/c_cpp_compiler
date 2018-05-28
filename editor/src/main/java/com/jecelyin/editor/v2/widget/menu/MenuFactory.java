@@ -28,11 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_BACK;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.CONVERT_WRAP_CHAR;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_BACK;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_FORWARD;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.DOC_INFO;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.FIND;
-import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_FORWARD;
+import static com.jecelyin.editor.v2.common.Command.CommandEnum.FORMAT_SOURCE;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_END;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_INDEX;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.GOTO_TOP;
@@ -128,6 +129,7 @@ public class MenuFactory {
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_back, CURSOR_BACK, R.drawable.ic_arrow_back_white_24dp, R.string.cursor_back));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_cursor_forward, CURSOR_FORWARD, R.drawable.ic_arrow_forward_white_24dp, R.string.cursor_forward));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_share_code, SHARE_CODE, R.drawable.baseline_share_24, R.string.share_code));
+        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_format_source, FORMAT_SOURCE, R.drawable.baseline_format_indent_increase_24, R.string.format_source));
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.m_info, DOC_INFO, R.drawable.ic_info_white_24dp, R.string.document_info));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.VIEW, R.id.action_encoding, NONE, R.drawable.m_encoding, R.string.encoding));

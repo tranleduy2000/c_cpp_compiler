@@ -3,6 +3,7 @@ package com.duy.astyle;
 /**
  * AStyleInterface jni
  *
+ * @link http://astyle.sourceforge.net/astyle.html#_Options
  * @link http://astyle.sourceforge.net/develop/jni.html
  */
 public class AStyleInterface {

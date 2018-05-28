@@ -59,8 +59,10 @@ public class Command {
         COMMENT,
         INSERT_TEXT,
         RELOAD_WITH_ENCODING,
-        FULL_SCREEN,
-        THEME, REQUEST_FOCUS, DELETE, HIGHLIGHT_ERROR, CLEAR_ERROR,
+        REQUEST_FOCUS,
+        HIGHLIGHT_ERROR,
+        CLEAR_ERROR,
         SHARE_CODE,
+        FORMAT_SOURCE,
     }
 }

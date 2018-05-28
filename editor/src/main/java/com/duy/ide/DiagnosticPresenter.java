@@ -27,7 +27,7 @@ import com.duy.ide.editor.editor.R;
 import com.duy.ide.suggestion.ISuggestion;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.manager.TabManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -74,7 +74,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                         mActivity.getString(R.string.message_non_project_file, source.getPath()));
                 return;
             }
-            EditorDelegate editorDelegate = moveToEditor(source, null);
+            IEditorDelegate editorDelegate = moveToEditor(source, null);
             if (editorDelegate != null) {
                 Command command = new Command(Command.CommandEnum.GOTO_INDEX);
                 command.args.putInt("line", (int) diagnostic.getLineNumber());
@@ -88,7 +88,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Override
     public void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion) {
         File source = suggestion.getSourceFile();
-        EditorDelegate delegate = moveToEditor(source, mHashCode.get(source));
+        IEditorDelegate delegate = moveToEditor(source, mHashCode.get(source));
 
         if (delegate != null) {
             int start = delegate.getEditText()
@@ -96,7 +96,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             int end = delegate.getEditText()
                     .getCursorIndex(suggestion.getLineEnd(), suggestion.getColEnd()).offset;
             if (start >= 0 && start <= end) {
-                delegate.getEditableText().replace(start, end, suggestion.getMessage());
+                delegate.getEditText().getEditableText().replace(start, end, suggestion.getMessage());
                 delegate.getEditText().setSelection(start + suggestion.getMessage().length());
             }
             mView.remove(diagnostic);
@@ -106,11 +106,11 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Nullable
     @SuppressWarnings("ConstantConditions")
     @MainThread
-    private EditorDelegate moveToEditor(File source, @Nullable byte[] md5) {
-        Pair<Integer, EditorDelegate> pair = mTabManager.getEditorDelegate(source);
+    private IEditorDelegate moveToEditor(File source, @Nullable byte[] md5) {
+        Pair<Integer, IEditorDelegate> pair = mTabManager.getEditorDelegate(source);
         if (pair != null) {
             int index = pair.first;
-            EditorDelegate editorDelegate = pair.second;
+            IEditorDelegate editorDelegate = pair.second;
             if (editorDelegate.isChanged()) {
                 return null;
             }
@@ -177,7 +177,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
      * Find first error index and move cursor to it
      */
     private void highlightErrorCurrentEditor() {
-        EditorDelegate delegate = mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
+        IEditorDelegate delegate = mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
         if (delegate == null) {
             return;
         }

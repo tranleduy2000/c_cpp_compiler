@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -39,7 +40,9 @@ import android.text.style.StyleSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
@@ -181,7 +184,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         mEditText.removeTextChangedListener(this);
     }
 
-
     public CharSequence getSelectedText() {
         return mEditText.hasSelection() ? mEditText.getEditableText().subSequence(mEditText.getSelectionStart(), mEditText.getSelectionEnd()) : "";
     }
@@ -236,6 +238,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     /**
      * Write current content of editor to file
      */
+    @Override
     public void saveCurrentFile() throws Exception {
         if (mDocument.isChanged()) {
             mDocument.writeToFile(mDocument.getFile(), mDocument.getEncoding());
@@ -245,6 +248,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     /**
      * Write out content of editor to file in background thread
      */
+    @Override
     public void saveInBackground() {
         if (mDocument.isChanged()) {
             saveInBackground(mDocument.getFile(), mDocument.getEncoding());
@@ -253,18 +257,19 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         }
     }
 
-
     public void addHighlight(int start, int end) {
         mEditText.getText().setSpan(new BackgroundColorSpan(findResultsKeywordColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         mEditText.setSelection(end, end);
     }
 
     public int getCursorOffset() {
-        if (mEditText == null)
+        if (mEditText == null) {
             return -1;
+        }
         return mEditText.getSelectionEnd();
     }
 
+    @Override
     public void doCommand(Command command) {
         if (mEditText == null)
             return;
@@ -393,6 +398,50 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             case SHARE_CODE:
                 shareCurrentContent();
                 break;
+            case FORMAT_SOURCE:
+                formatSource();
+                break;
+        }
+    }
+
+    /**
+     * Format current source
+     * Supported: c++, c, java,
+     */
+    private void formatSource() {
+        String currMode = mDocument.getModeName();
+        String mode;
+        String style = "gnu";
+        if (currMode.contentEquals(Catalog.getModeByName("C++").getName())) {
+            mode = "c";
+        } else if (currMode.contentEquals(Catalog.getModeByName("C").getName())) {
+            mode = "c";
+        } else if (currMode.contentEquals(Catalog.getModeByName("Objective-C").getName())) {
+            mode = "c";
+        } else if (currMode.contentEquals(Catalog.getModeByName("C#").getName())) {
+            mode = "cs";
+        } else if (currMode.contentEquals(Catalog.getModeByName("Java").getName())) {
+            mode = "java";
+            style = "java";
+        } else {
+            Toast.makeText(mContext, R.string.unsupported_format_source, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String options = "--mode=" + mode;
+        if (!style.isEmpty()) {
+            options += " --style=" + style;
+        }
+        try {
+            AStyleInterface astyle = new AStyleInterface();
+            String source = mEditText.getText().toString();
+            int oldSelection = mEditText.getSelectionStart();
+            String formatted = astyle.formatSource(source, options);
+            mEditText.setText(new SpannableStringBuilder(formatted));
+            mEditText.setSelection(oldSelection);
+            Toast.makeText(mContext, R.string.formated_source, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

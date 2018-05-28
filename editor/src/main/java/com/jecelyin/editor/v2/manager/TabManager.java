@@ -35,6 +35,7 @@ import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.dialog.SaveConfirmDialog;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -220,8 +221,8 @@ public class TabManager implements ViewPager.OnPageChangeListener {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
         ArrayList<File> needSaveFiles = new ArrayList<>();
-        ArrayList<EditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
-        for (EditorDelegate editorDelegate : allEditor) {
+        ArrayList<IEditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
+        for (IEditorDelegate editorDelegate : allEditor) {
             String path = editorDelegate.getPath();
             String encoding = editorDelegate.getEncoding();
             int offset = editorDelegate.getCursorOffset();
@@ -292,12 +293,12 @@ public class TabManager implements ViewPager.OnPageChangeListener {
      * @return first is index, second is {@link EditorDelegate}, null if not found
      */
     @Nullable
-    public Pair<Integer, EditorDelegate> getEditorDelegate(File file) {
+    public Pair<Integer, IEditorDelegate> getEditorDelegate(File file) {
         String path = file.getPath();
-        ArrayList<EditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
+        ArrayList<IEditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
         for (int i = 0, allEditorSize = allEditor.size(); i < allEditorSize; i++) {
-            EditorDelegate editorDelegate = allEditor.get(i);
-            if (editorDelegate.getPath().equals(path)) {
+            IEditorDelegate editorDelegate = allEditor.get(i);
+            if (editorDelegate.getDocument().getFile().equals(path)) {
                 return new Pair<>(i, editorDelegate);
             }
         }
