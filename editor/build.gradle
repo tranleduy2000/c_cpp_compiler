@@ -47,5 +47,6 @@ dependencies {
     api group: 'commons-io', name: 'commons-io', version: '2.4'
 
     api project(':style')
+    api project(':libastyle')
 }
 

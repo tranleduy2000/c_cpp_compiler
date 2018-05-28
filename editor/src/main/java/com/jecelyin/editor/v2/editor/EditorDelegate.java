@@ -67,7 +67,7 @@ import java.util.Locale;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditorDelegate implements TextWatcher {
+public class EditorDelegate implements TextWatcher, IEditorDelegate {
     public final static String KEY_CLUSTER = "is_cluster";
     private static final String TAG = "EditorDelegate";
     EditAreaView mEditText;
@@ -587,6 +587,7 @@ public class EditorDelegate implements TextWatcher {
         return savedState;
     }
 
+    @Override
     public Document getDocument() {
         return mDocument;
     }
