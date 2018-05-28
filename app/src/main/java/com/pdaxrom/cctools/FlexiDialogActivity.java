@@ -212,7 +212,6 @@ public abstract class FlexiDialogActivity extends AppCompatActivity {
 
                 new AlertDialog.Builder(context)
                         .setTitle(title)
-//				.setMessage(title)
                         .setView(table)
                         .setPositiveButton(getText(R.string.button_continue), new DialogInterface.OnClickListener() {
                             private String exec = execAttr;

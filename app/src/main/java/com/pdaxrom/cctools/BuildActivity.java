@@ -83,7 +83,6 @@ public class BuildActivity extends AppCompatActivity {
         String fileName = new File(mFilePath).getName();
         if (fileName.contentEquals("Makefile") || fileName.contentEquals("makefile")) {
             mCommand = "make " + systemShell;
-            mCommand += " " + CompilerSetting.getMakeFlags();
 
         } else {
             int dotPos = fileName.lastIndexOf(".");

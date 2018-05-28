@@ -7,7 +7,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
-        android:name="com.jecelyin.editor.v2.TextEditorApplication"
+        android:name="com.duy.editor.TextEditorApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -94,9 +94,6 @@
             android:name="com.pdaxrom.utils.FileDialog"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/filebrowser_name" />
-        <activity
-            android:name="com.pdaxrom.cctools.CCtoolsPreferences"
-            android:label="@string/preferences" />
         <activity android:name="com.pdaxrom.cctools.LauncherNativeActivity">
             <intent-filter>
                 <action android:name="com.pdaXrom.cctools.action.RUN" />

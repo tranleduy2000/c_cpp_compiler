@@ -19,6 +19,7 @@ package com.duy.ccppcompiler.packagemanager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 
 import com.pdaxrom.utils.Utils;
 
@@ -27,6 +28,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.InputStreamReader;
 
 import jackpal.androidterm.TermSettings;
@@ -180,9 +182,9 @@ public class Environment {
     private static String getBootClassPath() {
         String bootClassPath = getEnv("BOOTCLASSPATH", null);
         if (bootClassPath == null) {
-            bootClassPath = Utils.getBootClassPath();
+            bootClassPath = findBootClassPath();
         }
-        if (bootClassPath == null) {
+        if (bootClassPath == null || bootClassPath.isEmpty()) {
             bootClassPath = "/system/framework/core.jar:" +
                     "/system/framework/ext.jar:" +
                     "/system/framework/framework.jar:" +
@@ -192,6 +194,29 @@ public class Environment {
         return bootClassPath;
     }
 
+    @Nullable
+    private static String findBootClassPath() {
+        String classPath = null;
+        File dir = new File("/system/framework");
+        if (dir.exists() && dir.isDirectory()) {
+            FilenameFilter filter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    String lowercaseName = name.toLowerCase();
+                    return lowercaseName.endsWith(".jar");
+                }
+            };
+
+            String[] list = dir.list(filter);
+            for (int i = 0; i < list.length; i++) {
+                String file = list[i];
+                if (i != 0) {
+                    classPath += ":";
+                }
+                classPath += "/system/framework/" + file;
+            }
+        }
+        return classPath;
+    }
 
     private static String getEnv(String name, String defValue) {
         String value = System.getenv(name);

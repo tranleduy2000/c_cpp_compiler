@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2;
+package com.duy.editor;
 
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
