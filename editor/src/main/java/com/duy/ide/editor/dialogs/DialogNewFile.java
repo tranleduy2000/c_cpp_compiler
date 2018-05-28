@@ -44,6 +44,7 @@ public class DialogNewFile extends AbstractDialog {
     private final String[] fileExtensions;
     private String dir;
     private EditText mPathExitText, mNameEditText;
+    private Spinner mSpinnerExt;
 
     // TODO: 19-May-18 create new file and callback
     public DialogNewFile(@NonNull Context context, @NonNull String[] fileExtensions,
@@ -65,10 +66,10 @@ public class DialogNewFile extends AbstractDialog {
         mPathExitText = view.findViewById(R.id.edit_path);
         mPathExitText.setText(dir);
         mNameEditText = view.findViewById(R.id.edit_input);
-        final Spinner spinner = view.findViewById(R.id.spinner_exts);
+        mSpinnerExt = view.findViewById(R.id.spinner_exts);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, fileExtensions);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-        spinner.setAdapter(adapter);
+        mSpinnerExt.setAdapter(adapter);
 
         builder.setTitle(R.string.create_new_file);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -100,6 +101,9 @@ public class DialogNewFile extends AbstractDialog {
 
             mNameEditText.setText(R.string.invalid_name);
             return;
+        }
+        if (!name.contains(".")){
+            name += mSpinnerExt.getSelectedItem().toString();
         }
         File file = new File(path, name);
         if (IOUtils.createNewFile(file)) {
