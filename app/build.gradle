@@ -136,6 +136,7 @@ dependencies {
     api project(':emulatorview')
     api project(':libtermexec')
     api project(':style')
+    api project(':astyle')
 
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.firebase:firebase-storage:15.0.2'
