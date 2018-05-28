@@ -81,7 +81,11 @@ public class CompileSetting implements ICompileSetting {
 
         //optimize
         String optimize = mPref.getString(mContext.getString(R.string.pref_option_optimization_level), "");
-        if (!optimize.isEmpty()) builder.addFlags("-O" + optimize);
+        if (!optimize.isEmpty()) {
+            if (optimize.matches("(fast)|(g)|(s)|[0123]")) {
+                builder.addFlags("-O" + optimize);
+            }
+        }
 
         //language standard
         String std = mPref.getString(mContext.getString(R.string.pref_option_language_standard), "");

@@ -34,7 +34,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.CompileSetting;
 import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
 import com.duy.ccppcompiler.compiler.compilers.GPlusPlusCompiler;
 import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
@@ -193,7 +192,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 IOUtils.write(/*"#include <stdio.h>\n" +*/ "int main(){ return 0; }", output);
                 output.close();
 
-                GCCCompiler compiler = new GCCCompiler(context, new CompileSetting(context));
+                GCCCompiler compiler = new GCCCompiler(context, null);
                 GccCommandResult result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not exec C compiler, please install compiler");
@@ -205,7 +204,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 output = new FileOutputStream(file);
                 IOUtils.write(/*"#include <iostream>\n" + "using namespace std;\n" +*/ "int main() { return 0; }", output);
                 output.close();
-                compiler = new GPlusPlusCompiler(context, new CompileSetting(context));
+                compiler = new GPlusPlusCompiler(context, null);
                 result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not exec C++ compiler, please install compiler");

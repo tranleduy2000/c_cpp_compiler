@@ -28,6 +28,7 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -92,22 +93,22 @@ public class Shell {
 
             //parse output
             StringBuilder message = new StringBuilder();
-            int skipLine = 0; //skip echos from two command strings
+            int skipLine = 6; //skip echos from two command strings
             final Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
             do {
                 String errstr;
                 try {
                     errstr = input.readLine();
                     // remove escape sequence
-//                    errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
+                    errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
                     // remove clearing new line
-//                    Matcher m = patClearNewLine.matcher(errstr);
-//                    if (m.find()) {
-//                        int length = m.end() - m.start();
-//                        if (m.start() > length) {
-//                            errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
-//                        }
-//                    }
+                    Matcher m = patClearNewLine.matcher(errstr);
+                    if (m.find()) {
+                        int length = m.end() - m.start();
+                        if (m.start() > length) {
+                            errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
+                        }
+                    }
                 } catch (IOException e) {
                     break;
                 }

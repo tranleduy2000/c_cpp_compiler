@@ -98,7 +98,6 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         if (Build.VERSION.SDK_INT >= 21) {
             builder.addFlags("-pie");
         }
-
         // builder.addFlags("-std=c99");
         // builder.addFlags("-lz"/*zlib*/, "-ldl", "-lm" /*math*/, "-llog");
         // builder.addFlags("-lncurses");

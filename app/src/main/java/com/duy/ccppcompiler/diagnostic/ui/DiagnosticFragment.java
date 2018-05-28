@@ -35,6 +35,7 @@ import com.duy.ccppcompiler.diagnostic.Diagnostic;
 import com.duy.ccppcompiler.diagnostic.DiagnosticClickListener;
 import com.duy.ccppcompiler.diagnostic.DiagnosticContract;
 import com.duy.ccppcompiler.diagnostic.suggestion.ISuggestion;
+import com.duy.common.DLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +47,9 @@ import java.util.List;
 public class DiagnosticFragment extends Fragment implements DiagnosticContract.View, DiagnosticClickListener {
     private static final String KEY_LIST_DIAGNOSTIC = "KEY_LIST_DIAGNOSTIC";
     private static final String KEY_LOG = "KEY_LOG";
-
+    private static final String TAG = "DiagnosticFragment";
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticsAdapter mAdapter;
-
     private RecyclerView mDiagnosticView;
     private TextView mLogView;
     private ViewPager mViewPager;
@@ -107,12 +107,21 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     @Override
     public void showDiagnostic(List<Diagnostic> diagnostics) {
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "showDiagnostic() called with: diagnostics = [" + diagnostics + "]");
+        }
         mAdapter.setData(diagnostics);
+        if (!diagnostics.isEmpty()) {
+            mViewPager.setCurrentItem(0);
+        }
     }
 
     @Override
     public void showLog(CharSequence log) {
         mLogView.setText(log);
+        if (mAdapter.getDiagnostics().isEmpty()) {
+            mViewPager.setCurrentItem(1);
+        }
     }
 
     @Override
