@@ -38,11 +38,11 @@ import static com.duy.ide.Kind.OTHER;
 
 public class OutputParser {
     private static final Pattern FILE_LINE_COL_TYPE_MESSAGE_PATTERN
-            = Pattern.compile("(\\S+):([0-9]+):([0-9]+):(\\s+.*:\\s+)(.*)");
+            = Pattern.compile("^(\\S+):([0-9]+):([0-9]+):(\\s+.*:\\s+)(.*)");
     private static final Pattern FILE_LINE_COL_MESSAGE_PATTERN
-            = Pattern.compile("(\\S+):([0-9]+):([0-9]+)(.*)");
+            = Pattern.compile("^(\\S+):([0-9]+):([0-9]+)(.*)");
     private static final Pattern FILE_LINE_MESSAGE_PATTERN
-            = Pattern.compile("(\\S+):([0-9]+):(.*)");
+            = Pattern.compile("^(\\S+):([0-9]+):(.*)");
 
     private DiagnosticsCollector diagnosticsCollector;
 
