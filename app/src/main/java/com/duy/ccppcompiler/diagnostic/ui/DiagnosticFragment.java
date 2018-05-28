@@ -52,6 +52,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     private RecyclerView mDiagnosticView;
     private TextView mLogView;
+    private ViewPager mViewPager;
 
     public static DiagnosticFragment newInstance() {
 
@@ -73,9 +74,9 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ViewPager viewPager = view.findViewById(R.id.diagnostic_view_pager);
-        viewPager.setAdapter(new PagerAdapter(this));
-        viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
+        mViewPager = view.findViewById(R.id.diagnostic_view_pager);
+        mViewPager.setAdapter(new PagerAdapter(this));
+        mViewPager.setOffscreenPageLimit(mViewPager.getAdapter().getCount());
 
         mLogView = view.findViewById(R.id.txt_log);
         mLogView.setMovementMethod(new ScrollingMovementMethod());

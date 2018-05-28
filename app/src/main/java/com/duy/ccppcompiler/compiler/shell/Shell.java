@@ -28,7 +28,6 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -73,12 +72,12 @@ public class Shell {
             Utils.setPtyUTF8Mode(fd, true);
             Utils.setPtyWindowSize(fd, 128, 1024, 0, 0);
 
-            BufferedReader in = new BufferedReader(new FileReader(fd));
-            FileOutputStream out = new FileOutputStream(fd);
+            BufferedReader input = new BufferedReader(new FileReader(fd));
+            FileOutputStream output = new FileOutputStream(fd);
 
-            out.write(("export PS1=''\n").getBytes("UTF-8"));
-            out.write(("exec " + cmd + "\n").getBytes("UTF-8"));
-            out.flush();
+            output.write(("export PS1=''\n").getBytes("UTF-8"));
+            output.write(("exec " + cmd + "\n").getBytes("UTF-8"));
+            output.flush();
 
             final int[] exitCode = new int[1];
             Thread thread = new Thread(new Runnable() {
@@ -93,27 +92,27 @@ public class Shell {
 
             //parse output
             StringBuilder message = new StringBuilder();
-            int skipStrings = 6; //skip echos from two command strings
+            int skipLine = 0; //skip echos from two command strings
             final Pattern patClearNewLine = Pattern.compile("(\\x08)\\1+");
             do {
                 String errstr;
                 try {
-                    errstr = in.readLine();
+                    errstr = input.readLine();
                     // remove escape sequence
-                    errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
+//                    errstr = errstr.replaceAll("\u001b\\[([0-9]|;)*m", "");
                     // remove clearing new line
-                    Matcher m = patClearNewLine.matcher(errstr);
-                    if (m.find()) {
-                        int length = m.end() - m.start();
-                        if (m.start() > length) {
-                            errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
-                        }
-                    }
+//                    Matcher m = patClearNewLine.matcher(errstr);
+//                    if (m.find()) {
+//                        int length = m.end() - m.start();
+//                        if (m.start() > length) {
+//                            errstr = errstr.substring(0, m.start() - length) + errstr.substring(m.end());
+//                        }
+//                    }
                 } catch (IOException e) {
                     break;
                 }
-                if (skipStrings > 0) {
-                    skipStrings--;
+                if (skipLine > 0) {
+                    skipLine--;
                 } else {
                     message.append(errstr).append("\n");
                 }
@@ -121,8 +120,8 @@ public class Shell {
 
             if (DLog.DEBUG) DLog.d(TAG, "stdout: \n" + message);
 
-            out.close();
-            in.close();
+            output.close();
+            input.close();
 
             CommandResult commandResult = new CommandResult(exitCode[0], message.toString());
             long time = System.currentTimeMillis() - startTime;

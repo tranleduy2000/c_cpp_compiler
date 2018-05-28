@@ -35,7 +35,6 @@
 
     <PreferenceCategory android:title="Code generation">
         <ListPreference
-            android:defaultValue="false"
             android:entries="@array/optimization_level_entries"
             android:entryValues="@array/optimization_level_entries_value"
             android:key="@string/pref_option_optimization_level"

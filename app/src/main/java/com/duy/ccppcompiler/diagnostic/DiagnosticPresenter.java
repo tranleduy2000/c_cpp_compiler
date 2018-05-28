@@ -157,7 +157,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     private void show(ArrayList<Diagnostic> diagnostics) {
         if (mView != null) {
-            mView.showDiagnostic(mDiagnostics);
+            mView.showDiagnostic(diagnostics);
         }
     }
 

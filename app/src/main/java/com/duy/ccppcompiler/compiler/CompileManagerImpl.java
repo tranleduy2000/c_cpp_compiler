@@ -46,6 +46,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
     protected SimpleEditorActivity mActivity;
     @Nullable
     private ProgressDialog mCompileDialog;
+    @Nullable
     private DiagnosticPresenter mDiagnosticPresenter;
     private INativeCompiler mCompiler;
 
@@ -55,8 +56,11 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
 
     @Override
     public void onPrepareCompile() {
-        mDiagnosticPresenter.clear();
+        if (mDiagnosticPresenter != null) {
+            mDiagnosticPresenter.clear();
+        }
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
+
         mCompileDialog = new ProgressDialog(mActivity);
         mCompileDialog.setTitle(mActivity.getString(R.string.compiling));
         mCompileDialog.setMessage(mActivity.getString(R.string.wait_message));
@@ -80,44 +84,37 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
 
     @Override
     public void onCompileFailed(T commandResult) {
-        finishCompile();
+        finishCompile(commandResult);
+
+        if (mDiagnosticPresenter != null) {
+            mDiagnosticPresenter.expandView();
+        }
 
         Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + commandResult.getMessage());
-
-        if (mDiagnosticPresenter != null) {
-            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
-            OutputParser parser = new OutputParser(diagnosticsCollector);
-            parser.parse(commandResult.getMessage());
-
-            ArrayList diagnostics = diagnosticsCollector.getDiagnostics();
-            mDiagnosticPresenter.setDiagnostics(diagnostics);
-            mDiagnosticPresenter.log(commandResult.getMessage());
-            mDiagnosticPresenter.expandView();
-
-            debug(diagnostics);
-        }
     }
 
     @Override
     public void onCompileSuccess(T commandResult) {
-        finishCompile();
-    }
-
-    private void debug(ArrayList diagnostics) {
-        for (Object diagnostic : diagnostics) {
-            if (DLog.DEBUG) DLog.d(TAG, "diagnostic = " + diagnostic);
-        }
+        finishCompile(commandResult);
     }
 
     public void setDiagnosticPresenter(DiagnosticPresenter diagnosticPresenter) {
         this.mDiagnosticPresenter = diagnosticPresenter;
     }
 
-    private void finishCompile() {
+    private void finishCompile(T commandResult) {
         hideDialog();
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
-        mDiagnosticPresenter.setDiagnostics(new ArrayList<Diagnostic>());
+        if (mDiagnosticPresenter != null) {
+            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
+            OutputParser parser = new OutputParser(diagnosticsCollector);
+            parser.parse(commandResult.getMessage());
+
+            ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
+            mDiagnosticPresenter.setDiagnostics(diagnostics);
+            mDiagnosticPresenter.log(commandResult.getMessage());
+        }
     }
 
     @MainThread
