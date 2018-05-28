@@ -16,13 +16,16 @@
 
 package com.duy.ccppcompiler.compiler.analyze;
 
+import java.io.File;
+
 /**
  * Created by Duy on 25-Apr-18.
  */
 
-public class GCCCodeAnalyzer implements ICodeAnalysis {
+public class GCCCodeAnalyzer implements ICodeAnalyser {
+
     @Override
-    public void analyze(String charSequence) {
+    public void analyze(File[] sources) {
 
     }
 }

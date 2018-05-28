@@ -73,7 +73,6 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPremiumHelper = new InAppPurchaseHelper(this);
-        AStyleInterface.
 
         final View toggleView = findViewById(R.id.btn_toggle_panel);
         mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);
