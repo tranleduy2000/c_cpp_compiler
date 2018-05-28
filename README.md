@@ -1,5 +1,5 @@
 
-![](google-play-store/wallpaper/wallpaper.png)
+![](google-play-store/wallpaper/wallpaper2.png)
 
 # C/Cpp Compiler on Android - CPP N-IDE
 ## C/C++ compiler for Android device using GCC compiler
