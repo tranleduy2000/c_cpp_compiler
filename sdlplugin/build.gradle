@@ -33,6 +33,15 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDir 'res'
+            assets.srcDir 'assets'
+            jni.srcDir 'jni'
+            java.srcDir 'java'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
@@ -48,7 +57,7 @@ android {
 
     externalNativeBuild {
         ndkBuild {
-            path 'src/main/jni/Android.mk'
+            path 'jni/Android.mk'
         }
     }
 }
