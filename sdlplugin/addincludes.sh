@@ -2,19 +2,19 @@
 
 TOPDIR=$PWD
 
-TMPDIR=/tmp/sdlplugin$$/
-
+TMPDIR=${TOPDIR}/tmp
+echo ${TMPDIR}
 mkdir -p $TMPDIR
 
 rm -rf ${TMPDIR}/include
 mkdir -p ${TMPDIR}/include
 
-cp -f jni/SDL/include/*.h		${TMPDIR}/include/
-cp -f jni/SDL2_image/SDL_image.h	${TMPDIR}/include/
-cp -f jni/SDL2_mixer/SDL_mixer.h	${TMPDIR}/include/
-cp -f jni/SDL2_net/SDL_net.h		${TMPDIR}/include/
-cp -f jni/SDL2_net/SDLnetsys.h		${TMPDIR}/include/
-cp -f jni/SDL2_ttf/SDL_ttf.h		${TMPDIR}/include/
+cp -f src/main/jni/SDL/include/*.h		${TMPDIR}/include/
+cp -f src/main/jni/SDL2_image/SDL_image.h	${TMPDIR}/include/
+cp -f src/main/jni/SDL2_mixer/SDL_mixer.h	${TMPDIR}/include/
+cp -f src/main/jni/SDL2_net/SDL_net.h		${TMPDIR}/include/
+cp -f src/main/jni/SDL2_net/SDLnetsys.h		${TMPDIR}/include/
+cp -f src/main/jni/SDL2_ttf/SDL_ttf.h		${TMPDIR}/include/
 
 cd ${TMPDIR}
 rm -f ${TOPDIR}/assets/headers.zip
@@ -34,3 +34,4 @@ cd ${TOPDIR}
 
 rm -rf ${TOPDIR}/assets/examples.zip
 zip -r9 ${TOPDIR}/assets/examples.zip Examples
+read

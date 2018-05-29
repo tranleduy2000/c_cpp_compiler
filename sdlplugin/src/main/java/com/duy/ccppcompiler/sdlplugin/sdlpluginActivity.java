@@ -6,11 +6,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -32,24 +35,46 @@ public class sdlpluginActivity extends SDLActivity {
 
     private File mSdCardAppDir;
 
-    private ProgressDialog pd;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_PERMISSION_WRITE_EXTERNAL_STORAGE);
+        if (isPermissionGranted()) {
+            initUI();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        RC_PERMISSION_WRITE_EXTERNAL_STORAGE);
+            } else {
+                initUI();
+            }
         }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            initUI();
+        }
+    }
+
+    private boolean isPermissionGranted() {
+        int result = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    private void initUI() {
         mSdCardAppDir = new File(Environment.getExternalStorageDirectory(), "CCPlusPlusNIDE");
-        if (!super.mIsPaused && getIntent().getExtras() == null) {
+        if (!mIsPaused && getIntent().getExtras() == null) {
             if (mSdCardAppDir.exists() && mSdCardAppDir.isDirectory()) {
-                if (!new File(mSdCardAppDir + "/SDL/include").exists() ||
-                        !new File(mSdCardAppDir + "/SDL/lib").exists()) {
-                    Log.i(TAG, "Install dev files");
-
-                    new InstallDevFiles().execute();
+                File include = new File(mSdCardAppDir, "/SDL/include");
+                File lib = new File(mSdCardAppDir, "/SDL/lib");
+                if (!include.exists() || !lib.exists()) {
+                    new InstallDevFilesTask().execute();
                 } else {
                     aboutDialog(1);
                 }
@@ -105,45 +130,47 @@ public class sdlpluginActivity extends SDLActivity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class InstallDevFiles extends AsyncTask<Void, String, Void> {
+    private class InstallDevFilesTask extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = ProgressDialog.show(getContext(), getString(R.string.app_name),
+            mProgressDialog = ProgressDialog.show(getContext(),
+                    getString(R.string.app_name),
                     getString(R.string.update_checking), true);
         }
 
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-            pd.setMessage(values[0]);
+            mProgressDialog.setMessage(values[0]);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                if (!(new File(mSdCardAppDir + "/SDL/lib").exists())) {
-                    new File(mSdCardAppDir + "/SDL/lib").mkdirs();
-                    Utils.copyDirectory(new File(getCacheDir().getParentFile().getAbsolutePath() + "/lib"),
-                            new File(mSdCardAppDir + "/SDL/lib"));
-                    new File(mSdCardAppDir + "/SDL/lib/libmain.so").delete();
-                    new File(mSdCardAppDir + "/SDL/lib/libccsdlplugin.so").delete();
+                File sdlDir = new File(mSdCardAppDir, "SDL");
+                File libDir = new File(sdlDir, "/SDL/lib");
+                if (!libDir.exists()) {
+                    libDir.mkdirs();
+                    Utils.copyDirectory(new File(getCacheDir().getParentFile().getAbsolutePath() + "/lib"), libDir);
+                    new File(libDir, "libmain.so").delete();
+                    new File(libDir, "libccsdlplugin.so").delete();
                     String arch = Build.CPU_ABI;
                     if (arch.startsWith("mips")) {
                         arch = "mips";
                     }
                     publishProgress(getString(R.string.update_install_libs));
                     InputStream is = getAssets().open("sdlmain-" + arch + ".zip");
-                    Utils.unpackZip(is, mSdCardAppDir + "/SDL/lib");
+                    Utils.unpackZip(is, libDir.getAbsolutePath());
                     is.close();
                 }
-                if (!(new File(mSdCardAppDir + "/SDL/include").exists())) {
+                if (!(new File(sdlDir, "include").exists())) {
                     publishProgress(getString(R.string.update_install_headers));
                     InputStream is = getAssets().open("headers.zip");
-                    Utils.unpackZip(is, mSdCardAppDir + "/SDL");
+                    Utils.unpackZip(is, sdlDir.getAbsolutePath());
                     is.close();
                 }
-                if (!(new File(mSdCardAppDir + "/Examples/SDL").exists())) {
+                if (!(new File(mSdCardAppDir, "Examples/SDL").exists())) {
                     publishProgress(getString(R.string.update_install_examples));
                     InputStream is = getAssets().open("examples.zip");
                     Utils.unpackZip(is, mSdCardAppDir.getAbsolutePath());
@@ -158,7 +185,7 @@ public class sdlpluginActivity extends SDLActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            pd.dismiss();
+            mProgressDialog.dismiss();
             aboutDialog(1);
         }
     }
