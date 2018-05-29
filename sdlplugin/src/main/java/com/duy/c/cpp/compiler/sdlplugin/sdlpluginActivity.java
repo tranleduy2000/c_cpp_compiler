@@ -66,7 +66,7 @@ public class sdlpluginActivity extends SDLActivity {
 
     private void initUI() {
         mSdCardAppDir = new File(Environment.getExternalStorageDirectory(), "CCPlusPlusNIDE");
-        if (!mIsPaused && getIntent().getExtras() == null) {
+        if (!mIsPaused && (getIntent().getExtras() == null || !getIntent().hasExtra("sdlmain"))) {
             if (mSdCardAppDir.exists() && mSdCardAppDir.isDirectory()) {
                 File include = new File(mSdCardAppDir, "/SDL/include");
                 File lib = new File(mSdCardAppDir, "/SDL/lib");

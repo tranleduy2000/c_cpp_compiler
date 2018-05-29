@@ -279,8 +279,8 @@ public class SDLActivity extends AppCompatActivity {
                 String sdlmain = getIntent().getStringExtra("sdlmain");
                 Log.e(TAG, "sdlmain is " + sdlmain);
 
-                String libDir = getCacheDir().getParentFile().getAbsolutePath() + "/mylib";
-                String libFile = libDir + "/" + (new File(sdlmain)).getName();
+                String libDir = new File(getCacheDir().getParentFile(), "mylib").getAbsolutePath();
+                String libFile = new File(libDir, (new File(sdlmain)).getName()).getAbsolutePath();
 
                 if ((new File(sdlmain)).exists()) {
                     if (!(new File(libDir)).exists()) {
