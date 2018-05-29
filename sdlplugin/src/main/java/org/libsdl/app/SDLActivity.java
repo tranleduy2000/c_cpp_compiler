@@ -523,7 +523,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Keep track of the surface size to normalize touch events
     protected static float mWidth, mHeight;
 
-    // Startup    
+    // Startup
     public SDLSurface(Context context) {
         super(context);
         getHolder().addCallback(this);

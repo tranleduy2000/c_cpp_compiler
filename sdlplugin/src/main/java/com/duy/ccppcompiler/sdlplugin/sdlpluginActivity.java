@@ -26,11 +26,11 @@ public class sdlpluginActivity extends SDLActivity {
     private static final String TAG = "sdlpluginActivity";
     private static final int RC_PERMISSION_WRITE_EXTERNAL_STORAGE = 2;
 
-    private static final String CCTOOLS_GOOGLE_URL = "https://play.google.com/store/apps/details?id=com.pdaxrom.cctools";
+    private static final String CCTOOLS_GOOGLE_URL = "https://play.google.com/store/apps/details?id=com.duy.ccppcompiler";
 
     private static final String CCTOOLS_URL = "http://cctools.info";
 
-    private static String sdCardDir;
+    private File mSdCardAppDir;
 
     private ProgressDialog pd;
 
@@ -38,16 +38,17 @@ public class sdlpluginActivity extends SDLActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-        sdCardDir = Environment.getExternalStorageDirectory().getPath() + "/CCTools";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_PERMISSION_WRITE_EXTERNAL_STORAGE);
+        }
 
+        mSdCardAppDir = new File(Environment.getExternalStorageDirectory(), "CCPlusPlusNIDE");
         if (!super.mIsPaused && getIntent().getExtras() == null) {
-            if (new File(sdCardDir).exists() && new File(sdCardDir).isDirectory()) {
-                if (!new File(sdCardDir + "/SDL/include").exists() ||
-                        !new File(sdCardDir + "/SDL/lib").exists()) {
+            if (mSdCardAppDir.exists() && mSdCardAppDir.isDirectory()) {
+                if (!new File(mSdCardAppDir + "/SDL/include").exists() ||
+                        !new File(mSdCardAppDir + "/SDL/lib").exists()) {
                     Log.i(TAG, "Install dev files");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_PERMISSION_WRITE_EXTERNAL_STORAGE);
-                    }
+
                     new InstallDevFiles().execute();
                 } else {
                     aboutDialog(1);
@@ -121,31 +122,31 @@ public class sdlpluginActivity extends SDLActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                if (!(new File(sdCardDir + "/SDL/lib").exists())) {
-                    new File(sdCardDir + "/SDL/lib").mkdirs();
+                if (!(new File(mSdCardAppDir + "/SDL/lib").exists())) {
+                    new File(mSdCardAppDir + "/SDL/lib").mkdirs();
                     Utils.copyDirectory(new File(getCacheDir().getParentFile().getAbsolutePath() + "/lib"),
-                            new File(sdCardDir + "/SDL/lib"));
-                    new File(sdCardDir + "/SDL/lib/libmain.so").delete();
-                    new File(sdCardDir + "/SDL/lib/libccsdlplugin.so").delete();
+                            new File(mSdCardAppDir + "/SDL/lib"));
+                    new File(mSdCardAppDir + "/SDL/lib/libmain.so").delete();
+                    new File(mSdCardAppDir + "/SDL/lib/libccsdlplugin.so").delete();
                     String arch = Build.CPU_ABI;
                     if (arch.startsWith("mips")) {
                         arch = "mips";
                     }
                     publishProgress(getString(R.string.update_install_libs));
                     InputStream is = getAssets().open("sdlmain-" + arch + ".zip");
-                    Utils.unpackZip(is, sdCardDir + "/SDL/lib");
+                    Utils.unpackZip(is, mSdCardAppDir + "/SDL/lib");
                     is.close();
                 }
-                if (!(new File(sdCardDir + "/SDL/include").exists())) {
+                if (!(new File(mSdCardAppDir + "/SDL/include").exists())) {
                     publishProgress(getString(R.string.update_install_headers));
                     InputStream is = getAssets().open("headers.zip");
-                    Utils.unpackZip(is, sdCardDir + "/SDL");
+                    Utils.unpackZip(is, mSdCardAppDir + "/SDL");
                     is.close();
                 }
-                if (!(new File(sdCardDir + "/Examples/SDL").exists())) {
+                if (!(new File(mSdCardAppDir + "/Examples/SDL").exists())) {
                     publishProgress(getString(R.string.update_install_examples));
                     InputStream is = getAssets().open("examples.zip");
-                    Utils.unpackZip(is, sdCardDir);
+                    Utils.unpackZip(is, mSdCardAppDir.getAbsolutePath());
                     is.close();
                 }
             } catch (IOException e) {

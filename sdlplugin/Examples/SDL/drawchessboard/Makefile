@@ -10,11 +10,11 @@ TARGET = drawchessboard
 
 all: $(TARGET)
 
-CFLAGS = -Os -Wall -DANDROID -I${EXTERNAL_STORAGE}/CCTools/SDL/include
+CFLAGS = -Os -Wall -DANDROID -I${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/include
 
-LDFLAGS = -shared ${EXTERNAL_STORAGE}/CCTools/SDL/lib/SDL_android_main.o -L${EXTERNAL_STORAGE}/CCTools/SDL/lib -lSDL2 -lGLESv1_CM -llog -lm
+LDFLAGS = -shared ${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/lib/SDL_android_main.o -L${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/lib -lSDL2 -lGLESv1_CM -llog -lm
 
-SDLRUN = am start $(shell am 2>&1| grep -q '\-\-user' && echo '--user 0') -n com.pdaxrom.cctools.sdlplugin/.sdlpluginActivity -e sdlmain
+SDLRUN = am start $(shell am 2>&1| grep -q '\-\-user' && echo '--user 0') -n com.duy.ccppcompiler.sdlplugin/.sdlpluginActivity -e sdlmain
 
 OBJS = $(TARGET).o
 
