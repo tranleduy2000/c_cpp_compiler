@@ -160,7 +160,7 @@ public class BuildActivity extends AppCompatActivity {
 
     private void gccDialog(String title) {
         SharedPreferences mPrefs = getSharedPreferences(CCToolsActivity.SHARED_PREFS_NAME, 0);
-        mBuildNativeActivity = mPrefs.getBoolean("force_native_activity", false);
+        mBuildNativeActivity = getIntent().getBooleanExtra("force_native_activity", false);
         mRunExe = true;
         mForceRun = mPrefs.getBoolean("force_run", true);
         if (mExecJava) {

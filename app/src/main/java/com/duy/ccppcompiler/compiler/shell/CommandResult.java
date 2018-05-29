@@ -20,7 +20,7 @@ import android.support.annotation.Nullable;
 
 public class CommandResult {
 
-    public String message;
+    private String message;
     private int resultCode;
     private long time = 0;
 

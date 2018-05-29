@@ -82,13 +82,6 @@ public class Environment {
         return mkdirIfNotExist(file);
     }
 
-    /**
-     * @return temp directory for execute file
-     */
-    public static String getTmpDir(Context context) {
-        File file = new File(Environment.getToolchainsDir(context), "t");
-        return mkdirIfNotExist(file);
-    }
 
     /**
      * External storage
@@ -248,7 +241,7 @@ public class Environment {
         String ret = null;
         final String cctoolsDir = getCCtoolsDir(context);
         String[] envp = {
-                "TMPDIR=" + android.os.Environment.getExternalStorageDirectory().getPath(),
+                "TMPDIR=" +getSdCardTmpDir(),
                 "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
                 "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
                 "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),

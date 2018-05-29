@@ -58,7 +58,8 @@ public class Shell {
      */
     public static CommandResult exec(Context context, String cwd, String cmd) {
         if (DLog.DEBUG) {
-            DLog.d(TAG, "exec() called with: context = [" + context + "], cwd = [" + cwd + "], cmd = [" + cmd + "]");
+            if (DLog.DEBUG) DLog.w(TAG, "cwd = " + cwd);
+            if (DLog.DEBUG) DLog.w(TAG, "cmd = " + cmd);
         }
 
         long startTime = System.currentTimeMillis();

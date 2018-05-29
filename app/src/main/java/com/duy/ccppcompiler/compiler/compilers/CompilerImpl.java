@@ -23,6 +23,8 @@ import android.support.annotation.NonNull;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
+import com.duy.ccppcompiler.packagemanager.Environment;
+import com.pdaxrom.utils.Utils;
 
 import java.io.File;
 
@@ -55,7 +57,13 @@ public abstract class CompilerImpl implements ICompiler {
     }
 
     protected void clean() {
+        Utils.deleteDirectory(new File(Environment.getTmpExeDir(mContext)));
+        //create
+        Environment.getTmpExeDir(mContext);
 
+        Utils.deleteDirectory(new File(Environment.getSdCardTmpDir()));
+        //create
+        Environment.getSdCardTmpDir();
     }
 
     protected abstract String buildArgs(File[] sourceFiles);

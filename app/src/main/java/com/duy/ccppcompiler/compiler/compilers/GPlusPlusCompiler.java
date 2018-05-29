@@ -21,6 +21,7 @@ import android.os.Build;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
 
 import java.io.File;
@@ -39,6 +40,11 @@ public class GPlusPlusCompiler extends GCCCompiler {
     @Override
     protected String getCompilerProgram() {
         return G_PLUS_PLUS_COMPILER_NAME;
+    }
+
+    @Override
+    public CompileResult compile(File[] sourceFiles) {
+        return super.compile(sourceFiles);
     }
 
     @Override

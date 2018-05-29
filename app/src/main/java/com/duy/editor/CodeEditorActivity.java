@@ -54,6 +54,8 @@ import java.io.File;
 
 import jackpal.androidterm.TermPreferencesActivity;
 
+import static com.pdaxrom.cctools.BuildConstants.EXTRA_FILE_NAME;
+
 /**
  * Created by Duy on 19-May-18.
  */
@@ -130,7 +132,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 return true;
 
             case R.id.action_run:
-                compileAndRun(false);
+                compileAndRun();
                 return true;
 
             case R.id.action_term_preferences:
@@ -157,15 +159,58 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 break;
 
             case R.id.action_build_native_activity:
-                compileAndRun(true);
+                buildNativeActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void buildNativeActivity() {
+        final SaveListener saveListener = new SaveListener() {
+            @Override
+            public void onSaveFailed(Exception e) {
+                UIUtils.alert(CodeEditorActivity.this, e.getMessage());
+            }
 
-    private void compileAndRun(final boolean nativeActivity) {
-        SaveListener saveListener = new SaveListener() {
+            @Override
+            public void onSavedSuccess() {
+                if (DLog.DEBUG) DLog.d(TAG, "onSaved() called");
+                final CodeEditorActivity activity = CodeEditorActivity.this;
+                UIUtils.showInputDialog(activity, "Enter args", null, null, 0,
+                        new UIUtils.OnShowInputCallback() {
+                            @Override
+                            public void onConfirm(CharSequence input) {
+                                EditorDelegate currentEditor = getCurrentEditorDelegate();
+                                if (currentEditor == null) {
+                                    return;
+                                }
+                                File[] srcFiles = new File[1];
+                                String path = currentEditor.getPath();
+                                srcFiles[0] = new File(path);
+
+                                ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, true);
+                                if (compiler != null) {
+                                    CompileManager compileManager = new CompileManager(activity);
+                                    compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+                                    compileManager.setCompiler(compiler);
+
+                                    compileManager.compile(srcFiles);
+                                } else {
+                                    Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+
+
+        };
+        SaveAllTask saveAllTask = new SaveAllTask(CodeEditorActivity.this, saveListener);
+        saveAllTask.execute();
+    }
+
+
+    private void compileAndRun() {
+        final SaveListener saveListener = new SaveListener() {
             @Override
             public void onSaveFailed(Exception e) {
                 UIUtils.alert(CodeEditorActivity.this, e.getMessage());
@@ -184,7 +229,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 srcFiles[0] = new File(path);
 
                 CodeEditorActivity activity = CodeEditorActivity.this;
-                ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, nativeActivity);
+                ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, false);
                 if (compiler != null) {
                     CompileManager compileManager = new CompileManager(activity);
                     compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
@@ -198,9 +243,8 @@ public class CodeEditorActivity extends SimpleEditorActivity {
 
 
         };
-        SaveAllTask saveAllTask = new SaveAllTask(this, saveListener);
+        SaveAllTask saveAllTask = new SaveAllTask(CodeEditorActivity.this, saveListener);
         saveAllTask.execute();
-
     }
 
     @Override
@@ -223,7 +267,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             workDir = Environment.getHomeDir(this);
         }
         Intent intent = new Intent(this, TermActivity.class);
-        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + Environment.getShell(this));
+        intent.putExtra(EXTRA_FILE_NAME, "-" + Environment.getShell(this));
         intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
         startActivity(intent);
     }

@@ -45,7 +45,6 @@ public class CompileResult extends CommandResult {
     public String toString() {
         return "CompileResult{" +
                 "binaryFile=" + binaryFile +
-                ", message='" + message + '\'' +
-                '}';
+                "} " + super.toString();
     }
 }

@@ -17,20 +17,17 @@
 package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.CompileResult;
+import com.duy.ccppcompiler.compiler.shell.NativeActivityCompileResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
-import com.pdaxrom.utils.Utils;
-
-import org.apache.commons.io.IOUtils;
+import com.duy.common.DLog;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -38,7 +35,7 @@ import java.io.FileOutputStream;
 
 public class GCCCompiler extends CompilerImpl {
     private static final String TAG = "GCCCompiler";
-    private static final String GCC_COMPILER_NAME = "gcc-4.9";
+    private static final String GCC_COMPILER_NAME = "gcc";
 
     File mOutFile;
     ICompileSetting mSetting;
@@ -52,29 +49,17 @@ public class GCCCompiler extends CompilerImpl {
 
     @Override
     public CompileResult compile(File[] sourceFiles) {
-        CompileResult result = new CompileResult(super.compile(sourceFiles));
+        CommandResult shellResult = super.compile(sourceFiles);
+
+        CompileResult result;
+        if (mBuildNativeActivity) {
+            result = new NativeActivityCompileResult(shellResult);
+        } else {
+            result = new CompileResult(shellResult);
+        }
+
         if (result.getResultCode() == RESULT_NO_ERROR) {
-            if (mOutFile != null && mOutFile.exists()) {
-                try {
-                    File internalBinary = new File(Environment.getTmpExeDir(mContext), mOutFile.getName());
-                    FileInputStream inputStream = new FileInputStream(mOutFile);
-                    FileOutputStream outputStream = new FileOutputStream(internalBinary);
-                    IOUtils.copy(inputStream, outputStream);
-                    inputStream.close();
-                    outputStream.close();
-
-                    //set executable
-                    Utils.chmod(internalBinary.getAbsolutePath(), 0x1ed/*0775*/);
-
-                    result.setBinaryFile(internalBinary);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    result.setResultCode(-1);
-                    result.setMessage("Application error: " + e.getMessage() +
-                            ". Please report bug on GitHub of project");
-                }
-            }
+            result.setBinaryFile(mOutFile);
         }
         return result;
     }
@@ -98,27 +83,31 @@ public class GCCCompiler extends CompilerImpl {
         }
 
         if (mBuildNativeActivity) {
-            String outFile = nameNoExt;
-//            mOutFile = new File(source.getParent(), "lib" + nameNoExt + ".so");
-            outFile = "lib" + outFile + ".so";
-            String cCtoolsDir = Environment.getCCtoolsDir(mContext);
-            args.addFlags(String.format("-I%s/sources/native_app_glue", cCtoolsDir))
-                    .addFlags(String.format("%s/sources/native_app_glue/android_native_app_glue.c", cCtoolsDir))
-                    .addFlags(String.format("-Wl,-soname,%s", outFile))
+            if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
+            String soName = "lib" + nameNoExt + ".so";
+            mOutFile = new File(source.getParent(), soName);
+
+            String cctools = Environment.getCCtoolsDir(mContext);
+
+            args.addFlags("-I" + cctools + "/sources/native_app_glue/")
+                    .addFlags(cctools + "/sources/native_app_glue/android_native_app_glue.c")
+                    .addFlags("-Wl,-soname," + soName)
                     .addFlags("-shared")
-                    .addFlags("-Wl,--no-undefined -Wl,-z,noexecstack")
-                    .addFlags("-llog")
-                    .addFlags("-landroid")
+                    .addFlags("-Wl,--no-undefined")
+                    .addFlags("-Wl,-z,noexecstack")
+                    .addFlags("-llog") //lib log
+                    .addFlags("-landroid") //android
                     .addFlags("-lm")
-                    .addFlags("-o", outFile);
+                    .addFlags("-o", mOutFile.getAbsolutePath())
+            ;
         } else {
             mOutFile = new File(source.getParent(), nameNoExt);
             args.addFlags("-o", mOutFile.getAbsolutePath());
         }
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            args.addFlags("-pie");
-        }
+//        if (Build.VERSION.SDK_INT >= 21) {
+//            args.addFlags("-pie");
+//        }
 
         return args.build();
     }

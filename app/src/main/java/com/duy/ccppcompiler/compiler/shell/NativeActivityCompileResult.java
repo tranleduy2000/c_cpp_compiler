@@ -9,10 +9,4 @@ public class NativeActivityCompileResult extends CompileResult {
         super(commandResult);
     }
 
-    @Override
-    public String toString() {
-        return "NativeActivityCompileResult{" +
-                "message='" + message + '\'' +
-                '}';
-    }
 }

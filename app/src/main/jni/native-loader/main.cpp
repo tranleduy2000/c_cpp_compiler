@@ -17,7 +17,6 @@
 
 //BEGIN_INCLUDE(all)
 #include <jni.h>
-#include <errno.h>
 
 #include <android/log.h>
 #include <android_native_app_glue.h>
@@ -32,16 +31,15 @@
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-loader", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "native-loader", __VA_ARGS__))
 
-static char *get_app_name(char *confName, char *str, int size)
-{
+static char *get_app_name(char *confName, char *str, int size) {
     LOGI("Loading config file %s\n", confName);
     FILE *f = fopen(confName, "rb");
     if (f) {
-    	char *r = fgets(str, size, f);
-    	fclose(f);
-    	if (r) {
-    	    return r;
-    	}
+        char *r = fgets(str, size, f);
+        fclose(f);
+        if (r) {
+            return r;
+        }
     }
 
     LOGE("Can't open file %s\n", confName);
@@ -53,7 +51,7 @@ static char *get_app_name(char *confName, char *str, int size)
  * android_native_app_glue.  It runs in its own thread, with its own
  * event loop for receiving input events and doing other things.
  */
-void android_main(struct android_app* state) {
+void android_main(struct android_app *state) {
     char confDir[PATH_MAX];
     char buf[PATH_MAX];
     char *nativeApp = NULL;
@@ -71,20 +69,22 @@ void android_main(struct android_app* state) {
     jobject intent = env->CallObjectMethod(me, giid); //Got our intent
 
     jclass icl = env->GetObjectClass(intent); //class pointer of Intent
-    jmethodID gseid = env->GetMethodID(icl, "getStringExtra", "(Ljava/lang/String;)Ljava/lang/String;");
+    jmethodID gseid = env->GetMethodID(icl, "getStringExtra",
+                                       "(Ljava/lang/String;)Ljava/lang/String;");
 
-    jstring jsParam1 = (jstring) env->CallObjectMethod(intent, gseid, env->NewStringUTF("nativeApp"));
+    jstring jsParam1 = (jstring) env->CallObjectMethod(intent, gseid,
+                                                       env->NewStringUTF("nativeApp"));
 
     if (jsParam1) {
-	const char *param1 = env->GetStringUTFChars(jsParam1, 0);
+        const char *param1 = env->GetStringUTFChars(jsParam1, 0);
 
-	LOGI("nativeApp=%s\n", param1);
+        LOGI("nativeApp=%s\n", param1);
 
-	if (param1) {
-	    nativeApp = strdup(param1);
-	}
+        if (param1) {
+            nativeApp = strdup(param1);
+        }
 
-	env->ReleaseStringUTFChars(jsParam1, param1);
+        env->ReleaseStringUTFChars(jsParam1, param1);
     }
 
     state->activity->vm->DetachCurrentThread();
@@ -96,36 +96,35 @@ void android_main(struct android_app* state) {
         snprintf(confDir, sizeof(confDir), "%s/tmp/native-loader.conf", buf);
         nativeApp = get_app_name(confDir, buf, sizeof(buf));
         if (!nativeApp) {
-        	LOGW("Fail-safe mode...\n");
-        	nativeApp = get_app_name("/data/data/com.duy.c.cpp.compiler/root/tmp/native-loader.conf", buf, sizeof(buf));
-        	if (!nativeApp) {
-        	    nativeApp = get_app_name("/data/data/com.pdaxrom.cctools.free/cache/tmp/native-loader.conf", buf, sizeof(buf));
-        	    if (!nativeApp) {
-            		LOGE("Can't load native-loader.conf!\n");
-            		return;
-        	    }
-        	}
+            LOGW("Fail-safe mode...\n");
+            nativeApp = get_app_name(
+                    "/data/data/com.duy.c.cpp.compiler/root/tmp/native-loader.conf", buf,
+                    sizeof(buf));
+            if (!nativeApp) {
+                LOGE("Can't load native-loader.conf!\n");
+                return;
+            }
         }
     }
 
     void *handle;
-    void (*newMain)(struct android_app* state);
+    void (*newMain)(struct android_app *state);
     const char *error;
 
     LOGI("Load native activity %s\n", nativeApp);
 
     handle = dlopen(nativeApp, RTLD_LAZY);
     if (!handle) {
-    	LOGE("%s\n", dlerror());
-    	return;
+        LOGE("%s\n", dlerror());
+        return;
     }
 
     dlerror();
 
     *(void **) (&newMain) = dlsym(handle, "android_main");
-    if ((error = dlerror()) != NULL)  {
-    	LOGE("%s\n", error);
-    	return;
+    if ((error = dlerror()) != NULL) {
+        LOGE("%s\n", error);
+        return;
     }
 
     LOGI("start!!!\n");

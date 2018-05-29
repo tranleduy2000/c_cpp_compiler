@@ -19,7 +19,7 @@ public class LauncherNativeActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String activity_file = getIntent().getExtras().getString("activity_file");
+        String activity_file = getIntent().getStringExtra(BuildConstants.EXTRA_FILE_NAME);
 
         if (activity_file != null) {
             Log.i(TAG, "activity file " + activity_file);
@@ -28,7 +28,7 @@ public class LauncherNativeActivity extends AppCompatActivity {
                 String tmpexedir = getCacheDir().getParentFile().getAbsolutePath() + "/root" + "/tmp";
                 (new File(tmpexedir)).mkdir();
                 if (copyFile(activity_file, tmpexedir + "/" + outfile)) {
-                    Utils.chmod(tmpexedir + "/" + outfile, 0x1ed); //S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH
+                    Utils.chmod(tmpexedir + "/" + outfile, 0755); //S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH
                     try {
                         String str = tmpexedir + "/" + outfile;
                         FileOutputStream conf = new FileOutputStream(tmpexedir + "/native-loader.conf");

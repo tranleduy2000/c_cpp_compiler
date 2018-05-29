@@ -16,17 +16,24 @@
 
 package com.duy.ccppcompiler.compiler;
 
+import android.app.NativeActivity;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.duy.ccppcompiler.compiler.shell.NativeActivityCompileResult;
 import com.duy.ccppcompiler.console.TermActivity;
+import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.editor.CodeEditorActivity;
 import com.pdaxrom.cctools.BuildConstants;
-import com.pdaxrom.cctools.LauncherNativeActivity;
+import com.pdaxrom.utils.Utils;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -41,25 +48,45 @@ public class CompileManager extends CompileManagerImpl {
     @Override
     public void onCompileSuccess(CommandResult result) {
         super.onCompileSuccess(result);
+        File internalBinary = null;
+        if (result instanceof CompileResult) {
+            File binFile = ((CompileResult) result).getBinaryFile();
+            if (binFile == null) {
+                return;
+            }
+
+            //copy to internal storage
+            try {
+                internalBinary = new File(Environment.getTmpExeDir(getActivity()), binFile.getName());
+                FileInputStream inputStream = new FileInputStream(binFile);
+                FileOutputStream outputStream = new FileOutputStream(internalBinary);
+                IOUtils.copy(inputStream, outputStream);
+                inputStream.close();
+                outputStream.close();
+
+                //set executable
+                Utils.chmod(internalBinary.getAbsolutePath(), 0x1ed/*0775*/);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity(), String.format("Internal error: %s. Please report bug on GitHub",
+                        e.getMessage()), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
 
         if (result instanceof NativeActivityCompileResult) {
             //now run binary file
-            File binFile = ((NativeActivityCompileResult) result).getBinaryFile();
-            if (binFile != null) {
-                Intent intent = new Intent(getActivity(), LauncherNativeActivity.class);
-                intent.putExtra(BuildConstants.EXTRA_FILE_NAME, binFile.getAbsolutePath());
-                intent.putExtra(BuildConstants.EXTRA_WORK_DIR, binFile.getParent());
-                mActivity.startActivity(intent);
-            }
+            Intent intent = new Intent(getActivity(), NativeActivity.class);
+            //from jni: main.cpp
+            intent.putExtra("nativeApp", internalBinary.getAbsolutePath());
+            getActivity().startActivity(intent);
 
         } else if (result instanceof CompileResult) {
-            File binFile = ((CompileResult) result).getBinaryFile();
-            if (binFile != null) {
-                Intent intent = new Intent(getActivity(), TermActivity.class);
-                intent.putExtra(BuildConstants.EXTRA_FILE_NAME, binFile.getAbsolutePath());
-                intent.putExtra(BuildConstants.EXTRA_WORK_DIR, binFile.getParent());
-                mActivity.startActivity(intent);
-            }
+
+            Intent intent = new Intent(getActivity(), TermActivity.class);
+            intent.putExtra(BuildConstants.EXTRA_FILE_NAME, internalBinary.getAbsolutePath());
+            intent.putExtra(BuildConstants.EXTRA_WORK_DIR, internalBinary.getParent());
+            getActivity().startActivity(intent);
         }
     }
 
