@@ -19,6 +19,7 @@ package com.duy.editor;
 import android.content.Intent;
 import android.core.widget.EditAreaView;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -92,9 +93,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_editor_color_scheme, 0, R.string.editor_theme)
                 .setIcon(R.drawable.ic_color_lens_white_24dp);
 
-        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_native_activity, 0, R.string.build_native_activity);
 
         SubMenu codeMenu = menu.addSubMenu(R.string.code);
+        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_native_activity, 0, R.string.build_native_activity)
+                .setIcon(R.drawable.baseline_build_24);
+        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_sdl_activity, 0, R.string.build_sdl_activity)
+                .setIcon(R.drawable.baseline_build_24);
         codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
         codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
@@ -105,6 +109,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
                     .setIcon(R.drawable.baseline_extension_24);
         }
+
 
         SubMenu settingMenu = menu.addSubMenu(R.string.settings);
         settingMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_term_preferences, 0, R.string.title_term_preferences)
@@ -161,8 +166,16 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             case R.id.action_build_native_activity:
                 buildNativeActivity();
                 break;
+
+            case R.id.action_build_sdl_activity:
+                buildSDLActivity();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void buildSDLActivity() {
+
     }
 
     private void buildNativeActivity() {
@@ -176,7 +189,8 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             public void onSavedSuccess() {
                 if (DLog.DEBUG) DLog.d(TAG, "onSaved() called");
                 final CodeEditorActivity activity = CodeEditorActivity.this;
-                UIUtils.showInputDialog(activity, "Enter args", null, null, 0,
+                String value = PreferenceManager.getDefaultSharedPreferences(activity).getString("key_native_activity_args", "");
+                UIUtils.showInputDialog(activity, "Enter args", null, value, 0,
                         new UIUtils.OnShowInputCallback() {
                             @Override
                             public void onConfirm(CharSequence input) {

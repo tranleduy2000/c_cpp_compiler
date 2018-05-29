@@ -37,5 +37,6 @@
     <string name="pref_option_wextra_warning">pref_option_wextra_warning</string>
     <string name="pref_option_werror">pref_option_werror</string>
     <string name="build_native_activity">Build native activity</string>
+    <string name="build_sdl_activity">Build SDL activity</string>
 
 </resources>
