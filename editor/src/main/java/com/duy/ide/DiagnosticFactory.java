@@ -43,11 +43,11 @@ public class DiagnosticFactory {
 
     public static Kind createType(String type) {
         type = type.trim().toLowerCase();
-        if (type.startsWith("error")) {
+        if (type.contains("error")) {
             return Kind.ERROR;
-        } else if (type.startsWith("warn")) {
+        } else if (type.contains("warn")) {
             return Kind.WARNING;
-        } else if (type.startsWith("note")) {
+        } else if (type.contains("note")) {
             return Kind.NOTE;
         }
         return Kind.OTHER;
