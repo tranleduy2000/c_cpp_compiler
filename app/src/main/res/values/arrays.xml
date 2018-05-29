@@ -43,14 +43,14 @@
 
     <string-array name="language_standard_entries">
         <item>""</item>
-        <item>c90 - Support all ISO C90 programs (certain GNU extensions that conflict with ISO C90 are disabled). Same as -ansi for C code.</item>
-        <item>c99 - ISO C99. This standard is substantially completely supported, modulo bugs and floating-point issues (mainly but not entirely relating to optional C99 features from Annexes F and G)</item>
-        <item>c11 - ISO C11, the 2011 revision of the ISO C standard. This standard is substantially completely supported, modulo bugs, floating-point issues (mainly but not entirely relating to optional C11 features from Annexes F and G) and the optional Annexes K (Bounds-checking interfaces) and L (Analyzability).</item>
+        <item>c90 - Support all ISO C90 programs.</item>
+        <item>c99 - ISO C99.</item>
+        <item>c11 - ISO C11, the 2011 revision of the ISO C standard.</item>
         <item>gnu90 - GNU dialect of ISO C90 (including some C99 features).</item>
         <item>gnu99 - GNU dialect of ISO C99.</item>
         <item>gnu11 - GNU dialect of ISO C11.</item>
         <item>c++11 - The 2011 ISO C++ standard plus amendments.</item>
-        <item>gnu++11 - GNU dialect of -std=c++11.</item>
+        <item>gnu++11</item>
         <item>c++14 - The 2014 ISO C++ standard plus amendments.</item>
     </string-array>
 

@@ -1,10 +1,4 @@
-package com.pdaxrom.cctools.sdlplugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.libsdl.app.SDLActivity;
+package com.duy.c.cpp.compiler.sdlplugin;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -20,6 +14,14 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import com.pdaxrom.cctools.sdlplugin.R;
+
+import org.libsdl.app.SDLActivity;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class sdlpluginActivity extends SDLActivity {
     private static final String TAG = "CCTools SDL plugin";

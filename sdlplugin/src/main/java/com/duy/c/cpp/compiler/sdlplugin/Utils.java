@@ -1,4 +1,4 @@
-package com.pdaxrom.cctools.sdlplugin;
+package com.duy.c.cpp.compiler.sdlplugin;
 
 import java.io.BufferedInputStream;
 import java.io.File;
