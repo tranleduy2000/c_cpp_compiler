@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">C/C++ Compiler</string>
+    <string name="app_name">CPP N-IDE</string>
 
     <!--Permission message when start app-->
     <string name="message_need_permission">Can not run this app without read/write storage permission. Please open setting and granted permission for this app.</string>
