@@ -16,9 +16,19 @@
 
 package com.duy.ccppcompiler.compiler.compilers;
 
+import android.support.annotation.WorkerThread;
+
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
+
+import java.io.File;
+
 /**
- * Created by Duy on 18-May-18.
+ * Created by Duy on 25-Apr-18.
  */
 
-public class MakefileCompiler {
+public interface ICompiler<T extends CommandResult> {
+    @WorkerThread
+    T compile(File[] sourceFiles) ;
+
+    void hangup();
 }

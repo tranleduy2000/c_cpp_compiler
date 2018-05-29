@@ -16,25 +16,9 @@
 
 package com.duy.ccppcompiler.compiler.compilers;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ccppcompiler.compiler.shell.Shell;
-
 /**
  * Created by Duy on 18-May-18.
  */
-public abstract class NativeCompilerImpl<T extends CommandResult> implements INativeCompiler<T> {
-    private static final String TAG = "NativeCompilerImpl";
 
-    @NonNull
-    protected CommandResult execCommand(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
-        return Shell.exec(context, workingDir, cmd);
-    }
-
-    @Override
-    public void hangup() {
-
-    }
+public class MakeCompiler {
 }

@@ -99,11 +99,11 @@ public class BuildActivity extends AppCompatActivity {
                     return;
 
                 } else if (Catalog.getModeByName("C").acceptFile(mFilePath, fileName)) {
-                    mCommand = "gcc-4.9 " + fileName;
+                    mCommand = "gcc " + fileName;
                     mCommand += " " + mPrefs.getString("force_ccopts", "");
 
                 } else if (Catalog.getModeByName("C++").acceptFile(mFilePath, fileName)) {
-                    mCommand = "g++-4.9 " + fileName;
+                    mCommand = "g++ " + fileName;
                     mCommand += " " + mPrefs.getString("force_cxxopts", "");
 
                 } else if ((ext.contentEquals(".f") || ext.contentEquals(".f90") || ext.contentEquals(".f95")

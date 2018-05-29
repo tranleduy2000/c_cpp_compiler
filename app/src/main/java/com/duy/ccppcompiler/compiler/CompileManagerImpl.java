@@ -23,7 +23,7 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
+import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ide.Diagnostic;
 import com.duy.ide.DiagnosticPresenter;
@@ -48,7 +48,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
     private ProgressDialog mCompileDialog;
     @Nullable
     private DiagnosticPresenter mDiagnosticPresenter;
-    private INativeCompiler mCompiler;
+    private ICompiler mCompiler;
 
     CompileManagerImpl(@NonNull CodeEditorActivity activity) {
         mActivity = activity;
@@ -124,7 +124,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         }
     }
 
-    public void setCompiler(INativeCompiler compiler) {
+    public void setCompiler(ICompiler compiler) {
         this.mCompiler = compiler;
     }
 }

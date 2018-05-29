@@ -18,7 +18,7 @@ package com.duy.ccppcompiler.compiler;
 
 import android.content.Intent;
 
-import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
+import com.duy.ccppcompiler.compiler.shell.GccCompileResult;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.editor.CodeEditorActivity;
 import com.pdaxrom.cctools.BuildConstants;
@@ -29,14 +29,14 @@ import java.io.File;
  * Created by Duy on 25-Apr-18.
  */
 
-public class CompileManager extends CompileManagerImpl<GccCommandResult> {
+public class CompileManager extends CompileManagerImpl<GccCompileResult> {
 
     public CompileManager(CodeEditorActivity activity) {
         super(activity);
     }
 
     @Override
-    public void onCompileSuccess(GccCommandResult commandResult) {
+    public void onCompileSuccess(GccCompileResult commandResult) {
         super.onCompileSuccess(commandResult);
 
         //now run binary file

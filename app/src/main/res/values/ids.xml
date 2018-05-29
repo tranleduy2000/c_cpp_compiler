@@ -25,5 +25,6 @@
     <item name="action_compiler_setting" type="id" />
     <item name="action_premium" type="id" />
     <item name="action_editor_color_scheme" type="id" />
+    <item name="action_build_native_activity" type="id" />
 
 </resources>

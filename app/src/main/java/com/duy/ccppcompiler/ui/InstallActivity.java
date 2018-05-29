@@ -36,7 +36,7 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
 import com.duy.ccppcompiler.compiler.compilers.GPlusPlusCompiler;
-import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
+import com.duy.ccppcompiler.compiler.shell.GccCompileResult;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
@@ -193,7 +193,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 output.close();
 
                 GCCCompiler compiler = new GCCCompiler(context, null);
-                GccCommandResult result = compiler.compile(new File[]{file});
+                GccCompileResult result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not exec C compiler, please install compiler");
                     return false;

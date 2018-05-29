@@ -29,7 +29,7 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
-import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
+import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
@@ -90,6 +90,8 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_editor_color_scheme, 0, R.string.editor_theme)
                 .setIcon(R.drawable.ic_color_lens_white_24dp);
 
+        menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_native_activity, 0, R.string.build_native_activity);
+
         SubMenu codeMenu = menu.addSubMenu(R.string.code);
         codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
@@ -128,7 +130,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 return true;
 
             case R.id.action_run:
-                compileAndRun();
+                compileAndRun(false);
                 return true;
 
             case R.id.action_term_preferences:
@@ -153,18 +155,17 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             case R.id.action_editor_color_scheme:
                 startActivity(new Intent(this, ThemeActivity.class));
                 break;
+
+            case R.id.action_build_native_activity:
+                compileAndRun(true);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void clickUpgrade() {
-        PremiumDialog dialog = new PremiumDialog(this, mPremiumHelper);
-        dialog.show();
-    }
 
-    private void compileAndRun() {
-        SaveAllTask saveAllTask = new SaveAllTask(this, new SaveListener() {
-
+    private void compileAndRun(final boolean nativeActivity) {
+        SaveListener saveListener = new SaveListener() {
             @Override
             public void onSaveFailed(Exception e) {
                 UIUtils.alert(CodeEditorActivity.this, e.getMessage());
@@ -183,13 +184,12 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 srcFiles[0] = new File(path);
 
                 CodeEditorActivity activity = CodeEditorActivity.this;
-
-                INativeCompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles);
-                CompileManager compileManager = new CompileManager(activity);
-                compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
-                compileManager.setCompiler(compiler);
-
+                ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, nativeActivity);
                 if (compiler != null) {
+                    CompileManager compileManager = new CompileManager(activity);
+                    compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+                    compileManager.setCompiler(compiler);
+
                     compileManager.compile(srcFiles);
                 } else {
                     Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
@@ -197,7 +197,8 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             }
 
 
-        });
+        };
+        SaveAllTask saveAllTask = new SaveAllTask(this, saveListener);
         saveAllTask.execute();
 
     }
@@ -225,6 +226,11 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         intent.putExtra(BuildConstants.EXTRA_FILE_NAME, "-" + Environment.getShell(this));
         intent.putExtra(BuildConstants.EXTRA_WORK_DIR, workDir);
         startActivity(intent);
+    }
+
+    private void clickUpgrade() {
+        PremiumDialog dialog = new PremiumDialog(this, mPremiumHelper);
+        dialog.show();
     }
 
     @Override

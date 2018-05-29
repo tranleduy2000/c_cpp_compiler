@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.compiler.shell;
+package com.duy.ccppcompiler.compiler.compilers;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-import java.io.File;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.compiler.shell.Shell;
 
 /**
  * Created by Duy on 18-May-18.
  */
+public abstract class CompilerImpl<T extends CommandResult> implements ICompiler<T> {
+    private static final String TAG = "NativeCompilerImpl";
 
-public class GccCommandResult extends CommandResult {
-    @Nullable
-    private File binaryFile;
-
-    public GccCommandResult(CommandResult commandResult) {
-        super(commandResult);
+    @NonNull
+    protected CommandResult execCommand(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
+        return Shell.exec(context, workingDir, cmd);
     }
 
-    @Nullable
-    public File getBinaryFile() {
-        return binaryFile;
-    }
+    @Override
+    public void hangup() {
 
-    public void setBinaryFile(@Nullable File binaryFile) {
-        this.binaryFile = binaryFile;
     }
 }

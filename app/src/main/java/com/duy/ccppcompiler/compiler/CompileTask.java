@@ -20,7 +20,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.duy.ccppcompiler.compiler.compilers.INativeCompiler;
+import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.common.DLog;
 
@@ -33,13 +33,13 @@ import java.io.File;
 public class CompileTask extends AsyncTask<Void, Void, CommandResult> {
     private static final String TAG = "CompileTask";
     @NonNull
-    private INativeCompiler mCompiler;
+    private ICompiler mCompiler;
     @NonNull
     private File[] mFiles;
     @Nullable
     private ICompileManager mCompileManager;
 
-    public CompileTask(@NonNull INativeCompiler compiler,
+    public CompileTask(@NonNull ICompiler compiler,
                        @NonNull File[] files,
                        @Nullable ICompileManager compileManager) {
         mCompiler = compiler;

@@ -22,7 +22,7 @@ import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.GccCommandResult;
+import com.duy.ccppcompiler.compiler.shell.GccCompileResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
@@ -36,7 +36,7 @@ import java.io.FileOutputStream;
  * Created by Duy on 25-Apr-18.
  */
 
-public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
+public class GCCCompiler extends CompilerImpl<GccCompileResult> {
     private static final String TAG = "GCCCompiler";
     private static final String COMPILER_NAME = "gcc-4.9";
     protected File mOutFile;
@@ -50,11 +50,11 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
     }
 
     @Override
-    public GccCommandResult compile(File[] sourceFiles) {
+    public GccCompileResult compile(File[] sourceFiles) {
         File sourceFile = sourceFiles[0];
         String command = buildCommand(sourceFiles);
 
-        GccCommandResult result = new GccCommandResult(execCommand(mContext, sourceFile.getParent(), command));
+        GccCompileResult result = new GccCompileResult(execCommand(mContext, sourceFile.getParent(), command));
         if (result.getResultCode() == 0) {
             if (mOutFile.exists()) {
                 try {
