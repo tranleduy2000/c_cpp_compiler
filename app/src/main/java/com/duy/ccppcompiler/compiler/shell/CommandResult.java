@@ -37,21 +37,21 @@ public class CommandResult {
         this(commandResult.getResultCode(), commandResult.getMessage());
     }
 
+    @Override
+    public String toString() {
+        return "CommandResult{" +
+                "message='" + message + '\'' +
+                ", resultCode=" + resultCode +
+                ", time=" + time +
+                '}';
+    }
+
     public long getTime() {
         return time;
     }
 
     public void setTime(long time) {
         this.time = time;
-    }
-
-    @Override
-    public String toString() {
-        return "ShellResult{" +
-                "resultCode=" + resultCode +
-                ", message='" + message + '\'' +
-                ", time=" + time +
-                '}';
     }
 
     public int getResultCode() {

@@ -36,7 +36,7 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
 import com.duy.ccppcompiler.compiler.compilers.GPlusPlusCompiler;
-import com.duy.ccppcompiler.compiler.shell.GccCompileResult;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
@@ -189,25 +189,25 @@ public class InstallActivity extends ThemeSupportActivity {
                 publishProgress("Test C compiler\n");
                 File file = new File(getCacheDir(), "tmp.c");
                 FileOutputStream output = new FileOutputStream(file);
-                IOUtils.write(/*"#include <stdio.h>\n" +*/ "int main(){ return 0; }", output);
+                IOUtils.write("int main(){ return 0; }", output);
                 output.close();
 
-                GCCCompiler compiler = new GCCCompiler(context, nativeActivity, null);
-                GccCompileResult result = compiler.compile(new File[]{file});
+                GCCCompiler compiler = new GCCCompiler(context, false, null);
+                CompileResult result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
-                    publishProgress("Could not exec C compiler, please install compiler");
+                    publishProgress("Could not execute C compiler, please install compiler");
                     return false;
                 }
 
                 //Check C++ compiler
                 publishProgress("Test C++ compiler\n");
                 output = new FileOutputStream(file);
-                IOUtils.write(/*"#include <iostream>\n" + "using namespace std;\n" +*/ "int main() { return 0; }", output);
+                IOUtils.write("int main() { return 0; }", output);
                 output.close();
-                compiler = new GPlusPlusCompiler(context, nativeActivity, null);
+                compiler = new GPlusPlusCompiler(context, false, null);
                 result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
-                    publishProgress("Could not exec C++ compiler, please install compiler");
+                    publishProgress("Could not execute C++ compiler, please install compiler");
                     return false;
                 }
 

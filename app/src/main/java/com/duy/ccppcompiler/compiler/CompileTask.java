@@ -22,7 +22,6 @@ import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.common.DLog;
 
 import java.io.File;
 
@@ -63,8 +62,6 @@ public class CompileTask extends AsyncTask<Void, Void, CommandResult> {
     @Override
     protected void onPostExecute(CommandResult commandResult) {
         super.onPostExecute(commandResult);
-        if (DLog.DEBUG)
-            DLog.d(TAG, "onPostExecute() called with: shellResult = [" + commandResult + "]");
         if (mCompileManager == null) {
             return;
         }

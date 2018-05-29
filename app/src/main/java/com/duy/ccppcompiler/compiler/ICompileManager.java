@@ -26,7 +26,7 @@ import java.io.File;
  * Created by Duy on 25-Apr-18.
  */
 
-public interface ICompileManager<T extends CommandResult> {
+public interface ICompileManager {
     @MainThread
     void onNewMessage(CharSequence charSequence);
 
@@ -47,12 +47,12 @@ public interface ICompileManager<T extends CommandResult> {
      * This method will be call when compile success
      */
     @MainThread
-    void onCompileSuccess(T commandResult);
+    void onCompileSuccess(CommandResult compileResult);
 
     /**
      * This method will be call when compile failed with error
      */
     @MainThread
-    void onCompileFailed(T commandResult);
+    void onCompileFailed(CommandResult compileResult);
 
 }

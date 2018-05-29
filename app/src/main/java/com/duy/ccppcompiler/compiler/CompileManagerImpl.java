@@ -25,12 +25,12 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ide.Diagnostic;
-import com.duy.ide.DiagnosticPresenter;
-import com.duy.ide.DiagnosticsCollector;
 import com.duy.ccppcompiler.compiler.shell.OutputParser;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
+import com.duy.ide.Diagnostic;
+import com.duy.ide.DiagnosticPresenter;
+import com.duy.ide.DiagnosticsCollector;
 import com.duy.ide.editor.SimpleEditorActivity;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 
@@ -40,10 +40,10 @@ import java.util.ArrayList;
 /**
  * Created by Duy on 18-May-18.
  */
-public abstract class CompileManagerImpl<T extends CommandResult> implements ICompileManager<T> {
+public abstract class CompileManagerImpl implements ICompileManager {
     private static final String TAG = "CompileManager";
     @NonNull
-    protected SimpleEditorActivity mActivity;
+    SimpleEditorActivity mActivity;
     @Nullable
     private ProgressDialog mCompileDialog;
     @Nullable
@@ -84,27 +84,24 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
     }
 
     @Override
-    public void onCompileFailed(T commandResult) {
-        finishCompile(commandResult);
+    public void onCompileFailed(CommandResult compileResult) {
+        finishCompile(compileResult);
 
         if (mDiagnosticPresenter != null) {
             mDiagnosticPresenter.expandView();
         }
 
         Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();
-        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + commandResult.getMessage());
+        if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + compileResult.getMessage());
     }
 
     @Override
-    public void onCompileSuccess(T commandResult) {
+    public void onCompileSuccess(CommandResult commandResult) {
+        if (DLog.DEBUG) DLog.d(TAG, "onCompileSuccess() commandResult = [" + commandResult + "]");
         finishCompile(commandResult);
     }
 
-    public void setDiagnosticPresenter(DiagnosticPresenter diagnosticPresenter) {
-        this.mDiagnosticPresenter = diagnosticPresenter;
-    }
-
-    private void finishCompile(T commandResult) {
+    private void finishCompile(CommandResult compileResult) {
         hideDialog();
 
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
@@ -113,11 +110,11 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         if (mDiagnosticPresenter != null) {
             DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
             OutputParser parser = new OutputParser(diagnosticsCollector);
-            parser.parse(commandResult.getMessage());
+            parser.parse(compileResult.getMessage());
 
             ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
             mDiagnosticPresenter.setDiagnostics(diagnostics);
-            mDiagnosticPresenter.log(commandResult.getMessage());
+            mDiagnosticPresenter.log(compileResult.getMessage());
         }
     }
 
@@ -128,7 +125,16 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
         }
     }
 
+    public void setDiagnosticPresenter(DiagnosticPresenter diagnosticPresenter) {
+        this.mDiagnosticPresenter = diagnosticPresenter;
+    }
+
     public void setCompiler(ICompiler compiler) {
         this.mCompiler = compiler;
+    }
+
+    @NonNull
+    public SimpleEditorActivity getActivity() {
+        return mActivity;
     }
 }

@@ -22,7 +22,7 @@ import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.GccCompileResult;
+import com.duy.ccppcompiler.compiler.shell.CompileResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.pdaxrom.utils.Utils;
 
@@ -40,10 +40,9 @@ public class GCCCompiler extends CompilerImpl {
     private static final String TAG = "GCCCompiler";
     private static final String GCC_COMPILER_NAME = "gcc-4.9";
 
-    protected File mOutFile;
-    protected ICompileSetting mSetting;
-
-    private boolean mBuildNativeActivity;
+    File mOutFile;
+    ICompileSetting mSetting;
+    boolean mBuildNativeActivity;
 
     public GCCCompiler(Context context, boolean nativeActivity, @Nullable ICompileSetting setting) {
         super(context);
@@ -52,8 +51,8 @@ public class GCCCompiler extends CompilerImpl {
     }
 
     @Override
-    public GccCompileResult compile(File[] sourceFiles) {
-        GccCompileResult result = new GccCompileResult(super.compile(sourceFiles));
+    public CompileResult compile(File[] sourceFiles) {
+        CompileResult result = new CompileResult(super.compile(sourceFiles));
         if (result.getResultCode() == RESULT_NO_ERROR) {
             if (mOutFile != null && mOutFile.exists()) {
                 try {
@@ -99,17 +98,19 @@ public class GCCCompiler extends CompilerImpl {
         }
 
         if (mBuildNativeActivity) {
-            mOutFile = new File(source.getParent(), "lib" + nameNoExt + ".so");
+            String outFile = nameNoExt;
+//            mOutFile = new File(source.getParent(), "lib" + nameNoExt + ".so");
+            outFile = "lib" + outFile + ".so";
             String cCtoolsDir = Environment.getCCtoolsDir(mContext);
             args.addFlags(String.format("-I%s/sources/native_app_glue", cCtoolsDir))
                     .addFlags(String.format("%s/sources/native_app_glue/android_native_app_glue.c", cCtoolsDir))
-                    .addFlags(String.format("-Wl,-soname,%s", mOutFile.getAbsolutePath()))
+                    .addFlags(String.format("-Wl,-soname,%s", outFile))
                     .addFlags("-shared")
                     .addFlags("-Wl,--no-undefined -Wl,-z,noexecstack")
                     .addFlags("-llog")
                     .addFlags("-landroid")
                     .addFlags("-lm")
-                    .addFlags("-o", mOutFile.getAbsolutePath());
+                    .addFlags("-o", outFile);
         } else {
             mOutFile = new File(source.getParent(), nameNoExt);
             args.addFlags("-o", mOutFile.getAbsolutePath());

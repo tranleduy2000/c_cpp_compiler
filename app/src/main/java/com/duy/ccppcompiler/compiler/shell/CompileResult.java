@@ -24,11 +24,11 @@ import java.io.File;
  * Created by Duy on 18-May-18.
  */
 
-public class GccCompileResult extends CommandResult {
+public class CompileResult extends CommandResult {
     @Nullable
     private File binaryFile;
 
-    public GccCompileResult(CommandResult commandResult) {
+    public CompileResult(CommandResult commandResult) {
         super(commandResult);
     }
 
@@ -39,5 +39,13 @@ public class GccCompileResult extends CommandResult {
 
     public void setBinaryFile(@Nullable File binaryFile) {
         this.binaryFile = binaryFile;
+    }
+
+    @Override
+    public String toString() {
+        return "CompileResult{" +
+                "binaryFile=" + binaryFile +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

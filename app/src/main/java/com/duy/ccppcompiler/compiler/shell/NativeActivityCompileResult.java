@@ -1,21 +1,18 @@
 package com.duy.ccppcompiler.compiler.shell;
 
-import android.support.annotation.Nullable;
-
 /**
- * Commnad result when build native activity
+ * Compile result when build native activity
  */
-public class NativeActivityCompileResult extends CommandResult {
-
-    public NativeActivityCompileResult(int resultCode) {
-        super(resultCode);
-    }
-
-    public NativeActivityCompileResult(int resultCode, @Nullable String message) {
-        super(resultCode, message);
-    }
+public class NativeActivityCompileResult extends CompileResult {
 
     public NativeActivityCompileResult(CommandResult commandResult) {
         super(commandResult);
+    }
+
+    @Override
+    public String toString() {
+        return "NativeActivityCompileResult{" +
+                "message='" + message + '\'' +
+                '}';
     }
 }

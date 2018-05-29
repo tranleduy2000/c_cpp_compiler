@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 public class Shell {
 
-    private static final String TAG = "ShellUtils";
+    private static final String TAG = "Shell";
 
     private Shell() {
     }
@@ -57,7 +57,10 @@ public class Shell {
      * @return output from process
      */
     public static CommandResult exec(Context context, String cwd, String cmd) {
-        if (DLog.DEBUG) DLog.d(TAG, "mCommand = " + cmd);
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "exec() called with: context = [" + context + "], cwd = [" + cwd + "], cmd = [" + cmd + "]");
+        }
+
         long startTime = System.currentTimeMillis();
         try {
             String[] env = Environment.buildDefaultEnv(context);
