@@ -26,6 +26,7 @@ find ./build/intermediates/ndkBuild/debug/obj/local/ -name "SDL_android_main.o" 
     arch=`echo $f | cut -f8 -d'/'`
     echo "Arch=${arch}"
     cd `dirname $f`
+    echo "PWD=`pwd`"
     rm -f ${TOPDIR}/assets/sdlmain-${arch}.zip
     zip -9 ${TOPDIR}/assets/sdlmain-${arch}.zip SDL_android_main.o
     cd $TOPDIR
@@ -34,3 +35,5 @@ cd ${TOPDIR}
 
 rm -rf ${TOPDIR}/assets/examples.zip
 zip -r9 ${TOPDIR}/assets/examples.zip Examples
+
+read

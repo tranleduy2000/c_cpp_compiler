@@ -5,19 +5,17 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
-import android.widget.TextView;
 
 import org.libsdl.app.SDLActivity;
 
@@ -29,9 +27,7 @@ public class sdlpluginActivity extends SDLActivity {
     private static final String TAG = "sdlpluginActivity";
     private static final int RC_PERMISSION_WRITE_EXTERNAL_STORAGE = 2;
 
-    private static final String CCTOOLS_GOOGLE_URL = "https://play.google.com/store/apps/details?id=com.duy.ccppcompiler";
-
-    private static final String CCTOOLS_URL = "http://cctools.info";
+    private static final String CPP_NIDE_WIKI_URL = "https://github.com/tranleduy2000/c_cpp_compiler/wiki/";
 
     private File mSdCardAppDir;
 
@@ -45,8 +41,8 @@ public class sdlpluginActivity extends SDLActivity {
             initUI();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        RC_PERMISSION_WRITE_EXTERNAL_STORAGE);
+                String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                requestPermissions(permission, RC_PERMISSION_WRITE_EXTERNAL_STORAGE);
             } else {
                 initUI();
             }
@@ -73,60 +69,72 @@ public class sdlpluginActivity extends SDLActivity {
             if (mSdCardAppDir.exists() && mSdCardAppDir.isDirectory()) {
                 File include = new File(mSdCardAppDir, "/SDL/include");
                 File lib = new File(mSdCardAppDir, "/SDL/lib");
-                if (!include.exists() || !lib.exists() || true) {
+                if (!include.exists() || !lib.exists()) {
                     new InstallDevFilesTask().execute();
                 } else {
-                    aboutDialog(1);
+                    showAboutDialog();
                 }
             } else {
-                aboutDialog(0);
+                showAboutDialog();
             }
         }
     }
 
-    private void aboutDialog(int type) {
+    private void showAboutDialog() {
         String versionName;
         try {
             versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (NameNotFoundException e) {
             versionName = "1.0";
         }
-        final TextView textView = new TextView(this);
-        textView.setAutoLinkMask(Linkify.WEB_URLS);
-        textView.setLinksClickable(true);
-        if (type == 0) {
-            String text = getString(R.string.about_dialog_text) +
-                    " " +
-                    versionName +
-                    "\n" +
-                    getString(R.string.about_dialog_text1) +
-                    "\n" + CCTOOLS_GOOGLE_URL + "\n" +
-                    getString(R.string.about_dialog_text2);
-            textView.setText(text);
-        } else {
-            String text = getString(R.string.about_dialog_text) +
-                    " " + versionName + "\n" +
-                    getString(R.string.sdl_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL) + "\n" +
-                    getString(R.string.sdl_image_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_image) + "\n" +
-                    getString(R.string.sdl_mixer_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_mixer) + "\n" +
-                    getString(R.string.sdl_net_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_net) + "\n" +
-                    getString(R.string.sdl_ttf_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_ttf) + "\n\n" +
-                    getString(R.string.about_dialog_text3) + "\n" +
-                    CCTOOLS_URL + "\n";
-            textView.setText(text
-            );
-        }
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        new AlertDialog.Builder(this)
+        String message = getString(R.string.about_dialog_text) +
+                " " + versionName + "\n" +
+                getString(R.string.sdl_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL) + "\n" +
+                getString(R.string.sdl_image_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_image) + "\n" +
+                getString(R.string.sdl_mixer_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_mixer) + "\n" +
+                getString(R.string.sdl_net_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_net) + "\n" +
+                getString(R.string.sdl_ttf_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_ttf) + "\n\n" +
+                getString(R.string.about_dialog_text3) + "\n" +
+                CPP_NIDE_WIKI_URL + "\n";
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.about_dialog))
-                .setView(textView)
-                .setOnCancelListener(new OnCancelListener() {
+                .setMessage(message)
+                .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onCancel(DialogInterface dialog) {
-                        System.exit(RESULT_OK);
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        finish();
                     }
-                })
-                .show();
+                });
+        if (!isAppInstalled("com.duy.c.cpp.compiler")) {
+            builder.setPositiveButton(R.string.install_cpp_nide, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    gotoPlayStore("com.duy.c.cpp.compiler");
+                    finish();
+                }
+            });
+        }
+        builder.create().show();
+    }
+
+    private void gotoPlayStore(String packageName) {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+        }
+    }
+
+    public boolean isAppInstalled(String packageName) {
+        try {
+            getPackageManager().getApplicationInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     @Override
@@ -157,11 +165,13 @@ public class sdlpluginActivity extends SDLActivity {
         protected Void doInBackground(Void... params) {
             try {
                 File sdlDir = new File(mSdCardAppDir, "SDL");
-                File libDir = new File(sdlDir, "/SDL/lib");
+                File libDir = new File(sdlDir, "lib");
                 libDir.mkdirs();
-                Utils.copyDirectory(new File(getCacheDir().getParentFile().getAbsolutePath() + "/lib"), libDir);
+                Utils.copyDirectory(new File(getCacheDir().getParentFile().getAbsolutePath(), "lib"), libDir);
+
                 new File(libDir, "libmain.so").delete();
                 new File(libDir, "libccsdlplugin.so").delete();
+
                 String arch = Build.CPU_ABI;
                 if (arch.startsWith("mips")) {
                     arch = "mips";
@@ -191,7 +201,7 @@ public class sdlpluginActivity extends SDLActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             mProgressDialog.dismiss();
-            aboutDialog(1);
+            showAboutDialog();
         }
     }
 }

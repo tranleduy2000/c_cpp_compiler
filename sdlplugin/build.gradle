@@ -41,10 +41,26 @@ android {
             jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
         }
     }
+
+
+    signingConfigs {
+        release {
+            def propFile = new File(rootProject.projectDir, "signing.properties")
+            if (propFile.exists()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(propFile))
+                storeFile new File(rootProject.projectDir, props["RELEASE_STORE_FILE"])
+                storePassword props["RELEASE_STORE_PASSWORD"]
+                keyAlias props["RELEASE_KEY_ALIAS"]
+                keyPassword props["RELEASE_KEY_PASSWORD"]
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false

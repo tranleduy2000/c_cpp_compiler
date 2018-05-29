@@ -15,4 +15,6 @@
 	<string name="sdl_mixer_version">SDL2_mixer version</string>
 	<string name="sdl_net_version">SDL2_net version</string>
 	<string name="sdl_ttf_version">SDL2_ttf version</string>
+    <string name="install_cpp_nide">Install CPP NIDE</string>
+	<string name="exit">Exit</string>
 </resources>
