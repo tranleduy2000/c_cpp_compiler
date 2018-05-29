@@ -25,8 +25,6 @@ import com.duy.ide.Diagnostic;
 import com.duy.ide.Kind;
 import com.duy.ide.suggestion.ISuggestion;
 
-import java.io.File;
-
 /**
  * Created by Duy on 28-Apr-18.
  */
@@ -91,12 +89,8 @@ public class SimpleDiagnostic implements Diagnostic, Parcelable {
 
     @Nullable
     @Override
-    public File getSourceFile() {
-        File file = new File(filePath);
-        if (file.exists()){
-            return file;
-        }
-        return null;
+    public String getSourceFile() {
+        return filePath;
     }
 
     @Override

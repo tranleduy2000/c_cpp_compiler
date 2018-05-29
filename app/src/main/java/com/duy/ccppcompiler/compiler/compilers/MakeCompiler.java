@@ -16,9 +16,29 @@
 
 package com.duy.ccppcompiler.compiler.compilers;
 
+import android.content.Context;
+
+import java.io.File;
+
 /**
  * Created by Duy on 18-May-18.
  */
 
-public class MakeCompiler {
+public class MakeCompiler extends CompilerImpl {
+
+    private static final String MARK_PROGRAM = "make";
+
+    MakeCompiler(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected String buildArgs(File[] sourceFiles) {
+        return "run";
+    }
+
+    @Override
+    protected String getCompilerProgram() {
+        return MARK_PROGRAM;
+    }
 }

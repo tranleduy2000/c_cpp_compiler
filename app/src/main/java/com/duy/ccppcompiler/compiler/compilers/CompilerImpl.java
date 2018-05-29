@@ -41,7 +41,7 @@ public abstract class CompilerImpl implements ICompiler {
     }
 
     @NonNull
-    private CommandResult execCommand(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
+    protected CommandResult execCommand(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
         return Shell.exec(context, workingDir, cmd);
     }
 

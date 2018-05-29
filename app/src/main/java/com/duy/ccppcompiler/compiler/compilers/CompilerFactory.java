@@ -36,12 +36,15 @@ public class CompilerFactory {
         String filePath = file.getAbsolutePath();
         String fileName = file.getName();
 
-        CompilerFactory.CompileType compilerType = CompileType.NONE;
+        CompileType compilerType = CompileType.NONE;
         if (Catalog.getModeByName("C++").acceptFile(filePath, fileName)) {
-            compilerType = CompilerFactory.CompileType.G_PLUS_PLUS;
+            compilerType = CompileType.G_PLUS_PLUS;
 
         } else if (Catalog.getModeByName("C").acceptFile(filePath, fileName)) {
-            compilerType = CompilerFactory.CompileType.GCC;
+            compilerType = CompileType.GCC;
+        } else if (Catalog.getModeByName("Makefile").acceptFile(filePath, fileName)){
+
+            compilerType = CompileType.MAKE;
         }
 
 
@@ -51,6 +54,9 @@ public class CompilerFactory {
 
             case GCC:
                 return new GCCCompiler(context, nativeActivity, new CompileSetting(context));
+
+            case MAKE:
+                return new MakeCompiler(context);
 
             default:
                 return null;
@@ -62,6 +68,6 @@ public class CompilerFactory {
      */
 
     public enum CompileType {
-        GCC, G_PLUS_PLUS, NONE
+        GCC, G_PLUS_PLUS, MAKE, NONE
     }
 }

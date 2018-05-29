@@ -54,17 +54,17 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
             holder.txtLineCol.setText("");
         }
 
-        File source = diagnostic.getSourceFile();
-        if (source != null) {
-            holder.txtFile.setText(source.getName());
+        String path = diagnostic.getSourceFile();
+        if (path != null) {
+            holder.txtFile.setText(new File(path).getName());
         } else {
             holder.txtFile.setText("");
         }
-        setIcon(holder, diagnostic);
+
 
         if (diagnostic.getMessage(mContext).isEmpty()) {
             holder.txtMessage.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.txtMessage.setVisibility(View.VISIBLE);
             holder.txtMessage.setText(diagnostic.getMessage(mContext));
         }

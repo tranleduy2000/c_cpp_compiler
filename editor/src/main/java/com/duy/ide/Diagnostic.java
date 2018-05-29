@@ -22,8 +22,6 @@ import android.support.annotation.Nullable;
 
 import com.duy.ide.suggestion.ISuggestion;
 
-import java.io.File;
-
 /**
  * Created by Duy on 28-Apr-18.
  */
@@ -44,7 +42,7 @@ public interface Diagnostic extends Parcelable {
      * diagnostic.
      */
     @Nullable
-    File getSourceFile();
+    String getSourceFile();
 
     /**
      * Gets a character offset from the beginning of the source object

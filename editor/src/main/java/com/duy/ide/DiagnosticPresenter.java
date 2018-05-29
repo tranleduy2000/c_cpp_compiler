@@ -65,9 +65,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         if (DLog.DEBUG) {
             DLog.d(TAG, "onDiagnosticClick() called diagnostic = [" + diagnostic + "]");
         }
-        File source = diagnostic.getSourceFile();
-
-        if (source != null) {
+        if (diagnostic.getSourceFile() != null) {
+            File source = new File(diagnostic.getSourceFile());
             if (isSystemFile(source)) {
                 UIUtils.alert(mActivity,
                         mActivity.getString(R.string.title_non_project_file),
@@ -130,8 +129,10 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
             return editorDelegate;
         } else {
-            mTabManager.newTab(source);
-            return moveToEditor(source, md5);
+            if (mTabManager.newTab(source)) {
+                return moveToEditor(source, md5);
+            }
+            return null;
         }
     }
 
@@ -188,11 +189,13 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         boolean firstIndex = false;
 
         for (Diagnostic diagnostic : mDiagnostics) {
-            File sourceFile = diagnostic.getSourceFile();
-            if (sourceFile == null) {
+            if (diagnostic.getSourceFile() == null) {
                 continue;
             }
-            if (sourceFile.equals(delegate.getDocument().getFile())) {
+            File sourceFile = new File(diagnostic.getSourceFile());
+            File editFile = delegate.getDocument().getFile();
+            if (sourceFile.equals(editFile)
+                    || diagnostic.getSourceFile().equals(editFile.getName())) {
                 Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
                 int lineNumber = (int) diagnostic.getLineNumber();
                 int columnNumber = (int) diagnostic.getColumnNumber();

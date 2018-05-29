@@ -129,11 +129,18 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         // TODO: 25-Apr-18 show layout create new file
     }
 
-    public void newTab(File file) {
-        newTab(file, 0, "UTF-8");
+    public boolean newTab(File file) {
+        return newTab(file, 0, "UTF-8");
     }
 
+    /**
+     * @return true if new tab added success, otherwise return fable
+     */
     public boolean newTab(File file, int offset, String encoding) {
+        if (!file.exists() || !file.canRead() || !file.canWrite()) {
+            return false;
+        }
+
         int count = mEditorFragmentPagerAdapter.getCount();
         for (int i = 0; i < count; i++) {
             EditorPageDescriptor descriptor = mEditorFragmentPagerAdapter.getItem(i);
@@ -296,11 +303,25 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     public Pair<Integer, IEditorDelegate> getEditorDelegate(File file) {
         ArrayList<IEditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
         for (int i = 0, allEditorSize = allEditor.size(); i < allEditorSize; i++) {
-            IEditorDelegate editorDelegate = allEditor.get(i);
-            if (editorDelegate.getDocument().getFile().equals(file)) {
-                return new Pair<>(i, editorDelegate);
+            IEditorDelegate delegate = allEditor.get(i);
+            File editFile = delegate.getDocument().getFile();
+            if (editFile.equals(file)) {
+                return new Pair<>(i, delegate);
             }
         }
-        return null;
+
+        //file editor with name only, if has more editor, return null
+        Pair<Integer, IEditorDelegate> result = null;
+        for (int i = 0, allEditorSize = allEditor.size(); i < allEditorSize; i++) {
+            IEditorDelegate delegate = allEditor.get(i);
+            File editFile = delegate.getDocument().getFile();
+            if (editFile.getName().equals(file.getPath())) {
+                if (result != null) {
+                    return null;
+                }
+                result = new Pair<>(i, delegate);
+            }
+        }
+        return result;
     }
 }
