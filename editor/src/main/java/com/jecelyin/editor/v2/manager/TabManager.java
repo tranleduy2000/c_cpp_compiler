@@ -294,11 +294,10 @@ public class TabManager implements ViewPager.OnPageChangeListener {
      */
     @Nullable
     public Pair<Integer, IEditorDelegate> getEditorDelegate(File file) {
-        String path = file.getPath();
         ArrayList<IEditorDelegate> allEditor = mEditorFragmentPagerAdapter.getAllEditor();
         for (int i = 0, allEditorSize = allEditor.size(); i < allEditorSize; i++) {
             IEditorDelegate editorDelegate = allEditor.get(i);
-            if (editorDelegate.getDocument().getFile().equals(path)) {
+            if (editorDelegate.getDocument().getFile().equals(file)) {
                 return new Pair<>(i, editorDelegate);
             }
         }
