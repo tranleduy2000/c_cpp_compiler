@@ -41,7 +41,7 @@ import java.util.Arrays;
 /**
  * SDL Activity
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class SDLActivity extends AppCompatActivity {
     protected static final int COMMAND_USER = 0x8000;
     // Messages from the SDLMain thread
@@ -273,10 +273,10 @@ public class SDLActivity extends AppCompatActivity {
         mSingleton = this;
 
         if (!mIsPaused) {
-            if (getIntent().getExtras() == null) {
+            if (getIntent().getExtras() == null || !getIntent().hasExtra("sdlmain")) {
                 return;
             } else {
-                String sdlmain = getIntent().getExtras().getString("sdlmain");
+                String sdlmain = getIntent().getStringExtra("sdlmain");
                 Log.e(TAG, "sdlmain is " + sdlmain);
 
                 String libDir = getCacheDir().getParentFile().getAbsolutePath() + "/mylib";

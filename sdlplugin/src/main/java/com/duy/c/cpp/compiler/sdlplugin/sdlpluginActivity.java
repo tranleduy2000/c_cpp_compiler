@@ -35,8 +35,9 @@ public class sdlpluginActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate()");
+
         if (isPermissionGranted()) {
             initUI();
         } else {
@@ -104,19 +105,23 @@ public class sdlpluginActivity extends SDLActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        finish();
                     }
                 });
         if (!isAppInstalled("com.duy.c.cpp.compiler")) {
             builder.setPositiveButton(R.string.install_cpp_nide, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
                     gotoPlayStore("com.duy.c.cpp.compiler");
-                    finish();
+                    dialog.cancel();
                 }
             });
         }
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                System.exit(RESULT_OK);
+            }
+        });
         builder.create().show();
     }
 
