@@ -21,17 +21,16 @@ rm -f ${TOPDIR}/assets/headers.zip
 zip -r9 ${TOPDIR}/assets/headers.zip include
 cd ${TOPDIR}
 
-find obj -name "SDL_android_main.o" | while read f; do
-
-    arch=`echo $f | cut -f3 -d'/'`
+find ./build/intermediates/ndkBuild/debug/obj/local/ -name "SDL_android_main.o" | while read f; do
+    echo "File = ${f}"
+    arch=`echo $f | cut -f8 -d'/'`
+    echo "Arch=${arch}"
     cd `dirname $f`
     rm -f ${TOPDIR}/assets/sdlmain-${arch}.zip
     zip -9 ${TOPDIR}/assets/sdlmain-${arch}.zip SDL_android_main.o
     cd $TOPDIR
 done
-
 cd ${TOPDIR}
 
 rm -rf ${TOPDIR}/assets/examples.zip
 zip -r9 ${TOPDIR}/assets/examples.zip Examples
-read

@@ -73,7 +73,7 @@ public class sdlpluginActivity extends SDLActivity {
             if (mSdCardAppDir.exists() && mSdCardAppDir.isDirectory()) {
                 File include = new File(mSdCardAppDir, "/SDL/include");
                 File lib = new File(mSdCardAppDir, "/SDL/lib");
-                if (!include.exists() || !lib.exists()) {
+                if (!include.exists() || !lib.exists() || true) {
                     new InstallDevFilesTask().execute();
                 } else {
                     aboutDialog(1);
@@ -129,6 +129,14 @@ public class sdlpluginActivity extends SDLActivity {
                 .show();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        super.onDestroy();
+    }
+
     @SuppressLint("StaticFieldLeak")
     private class InstallDevFilesTask extends AsyncTask<Void, String, Void> {
         @Override
@@ -150,33 +158,30 @@ public class sdlpluginActivity extends SDLActivity {
             try {
                 File sdlDir = new File(mSdCardAppDir, "SDL");
                 File libDir = new File(sdlDir, "/SDL/lib");
-                if (!libDir.exists()) {
-                    libDir.mkdirs();
-                    Utils.copyDirectory(new File(getCacheDir().getParentFile().getAbsolutePath() + "/lib"), libDir);
-                    new File(libDir, "libmain.so").delete();
-                    new File(libDir, "libccsdlplugin.so").delete();
-                    String arch = Build.CPU_ABI;
-                    if (arch.startsWith("mips")) {
-                        arch = "mips";
-                    }
-                    publishProgress(getString(R.string.update_install_libs));
-                    InputStream is = getAssets().open("sdlmain-" + arch + ".zip");
-                    Utils.unpackZip(is, libDir.getAbsolutePath());
-                    is.close();
+                libDir.mkdirs();
+                Utils.copyDirectory(new File(getCacheDir().getParentFile().getAbsolutePath() + "/lib"), libDir);
+                new File(libDir, "libmain.so").delete();
+                new File(libDir, "libccsdlplugin.so").delete();
+                String arch = Build.CPU_ABI;
+                if (arch.startsWith("mips")) {
+                    arch = "mips";
                 }
-                if (!(new File(sdlDir, "include").exists())) {
-                    publishProgress(getString(R.string.update_install_headers));
-                    InputStream is = getAssets().open("headers.zip");
-                    Utils.unpackZip(is, sdlDir.getAbsolutePath());
-                    is.close();
-                }
-                if (!(new File(mSdCardAppDir, "Examples/SDL").exists())) {
-                    publishProgress(getString(R.string.update_install_examples));
-                    InputStream is = getAssets().open("examples.zip");
-                    Utils.unpackZip(is, mSdCardAppDir.getAbsolutePath());
-                    is.close();
-                }
+                publishProgress(getString(R.string.update_install_libs));
+                InputStream is = getAssets().open("sdlmain-" + arch + ".zip");
+                Utils.unpackZip(is, libDir.getAbsolutePath());
+                is.close();
+
+                publishProgress(getString(R.string.update_install_headers));
+                is = getAssets().open("headers.zip");
+                Utils.unpackZip(is, sdlDir.getAbsolutePath());
+                is.close();
+
+                publishProgress(getString(R.string.update_install_examples));
+                is = getAssets().open("examples.zip");
+                Utils.unpackZip(is, mSdCardAppDir.getAbsolutePath());
+                is.close();
             } catch (IOException e) {
+                e.printStackTrace();
                 Log.e(TAG, "Error installing dev files " + e);
             }
             return null;
@@ -189,5 +194,4 @@ public class sdlpluginActivity extends SDLActivity {
             aboutDialog(1);
         }
     }
-
 }
