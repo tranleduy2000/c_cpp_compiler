@@ -16,7 +16,7 @@ CXXFLAGS = $(CFLAGS)
 
 LDFLAGS = -shared ${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/lib/SDL_android_main.o -L${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/lib -lSDL2 -lGLESv2 -llog -lm
 
-SDLRUN = am start $(shell am 2>&1| grep -q '\-\-user' && echo '--user 0') -n com.duy.ccppcompiler.sdlplugin/.sdlpluginActivity -e sdlmain
+SDLRUN = am start $(shell am 2>&1| grep -q '\-\-user' && echo '--user 0') -n com.duy.c.cpp.compiler.sdlplugin/.sdlpluginActivity -e sdlmain
 
 OBJS = $(TARGET).o
 

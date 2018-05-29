@@ -32,7 +32,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsoluteLayout;
 
-import com.duy.ccppcompiler.sdlplugin.Utils;
+import com.duy.c.cpp.compiler.sdlplugin.Utils;
 
 import java.io.File;
 import java.util.Arrays;

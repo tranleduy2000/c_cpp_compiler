@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.sdlplugin;
+package com.duy.c.cpp.compiler.sdlplugin;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
