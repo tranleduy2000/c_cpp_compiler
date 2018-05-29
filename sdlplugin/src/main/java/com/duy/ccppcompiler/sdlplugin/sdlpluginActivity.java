@@ -1,5 +1,6 @@
-package com.duy.c.cpp.compiler.sdlplugin;
+package com.duy.ccppcompiler.sdlplugin;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 
 public class sdlpluginActivity extends SDLActivity {
     private static final String TAG = "sdlpluginActivity";
+    private static final int RC_PERMISSION_WRITE_EXTERNAL_STORAGE = 2;
 
     private static final String CCTOOLS_GOOGLE_URL = "https://play.google.com/store/apps/details?id=com.pdaxrom.cctools";
 
@@ -36,7 +38,6 @@ public class sdlpluginActivity extends SDLActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-
         sdCardDir = Environment.getExternalStorageDirectory().getPath() + "/CCTools";
 
         if (!super.mIsPaused && getIntent().getExtras() == null) {
@@ -44,6 +45,9 @@ public class sdlpluginActivity extends SDLActivity {
                 if (!new File(sdCardDir + "/SDL/include").exists() ||
                         !new File(sdCardDir + "/SDL/lib").exists()) {
                     Log.i(TAG, "Install dev files");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_PERMISSION_WRITE_EXTERNAL_STORAGE);
+                    }
                     new InstallDevFiles().execute();
                 } else {
                     aboutDialog(1);
@@ -65,15 +69,16 @@ public class sdlpluginActivity extends SDLActivity {
         textView.setAutoLinkMask(Linkify.WEB_URLS);
         textView.setLinksClickable(true);
         if (type == 0) {
-            textView.setText(getString(R.string.about_dialog_text) +
+            String text = getString(R.string.about_dialog_text) +
                     " " +
                     versionName +
                     "\n" +
                     getString(R.string.about_dialog_text1) +
                     "\n" + CCTOOLS_GOOGLE_URL + "\n" +
-                    getString(R.string.about_dialog_text2));
+                    getString(R.string.about_dialog_text2);
+            textView.setText(text);
         } else {
-            textView.setText(getString(R.string.about_dialog_text) +
+            String text = getString(R.string.about_dialog_text) +
                     " " + versionName + "\n" +
                     getString(R.string.sdl_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL) + "\n" +
                     getString(R.string.sdl_image_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_image) + "\n" +
@@ -81,7 +86,8 @@ public class sdlpluginActivity extends SDLActivity {
                     getString(R.string.sdl_net_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_net) + "\n" +
                     getString(R.string.sdl_ttf_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_ttf) + "\n\n" +
                     getString(R.string.about_dialog_text3) + "\n" +
-                    CCTOOLS_URL + "\n"
+                    CCTOOLS_URL + "\n";
+            textView.setText(text
             );
         }
         textView.setMovementMethod(LinkMovementMethod.getInstance());

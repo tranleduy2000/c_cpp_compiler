@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.duy.c.cpp.compiler.sdlplugin"
+    package="com.duy.ccppcompiler.sdlplugin"
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,7 +17,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.duy.c.cpp.compiler.sdlplugin.sdlpluginActivity"
+            android:name=".sdlpluginActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:label="@string/app_name">
 

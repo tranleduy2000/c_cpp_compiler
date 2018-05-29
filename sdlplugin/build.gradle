@@ -36,10 +36,7 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDir 'res'
             assets.srcDir 'assets'
-            jni.srcDir 'jni'
-            java.srcDir 'java'
         }
     }
     buildTypes {
@@ -57,7 +54,7 @@ android {
 
     externalNativeBuild {
         ndkBuild {
-            path 'jni/Android.mk'
+            path 'src/main/jni/Android.mk'
         }
     }
 }

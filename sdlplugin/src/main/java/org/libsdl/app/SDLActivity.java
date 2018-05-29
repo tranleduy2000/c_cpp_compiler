@@ -32,7 +32,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsoluteLayout;
 
-import com.duy.c.cpp.compiler.sdlplugin.Utils;
+import com.duy.ccppcompiler.sdlplugin.Utils;
 
 import java.io.File;
 import java.util.Arrays;
@@ -41,6 +41,7 @@ import java.util.Arrays;
 /**
  * SDL Activity
  */
+@SuppressWarnings("unused")
 public class SDLActivity extends AppCompatActivity {
     protected static final int COMMAND_USER = 0x8000;
     // Messages from the SDLMain thread
@@ -49,9 +50,13 @@ public class SDLActivity extends AppCompatActivity {
     static final int COMMAND_TEXTEDIT_HIDE = 3;
     static final int COMMAND_QUIT = 4;
 
-    private static final String TAG = "CCTools SDLActivity";
+    private static final String TAG = "SDLActivity";
+
     // Keep track of the paused state
-    public static boolean mIsPaused = false, mIsSurfaceReady = false, mHasFocus = true;
+    public static boolean mIsPaused = false;
+    public static boolean mIsSurfaceReady = false;
+    public static boolean mHasFocus = true;
+
     // Main components
     protected static SDLActivity mSingleton;
     protected static SDLSurface mSurface;
@@ -75,7 +80,7 @@ public class SDLActivity extends AppCompatActivity {
     }
 
     // Handler for the messages
-    private Handler commandHandler = new SDLCommandHandler();
+    private final Handler commandHandler = new SDLCommandHandler();
 
     /**
      * Called by onPause or surfaceDestroyed. Even if surfaceDestroyed

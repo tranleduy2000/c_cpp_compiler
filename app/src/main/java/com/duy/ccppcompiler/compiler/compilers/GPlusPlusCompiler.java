@@ -45,7 +45,7 @@ public class GPlusPlusCompiler extends GCCCompiler {
     protected String buildCommand(File[] sourceFiles) {
         File file = sourceFiles[0];
         String fileName = file.getName();
-        mOutFile = new File(file.getParent(), fileName.substring(0, fileName.lastIndexOf(".")));
+        mOutFile = new File(getBuildDir(file), fileName.substring(0, fileName.lastIndexOf(".")));
 
         CommandBuilder builder = new CommandBuilder(COMPILER_NAME);
         for (File sourceFile : sourceFiles) {

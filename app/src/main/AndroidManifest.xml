@@ -7,7 +7,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
-        android:name="com.duy.editor.TextEditorApplication"
+        android:name="com.duy.CppIdeApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"

@@ -82,9 +82,7 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         File source = sourceFiles[0];
         String fileName = source.getName();
 
-        File buildDir = new File(source.getParent(), "build");
-        buildDir.mkdir();
-        mOutFile = new File(buildDir, fileName.substring(0, fileName.lastIndexOf(".")));
+        mOutFile = new File(getBuildDir(source), fileName.substring(0, fileName.lastIndexOf(".")));
 
         CommandBuilder builder = new CommandBuilder(COMPILER_NAME);
         for (File sourceFile : sourceFiles) {
@@ -122,5 +120,11 @@ public class GCCCompiler extends NativeCompilerImpl<GccCommandResult> {
         //builder.addFlags("-fno-diagnostics-show-caret");
 
         return builder.buildCommand();
+    }
+
+    protected String getBuildDir(File source) {
+        File buildDir = new File(source.getParent(), "build");
+        buildDir.mkdir();
+        return buildDir.getAbsolutePath();
     }
 }
