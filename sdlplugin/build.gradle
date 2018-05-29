@@ -27,7 +27,6 @@ android {
         versionCode 4
         versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
         ndk {
             abiFilters 'armeabi-v7a', 'x86'
         }

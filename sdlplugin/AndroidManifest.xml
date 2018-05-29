@@ -16,6 +16,7 @@
         <activity
             android:name=".sdlpluginActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
+            android:exported="true"
             android:label="@string/app_name">
 
             <intent-filter>

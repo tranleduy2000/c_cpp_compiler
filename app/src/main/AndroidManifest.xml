@@ -67,11 +67,19 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name="com.jecelyin.editor.v2.settings.EditorSettingsActivity" />
         <activity android:name="com.duy.file.explorer.FileExplorerActivity" />
-
         <activity android:name=".ui.examples.ExampleActivity" />
         <activity android:name=".compiler.CompilerSettingActivity" />
+
+        <activity
+            android:name=".console.TermActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="@string/console_name"
+            android:windowSoftInputMode="adjustResize" />
+
 
         <activity
             android:name="com.pdaxrom.cctools.CCToolsActivity"
@@ -80,20 +88,16 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".console.TermActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:label="@string/console_name"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
             android:name="com.pdaxrom.cctools.BuildActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/buildwindow_name"
             android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name="com.pdaxrom.utils.FileDialog"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/filebrowser_name" />
+
         <activity android:name="com.pdaxrom.cctools.LauncherNativeActivity">
             <intent-filter>
                 <action android:name="com.pdaXrom.cctools.action.RUN" />
