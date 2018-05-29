@@ -37,6 +37,17 @@ import java.io.OutputStream;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class LocalFile extends JecFile {
+    public static final Creator<LocalFile> CREATOR = new Creator<LocalFile>() {
+        @Override
+        public LocalFile createFromParcel(Parcel source) {
+            return new LocalFile(source);
+        }
+
+        @Override
+        public LocalFile[] newArray(int size) {
+            return new LocalFile[size];
+        }
+    };
     private File file;
 
     public LocalFile(JecFile parent, String child) {
@@ -52,6 +63,19 @@ public class LocalFile extends JecFile {
     public LocalFile(String pathname) {
         super(pathname);
         file = new File(pathname);
+    }
+
+    protected LocalFile(Parcel in) {
+        this(in.readString());
+    }
+
+    private static boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        return fileOrDirectory.delete();
     }
 
     @Override
@@ -135,15 +159,6 @@ public class LocalFile extends JecFile {
         }
     }
 
-    private static boolean deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteRecursive(child);
-            }
-        }
-        return fileOrDirectory.delete();
-    }
-
     @Override
     public void listFiles(FileListResultListener listener) {
         if (listener == null)
@@ -182,7 +197,7 @@ public class LocalFile extends JecFile {
         if (!(dest instanceof LocalFile)) {
             throw new ExplorerException(dest + " !(dest instanceof LocalFile)");
         }
-        boolean result = IOUtils.copyFile(file, ((LocalFile)dest).file);
+        boolean result = IOUtils.copyFile(file, ((LocalFile) dest).file);
         if (listener != null)
             listener.onResult(result);
     }
@@ -203,10 +218,15 @@ public class LocalFile extends JecFile {
     }
 
     @Override
+    public boolean canExecutable() {
+        return file.canExecute();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof LocalFile))
             return false;
-        return file.equals(((LocalFile)o).file);
+        return file.equals(((LocalFile) o).file);
     }
 
     @Override
@@ -223,20 +243,4 @@ public class LocalFile extends JecFile {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(file.getPath());
     }
-
-    protected LocalFile(Parcel in) {
-        this(in.readString());
-    }
-
-    public static final Creator<LocalFile> CREATOR = new Creator<LocalFile>() {
-        @Override
-        public LocalFile createFromParcel(Parcel source) {
-            return new LocalFile(source);
-        }
-
-        @Override
-        public LocalFile[] newArray(int size) {
-            return new LocalFile[size];
-        }
-    };
 }

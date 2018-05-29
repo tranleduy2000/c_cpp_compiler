@@ -28,12 +28,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.editor.databinding.FileListItemBinding;
 import com.duy.file.explorer.io.JecFile;
 import com.duy.file.explorer.model.FileItemModel;
 import com.duy.file.explorer.util.MimeTypes;
 import com.duy.file.explorer.util.OnCheckedChangeListener;
+import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.editor.databinding.FileListItemBinding;
 import com.jecelyin.common.adapter.BindingViewHolder;
 import com.jecelyin.common.listeners.OnItemClickListener;
 import com.jecelyin.common.utils.StringUtils;
@@ -46,9 +46,9 @@ import java.util.Calendar;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<FileListItemBinding>> implements FastScrollRecyclerView.SectionedAdapter {
-    private JecFile[] data;
     private final String year;
     private final SparseIntArray checkedArray;
+    private JecFile[] data;
     private OnCheckedChangeListener onCheckedChangeListener;
     private OnItemClickListener onItemClickListener;
     private JecFile[] mOriginalValues;
@@ -81,7 +81,7 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
 
         filterText = filterText.toString().toLowerCase();
         int index = 0;
-        for(JecFile path : mOriginalValues) {
+        for (JecFile path : mOriginalValues) {
             if (path.getName().toLowerCase().contains(filterText)) {
                 data[index++] = path;
             }
@@ -96,9 +96,9 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
         JecFile file = getItem(position);
         char c = file.getName().charAt(0);
 
-        if ( (c >= '0' && c <= '9')
-            || (c >= 'a' && c <= 'z')
-            || (c >= 'A' && c <= 'Z')
+        if ((c >= '0' && c <= '9')
+                || (c >= 'a' && c <= 'z')
+                || (c >= 'A' && c <= 'Z')
                 ) {
             return String.valueOf(c);
         }
@@ -165,13 +165,64 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
             color = R.color.type_code;
             icon = R.drawable.file_type_code;
 
-        } else if (mimeTypes.isTextFile(path)) {
-            color = R.color.type_text;
-            icon = R.drawable.file_type_text;
-
         } else {
-            color = R.color.type_file;
-            icon = TextUtils.isEmpty(path.getExtension()) ? R.drawable.file_type_file : 0;
+            color = R.color.type_code;
+            String extension = path.getExtension();
+            switch (extension.toLowerCase()) {
+                case "apk":
+                    icon = R.drawable.ic_apk_file_format;
+                    break;
+                case "class":
+                    icon = R.drawable.ic_class_file_format;
+                    break;
+                case "cpp":
+                    icon = R.drawable.ic_cpp_file_format;
+                    break;
+                case "css":
+                    icon = R.drawable.ic_css_file_format;
+                    break;
+                case "csv":
+                    icon = R.drawable.ic_csv_file_format;
+                    break;
+                case "dtd":
+                    icon = R.drawable.ic_dtd_file_format;
+                    break;
+                case "html":
+                    icon = R.drawable.ic_html_file_format;
+                    break;
+                case "jar":
+                    icon = R.drawable.ic_jar_file_format;
+                    break;
+                case "js":
+                    icon = R.drawable.ic_js_file_format;
+                    break;
+                case "lua":
+                    icon = R.drawable.ic_lua_file_format;
+                    break;
+                case "py":
+                    icon = R.drawable.ic_py_file_format;
+                    break;
+                case "svg":
+                    icon = R.drawable.ic_svg_file_format;
+                    break;
+                case "txt":
+                    icon = R.drawable.ic_txt_file_format;
+                    break;
+                case "xml":
+                    icon = R.drawable.ic_xml_file_format;
+                    break;
+                default:
+                    if (path.canExecutable()) {
+                        icon = R.drawable.ic_bin_file_format;
+                    } else if (mimeTypes.isTextFile(path)) {
+                        color = R.color.type_text;
+                        icon = R.drawable.file_type_text;
+                    } else {
+                        color = R.color.type_file;
+                        icon = TextUtils.isEmpty(extension) ? R.drawable.file_type_file : 0;
+                    }
+                    break;
+            }
         }
 
         final FileListItemBinding binding = holder.getBinding();
@@ -217,7 +268,7 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
     private void setViewCheckedStatus(boolean isChecked, FileListItemBinding binding) {
         binding.iconImageView.setChecked(isChecked);
 
-        if(!isChecked) {
+        if (!isChecked) {
             binding.getRoot().setSelected(false);
             binding.extTextView.setVisibility(View.VISIBLE);
         } else {
@@ -228,7 +279,7 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
 
     private void toggleChecked(int position, FileListItemBinding binding) {
         boolean isChecked = isChecked(position);
-        if(isChecked) {
+        if (isChecked) {
             checkedArray.delete(position);
         } else {
             checkedArray.put(position, 1);
@@ -236,7 +287,7 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
 
         setViewCheckedStatus(!isChecked, binding);
 
-        if(onCheckedChangeListener != null) {
+        if (onCheckedChangeListener != null) {
             onCheckedChangeListener.onCheckedChanged(getItem(position), position, !isChecked);
             onCheckedChangeListener.onCheckedChanged(checkedArray.size());
         }

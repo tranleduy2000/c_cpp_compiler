@@ -13,7 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -37,7 +38,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="16dp">
 
-            <com.duy.file.explorer.widget.IconImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.duy.file.explorer.widget.IconImageView
                 android:id="@+id/iconImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

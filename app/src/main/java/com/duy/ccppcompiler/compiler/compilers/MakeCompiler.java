@@ -17,9 +17,6 @@
 package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
 
 import java.io.File;
 
@@ -30,6 +27,7 @@ import java.io.File;
 public class MakeCompiler extends CompilerImpl {
 
     private static final String MARK_PROGRAM = "make";
+    private static final String TAG = "MakeCompiler";
 
     MakeCompiler(Context context) {
         super(context);
@@ -37,17 +35,11 @@ public class MakeCompiler extends CompilerImpl {
 
     @Override
     protected String buildArgs(File[] sourceFiles) {
-        return "run";
+        return "-f " + sourceFiles[0].getAbsolutePath();
     }
 
     @Override
     protected String getCompilerProgram() {
         return MARK_PROGRAM;
-    }
-
-    @NonNull
-    @Override
-    protected CommandResult execCommand(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
-        return super.execCommand(context, workingDir, cmd);
     }
 }

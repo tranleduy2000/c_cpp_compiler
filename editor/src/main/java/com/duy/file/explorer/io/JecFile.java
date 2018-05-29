@@ -479,4 +479,5 @@ public abstract class JecFile implements Parcelable
             return "";
     }
 
+    public abstract boolean canExecutable();
 }
