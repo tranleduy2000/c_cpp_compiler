@@ -25,11 +25,11 @@
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 /*
- * Class:     com_duy_ccppcompiler_sdlplugin_Utils
+ * Class:     com_duy_c_cpp_compiler_sdlplugin_Utils
  * Method:    setEnv
  * Signature: (Ljava/lang/String;Ljava/lang/String;Z)I
  */
-JNIEXPORT jint JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_setEnv
+JNIEXPORT jint JNICALL Java_com_duy_c_cpp_compiler_sdlplugin_Utils_setEnv
   (JNIEnv *env, jobject this, jstring name, jstring value, jboolean overwrite)
 {
     const char *_name  = (*env)->GetStringUTFChars(env, name, 0);
@@ -39,11 +39,11 @@ JNIEXPORT jint JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_setEnv
 }
 
 /*
- * Class:     com_duy_ccppcompiler_sdlplugin_Utils
+ * Class:     com_duy_c_cpp_compiler_sdlplugin_Utils
  * Method:    unSetEnv
  * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_unSetEnv
+JNIEXPORT jint JNICALL Java_com_duy_c_cpp_compiler_sdlplugin_Utils_unSetEnv
   (JNIEnv *env, jobject this, jstring name)
 {
     const char *_name = (*env)->GetStringUTFChars(env, name, 0);
@@ -52,11 +52,11 @@ JNIEXPORT jint JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_unSetEnv
 }
 
 /*
- * Class:     com_duy_ccppcompiler_sdlplugin_Utils
+ * Class:     com_duy_c_cpp_compiler_sdlplugin_Utils
  * Method:    getEnv
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_getEnv
+JNIEXPORT jstring JNICALL Java_com_duy_c_cpp_compiler_sdlplugin_Utils_getEnv
   (JNIEnv *env, jobject this, jstring name)
 {
     const char *_name = (*env)->GetStringUTFChars(env, name, 0);
@@ -70,11 +70,11 @@ JNIEXPORT jstring JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_getEnv
 }
 
 /*
- * Class:     com_duy_ccppcompiler_sdlplugin_Utils
+ * Class:     com_duy_c_cpp_compiler_sdlplugin_Utils
  * Method:    chDir
  * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_chDir
+JNIEXPORT jint JNICALL Java_com_duy_c_cpp_compiler_sdlplugin_Utils_chDir
   (JNIEnv *env, jobject this, jstring path)
 {
     const char *_path = (*env)->GetStringUTFChars(env, path, 0);
@@ -82,11 +82,11 @@ JNIEXPORT jint JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_chDir
 }
 
 /*
- * Class:     com_duy_ccppcompiler_sdlplugin_Utils
+ * Class:     com_duy_c_cpp_compiler_sdlplugin_Utils
  * Method:    getSDLVersion
  * Signature: (I)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_duy_ccppcompiler_sdlplugin_Utils_getSDLVersion
+JNIEXPORT jstring JNICALL Java_com_duy_c_cpp_compiler_sdlplugin_Utils_getSDLVersion
   (JNIEnv *env, jclass this, jint lib)
 {
     char buf[256];

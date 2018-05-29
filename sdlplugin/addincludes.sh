@@ -35,5 +35,3 @@ cd ${TOPDIR}
 
 rm -rf ${TOPDIR}/assets/examples.zip
 zip -r9 ${TOPDIR}/assets/examples.zip Examples
-
-read
