@@ -26,9 +26,8 @@ import java.io.File;
  * Created by Duy on 25-Apr-18.
  */
 
-public interface ICompiler<T extends CommandResult> {
+public interface ICompiler {
     @WorkerThread
-    T compile(File[] sourceFiles) ;
+    CommandResult compile(File[] sourceFiles);
 
-    void hangup();
 }

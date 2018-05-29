@@ -44,7 +44,7 @@ public class CompileSetting implements ICompileSetting {
         String cFlags = mPref.getString(mContext.getString(R.string.pref_key_c_options), "");
         builder.addFlags(cFlags);
 
-        return builder.buildCommand();
+        return builder.build();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CompileSetting implements ICompileSetting {
         String cxxFlags = mPref.getString(mContext.getString(R.string.pref_key_cxx_options), "");
         builder.addFlags(cxxFlags);
 
-        return builder.buildCommand();
+        return builder.build();
 
     }
 
@@ -107,7 +107,7 @@ public class CompileSetting implements ICompileSetting {
         boolean Werror = mPref.getBoolean(mContext.getString(R.string.pref_option_werror), false);
         if (Werror) builder.addFlags("-Werror");
 
-        return builder.buildCommand();
+        return builder.build();
     }
 
 }

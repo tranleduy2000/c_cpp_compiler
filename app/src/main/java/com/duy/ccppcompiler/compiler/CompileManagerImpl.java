@@ -60,6 +60,7 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
             mDiagnosticPresenter.clear();
         }
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
+        mActivity.setMenuStatus(R.id.action_build_native_activity, MenuDef.STATUS_DISABLED);
 
         mCompileDialog = new ProgressDialog(mActivity);
         mCompileDialog.setTitle(mActivity.getString(R.string.compiling));
@@ -105,7 +106,10 @@ public abstract class CompileManagerImpl<T extends CommandResult> implements ICo
 
     private void finishCompile(T commandResult) {
         hideDialog();
+
         mActivity.setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
+        mActivity.setMenuStatus(R.id.action_build_native_activity, MenuDef.STATUS_NORMAL);
+
         if (mDiagnosticPresenter != null) {
             DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
             OutputParser parser = new OutputParser(diagnosticsCollector);

@@ -36,27 +36,26 @@ import java.io.FileOutputStream;
  * Created by Duy on 25-Apr-18.
  */
 
-public class GCCCompiler extends CompilerImpl<GccCompileResult> {
+public class GCCCompiler extends CompilerImpl {
     private static final String TAG = "GCCCompiler";
-    private static final String COMPILER_NAME = "gcc-4.9";
+    private static final String GCC_COMPILER_NAME = "gcc-4.9";
+
     protected File mOutFile;
-    protected Context mContext;
-    @Nullable
     protected ICompileSetting mSetting;
 
-    public GCCCompiler(Context context, @Nullable ICompileSetting compileSetting) {
-        mContext = context;
-        mSetting = compileSetting;
+    private boolean mBuildNativeActivity;
+
+    public GCCCompiler(Context context, boolean nativeActivity, @Nullable ICompileSetting setting) {
+        super(context);
+        mBuildNativeActivity = nativeActivity;
+        mSetting = setting;
     }
 
     @Override
     public GccCompileResult compile(File[] sourceFiles) {
-        File sourceFile = sourceFiles[0];
-        String command = buildCommand(sourceFiles);
-
-        GccCompileResult result = new GccCompileResult(execCommand(mContext, sourceFile.getParent(), command));
-        if (result.getResultCode() == 0) {
-            if (mOutFile.exists()) {
+        GccCompileResult result = new GccCompileResult(super.compile(sourceFiles));
+        if (result.getResultCode() == RESULT_NO_ERROR) {
+            if (mOutFile != null && mOutFile.exists()) {
                 try {
                     File internalBinary = new File(Environment.getTmpExeDir(mContext), mOutFile.getName());
                     FileInputStream inputStream = new FileInputStream(mOutFile);
@@ -65,66 +64,62 @@ public class GCCCompiler extends CompilerImpl<GccCompileResult> {
                     inputStream.close();
                     outputStream.close();
 
+                    //set executable
                     Utils.chmod(internalBinary.getAbsolutePath(), 0x1ed/*0775*/);
 
                     result.setBinaryFile(internalBinary);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     result.setResultCode(-1);
-                    result.setMessage("Application error: " + e.getMessage() + ". Please report bug on GitHub of project");
+                    result.setMessage("Application error: " + e.getMessage() +
+                            ". Please report bug on GitHub of project");
                 }
             }
         }
         return result;
     }
 
-    protected String buildCommand(File[] sourceFiles) {
+    @Override
+    protected String getCompilerProgram() {
+        return GCC_COMPILER_NAME;
+    }
+
+    @Override
+    protected String buildArgs(File[] sourceFiles) {
         File source = sourceFiles[0];
-        String fileName = source.getName();
+        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
 
-        mOutFile = new File(getBuildDir(source), fileName.substring(0, fileName.lastIndexOf(".")));
-
-        CommandBuilder builder = new CommandBuilder(COMPILER_NAME);
+        CommandBuilder args = new CommandBuilder();
         for (File sourceFile : sourceFiles) {
-            builder.addFlags(sourceFile.getAbsolutePath());
+            args.addFlags(sourceFile.getAbsolutePath());
         }
         if (mSetting != null) {
-            builder.addFlags(mSetting.getCFlags());
+            args.addFlags(mSetting.getCFlags());
         }
-        builder.addFlags("-o", mOutFile.getAbsolutePath());
+
+        if (mBuildNativeActivity) {
+            mOutFile = new File(source.getParent(), "lib" + nameNoExt + ".so");
+            String cCtoolsDir = Environment.getCCtoolsDir(mContext);
+            args.addFlags(String.format("-I%s/sources/native_app_glue", cCtoolsDir))
+                    .addFlags(String.format("%s/sources/native_app_glue/android_native_app_glue.c", cCtoolsDir))
+                    .addFlags(String.format("-Wl,-soname,%s", mOutFile.getAbsolutePath()))
+                    .addFlags("-shared")
+                    .addFlags("-Wl,--no-undefined -Wl,-z,noexecstack")
+                    .addFlags("-llog")
+                    .addFlags("-landroid")
+                    .addFlags("-lm")
+                    .addFlags("-o", mOutFile.getAbsolutePath());
+        } else {
+            mOutFile = new File(source.getParent(), nameNoExt);
+            args.addFlags("-o", mOutFile.getAbsolutePath());
+        }
 
         if (Build.VERSION.SDK_INT >= 21) {
-            builder.addFlags("-pie");
+            args.addFlags("-pie");
         }
-        // builder.addFlags("-std=c99");
-        // builder.addFlags("-lz"/*zlib*/, "-ldl", "-lm" /*math*/, "-llog");
-        // builder.addFlags("-lncurses");
-        // builder.addFlags("-Og");
 
-        // Emit fix-it hints in a machine-parseable format, suitable for consumption by IDEs.
-        // For each fix-it, a line will be printed after the relevant diagnostic, starting with the
-        // string “fix-it:”. For example:
-        // fix-it:"test.c":{45:3-45:21}:"gtk_widget_show_all"
-        // builder.add("-fdiagnostics-parseable-fixits");
-
-        // By default, each diagnostic emitted includes text indicating the command-line option that
-        // directly controls the diagnostic (if such an option is known to the diagnostic machinery).
-        // Specifying the -fno-diagnostics-show-option flag suppresses that behavior.
-        //builder.addFlags("-fno-diagnostics-show-option");
-
-        // By default, each diagnostic emitted includes the original source line and a caret ‘^’
-        // indicating the column. This option suppresses this information. The source line is
-        // truncated to n characters, if the -fmessage-length=n option is given. When the output is
-        // done to the terminal, the width is limited to the width given by the COLUMNS environment
-        // variable or, if not set, to the terminal width.
-        //builder.addFlags("-fno-diagnostics-show-caret");
-
-        return builder.buildCommand();
+        return args.build();
     }
 
-    protected String getBuildDir(File source) {
-        File buildDir = new File(source.getParent(), "build");
-        buildDir.mkdir();
-        return buildDir.getAbsolutePath();
-    }
 }

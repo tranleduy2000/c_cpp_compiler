@@ -53,7 +53,7 @@ public class CommandBuilder {
     }
 
     @NonNull
-    public String buildCommand() {
+    public String build() {
         StringBuilder cmd = new StringBuilder();
         cmd.append(program);
         if (flags.size() == 0) {

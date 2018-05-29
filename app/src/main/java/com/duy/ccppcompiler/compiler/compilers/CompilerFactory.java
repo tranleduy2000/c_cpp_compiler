@@ -25,8 +25,6 @@ import org.gjt.sp.jedit.Catalog;
 
 import java.io.File;
 
-import static com.duy.ccppcompiler.compiler.compilers.CompilerFactory.CompileType.NATIVE_ACTIVITY;
-
 /**
  * Created by Duy on 25-Apr-18.
  */
@@ -39,9 +37,7 @@ public class CompilerFactory {
         String fileName = file.getName();
 
         CompilerFactory.CompileType compilerType = CompileType.NONE;
-        if (nativeActivity) {
-            compilerType = NATIVE_ACTIVITY;
-        } else if (Catalog.getModeByName("C++").acceptFile(filePath, fileName)) {
+        if (Catalog.getModeByName("C++").acceptFile(filePath, fileName)) {
             compilerType = CompilerFactory.CompileType.G_PLUS_PLUS;
 
         } else if (Catalog.getModeByName("C").acceptFile(filePath, fileName)) {
@@ -51,13 +47,10 @@ public class CompilerFactory {
 
         switch (compilerType) {
             case G_PLUS_PLUS:
-                return new GPlusPlusCompiler(context, new CompileSetting(context));
+                return new GPlusPlusCompiler(context, nativeActivity, new CompileSetting(context));
 
             case GCC:
-                return new GCCCompiler(context, new CompileSetting(context));
-
-            case NATIVE_ACTIVITY:
-                return new NativeActivityCompiler(context, new CompileSetting(context));
+                return new GCCCompiler(context, nativeActivity, new CompileSetting(context));
 
             default:
                 return null;
@@ -69,6 +62,6 @@ public class CompilerFactory {
      */
 
     public enum CompileType {
-        GCC, G_PLUS_PLUS, NATIVE_ACTIVITY, NONE
+        GCC, G_PLUS_PLUS, NONE
     }
 }
