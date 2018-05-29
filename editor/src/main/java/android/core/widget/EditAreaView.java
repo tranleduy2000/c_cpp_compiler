@@ -20,12 +20,14 @@ package android.core.widget;
 
 import android.content.Context;
 import android.core.content.UndoManager;
+import android.core.text.Layout;
 import android.core.text.Selection;
 import android.core.text.method.ArrowKeyMovementMethod;
 import android.core.text.method.MovementMethod;
 import android.core.view.InputMethodManagerCompat;
 import android.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -370,7 +372,16 @@ public class EditAreaView extends BaseEditorView {
      */
     public void scrollToLine(int virtualLine) {
         virtualLine = Math.max(0, Math.min(virtualLine, getLineCount() - 1));
-        int y = getLayout().getLineTop(virtualLine);
+        final Layout layout = getLayout();
+        final int layoutHeight = layout.getHeight();
+
+
+        Rect bound = new Rect();
+        getGlobalVisibleRect(bound);
+        final int visibleHeight = bound.height();
+
+        int y = layout.getLineTop(virtualLine);
+        y = Math.min(y, layoutHeight - visibleHeight);
         scrollTo(getScrollX(), y);
     }
 
