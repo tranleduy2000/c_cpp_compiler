@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
@@ -33,6 +34,7 @@ import com.duy.common.DLog;
 import com.duy.ide.diagnostic.Diagnostic;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.io.LocalFileWriter;
 
@@ -157,7 +159,25 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
             CommandBuilder builder = new CommandBuilder(CPPCHECK_PROGRAM);
             builder.addFlags(CppCheckOutputParser.TEMPLATE);
             builder.addFlags(tmpFile.getAbsolutePath());
-            builder.addFlags("--enable=warning,performance,information");
+
+            String enableFlags = "";
+            //flags
+            Preferences setting = Preferences.getInstance(mContext);
+            boolean warn = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_warning), true);
+            if (warn) enableFlags += "warning";
+            boolean performance = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_performance), true);
+            if (performance) {
+                if (!enableFlags.isEmpty()) enableFlags += ",";
+                enableFlags += "performance";
+            }
+            boolean information = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_information), true);
+            if (information) {
+                if (!enableFlags.isEmpty()) enableFlags += ",";
+                enableFlags += "information";
+            }
+            if (!enableFlags.isEmpty()) {
+                builder.addFlags("--enable=" + enableFlags);
+            }
 
             String cmd = builder.build();
             CommandResult result = Shell.exec(mContext, tmpFile.getParent(), cmd);

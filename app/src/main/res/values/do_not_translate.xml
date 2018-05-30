@@ -9,4 +9,9 @@
     <string name="pref_c_options_traditional_cpp">pref_c_options_traditional_cpp</string>
     <string name="pref_option_optimization_level">pref_option_optimization_level</string>
     <string name="pref_option_language_standard">pref_option_language_standard</string>
+
+    <string name="pref_key_cpp_check">pref_key_cpp_check</string>
+    <string name="pref_key_cpp_check_warning">pref_key_cpp_check_warning</string>
+    <string name="pref_key_cpp_check_performance">pref_key_cpp_check_performance</string>
+    <string name="pref_key_cpp_check_information">pref_key_cpp_check_information</string>
 </resources>

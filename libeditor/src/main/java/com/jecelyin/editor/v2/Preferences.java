@@ -219,7 +219,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         return getBoolean(context.getString(R.string.pref_auto_save), true);
     }
 
-    private boolean getBoolean(String key, boolean def) {
+    public boolean getBoolean(String key, boolean def) {
         try {
             return preferences.getBoolean(key, def);
         } catch (ClassCastException e) {

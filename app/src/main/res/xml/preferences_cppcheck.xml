@@ -21,6 +21,7 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="@string/pref_key_cpp_check"
             android:summary="Static analysis of C/C++ code. Checks for: memory leaks, mismatching allocation-deallocation, buffer overrun, and many more."
             android:title="Static code analysis" />
 
@@ -29,16 +30,19 @@
     <PreferenceCategory android:title="Flags">
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="@string/pref_key_cpp_check_warning"
             android:summary="enable warning messages"
             android:title="--enable=warning" />
 
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="@string/pref_key_cpp_check_performance"
             android:summary="enable performance messages"
             android:title="--enable=performance" />
 
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="@string/pref_key_cpp_check_information"
             android:summary="enable information messages"
             android:title="--enable=information" />
 
