@@ -9,12 +9,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.text.InputType;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -186,82 +182,6 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
         return findViewById(R.id.list_view);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.file_dialog_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.home_folder) {
-            if (currentPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-                sdDirectory = currentPath;
-            }
-            if (!currentPath.startsWith(getCacheDir().getParentFile().getAbsolutePath())) {
-                getDir(homeDirectory);
-                if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
-                    selectedFile = new File(currentPath);
-                    mFileName.setText(selectedFile.getName());
-                    selectButton.setEnabled(true);
-                }
-            }
-
-        } else if (i == R.id.sd_folder) {
-            if (currentPath.startsWith(getCacheDir().getParentFile().getAbsolutePath())) {
-                homeDirectory = currentPath;
-            }
-            if (!currentPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-                getDir(sdDirectory);
-                if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
-                    selectedFile = new File(currentPath);
-                    mFileName.setText(selectedFile.getName());
-                    selectButton.setEnabled(true);
-                }
-            }
-
-        } else if (i == R.id.new_folder) {
-            newDir();
-
-        }
-        return true;
-    }
-
-    private void newDir() {
-        final EditText input = new EditText(context);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setSingleLine(true);
-        new AlertDialog.Builder(context)
-                .setMessage(getString(R.string.create_new))
-                .setView(input)
-                .setPositiveButton(getString(R.string.button_continue), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if ((new File(currentPath + "/" + input.getText().toString())).mkdirs() == false) {
-                            new AlertDialog.Builder(context)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle(R.string.newDirectory)
-                                    .setMessage(getString(R.string.cannot_create))
-                                    .show();
-                        } else {
-                            getDir(currentPath + "/" + input.getText().toString());
-                            if (selectionMode == SelectionMode.MODE_SELECT_DIR) {
-                                selectedFile = new File(currentPath);
-                                mFileName.setText(selectedFile.getName());
-                                selectButton.setEnabled(true);
-                            }
-                        }
-                    }
-                })
-                .setNegativeButton(getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-
-                    }
-                }).show();
-    }
-
     private void getDir(String dirPath) {
 
         boolean useAutoSelection = dirPath.length() < currentPath.length();
@@ -377,8 +297,6 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
     }
 
     protected void onLongListItemClick(View v, int pos, long id) {
-        Log.i(TAG, "onLongListItemClick id=" + id);
-        mMode = startSupportActionMode(new FileActionMode());
     }
 
 
@@ -450,69 +368,6 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
             if (mMode == null) {
                 selectButton.setEnabled(true);
             }
-        }
-    }
-
-    private final class FileActionMode implements ActionMode.Callback {
-        private List<String> getSelectedFiles() {
-            List<String> files = new ArrayList<String>();
-            SparseBooleanArray checked = getListView().getCheckedItemPositions();
-
-            for (int i = 0; i < checked.size(); i++) {
-                if (checked.valueAt(i)) {
-                    HashMap<String, Object> item = (HashMap<String, Object>) getListView().getAdapter().getItem(checked.keyAt(i));
-                    if (item.get(ITEM_KEY).equals("..")) {
-                        continue;
-                    }
-                    files.add(currentPath + "/" + item.get(ITEM_KEY));
-                }
-            }
-
-            return files;
-        }
-
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            int i = item.getItemId();
-            if (i == R.id.file_delete) {
-                List<String> files = getSelectedFiles();
-                if (files.size() > 0) {
-                    actionOp = item.getItemId();
-                    new ActionFiles().execute(files);
-                }
-
-            } else if (i == R.id.file_copy || i == R.id.file_cut) {
-                actionFiles = getSelectedFiles();
-                if (actionFiles.size() > 0) {
-                    actionOp = item.getItemId();
-                }
-
-            } else if (i == R.id.file_paste) {
-                if (actionOp == R.id.file_copy || actionOp == R.id.file_cut) {
-                    new ActionFiles().execute(actionFiles);
-                }
-
-            }
-            mode.finish();
-            return true;
-        }
-
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            getMenuInflater().inflate(R.menu.file_action_menu, menu);
-            if (actionOp == 0) {
-                menu.findItem(R.id.file_paste).setVisible(false);
-            }
-            return true;
-        }
-
-        public void onDestroyActionMode(ActionMode mode) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            getDir(currentPath);
-            mMode = null;
-        }
-
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            return false;
         }
     }
 
