@@ -83,7 +83,9 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     public void onEditorViewCreated(IEditorDelegate editorDelegate) {
         super.onEditorViewCreated(editorDelegate);
 
-        if (Preferences.getInstance(this).isUseStaticCodeAnalysis()) {
+        Preferences setting = Preferences.getInstance(this);
+        boolean enableStaticCodeAnalysis = setting.getBoolean(getString(R.string.pref_key_cpp_check), true);
+        if (enableStaticCodeAnalysis) {
             File file = editorDelegate.getDocument().getFile();
             String fileName = file.getName().toLowerCase();
             if (fileName.endsWith(".cpp") || fileName.endsWith(".c")) {

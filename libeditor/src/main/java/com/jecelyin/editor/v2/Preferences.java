@@ -413,10 +413,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         preferences.edit().putString("pref_terminal_color", String.valueOf(index)).apply();
     }
 
-    public boolean isUseStaticCodeAnalysis() {
-        return true;
-    }
-
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
     public @interface ScreenOrientation {
