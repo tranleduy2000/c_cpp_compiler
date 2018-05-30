@@ -23,7 +23,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.core.widget.EditAreaView;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -52,12 +51,13 @@ import android.widget.TextView;
 import com.duy.common.StoreUtil;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
-import com.duy.ide.file.dialogs.DialogNewFile;
+import com.duy.ide.diagnostic.view.DiagnosticFragment;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.SaveListener;
-import com.duy.ide.diagnostic.view.DiagnosticFragment;
+import com.duy.ide.file.dialogs.DialogNewFile;
+import com.duy.ide.settings.EditorSettingsActivity;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
@@ -76,7 +76,6 @@ import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
 import com.jecelyin.editor.v2.manager.TabManager;
-import com.duy.ide.settings.EditorSettingsActivity;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.jecelyin.editor.v2.widget.SymbolBarLayout;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
@@ -158,14 +157,15 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
         bindPreferences();
         setScreenOrientation();
 
-        mDrawerLayout.setEnabled(false);
-        mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-
-        final String version = SysUtils.getVersionName(this);
-        mVersionTextView.setText(version);
-
+        mVersionTextView.setText(SysUtils.getVersionName(this));
         mEditorPager.setVisibility(View.VISIBLE);
-        initUI();
+
+        initToolbar();
+
+        mTabRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mTabManager = new TabManager(this);
+
+        initMenuView();
         intiDiagnosticView();
         processIntent();
     }
@@ -229,12 +229,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
         }
     }
 
-    private void initUI() {
-        mTabRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mDrawerLayout.setEnabled(true);
-
-        initToolbar();
-
+    private void initMenuView() {
         if (mMenuManager == null) {
             mMenuManager = new MenuManager(this);
             NavigationView rightMenu = findViewById(R.id.menuNavView);
@@ -253,7 +248,6 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     private void initToolbar() {
         mToolbar.setNavigationIcon(R.drawable.ic_drawer_raw);
         mToolbar.setNavigationContentDescription(R.string.tab);
-        mTabManager = new TabManager(this);
     }
 
     @Override

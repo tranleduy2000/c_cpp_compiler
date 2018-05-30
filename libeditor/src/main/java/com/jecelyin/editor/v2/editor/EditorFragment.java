@@ -28,7 +28,6 @@ import android.view.ViewGroup;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
 import com.duy.ide.editor.view.EditorView;
-import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.Preferences;
 
 import java.io.File;

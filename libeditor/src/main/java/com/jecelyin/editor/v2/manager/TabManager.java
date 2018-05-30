@@ -52,9 +52,9 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     private EditorFragmentPagerAdapter mEditorFragmentPagerAdapter;
 
     public TabManager(SimpleEditorActivity activity) {
-        this.mActivity = activity;
+        mActivity = activity;
 
-        this.mTabAdapter = new TabAdapter();
+        mTabAdapter = new TabAdapter();
         mTabAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
