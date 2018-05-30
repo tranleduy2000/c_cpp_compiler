@@ -24,8 +24,8 @@ import android.view.View;
 
 import com.duy.common.DLog;
 import com.duy.ide.core.SimpleEditorActivity;
-import com.duy.ide.editor.editor.R;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
+import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
@@ -185,27 +185,32 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
         boolean firstIndex = false;
         for (Diagnostic diagnostic : mDiagnostics) {
+//            if (diagnostic.getKind() != Kind.ERROR) {
+//                continue;
+//            }
             if (diagnostic.getSourceFile() == null) {
                 continue;
             }
             File sourceFile = new File(diagnostic.getSourceFile());
             Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(sourceFile);
-            if (position != null) {
-                final IEditorDelegate editorDelegate = position.second;
-                Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
-                int lineNumber = (int) diagnostic.getLineNumber();
-                int columnNumber = (int) diagnostic.getColumnNumber();
+            if (position == null) {
+                continue;
+            }
 
-                command.args.putInt("line", lineNumber);
-                command.args.putInt("col", columnNumber);
-                editorDelegate.doCommand(command);
+            final IEditorDelegate editorDelegate = position.second;
+            Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
+            int lineNumber = (int) diagnostic.getLineNumber();
+            int columnNumber = (int) diagnostic.getColumnNumber();
 
-                if (!firstIndex) {
-                    Command gotoIndexCmd = new Command(Command.CommandEnum.GOTO_INDEX);
-                    gotoIndexCmd.args.putAll(command.args);
-                    editorDelegate.doCommand(gotoIndexCmd);
-                    firstIndex = true;
-                }
+            command.args.putInt("line", lineNumber);
+            command.args.putInt("col", columnNumber);
+            editorDelegate.doCommand(command);
+
+            if (!firstIndex) {
+                Command gotoIndexCmd = new Command(Command.CommandEnum.GOTO_INDEX);
+                gotoIndexCmd.args.putAll(command.args);
+                editorDelegate.doCommand(gotoIndexCmd);
+                firstIndex = true;
             }
         }
     }

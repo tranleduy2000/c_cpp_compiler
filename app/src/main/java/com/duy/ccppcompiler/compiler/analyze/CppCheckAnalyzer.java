@@ -18,7 +18,6 @@
 package com.duy.ccppcompiler.compiler.analyze;
 
 import android.content.Context;
-import android.core.widget.EditAreaView;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -26,15 +25,18 @@ import android.text.TextWatcher;
 
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.compiler.shell.OutputParser;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.common.DLog;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
-
-import org.apache.commons.io.IOUtils;
+import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
+import com.duy.ide.diagnostic.DiagnosticsCollector;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
+import com.jecelyin.editor.v2.io.LocalFileWriter;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -49,8 +51,9 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("^(\\S+):([0-9]+):(.*)");
 
     private final Context mContext;
-    private final EditorDelegate mEditorDelegate;
+    private final IEditorDelegate mEditorDelegate;
     private final android.os.Handler mHandler = new Handler();
+    private DiagnosticPresenter mDiagnosticPresenter;
     private final Runnable mAnalyze = new Runnable() {
         @Override
         public void run() {
@@ -62,35 +65,47 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         }
     };
 
-    public CppCheckAnalyzer(@NonNull Context context, @NonNull EditorDelegate delegate) {
-        this.mContext = context;
-        this.mEditorDelegate = delegate;
-        setEditor(delegate.getEditText());
+    public CppCheckAnalyzer(@NonNull Context context, @NonNull IEditorDelegate delegate, DiagnosticPresenter diagnosticPresenter) {
+        mContext = context;
+        mEditorDelegate = delegate;
+        mDiagnosticPresenter = diagnosticPresenter;
     }
 
     private void analyzeImpl() throws IOException {
-        File file = new File(mContext.getCacheDir(), "cppcheck/tmp/" + mEditorDelegate.getDocument().getFile().getName());
-        FileOutputStream output = new FileOutputStream(file);
-        IOUtils.write(mEditorDelegate.getEditableText(), output);
-        output.close();
-        if (DLog.DEBUG) DLog.d(TAG, "analyzeImpl: write tmp file complete");
+        File originFile = mEditorDelegate.getDocument().getFile();
+        File tmpFile = new File(getCppCheckTmpDir(), originFile.getName());
+
+        LocalFileWriter localFileWriter = new LocalFileWriter(tmpFile, "UTF-8");
+        localFileWriter.writeToFile(mEditorDelegate.getEditText().getText());
 
         CommandBuilder builder = new CommandBuilder(CPPCHECK_PROGRAM);
         builder.addFlags(TEMPLATE);
-        builder.addFlags(file.getAbsolutePath());
+        builder.addFlags(tmpFile.getAbsolutePath());
 
         String cmd = builder.build();
-        CommandResult result = Shell.exec(mContext, file.getParent(), cmd);
+        CommandResult result = Shell.exec(mContext, tmpFile.getParent(), cmd);
         if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
+        String message = result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
+
+        DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
+        OutputParser parser = new OutputParser(diagnosticsCollector);
+        parser.parse(message);
+
+        ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
+        mDiagnosticPresenter.setDiagnostics(diagnostics);
+    }
+
+    private File getCppCheckTmpDir() {
+        File dir = new File(mContext.getCacheDir(), "cppcheck/tmp");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dir;
     }
 
     @Override
-    public void analyze(File[] sources) {
-
-    }
-
-    public void setEditor(EditAreaView editor) {
-        editor.addTextChangedListener(new TextWatcher() {
+    public void start() {
+        mEditorDelegate.getEditText().addTextChangedListener(new TextWatcher() {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

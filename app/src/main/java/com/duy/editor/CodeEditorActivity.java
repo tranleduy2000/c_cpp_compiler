@@ -20,7 +20,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.core.widget.EditAreaView;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -29,6 +28,7 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
+import com.duy.ccppcompiler.compiler.analyze.CppCheckAnalyzer;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
@@ -47,6 +47,7 @@ import com.duy.ide.core.SimpleEditorActivity;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.kobakei.ratethisapp.RateThisApp;
 import com.pdaxrom.cctools.BuildConstants;
@@ -76,28 +77,24 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         mPremiumHelper = new InAppPurchaseHelper(this);
         // Monitor launch times and interval from installation
         RateThisApp.onCreate(this);
-
-        initCodeAnalyzer();
     }
 
-    private void initCodeAnalyzer() {
-        mEditorPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    @Override
+    public void onEditorViewCreated(IEditorDelegate editorDelegate) {
+        super.onEditorViewCreated(editorDelegate);
+        File file = editorDelegate.getDocument().getFile();
+        String fileName = file.getName().toLowerCase();
+        if (fileName.endsWith(".cpp") || fileName.endsWith(".c")) {
+            initCodeAnalyzer(editorDelegate);
+        }
+    }
 
-            }
 
-            @Override
-            public void onPageSelected(int position) {
-                if (DLog.DEBUG)
-                    DLog.d(TAG, "onPageSelected() called with: position = [" + position + "]");
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+    private void initCodeAnalyzer(IEditorDelegate editorDelegate) {
+        if (DLog.DEBUG)
+            DLog.d(TAG, "initCodeAnalyzer() called with: editorDelegate = [" + editorDelegate + "]");
+        CppCheckAnalyzer analyzer = new CppCheckAnalyzer(this, editorDelegate, mDiagnosticPresenter);
+        analyzer.start();
     }
 
     @Override

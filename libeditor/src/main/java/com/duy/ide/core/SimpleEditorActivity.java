@@ -72,6 +72,7 @@ import com.jecelyin.editor.v2.dialog.WrapCharDialog;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
+import com.jecelyin.editor.v2.editor.IEditorStateListener;
 import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
@@ -97,6 +98,7 @@ import java.util.Map;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class SimpleEditorActivity extends ThemeSupportActivity implements MenuItem.OnMenuItemClickListener,
+        IEditorStateListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected static final int RC_OPEN_FILE = 1;
@@ -738,5 +740,11 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
         setMenuStatus(R.id.action_save, document.isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         setMenuStatus(R.id.action_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
         setMenuStatus(R.id.action_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+    }
+
+
+    @Override
+    public void onEditorViewCreated(IEditorDelegate editorDelegate) {
+
     }
 }

@@ -76,6 +76,15 @@ public class EditorFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof IEditorStateListener) {
+            IEditorStateListener listener = (IEditorStateListener) getActivity();
+            listener.onEditorViewCreated(mEditorDelegate);
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         if (mEditorDelegate != null) {
             if (mEditorDelegate.isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
