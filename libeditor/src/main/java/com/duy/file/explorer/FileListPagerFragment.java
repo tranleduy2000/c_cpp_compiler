@@ -28,8 +28,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -133,23 +131,6 @@ public class FileListPagerFragment extends Fragment implements SwipeRefreshLayou
                 binding.explorerSwipeRefreshLayout.setRefreshing(true);
             }
         });
-        binding.nameFilterEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
         Preferences.getInstance(getContext()).registerOnSharedPreferenceChangeListener(this);
 
         view.post(new Runnable() {

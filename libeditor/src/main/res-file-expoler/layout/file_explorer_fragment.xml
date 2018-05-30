@@ -35,19 +35,6 @@
             android:layout_height="1dp"
             android:background="?android:listDivider" />
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/nameFilterEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/filter_by_name"
-                android:maxLength="20"
-                android:singleLine="true" />
-
-        </android.support.design.widget.TextInputLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
