@@ -1,0 +1,14 @@
+This "plugin" includes external headers, libraries and examples for SDL2 libraries:
+Please install CPP NIDE before using this plugin.
+
+You must open this app once time to install library.
+
+Check wiki on https://github.com/tranleduy2000/c_cpp_compiler/wiki/SDL-Plugin
+
+This plugin contains
+
+SDL2
+SDL2_image
+SDL2_mixer
+SDL2_net
+SDL2_ttf
