@@ -123,7 +123,7 @@ public class Shell {
                 }
             } while (thread.isAlive());
 
-            if (DLog.DEBUG) DLog.d(TAG, "stdout: \n" + message);
+            if (DLog.DEBUG) DLog.w(TAG, "stdout: \n" + message);
 
             output.close();
             input.close();

@@ -40,5 +40,6 @@
     <string name="build_sdl_activity">Build SDL activity</string>
     <string name="pref_ld_opts">Linker options (LDFLAGS)</string>
     <string name="title_compiler_options">Compiler options</string>
+    <string name="run_sdl_activity">Run SDL activity</string>
 
 </resources>

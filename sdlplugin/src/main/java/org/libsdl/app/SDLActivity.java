@@ -43,15 +43,15 @@ import java.util.Arrays;
  */
 @SuppressWarnings("all")
 public class SDLActivity extends AppCompatActivity {
+    public static final String EXTRA_SDL_FILE = "sdlmain";
     protected static final int COMMAND_USER = 0x8000;
+
     // Messages from the SDLMain thread
     static final int COMMAND_CHANGE_TITLE = 1;
     static final int COMMAND_UNUSED = 2;
     static final int COMMAND_TEXTEDIT_HIDE = 3;
     static final int COMMAND_QUIT = 4;
-
     private static final String TAG = "SDLActivity";
-
     // Keep track of the paused state
     public static boolean mIsPaused = false;
     public static boolean mIsSurfaceReady = false;
@@ -273,7 +273,7 @@ public class SDLActivity extends AppCompatActivity {
         mSingleton = this;
 
         if (!mIsPaused) {
-            if (getIntent().getExtras() == null || !getIntent().hasExtra("sdlmain")) {
+            if (getIntent().getExtras() == null || !getIntent().hasExtra(EXTRA_SDL_FILE)) {
                 return;
             } else {
                 String sdlmain = getIntent().getStringExtra("sdlmain");
@@ -292,7 +292,8 @@ public class SDLActivity extends AppCompatActivity {
                         Runtime.getRuntime().exec("chmod 755 " + libFile).waitFor();
                     } catch (Exception e) {
                         Log.e(TAG, "copy sdlmain failed " + e);
-                        System.exit(RESULT_OK);
+                        finish();
+                        return;
                     }
                     try {
                         System.load(libFile);
@@ -303,7 +304,8 @@ public class SDLActivity extends AppCompatActivity {
                         Utils.setEnv("PWD", pwd, true);
                     } catch (UnsatisfiedLinkError e) {
                         Log.e(TAG, "Native code library failed to load.\n" + e);
-                        System.exit(RESULT_OK);
+                        finish();
+                        return;
                     }
                 }
             }

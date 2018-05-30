@@ -20,7 +20,7 @@ import android.content.Context;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
+import com.duy.ccppcompiler.compiler.result.CompileResult;
 
 import java.io.File;
 
@@ -52,11 +52,11 @@ public class GPlusPlusCompiler extends GCCCompiler {
             args.addFlags(sourceFile.getAbsolutePath());
         }
         if (mBuildNativeActivity) {
-            args.addFlags(super.buildNativeActivityFlags(sourceFiles));
+            args.addFlags(buildNativeActivityFlags(sourceFiles));
         } else if (mBuildSDL) {
-            args.addFlags(super.buildNativeActivityFlags(sourceFiles));
+            args.addFlags(buildSDLActivityFlags(sourceFiles));
         } else {
-            args.addFlags(super.buildExecutableFlags(sourceFiles));
+            args.addFlags(buildExecutableFlags(sourceFiles));
         }
 
         if (mSetting != null) {

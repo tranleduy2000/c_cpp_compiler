@@ -18,6 +18,7 @@
 package com.duy.ccppcompiler.compiler.manager;
 
 import android.app.ProgressDialog;
+import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -98,6 +99,7 @@ public abstract class CompileManagerImpl implements ICompileManager {
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + compileResult.getMessage());
     }
 
+    @CallSuper
     @Override
     public void onCompileSuccess(CommandResult commandResult) {
         if (DLog.DEBUG) DLog.d(TAG, "onCompileSuccess() commandResult = [" + commandResult + "]");

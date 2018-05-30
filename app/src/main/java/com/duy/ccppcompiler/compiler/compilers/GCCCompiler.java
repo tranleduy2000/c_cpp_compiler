@@ -22,8 +22,9 @@ import android.support.annotation.Nullable;
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ccppcompiler.compiler.shell.CompileResult;
-import com.duy.ccppcompiler.compiler.shell.NativeActivityCompileResult;
+import com.duy.ccppcompiler.compiler.result.CompileResult;
+import com.duy.ccppcompiler.compiler.result.NativeActivityCompileResult;
+import com.duy.ccppcompiler.compiler.result.SDLCompileResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
 
@@ -58,6 +59,8 @@ public class GCCCompiler extends CompilerImpl {
         CompileResult result;
         if (mBuildNativeActivity) {
             result = new NativeActivityCompileResult(shellResult);
+        } else if (mBuildSDL) {
+            result = new SDLCompileResult(shellResult);
         } else {
             result = new CompileResult(shellResult);
         }
@@ -96,7 +99,7 @@ public class GCCCompiler extends CompilerImpl {
         return args.build();
     }
 
-    private ArrayList<String> buildSDLActivityFlags(File[] sourceFiles) {
+    protected ArrayList<String> buildSDLActivityFlags(File[] sourceFiles) {
         File source = sourceFiles[0];
         String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
 
@@ -113,9 +116,6 @@ public class GCCCompiler extends CompilerImpl {
                 .addFlags("-shared")
                 .addFlags(new File(Environment.getSdCardHomeDir(), "SDL/lib/SDL_android_main.o").getAbsolutePath())
                 .addFlags("-I" + new File(Environment.getSdCardHomeDir(), "SDL/lib").getAbsolutePath())
-                .addFlags("-lSDL2")
-                .addFlags("-llog")
-                .addFlags("-lm")
                 .addFlags("-o", mOutFile.getAbsolutePath());
 
         return flags.toList();

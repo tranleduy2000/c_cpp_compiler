@@ -31,8 +31,6 @@ import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
-import com.duy.ccppcompiler.compiler.manager.NativeActivityCompileManager;
-import com.duy.ccppcompiler.compiler.manager.SDLCompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
@@ -42,7 +40,9 @@ import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
+import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.editor.SimpleEditorActivity;
+import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
@@ -63,8 +63,8 @@ import static com.pdaxrom.cctools.BuildConstants.EXTRA_FILE_NAME;
 public class CodeEditorActivity extends SimpleEditorActivity {
     private static final String TAG = "CodeEditorActivity";
     private static final int RC_BUILD_NATIVE_ACTIVITY = 1234;
-    private static final int RC_BUILD_SDL_ACTIVITY = 1235;
     private static final int RC_BUILD_EXECUTABLE = 1236;
+    private static final int RC_SELECT_NATIVE_ACTIVITY = 1237;
 
     private InAppPurchaseHelper mPremiumHelper;
 
@@ -101,6 +101,9 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 .setIcon(R.drawable.baseline_build_24);
         codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_sdl_activity, 0, R.string.build_sdl_activity)
                 .setIcon(R.drawable.baseline_build_24);
+        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_run_sdl_activity, 0, R.string.run_sdl_activity)
+                .setIcon(R.drawable.ic_play_arrow_white_24dp);
+
         codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
                 .setIcon(R.drawable.ic_code_black_24dp);
         codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
@@ -169,11 +172,22 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 saveAll(RC_BUILD_NATIVE_ACTIVITY);
                 break;
 
-            case R.id.action_build_sdl_activity:
-                saveAll(RC_BUILD_SDL_ACTIVITY);
+            case R.id.action_run_sdl_activity:
+                selectSDLFile();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void selectSDLFile() {
+        EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
+        String path = null;
+        if (currentEditorDelegate != null) {
+            path = currentEditorDelegate.getPath();
+        }
+        FileExplorerActivity.startPickFileActivity(this, path, Environment.getSdCardHomeDir(),
+                RC_SELECT_NATIVE_ACTIVITY);
+
     }
 
     @Override
@@ -186,34 +200,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
             case RC_BUILD_EXECUTABLE:
                 buildExecutable();
                 break;
-            case RC_BUILD_SDL_ACTIVITY:
-                buildSDLActivity();
-                break;
         }
-    }
-
-    private void buildSDLActivity() {
-        CompilerOptionsDialog dialog = new CompilerOptionsDialog(this, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                EditorDelegate currentEditor = getCurrentEditorDelegate();
-                if (currentEditor == null) {
-                    return;
-                }
-                File[] srcFiles = new File[]{new File(currentEditor.getPath())};
-
-                ICompiler compiler = CompilerFactory.getSDLActivityCompilerForFile(CodeEditorActivity.this, srcFiles);
-                if (compiler != null) {
-                    SDLCompileManager compileManager = new SDLCompileManager(CodeEditorActivity.this);
-                    compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
-                    compileManager.setCompiler(compiler);
-                    compileManager.compile(srcFiles);
-                } else {
-                    Toast.makeText(CodeEditorActivity.this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        dialog.show();
     }
 
     private void buildNativeActivity() {
@@ -228,7 +215,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
 
                 ICompiler compiler = CompilerFactory.getNativeActivityCompilerForFile(CodeEditorActivity.this, srcFiles);
                 if (compiler != null) {
-                    NativeActivityCompileManager compileManager = new NativeActivityCompileManager(CodeEditorActivity.this);
+                    CompileManager compileManager = new CompileManager(CodeEditorActivity.this);
                     compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
                     compileManager.setCompiler(compiler);
                     compileManager.compile(srcFiles);
@@ -303,6 +290,20 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                         openFile(path, "UTF-8", 0);
                     }
                 });
+            }
+        } else if (requestCode == RC_SELECT_NATIVE_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                String path = FileExplorerActivity.getFile(data);
+                if (path == null) {
+                    return;
+                }
+                Intent intent = getPackageManager().getLaunchIntentForPackage(BuildConstants.SDL_PACKAGE_NAME);
+                if (intent != null) {
+                    intent.putExtra("sdlmain", path);
+                    startActivity(intent);//null pointer check in case package name was not found
+                } else {
+                    UIUtils.alert(this, "Can not run SDL application");
+                }
             }
         }
     }

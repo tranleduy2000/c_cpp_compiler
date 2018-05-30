@@ -30,4 +30,5 @@ public class BuildConstants {
     public static final String EXTRA_WORK_DIR = "workdir";
     public static final String EXTRA_HOME_DIR = "homedir";
     public static final String EXTRA_FORCE_BUILD = "force";
+    public static final String SDL_PACKAGE_NAME = "com.duy.c.cpp.compiler.sdlplugin";
 }

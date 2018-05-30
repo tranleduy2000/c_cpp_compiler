@@ -119,7 +119,7 @@ public class sdlpluginActivity extends SDLActivity {
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                System.exit(RESULT_OK);
+                finish();
             }
         });
         builder.create().show();

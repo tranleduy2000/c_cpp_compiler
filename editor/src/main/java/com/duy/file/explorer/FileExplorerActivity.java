@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -39,8 +38,8 @@ import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.editor.databinding.ActivityFileExplorerBinding;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.ThemeSupportActivity;
 import com.jecelyin.editor.v2.Preferences;
+import com.jecelyin.editor.v2.ThemeSupportActivity;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -87,7 +86,7 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
         activity.startActivityForResult(it, requestCode);
     }
 
-    @NonNull
+    @Nullable
     public static String getFile(Intent it) {
         return it.getStringExtra("file");
     }
