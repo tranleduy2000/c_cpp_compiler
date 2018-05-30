@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,6 +15,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.libsdl.app.SDLActivity;
 
@@ -27,7 +27,7 @@ public class sdlpluginActivity extends SDLActivity {
     private static final String TAG = "sdlpluginActivity";
     private static final int RC_PERMISSION_WRITE_EXTERNAL_STORAGE = 2;
 
-    private static final String CPP_NIDE_WIKI_URL = "https://github.com/tranleduy2000/c_cpp_compiler/wiki/";
+    private static final String CPP_NIDE_WIKI_URL = "https://github.com/tranleduy2000/c_cpp_compiler/wiki/SDL-Plugin";
 
     private File mSdCardAppDir;
 
@@ -82,25 +82,29 @@ public class sdlpluginActivity extends SDLActivity {
     }
 
     private void showAboutDialog() {
-        String versionName;
-        try {
-            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (NameNotFoundException e) {
-            versionName = "1.0";
-        }
-        String message = getString(R.string.about_dialog_text) +
-                " " + versionName + "\n" +
+        String message = getString(R.string.about_dialog_text) + " " + BuildConfig.VERSION_NAME + "\n" +
                 getString(R.string.sdl_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL) + "\n" +
                 getString(R.string.sdl_image_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_image) + "\n" +
                 getString(R.string.sdl_mixer_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_mixer) + "\n" +
                 getString(R.string.sdl_net_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_net) + "\n" +
                 getString(R.string.sdl_ttf_version) + " " + Utils.getSDLVersion(Utils.Lib_SDL_ttf) + "\n\n" +
-                getString(R.string.about_dialog_text3) + "\n" +
-                CPP_NIDE_WIKI_URL + "\n";
+                getString(R.string.about_dialog_text3) + "\n" + CPP_NIDE_WIKI_URL + "\n";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.about_dialog))
                 .setMessage(message)
+                .setNeutralButton(R.string.open_wiki, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CPP_NIDE_WIKI_URL));
+                            startActivity(browserIntent);
+                        } catch (Exception e) {
+                            Toast.makeText(sdlpluginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                        dialog.cancel();
+                    }
+                })
                 .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
