@@ -17,14 +17,9 @@
 package android.core.widget;
 
 import android.content.Context;
-import android.core.text.LayoutContext;
-import android.core.text.TextLineNumber;
-import android.graphics.Canvas;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-
-import java.util.List;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -34,49 +29,24 @@ public class GutterView extends View {
     @Nullable
     private BaseEditorView editorView;
 
-    public GutterView(Context context, @Nullable BaseEditorView editorView) {
+    public GutterView(Context context) {
         super(context);
+        init(context, null, -1);
+
     }
 
     public GutterView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init(context, null, -1);
+
     }
 
     public GutterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context, attrs, defStyleAttr);
     }
 
-    public void setEditorView(@Nullable BaseEditorView editorView) {
-        this.editorView = editorView;
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (editorView == null) {
-            return;
-        }
-        drawLineNumber(canvas);
-    }
-
-    // TODO: 24-Apr-18 improve calculate padding and recalculate when layout changed
-    private void drawLineNumber(Canvas canvas) {
-        if (editorView == null) {
-            return;
-        }
-        LayoutContext layoutContext = editorView.getLayoutContext();
-        if (!layoutContext.preferences.isShowLineNumber()) {
-            return;
-        }
-
-        int width = getScrollX() + layoutContext.gutterWidth;
-        int height = getScrollY() + getHeight();
-        canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.getGutterBackgroundPaint());
-        canvas.drawLine(width, getScrollY(), width, height, layoutContext.getGutterDividerPaint());
-
-        List<TextLineNumber.LineInfo> lines = layoutContext.textLineNumber.getLines();
-        for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.getGutterForegroundPaint());
-        }
-    }
 }

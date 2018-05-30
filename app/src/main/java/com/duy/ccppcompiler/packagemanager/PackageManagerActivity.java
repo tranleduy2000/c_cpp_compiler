@@ -571,8 +571,12 @@ public class PackageManagerActivity extends ThemeSupportActivity {
         }
     }
 
-    private void prepareForInstallPackage(String name, boolean confirmBeforeInstall) {
-        final InstallPackageInfo info = new InstallPackageInfo(mPackagesLists, name);
+    private void prepareForInstallPackage(String data, boolean confirmBeforeInstall) {
+        final InstallPackageInfo info = new InstallPackageInfo();
+        String[] packagesName = data.split(";");
+        for (String name : packagesName) {
+            info.addPackage(mPackagesLists, name);
+        }
         if (confirmBeforeInstall) {
             Builder dialog = new AlertDialog.Builder(context)
                     .setTitle(getString(R.string.pkg_selected) + info.getName())

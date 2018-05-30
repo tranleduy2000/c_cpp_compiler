@@ -789,10 +789,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         return mText;
     }
 
-    public final void setText(int resid) {
-        setText(getContext().getResources().getText(resid));
-    }
-
     /**
      * Sets the string value of the TextView. TextView <em>does not</em> accept
      * HTML-like formatting, which you can do with text strings in XML resource files.
@@ -806,6 +802,10 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
      */
     public final void setText(CharSequence text) {
         setText(text, mBufferType);
+    }
+
+    public final void setText(int resid) {
+        setText(getContext().getResources().getText(resid));
     }
 
     /**
@@ -1095,35 +1095,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     /**
-     * Returns the start padding of the view, plus space for the start
-     * Drawable if any.
-     */
-    public int getCompoundPaddingStart() {
-        switch (getLayoutDirection()) {
-            default:
-            case LAYOUT_DIRECTION_LTR:
-                return getCompoundPaddingLeft();
-            case LAYOUT_DIRECTION_RTL:
-                return getCompoundPaddingRight();
-        }
-    }
-
-    /**
-     * Returns the end padding of the view, plus space for the end
-     * Drawable if any.
-     */
-    public int getCompoundPaddingEnd() {
-//        resolveDrawables();
-        switch (getLayoutDirection()) {
-            default:
-            case LAYOUT_DIRECTION_LTR:
-                return getCompoundPaddingRight();
-            case LAYOUT_DIRECTION_RTL:
-                return getCompoundPaddingLeft();
-        }
-    }
-
-    /**
      * Returns the extended top padding of the view, including both the
      * top Drawable if any and any extra space to keep more than maxLines
      * of text from showing.  It is only valid to call this after measuring.
@@ -1214,22 +1185,6 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     }
 
     /**
-     * Returns the total start padding of the view, including the start
-     * Drawable if any.
-     */
-    public int getTotalPaddingStart() {
-        return getCompoundPaddingStart();
-    }
-
-    /**
-     * Returns the total end padding of the view, including the end
-     * Drawable if any.
-     */
-    public int getTotalPaddingEnd() {
-        return getCompoundPaddingEnd();
-    }
-
-    /**
      * Returns the total top padding of the view, including the top
      * Drawable if any, the extra space to keep more than maxLines
      * from showing, and the vertical offset for gravity, if any.
@@ -1263,8 +1218,8 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
 
     @Override
     public void setPaddingRelative(int start, int top, int end, int bottom) {
-        if (start != getPaddingStart() ||
-                end != getPaddingEnd() ||
+        if (start != getPaddingLeft() ||
+                end != getPaddingRight() ||
                 top != getPaddingTop() ||
                 bottom != getPaddingBottom()) {
             nullLayouts();
@@ -6902,9 +6857,9 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.getGutterBackgroundPaint());
         canvas.drawLine(width, getScrollY(), width, height, layoutContext.getGutterDividerPaint());
 
-        List<TextLineNumber.LineInfo> lines = layoutContext.textLineNumber.getLines();
+        List<TextLineNumber.LineInfo> lines = layoutContext.getTextLineNumber().getLines();
         for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.getGutterForegroundPaint());
+            canvas.drawText(line.text, layoutContext.getLineNumberX() + getScrollX(), line.y, layoutContext.getGutterForegroundPaint());
         }
     }
 

@@ -58,10 +58,8 @@ public class EditorView extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
         mEditText = findViewById(R.id.edit_text);
         mProgressView = findViewById(R.id.progress_view);
-
     }
 
     public EditAreaView getEditText() {
