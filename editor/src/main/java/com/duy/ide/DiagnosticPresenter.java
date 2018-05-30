@@ -153,7 +153,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         mHashCode.clear();
 
         show(mDiagnostics);
-        highlightErrorCurrentEditor();
+        highlightError();
     }
 
     private void show(ArrayList<Diagnostic> diagnostics) {
@@ -177,37 +177,32 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
      * Show error in current editor,
      * Find first error index and move cursor to it
      */
-    private void highlightErrorCurrentEditor() {
-        IEditorDelegate delegate = mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
-        if (delegate == null) {
-            return;
+    private void highlightError() {
+        for (IEditorDelegate editorDelegate : mTabManager.getEditorPagerAdapter().getAllEditor()) {
+            editorDelegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
         }
 
-        delegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
-        delegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
-
         boolean firstIndex = false;
-
         for (Diagnostic diagnostic : mDiagnostics) {
             if (diagnostic.getSourceFile() == null) {
                 continue;
             }
             File sourceFile = new File(diagnostic.getSourceFile());
-            File editFile = delegate.getDocument().getFile();
-            if (sourceFile.equals(editFile)
-                    || diagnostic.getSourceFile().equals(editFile.getName())) {
+            Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(sourceFile);
+            if (position != null) {
+                final IEditorDelegate editorDelegate = position.second;
                 Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
                 int lineNumber = (int) diagnostic.getLineNumber();
                 int columnNumber = (int) diagnostic.getColumnNumber();
 
                 command.args.putInt("line", lineNumber);
                 command.args.putInt("col", columnNumber);
-                delegate.doCommand(command);
+                editorDelegate.doCommand(command);
 
                 if (!firstIndex) {
                     Command gotoIndexCmd = new Command(Command.CommandEnum.GOTO_INDEX);
                     gotoIndexCmd.args.putAll(command.args);
-                    delegate.doCommand(gotoIndexCmd);
+                    editorDelegate.doCommand(gotoIndexCmd);
                     firstIndex = true;
                 }
             }
