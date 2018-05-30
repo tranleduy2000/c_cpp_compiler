@@ -17,9 +17,10 @@
 
 package com.duy.ide.diagnostic;
 
-import com.duy.ide.model.SimpleDiagnostic;
-import com.duy.ide.suggestion.DiagnosticSuggestion;
-import com.duy.ide.suggestion.ISuggestion;
+import com.duy.ide.diagnostic.model.Kind;
+import com.duy.ide.diagnostic.model.SimpleDiagnostic;
+import com.duy.ide.diagnostic.suggestion.DiagnosticSuggestion;
+import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.

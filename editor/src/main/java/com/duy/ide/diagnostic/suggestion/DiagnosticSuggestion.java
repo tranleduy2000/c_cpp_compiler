@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.suggestion;
+package com.duy.ide.diagnostic.suggestion;
 
 import android.os.Parcel;
 import android.os.Parcelable;

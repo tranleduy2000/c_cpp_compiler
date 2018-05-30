@@ -15,18 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.diagnostic;
+package com.duy.ide.file.model;
 
-import android.view.View;
+import android.support.annotation.NonNull;
 
-import com.duy.ide.diagnostic.suggestion.ISuggestion;
+import java.io.File;
 
 /**
- * Created by Duy on 28-Apr-18.
+ * Created by Duy on 30-Apr-18.
  */
 
-public interface DiagnosticClickListener {
-    void onDiagnosisClick(Diagnostic diagnostic, View view);
+public interface ISourceFile extends IFileObject {
+    @NonNull
+    byte[] md5();
 
-    void onSuggestionClick(View v, Diagnostic diagnostic, ISuggestion suggestion);
+    @NonNull
+    String getPath();
+
+    @NonNull
+    File getFile();
 }

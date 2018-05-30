@@ -46,7 +46,7 @@ import android.text.style.SuggestionSpan;
 import android.text.style.URLSpan;
 import android.util.Log;
 
-import com.duy.ide.editor.span.ErrorSpan;
+import android.core.text.style.ErrorSpan;
 
 import java.lang.reflect.Array;
 

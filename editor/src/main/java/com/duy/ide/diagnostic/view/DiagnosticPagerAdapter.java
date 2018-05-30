@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.diagnostic;
+package com.duy.ide.diagnostic.view;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;

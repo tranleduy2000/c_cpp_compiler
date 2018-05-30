@@ -14,31 +14,17 @@
  * limitations under the License.
  */
 
-package com.duy.ide.filemanager.file;
+package com.duy.ide.file;
 
-import android.net.Uri;
-import android.support.annotation.Nullable;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
+import android.support.annotation.UiThread;
 
 /**
- * Created by Duy on 30-Apr-18.
+ * @author Jecelyin Peng <jecelyin@gmail.com>
  */
+public interface SaveListener {
+    @UiThread
+    void onSavedSuccess();
 
-public interface IFileObject {
-    @Nullable
-    Uri toUri();
-
-    InputStream openInputStream() throws IOException;
-
-    OutputStream openOutputStream() throws FileNotFoundException;
-
-    Writer openWriter() throws IOException;
-
-    Reader openReader() throws IOException;
+    @UiThread
+    void onSaveFailed(Exception e);
 }

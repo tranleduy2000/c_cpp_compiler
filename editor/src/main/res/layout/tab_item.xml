@@ -49,7 +49,7 @@
 
     </LinearLayout>
 
-    <com.duy.ide.editor.view.TintImageView
+    <com.duy.common.view.TintImageView
         android:id="@+id/btn_close"
         android:layout_width="40dp"
         android:layout_height="40dp"

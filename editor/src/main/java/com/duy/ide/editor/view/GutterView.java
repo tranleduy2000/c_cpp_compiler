@@ -33,19 +33,19 @@ import java.util.List;
  * Created by Duy on 25-Apr-18.
  */
 
-public class LineNumberView extends View implements TextWatcher {
+public class GutterView extends View implements TextWatcher {
     @Nullable
     private BaseEditorView editorView;
 
-    public LineNumberView(Context context, @Nullable BaseEditorView editorView) {
+    public GutterView(Context context, @Nullable BaseEditorView editorView) {
         super(context);
     }
 
-    public LineNumberView(Context context, @Nullable AttributeSet attrs) {
+    public GutterView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LineNumberView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public GutterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

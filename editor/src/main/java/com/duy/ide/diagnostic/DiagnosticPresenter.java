@@ -25,7 +25,7 @@ import android.view.View;
 import com.duy.common.DLog;
 import com.duy.ide.core.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.suggestion.ISuggestion;
+import com.duy.ide.diagnostic.suggestion.ISuggestion;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;

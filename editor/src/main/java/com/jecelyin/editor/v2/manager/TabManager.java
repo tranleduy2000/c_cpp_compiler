@@ -28,7 +28,7 @@ import com.duy.ide.core.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
-import com.duy.ide.filemanager.SaveListener;
+import com.duy.ide.file.SaveListener;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;

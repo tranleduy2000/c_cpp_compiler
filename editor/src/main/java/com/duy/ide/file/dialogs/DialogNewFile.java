@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.dialogs;
+package com.duy.ide.file.dialogs;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,7 +28,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.utils.IOUtils;
+import com.duy.common.utils.IOUtils;
 import com.jecelyin.editor.v2.dialog.AbstractDialog;
 
 import java.io.File;

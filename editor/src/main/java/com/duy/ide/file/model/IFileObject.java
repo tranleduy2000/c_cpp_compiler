@@ -15,18 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.diagnostic;
+package com.duy.ide.file.model;
 
-import android.view.View;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 
-import com.duy.ide.diagnostic.suggestion.ISuggestion;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 
 /**
- * Created by Duy on 28-Apr-18.
+ * Created by Duy on 30-Apr-18.
  */
 
-public interface DiagnosticClickListener {
-    void onDiagnosisClick(Diagnostic diagnostic, View view);
+public interface IFileObject {
+    @Nullable
+    Uri toUri();
 
-    void onSuggestionClick(View v, Diagnostic diagnostic, ISuggestion suggestion);
+    InputStream openInputStream() throws IOException;
+
+    OutputStream openOutputStream() throws FileNotFoundException;
+
+    Writer openWriter() throws IOException;
+
+    Reader openReader() throws IOException;
 }

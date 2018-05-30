@@ -46,11 +46,11 @@ import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
 import com.duy.ide.core.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.span.ErrorSpan;
+import android.core.text.style.ErrorSpan;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.theme.model.SyntaxStyle;
 import com.duy.ide.editor.view.EditorView;
-import com.duy.ide.filemanager.SaveListener;
+import com.duy.ide.file.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
@@ -472,7 +472,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     }
 
     /**
-     * Set {@link com.duy.ide.editor.span.ErrorSpan} from line:col to lineEnd:colEnd
+     * Set {@link ErrorSpan} from line:col to lineEnd:colEnd
      * If it hasn't end index, this method will be set span for all line
      *
      * @param args - contains four key

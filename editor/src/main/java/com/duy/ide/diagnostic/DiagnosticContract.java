@@ -19,7 +19,7 @@ package com.duy.ide.diagnostic;
 
 import android.support.annotation.MainThread;
 
-import com.duy.ide.suggestion.ISuggestion;
+import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 import java.util.ArrayList;
 import java.util.List;

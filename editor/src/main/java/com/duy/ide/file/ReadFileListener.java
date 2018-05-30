@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.filemanager;
+package com.duy.ide.file;
 
 import android.core.text.SpannableStringBuilder;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.suggestion;
+package com.duy.ide.diagnostic.suggestion;
 
 /**
  * An empty replacement string indicates that the given range is to be removed. An empty range

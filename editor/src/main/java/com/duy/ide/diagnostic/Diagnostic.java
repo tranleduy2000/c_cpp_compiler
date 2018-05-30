@@ -21,7 +21,8 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.duy.ide.suggestion.ISuggestion;
+import com.duy.ide.diagnostic.model.Kind;
+import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.

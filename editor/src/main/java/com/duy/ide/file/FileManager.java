@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.ide.filemanager;
+package com.duy.ide.file;
 
 import android.content.Context;
 
-import com.duy.ide.editor.utils.IOUtils;
+import com.duy.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
 
 import java.io.File;

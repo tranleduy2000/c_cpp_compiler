@@ -20,7 +20,7 @@
 
     </android.support.v7.widget.AppCompatTextView>
 
-    <com.duy.ide.editor.view.TintImageView
+    <com.duy.common.view.TintImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_chevron_right_black_24dp"

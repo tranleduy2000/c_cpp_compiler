@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.diagnostic;
+package com.duy.ide.diagnostic.view;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -29,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.DiagnosticClickListener;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DrawableUtils;
 

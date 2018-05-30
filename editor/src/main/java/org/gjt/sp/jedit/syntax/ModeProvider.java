@@ -19,8 +19,8 @@ package org.gjt.sp.jedit.syntax;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.duy.ide.filemanager.file.AssetFile;
-import com.duy.ide.filemanager.file.IFileObject;
+import com.duy.ide.file.model.AssetFile;
+import com.duy.ide.file.model.IFileObject;
 import com.jecelyin.common.utils.DLog;
 
 import org.gjt.sp.jedit.Catalog;

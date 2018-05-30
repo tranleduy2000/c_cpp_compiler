@@ -1,4 +1,4 @@
-package com.duy.ide.editor.utils;
+package com.duy.common.utils;
 
 import java.io.File;
 

@@ -19,14 +19,14 @@ package com.duy.ccppcompiler.compiler.shell;
 import com.duy.ide.diagnostic.Diagnostic;
 import com.duy.ide.diagnostic.DiagnosticFactory;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
-import com.duy.ide.diagnostic.Kind;
+import com.duy.ide.diagnostic.model.Kind;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.duy.ide.diagnostic.Kind.OTHER;
+import static com.duy.ide.diagnostic.model.Kind.OTHER;
 
 /**
  * https://gcc.gnu.org/onlinedocs/gcc-3.3.5/gnat_ug_unx/Output-and-Error-Message-Control.html

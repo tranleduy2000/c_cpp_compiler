@@ -14,23 +14,28 @@
  * limitations under the License.
  */
 
-package com.duy.ide.filemanager.file;
+package com.duy.ide.diagnostic.suggestion;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.io.File;
 
 /**
- * Created by Duy on 30-Apr-18.
+ * Created by Duy on 29-Apr-18.
  */
 
-public interface ISourceFile extends IFileObject {
-    @NonNull
-    byte[] md5();
+public interface ISuggestion extends Parcelable {
+    File getSourceFile();
+
+    int getLineStart();
+
+    int getColStart();
+
+    int getLineEnd();
+
+    int getColEnd();
 
     @NonNull
-    String getPath();
-
-    @NonNull
-    File getFile();
+    String getMessage();
 }

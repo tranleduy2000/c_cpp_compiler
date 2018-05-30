@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.diagnostic;
+package com.duy.ide.diagnostic.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,8 +32,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.duy.common.DLog;
+import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.DiagnosticClickListener;
+import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.suggestion.ISuggestion;
+import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
