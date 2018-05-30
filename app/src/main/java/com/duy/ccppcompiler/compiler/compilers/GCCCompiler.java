@@ -20,11 +20,10 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
-import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.result.CompileResult;
 import com.duy.ccppcompiler.compiler.result.NativeActivityCompileResult;
-import com.duy.ccppcompiler.compiler.result.SDLCompileResult;
+import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
 
@@ -41,14 +40,12 @@ public class GCCCompiler extends CompilerImpl {
     protected final ICompileSetting mSetting;
 
     protected final boolean mBuildNativeActivity;
-    protected final boolean mBuildSDL;
 
     File mOutFile;
 
-    public GCCCompiler(Context context, boolean nativeActivity, boolean buildSDL, @Nullable ICompileSetting setting) {
+    public GCCCompiler(Context context, boolean nativeActivity, @Nullable ICompileSetting setting) {
         super(context);
         mBuildNativeActivity = nativeActivity;
-        mBuildSDL = buildSDL;
         mSetting = setting;
     }
 
@@ -59,8 +56,6 @@ public class GCCCompiler extends CompilerImpl {
         CompileResult result;
         if (mBuildNativeActivity) {
             result = new NativeActivityCompileResult(shellResult);
-        } else if (mBuildSDL) {
-            result = new SDLCompileResult(shellResult);
         } else {
             result = new CompileResult(shellResult);
         }
@@ -85,8 +80,6 @@ public class GCCCompiler extends CompilerImpl {
 
         if (mBuildNativeActivity) {
             args.addFlags(buildNativeActivityFlags(sourceFiles));
-        } else if (mBuildSDL) {
-            args.addFlags(buildSDLActivityFlags(sourceFiles));
         } else {
             args.addFlags(buildExecutableFlags(sourceFiles));
         }
@@ -97,28 +90,6 @@ public class GCCCompiler extends CompilerImpl {
         }
 
         return args.build();
-    }
-
-    protected ArrayList<String> buildSDLActivityFlags(File[] sourceFiles) {
-        File source = sourceFiles[0];
-        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
-
-        if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
-        String soName = "lib" + nameNoExt + ".so";
-        mOutFile = new File(source.getParent(), soName);
-        String cctools = Environment.getCCtoolsDir(mContext);
-        CommandBuilder flags = new CommandBuilder();
-
-        //default flags
-        flags.addFlags("-DANDROID")
-                .addFlags("-I" + new File(Environment.getSdCardHomeDir(), "SDL/include").getAbsolutePath())
-                //ld flags
-                .addFlags("-shared")
-                .addFlags(new File(Environment.getSdCardHomeDir(), "SDL/lib/SDL_android_main.o").getAbsolutePath())
-                .addFlags("-I" + new File(Environment.getSdCardHomeDir(), "SDL/lib").getAbsolutePath())
-                .addFlags("-o", mOutFile.getAbsolutePath());
-
-        return flags.toList();
     }
 
     protected ArrayList<String> buildExecutableFlags(File[] sourceFiles) {

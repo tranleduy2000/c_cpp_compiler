@@ -31,8 +31,8 @@ import java.io.File;
 public class GPlusPlusCompiler extends GCCCompiler {
     private static final String G_PLUS_PLUS_COMPILER_NAME = "g++-4.9";
 
-    public GPlusPlusCompiler(Context context, boolean nativeActivity, boolean buildSDL, ICompileSetting setting) {
-        super(context, nativeActivity, buildSDL, setting);
+    public GPlusPlusCompiler(Context context, boolean nativeActivity, ICompileSetting setting) {
+        super(context, nativeActivity, setting);
     }
 
     @Override
@@ -53,8 +53,6 @@ public class GPlusPlusCompiler extends GCCCompiler {
         }
         if (mBuildNativeActivity) {
             args.addFlags(buildNativeActivityFlags(sourceFiles));
-        } else if (mBuildSDL) {
-            args.addFlags(buildSDLActivityFlags(sourceFiles));
         } else {
             args.addFlags(buildExecutableFlags(sourceFiles));
         }

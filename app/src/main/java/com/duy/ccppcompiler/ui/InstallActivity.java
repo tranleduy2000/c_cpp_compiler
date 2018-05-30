@@ -192,7 +192,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 IOUtils.write("int main(){ return 0; }", output);
                 output.close();
 
-                GCCCompiler compiler = new GCCCompiler(context, false, false, null);
+                GCCCompiler compiler = new GCCCompiler(context, false, null);
                 CompileResult result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not execute C compiler, please install compiler");
@@ -204,7 +204,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 output = new FileOutputStream(file);
                 IOUtils.write("int main() { return 0; }", output);
                 output.close();
-                compiler = new GPlusPlusCompiler(context, false, false, null);
+                compiler = new GPlusPlusCompiler(context, false, null);
                 result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not execute C++ compiler, please install compiler");
