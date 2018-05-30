@@ -60,7 +60,6 @@ public class EditorFragment extends Fragment {
         return newInstance(desc.getFile(), desc.getCursorOffset(), desc.getEncoding());
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,33 +78,15 @@ public class EditorFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        if (DLog.DEBUG) DLog.d(TAG, "onDestroyView() called");
         if (mEditorDelegate != null) {
             if (mEditorDelegate.isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
-                if (DLog.DEBUG)
-                    DLog.d(TAG, "onDestroyView: auto save file " + mEditorDelegate.getDocument().getFile());
                 mEditorDelegate.saveInBackground();
             }
         }
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (DLog.DEBUG)
-            DLog.d(TAG, "onViewStateRestored() called with: savedInstanceState = [" + savedInstanceState + "]");
-
-    }
-
     private void onRestoreState(@Nullable Bundle savedInstanceState) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "onRestoreState() called with: savedInstanceState = [" + savedInstanceState + "]");
         if (savedInstanceState == null) {
             return;
         }
@@ -117,15 +98,8 @@ public class EditorFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (DLog.DEBUG)
-            DLog.d(TAG, "onSaveInstanceState() called with: outState = [" + outState + "]");
         if (mEditorDelegate != null) {
             Parcelable value = mEditorDelegate.onSaveInstanceState();
             outState.putParcelable(KEY_SAVE_STATE, value);
