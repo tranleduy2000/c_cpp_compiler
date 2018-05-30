@@ -43,7 +43,7 @@ public class NativeActivityCompileManager extends CompileManager {
                 NativeActivityCompileResult compileResult = (NativeActivityCompileResult) result;
                 internalBinary = copyToTmpExeDirAndSetExecutable(compileResult.getBinaryFile());
             } catch (IOException e) {
-                handleException(e);
+                handleInternalException(e);
                 return;
             }
 
@@ -52,8 +52,6 @@ public class NativeActivityCompileManager extends CompileManager {
             //from jni: main.cpp
             intent.putExtra("nativeApp", internalBinary.getAbsolutePath());
             getActivity().startActivity(intent);
-        } else {
-            super.onCompileSuccess(result);
         }
     }
 }

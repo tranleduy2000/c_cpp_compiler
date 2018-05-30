@@ -28,6 +28,7 @@ import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -36,14 +37,17 @@ import java.io.File;
 public class GCCCompiler extends CompilerImpl {
     private static final String TAG = "GCCCompiler";
     private static final String GCC_COMPILER_NAME = "gcc";
+    protected final ICompileSetting mSetting;
+
+    protected final boolean mBuildNativeActivity;
+    protected final boolean mBuildSDL;
 
     File mOutFile;
-    ICompileSetting mSetting;
-    boolean mBuildNativeActivity;
 
-    public GCCCompiler(Context context, boolean nativeActivity, @Nullable ICompileSetting setting) {
+    public GCCCompiler(Context context, boolean nativeActivity, boolean buildSDL, @Nullable ICompileSetting setting) {
         super(context);
         mBuildNativeActivity = nativeActivity;
+        mBuildSDL = buildSDL;
         mSetting = setting;
     }
 
@@ -71,35 +75,17 @@ public class GCCCompiler extends CompilerImpl {
 
     @Override
     protected String buildArgs(File[] sourceFiles) {
-        File source = sourceFiles[0];
-        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
-
         CommandBuilder args = new CommandBuilder();
         for (File sourceFile : sourceFiles) {
             args.addFlags(sourceFile.getAbsolutePath());
         }
 
         if (mBuildNativeActivity) {
-            if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
-            String soName = "lib" + nameNoExt + ".so";
-            mOutFile = new File(source.getParent(), soName);
-
-            String cctools = Environment.getCCtoolsDir(mContext);
-
-            args.addFlags("-I" + cctools + "/sources/native_app_glue/")
-                    .addFlags(cctools + "/sources/native_app_glue/android_native_app_glue.c")
-                    .addFlags("-Wl,-soname," + soName)
-                    .addFlags("-shared")
-                    .addFlags("-Wl,--no-undefined")
-                    .addFlags("-Wl,-z,noexecstack")
-                    .addFlags("-llog") //lib log
-                    .addFlags("-landroid") //android
-                    .addFlags("-lm")
-                    .addFlags("-o", mOutFile.getAbsolutePath())
-            ;
+            args.addFlags(buildNativeActivityFlags(sourceFiles));
+        } else if (mBuildSDL) {
+            args.addFlags(buildSDLActivityFlags(sourceFiles));
         } else {
-            mOutFile = new File(source.getParent(), nameNoExt);
-            args.addFlags("-o", mOutFile.getAbsolutePath());
+            args.addFlags(buildExecutableFlags(sourceFiles));
         }
 
         if (mSetting != null) {
@@ -109,5 +95,64 @@ public class GCCCompiler extends CompilerImpl {
 
         return args.build();
     }
+
+    private ArrayList<String> buildSDLActivityFlags(File[] sourceFiles) {
+        File source = sourceFiles[0];
+        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
+
+        if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
+        String soName = "lib" + nameNoExt + ".so";
+        mOutFile = new File(source.getParent(), soName);
+        String cctools = Environment.getCCtoolsDir(mContext);
+        CommandBuilder flags = new CommandBuilder();
+
+        //default flags
+        flags.addFlags("-DANDROID")
+                .addFlags("-I" + new File(Environment.getSdCardHomeDir(), "SDL/include").getAbsolutePath())
+                //ld flags
+                .addFlags("-shared")
+                .addFlags(new File(Environment.getSdCardHomeDir(), "SDL/lib/SDL_android_main.o").getAbsolutePath())
+                .addFlags("-I" + new File(Environment.getSdCardHomeDir(), "SDL/lib").getAbsolutePath())
+                .addFlags("-lSDL2")
+                .addFlags("-llog")
+                .addFlags("-lm")
+                .addFlags("-o", mOutFile.getAbsolutePath());
+
+        return flags.toList();
+    }
+
+    protected ArrayList<String> buildExecutableFlags(File[] sourceFiles) {
+        File source = sourceFiles[0];
+        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
+        mOutFile = new File(source.getParent(), nameNoExt);
+
+        CommandBuilder args = new CommandBuilder();
+        args.addFlags("-o", mOutFile.getAbsolutePath());
+        return args.toList();
+    }
+
+    protected ArrayList<String> buildNativeActivityFlags(File[] sourceFiles) {
+        File source = sourceFiles[0];
+        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
+
+        if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
+        String soName = "lib" + nameNoExt + ".so";
+        mOutFile = new File(source.getParent(), soName);
+        String cctools = Environment.getCCtoolsDir(mContext);
+        CommandBuilder args = new CommandBuilder();
+        args.addFlags("-I" + cctools + "/sources/native_app_glue/")
+                .addFlags(cctools + "/sources/native_app_glue/android_native_app_glue.c")
+                .addFlags("-Wl,-soname," + soName)
+                .addFlags("-shared")
+                .addFlags("-Wl,--no-undefined")
+                .addFlags("-Wl,-z,noexecstack")
+                .addFlags("-llog") //lib log
+                .addFlags("-landroid") //android
+                .addFlags("-lm")
+                .addFlags("-o", mOutFile.getAbsolutePath());
+
+        return args.toList();
+    }
+
 
 }

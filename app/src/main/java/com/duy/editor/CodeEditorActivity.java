@@ -32,6 +32,7 @@ import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.compiler.manager.NativeActivityCompileManager;
+import com.duy.ccppcompiler.compiler.manager.SDLCompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
@@ -195,7 +196,21 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         CompilerOptionsDialog dialog = new CompilerOptionsDialog(this, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                EditorDelegate currentEditor = getCurrentEditorDelegate();
+                if (currentEditor == null) {
+                    return;
+                }
+                File[] srcFiles = new File[]{new File(currentEditor.getPath())};
 
+                ICompiler compiler = CompilerFactory.getSDLActivityCompilerForFile(CodeEditorActivity.this, srcFiles);
+                if (compiler != null) {
+                    SDLCompileManager compileManager = new SDLCompileManager(CodeEditorActivity.this);
+                    compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+                    compileManager.setCompiler(compiler);
+                    compileManager.compile(srcFiles);
+                } else {
+                    Toast.makeText(CodeEditorActivity.this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         dialog.show();
@@ -211,7 +226,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 }
                 File[] srcFiles = new File[]{new File(currentEditor.getPath())};
 
-                ICompiler compiler = CompilerFactory.getCompilerForFile(CodeEditorActivity.this, srcFiles, true);
+                ICompiler compiler = CompilerFactory.getNativeActivityCompilerForFile(CodeEditorActivity.this, srcFiles);
                 if (compiler != null) {
                     NativeActivityCompileManager compileManager = new NativeActivityCompileManager(CodeEditorActivity.this);
                     compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
@@ -230,12 +245,10 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         if (currentEditor == null) {
             return;
         }
-        File[] srcFiles = new File[1];
-        String path = currentEditor.getPath();
-        srcFiles[0] = new File(path);
+        File[] srcFiles = new File[]{new File(currentEditor.getPath())};
 
         CodeEditorActivity activity = CodeEditorActivity.this;
-        ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, false);
+        ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles);
         if (compiler != null) {
             CompileManager compileManager = new CompileManager(activity);
             compileManager.setDiagnosticPresenter(mDiagnosticPresenter);

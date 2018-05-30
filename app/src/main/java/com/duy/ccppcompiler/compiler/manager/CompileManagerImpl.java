@@ -105,7 +105,7 @@ public abstract class CompileManagerImpl implements ICompileManager {
     }
 
     @MainThread
-    protected void handleException(Throwable e) {
+    protected void handleInternalException(Throwable e) {
         if (e == null) {
             return;
         }

@@ -31,7 +31,7 @@ import java.io.File;
 
 public class CompilerFactory {
     @Nullable
-    public static ICompiler getCompilerForFile(Context context, File[] sourceFiles, boolean nativeActivity) {
+    public static ICompiler getCompilerForFile(Context context, File[] sourceFiles) {
         File file = sourceFiles[0];
         String filePath = file.getAbsolutePath();
         String fileName = file.getName();
@@ -42,7 +42,7 @@ public class CompilerFactory {
 
         } else if (Catalog.getModeByName("C").acceptFile(filePath, fileName)) {
             compilerType = CompileType.GCC;
-        } else if (Catalog.getModeByName("Makefile").acceptFile(filePath, fileName)){
+        } else if (Catalog.getModeByName("Makefile").acceptFile(filePath, fileName)) {
 
             compilerType = CompileType.MAKE;
         }
@@ -50,10 +50,76 @@ public class CompilerFactory {
 
         switch (compilerType) {
             case G_PLUS_PLUS:
-                return new GPlusPlusCompiler(context, nativeActivity, new CompileSetting(context));
+                return new GPlusPlusCompiler(context, false, false, new CompileSetting(context));
 
             case GCC:
-                return new GCCCompiler(context, nativeActivity, new CompileSetting(context));
+                return new GCCCompiler(context, false, false, new CompileSetting(context));
+
+            case MAKE:
+                return new MakeCompiler(context);
+
+            default:
+                return null;
+        }
+    }
+
+    @Nullable
+    public static ICompiler getNativeActivityCompilerForFile(Context context, File[] sourceFiles) {
+        File file = sourceFiles[0];
+        String filePath = file.getAbsolutePath();
+        String fileName = file.getName();
+
+        CompileType compilerType = CompileType.NONE;
+        if (Catalog.getModeByName("C++").acceptFile(filePath, fileName)) {
+            compilerType = CompileType.G_PLUS_PLUS;
+
+        } else if (Catalog.getModeByName("C").acceptFile(filePath, fileName)) {
+            compilerType = CompileType.GCC;
+        } else if (Catalog.getModeByName("Makefile").acceptFile(filePath, fileName)) {
+
+            compilerType = CompileType.MAKE;
+        }
+
+
+        switch (compilerType) {
+            case G_PLUS_PLUS:
+                return new GPlusPlusCompiler(context, true, false, new CompileSetting(context));
+
+            case GCC:
+                return new GCCCompiler(context, true, false, new CompileSetting(context));
+
+            case MAKE:
+                return new MakeCompiler(context);
+
+            default:
+                return null;
+        }
+    }
+
+    @Nullable
+    public static ICompiler getSDLActivityCompilerForFile(Context context, File[] sourceFiles) {
+        File file = sourceFiles[0];
+        String filePath = file.getAbsolutePath();
+        String fileName = file.getName();
+
+        CompileType compilerType = CompileType.NONE;
+        if (Catalog.getModeByName("C++").acceptFile(filePath, fileName)) {
+            compilerType = CompileType.G_PLUS_PLUS;
+
+        } else if (Catalog.getModeByName("C").acceptFile(filePath, fileName)) {
+            compilerType = CompileType.GCC;
+        } else if (Catalog.getModeByName("Makefile").acceptFile(filePath, fileName)) {
+
+            compilerType = CompileType.MAKE;
+        }
+
+
+        switch (compilerType) {
+            case G_PLUS_PLUS:
+                return new GPlusPlusCompiler(context, false, true, new CompileSetting(context));
+
+            case GCC:
+                return new GCCCompiler(context, false, true, new CompileSetting(context));
 
             case MAKE:
                 return new MakeCompiler(context);

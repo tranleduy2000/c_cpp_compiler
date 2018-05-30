@@ -73,4 +73,7 @@ public class CommandBuilder {
     }
 
 
+    public ArrayList<String> toList() {
+        return flags;
+    }
 }

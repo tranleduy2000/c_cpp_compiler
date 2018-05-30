@@ -17,13 +17,10 @@
 
 package com.duy.ccppcompiler.compiler.manager;
 
-import android.app.NativeActivity;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.CompileResult;
-import com.duy.ccppcompiler.compiler.shell.NativeActivityCompileResult;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.editor.CodeEditorActivity;
@@ -50,33 +47,20 @@ public class CompileManager extends CompileManagerImpl {
     @Override
     public void onCompileSuccess(CommandResult result) {
         super.onCompileSuccess(result);
-        File internalBinary = null;
+
         if (result instanceof CompileResult) {
-            File binFile = ((CompileResult) result).getBinaryFile();
-            if (binFile == null) {
+            File binaryFile = ((CompileResult) result).getBinaryFile();
+            if (binaryFile == null){
                 return;
             }
-
-            //copy to internal storage
+            File internalBinary;
             try {
-                internalBinary = copyToTmpExeDirAndSetExecutable(binFile);
-
-            } catch (Exception e) {
+                internalBinary = copyToTmpExeDirAndSetExecutable(binaryFile);
+            } catch (IOException e) {
+                handleInternalException(e);
                 e.printStackTrace();
-                Toast.makeText(getActivity(), String.format("Internal error: %s. Please report bug on GitHub",
-                        e.getMessage()), Toast.LENGTH_SHORT).show();
                 return;
             }
-        }
-
-        if (result instanceof NativeActivityCompileResult) {
-            //now run binary file
-            Intent intent = new Intent(getActivity(), NativeActivity.class);
-            //from jni: main.cpp
-            intent.putExtra("nativeApp", internalBinary.getAbsolutePath());
-            getActivity().startActivity(intent);
-
-        } else if (result instanceof CompileResult) {
 
             Intent intent = new Intent(getActivity(), TermActivity.class);
             intent.putExtra(BuildConstants.EXTRA_FILE_NAME, internalBinary.getAbsolutePath());
