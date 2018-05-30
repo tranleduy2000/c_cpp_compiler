@@ -17,7 +17,10 @@
 
 package com.duy.ccppcompiler.compiler.analyze;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.core.widget.EditAreaView;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -25,7 +28,6 @@ import android.text.TextWatcher;
 
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ccppcompiler.compiler.shell.OutputParser;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.common.DLog;
 import com.duy.ide.diagnostic.Diagnostic;
@@ -37,23 +39,45 @@ import com.jecelyin.editor.v2.io.LocalFileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 /**
  * https://sourceforge.net/p/cppcheck/wiki/Home/
+ * <p>
+ * # enable warning messages
+ * cppcheck --enable=warning file.c
+ * <p>
+ * # enable performance messages
+ * cppcheck --enable=performance file.c
+ * <p>
+ * # enable information messages
+ * cppcheck --enable=information file.c
+ * <p>
+ * # For historical reasons, --enable=style enables warning, performance,
+ * # portability and style messages. These are all reported as "style" when
+ * # using the old xml format.
+ * cppcheck --enable=style file.c
+ * <p>
+ * # enable warning and performance messages
+ * cppcheck --enable=warning,performance file.c
+ * <p>
+ * # enable unusedFunction checking. This is not enabled by --enable=style
+ * # because it doesn't work well on libraries.
+ * cppcheck --enable=unusedFunction file.c
+ * <p>
+ * # enable all messages
+ * cppcheck --enable=all
  */
 public class CppCheckAnalyzer implements ICodeAnalyser {
     public static final long DELAY_TIME = 300;
     private static final String TAG = "CppCheckAnalyzer";
 
     private static final String CPPCHECK_PROGRAM = "cppcheck";
-    private static final String TEMPLATE = "--template=\"{file}:{line}:{message}\"";
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("^(\\S+):([0-9]+):(.*)");
 
     private final Context mContext;
     private final IEditorDelegate mEditorDelegate;
     private final android.os.Handler mHandler = new Handler();
     private DiagnosticPresenter mDiagnosticPresenter;
+    private AnalyzeTask mAnalyzeTask;
     private final Runnable mAnalyze = new Runnable() {
         @Override
         public void run() {
@@ -72,36 +96,13 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
     }
 
     private void analyzeImpl() throws IOException {
-        File originFile = mEditorDelegate.getDocument().getFile();
-        File tmpFile = new File(getCppCheckTmpDir(), originFile.getName());
-
-        LocalFileWriter localFileWriter = new LocalFileWriter(tmpFile, "UTF-8");
-        localFileWriter.writeToFile(mEditorDelegate.getEditText().getText());
-
-        CommandBuilder builder = new CommandBuilder(CPPCHECK_PROGRAM);
-        builder.addFlags(TEMPLATE);
-        builder.addFlags(tmpFile.getAbsolutePath());
-
-        String cmd = builder.build();
-        CommandResult result = Shell.exec(mContext, tmpFile.getParent(), cmd);
-        if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
-        String message = result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
-
-        DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
-        OutputParser parser = new OutputParser(diagnosticsCollector);
-        parser.parse(message);
-
-        ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
-        mDiagnosticPresenter.setDiagnostics(diagnostics);
-    }
-
-    private File getCppCheckTmpDir() {
-        File dir = new File(mContext.getCacheDir(), "cppcheck/tmp");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        if (mAnalyzeTask != null) {
+            mAnalyzeTask.cancel(true);
         }
-        return dir;
+        mAnalyzeTask = new AnalyzeTask(mContext, mEditorDelegate, mDiagnosticPresenter);
+        mAnalyzeTask.execute();
     }
+
 
     @Override
     public void start() {
@@ -123,5 +124,70 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
                 mHandler.postDelayed(mAnalyze, DELAY_TIME);
             }
         });
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private static class AnalyzeTask extends AsyncTask<Void, Void, ArrayList<Diagnostic>> {
+
+        private final Context mContext;
+        private final DiagnosticPresenter mDiagnosticPresenter;
+        private IEditorDelegate mEditorDelegate;
+
+        public AnalyzeTask(Context mContext, IEditorDelegate delegate, DiagnosticPresenter mDiagnosticPresenter) {
+            this.mContext = mContext;
+            this.mEditorDelegate = delegate;
+            this.mDiagnosticPresenter = mDiagnosticPresenter;
+        }
+
+        @Override
+        protected ArrayList<Diagnostic> doInBackground(Void... voids) {
+            EditAreaView editText = mEditorDelegate.getEditText();
+
+            File originFile = mEditorDelegate.getDocument().getFile();
+            File tmpFile = new File(getCppCheckTmpDir(), originFile.getName());
+
+            LocalFileWriter localFileWriter = new LocalFileWriter(tmpFile, "UTF-8");
+            try {
+                localFileWriter.writeToFile(editText.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            CommandBuilder builder = new CommandBuilder(CPPCHECK_PROGRAM);
+            builder.addFlags(CppCheckOutputParser.TEMPLATE);
+            builder.addFlags(tmpFile.getAbsolutePath());
+            builder.addFlags("--enable=warning,performance,information");
+
+            String cmd = builder.build();
+            CommandResult result = Shell.exec(mContext, tmpFile.getParent(), cmd);
+            if (isCancelled()) {
+                return null;
+            }
+
+            if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
+            String message = result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
+            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
+            CppCheckOutputParser parser = new CppCheckOutputParser(diagnosticsCollector);
+            parser.parse(message);
+
+            return diagnosticsCollector.getDiagnostics();
+        }
+
+        private File getCppCheckTmpDir() {
+            File dir = new File(mContext.getCacheDir(), "cppcheck/tmp");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            return dir;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Diagnostic> diagnostics) {
+            super.onPostExecute(diagnostics);
+            if (diagnostics != null && !isCancelled()) {
+                mDiagnosticPresenter.setDiagnostics(diagnostics);
+            }
+        }
     }
 }

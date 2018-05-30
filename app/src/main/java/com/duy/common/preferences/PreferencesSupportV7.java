@@ -17,19 +17,19 @@
 
 package com.duy.common.preferences;
 
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-
+import android.support.v7.preference.EditTextPreference;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceManager;
 
 /**
  * Created by Duy on 29-Dec-17.
  */
 
-public class PreferencesNative {
+public class PreferencesSupportV7 {
+
     private static final String TAG = "PreferencesCompat";
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener =
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListenerV7 =
             new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object value) {
@@ -56,6 +56,7 @@ public class PreferencesNative {
                 }
             };
 
+
     /**
      * Binds a preference's summary to its value. More specifically, when the
      * preference's value is changed, its summary (line of text below the
@@ -63,18 +64,18 @@ public class PreferencesNative {
      * immediately updated upon calling this method. The exact display format is
      * dependent on the type of preference.
      *
-     * @see #sBindPreferenceSummaryToValueListener
+     * @see #sBindPreferenceSummaryToValueListenerV7
      */
     public static void bindPreferenceSummaryToValue(Preference preference) {
         if (preference == null) return;
         if (preference.getOnPreferenceChangeListener() == null) {
             // Set the listener to watch for value changes.
-            preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+            preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListenerV7);
         }
         try {
             // Trigger the listener immediately with the preference's
             // current value.
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+            sBindPreferenceSummaryToValueListenerV7.onPreferenceChange(preference,
                     PreferenceManager
                             .getDefaultSharedPreferences(preference.getContext())
                             .getString(preference.getKey(), ""));
@@ -90,18 +91,17 @@ public class PreferencesNative {
      * immediately updated upon calling this method. The exact display format is
      * dependent on the type of preference.
      *
-     * @see #sBindPreferenceSummaryToValueListener
+     * @see #sBindPreferenceSummaryToValueListenerV7
      */
     public static void bindPreferenceSummaryToValue(Preference preference, Object value) {
         if (preference == null) return;
         try {
             // Trigger the listener immediately with the preference's
             // current value.
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, value);
+            sBindPreferenceSummaryToValueListenerV7.onPreferenceChange(preference, value);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 }

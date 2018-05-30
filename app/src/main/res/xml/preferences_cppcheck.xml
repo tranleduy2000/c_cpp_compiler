@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (C)  2018  Duy Tran Le
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="General">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:summary="Static analysis of C/C++ code. Checks for: memory leaks, mismatching allocation-deallocation, buffer overrun, and many more."
+            android:title="Static code analysis" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Flags">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:summary="enable warning messages"
+            android:title="--enable=warning" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:summary="enable performance messages"
+            android:title="--enable=performance" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:summary="enable information messages"
+            android:title="--enable=information" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

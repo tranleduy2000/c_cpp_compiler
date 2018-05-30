@@ -38,13 +38,13 @@ import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.ui.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
-import com.duy.common.DLog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.core.SimpleEditorActivity;
 import com.jecelyin.common.utils.UIUtils;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
@@ -82,19 +82,16 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     @Override
     public void onEditorViewCreated(IEditorDelegate editorDelegate) {
         super.onEditorViewCreated(editorDelegate);
-        File file = editorDelegate.getDocument().getFile();
-        String fileName = file.getName().toLowerCase();
-        if (fileName.endsWith(".cpp") || fileName.endsWith(".c")) {
-            initCodeAnalyzer(editorDelegate);
+
+        if (Preferences.getInstance(this).isUseStaticCodeAnalysis()) {
+            File file = editorDelegate.getDocument().getFile();
+            String fileName = file.getName().toLowerCase();
+            if (fileName.endsWith(".cpp") || fileName.endsWith(".c")) {
+                CppCheckAnalyzer analyzer = new CppCheckAnalyzer(this, editorDelegate,
+                        mDiagnosticPresenter);
+                analyzer.start();
+            }
         }
-    }
-
-
-    private void initCodeAnalyzer(IEditorDelegate editorDelegate) {
-        if (DLog.DEBUG)
-            DLog.d(TAG, "initCodeAnalyzer() called with: editorDelegate = [" + editorDelegate + "]");
-        CppCheckAnalyzer analyzer = new CppCheckAnalyzer(this, editorDelegate, mDiagnosticPresenter);
-        analyzer.start();
     }
 
     @Override

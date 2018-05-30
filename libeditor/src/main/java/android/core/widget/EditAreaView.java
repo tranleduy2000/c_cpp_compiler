@@ -381,7 +381,9 @@ public class EditAreaView extends BaseEditorView {
         final int visibleHeight = bound.height();
 
         int y = layout.getLineTop(virtualLine);
-        y = Math.min(y, layoutHeight - visibleHeight);
+        if (layoutHeight - visibleHeight >= 0) {
+            y = Math.min(y, layoutHeight - visibleHeight);
+        }
         scrollTo(getScrollX(), y);
     }
 

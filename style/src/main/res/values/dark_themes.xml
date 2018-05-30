@@ -15,6 +15,7 @@
   -->
 
 <resources>
+
     <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
         <item name="actionBarStyle">@style/Light.Toolbar</item>
@@ -30,6 +31,8 @@
 
         <item name="findResultsPath">#0000ff</item>
         <item name="findResultsKeyword">#C26509</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="DarkToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -1,18 +1,17 @@
 /*
- *  Copyright (C)  2018  Duy Tran Le
+ * Copyright (c) 2017 by Tran Le Duy
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.duy.common.preferences;
@@ -21,14 +20,15 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
-
+import android.preference.RingtonePreference;
+import android.support.v7.app.AppCompatDelegate;
 
 /**
- * Created by Duy on 29-Dec-17.
+ * Use {@link PreferencesCompat}
  */
+@Deprecated
+public class PreferencesUtil {
 
-public class PreferencesNative {
-    private static final String TAG = "PreferencesCompat";
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener =
             new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -44,6 +44,7 @@ public class PreferencesNative {
                         // Set the summary to reflect the new value.
                         preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
 
+                    } else if (preference instanceof RingtonePreference) {
                     } else if (preference instanceof EditTextPreference) {
                         EditTextPreference editTextPreference = (EditTextPreference) preference;
                         editTextPreference.setSummary(editTextPreference.getText());
@@ -56,6 +57,8 @@ public class PreferencesNative {
                 }
             };
 
+    private AppCompatDelegate mDelegate;
+
     /**
      * Binds a preference's summary to its value. More specifically, when the
      * preference's value is changed, its summary (line of text below the
@@ -67,39 +70,16 @@ public class PreferencesNative {
      */
     public static void bindPreferenceSummaryToValue(Preference preference) {
         if (preference == null) return;
-        if (preference.getOnPreferenceChangeListener() == null) {
-            // Set the listener to watch for value changes.
-            preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-        }
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+
+        // Trigger the listener immediately with the preference's
+        // current value.
         try {
-            // Trigger the listener immediately with the preference's
-            // current value.
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
+                    PreferenceManager.getDefaultSharedPreferences(preference.getContext())
                             .getString(preference.getKey(), ""));
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    public static void bindPreferenceSummaryToValue(Preference preference, Object value) {
-        if (preference == null) return;
-        try {
-            // Trigger the listener immediately with the preference's
-            // current value.
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, value);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

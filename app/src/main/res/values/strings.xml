@@ -41,5 +41,7 @@
     <string name="title_compiler_options">Compiler options</string>
     <string name="run_sdl_activity">Run SDL activity</string>
     <string name="build">Build</string>
+    <string name="compiler">Compiler</string>
+    <string name="code_analysis">Code analysis</string>
 
 </resources>
