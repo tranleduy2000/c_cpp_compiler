@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.view;
+package android.core.widget;
 
 import android.content.Context;
 import android.core.text.LayoutContext;
 import android.core.text.TextLineNumber;
-import android.core.widget.BaseEditorView;
 import android.graphics.Canvas;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -33,7 +30,7 @@ import java.util.List;
  * Created by Duy on 25-Apr-18.
  */
 
-public class GutterView extends View implements TextWatcher {
+public class GutterView extends View {
     @Nullable
     private BaseEditorView editorView;
 
@@ -51,9 +48,6 @@ public class GutterView extends View implements TextWatcher {
 
     public void setEditorView(@Nullable BaseEditorView editorView) {
         this.editorView = editorView;
-        if (editorView != null) {
-            editorView.addTextChangedListener(this);
-        }
     }
 
     @Override
@@ -85,36 +79,4 @@ public class GutterView extends View implements TextWatcher {
             canvas.drawText(line.text, layoutContext.lineNumberX + getScrollX(), line.y, layoutContext.getGutterForegroundPaint());
         }
     }
-
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        // TODO: 25-Apr-18
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        invalidate();
-    }
-
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (editorView != null) {
-            editorView.removeTextChangedListener(this);
-        }
-    }
-
 }
