@@ -11,6 +11,10 @@
             android:key="@string/pref_key_cxx_options"
             android:summary="Add the commands when calling the C++ compiler"
             android:title="@string/pref_cxx_opts" />
+        <EditTextPreference
+            android:key="@string/pref_key_linker_options"
+            android:summary="Add the commands when calling the linker"
+            android:title="@string/pref_title_ld_opts" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="C setting">

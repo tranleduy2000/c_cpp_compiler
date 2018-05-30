@@ -32,8 +32,8 @@ public class CompilerSettingActivity extends ThemeSupportActivity {
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences_compiler);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_c_options)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_cxx_options)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_option_optimization_level)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_option_language_standard)));
         }
     }
 }

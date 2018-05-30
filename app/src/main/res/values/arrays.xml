@@ -43,15 +43,15 @@
 
     <string-array name="language_standard_entries">
         <item>""</item>
-        <item>c90 - Support all ISO C90 programs.</item>
-        <item>c99 - ISO C99.</item>
-        <item>c11 - ISO C11, the 2011 revision of the ISO C standard.</item>
-        <item>gnu90 - GNU dialect of ISO C90 (including some C99 features).</item>
-        <item>gnu99 - GNU dialect of ISO C99.</item>
-        <item>gnu11 - GNU dialect of ISO C11.</item>
-        <item>c++11 - The 2011 ISO C++ standard plus amendments.</item>
+        <item>c90</item>
+        <item>c99</item>
+        <item>c11</item>
+        <item>gnu90</item>
+        <item>gnu99</item>
+        <item>gnu11</item>
+        <item>c++11</item>
         <item>gnu++11</item>
-        <item>c++14 - The 2014 ISO C++ standard plus amendments.</item>
+        <item>c++14</item>
     </string-array>
 
     <string-array name="language_standard_entries_values">
