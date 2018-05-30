@@ -45,8 +45,8 @@
     <string name="pref_dialog_fontsize">Font size</string>
     <string name="pref_console_fontsize">Console font size</string>
     <string name="pref_force_run">Quick run</string>
-    <string name="pref_ccopts">C options</string>
-    <string name="pref_cxxopts">C++ options</string>
+    <string name="pref_cc_opts">C options (CFLAGS)</string>
+    <string name="pref_cxx_opts">C++ options (CXXFLAGS)</string>
     <string name="pref_runargs">Execute without args</string>
     <string name="pref_codeeditor">Code editor</string>
     <string name="pref_autopair">Autopair</string>

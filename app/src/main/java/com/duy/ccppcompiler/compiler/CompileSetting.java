@@ -47,6 +47,10 @@ public class CompileSetting implements ICompileSetting {
         return builder.build();
     }
 
+    public void setCFlags(String cFlags) {
+        mPref.edit().putString(mContext.getString(R.string.pref_cc_opts), cFlags).apply();
+    }
+
     @Override
     public String getCxxFlags() {
         CommandBuilder builder = new CommandBuilder();
@@ -57,6 +61,23 @@ public class CompileSetting implements ICompileSetting {
 
         return builder.build();
 
+    }
+
+    public void setCxxFlags(String cxxFlags) {
+        mPref.edit().putString(mContext.getString(R.string.pref_cxx_opts), cxxFlags).apply();
+    }
+
+    @Override
+    public String getLinkerFlags() {
+        CommandBuilder builder = new CommandBuilder();
+        String ldFlags = mPref.getString(mContext.getString(R.string.pref_key_linker_options), "");
+        builder.addFlags(ldFlags);
+
+        return builder.build();
+    }
+
+    public void setLinkerFlags(String ldFlags) {
+        mPref.edit().putString(mContext.getString(R.string.pref_key_linker_options), ldFlags).apply();
     }
 
     @Override

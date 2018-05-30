@@ -45,8 +45,8 @@
     <string name="pref_dialog_fontsize">ფონტის ზომა</string>
     <string name="pref_console_fontsize">კონსოლის ფონტის ზომა</string>
     <string name="pref_force_run">სწრაფი გაშვება</string>
-    <string name="pref_ccopts">C ოპციები</string>
-    <string name="pref_cxxopts">C++ ოპციები</string>
+    <string name="pref_cc_opts">C ოპციები</string>
+    <string name="pref_cxx_opts">C++ ოპციები</string>
     <string name="pref_runargs">გაშვება არგუმენტების გარეშე</string>
     <string name="pref_codeeditor">კოდის რედაქტორი</string>
     <string name="pref_autopair">ავტოპეირინგი</string>

@@ -38,5 +38,7 @@
     <string name="pref_option_werror">pref_option_werror</string>
     <string name="build_native_activity">Build native activity</string>
     <string name="build_sdl_activity">Build SDL activity</string>
+    <string name="pref_ld_opts">Linker options (LDFLAGS)</string>
+    <string name="title_compiler_options">Compiler options</string>
 
 </resources>

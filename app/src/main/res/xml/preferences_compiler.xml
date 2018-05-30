@@ -5,12 +5,12 @@
         <EditTextPreference
             android:key="@string/pref_key_c_options"
             android:summary="Add the commands when calling C the compiler"
-            android:title="@string/pref_ccopts" />
+            android:title="@string/pref_cc_opts" />
 
         <EditTextPreference
             android:key="@string/pref_key_cxx_options"
             android:summary="Add the commands when calling the C++ compiler"
-            android:title="@string/pref_cxxopts" />
+            android:title="@string/pref_cxx_opts" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="C setting">

@@ -45,8 +45,8 @@
     <string name="pref_dialog_fontsize">Размер шрифта</string>
     <string name="pref_console_fontsize">Размер консольного шрифта</string>
     <string name="pref_force_run">Быстрый запуск</string>
-    <string name="pref_ccopts">C опции</string>
-    <string name="pref_cxxopts">C++ опции</string>
+    <string name="pref_cc_opts">C опции</string>
+    <string name="pref_cxx_opts">C++ опции</string>
     <string name="pref_runargs">Выполнить без аргументов</string>
     <string name="pref_codeeditor">Редактор кода</string>
     <string name="pref_autopair">Закрывать парные символы</string>

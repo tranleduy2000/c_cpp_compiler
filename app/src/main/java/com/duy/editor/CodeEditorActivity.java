@@ -16,6 +16,7 @@
 
 package com.duy.editor;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.core.widget.EditAreaView;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.ccppcompiler.ui.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.common.DLog;
@@ -137,7 +139,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 return true;
 
             case R.id.action_run:
-                compileAndRun();
+                buildExecutable();
                 return true;
 
             case R.id.action_term_preferences:
@@ -175,7 +177,13 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     }
 
     private void buildSDLActivity() {
+        CompilerOptionsDialog dialog = new CompilerOptionsDialog(this, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+        dialog.show();
     }
 
     private void buildNativeActivity() {
@@ -222,8 +230,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         saveAllTask.execute();
     }
 
-
-    private void compileAndRun() {
+    private void buildExecutable() {
         final SaveListener saveListener = new SaveListener() {
             @Override
             public void onSaveFailed(Exception e) {

@@ -26,4 +26,6 @@ public interface ICompileSetting {
     public String getCxxFlags();
 
     public String getMakeFlags();
+
+    String getLinkerFlags();
 }
