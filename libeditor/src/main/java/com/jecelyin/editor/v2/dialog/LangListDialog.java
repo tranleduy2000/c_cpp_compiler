@@ -96,20 +96,6 @@ public class LangListDialog extends AbstractDialog {
                         dialog.cancel();
                     }
                 });
-//        MaterialDialog dlg = getDialogBuilder().items(langList)
-//                .title(R.string.select_lang_to_highlight)
-//                .itemsCallbackSingleChoice(currentLangIndex, new MaterialDialog.ListCallbackSingleChoice() {
-//
-//                    @Override
-//                    public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-//                        Command command = new Command(Command.CommandEnum.HIGHLIGHT);
-//                        command.object = scopeList[i];
-//                        getMainActivity().doCommand(command);
-//                        return true;
-//                    }
-//                })
-//                .negativeText(R.string.cancel)
-//                .show();
         AlertDialog dlg = builder.create();
         dlg.show();
         handleDialog(dlg);

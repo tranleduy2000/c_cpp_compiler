@@ -680,8 +680,9 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     }
 
     public void insertText(CharSequence text) {
-        if (text == null)
+        if (text == null) {
             return;
+        }
         Command c = new Command(Command.CommandEnum.INSERT_TEXT);
         c.object = text;
         doCommand(c);
