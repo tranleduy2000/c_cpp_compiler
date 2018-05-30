@@ -205,13 +205,13 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             command.args.putInt("line", lineNumber);
             command.args.putInt("col", columnNumber);
             editorDelegate.doCommand(command);
-
-            if (!firstIndex) {
-                Command gotoIndexCmd = new Command(Command.CommandEnum.GOTO_INDEX);
-                gotoIndexCmd.args.putAll(command.args);
-                editorDelegate.doCommand(gotoIndexCmd);
-                firstIndex = true;
-            }
+//
+//            if (!firstIndex) {
+//                Command gotoIndexCmd = new Command(Command.CommandEnum.GOTO_INDEX);
+//                gotoIndexCmd.args.putAll(command.args);
+//                editorDelegate.doCommand(gotoIndexCmd);
+//                firstIndex = true;
+//            }
         }
     }
 

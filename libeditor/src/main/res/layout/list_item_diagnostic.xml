@@ -14,16 +14,17 @@
   ~ limitations under the License.
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?selectableItemBackground"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageView
@@ -31,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:padding="4dp"
             app:srcCompat="@drawable/baseline_warning_black_18"
             tools:tint="#d50000" />
 
@@ -38,9 +40,9 @@
             android:id="@+id/txt_line_col"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minEms="4"
             android:padding="4dp"
             android:textColor="?android:textColorPrimary"
-            android:minEms="4"
             android:textSize="@dimen/smallest_text_size"
             tools:text="1222:222" />
 

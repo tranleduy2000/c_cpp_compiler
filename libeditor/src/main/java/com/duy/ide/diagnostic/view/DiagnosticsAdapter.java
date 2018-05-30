@@ -78,7 +78,7 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
             holder.txtFile.setText("");
         }
 
-
+        setIcon(holder, diagnostic);
         if (diagnostic.getMessage(mContext).isEmpty()) {
             holder.txtMessage.setVisibility(View.GONE);
         } else {
@@ -106,7 +106,7 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
             }
             case WARNING: {
                 Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.baseline_warning_24);
-                drawable = DrawableUtils.tintDrawable(drawable, Color.YELLOW);
+                drawable = DrawableUtils.tintDrawable(drawable, ContextCompat.getColor(mContext, R.color.color_diagnostic_warn));
                 holder.icon.setImageDrawable(drawable);
                 break;
             }
