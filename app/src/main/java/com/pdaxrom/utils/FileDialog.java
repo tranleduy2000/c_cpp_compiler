@@ -4,12 +4,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +25,6 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -368,78 +365,6 @@ public class FileDialog extends AppCompatActivity implements AdapterView.OnItemC
             if (mMode == null) {
                 selectButton.setEnabled(true);
             }
-        }
-    }
-
-    private class ActionFiles extends AsyncTask<List<String>, String, Boolean> {
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("...");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-
-        protected void onProgressUpdate(String... value) {
-            super.onProgressUpdate(value);
-            String message = "";
-            if (actionOp == R.id.file_copy) {
-                message = getString(R.string.message_file_copy);
-
-            } else if (actionOp == R.id.file_cut) {
-                message = getString(R.string.message_file_move);
-
-            } else if (actionOp == R.id.file_delete) {
-                message = getString(R.string.message_file_delete);
-
-            }
-            progressDialog.setMessage(message + " " + (new File(value[0])).getName());
-            progressDialog.setProgress(Integer.parseInt(value[1]));
-            progressDialog.setMax(Integer.parseInt(value[2]));
-        }
-
-        protected Boolean doInBackground(List<String>... params) {
-            int max = params[0].size();
-            int count = 0;
-            for (String file : params[0]) {
-                try {
-                    publishProgress(file, String.valueOf(++count), String.valueOf(max));
-                    if (actionOp == R.id.file_copy || actionOp == R.id.file_cut) {
-                        Log.i(TAG, "Copy " + file + " to " + currentPath);
-                        if (new File(currentPath + "/" + (new File(file).getName())).getCanonicalPath()
-                                .startsWith(new File(file).getCanonicalPath())) {
-                            Log.e(TAG, "Cannot copy a directory, '" + file + "', into itself.");
-                            continue;
-                        }
-                        Utils.copyDirectory(new File(file), new File(currentPath + "/" + (new File(file).getName())));
-                    }
-                    if (actionOp == R.id.file_cut || actionOp == R.id.file_delete) {
-                        Log.i(TAG, "Delete " + file);
-                        Utils.deleteDirectory(new File(file));
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException " + e);
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        protected void onPostExecute(final Boolean result) {
-            actionOp = 0;
-            actionFiles = null;
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-            try {
-                if (mMode != null) {
-                    mMode.wait();
-                }
-            } catch (InterruptedException e) {
-                Log.e(TAG, "ActionFiles onPostExecute Interrupted Exception " + e);
-            }
-            getDir(currentPath);
         }
     }
 

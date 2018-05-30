@@ -94,33 +94,35 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         }
         menu.add(MenuDef.GROUP_NAVIGATION, R.id.action_editor_color_scheme, 0, R.string.editor_theme)
                 .setIcon(R.drawable.ic_color_lens_white_24dp);
-
-
-        SubMenu codeMenu = menu.addSubMenu(R.string.code);
-        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_native_activity, 0, R.string.build_native_activity)
-                .setIcon(R.drawable.baseline_build_24);
-        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_sdl_activity, 0, R.string.build_sdl_activity)
-                .setIcon(R.drawable.baseline_build_24);
-        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_run_sdl_activity, 0, R.string.run_sdl_activity)
-                .setIcon(R.drawable.ic_play_arrow_white_24dp);
-
-        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
-                .setIcon(R.drawable.ic_code_black_24dp);
-        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
-                .setIcon(R.drawable.ic_code_black_24dp);
-        codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
-                .setIcon(R.drawable.ic_terminal_black);
-        if (BuildConfig.DEBUG) {
-            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
-                    .setIcon(R.drawable.baseline_extension_24);
+        {
+            SubMenu buildMenu = menu.addSubMenu(R.string.build);
+            buildMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_native_activity, 0, R.string.build_native_activity)
+                    .setIcon(R.drawable.baseline_build_24);
+            buildMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_run_sdl_activity, 0, R.string.run_sdl_activity)
+                    .setIcon(R.drawable.ic_play_arrow_white_24dp);
         }
 
+        {
+            SubMenu codeMenu = menu.addSubMenu(R.string.code);
+            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_c_example, 0, R.string.title_menu_c_example)
+                    .setIcon(R.drawable.ic_code_black_24dp);
+            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_cpp_example, 0, R.string.title_menu_cpp_example)
+                    .setIcon(R.drawable.ic_code_black_24dp);
+            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
+                    .setIcon(R.drawable.ic_terminal_black);
+            if (BuildConfig.DEBUG) {
+                codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
+                        .setIcon(R.drawable.baseline_extension_24);
+            }
+        }
 
-        SubMenu settingMenu = menu.addSubMenu(R.string.settings);
-        settingMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_term_preferences, 0, R.string.title_term_preferences)
-                .setIcon(R.drawable.ic_settings_white_24dp);
-        settingMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_compiler_setting, 0, R.string.compiler_setting)
-                .setIcon(R.drawable.ic_settings_white_24dp);
+        {
+            SubMenu settingMenu = menu.addSubMenu(R.string.settings);
+            settingMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_term_preferences, 0, R.string.title_term_preferences)
+                    .setIcon(R.drawable.ic_settings_white_24dp);
+            settingMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_compiler_setting, 0, R.string.compiler_setting)
+                    .setIcon(R.drawable.ic_settings_white_24dp);
+        }
         super.onCreateNavigationMenu(menu);
     }
 
