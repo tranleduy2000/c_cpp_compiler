@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -65,7 +66,8 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
     private String mLastPath;
     private String mHomePath;
     private FileClipboard fileClipboard;
-    private MenuItem pasteMenu;
+    private MenuItem mPasteMenu;
+    private SearchView mSearchView;
 
     public static void startPickFileActivity(Activity activity,
                                              @Nullable String destFile,
@@ -170,9 +172,26 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_explorer, menu);
 
+        // Retrieve the SearchView and plug it into SearchManager
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (mFileListPagerFragment != null) {
+                    mFileListPagerFragment.filter(newText);
+                }
+                return false;
+            }
+        });
+
         Preferences preferences = Preferences.getInstance(this);
         menu.findItem(R.id.show_hidden_files_menu).setChecked(preferences.isShowHiddenFiles());
-        pasteMenu = menu.findItem(R.id.paste_menu);
+        mPasteMenu = menu.findItem(R.id.paste_menu);
 
         int sortId;
         switch (preferences.getFileSortType()) {
@@ -193,6 +212,15 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
         menu.findItem(sortId).setChecked(true);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -333,9 +361,9 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
 
     @Override
     public void onClipboardDataChanged() {
-        if (pasteMenu == null)
+        if (mPasteMenu == null)
             return;
 
-        pasteMenu.setVisible(getFileClipboard().canPaste());
+        mPasteMenu.setVisible(getFileClipboard().canPaste());
     }
 }

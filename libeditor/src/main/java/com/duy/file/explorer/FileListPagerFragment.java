@@ -36,14 +36,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.editor.databinding.FileExplorerFragmentBinding;
 import com.duy.file.explorer.adapter.FileListItemAdapter;
 import com.duy.file.explorer.adapter.PathButtonAdapter;
 import com.duy.file.explorer.io.JecFile;
 import com.duy.file.explorer.listener.FileListResultListener;
 import com.duy.file.explorer.listener.OnClipboardPasteFinishListener;
 import com.duy.file.explorer.util.FileListSorter;
+import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.editor.databinding.FileExplorerFragmentBinding;
 import com.jecelyin.common.listeners.OnItemClickListener;
 import com.jecelyin.common.task.JecAsyncTask;
 import com.jecelyin.common.task.TaskListener;
@@ -89,7 +89,7 @@ public class FileListPagerFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         action = new FileExplorerAction(getContext(), this, ((FileExplorerActivity) getActivity()).getFileClipboard(), this);
-        adapter = new FileListItemAdapter();
+        adapter = new FileListItemAdapter(getContext());
         adapter.setOnCheckedChangeListener(action);
         adapter.setOnItemClickListener(this);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -286,6 +286,13 @@ public class FileListPagerFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void finish() {
         getActivity().finish();
+    }
+
+    @Override
+    public void filter(String query) {
+        if (adapter != null) {
+            adapter.filter(query);
+        }
     }
 
     @Override

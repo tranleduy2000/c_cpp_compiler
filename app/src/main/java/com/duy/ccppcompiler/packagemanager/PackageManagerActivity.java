@@ -207,15 +207,18 @@ public class PackageManagerActivity extends ThemeSupportActivity {
 
         } else if (i == R.id.action_repo_mirrors) {
             editReposList();
-        } else if (i == android.R.id.home) {
-            if (!mSearchView.isIconified()) {
-                mSearchView.setIconified(true);
-                return true;
-            }
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @UiThread
     protected void showPackages(List<PackageInfo> repo) {

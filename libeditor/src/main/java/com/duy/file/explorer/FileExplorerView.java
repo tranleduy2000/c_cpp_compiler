@@ -30,4 +30,6 @@ public interface FileExplorerView {
     void refresh();
 
     void finish();
+
+    void filter(String query);
 }

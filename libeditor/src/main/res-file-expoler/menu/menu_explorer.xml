@@ -37,6 +37,13 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/baseline_search_24"
+        android:title="@string/filter_by_name"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/show_hidden_files_menu"
         android:checkable="true"
         android:checked="false"
