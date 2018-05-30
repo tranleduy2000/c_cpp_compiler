@@ -34,7 +34,7 @@ import com.duy.editor.CodeEditorActivity;
 import com.duy.ide.diagnostic.Diagnostic;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
-import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.core.SimpleEditorActivity;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 

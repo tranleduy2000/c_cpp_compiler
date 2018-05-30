@@ -44,7 +44,7 @@ import android.widget.Toast;
 
 import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
-import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.core.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.span.ErrorSpan;
 import com.duy.ide.editor.theme.model.EditorTheme;

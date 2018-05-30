@@ -41,7 +41,7 @@ import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
 import com.duy.file.explorer.FileExplorerActivity;
-import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.core.SimpleEditorActivity;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;

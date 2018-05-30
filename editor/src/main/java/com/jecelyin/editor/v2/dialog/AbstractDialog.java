@@ -20,7 +20,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 
-import com.duy.ide.editor.SimpleEditorActivity;
+import com.duy.ide.core.SimpleEditorActivity;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
