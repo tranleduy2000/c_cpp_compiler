@@ -20,7 +20,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.core.widget.EditAreaView;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -28,26 +27,23 @@ import android.widget.Toast;
 
 import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.CompileManager;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
+import com.duy.ccppcompiler.compiler.manager.CompileManager;
+import com.duy.ccppcompiler.compiler.manager.NativeActivityCompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.ui.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
-import com.duy.common.DLog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
 import com.duy.ide.editor.SimpleEditorActivity;
-import com.duy.ide.filemanager.SaveListener;
-import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
-import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.kobakei.ratethisapp.RateThisApp;
 import com.pdaxrom.cctools.BuildConstants;
@@ -65,6 +61,9 @@ import static com.pdaxrom.cctools.BuildConstants.EXTRA_FILE_NAME;
 
 public class CodeEditorActivity extends SimpleEditorActivity {
     private static final String TAG = "CodeEditorActivity";
+    private static final int RC_BUILD_NATIVE_ACTIVITY = 1234;
+    private static final int RC_BUILD_SDL_ACTIVITY = 1235;
+    private static final int RC_BUILD_EXECUTABLE = 1236;
 
     private InAppPurchaseHelper mPremiumHelper;
 
@@ -138,10 +137,6 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 openTerminal();
                 return true;
 
-            case R.id.action_run:
-                buildExecutable();
-                return true;
-
             case R.id.action_term_preferences:
                 startActivity(new Intent(this, TermPreferencesActivity.class));
                 break;
@@ -165,15 +160,35 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 startActivity(new Intent(this, ThemeActivity.class));
                 break;
 
+            case R.id.action_run:
+                saveAll(RC_BUILD_EXECUTABLE);
+                return true;
+
             case R.id.action_build_native_activity:
-                buildNativeActivity();
+                saveAll(RC_BUILD_NATIVE_ACTIVITY);
                 break;
 
             case R.id.action_build_sdl_activity:
-                buildSDLActivity();
+                saveAll(RC_BUILD_SDL_ACTIVITY);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveComplete(int requestCode) {
+        super.onSaveComplete(requestCode);
+        switch (requestCode) {
+            case RC_BUILD_NATIVE_ACTIVITY:
+                buildNativeActivity();
+                break;
+            case RC_BUILD_EXECUTABLE:
+                buildExecutable();
+                break;
+            case RC_BUILD_SDL_ACTIVITY:
+                buildSDLActivity();
+                break;
+        }
     }
 
     private void buildSDLActivity() {
@@ -187,85 +202,49 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     }
 
     private void buildNativeActivity() {
-        final SaveListener saveListener = new SaveListener() {
+        CompilerOptionsDialog dialog = new CompilerOptionsDialog(this, new DialogInterface.OnClickListener() {
             @Override
-            public void onSaveFailed(Exception e) {
-                UIUtils.alert(CodeEditorActivity.this, e.getMessage());
-            }
-
-            @Override
-            public void onSavedSuccess() {
-                if (DLog.DEBUG) DLog.d(TAG, "onSaved() called");
-                final CodeEditorActivity activity = CodeEditorActivity.this;
-                String value = PreferenceManager.getDefaultSharedPreferences(activity).getString("key_native_activity_args", "");
-                UIUtils.showInputDialog(activity, "Enter args", null, value, 0,
-                        new UIUtils.OnShowInputCallback() {
-                            @Override
-                            public void onConfirm(CharSequence input) {
-                                EditorDelegate currentEditor = getCurrentEditorDelegate();
-                                if (currentEditor == null) {
-                                    return;
-                                }
-                                File[] srcFiles = new File[1];
-                                String path = currentEditor.getPath();
-                                srcFiles[0] = new File(path);
-
-                                ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, true);
-                                if (compiler != null) {
-                                    CompileManager compileManager = new CompileManager(activity);
-                                    compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
-                                    compileManager.setCompiler(compiler);
-
-                                    compileManager.compile(srcFiles);
-                                } else {
-                                    Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-
-
-        };
-        SaveAllTask saveAllTask = new SaveAllTask(CodeEditorActivity.this, saveListener);
-        saveAllTask.execute();
-    }
-
-    private void buildExecutable() {
-        final SaveListener saveListener = new SaveListener() {
-            @Override
-            public void onSaveFailed(Exception e) {
-                UIUtils.alert(CodeEditorActivity.this, e.getMessage());
-            }
-
-            @Override
-            public void onSavedSuccess() {
-                if (DLog.DEBUG) DLog.d(TAG, "onSaved() called");
-
+            public void onClick(DialogInterface dialog, int which) {
                 EditorDelegate currentEditor = getCurrentEditorDelegate();
                 if (currentEditor == null) {
                     return;
                 }
-                File[] srcFiles = new File[1];
-                String path = currentEditor.getPath();
-                srcFiles[0] = new File(path);
+                File[] srcFiles = new File[]{new File(currentEditor.getPath())};
 
-                CodeEditorActivity activity = CodeEditorActivity.this;
-                ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, false);
+                ICompiler compiler = CompilerFactory.getCompilerForFile(CodeEditorActivity.this, srcFiles, true);
                 if (compiler != null) {
-                    CompileManager compileManager = new CompileManager(activity);
+                    NativeActivityCompileManager compileManager = new NativeActivityCompileManager(CodeEditorActivity.this);
                     compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
                     compileManager.setCompiler(compiler);
-
                     compileManager.compile(srcFiles);
                 } else {
-                    Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CodeEditorActivity.this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+        dialog.show();
+    }
 
+    private void buildExecutable() {
+        EditorDelegate currentEditor = getCurrentEditorDelegate();
+        if (currentEditor == null) {
+            return;
+        }
+        File[] srcFiles = new File[1];
+        String path = currentEditor.getPath();
+        srcFiles[0] = new File(path);
 
-        };
-        SaveAllTask saveAllTask = new SaveAllTask(CodeEditorActivity.this, saveListener);
-        saveAllTask.execute();
+        CodeEditorActivity activity = CodeEditorActivity.this;
+        ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, false);
+        if (compiler != null) {
+            CompileManager compileManager = new CompileManager(activity);
+            compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
+            compileManager.setCompiler(compiler);
+
+            compileManager.compile(srcFiles);
+        } else {
+            Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

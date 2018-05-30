@@ -1,20 +1,21 @@
 /*
- * Copyright 2018 Mr Duy
+ *  Copyright (C)  2018  Duy Tran Le
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ccppcompiler.compiler;
+package com.duy.ccppcompiler.compiler.manager;
 
 import android.app.NativeActivity;
 import android.content.Intent;
@@ -34,6 +35,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -57,15 +59,8 @@ public class CompileManager extends CompileManagerImpl {
 
             //copy to internal storage
             try {
-                internalBinary = new File(Environment.getTmpExeDir(getActivity()), binFile.getName());
-                FileInputStream inputStream = new FileInputStream(binFile);
-                FileOutputStream outputStream = new FileOutputStream(internalBinary);
-                IOUtils.copy(inputStream, outputStream);
-                inputStream.close();
-                outputStream.close();
+                internalBinary = copyToTmpExeDirAndSetExecutable(binFile);
 
-                //set executable
-                Utils.chmod(internalBinary.getAbsolutePath(), 0x1ed/*0775*/);
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getActivity(), String.format("Internal error: %s. Please report bug on GitHub",
@@ -88,6 +83,20 @@ public class CompileManager extends CompileManagerImpl {
             intent.putExtra(BuildConstants.EXTRA_WORK_DIR, internalBinary.getParent());
             getActivity().startActivity(intent);
         }
+    }
+
+    protected File copyToTmpExeDirAndSetExecutable(File binFile) throws IOException {
+        File internalBinary = new File(Environment.getTmpExeDir(getActivity()), binFile.getName());
+        FileInputStream inputStream = new FileInputStream(binFile);
+        FileOutputStream outputStream = new FileOutputStream(internalBinary);
+        IOUtils.copy(inputStream, outputStream);
+        inputStream.close();
+        outputStream.close();
+
+        //set executable
+        Utils.chmod(internalBinary.getAbsolutePath(), 0x1ed/*0775*/);
+
+        return internalBinary;
     }
 
 }

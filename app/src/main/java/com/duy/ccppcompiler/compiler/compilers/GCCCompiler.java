@@ -78,9 +78,6 @@ public class GCCCompiler extends CompilerImpl {
         for (File sourceFile : sourceFiles) {
             args.addFlags(sourceFile.getAbsolutePath());
         }
-        if (mSetting != null) {
-            args.addFlags(mSetting.getCFlags());
-        }
 
         if (mBuildNativeActivity) {
             if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
@@ -105,9 +102,10 @@ public class GCCCompiler extends CompilerImpl {
             args.addFlags("-o", mOutFile.getAbsolutePath());
         }
 
-//        if (Build.VERSION.SDK_INT >= 21) {
-//            args.addFlags("-pie");
-//        }
+        if (mSetting != null) {
+            args.addFlags(mSetting.getCFlags());
+            args.addFlags(mSetting.getLinkerFlags());
+        }
 
         return args.build();
     }

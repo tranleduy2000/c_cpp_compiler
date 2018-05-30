@@ -17,7 +17,6 @@
 package com.duy.ccppcompiler.compiler.compilers;
 
 import android.content.Context;
-import android.os.Build;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
 import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
@@ -56,10 +55,6 @@ public class GPlusPlusCompiler extends GCCCompiler {
         for (File sourceFile : sourceFiles) {
             args.addFlags(sourceFile.getAbsolutePath());
         }
-        if (mSetting != null) {
-            args.addFlags(mSetting.getCxxFlags());
-        }
-
         if (mBuildNativeActivity) {
             mOutFile = new File(source.getParent(), "lib" + nameNoExt + ".so");
             String cCtoolsDir = Environment.getCCtoolsDir(mContext);
@@ -77,8 +72,9 @@ public class GPlusPlusCompiler extends GCCCompiler {
             args.addFlags("-o", mOutFile.getAbsolutePath());
         }
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            args.addFlags("-pie");
+        if (mSetting != null) {
+            args.addFlags(mSetting.getCFlags());
+            args.addFlags(mSetting.getLinkerFlags());
         }
 
         return args.build();

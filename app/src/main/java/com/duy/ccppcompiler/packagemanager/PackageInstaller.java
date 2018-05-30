@@ -2,6 +2,7 @@ package com.duy.ccppcompiler.packagemanager;
 
 import android.content.Context;
 import android.os.StatFs;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
@@ -12,10 +13,7 @@ import com.duy.ccppcompiler.packagemanager.model.PackageInfo;
 import com.duy.common.DLog;
 import com.pdaxrom.utils.Utils;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 public class PackageInstaller {
@@ -63,6 +61,7 @@ public class PackageInstaller {
         if (DLog.DEBUG) DLog.d(TAG, "onComplete: copy info files");
         // Move package info files from root directory
         String[] infoFiles = {"pkgdesc", "prerm", "postinst"};
+        File postinst = null;
         for (String infoFilePath : infoFiles) {
             File file = new File(mToolchainDir, infoFilePath);
             if (file.exists()) {
@@ -71,7 +70,7 @@ public class PackageInstaller {
                     Log.i(TAG, "Copy file to " + infoFile);
                     Utils.copyDirectory(file, infoFile);
                     if (infoFilePath.equals("postinst")) {
-                        finishInstallPackage(file);
+                        postinst = infoFile;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -80,17 +79,16 @@ public class PackageInstaller {
                 file.delete();
             }
         }
+
+        try {
+            finishInstallPackage(postinst);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @WorkerThread
-    private void finishInstallPackage(File postinstFile) throws IOException {
-        if (DLog.DEBUG) {
-            FileInputStream input = new FileInputStream(postinstFile);
-            String content = IOUtils.toString(input);
-            input.close();
-            DLog.d(TAG, "finishInstallPackage called with \n" + content);
-        }
-
+    private void finishInstallPackage(@Nullable File postinstFile) throws IOException {
         // Move Examples to sd card
         File examples = new File(mCCToolsDir, "Examples");
         if (examples.exists()) {
@@ -106,8 +104,10 @@ public class PackageInstaller {
 
         Log.i(TAG, "Execute postinst file " + postinstFile);
 
-        Utils.chmod(postinstFile.getAbsolutePath(), 493/*0755*/);
-        Shell.exec(mContext, postinstFile);
+        if (postinstFile != null) {
+            Utils.chmod(postinstFile.getAbsolutePath(), 493/*0755*/);
+            Shell.exec(mContext, postinstFile);
+        }
     }
 
 

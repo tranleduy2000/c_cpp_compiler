@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
+import com.duy.ccppcompiler.compiler.manager.ICompileManager;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 
 import java.io.File;

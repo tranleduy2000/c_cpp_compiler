@@ -51,6 +51,7 @@ import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.filemanager.FileManager;
+import com.duy.ide.filemanager.SaveListener;
 import com.duy.ide.ui.DiagnosticFragment;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
@@ -446,7 +447,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
 
         } else if (id == R.id.action_save_all) {
             UIUtils.toast(this, R.string.save_all);
-            saveAll();
+            saveAll(0);
 
         } else if (id == R.id.m_fullscreen) {
             boolean fullscreenMode = mPreferences.isFullScreenMode();
@@ -515,9 +516,23 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
         return new String[]{".txt"};
     }
 
-    public void saveAll() {
-        SaveAllTask saveAllTask = new SaveAllTask(this, null);
+    public void saveAll(final int requestCode) {
+        SaveAllTask saveAllTask = new SaveAllTask(this, new SaveListener() {
+            @Override
+            public void onSavedSuccess() {
+                onSaveComplete(requestCode);
+            }
+
+            @Override
+            public void onSaveFailed(Exception e) {
+                UIUtils.alert(SimpleEditorActivity.this, e.getMessage());
+            }
+        });
         saveAllTask.execute();
+    }
+
+    protected void onSaveComplete(int requestCode) {
+
     }
 
     public void closeMenu() {
