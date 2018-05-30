@@ -24,43 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application android:supportsRtl="false">
-        <activity android:name="com.duy.ide.settings.EditorSettingsActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.EDIT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:mimeType="application/x-*" />
-                <data android:mimeType="application/xml" />
-                <data android:mimeType="application/postscript" />
-                <data android:mimeType="application/plain" />
-                <data android:mimeType="application/x-tcl" />
-                <data android:mimeType="application/x-javascript" />
-                <data android:mimeType="application/inf" />
-                <data android:mimeType="application/octet-stream" />
-                <data android:mimeType="text/*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.googlecode.android_scripting.action.EDIT_SCRIPT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        <activity android:name="com.duy.ide.settings.EditorSettingsActivity" />
+        <activity android:name="com.duy.file.explorer.FileExplorerActivity" />
     </application>
 </manifest>
