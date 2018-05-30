@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/libastyle/libastyle.iml" filepath="$PROJECT_DIR$/libastyle/libastyle.iml" />
       <module fileurl="file://$PROJECT_DIR$/libtermexec/libtermexec.iml" filepath="$PROJECT_DIR$/libtermexec/libtermexec.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdlplugin/sdlplugin.iml" filepath="$PROJECT_DIR$/sdlplugin/sdlplugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-editor/simple-editor.iml" filepath="$PROJECT_DIR$/simple-editor/simple-editor.iml" />
       <module fileurl="file://$PROJECT_DIR$/style/style.iml" filepath="$PROJECT_DIR$/style/style.iml" />
     </modules>
   </component>

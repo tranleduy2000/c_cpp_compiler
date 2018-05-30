@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.settings;
+package com.duy.ide.settings;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -53,7 +53,7 @@ import com.jecelyin.editor.v2.Preferences;
  */
 public class EditorSettingsActivity extends ThemeSupportActivity {
 
-    public static void startActivity(Activity activity, int requestCode) {
+    public static void open(Activity activity, int requestCode) {
         activity.startActivityForResult(new Intent(activity, EditorSettingsActivity.class), requestCode);
     }
 

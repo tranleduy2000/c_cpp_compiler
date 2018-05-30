@@ -21,8 +21,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.duy.ide.Diagnostic;
-import com.duy.ide.Kind;
+import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Kind;
 import com.duy.ide.suggestion.ISuggestion;
 
 /**

@@ -16,19 +16,23 @@
 
 package com.duy.ide.editor;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.core.widget.EditAreaView;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -46,13 +50,13 @@ import android.widget.TextView;
 
 import com.duy.common.StoreUtil;
 import com.duy.file.explorer.FileExplorerActivity;
-import com.duy.ide.DiagnosticPresenter;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.editor.dialogs.DialogNewFile;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.filemanager.FileManager;
 import com.duy.ide.filemanager.SaveListener;
-import com.duy.ide.ui.DiagnosticFragment;
+import com.duy.ide.diagnostic.DiagnosticFragment;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
@@ -71,7 +75,7 @@ import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
 import com.jecelyin.editor.v2.manager.TabManager;
-import com.jecelyin.editor.v2.settings.EditorSettingsActivity;
+import com.duy.ide.settings.EditorSettingsActivity;
 import com.jecelyin.editor.v2.utils.DBHelper;
 import com.jecelyin.editor.v2.widget.SymbolBarLayout;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
@@ -99,6 +103,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     private static final String TAG = "MainActivity";
     private final static int RC_SAVE_AS = 3;
     private static final int RC_SETTINGS = 5;
+    private static final int RC_PERMISSION_WRITE_STORAGE = 5001;
 
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
     public Toolbar mToolbar;
@@ -465,7 +470,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
             new CharsetsDialog(this).show();
 
         } else if (id == R.id.action_editor_setting) {
-            EditorSettingsActivity.startActivity(this, RC_SETTINGS);
+            EditorSettingsActivity.open(this, RC_SETTINGS);
 
         } else if (id == R.id.action_share) {
             StoreUtil.shareThisApp(this);
@@ -494,6 +499,14 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     }
 
     public void createNewFile() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_PERMISSION_WRITE_STORAGE);
+                return;
+            }
+        }
+
         String[] fileExtensions = getSupportedFileExtensions();
         EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
         String path = null;
@@ -576,6 +589,15 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
 
     public void startPickPathActivity(String path, String encoding) {
         FileExplorerActivity.startPickPathActivity(this, path, encoding, RC_SAVE_AS);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RC_PERMISSION_WRITE_STORAGE &&
+                grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            createNewFile();
+        }
     }
 
     @Override
