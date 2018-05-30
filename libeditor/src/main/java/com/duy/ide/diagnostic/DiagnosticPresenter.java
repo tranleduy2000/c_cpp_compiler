@@ -111,13 +111,6 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         if (pair != null) {
             int index = pair.first;
             IEditorDelegate editorDelegate = pair.second;
-            if (editorDelegate.isChanged()) {
-                return null;
-            }
-
-            if (editorDelegate.isChanged()) {
-                return null;
-            }
             byte[] otherMd5 = editorDelegate.getDocument().getMd5();
             if (md5 != null) {
                 if (!Arrays.equals(md5, otherMd5)) {
@@ -125,7 +118,6 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 }
             }
             mHashCode.put(source, otherMd5);
-
             mTabManager.setCurrentTab(index);
             editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
             return editorDelegate;

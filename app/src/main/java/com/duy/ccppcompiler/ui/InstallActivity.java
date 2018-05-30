@@ -36,7 +36,8 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
 import com.duy.ccppcompiler.compiler.compilers.GPlusPlusCompiler;
-import com.duy.ccppcompiler.compiler.result.CompileResult;
+import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.duy.editor.CodeEditorActivity;
@@ -193,7 +194,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 output.close();
 
                 GCCCompiler compiler = new GCCCompiler(context, false, null);
-                CompileResult result = compiler.compile(new File[]{file});
+                CommandResult result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not execute C compiler, please install compiler");
                     return false;
@@ -208,6 +209,13 @@ public class InstallActivity extends ThemeSupportActivity {
                 result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not execute C++ compiler, please install compiler");
+                    return false;
+                }
+
+                publishProgress("Test static code analysis");
+                result = Shell.exec(context, file.getParent(), "cppcheck " + file.getAbsolutePath());
+                if (result == null || result.getResultCode() != 0) {
+                    publishProgress("Could not run static code analysis");
                     return false;
                 }
 

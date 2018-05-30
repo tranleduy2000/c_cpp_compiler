@@ -70,7 +70,7 @@ import java.util.ArrayList;
  * cppcheck --enable=all
  */
 public class CppCheckAnalyzer implements ICodeAnalyser {
-    public static final long DELAY_TIME = 300;
+    public static final long DELAY_TIME = 500;
     private static final String TAG = "CppCheckAnalyzer";
 
     private static final String CPPCHECK_PROGRAM = "cppcheck";
@@ -83,11 +83,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
     private final Runnable mAnalyze = new Runnable() {
         @Override
         public void run() {
-            try {
-                analyzeImpl();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            analyzeImpl();
         }
     };
 
@@ -97,7 +93,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         mDiagnosticPresenter = diagnosticPresenter;
     }
 
-    private void analyzeImpl() throws IOException {
+    private void analyzeImpl() {
         if (mAnalyzeTask != null) {
             mAnalyzeTask.cancel(true);
         }
