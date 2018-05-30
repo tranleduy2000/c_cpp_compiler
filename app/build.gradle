@@ -131,7 +131,7 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 
-    api project(':editor')
+    api project(':libeditor')
     api project(':emulatorview')
     api project(':libtermexec')
     api project(':style')

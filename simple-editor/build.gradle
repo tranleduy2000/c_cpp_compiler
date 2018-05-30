@@ -81,5 +81,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api project(':editor')
+    api project(':libeditor')
 }
