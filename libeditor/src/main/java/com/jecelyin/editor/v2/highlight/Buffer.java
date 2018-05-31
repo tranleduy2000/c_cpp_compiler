@@ -128,7 +128,7 @@ public class Buffer {
      */
     public void getLineText(int line, int relativeStartOffset, Segment segment) {
         if (line < 0 || line >= lineMgr.getLineCount())
-            throw new ArrayIndexOutOfBoundsException(line);
+            throw new ArrayIndexOutOfBoundsException("length=" + lineMgr.getLineCount() + "; index=" + line);
 
         int start = (line == 0 ? 0 : lineMgr.getLineEndOffset(line - 1));
         int end = lineMgr.getLineEndOffset(line);

@@ -253,7 +253,7 @@ public class Document implements ReadFileListener, TextWatcher {
         mBuffer.setMode(Catalog.getModeByName(name), mContext);
         mEditorDelegate.getEditableText().clearSpans();
 
-        highlight(mEditorDelegate.getEditText());
+        highlightSyntax(mEditorDelegate.getEditText());
     }
 
     String getModeName() {
@@ -314,10 +314,37 @@ public class Document implements ReadFileListener, TextWatcher {
         return !StringUtils.isEqual(mSourceMD5, curMD5);
     }
 
-    private void highlight(EditAreaView editAreaView) {
+    private void highlightSyntax(EditAreaView editAreaView) {
         EditorTheme editorTheme = mEditorDelegate.getEditText().getEditorTheme();
         Editable editableText = editAreaView.getEditableText();
-        mHighlighter.highlight(mBuffer, editorTheme, mColorSpanMap, editableText, 0, mLineCount - 1);
+        try {
+            mHighlighter.highlight(mBuffer, editorTheme, mColorSpanMap, editableText, 0, mLineCount - 1);
+        } catch (Exception e) {
+            //should not happened
+            e.printStackTrace();
+        }
+    }
+
+    public void highlightWarn(int startLine, int endLine) {
+        EditorTheme editorTheme = mEditorDelegate.getEditText().getEditorTheme();
+        Editable editableText = mEditorDelegate.getEditableText();
+        try {
+            mHighlighter.highlightWarn(mBuffer, editorTheme, mColorSpanMap, editableText, startLine, endLine, false);
+        } catch (Exception e) {
+            //should not happened
+            e.printStackTrace();
+        }
+    }
+
+    public void highlightError(int startLine, int endLine) {
+        EditorTheme editorTheme = mEditorDelegate.getEditText().getEditorTheme();
+        Editable editableText = mEditorDelegate.getEditableText();
+        try {
+            mHighlighter.highlightError(mBuffer, editorTheme, mColorSpanMap, editableText, startLine, endLine, false);
+        } catch (Exception e) {
+            //should not happened
+            e.printStackTrace();
+        }
     }
 
     public byte[] getMd5() {

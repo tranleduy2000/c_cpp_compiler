@@ -19,6 +19,8 @@ package com.jecelyin.editor.v2.editor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.core.text.style.ErrorSpan;
+import android.core.text.style.WarningSpan;
 import android.core.widget.BaseEditorView;
 import android.core.widget.EditAreaView;
 import android.core.widget.model.EditorIndex;
@@ -36,7 +38,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,9 +47,6 @@ import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
 import com.duy.ide.core.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
-import android.core.text.style.ErrorSpan;
-import com.duy.ide.editor.theme.model.EditorTheme;
-import com.duy.ide.editor.theme.model.SyntaxStyle;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -60,9 +58,7 @@ import com.jecelyin.editor.v2.dialog.FinderDialog;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
-import org.gjt.sp.jedit.awt.Font;
 import org.gjt.sp.jedit.syntax.ModeProvider;
-import org.gjt.sp.jedit.syntax.Token;
 
 import java.io.File;
 import java.util.Locale;
@@ -390,19 +386,24 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 mEditText.requestFocus();
                 break;
             case HIGHLIGHT_ERROR:
-                highlightError(command.args, false);
+                highlightError(command.args);
                 break;
-            case CLEAR_ERROR:
-                clearErrorSpan();
-                break;
+
             case SHARE_CODE:
                 shareCurrentContent();
                 break;
             case FORMAT_SOURCE:
                 formatSource();
                 break;
+            case CLEAR_ERROR:
+                clearErrorSpan();
+                break;
+            case CLEAR_WARNING:
+                clearWarningSpan();
+                break;
         }
     }
+
 
     /**
      * Format current source
@@ -471,59 +472,24 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         }
     }
 
+    private void clearWarningSpan() {
+        Editable editableText = mEditText.getEditableText();
+        WarningSpan[] spans = editableText.getSpans(0, mEditText.length(), WarningSpan.class);
+        for (WarningSpan span : spans) {
+            editableText.removeSpan(span);
+        }
+    }
+
     /**
      * Set {@link ErrorSpan} from line:col to lineEnd:colEnd
      * If it hasn't end index, this method will be set span for all line
      *
      * @param args - contains four key
      */
-    private void highlightError(Bundle args, boolean includeWhitespace) {
+    private void highlightError(Bundle args) {
         if (DLog.DEBUG) DLog.d(TAG, "highlightError() called with: args = [" + args + "]");
         int realLine = args.getInt("line", -1);
-        int virtualLine = mEditText.realLineToVirtualLine(realLine);
-        if (virtualLine != -1) { //found
-            Editable editableText = mEditText.getEditableText();
-            int startIndex;
-            int endIndex;
-            if (args.containsKey("lineEnd")) {
-                int lineEnd = args.getInt("lineEnd");
-                int colEnd = args.getInt("colEnd", 1);
-                int colStart = args.getInt("col", 1);
-                startIndex = mEditText.getCursorIndex(realLine, colStart).offset;
-                endIndex = mEditText.getCursorIndex(lineEnd, colEnd).offset;
-
-            } else {
-                startIndex = mEditText.getLayout().getLineStart(virtualLine);
-                endIndex = mEditText.getLayout().getLineEnd(virtualLine);
-                //remove white space, tab or line terminate
-                if (!includeWhitespace) {
-                    while (startIndex < endIndex) {
-                        if (Character.isWhitespace(editableText.charAt(startIndex))) {
-                            startIndex++;
-                            continue;
-                        }
-                        if (Character.isWhitespace(editableText.charAt(endIndex - 1))) {
-                            endIndex--;
-                            continue;
-                        }
-                        break;
-                    }
-                }
-            }
-            ErrorSpan[] spans = editableText.getSpans(startIndex, endIndex, ErrorSpan.class);
-            for (ErrorSpan span : spans) {
-                editableText.removeSpan(span);
-            }
-            if (startIndex < endIndex) {
-                EditorTheme editorTheme = mEditText.getEditorTheme();
-                SyntaxStyle color = editorTheme.getSyntaxStyles()[Token.INVALID];
-                Font font = color.getFont();
-                if (font != null) {
-                    editableText.setSpan(new StyleSpan(font.getStyle()), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                editableText.setSpan(new ErrorSpan(color.getForegroundColor()), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        }
+        mDocument.highlightError(realLine - 1, realLine - 1);
     }
 
     private void reOpenWithEncoding(final String encoding) {

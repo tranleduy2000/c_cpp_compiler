@@ -47,7 +47,7 @@ public class ErrorSpan extends CharacterStyle implements UpdateAppearance, Parce
         mColor = color;
     }
 
-    protected ErrorSpan(Parcel in) {
+    private ErrorSpan(Parcel in) {
         mColor = in.readInt();
     }
 
@@ -66,6 +66,5 @@ public class ErrorSpan extends CharacterStyle implements UpdateAppearance, Parce
         paint.setColor(mColor);
         paint.setUnderlineText(true);
         paint.setFakeBoldText(true);
-//        TextPaintCompat.setUnderlineText(paint, mColor, 4);
     }
 }

@@ -24,6 +24,7 @@ import android.view.View;
 
 import com.duy.common.DLog;
 import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.diagnostic.model.Kind;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.UIUtils;
@@ -175,11 +176,10 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             editorDelegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
         }
 
-        boolean firstIndex = false;
         for (Diagnostic diagnostic : mDiagnostics) {
-//            if (diagnostic.getKind() != Kind.ERROR) {
-//                continue;
-//            }
+            if (diagnostic.getKind() != Kind.ERROR) {
+                continue;
+            }
             if (diagnostic.getSourceFile() == null) {
                 continue;
             }
@@ -193,17 +193,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
             int lineNumber = (int) diagnostic.getLineNumber();
             int columnNumber = (int) diagnostic.getColumnNumber();
-
             command.args.putInt("line", lineNumber);
             command.args.putInt("col", columnNumber);
             editorDelegate.doCommand(command);
-//
-//            if (!firstIndex) {
-//                Command gotoIndexCmd = new Command(Command.CommandEnum.GOTO_INDEX);
-//                gotoIndexCmd.args.putAll(command.args);
-//                editorDelegate.doCommand(gotoIndexCmd);
-//                firstIndex = true;
-//            }
         }
     }
 

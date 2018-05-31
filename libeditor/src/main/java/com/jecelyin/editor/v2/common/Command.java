@@ -61,8 +61,10 @@ public class Command {
         RELOAD_WITH_ENCODING,
         REQUEST_FOCUS,
         HIGHLIGHT_ERROR,
-        CLEAR_ERROR,
         SHARE_CODE,
         FORMAT_SOURCE,
+
+        CLEAR_ERROR,
+        CLEAR_WARNING
     }
 }

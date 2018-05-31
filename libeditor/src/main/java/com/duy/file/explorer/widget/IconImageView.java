@@ -19,7 +19,6 @@
 package com.duy.file.explorer.widget;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.Checkable;
 
@@ -32,7 +31,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 public class IconImageView extends RoundedImageView implements Checkable {
     private int defaultBackgroundColor;
-    private Drawable defaultImageResource;
+    private int defaultImageResource;
     private boolean checked;
 
     public IconImageView(Context context) {
@@ -52,14 +51,14 @@ public class IconImageView extends RoundedImageView implements Checkable {
         defaultBackgroundColor = color;
     }
 
-    public void setDefaultImageResource(Drawable drawable) {
-        super.setImageDrawable(drawable);
+    public void setDefaultImageResource(int drawable) {
+        super.setImageResource(drawable);
         defaultImageResource = drawable;
     }
 
     public void reset() {
         setBackgroundColor(defaultBackgroundColor);
-        setImageDrawable(defaultImageResource);
+        setImageResource(defaultImageResource);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class IconImageView extends RoundedImageView implements Checkable {
             setImageResource(R.drawable.file_checked);
         } else {
             setBackgroundColor(defaultBackgroundColor);
-            setImageDrawable(defaultImageResource);
+            setImageResource(defaultImageResource);
         }
     }
 

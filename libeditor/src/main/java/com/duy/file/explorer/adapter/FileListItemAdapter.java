@@ -176,67 +176,20 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
             color = R.color.type_code;
             String extension = path.getExtension();
             switch (extension.toLowerCase()) {
-//                case "apk":
-//                    icon = R.drawable.ic_apk_file_format;
-//                    break;
-//                case "class":
-//                    icon = R.drawable.ic_class_file_format;
-//                    break;
-//                case "cpp":
-//                    icon = R.drawable.ic_cpp_file_format;
-//                    break;
-//                case "css":
-//                    icon = R.drawable.ic_css_file_format;
-//                    break;
-//                case "csv":
-//                    icon = R.drawable.ic_csv_file_format;
-//                    break;
-//                case "dtd":
-//                    icon = R.drawable.ic_dtd_file_format;
-//                    break;
-//                case "html":
-//                    icon = R.drawable.ic_html_file_format;
-//                    break;
-//                case "jar":
-//                    icon = R.drawable.ic_jar_file_format;
-//                    break;
-//                case "js":
-//                    icon = R.drawable.ic_js_file_format;
-//                    break;
-//                case "lua":
-//                    icon = R.drawable.ic_lua_file_format;
-//                    break;
-//                case "py":
-//                    icon = R.drawable.ic_py_file_format;
-//                    break;
-//                case "svg":
-//                    icon = R.drawable.ic_svg_file_format;
-//                    break;
-//                case "txt":
-//                    icon = R.drawable.ic_txt_file_format;
-//                    break;
-//                case "xml":
-//                    icon = R.drawable.ic_xml_file_format;
-//                    break;
                 default:
-                 /*   if (path.canExecutable()) {
-                        icon = R.drawable.ic_bin_file_format;
-                    } else */
                     if (mimeTypes.isTextFile(path)) {
                         color = R.color.type_text;
                         icon = R.drawable.file_type_text;
                     } else {
                         color = R.color.type_file;
-                        icon = TextUtils.isEmpty(extension) ? R.drawable.file_type_file : 0;
+                        icon = R.drawable.file_type_file;
                     }
                     break;
             }
         }
 
         final FileListItemBinding binding = holder.getBinding();
-        Drawable drawable = ContextCompat.getDrawable(context, icon);
-        drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-        binding.iconImageView.setDefaultImageResource(drawable);
+        binding.iconImageView.setDefaultImageResource(icon);
         binding.iconImageView.setDefaultBackgroundColor(res.getColor(color));
 
         FileItemModel item = new FileItemModel();

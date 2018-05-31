@@ -1,8 +1,11 @@
 package com.jecelyin.editor.v2.editor;
 
 import android.core.text.SpannableStringBuilder;
+import android.core.text.style.ErrorSpan;
 import android.graphics.Color;
+import android.text.Editable;
 import android.text.Spannable;
+import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
@@ -14,6 +17,7 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.highlight.HighlightInfo;
 
+import org.gjt.sp.jedit.Segment;
 import org.gjt.sp.jedit.awt.Font;
 import org.gjt.sp.jedit.syntax.DefaultTokenHandler;
 import org.gjt.sp.jedit.syntax.Token;
@@ -23,6 +27,60 @@ import java.util.HashMap;
 
 public class Highlighter {
     public Highlighter() {
+
+    }
+
+    public void highlightError(Buffer buffer, EditorTheme editorTheme,
+                               HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap,
+                               Editable spannable,
+                               int startLine, int endLine, boolean includeWhitespace) {
+        Segment segment = new Segment();
+        for (int line = startLine; line <= endLine; line++) {
+            ArrayList<? extends CharacterStyle> oldSpans = colorsMap.remove(line);
+            if (oldSpans != null) {
+                for (CharacterStyle span : oldSpans) {
+                    spannable.removeSpan(span);
+                }
+            }
+            buffer.getLineText(line, segment);
+            int startIndex;
+            startIndex = segment.offset;
+            int endIndex = segment.offset + segment.count;
+            if (!includeWhitespace) {
+                while (startIndex < endIndex) {
+                    if (Character.isWhitespace(segment.charAt(startIndex))) {
+                        startIndex++;
+                        continue;
+                    }
+                    if (Character.isWhitespace(segment.charAt(endIndex - 1))) {
+                        endIndex--;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            if (startIndex < endIndex) {
+                int lineStartOffset = buffer.getLineManager().getLineStartOffset(line);
+                ArrayList<CharacterStyle> spans = new ArrayList<>(2);
+                SyntaxStyle color = editorTheme.getSyntaxStyles()[Token.INVALID];
+                Font font = color.getFont();
+                if (font != null) {
+                    StyleSpan span = new StyleSpan(font.getStyle());
+                    spans.add(span);
+                    spannable.setSpan(span, lineStartOffset + startIndex, lineStartOffset + endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                ErrorSpan span = new ErrorSpan(color.getForegroundColor());
+                spans.add(span);
+                spannable.setSpan(span, lineStartOffset + startIndex, lineStartOffset + endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                colorsMap.put(line, spans);
+            }
+        }
+    }
+
+    public void highlightWarn(Buffer buffer, EditorTheme editorTheme,
+                              HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap,
+                              Spannable spannable,
+                              int startLine, int endLine, boolean includeWhitespace) {
 
     }
 
@@ -37,14 +95,14 @@ public class Highlighter {
         DefaultTokenHandler tokenHandler;
         ArrayList<HighlightInfo> mergerArray;
 
-        for (int i = startLine; i <= endLine; i++) {
+        for (int line = startLine; line <= endLine; line++) {
             tokenHandler = new DefaultTokenHandler();
-            buffer.markTokens(i, tokenHandler);
+            buffer.markTokens(line, tokenHandler);
             Token token = tokenHandler.getTokens();
 
             mergerArray = new ArrayList<>();
-            collectToken(syntaxStyles, buffer, i, token, mergerArray);
-            addTokenSpans(spannable, i, mergerArray, colorsMap);
+            collectToken(syntaxStyles, buffer, line, token, mergerArray);
+            addTokenSpans(spannable, line, mergerArray, colorsMap);
         }
     }
 
