@@ -58,12 +58,6 @@ public abstract class Layout {
     static final int DIR_REQUEST_DEFAULT_RTL = -2;
     static final int RUN_LENGTH_MASK = 0x03ffffff;
 
-    /**
-     * Draw this Layout on the specified Canvas.
-     */
-//    public void draw(Canvas c) {
-//        draw(c, null, null, 0);
-//    }
     static final int RUN_LEVEL_SHIFT = 26;
     static final int RUN_LEVEL_MASK = 0x3f;
     static final int RUN_RTL_FLAG = 1 << RUN_LEVEL_SHIFT;

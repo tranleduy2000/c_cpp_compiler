@@ -164,10 +164,15 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         mEditText.setReadOnly(Preferences.getInstance(mContext).isReadOnly());
         mEditText.setCustomSelectionActionModeCallback(new EditorSelectionActionModeCallback());
 
-        if (savedState.editorState != null) {
-            mDocument.onRestoreInstanceState(savedState);
-            mEditText.onRestoreInstanceState(savedState.editorState);
-        } else {
+        if (savedState.editorState != null)
+            try {
+                mDocument.onRestoreInstanceState(savedState);
+                mEditText.onRestoreInstanceState(savedState.editorState);
+            } catch (Exception e) {
+                //wrong state
+                e.printStackTrace();
+            }
+        else {
             mDocument.loadFile(savedState.file, savedState.encoding);
         }
 
