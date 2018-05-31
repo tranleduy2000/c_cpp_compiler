@@ -221,7 +221,8 @@ public class FileListItemAdapter extends RecyclerView.Adapter<BindingViewHolder<
                 default:
                  /*   if (path.canExecutable()) {
                         icon = R.drawable.ic_bin_file_format;
-                    } else */if (mimeTypes.isTextFile(path)) {
+                    } else */
+                    if (mimeTypes.isTextFile(path)) {
                         color = R.color.type_text;
                         icon = R.drawable.file_type_text;
                     } else {
