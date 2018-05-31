@@ -39,7 +39,12 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        this(context, name, factory, version, null);
+        this(context, name, factory, version, new DatabaseErrorHandler() {
+            @Override
+            public void onCorruption(SQLiteDatabase dbObj) {
+
+            }
+        });
     }
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
