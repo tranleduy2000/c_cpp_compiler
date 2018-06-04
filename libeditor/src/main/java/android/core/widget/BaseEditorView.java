@@ -6741,7 +6741,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
         layoutContext.setGutterDividerPaint(new Paint(getPaint()));
         layoutContext.setGutterBackgroundPaint(new Paint(getPaint()));
 
-        setLineNumber(1);
+        setInitLineNumber(1);
         onTextSizeChanged();
         setTheme(preferences.getEditorTheme());
 
@@ -6766,7 +6766,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
                 layoutContext.cursorThickness = preferences.getCursorThickness();
                 break;
             case Preferences.KEY_SHOW_LINE_NUMBER:
-                setLineNumber(layoutContext.lineNumber);
+                setInitLineNumber(layoutContext.lineNumber);
                 break;
             case Preferences.KEY_WORD_WRAP:
                 setHorizontallyScrolling(!preferences.isWordWrap());
@@ -6821,7 +6821,7 @@ public class BaseEditorView extends View implements ViewTreeObserver.OnPreDrawLi
     /**
      * Calculate padding line number padding
      */
-    public void setLineNumber(int lineNumber) {
+    public void setInitLineNumber(int lineNumber) {
         if (!layoutContext.preferences.isShowLineNumber()) {
             //invalidate
             setPaddingRelative(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());

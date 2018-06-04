@@ -23,7 +23,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.jecelyin.common.utils.MethodReflection;
+import com.jecelyin.common.utils.ReflectionUtil;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -39,7 +39,7 @@ public class CanvasCompat {
         } else {
             try {
                 //c.drawTextRun(text, index, count, contextIndex, contextCount, x, y, isRtl ? 1 : 0, paint);
-                MethodReflection.callAny(c, "drawTextRun",
+                ReflectionUtil.callAny(c, "drawTextRun",
                         new Class[]{char[].class, int.class, int.class, int.class, int.class, float.class, float.class, int.class, Paint.class},
                         new Object[]{text, index, count, contextIndex, contextCount, x, y, isRtl ? 1 : 0, paint}
                 );

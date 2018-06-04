@@ -17,23 +17,16 @@
 package com.duy.ide.editor.view;
 
 import android.content.Context;
-import android.core.widget.EditAreaView;
-import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.duy.ide.editor.editor.R;
-import com.jecelyin.common.utils.DLog;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class EditorView extends RelativeLayout {
     private static final String TAG = "EditorView";
-    private EditAreaView mEditText;
-    private ProgressBar mProgressView;
 
     public EditorView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -43,42 +36,9 @@ public class EditorView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void restoreHierarchyState(SparseArray<Parcelable> container) {
-        super.restoreHierarchyState(container);
+    public IEditAreaView getEditText() {
+        return findViewById(R.id.edit_text);
     }
 
-    @Override
-    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        super.dispatchRestoreInstanceState(container);
-        if (DLog.DEBUG)
-            DLog.d(TAG, "dispatchRestoreInstanceState() called with: container = [" + container + "]");
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mEditText = findViewById(R.id.edit_text);
-        mProgressView = findViewById(R.id.progress_view);
-    }
-
-    public EditAreaView getEditText() {
-        return mEditText;
-    }
-
-    public void setLoading(boolean loading) {
-        if (loading) {
-            mEditText.setVisibility(INVISIBLE);
-            mProgressView.setVisibility(VISIBLE);
-        } else {
-            mEditText.setVisibility(VISIBLE);
-            mProgressView.setVisibility(GONE);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-    }
 
 }

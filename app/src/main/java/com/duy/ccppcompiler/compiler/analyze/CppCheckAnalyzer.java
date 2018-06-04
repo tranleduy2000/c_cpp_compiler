@@ -19,7 +19,6 @@ package com.duy.ccppcompiler.compiler.analyze;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.core.widget.EditAreaView;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -34,6 +33,7 @@ import com.duy.common.DLog;
 import com.duy.ide.diagnostic.Diagnostic;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.io.LocalFileWriter;
@@ -41,6 +41,8 @@ import com.jecelyin.editor.v2.io.LocalFileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+;
 
 /**
  * https://sourceforge.net/p/cppcheck/wiki/Home/
@@ -139,7 +141,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
 
         @Override
         protected ArrayList<Diagnostic> doInBackground(Void... voids) {
-            EditAreaView editText = mEditorDelegate.getEditText();
+            IEditAreaView editText = mEditorDelegate.getEditText();
 
             File originFile = mEditorDelegate.getDocument().getFile();
             File tmpFile = new File(getCppCheckTmpDir(), originFile.getName());

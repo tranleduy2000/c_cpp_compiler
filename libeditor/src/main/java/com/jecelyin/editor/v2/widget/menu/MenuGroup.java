@@ -17,6 +17,9 @@
 package com.jecelyin.editor.v2.widget.menu;
 
 
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
+
 import com.duy.ide.editor.editor.R;
 
 /**
@@ -24,19 +27,31 @@ import com.duy.ide.editor.editor.R;
  */
 public enum MenuGroup {
     //Run, edit
-    TOP(0),
-    FILE(R.string.file),
-    EDIT(R.string.edit),
-    VIEW(R.string.view),
-    OTHER(R.string.other);
+    TOP(0, 0, 0),
+    FILE(R.string.file, R.id.menu_file, R.drawable.ic_folder_open_white_24dp),
+    EDIT(R.string.edit, R.id.menu_edit, 0),
+    VIEW(R.string.view, R.id.menu_view, 0),
+    OTHER(R.string.other, R.id.menu_other, 0);
 
-    private int nameResId;
+    private int titleId;
+    private int menuId;
+    private int iconId;
 
-    MenuGroup(int resId) {
-        nameResId = resId;
+    MenuGroup(int titleId, @IdRes int menuId, @DrawableRes int iconId) {
+        this.titleId = titleId;
+        this.menuId = menuId;
+        this.iconId = iconId;
     }
 
-    public int getNameResId() {
-        return nameResId;
+    public int getTitleId() {
+        return titleId;
+    }
+
+    public int getMenuId() {
+        return menuId;
+    }
+
+    public int getIconId() {
+        return iconId;
     }
 }

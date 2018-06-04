@@ -102,7 +102,7 @@ import android.widget.PopupWindow;
 
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
-import com.jecelyin.common.utils.MethodReflection;
+import com.jecelyin.common.utils.ReflectionUtil;
 
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
@@ -1917,7 +1917,7 @@ public class Editor {
 
                 // Make sure there is only at most one EasyEditSpan in the text
                 if (mPopupWindow.mEasyEditSpan != null) {
-                    MethodReflection method = new MethodReflection(mPopupWindow.mEasyEditSpan,
+                    ReflectionUtil method = new ReflectionUtil(mPopupWindow.mEasyEditSpan,
                             "setMethodEnabled", new Class[]{boolean.class});
 //                    mPopupWindow.mEasyEditSpan.setDeleteEnabled(false);
                     try {
@@ -1994,7 +1994,7 @@ public class Editor {
 
         private void sendEasySpanNotification(int textChangedType, EasyEditSpan span) {
             try {
-                MethodReflection method = new MethodReflection(span, "getPendingIntent", new Class[]{});
+                ReflectionUtil method = new ReflectionUtil(span, "getPendingIntent", new Class[]{});
                 PendingIntent pendingIntent = /*span.getPendingIntent();*/ method.get(span);
                 if (pendingIntent != null) {
                     Intent intent = new Intent();
@@ -2160,7 +2160,7 @@ public class Editor {
             if (view == mDeleteTextView
                     && mEasyEditSpan != null) {
                 if (mOnDeleteListener != null) {
-                    MethodReflection method = new MethodReflection(mEasyEditSpan, "isDeleteEnabled",
+                    ReflectionUtil method = new ReflectionUtil(mEasyEditSpan, "isDeleteEnabled",
                             new Class[]{});
                     try {
                         boolean isDeleteEnabled = method.get(mEasyEditSpan);
@@ -2567,7 +2567,7 @@ public class Editor {
 
                 // The first span dictates the background color of the highlighted text
                 if (spanIndex == 0) {
-                    MethodReflection method = new MethodReflection(suggestionSpan,
+                    ReflectionUtil method = new ReflectionUtil(suggestionSpan,
                             "getUnderlineColor", new Class[]{});
                     Object underlineColorObj = null;
                     try {
@@ -2758,7 +2758,7 @@ public class Editor {
 
                 // Notify source IME of the suggestion pick. Do this before
                 // swaping texts.
-                MethodReflection method = new MethodReflection(suggestionInfo.suggestionSpan,
+                ReflectionUtil method = new ReflectionUtil(suggestionInfo.suggestionSpan,
                         "notifySelection", new Class[]{Context.class, String.class, int.class});
                 try {
                     method.invoke(suggestionInfo.suggestionSpan, mTextView.getContentDescription(), originalText,

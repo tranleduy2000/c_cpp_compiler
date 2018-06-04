@@ -25,7 +25,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.jecelyin.common.utils.DLog;
-import com.jecelyin.common.utils.MethodReflection;
+import com.jecelyin.common.utils.ReflectionUtil;
 
 public class MetaKeyKeyListenerCompat extends MetaKeyKeyListener {
     private static final String TAG = "MetaKeyKeyListenerCompa";
@@ -33,7 +33,7 @@ public class MetaKeyKeyListenerCompat extends MetaKeyKeyListener {
 
     private static int getMetaSelecting() {
         try {
-            return (int) MethodReflection.getField(MetaKeyKeyListener.class, "META_SELECTING");
+            return (int) ReflectionUtil.getField(MetaKeyKeyListener.class, "META_SELECTING");
         } catch (Throwable e) {
             if (DLog.DEBUG) DLog.w(TAG, "getMetaSelecting: " + e.getMessage());
             return 0x800;
@@ -46,7 +46,7 @@ public class MetaKeyKeyListenerCompat extends MetaKeyKeyListener {
      */
     public static void stopSelecting(View view, Spannable content) {
         try {
-            MethodReflection.getStaticMethod(
+            ReflectionUtil.getStaticMethod(
                     MetaKeyKeyListener.class
                     , "stopSelecting"
                     , new Class[]{View.class, Spannable.class}

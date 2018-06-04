@@ -23,7 +23,7 @@ import android.os.Build;
 import android.text.TextPaint;
 
 import com.jecelyin.common.utils.DLog;
-import com.jecelyin.common.utils.MethodReflection;
+import com.jecelyin.common.utils.ReflectionUtil;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -63,7 +63,7 @@ public class TextPaintCompat {
 
     public static void setUnderlineText(TextPaint tp, int color, float thickness) {
         try {
-            MethodReflection.callAny(tp, "setUnderlineText", new Class[]{int.class, float.class}, new Object[]{color, thickness});
+            ReflectionUtil.callAny(tp, "setUnderlineText", new Class[]{int.class, float.class}, new Object[]{color, thickness});
         } catch (Throwable e) {
             if (DLog.DEBUG) DLog.w(TAG, "setUnderlineText: ", e);
         }
@@ -71,7 +71,7 @@ public class TextPaintCompat {
 
     public static int getUnderlineColor(TextPaint tp) {
         try {
-            return (int) MethodReflection.getField(tp, "underlineColor");
+            return (int) ReflectionUtil.getField(tp, "underlineColor");
         } catch (Throwable e) {
             if (DLog.DEBUG) DLog.w(TAG, "getUnderlineColor: ", e);
             return 0;
@@ -80,7 +80,7 @@ public class TextPaintCompat {
 
     public static float getUnderlineThickness(TextPaint tp) {
         try {
-            return (float) MethodReflection.getField(tp, "underlineThickness");
+            return (float) ReflectionUtil.getField(tp, "underlineThickness");
         } catch (Throwable e) {
             if (DLog.DEBUG) DLog.w(TAG, "getUnderlineThickness: ", e);
             return 0;
@@ -97,12 +97,12 @@ public class TextPaintCompat {
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0 above
-                return (float) MethodReflection.callAny(tp, "getTextRunAdvances"
+                return (float) ReflectionUtil.callAny(tp, "getTextRunAdvances"
                         , new Class[]{char[].class, int.class, int.class, int.class, int.class, boolean.class, float[].class, int.class}
                         , new Object[]{chars, index, count, contextIndex, contextCount, isRtl, advances, advancesIndex}
                 );
             } else {
-                return (float) MethodReflection.callAny(tp, "getTextRunAdvances"
+                return (float) ReflectionUtil.callAny(tp, "getTextRunAdvances"
                         , new Class[]{char[].class, int.class, int.class, int.class, int.class, int.class, float[].class, int.class}
                         , new Object[]{chars, index, count, contextIndex, contextCount, isRtl ? 1 : 0, advances, advancesIndex}
                 );
@@ -118,12 +118,12 @@ public class TextPaintCompat {
                                            int advancesIndex) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0 above
-                return (float) MethodReflection.callAny(tp, "getTextRunAdvances",
+                return (float) ReflectionUtil.callAny(tp, "getTextRunAdvances",
                         new Class[]{CharSequence.class, int.class, int.class, int.class, int.class, boolean.class, float[].class, int.class},
                         new Object[]{text, start, end, contextStart, contextEnd, isRtl, advances, advancesIndex}
                 );
             } else { // 4.4 below
-                return (float) MethodReflection.callAny(tp, "getTextRunAdvances",
+                return (float) ReflectionUtil.callAny(tp, "getTextRunAdvances",
                         new Class[]{CharSequence.class, int.class, int.class, int.class, int.class, int.class, float[].class, int.class},
                         new Object[]{text, start, end, contextStart, contextEnd, isRtl ? 1 : 0, advances, advancesIndex}
                 );
@@ -138,7 +138,7 @@ public class TextPaintCompat {
     public static int getTextRunCursor(Paint p, CharSequence text, int contextStart,
                                        int contextEnd, int dir, int offset, int cursorOpt) {
         try {
-            return (int) MethodReflection.callAny(p, "getTextRunCursor",
+            return (int) ReflectionUtil.callAny(p, "getTextRunCursor",
                     new Class[]{CharSequence.class, int.class, int.class, int.class, int.class, int.class},
                     new Object[]{text, contextStart, contextEnd, dir, offset, cursorOpt}
             );
@@ -152,7 +152,7 @@ public class TextPaintCompat {
     public static int getTextRunCursor(Paint p, char[] text, int contextStart, int contextLength,
                                        int dir, int offset, int cursorOpt) {
         try {
-            return (int) MethodReflection.callAny(p, "getTextRunCursor",
+            return (int) ReflectionUtil.callAny(p, "getTextRunCursor",
                     new Class[]{char[].class, int.class, int.class, int.class, int.class, int.class},
                     new Object[]{text, contextStart, contextLength, dir, offset, cursorOpt}
             );

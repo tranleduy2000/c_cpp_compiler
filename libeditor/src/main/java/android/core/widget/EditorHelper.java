@@ -21,13 +21,15 @@ package android.core.widget;
 import android.core.text.SpannableStringBuilder;
 import android.text.Editable;
 
+import com.duy.ide.editor.view.IEditAreaView;
+
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 class EditorHelper {
-    private final EditAreaView editAreaView;
+    private final IEditAreaView editAreaView;
 
-    public EditorHelper(EditAreaView editAreaView) {
+    public EditorHelper(IEditAreaView editAreaView) {
         this.editAreaView = editAreaView;
     }
 

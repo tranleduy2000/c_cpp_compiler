@@ -2,7 +2,6 @@ package com.duy.editor.theme;
 
 import android.content.Context;
 import android.core.text.SpannableStringBuilder;
-import android.core.widget.EditAreaView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import com.duy.ccppcompiler.R;
 import com.duy.ide.editor.theme.ThemeLoader;
 import com.duy.ide.editor.theme.model.EditorTheme;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.Highlighter;
 import com.jecelyin.editor.v2.highlight.Buffer;
@@ -98,7 +98,7 @@ public class EditorThemeFragment extends Fragment {
 
             final String title = makeTitle(position, editorTheme);
             holder.mTxtName.setText(title);
-            EditAreaView editorView = holder.mEditorView;
+            IEditAreaView editorView = holder.mEditorView;
 
             Buffer buffer = new Buffer();
             Highlighter highlighter = new Highlighter();
@@ -185,7 +185,7 @@ public class EditorThemeFragment extends Fragment {
 
         static class ViewHolder extends RecyclerView.ViewHolder {
             View mBtnSelect;
-            EditAreaView mEditorView;
+            IEditAreaView mEditorView;
             TextView mTxtName;
 
             public ViewHolder(View itemView) {

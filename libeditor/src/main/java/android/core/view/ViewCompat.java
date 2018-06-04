@@ -22,13 +22,13 @@ import android.os.Build;
 import android.view.View;
 
 import com.jecelyin.common.utils.DLog;
-import com.jecelyin.common.utils.MethodReflection;
+import com.jecelyin.common.utils.ReflectionUtil;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class ViewCompat {
-    private static MethodReflection invalidateParentCaches;
+    private static ReflectionUtil invalidateParentCaches;
 
     public static boolean isLayoutRtl(View view) {
         return (android.support.v4.view.ViewCompat.getLayoutDirection(view) == android.support.v4.view.ViewCompat.LAYOUT_DIRECTION_RTL);
@@ -37,7 +37,7 @@ public class ViewCompat {
     public static void invalidateParentCaches(View view) {
         try {
             if (invalidateParentCaches == null) {
-                invalidateParentCaches = new MethodReflection(view.getClass(), "invalidateParentCaches", null);
+                invalidateParentCaches = new ReflectionUtil(view.getClass(), "invalidateParentCaches", null);
             }
             invalidateParentCaches.invoke(view);
         } catch (Throwable e) {

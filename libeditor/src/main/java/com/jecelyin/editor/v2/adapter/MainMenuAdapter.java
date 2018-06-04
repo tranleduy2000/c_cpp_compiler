@@ -58,7 +58,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
         menuItems = new ArrayList<>();
 
         for (MenuGroup group : groups) {
-            if (group.getNameResId() == 0)
+            if (group.getTitleId() == 0)
                 continue; //top group
             menuItems.add(new MenuItemInfo(group, 0, Command.CommandEnum.NONE, 0, 0));
             menuItems.addAll(menuFactory.getMenuItemsWithoutToolbarMenu(group));
@@ -111,7 +111,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter {
             }
         } else {
             GroupViewHolder vh = (GroupViewHolder) holder;
-            vh.mNameTextView.setText(item.getGroup().getNameResId());
+            vh.mNameTextView.setText(item.getGroup().getTitleId());
         }
     }
 

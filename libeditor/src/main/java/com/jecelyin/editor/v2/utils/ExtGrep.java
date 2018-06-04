@@ -16,11 +16,11 @@
 
 package com.jecelyin.editor.v2.utils;
 
-import android.core.widget.BaseEditorView;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.common.task.JecAsyncTask;
 import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.task.TaskResult;
@@ -466,7 +466,7 @@ public class ExtGrep implements Parcelable {
         return null;
     }
 
-    public void replaceAll(BaseEditorView text, String replaceText) {
+    public void replaceAll(IEditAreaView text, String replaceText) {
         Matcher m = grepPattern.matcher(text.getEditableText());
         ArrayList<Integer> array = new ArrayList<>();
         // 从头开始搜索获取所有位置

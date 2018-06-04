@@ -1,8 +1,8 @@
 package com.jecelyin.editor.v2.editor;
 
-import android.core.widget.EditAreaView;
 import android.support.annotation.Nullable;
 
+import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.common.Command;
 
 public interface IEditorDelegate {
@@ -14,7 +14,7 @@ public interface IEditorDelegate {
 
     //MARK: View interface
 
-    EditAreaView getEditText();
+    IEditAreaView getEditText();
 
     int getCursorOffset();
 

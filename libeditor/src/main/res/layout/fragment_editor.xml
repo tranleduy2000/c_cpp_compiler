@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.duy.ide.editor.view.EditorView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent" />
 
-        <android.core.widget.EditAreaView
+        <com.duy.ide.editor.view.EditAreaView2
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,11 +22,13 @@
             android:enabled="false"
             android:gravity="start|top"
             android:inputType="textMultiLine"
+            android:typeface="monospace"
             android:padding="0dp"
             android:scrollbarAlwaysDrawVerticalTrack="false"
             android:scrollbarThumbVertical="@android:color/transparent"
             android:scrollbarTrackVertical="@null"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            tools:text="Shsadhashdhasdhhasdhahsdhahsdhahs" />
 
     </LinearLayout>
 

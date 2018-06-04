@@ -21,8 +21,8 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.core.text.style.ErrorSpan;
 import android.core.text.style.WarningSpan;
+import android.core.view.InputMethodManagerCompat;
 import android.core.widget.BaseEditorView;
-import android.core.widget.EditAreaView;
 import android.core.widget.model.EditorIndex;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -41,6 +41,7 @@ import android.text.style.BackgroundColorSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.duy.astyle.AStyleInterface;
@@ -48,6 +49,7 @@ import com.duy.common.ShareUtil;
 import com.duy.ide.core.SimpleEditorActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
@@ -69,9 +71,8 @@ import java.util.Locale;
 public class EditorDelegate implements TextWatcher, IEditorDelegate {
     public final static String KEY_CLUSTER = "is_cluster";
     private static final String TAG = "EditorDelegate";
-    EditAreaView mEditText;
+    IEditAreaView mEditText;
     private Context mContext;
-    private EditorView mEditorView;
 
     private Document mDocument;
     @NonNull
@@ -100,11 +101,9 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     void onLoadStart() {
         loaded = false;
         mEditText.setEnabled(false);
-        mEditorView.setLoading(true);
     }
 
     void onLoadFinish() {
-        mEditorView.setLoading(false);
         mEditText.setEnabled(true);
         mEditText.post(new Runnable() {
             @Override
@@ -146,13 +145,12 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         return mEditText.getText();
     }
 
-    public EditAreaView getEditText() {
+    public IEditAreaView getEditText() {
         return mEditText;
     }
 
     public void setEditorView(EditorView editorView) {
         mContext = editorView.getContext();
-        mEditorView = editorView;
         mEditText = editorView.getEditText();
         mOrientation = mContext.getResources().getConfiguration().orientation;
 
@@ -199,9 +197,9 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         String title = getTitle();
         String changed = isChanged() ? "*" : "";
         String cursor = "";
-        if (mEditText != null && mEditText.getLayout() != null && getCursorOffset() >= 0) {
+        if (mEditText != null &&  getCursorOffset() >= 0) {
             int cursorOffset = getCursorOffset();
-            int line = mEditText.getLayout().getLineForOffset(cursorOffset);
+            int line = mEditText.getLineForOffset(cursorOffset);
             cursor += line + ":" + cursorOffset;
         }
         return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s", changed, title, encode, fileMode, cursor);
@@ -277,10 +275,10 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         boolean readonly = Preferences.getInstance(mContext).isReadOnly();
         switch (command.what) {
             case HIDE_SOFT_INPUT:
-                mEditText.hideSoftInput();
+                InputMethodManagerCompat.hideSoftInput((View) mEditText);
                 break;
             case SHOW_SOFT_INPUT:
-                mEditText.showSoftInput();
+                InputMethodManagerCompat.showSoftInput((View) mEditText);
                 break;
             case UNDO:
                 if (!readonly)
@@ -308,11 +306,12 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 return;
             case DUPLICATION:
                 if (!readonly)
-                    mEditText.duplication();
+                    mEditText.duplicateSelection();
                 break;
+            // TODO: 04-Jun-18 remove
             case CONVERT_WRAP_CHAR:
-                if (!readonly)
-                    mEditText.convertWrapCharTo((String) command.object);
+//                if (!readonly)
+//                    mEditText.convertWrapCharTo((String) command.object);
                 break;
             case GOTO_INDEX:
                 int col = command.args.getInt("col", -1);
@@ -381,12 +380,12 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             case RELOAD_WITH_ENCODING:
                 reOpenWithEncoding((String) command.object);
                 break;
-            case CURSOR_FORWARD:
-                mEditText.forwardLocation();
-                break;
-            case CURSOR_BACK:
-                mEditText.backLocation();
-                break;
+//            case CURSOR_FORWARD:
+//                mEditText.forwardLocation();
+//                break;
+//            case CURSOR_BACK:
+//                mEditText.backLocation();
+//                break;
             case REQUEST_FOCUS:
                 mEditText.requestFocus();
                 break;
@@ -585,7 +584,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         }
         if (mEditText != null) {
             mEditText.setFreezesText(true);
-            savedState.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
+//            savedState.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
         }
 
         if (loaded && mDocument != null) {
@@ -730,7 +729,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 convertSelectedText(item.getItemId());
                 return true;
             } else if (i == R.id.m_duplication) {
-                mEditText.duplication();
+                mEditText.duplicateSelection();
                 return true;
             }
             return false;

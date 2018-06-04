@@ -55,14 +55,6 @@ public class StaticLayout extends Layout {
     private static final int COLUMNS_NORMAL = 4; //jec+ linebreak
     private static final int COLUMNS_ELLIPSIZE = 5;
 
-    //    public StaticLayout(CharSequence source, int bufstart, int bufend,
-//                        TextPaint paint, int outerwidth,
-//                        Alignment align,
-//                        float spacingmult, float spacingadd,
-//                        boolean includepad) {
-//        this(source, bufstart, bufend, paint, outerwidth, align,
-//             spacingmult, spacingadd, includepad, null, 0);
-//    }
     private static final int START = 0;
     private static final int DIR = START;
     private static final int TAB = START;

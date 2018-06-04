@@ -40,4 +40,8 @@
     <item name="action_rate" type="id" />
     <item name="action_share_code" type="id">Share code</item>
     <item name="action_format_source" type="id" />
+    <item name="menu_file" type="id" />
+    <item name="menu_edit" type="id" />
+    <item name="menu_view" type="id" />
+    <item name="menu_other" type="id" />
 </resources>

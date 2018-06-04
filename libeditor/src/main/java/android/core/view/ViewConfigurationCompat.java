@@ -21,18 +21,18 @@ package android.core.view;
 import android.view.ViewConfiguration;
 
 import com.jecelyin.common.utils.DLog;
-import com.jecelyin.common.utils.MethodReflection;
+import com.jecelyin.common.utils.ReflectionUtil;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class ViewConfigurationCompat {
-    private static MethodReflection getScaledDoubleTapTouchSlop;
+    private static ReflectionUtil getScaledDoubleTapTouchSlop;
 
     public static int getScaledDoubleTapTouchSlop(ViewConfiguration viewConfiguration) {
         try {
             if (getScaledDoubleTapTouchSlop == null) {
-                getScaledDoubleTapTouchSlop = new MethodReflection(ViewConfiguration.class, "getScaledDoubleTapTouchSlop", new Class[]{});
+                getScaledDoubleTapTouchSlop = new ReflectionUtil(ViewConfiguration.class, "getScaledDoubleTapTouchSlop", new Class[]{});
             }
             return getScaledDoubleTapTouchSlop.get(viewConfiguration);
         } catch (Throwable e) {

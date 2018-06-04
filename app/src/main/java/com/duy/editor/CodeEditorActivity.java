@@ -18,7 +18,6 @@ package com.duy.editor;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.core.widget.EditAreaView;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +42,7 @@ import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.Document;
@@ -147,7 +147,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     }
 
     @Override
-    public void invalidateEditMenu(Document document, EditAreaView mEditText) {
+    public void invalidateEditMenu(Document document, IEditAreaView mEditText) {
         super.invalidateEditMenu(document, mEditText);
         setMenuStatus(R.id.action_run, document != null ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
     }

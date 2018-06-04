@@ -19,7 +19,6 @@ package com.jecelyin.editor.v2.editor;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.core.text.SpannableStringBuilder;
-import android.core.widget.EditAreaView;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +30,7 @@ import android.text.style.ForegroundColorSpan;
 
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.EditorTheme;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.file.ReadFileListener;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -183,7 +183,7 @@ public class Document implements ReadFileListener, TextWatcher {
             return;
         }
 
-        mEditorDelegate.mEditText.setLineNumber(mLineCount);
+        mEditorDelegate.mEditText.setInitLineNumber(mLineCount);
         mEditorDelegate.mEditText.setText(spannableStringBuilder);
         mEditorDelegate.onLoadFinish();
 
@@ -314,7 +314,7 @@ public class Document implements ReadFileListener, TextWatcher {
         return !StringUtils.isEqual(mSourceMD5, curMD5);
     }
 
-    private void highlightSyntax(EditAreaView editAreaView) {
+    private void highlightSyntax(IEditAreaView editAreaView) {
         EditorTheme editorTheme = mEditorDelegate.getEditText().getEditorTheme();
         Editable editableText = editAreaView.getEditableText();
         try {

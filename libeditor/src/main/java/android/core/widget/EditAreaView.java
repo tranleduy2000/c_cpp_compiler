@@ -24,7 +24,6 @@ import android.core.text.Layout;
 import android.core.text.Selection;
 import android.core.text.method.ArrowKeyMovementMethod;
 import android.core.text.method.MovementMethod;
-import android.core.view.InputMethodManagerCompat;
 import android.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -40,15 +39,15 @@ import android.view.ScaleGestureDetector;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
-import android.view.inputmethod.InputMethodManager;
 
+import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.common.utils.LimitedQueue;
 import com.jecelyin.editor.v2.Preferences;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditAreaView extends BaseEditorView {
+public class EditAreaView extends BaseEditorView implements IEditAreaView {
     /**
      * Indicates that we are not in the middle of a touch gesture
      */
@@ -195,8 +194,8 @@ public class EditAreaView extends BaseEditorView {
     /**
      * Convenience for {@link Selection#selectAll}.
      */
-    public boolean selectAll() {
-        return canSelectText() && selectAllText();
+    public void selectAll() {
+        selectAllText();
     }
 
     /**
@@ -218,6 +217,7 @@ public class EditAreaView extends BaseEditorView {
         }
     }
 
+    @Override
     public void setReadOnly(boolean readOnly) {
         if (readOnly) {
             if (keyListener == null) {
@@ -236,19 +236,6 @@ public class EditAreaView extends BaseEditorView {
         this.onEditorSizeChangedListener = onEditorSizeChangedListener;
     }
 
-    public void hideSoftInput() {
-        InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    public void showSoftInput() {
-        InputMethodManager imm = InputMethodManagerCompat.peekInstance(getContext());
-        if (imm != null) {
-            imm.showSoftInput(this, InputMethodManager.SHOW_FORCED);
-        }
-    }
 
     private void init() {
         setFocusableInTouchMode(true);
@@ -322,7 +309,7 @@ public class EditAreaView extends BaseEditorView {
         return canCut() && onTextContextMenuItem(ID_CUT);
     }
 
-    public void duplication() {
+    public void duplicateSelection() {
         editorHelper.duplication();
     }
 
@@ -385,6 +372,14 @@ public class EditAreaView extends BaseEditorView {
             y = Math.min(y, layoutHeight - visibleHeight);
         }
         scrollTo(getScrollX(), y);
+    }
+
+    @Override
+    public int getLineForOffset(int offset) {
+        if (getLayout() == null){
+            return -1;
+        }
+        return getLayout().getLineForOffset(offset);
     }
 
     @Override

@@ -46,6 +46,7 @@ dependencies {
     api 'com.sothree.slidinguppanel:library:3.4.0'
     api group: 'commons-io', name: 'commons-io', version: '2.4'
     api 'com.simplecityapps:recyclerview-fastscroll:1.0.18'
+    api group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
     api project(':style')
     api project(':libastyle')
