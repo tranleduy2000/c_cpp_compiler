@@ -331,6 +331,9 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         super.setTextSize(unit, size);
         updateLayoutContext();
         updateTabChar();
+
+        mNeedUpdateLineNumber = true;
+        mPreLineCount = -1;
     }
 
     @Override
