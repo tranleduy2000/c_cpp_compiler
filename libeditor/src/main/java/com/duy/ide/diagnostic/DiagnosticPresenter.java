@@ -82,6 +82,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 command.args.putInt("col", (int) diagnostic.getColumnNumber());
                 editorDelegate.doCommand(command);
             }
+            hidePanel();
         }
     }
 
@@ -131,12 +132,12 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @Override
-    public void expandView() {
+    public void showPanel() {
         mActivity.mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
     }
 
     @Override
-    public void hideView() {
+    public void hidePanel() {
         mActivity.mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 

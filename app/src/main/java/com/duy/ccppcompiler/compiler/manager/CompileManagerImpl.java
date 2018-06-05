@@ -92,7 +92,7 @@ public abstract class CompileManagerImpl implements ICompileManager {
         finishCompile(compileResult);
 
         if (mDiagnosticPresenter != null) {
-            mDiagnosticPresenter.expandView();
+            mDiagnosticPresenter.showPanel();
         }
 
         Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();

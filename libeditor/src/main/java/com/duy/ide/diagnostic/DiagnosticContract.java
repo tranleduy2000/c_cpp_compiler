@@ -52,10 +52,10 @@ public class DiagnosticContract {
         void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion);
 
         @MainThread
-        void expandView();
+        void showPanel();
 
         @MainThread
-        void hideView();
+        void hidePanel();
 
         @MainThread
         void setDiagnostics(ArrayList<Diagnostic> diagnostics);
