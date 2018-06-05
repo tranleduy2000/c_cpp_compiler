@@ -19,6 +19,7 @@ package com.duy.ide.editor.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.ActionMode;
 
 public class CodeEditor extends EditActionSupportEditor {
     public CodeEditor(Context context) {
@@ -31,5 +32,10 @@ public class CodeEditor extends EditActionSupportEditor {
 
     public CodeEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public void setCustomSelectionActionModeCallback(ActionMode.Callback actionModeCallback) {
+        super.setCustomSelectionActionModeCallback(actionModeCallback);
     }
 }
