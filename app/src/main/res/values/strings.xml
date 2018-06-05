@@ -43,6 +43,8 @@
     <string name="build">Build</string>
     <string name="compiler">Compiler</string>
     <string name="code_analysis">Code analysis</string>
+    <string name="report_bug">Report bug</string>
+    <string name="title_menu_install_libraries">Install libraries / plugins</string>
 
 
 </resources>

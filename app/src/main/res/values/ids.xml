@@ -18,7 +18,7 @@
 
     <item name="action_c_example" type="id" />
     <item name="action_cpp_example" type="id" />
-    <item name="action_install_add_on" type="id" />
+    <item name="action_install_libraries" type="id" />
     <item name="action_open_terminal" type="id" />
     <item name="action_term_preferences" type="id" />
     <item name="action_compiler_setting" type="id" />
@@ -26,5 +26,6 @@
     <item name="action_editor_color_scheme" type="id" />
     <item name="action_build_native_activity" type="id" />
     <item name="action_run_sdl_activity" type="id" />
+    <item name="action_report_bug" type="id" />
 
 </resources>

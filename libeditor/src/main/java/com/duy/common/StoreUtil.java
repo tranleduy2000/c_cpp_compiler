@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.jecelyin.common.utils.DLog;
 
@@ -96,7 +97,11 @@ public class StoreUtil {
     public static void openBrowser(Activity context, String uriString, int request) {
         Uri link = Uri.parse(uriString);
         Intent intent = new Intent(Intent.ACTION_VIEW, link);
-        context.startActivityForResult(intent, request);
+        try {
+            context.startActivityForResult(intent, request);
+        } catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

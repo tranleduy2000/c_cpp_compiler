@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.Toast;
 
-import com.duy.ccppcompiler.BuildConfig;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.analyze.CppCheckAnalyzer;
@@ -37,6 +36,7 @@ import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.ccppcompiler.ui.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
+import com.duy.common.StoreUtil;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
@@ -128,10 +128,10 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                     .setIcon(R.drawable.ic_code_black_24dp);
             codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_open_terminal, 0, R.string.title_menu_terminal)
                     .setIcon(R.drawable.ic_terminal_black);
-            if (BuildConfig.DEBUG) {
-                codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_add_on, 0, R.string.title_menu_add_ons)
-                        .setIcon(R.drawable.baseline_extension_24);
-            }
+            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_install_libraries, 0, R.string.title_menu_install_libraries)
+                    .setIcon(R.drawable.baseline_extension_24);
+            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_report_bug, 0, R.string.report_bug)
+                    .setIcon(R.drawable.baseline_bug_report_24);
         }
 
         {
@@ -147,7 +147,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_install_add_on:
+            case R.id.action_install_libraries:
                 startActivity(new Intent(this, PackageManagerActivity.class));
                 return true;
 
@@ -188,6 +188,10 @@ public class CodeEditorActivity extends SimpleEditorActivity {
 
             case R.id.action_run_sdl_activity:
                 selectSDLFile();
+                break;
+
+            case R.id.action_report_bug:
+                StoreUtil.openBrowser(this, "https://github.com/tranleduy2000/c_cpp_compiler", 0);
                 break;
         }
         return super.onOptionsItemSelected(item);
