@@ -16,7 +16,8 @@
 
 package com.duy.ide.file;
 
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
+
+import android.text.SpannableStringBuilder;
 
 import com.jecelyin.editor.v2.io.FileReader;
 

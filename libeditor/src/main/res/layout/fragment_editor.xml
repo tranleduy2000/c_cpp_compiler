@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <com.duy.ide.editor.core.widget.GutterView
+        <com.duy.ide.editor.view.GutterView
             android:id="@+id/gutter_view"
             android:layout_width="0dp"
             android:layout_height="match_parent" />

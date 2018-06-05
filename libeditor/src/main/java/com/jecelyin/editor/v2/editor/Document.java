@@ -18,12 +18,12 @@ package com.jecelyin.editor.v2.editor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;

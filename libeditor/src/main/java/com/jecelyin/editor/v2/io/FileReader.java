@@ -18,10 +18,10 @@
 
 package com.jecelyin.editor.v2.io;
 
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
-import com.duy.ide.editor.core.util.GrowingArrayUtils;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
+import com.duy.ide.editor.util.GrowingArrayUtils;
 import com.jecelyin.common.utils.DLog;
 
 import java.io.File;
@@ -60,7 +60,7 @@ public class FileReader {
 
             lineCount = reader.getLineNumber() + 1;
             reader.close();
-            stringBuilder = new SpannableStringBuilder(arrayBuffer.buffer(), 0, arrayBuffer.length());
+            stringBuilder = new SpannableStringBuilder(new String(arrayBuffer.buffer(), 0, arrayBuffer.length()));
 
             return true;
         } catch (Exception e) {

@@ -19,8 +19,6 @@ package com.duy.ide.editor.view;
 
 import android.text.Editable;
 
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
-
 public class EditorCompat {
     public static void gotoTop(IEditAreaView editView) {
         editView.setSelection(0);
@@ -34,7 +32,7 @@ public class EditorCompat {
 
         int start = editAreaView.getSelectionStart();
         int end = editAreaView.getSelectionEnd();
-        SpannableStringBuilder text = new SpannableStringBuilder();
+        StringBuilder text = new StringBuilder();
         int offset;
         Editable mText = editAreaView.getEditableText();
         if (end == start) {

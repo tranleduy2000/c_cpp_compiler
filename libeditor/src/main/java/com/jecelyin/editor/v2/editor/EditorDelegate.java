@@ -42,10 +42,9 @@ import android.widget.Toast;
 import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
 import com.duy.ide.core.SimpleEditorActivity;
-import com.duy.ide.editor.core.text.style.ErrorSpan;
-import com.duy.ide.editor.core.text.style.WarningSpan;
-import com.duy.ide.editor.core.view.InputMethodManagerCompat;
-import com.duy.ide.editor.core.widget.BaseEditorView;
+import com.duy.ide.editor.text.style.ErrorSpan;
+import com.duy.ide.editor.text.style.WarningSpan;
+import com.duy.ide.editor.text.InputMethodManagerCompat;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.model.EditorIndex;
 import com.duy.ide.editor.view.IEditAreaView;
@@ -628,7 +627,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         String title;
         String encoding;
         String modeName;
-        BaseEditorView.SavedState editorState;
+        Parcelable editorState;
         byte[] textMd5;
         int textLength;
 
@@ -645,7 +644,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             this.modeName = in.readString();
             int hasState = in.readInt();
             if (hasState == 1) {
-                this.editorState = in.readParcelable(BaseEditorView.SavedState.class.getClassLoader());
+                this.editorState = in.readParcelable(Parcelable.class.getClassLoader());
             }
             this.textMd5 = in.createByteArray();
             this.textLength = in.readInt();

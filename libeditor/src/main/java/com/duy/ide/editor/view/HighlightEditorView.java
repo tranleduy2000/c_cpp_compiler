@@ -33,8 +33,7 @@ import android.util.TypedValue;
 import android.view.inputmethod.EditorInfo;
 
 import com.duy.common.DLog;
-import com.duy.ide.editor.core.text.LayoutContext;
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.text.LayoutContext;
 import com.duy.ide.editor.text.LineManager;
 import com.duy.ide.editor.text.TextLineNumber;
 import com.duy.ide.editor.theme.model.EditorTheme;
@@ -67,6 +66,7 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
      * We can not update line count when layout is null, lazy init
      */
     private boolean mNeedUpdateLineNumber = false;
+    private boolean mIsAutoIndent = true;
 
     public HighlightEditorView(Context context) {
         super(context);
@@ -125,7 +125,7 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         setFilters(new InputFilter[]{new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                if (mPreferences.isAutoIndent()) {
+                if (mIsAutoIndent) {
                     if (!(source.length() == 1 && source.charAt(0) == '\n')) {
                         return null;
                     }
@@ -308,9 +308,7 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
                 updateTabChar();
                 break;
             case Preferences.KEY_AUTO_INDENT:
-                if (getText() != null && getText() instanceof SpannableStringBuilder) {
-                    ((SpannableStringBuilder) getText()).setAutoIndent(mPreferences.isAutoIndent());
-                }
+                mIsAutoIndent = mPreferences.isAutoIndent();
                 break;
             case Preferences.KEY_AUTO_CAPITALIZE:
                 if (!mPreferences.isAutoCapitalize()) {
