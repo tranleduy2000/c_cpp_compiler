@@ -38,7 +38,7 @@ import com.jecelyin.common.utils.DLog;
 /**
  * Helper class for AbsListView to draw and control the Fast Scroll thumb
  */
-public class FastScroller {
+public class FastScroller2 {
 
     // Scroll thumb not showing
     private static final int STATE_NONE = 0;
@@ -58,7 +58,7 @@ public class FastScroller {
     private int mThumbW;
     private int mThumbY;
 
-    private EditText mList;
+    private EditText mEditText;
     //private boolean mScrollCompleted;
     private int mVisibleItem;
     private Paint mPaint;
@@ -80,8 +80,8 @@ public class FastScroller {
     private boolean mChangedBounds;
 
 
-    public FastScroller(Context context, EditText textView) {
-        mList = textView;
+    public FastScroller2(Context context, EditText textView) {
+        mEditText = textView;
         init(context);
     }
 
@@ -93,7 +93,7 @@ public class FastScroller {
         switch (state) {
             case STATE_NONE:
                 mHandler.removeCallbacks(mScrollFade);
-                mList.invalidate();
+                mEditText.invalidate();
                 break;
             case STATE_VISIBLE:
                 if (mState != STATE_VISIBLE) { // Optimization
@@ -104,15 +104,15 @@ public class FastScroller {
                 mHandler.removeCallbacks(mScrollFade);
                 break;
             case STATE_EXIT:
-                int viewWidth = mList.getWidth();
-                mList.invalidate(viewWidth - mThumbW, mThumbY, viewWidth, mThumbY + mThumbH);
+                int viewWidth = mEditText.getWidth();
+                mEditText.invalidate(viewWidth - mThumbW, mThumbY, viewWidth, mThumbY + mThumbH);
                 break;
         }
         mState = state;
     }
 
     private void resetThumbPos() {
-        final int viewWidth = mList.getWidth();
+        final int viewWidth = mEditText.getWidth();
         // Bounds are always top right. Y coordinate get's translated during draw
         //Log.v(TAG, "setBounds resetThumbPos left:"+String.valueOf(viewWidth - mThumbW)+" right:"+String.valueOf(viewWidth)+" button:"+String.valueOf(mThumbH));
         mThumbDrawable.setBounds(viewWidth - mThumbW, 0, viewWidth, mThumbH);
@@ -169,10 +169,10 @@ public class FastScroller {
             return;
         }
 
-        final int y = mThumbY + mList.getScrollY();
-        final int viewWidth = mList.getWidth();
-        final FastScroller.ScrollFade scrollFade = mScrollFade;
-        final int x = mList.getScrollX();
+        final int y = mThumbY + mEditText.getScrollY();
+        final int viewWidth = mEditText.getWidth();
+        final FastScroller2.ScrollFade scrollFade = mScrollFade;
+        final int x = mEditText.getScrollX();
 
         int alpha = -1;
         if (mState == STATE_EXIT) {
@@ -194,7 +194,7 @@ public class FastScroller {
         if (alpha == 0) { // Done with exit
             setState(STATE_NONE);
         } else {
-            mList.invalidate(viewWidth - mThumbW, y, viewWidth, y + mThumbH);
+            mEditText.invalidate(viewWidth - mThumbW, y, viewWidth, y + mThumbH);
         }
     }
 
@@ -226,7 +226,7 @@ public class FastScroller {
             return;
         }
         if (totalItemCount - visibleItemCount > 0 && mState != STATE_DRAGGING) {
-            mThumbY = ((mList.getHeight() - mThumbH) * firstVisibleItem)
+            mThumbY = ((mEditText.getHeight() - mThumbH) * firstVisibleItem)
                     / (totalItemCount - visibleItemCount);
 //            DLog.d("FSL onScroll thumbY=" + mThumbY);
             if (mChangedBounds) {
@@ -263,13 +263,13 @@ public class FastScroller {
     }
 
     private void scrollTo(float position) {
-        int count = mList.getLineCount();
+        int count = mEditText.getLineCount();
         //mScrollCompleted = false;
         int index = (int) (position * count);
         try {
-            int offset = mList.getLayout().getLineStart(index);
+            int offset = mEditText.getLayout().getLineStart(index);
             DLog.d("FSL scrollTo position=" + position + " offset=" + offset + " " + index + "/" + count);
-            Selection.setSelection((Spannable) mList.getText(), offset, offset);
+            Selection.setSelection((Spannable) mEditText.getText(), offset, offset);
         } catch (Exception e) {
             DLog.e("FSL scrollTo error", e);
         }
@@ -279,7 +279,7 @@ public class FastScroller {
     private void cancelFling() {
         // Cancel the list fling
         MotionEvent cancelFling = MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0, 0, 0);
-        mList.onTouchEvent(cancelFling);
+        mEditText.onTouchEvent(cancelFling);
         cancelFling.recycle();
     }
 
@@ -308,7 +308,7 @@ public class FastScroller {
                 if (mSections == null) {
                     getSectionsFromIndexer();
                 }
-                if (mList != null) {
+                if (mEditText != null) {
                 }
 
                 cancelFling();
@@ -324,7 +324,7 @@ public class FastScroller {
             }
         } else if (action == MotionEvent.ACTION_MOVE) {
             if (mState == STATE_DRAGGING) {
-                final int viewHeight = mList.getHeight();
+                final int viewHeight = mEditText.getHeight();
                 // Jitter
                 int newThumbY = (int) me.getY() - mThumbH / 2;
                 if (newThumbY < 0) {
@@ -349,7 +349,7 @@ public class FastScroller {
     }
 
     boolean isPointInside(float x, float y) {
-        int width = mList.getWidth();
+        int width = mEditText.getWidth();
         final int thumbY = mThumbY;
         DLog.d("FSL isPointInside y=" + y + " thumbY=" + thumbY);
         return x > width - mThumbW && y >= thumbY && y <= thumbY + mThumbH;
@@ -389,7 +389,7 @@ public class FastScroller {
             }
 
             if (getAlpha() > 0) {
-                mList.invalidate();
+                mEditText.invalidate();
             } else {
                 setState(STATE_NONE);
             }
