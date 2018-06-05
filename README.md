@@ -17,11 +17,10 @@ You can use this app to code and compile C/C++ project without Internet.
 - Native C compiler
 - Native C++ compiler
 - Static code analysic, it helps you to fix "difficult" bugs:
-    - memory leaks
-    - mismatching allocation and deallocation
-    - uninitialized variables usage
-    - array index out of bounds errors
-
+    1. memory leaks
+    1. mismatching allocation and deallocation
+    1. uninitialized variables usage
+    1. array index out of bounds errors
 - C/C++ code formatter using AStyle http://astyle.sourceforge.net/astyle.html#_indent-classes
 - Terminal emulator: full-featured terminal
 - Diagnostic utility: auto jump to error position
