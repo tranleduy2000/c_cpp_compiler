@@ -58,6 +58,11 @@ public class LineManager {
             if (layout == null) {
                 return 0;
             }
+            boolean verticalScrollBarEnabled = mEditText.isVerticalScrollBarEnabled();
+            if (!verticalScrollBarEnabled) {
+                return 0;
+            }
+
             int lineCount = layout.getLineCount();
             int line = (int) (mEditText.getScrollY() / ((float) layout.getHeight()) * lineCount);
             line = Math.max(0, Math.min(line, lineCount - 1));
@@ -73,8 +78,13 @@ public class LineManager {
             if (layout == null) {
                 return 0;
             }
-            mEditText.getGlobalVisibleRect(BOUND);
             int lineCount = mEditText.getLineCount();
+            boolean verticalScrollBarEnabled = mEditText.isVerticalScrollBarEnabled();
+            if (!verticalScrollBarEnabled) {
+                return lineCount - 1;
+            }
+
+            mEditText.getGlobalVisibleRect(BOUND);
             int line = (int) ((mEditText.getScrollY() + BOUND.height()) / ((float) layout.getHeight()) * lineCount);
             line = Math.max(0, Math.min(line, lineCount - 1));
             return line;

@@ -125,6 +125,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     public void setText(CharSequence text, BufferType type) {
         super.setText(text, type);
         mNeedUpdateLineNumber = true;
+        mPreLineCount = -1;
     }
 
     @Override
@@ -152,7 +153,6 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
 
         drawLineNumber(canvas);
     }
@@ -295,9 +295,10 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
 
         List<TextLineNumber.LineInfo> lines = mLineManager.getTextLineNumber().getLines();
         int x = mLayoutContext.getLineNumberX() + getScrollX();
+        int paddingTop = getPaddingTop();
         Paint paint = mLayoutContext.getGutterForegroundPaint();
         for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.getText(), x, line.getY(), paint);
+            canvas.drawText(line.getText(), x, line.getY() + paddingTop, paint);
         }
     }
 
@@ -368,7 +369,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        setNeedUpdateLineNumber(true);
+        updateLineNumberCount(start);
     }
 
     /**
@@ -400,7 +401,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     private void updateGutterSize() {
         int numberPadding = SysUtils.dpToPixels(getContext(), 2);
 
-        float textWidth = mLayoutContext.getGutterForegroundPaint().measureText(" ");
+        float textWidth = mLayoutContext.getGutterForegroundPaint().measureText("8");
         //plus 1 for some case: log(100) = 2, but we need 3
         double columnCount = Math.ceil(Math.log10(mLineManager.getRealLineCount() + 1)) + 1;
         mLayoutContext.setGutterWidth(((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/);
@@ -411,8 +412,4 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         setPadding(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
     }
 
-    public void setNeedUpdateLineNumber(boolean needUpdateLineNumber) {
-        mNeedUpdateLineNumber = needUpdateLineNumber;
-        mPreLineCount = -1;
-    }
 }
