@@ -25,6 +25,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -93,6 +94,10 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         setSaveEnabled(false);
 
         setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+        setInputType(InputType.TYPE_CLASS_TEXT
+                | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
 
         mLineManager = new LineManager(this);
         mPreferences = mLayoutContext.preferences = Preferences.getInstance(getContext());

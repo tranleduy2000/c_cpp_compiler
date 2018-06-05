@@ -46,7 +46,6 @@ public class Command {
         PASTE,
         SELECT_ALL,
         DUPLICATION,
-        CONVERT_WRAP_CHAR,
         GOTO_INDEX,
         FIND,
         GOTO_TOP,

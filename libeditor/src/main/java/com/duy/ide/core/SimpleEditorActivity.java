@@ -67,7 +67,6 @@ import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.dialog.GotoLineDialog;
 import com.jecelyin.editor.v2.dialog.LangListDialog;
-import com.jecelyin.editor.v2.dialog.WrapCharDialog;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorStateListener;
@@ -430,10 +429,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
             });
             rfm.show(this);
 
-        } else if (id == R.id.action_wrap) {
-            new WrapCharDialog(this).show();
-
-        } else if (id == R.id.action_highlight) {
+        }  else if (id == R.id.action_highlight) {
             new LangListDialog(this).show();
 
         } else if (id == R.id.m_menu) {

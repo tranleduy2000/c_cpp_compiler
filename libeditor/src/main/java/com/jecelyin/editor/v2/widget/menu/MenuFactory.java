@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.jecelyin.editor.v2.common.Command.CommandEnum.CONVERT_WRAP_CHAR;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_BACK;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.CURSOR_FORWARD;
 import static com.jecelyin.editor.v2.common.Command.CommandEnum.DOC_INFO;
@@ -121,7 +120,6 @@ public class MenuFactory {
 
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_undo, UNDO, R.drawable.ic_undo_white_24dp, R.string.undo));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_redo, REDO, R.drawable.ic_redo_white_24dp, R.string.redo));
-        menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_wrap, CONVERT_WRAP_CHAR, R.drawable.ic_wrap_text_white_24dp, R.string.line_separator));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_find_replace, FIND, R.drawable.ic_find_in_page_white_24dp, R.string.find_or_replace));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_goto_top, GOTO_TOP, R.drawable.ic_vertical_align_top_white_24dp, R.string.jump_to_start));
         menuItemInfos.add(new MenuItemInfo(MenuGroup.EDIT, R.id.action_goto_end, GOTO_END, R.drawable.ic_vertical_align_bottom_white_24dp, R.string.jump_to_end));

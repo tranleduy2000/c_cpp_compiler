@@ -308,11 +308,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 if (!readonly)
                     mEditText.duplicateSelection();
                 break;
-            // TODO: 04-Jun-18 remove
-            case CONVERT_WRAP_CHAR:
-//                if (!readonly)
-//                    mEditText.convertWrapCharTo((String) command.object);
-                break;
             case GOTO_INDEX:
                 int col = command.args.getInt("col", -1);
                 int line = command.args.getInt("line", -1);
