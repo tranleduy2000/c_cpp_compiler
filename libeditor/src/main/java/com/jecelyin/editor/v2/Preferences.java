@@ -31,7 +31,6 @@ import com.duy.ide.editor.theme.ThemeLoader;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
-import com.jecelyin.common.utils.SysUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +43,6 @@ import java.util.WeakHashMap;
  */
 public class Preferences implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String KEY_FONT_SIZE = "pref_font_size";
-    public static final String KEY_CURSOR_WIDTH = "pref_cursor_width";
     public static final String KEY_WORD_WRAP = "pref_word_wrap";
     public static final String KEY_SHOW_LINE_NUMBER = "pref_show_linenumber";
     public static final String KEY_SHOW_WHITESPACE = "pref_show_whitespace";
@@ -96,7 +94,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
         map = new HashMap<>();
         map.put(KEY_FONT_SIZE, 13);
-        map.put(KEY_CURSOR_WIDTH, 2);
         map.put(KEY_TOUCH_TO_ADJUST_TEXT_SIZE, false);
         map.put(KEY_WORD_WRAP, true);
         map.put(KEY_SHOW_LINE_NUMBER, true);
@@ -281,14 +278,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     public int getFontSize() {
         return (int) map.get(KEY_FONT_SIZE);
-    }
-
-    public int getCursorThickness() {
-        int width = (int) map.get(KEY_CURSOR_WIDTH);
-        if (width == 0)
-            return 0;
-
-        return SysUtils.dpToPixels(context, width);
     }
 
     public boolean isReadOnly() {

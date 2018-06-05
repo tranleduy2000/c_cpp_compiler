@@ -36,7 +36,6 @@ public class LayoutContext {
 
     public Preferences preferences;
 
-    public int cursorThickness;
     public boolean isShowWhiteSpace;
     public int whiteSpaceColor;
 
@@ -82,14 +81,6 @@ public class LayoutContext {
 
     public void setShowWhiteSpace(boolean showWhiteSpace) {
         isShowWhiteSpace = showWhiteSpace;
-    }
-
-    public int getCursorThickness() {
-        return cursorThickness;
-    }
-
-    public void setCursorThickness(int cursorThickness) {
-        this.cursorThickness = cursorThickness;
     }
 
     public int getLineNumber() {

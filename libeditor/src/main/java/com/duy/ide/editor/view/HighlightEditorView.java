@@ -115,7 +115,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         setTheme(mPreferences.getEditorTheme());
 
         onSharedPreferenceChanged(null, Preferences.KEY_FONT_SIZE);
-        onSharedPreferenceChanged(null, Preferences.KEY_CURSOR_WIDTH);
         onSharedPreferenceChanged(null, Preferences.KEY_SHOW_LINE_NUMBER);
         onSharedPreferenceChanged(null, Preferences.KEY_WORD_WRAP);
         onSharedPreferenceChanged(null, Preferences.KEY_SHOW_WHITESPACE);
@@ -296,9 +295,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         switch (key) {
             case Preferences.KEY_FONT_SIZE:
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, mPreferences.getFontSize());
-                break;
-            case Preferences.KEY_CURSOR_WIDTH:
-                mLayoutContext.cursorThickness = mPreferences.getCursorThickness();
                 break;
             case Preferences.KEY_SHOW_LINE_NUMBER:
                 setInitLineNumber(mLayoutContext.lineNumber);
