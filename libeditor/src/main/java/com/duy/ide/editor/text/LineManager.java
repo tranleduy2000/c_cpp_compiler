@@ -26,8 +26,6 @@ import android.widget.EditText;
 
 import com.duy.common.DLog;
 
-import java.util.Arrays;
-
 public class LineManager {
     private static final Rect BOUND = new Rect();
     private static final String TAG = "LineManager";
@@ -131,10 +129,16 @@ public class LineManager {
         }
         //in some case, edit text not init and return line count is 0
         lineCount = Math.max(lineCount, 1);
-
         if (mIsStartRealLine != null) {
-            mIsStartRealLine = Arrays.copyOf(mIsStartRealLine, lineCount);
-            mRealLines = Arrays.copyOf(mRealLines, lineCount);
+            boolean[] dest = new boolean[lineCount];
+            System.arraycopy(mIsStartRealLine, 0, dest, 0,
+                    Math.max(0, Math.min(mIsStartRealLine.length, startLine - 1)));
+            mIsStartRealLine = dest;
+
+            int[] dest2 = new int[lineCount];
+            System.arraycopy(mRealLines, 0, dest2, 0,
+                    Math.max(0, Math.min(mRealLines.length, startLine - 1)));
+            mRealLines = dest2;
         } else {
             mIsStartRealLine = new boolean[lineCount];
             mRealLines = new int[lineCount];
