@@ -24,16 +24,17 @@
             android:id="@+id/btn_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:typeface="monospace"
             app:srcCompat="@drawable/baseline_check_24"
             android:text="Select" />
 
     </LinearLayout>
 
-    <com.duy.ide.editor.core.widget.EditAreaView
+    <com.duy.ide.editor.view.EditAreaView2
         android:id="@+id/editor_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </com.duy.ide.editor.core.widget.EditAreaView>
+    </com.duy.ide.editor.view.EditAreaView2>
 </LinearLayout>
 

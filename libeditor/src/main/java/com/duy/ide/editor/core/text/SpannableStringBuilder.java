@@ -19,12 +19,6 @@
 package com.duy.ide.editor.core.text;
 
 
-import com.duy.ide.editor.core.graphics.CanvasCompat;
-import com.duy.ide.editor.core.text.method.Touch;
-import com.duy.ide.editor.core.util.ArrayUtils;
-import com.duy.ide.editor.core.util.EmptyArray;
-import com.duy.ide.editor.core.util.GrowingArrayUtils;
-import com.duy.ide.editor.core.widget.BaseEditorView;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.Editable;
@@ -46,7 +40,13 @@ import android.text.style.SuggestionSpan;
 import android.text.style.URLSpan;
 import android.util.Log;
 
+import com.duy.ide.editor.core.graphics.CanvasCompat;
+import com.duy.ide.editor.core.text.method.Touch;
 import com.duy.ide.editor.core.text.style.ErrorSpan;
+import com.duy.ide.editor.core.util.ArrayUtils;
+import com.duy.ide.editor.core.util.EmptyArray;
+import com.duy.ide.editor.core.util.GrowingArrayUtils;
+import com.duy.ide.editor.core.widget.BaseEditorView;
 
 import java.lang.reflect.Array;
 
@@ -552,86 +552,6 @@ public class SpannableStringBuilder implements CharSequence, GetChars, Spannable
         return replace(start, end, tb, 0, tb.length());
     }
 
-    /*
-    private boolean isprint(char c) { // XXX
-        if (c >= ' ' && c <= '~')
-            return true;
-        else
-            return false;
-    }
-
-    private static final int startFlag(int flag) {
-        return (flag >> 4) & 0x0F;
-    }
-
-    private static final int endFlag(int flag) {
-        return flag & 0x0F;
-    }
-
-    public void dump() { // XXX
-        for (int i = 0; i < mGapStart; i++) {
-            System.out.print('|');
-            System.out.print(' ');
-            System.out.print(isprint(mText[i]) ? mText[i] : '.');
-            System.out.print(' ');
-        }
-
-        for (int i = mGapStart; i < mGapStart + mGapLength; i++) {
-            System.out.print('|');
-            System.out.print('(');
-            System.out.print(isprint(mText[i]) ? mText[i] : '.');
-            System.out.print(')');
-        }
-
-        for (int i = mGapStart + mGapLength; i < mText.length; i++) {
-            System.out.print('|');
-            System.out.print(' ');
-            System.out.print(isprint(mText[i]) ? mText[i] : '.');
-            System.out.print(' ');
-        }
-
-        System.out.print('\n');
-
-        for (int i = 0; i < mText.length + 1; i++) {
-            int found = 0;
-            int wfound = 0;
-
-            for (int j = 0; j < mSpanCount; j++) {
-                if (mSpanStarts[j] == i) {
-                    found = 1;
-                    wfound = j;
-                    break;
-                }
-
-                if (mSpanEnds[j] == i) {
-                    found = 2;
-                    wfound = j;
-                    break;
-                }
-            }
-
-            if (found == 1) {
-                if (startFlag(mSpanFlags[wfound]) == MARK)
-                    System.out.print("(   ");
-                if (startFlag(mSpanFlags[wfound]) == PARAGRAPH)
-                    System.out.print("<   ");
-                else
-                    System.out.print("[   ");
-            } else if (found == 2) {
-                if (endFlag(mSpanFlags[wfound]) == POINT)
-                    System.out.print(")   ");
-                if (endFlag(mSpanFlags[wfound]) == PARAGRAPH)
-                    System.out.print(">   ");
-                else
-                    System.out.print("]   ");
-            } else {
-                System.out.print("    ");
-            }
-        }
-
-        System.out.print("\n");
-    }
-    */
 
     private CharSequence autoIndent(int start) {
         if (start < 0 || start >= mText.length)

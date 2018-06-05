@@ -1,7 +1,7 @@
 package com.duy.editor.theme;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +25,7 @@ import com.jecelyin.editor.v2.highlight.Buffer;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import org.gjt.sp.jedit.Catalog;
+import org.gjt.sp.jedit.Mode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +70,7 @@ public class EditorThemeFragment extends Fragment {
         private final ArrayList<EditorTheme> mEditorThemes;
         private Context mContext;
         private OnThemeSelectListener onThemeSelectListener;
+        private Mode mLanguage = Catalog.getModeByName("C++");
 
         public EditorThemeAdapter(Context context) {
             mContext = context;
@@ -104,13 +106,14 @@ public class EditorThemeFragment extends Fragment {
             Highlighter highlighter = new Highlighter();
             editorView.setTheme(editorTheme);
 
-            buffer.setMode(Catalog.getModeByName("C++"), mContext);
-            editorView.setText(new SpannableStringBuilder());
+            buffer.setMode(mLanguage, mContext);
+            editorView.setText("");
             editorView.getText().insert(0, getSampleData());
 
             buffer.setEditable(editorView.getText());
             buffer.insert(0, getSampleData());
 
+            @SuppressLint("UseSparseArrays")
             HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap = new HashMap<>();
             int lineCount = buffer.getLineManager().getLineCount();
             highlighter.highlight(buffer, editorTheme, colorsMap, editorView.getText(), 0, lineCount - 1);
@@ -134,7 +137,7 @@ public class EditorThemeFragment extends Fragment {
             return mEditorThemes.size();
         }
 
-        private CharSequence getSampleData() {
+        private String getSampleData() {
             return "// C++ Program to Find Largest Element of an Array\n" +
                     "\n" +
                     "// This program takes n number of element from user (where, n is specified by user) and stores data in an array. Then, this program displays the largest element of that array using loops.\n" +

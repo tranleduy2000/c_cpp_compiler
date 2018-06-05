@@ -19,11 +19,9 @@ package com.duy.ide.editor.view;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.duy.ide.editor.core.text.LayoutContext;
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
-import com.duy.ide.editor.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
@@ -34,6 +32,9 @@ import android.util.TypedValue;
 import android.view.inputmethod.EditorInfo;
 
 import com.duy.common.DLog;
+import com.duy.ide.editor.core.text.LayoutContext;
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.core.widget.model.EditorIndex;
 import com.duy.ide.editor.text.LineManager;
 import com.duy.ide.editor.text.TextLineNumber;
 import com.duy.ide.editor.theme.model.EditorTheme;
@@ -59,6 +60,10 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
      * Store last line count has been calculated
      */
     private int mPreLineCount;
+    /**
+     * We can not update line count when layout is null, lazy init
+     */
+    private boolean mNeedUpdateLineNumber = false;
     /**
      * Line manager will be calculate real lines and virtual lines
      */
@@ -102,6 +107,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         mLayoutContext.setGutterBackgroundPaint(new Paint(getPaint()));
 
         setInitLineNumber(1);
+        setTypeface(Typeface.MONOSPACE);
         setTextSize(getTextSize());
         setTheme(mPreferences.getEditorTheme());
 
@@ -116,19 +122,9 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     }
 
     @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        updateLineNumberCount(start);
-    }
-
-
-    @Override
     public void setText(CharSequence text, BufferType type) {
-        if (text instanceof SpannableStringBuilder) {
-            super.setText(text, type);
-        } else {
-            super.setText(new SpannableStringBuilder(text), type);
-        }
+        super.setText(text, type);
+        mNeedUpdateLineNumber = true;
     }
 
     @Override
@@ -156,6 +152,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
 
         drawLineNumber(canvas);
     }
@@ -265,6 +262,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     /**
      * Calculate padding line number padding
      */
+    @Override
     public void setInitLineNumber(int lineNumber) {
         if (!mLayoutContext.preferences.isShowLineNumber()) {
             //invalidate
@@ -272,13 +270,18 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
             return;
         }
         mLayoutContext.setLineNumber(lineNumber);
-        updateGutterSize();
+        updateLineNumberCount(0);
     }
 
 
     private void drawLineNumber(Canvas canvas) {
         if (!mLayoutContext.getPreferences().isShowLineNumber()) {
             return;
+        }
+
+        if (mNeedUpdateLineNumber) {
+            updateLineNumberCount(0);
+            mNeedUpdateLineNumber = false;
         }
 
         //calculate position
@@ -362,6 +365,12 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         updateTabChar();
     }
 
+    @Override
+    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+        setNeedUpdateLineNumber(true);
+    }
+
     /**
      * Update tab width
      */
@@ -370,7 +379,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         float spaceWidth = getPaint().measureText(" ");
         float tabWidth = spaceWidth * (mPreferences == null ? 4 : mPreferences.getTabSize());
         try {
-            Field tabIncrement = ReflectionUtil.getField(Layout.class, "TAB_INCREMENT", true);
+            Field tabIncrement = ReflectionUtil.getField(getLayout().getClass(), "TAB_INCREMENT", true);
             ReflectionUtil.setFinalStatic(tabIncrement, (int) tabWidth);
             postInvalidate();
         } catch (Exception e) {
@@ -402,4 +411,8 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         setPadding(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
     }
 
+    public void setNeedUpdateLineNumber(boolean needUpdateLineNumber) {
+        mNeedUpdateLineNumber = needUpdateLineNumber;
+        mPreLineCount = -1;
+    }
 }
