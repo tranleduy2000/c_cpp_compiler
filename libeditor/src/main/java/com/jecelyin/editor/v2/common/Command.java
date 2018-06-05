@@ -50,8 +50,6 @@ public class Command {
         FIND,
         GOTO_TOP,
         GOTO_END,
-        CURSOR_BACK,
-        CURSOR_FORWARD,
         DOC_INFO,
         READONLY_MODE,
         HIGHLIGHT,
