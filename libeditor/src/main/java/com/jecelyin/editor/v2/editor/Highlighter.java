@@ -1,7 +1,7 @@
 package com.jecelyin.editor.v2.editor;
 
-import android.core.text.SpannableStringBuilder;
-import android.core.text.style.ErrorSpan;
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.core.text.style.ErrorSpan;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.Spannable;

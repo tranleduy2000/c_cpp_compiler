@@ -18,8 +18,8 @@
 
 package com.jecelyin.editor.v2.io;
 
-import android.core.text.SpannableStringBuilder;
-import android.core.util.GrowingArrayUtils;
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.core.util.GrowingArrayUtils;
 import android.text.TextUtils;
 
 import com.jecelyin.common.utils.DLog;

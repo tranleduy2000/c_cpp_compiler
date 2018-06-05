@@ -5,8 +5,8 @@ package com.duy.ide.editor.content;/*
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.core.content.IUndoManager;
-import android.core.widget.BaseEditorView;
+import com.duy.ide.editor.core.content.IUndoManager;
+import com.duy.ide.editor.core.widget.BaseEditorView;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;

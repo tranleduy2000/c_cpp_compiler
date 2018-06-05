@@ -1,7 +1,7 @@
 package com.duy.editor.theme;
 
 import android.content.Context;
-import android.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

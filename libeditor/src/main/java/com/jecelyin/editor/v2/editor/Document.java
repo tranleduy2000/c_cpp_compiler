@@ -18,7 +18,7 @@ package com.jecelyin.editor.v2.editor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

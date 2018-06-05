@@ -18,7 +18,7 @@ package com.duy.ide.editor.content;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.core.widget.BaseEditorView;
+import com.duy.ide.editor.core.widget.BaseEditorView;
 import android.support.annotation.Nullable;
 
 import java.io.File;

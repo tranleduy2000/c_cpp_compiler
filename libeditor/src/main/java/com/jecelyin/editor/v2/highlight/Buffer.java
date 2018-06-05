@@ -18,7 +18,7 @@ package com.jecelyin.editor.v2.highlight;
 
 
 import android.content.Context;
-import android.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
 import android.text.GetChars;
 
 import com.jecelyin.common.utils.DLog;

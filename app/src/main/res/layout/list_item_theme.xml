@@ -29,11 +29,11 @@
 
     </LinearLayout>
 
-    <android.core.widget.EditAreaView
+    <com.duy.ide.editor.core.widget.EditAreaView
         android:id="@+id/editor_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </android.core.widget.EditAreaView>
+    </com.duy.ide.editor.core.widget.EditAreaView>
 </LinearLayout>
 

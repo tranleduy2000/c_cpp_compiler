@@ -17,7 +17,7 @@
 
 package com.duy.ide.editor.view;
 
-import android.core.widget.model.EditorIndex;
+import com.duy.ide.editor.core.widget.model.EditorIndex;
 
 import com.duy.ide.editor.theme.model.EditorTheme;
 

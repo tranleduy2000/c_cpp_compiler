@@ -19,9 +19,9 @@ package com.duy.ide.editor.view;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.core.text.LayoutContext;
-import android.core.text.SpannableStringBuilder;
-import android.core.widget.model.EditorIndex;
+import com.duy.ide.editor.core.text.LayoutContext;
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
+import com.duy.ide.editor.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;

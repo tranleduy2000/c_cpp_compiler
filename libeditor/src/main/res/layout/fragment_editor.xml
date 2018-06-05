@@ -10,7 +10,7 @@
         android:layout_marginBottom="50dp"
         android:orientation="horizontal">
 
-        <android.core.widget.GutterView
+        <com.duy.ide.editor.core.widget.GutterView
             android:id="@+id/gutter_view"
             android:layout_width="0dp"
             android:layout_height="match_parent" />
