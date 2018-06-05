@@ -17,18 +17,19 @@
 
 package com.duy.ide.editor.view;
 
-public interface IEditActionSupport {
-    void undo();
+import android.content.Context;
+import android.util.AttributeSet;
 
-    void redo();
+public class CodeEditor extends EditActionSupportEditor {
+    public CodeEditor(Context context) {
+        super(context);
+    }
 
-    boolean doCut();
+    public CodeEditor(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-    boolean doCopy();
-
-    boolean doPaste();
-
-    void selectAll();
-
-    void duplicateSelection();
+    public CodeEditor(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 }

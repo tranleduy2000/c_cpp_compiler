@@ -344,12 +344,14 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         float spaceWidth = getPaint().measureText(" ");
         float tabWidth = spaceWidth * (mPreferences == null ? 4 : mPreferences.getTabSize());
         try {
-            Field tabIncrement = ReflectionUtil.getField(getLayout().getClass(),
+            Field tabIncrement = ReflectionUtil.getField(Layout.class,
                     "TAB_INCREMENT", true);
             ReflectionUtil.setFinalStatic(tabIncrement, (int) tabWidth);
             postInvalidate();
         } catch (Exception e) {
-            if (DLog.DEBUG) DLog.w(TAG, "updateTabChar: can not set tab width");
+            if (DLog.DEBUG) {
+                DLog.w(TAG, "updateTabChar: can not set tab width. Exception " + e.getClass().getName());
+            }
         }
     }
 

@@ -17,13 +17,17 @@
 
 package com.duy.ide.editor.content;
 
-import com.duy.ide.editor.view.IEditAreaView;
+import android.widget.EditText;
 
 public class UndoManager implements IUndoManager {
+    private static final int MAX_HISTORY_EDIT = 100;
+
     private UndoRedoHelper mUndoRedoHelper;
 
-    public UndoManager(IEditAreaView editText) {
+    public UndoManager(EditText editText) {
         mUndoRedoHelper = new UndoRedoHelper(editText);
+        mUndoRedoHelper.attach();
+        mUndoRedoHelper.setMaxHistorySize(MAX_HISTORY_EDIT);
     }
 
     @Override

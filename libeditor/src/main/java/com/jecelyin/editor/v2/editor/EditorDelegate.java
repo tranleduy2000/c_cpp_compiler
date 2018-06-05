@@ -281,12 +281,14 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 InputMethodManagerCompat.showSoftInput((View) mEditText);
                 break;
             case UNDO:
-                if (!readonly)
+                if (!readonly) {
                     mEditText.undo();
+                }
                 break;
             case REDO:
-                if (!readonly)
+                if (!readonly) {
                     mEditText.redo();
+                }
                 break;
             case CUT:
                 if (!readonly) {
@@ -528,7 +530,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @MainThread
     public void onDocumentChanged() {
         setCurrentFileToEdit(mDocument.getFile());
-        getActivity().invalidateEditMenu(mDocument, mEditText);
         getActivity().getTabManager().onDocumentChanged(mDocument);
     }
 
@@ -545,7 +546,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Override
     public void afterTextChanged(Editable s) {
         if (loaded) {
-            getActivity().invalidateEditMenu(mDocument, mEditText);
             getActivity().getTabManager().onDocumentChanged(mDocument);
         }
     }

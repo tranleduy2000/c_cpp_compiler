@@ -107,18 +107,26 @@ public class ReflectionUtil {
 
     public static void setFinalStatic(Field field, Object newValue) throws Exception {
         field.setAccessible(true);
+        makeNotFinal(field);
+        field.set(null, newValue);
+    }
 
+    public static void setFinalStatic(Field field, int newValue) throws Exception {
+        field.setAccessible(true);
+        makeNotFinal(field);
+        field.set(null, newValue);
+    }
+
+    private static void makeNotFinal(Field field) throws IllegalAccessException, NoSuchFieldException {
         try {
             Field modifiersField = Field.class.getDeclaredField("modifiers");
             modifiersField.setAccessible(true);
             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        }catch (NoSuchFieldException e){
+        } catch (NoSuchFieldException e) {
             Field modifiersField = Field.class.getDeclaredField("accessFlags");
             modifiersField.setAccessible(true);
             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         }
-
-        field.set(null, newValue);
     }
 
 

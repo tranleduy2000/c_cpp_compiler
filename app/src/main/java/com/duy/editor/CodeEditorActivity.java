@@ -42,10 +42,8 @@ import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.core.SimpleEditorActivity;
-import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
@@ -144,12 +142,6 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                     .setIcon(R.drawable.ic_settings_white_24dp);
         }
         super.onCreateNavigationMenu(menu);
-    }
-
-    @Override
-    public void invalidateEditMenu(Document document, IEditAreaView mEditText) {
-        super.invalidateEditMenu(document, mEditText);
-        setMenuStatus(R.id.action_run, document != null ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
     }
 
     @Override

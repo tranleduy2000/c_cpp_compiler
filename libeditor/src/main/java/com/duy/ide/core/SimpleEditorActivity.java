@@ -53,7 +53,6 @@ import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.view.DiagnosticFragment;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
-import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.SaveListener;
 import com.duy.ide.file.dialogs.DialogNewFile;
@@ -69,7 +68,6 @@ import com.jecelyin.editor.v2.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.dialog.GotoLineDialog;
 import com.jecelyin.editor.v2.dialog.LangListDialog;
 import com.jecelyin.editor.v2.dialog.WrapCharDialog;
-import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorStateListener;
@@ -361,7 +359,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
                 continue;
             }
             SubMenu subMenu = container.addSubMenu(MenuDef.GROUP_TOOLBAR, group.getMenuId(), 0, group.getTitleId());
-            subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             if (group.getIconId() != 0) {
                 subMenu.getItem().setIcon(MenuManager.makeToolbarNormalIcon(this, group.getIconId()));
             }
@@ -736,14 +734,6 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     public RecyclerView getTabRecyclerView() {
         return mTabRecyclerView;
     }
-
-    @CallSuper
-    public void invalidateEditMenu(Document document, IEditAreaView mEditText) {
-//        setMenuStatus(R.id.action_save, document.isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-//        setMenuStatus(R.id.action_undo, mEditText != null && mEditText.isCanUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-//        setMenuStatus(R.id.action_redo, mEditText != null && mEditText.isCanRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-    }
-
 
     @Override
     public void onEditorViewCreated(IEditorDelegate editorDelegate) {

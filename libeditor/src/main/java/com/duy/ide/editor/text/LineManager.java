@@ -24,8 +24,6 @@ import android.text.Layout;
 import android.text.TextUtils;
 import android.widget.EditText;
 
-import com.duy.common.DLog;
-
 public class LineManager {
     private static final Rect BOUND = new Rect();
     private static final String TAG = "LineManager";
@@ -104,9 +102,6 @@ public class LineManager {
 
         int firstVisibleLine = getFirstVisibleVirtualLine();
         int lastVisibleLine = Math.min(mIsStartRealLine.length - 1, getLastVisibleVirtualLine());
-
-        if (DLog.DEBUG) DLog.d(TAG, "firstVisibleLine = " + firstVisibleLine);
-        if (DLog.DEBUG) DLog.d(TAG, "lastVisibleLine = " + lastVisibleLine);
 
         for (int virLine = firstVisibleLine; virLine <= lastVisibleLine; virLine++) {
             if (mIsStartRealLine[virLine]) {

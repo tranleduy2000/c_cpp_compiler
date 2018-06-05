@@ -62,15 +62,6 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
         mUndoManager.undo();
     }
 
-    public boolean isCanRedo() {
-        return mUndoManager.canRedo();
-    }
-
-    @Override
-    public boolean isCanUndo() {
-        return mUndoManager.canUndo();
-    }
-
     @Override
     public boolean doCopy() {
         if (!onTextContextMenuItem(android.R.id.copy)) {

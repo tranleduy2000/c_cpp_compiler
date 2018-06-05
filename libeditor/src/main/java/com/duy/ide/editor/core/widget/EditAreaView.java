@@ -281,14 +281,6 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         undoManager.undo();
     }
 
-    public boolean isCanRedo() {
-        return undoManager.canRedo();
-    }
-
-    public boolean isCanUndo() {
-        return undoManager.canUndo();
-    }
-
     public boolean doCopy() {
         return canCopy() && onTextContextMenuItem(ID_COPY);
     }
