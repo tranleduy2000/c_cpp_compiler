@@ -48,7 +48,6 @@ import com.duy.ide.editor.core.view.InputMethodManagerCompat;
 import com.duy.ide.editor.core.widget.BaseEditorView;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.model.EditorIndex;
-import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -149,9 +148,9 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         return mEditText;
     }
 
-    public void setEditorView(EditorView editorView) {
+    public void setEditorView(IEditAreaView editorView) {
         mContext = editorView.getContext();
-        mEditText = editorView.getEditText();
+        mEditText = editorView;
         mOrientation = mContext.getResources().getConfiguration().orientation;
 
         TypedArray a = mContext.obtainStyledAttributes(new int[]{R.attr.findResultsKeyword});

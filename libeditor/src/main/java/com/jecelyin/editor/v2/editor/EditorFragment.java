@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
-import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
 
 import java.io.File;
@@ -70,8 +70,8 @@ public class EditorFragment extends Fragment {
             File file = (File) arguments.getSerializable(KEY_FILE);
             mEditorDelegate = new EditorDelegate(file, offset, encoding);
         }
-        EditorView view = (EditorView) inflater.inflate(R.layout.fragment_editor, container, false);
-        mEditorDelegate.setEditorView(view);
+        View view =  inflater.inflate(R.layout.fragment_editor, container, false);
+        mEditorDelegate.setEditorView((IEditAreaView) view.findViewById(R.id.edit_text));
         return view;
     }
 
