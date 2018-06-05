@@ -39,7 +39,7 @@ import com.duy.ide.editor.core.text.Layout;
 import com.duy.ide.editor.core.text.Selection;
 import com.duy.ide.editor.core.text.method.ArrowKeyMovementMethod;
 import com.duy.ide.editor.core.text.method.MovementMethod;
-import com.duy.ide.editor.core.widget.model.EditorIndex;
+import com.duy.ide.editor.model.EditorIndex;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.common.utils.LimitedQueue;
 import com.jecelyin.editor.v2.Preferences;
@@ -281,23 +281,23 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         undoManager.undo();
     }
 
-    public boolean canRedo() {
+    public boolean isCanRedo() {
         return undoManager.canRedo();
     }
 
-    public boolean canUndo() {
+    public boolean isCanUndo() {
         return undoManager.canUndo();
     }
 
-    public boolean copy() {
+    public boolean doCopy() {
         return canCopy() && onTextContextMenuItem(ID_COPY);
     }
 
-    public boolean paste() {
+    public boolean doPaste() {
         return canPaste() && onTextContextMenuItem(ID_PASTE);
     }
 
-    public boolean cut() {
+    public boolean doCut() {
         return canCut() && onTextContextMenuItem(ID_CUT);
     }
 

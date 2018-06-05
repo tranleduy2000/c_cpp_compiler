@@ -25,11 +25,12 @@ import android.text.method.KeyListener;
 import android.util.AttributeSet;
 
 import com.duy.ide.editor.content.ClipboardCompat;
-import com.duy.ide.editor.core.content.UndoManager;
-import com.duy.ide.editor.core.widget.model.EditorIndex;
+import com.duy.ide.editor.content.IUndoManager;
+import com.duy.ide.editor.content.UndoManager;
+import com.duy.ide.editor.model.EditorIndex;
 
 public class EditActionSupportEditor extends ZoomSupportEditor {
-    private UndoManager mUndoManager;
+    private IUndoManager mUndoManager;
     private ClipboardCompat mClipboard;
     private KeyListener mLastKeyListener;
 
@@ -49,7 +50,7 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
     }
 
     private void init(Context context) {
-        mUndoManager = new UndoManager();
+        mUndoManager = new UndoManager(this);
         mClipboard = new ClipboardCompat(context);
     }
 
@@ -61,17 +62,17 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
         mUndoManager.undo();
     }
 
-    public boolean canRedo() {
+    public boolean isCanRedo() {
         return mUndoManager.canRedo();
     }
 
     @Override
-    public boolean canUndo() {
+    public boolean isCanUndo() {
         return mUndoManager.canUndo();
     }
 
     @Override
-    public boolean copy() {
+    public boolean doCopy() {
         if (!onTextContextMenuItem(android.R.id.copy)) {
             int selectionStart = getSelectionStart();
             int selectionEnd = getSelectionEnd();
@@ -88,7 +89,7 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
 
     @Override
 
-    public boolean paste() {
+    public boolean doPaste() {
         if (!onTextContextMenuItem(android.R.id.paste)) {
             CharSequence clipboard = mClipboard.getClipboard();
             if (clipboard != null) {
@@ -105,7 +106,7 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
 
     @Override
 
-    public boolean cut() {
+    public boolean doCut() {
         if (!onTextContextMenuItem(android.R.id.cut)) {
             int selectionStart = getSelectionStart();
             int selectionEnd = getSelectionEnd();

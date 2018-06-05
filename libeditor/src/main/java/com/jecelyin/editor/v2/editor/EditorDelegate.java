@@ -19,11 +19,6 @@ package com.jecelyin.editor.v2.editor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import com.duy.ide.editor.core.text.style.ErrorSpan;
-import com.duy.ide.editor.core.text.style.WarningSpan;
-import com.duy.ide.editor.core.view.InputMethodManagerCompat;
-import com.duy.ide.editor.core.widget.BaseEditorView;
-import com.duy.ide.editor.core.widget.model.EditorIndex;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -47,7 +42,12 @@ import android.widget.Toast;
 import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
 import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.editor.core.text.style.ErrorSpan;
+import com.duy.ide.editor.core.text.style.WarningSpan;
+import com.duy.ide.editor.core.view.InputMethodManagerCompat;
+import com.duy.ide.editor.core.widget.BaseEditorView;
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.model.EditorIndex;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.file.SaveListener;
@@ -290,15 +290,15 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 break;
             case CUT:
                 if (!readonly) {
-                    mEditText.cut();
+                    mEditText.doCut();
                     return;
                 }
             case COPY:
-                mEditText.copy();
+                mEditText.doCopy();
                 return;
             case PASTE:
                 if (!readonly) {
-                    mEditText.paste();
+                    mEditText.doPaste();
                     return;
                 }
             case SELECT_ALL:

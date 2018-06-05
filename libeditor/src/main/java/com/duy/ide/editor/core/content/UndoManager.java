@@ -16,11 +16,12 @@
 
 package com.duy.ide.editor.core.content;
 
-import com.duy.ide.editor.content.IUndoManager;
-import com.duy.ide.editor.core.text.TextUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.ArrayMap;
+
+import com.duy.ide.editor.content.IUndoManager;
+import com.duy.ide.editor.core.text.TextUtils;
 
 import java.util.ArrayList;
 

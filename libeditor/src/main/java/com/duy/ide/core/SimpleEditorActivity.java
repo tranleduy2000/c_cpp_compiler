@@ -739,9 +739,9 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
 
     @CallSuper
     public void invalidateEditMenu(Document document, IEditAreaView mEditText) {
-        setMenuStatus(R.id.action_save, document.isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        setMenuStatus(R.id.action_undo, mEditText != null && mEditText.canUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
-        setMenuStatus(R.id.action_redo, mEditText != null && mEditText.canRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+//        setMenuStatus(R.id.action_save, document.isChanged() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+//        setMenuStatus(R.id.action_undo, mEditText != null && mEditText.isCanUndo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
+//        setMenuStatus(R.id.action_redo, mEditText != null && mEditText.isCanRedo() ? MenuDef.STATUS_NORMAL : MenuDef.STATUS_DISABLED);
     }
 
 

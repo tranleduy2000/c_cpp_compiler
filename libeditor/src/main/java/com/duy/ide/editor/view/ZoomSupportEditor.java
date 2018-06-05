@@ -31,9 +31,6 @@ import android.view.ViewParent;
 
 import com.jecelyin.editor.v2.Preferences;
 
-/**
- * @author Jecelyin Peng <jecelyin@gmail.com>
- */
 public abstract class ZoomSupportEditor extends HighlightEditorView implements IEditAreaView {
     /**
      * Indicates that we are not in the middle of a touch gesture

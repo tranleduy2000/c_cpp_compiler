@@ -17,20 +17,20 @@
 
 package com.duy.ide.editor.view;
 
-interface IEditActionSupport {
+public interface IEditActionSupport {
     void undo();
 
     void redo();
 
-    boolean canUndo();
+    boolean isCanUndo();
 
-    boolean canRedo();
+    boolean isCanRedo();
 
-    boolean cut();
+    boolean doCut();
 
-    boolean copy();
+    boolean doCopy();
 
-    boolean paste();
+    boolean doPaste();
 
     void selectAll();
 

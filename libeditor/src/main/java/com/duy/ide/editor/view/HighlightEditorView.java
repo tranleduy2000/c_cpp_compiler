@@ -24,7 +24,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
 import android.text.Layout;
 import android.text.Spanned;
@@ -46,7 +45,8 @@ import com.jecelyin.editor.v2.Preferences;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public abstract class HighlightEditorView extends AppCompatEditText implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class HighlightEditorView extends android.support.v7.widget.AppCompatEditText
+        implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "EditAreaView2";
     private final LayoutContext mLayoutContext = new LayoutContext();
     protected Preferences mPreferences;
@@ -344,11 +344,12 @@ public abstract class HighlightEditorView extends AppCompatEditText implements I
         float spaceWidth = getPaint().measureText(" ");
         float tabWidth = spaceWidth * (mPreferences == null ? 4 : mPreferences.getTabSize());
         try {
-            Field tabIncrement = ReflectionUtil.getField(getLayout().getClass(), "TAB_INCREMENT", true);
+            Field tabIncrement = ReflectionUtil.getField(getLayout().getClass(),
+                    "TAB_INCREMENT", true);
             ReflectionUtil.setFinalStatic(tabIncrement, (int) tabWidth);
             postInvalidate();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "updateTabChar: can not set tab width");
         }
     }
 
@@ -375,7 +376,7 @@ public abstract class HighlightEditorView extends AppCompatEditText implements I
         int newPaddingLeft = mLayoutContext.getGutterWidth() + gutterPaddingRight;
         setPadding(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
     }
-    
+
     public int getMaxScrollY() {
         if (getLayout() == null)
             return 0;

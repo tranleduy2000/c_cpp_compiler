@@ -17,7 +17,7 @@
 
 package com.duy.ide.editor.view;
 
-import com.duy.ide.editor.core.widget.model.EditorIndex;
+import com.duy.ide.editor.model.EditorIndex;
 
 import com.duy.ide.editor.theme.model.EditorTheme;
 

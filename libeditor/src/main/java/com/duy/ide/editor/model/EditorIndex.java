@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.core.widget.model;
+package com.duy.ide.editor.model;
 
 /**
  * Created by Duy on 30-Apr-18.

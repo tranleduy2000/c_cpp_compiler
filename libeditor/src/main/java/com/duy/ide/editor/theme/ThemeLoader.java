@@ -3,6 +3,7 @@ package com.duy.ide.editor.theme;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.duy.common.DLog;
 import com.duy.ide.editor.theme.model.EditorTheme;
 
 import org.apache.commons.io.IOUtils;
@@ -18,6 +19,7 @@ public class ThemeLoader {
     private static final String ASSET_PATH = "themes/vscode";
     private static final String DEFAULT_EDITOR_THEME_LIGHT = "github-light.json.properties";
     private static final HashMap<String, EditorTheme> CACHED = new HashMap<>();
+    private static final String TAG = "ThemeLoader";
 
     public static void init(Context context) {
         try {
@@ -74,12 +76,11 @@ public class ThemeLoader {
             editorTheme.setFileName(fileName);
             return editorTheme;
         } catch (IOException e) {
-            e.printStackTrace();
+            if (DLog.DEBUG) DLog.w(TAG, "loadFromAsset: Can not load theme " + fileName);
         }
 
         return null;
     }
-
 
     private static EditorTheme loadTheme(Properties properties) {
         EditorTheme editorTheme = new EditorTheme();
