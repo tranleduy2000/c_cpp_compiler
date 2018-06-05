@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import com.duy.ide.editor.core.text.Selection;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -30,6 +29,7 @@ import android.text.Spannable;
 import android.view.MotionEvent;
 import android.widget.SectionIndexer;
 
+import com.duy.ide.editor.core.text.Selection;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
 
@@ -56,7 +56,7 @@ public class FastScroller {
     private int mThumbW;
     private int mThumbY;
 
-    private BaseEditorView mList;
+    private EditAreaView mList;
     //private boolean mScrollCompleted;
     private int mVisibleItem;
     private Paint mPaint;
@@ -79,7 +79,7 @@ public class FastScroller {
 
 //    private String TAG = "FastScroller";
 
-    public FastScroller(Context context, BaseEditorView textView) {
+    public FastScroller(Context context, EditAreaView textView) {
         mList = textView;
         init(context);
     }

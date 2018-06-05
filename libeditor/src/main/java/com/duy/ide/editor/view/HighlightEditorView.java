@@ -47,7 +47,7 @@ import com.jecelyin.editor.v2.Preferences;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
+public class HighlightEditorView extends AppCompatEditText implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "EditAreaView2";
     private final LayoutContext mLayoutContext = new LayoutContext();
     protected Preferences mPreferences;
@@ -71,18 +71,18 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
      */
     private LineManager mLineManager;
 
-    public EditAreaView2(Context context) {
+    public HighlightEditorView(Context context) {
         super(context);
         init(context);
     }
 
-    public EditAreaView2(Context context, AttributeSet attrs) {
+    public HighlightEditorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
 
     }
 
-    public EditAreaView2(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HighlightEditorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

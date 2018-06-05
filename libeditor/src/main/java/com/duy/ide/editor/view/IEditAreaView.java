@@ -67,4 +67,5 @@ public interface IEditAreaView extends IEditableSupport, IdeEditor {
     Parcelable onSaveInstanceState();
 
     Context getContext();
+
 }

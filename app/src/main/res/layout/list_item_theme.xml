@@ -29,12 +29,12 @@
 
     </LinearLayout>
 
-    <com.duy.ide.editor.view.EditAreaView2
+    <com.duy.ide.editor.view.HighlightEditorView
         android:id="@+id/editor_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:typeface="monospace">
 
-    </com.duy.ide.editor.view.EditAreaView2>
+    </com.duy.ide.editor.view.HighlightEditorView>
 </LinearLayout>
 

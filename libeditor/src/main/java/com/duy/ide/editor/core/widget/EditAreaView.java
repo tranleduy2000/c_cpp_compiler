@@ -19,12 +19,6 @@
 package com.duy.ide.editor.core.widget;
 
 import android.content.Context;
-import com.duy.ide.editor.core.content.UndoManager;
-import com.duy.ide.editor.core.text.Layout;
-import com.duy.ide.editor.core.text.Selection;
-import com.duy.ide.editor.core.text.method.ArrowKeyMovementMethod;
-import com.duy.ide.editor.core.text.method.MovementMethod;
-import com.duy.ide.editor.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
@@ -40,6 +34,12 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 
+import com.duy.ide.editor.core.content.UndoManager;
+import com.duy.ide.editor.core.text.Layout;
+import com.duy.ide.editor.core.text.Selection;
+import com.duy.ide.editor.core.text.method.ArrowKeyMovementMethod;
+import com.duy.ide.editor.core.text.method.MovementMethod;
+import com.duy.ide.editor.core.widget.model.EditorIndex;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.common.utils.LimitedQueue;
 import com.jecelyin.editor.v2.Preferences;
@@ -198,13 +198,6 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         selectAllText();
     }
 
-    /**
-     * Convenience for {@link Selection#extendSelection}.
-     */
-    public void extendSelection(int index) {
-        Selection.extendSelection(getText(), index);
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -241,7 +234,6 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         setFocusableInTouchMode(true);
 
         mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
-
         mFastScroller = new FastScroller(getContext(), this);
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
