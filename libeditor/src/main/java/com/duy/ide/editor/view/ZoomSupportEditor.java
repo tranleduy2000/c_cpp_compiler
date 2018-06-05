@@ -1,30 +1,25 @@
 /*
+ *  Copyright (C)  2018  Duy Tran Le
  *
- *  * Copyright (C) 2006 The Android Open Source Project
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *      http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.editor.core.widget;
+package com.duy.ide.editor.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.method.KeyListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -34,20 +29,12 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 
-import com.duy.ide.editor.core.content.UndoManager;
-import com.duy.ide.editor.core.text.Layout;
-import com.duy.ide.editor.core.text.Selection;
-import com.duy.ide.editor.core.text.method.ArrowKeyMovementMethod;
-import com.duy.ide.editor.core.text.method.MovementMethod;
-import com.duy.ide.editor.core.widget.model.EditorIndex;
-import com.duy.ide.editor.view.IEditAreaView;
-import com.jecelyin.common.utils.LimitedQueue;
 import com.jecelyin.editor.v2.Preferences;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class EditAreaView extends BaseEditorView implements IEditAreaView {
+public abstract class ZoomSupportEditor extends HighlightEditorView implements IEditAreaView {
     /**
      * Indicates that we are not in the middle of a touch gesture
      */
@@ -113,11 +100,8 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
      * How far the finger moved before we started scrolling
      */
     int mMotionCorrection;
-    private OnEditorSizeChangedListener onEditorSizeChangedListener;
-    private UndoManager undoManager;
-    private EditorHelper editorHelper;
+    private OnEditorSizeChangedListener mOnEditorSizeChangedListener;
     private ScaleGestureDetector mScaleDetector;
-    private LimitedQueue<Integer> mPositionHistoryList = new LimitedQueue<>(30);
     private int currentLocation = -1;
     /**
      * Helper object that renders and controls the fast scroll thumb.
@@ -141,98 +125,44 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
      * Handles one frame of a fling
      */
     private FlingRunnable mFlingRunnable;
-    private KeyListener keyListener;
 
     /**
      * When user zoom in/zoom out, disable long click event
      */
     private boolean isTextScaling = false;
 
-    public EditAreaView(Context context) {
+
+    public ZoomSupportEditor(Context context) {
         this(context, null);
     }
 
-    public EditAreaView(Context context, AttributeSet attrs) {
+    public ZoomSupportEditor(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
-    @Override
-    protected boolean getDefaultEditable() {
-        return true;
-    }
-
-    @Override
-    protected MovementMethod getDefaultMovementMethod() {
-        return ArrowKeyMovementMethod.getInstance();
-    }
-
-    @Override
-    public Editable getText() {
-        return (Editable) super.getText();
-    }
-
-    @Override
-    public void setText(CharSequence text, BufferType type) {
-        super.setText(text, BufferType.EDITABLE);
-    }
-
-    /**
-     * Convenience for {@link android.text.Selection#setSelection(android.text.Spannable, int, int)}.
-     */
-    public void setSelection(int start, int stop) {
-        Selection.setSelection(getText(), start, stop);
-    }
-
-    /**
-     * Convenience for {@link Selection#setSelection(android.text.Spannable, int)}.
-     */
-    public void setSelection(int index) {
-        Selection.setSelection(getText(), index);
-    }
-
-    /**
-     * Convenience for {@link Selection#selectAll}.
-     */
-    public void selectAll() {
-        selectAllText();
+    public ZoomSupportEditor(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-        if (onEditorSizeChangedListener != null)
-            onEditorSizeChangedListener.onEditorSizeChanged(w, h, oldw, oldh);
+        if (mOnEditorSizeChangedListener != null)
+            mOnEditorSizeChangedListener.onEditorSizeChanged(w, h, oldw, oldh);
 
         if (mFastScroller != null) {
             mFastScroller.onSizeChanged(w, h, oldw, oldh);
         }
     }
 
-    @Override
-    public void setReadOnly(boolean readOnly) {
-        if (readOnly) {
-            if (keyListener == null) {
-                keyListener = getKeyListener();
-            }
-            setKeyListener(null);
-        } else {
-            if (keyListener != null) {
-                setKeyListener(keyListener);
-                keyListener = null;
-            }
-        }
-    }
-
     public void setOnEditorSizeChangedListener(OnEditorSizeChangedListener onEditorSizeChangedListener) {
-        this.onEditorSizeChangedListener = onEditorSizeChangedListener;
+        this.mOnEditorSizeChangedListener = onEditorSizeChangedListener;
     }
 
 
-    private void init() {
-        setFocusableInTouchMode(true);
-
+    private void init(Context context) {
         mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
         mFastScroller = new FastScroller(getContext(), this);
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
@@ -242,133 +172,12 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         mOverflingDistance = configuration.getScaledOverflingDistance();
         mOverscrollDistance = configuration.getScaledOverscrollDistance();
 
-        editorHelper = new EditorHelper(this);
-        createUndoRedoManager();
-
-        if (mEditor != null) {
-            final boolean undoFilter = mEditor.mUndoInputFilter != null;
-            final boolean keyFilter = mEditor.mKeyListener instanceof InputFilter;
-            int num = 0;
-            if (undoFilter) num++;
-            if (keyFilter) num++;
-            if (num > 0) {
-                InputFilter[] nf = new InputFilter[num];
-
-                num = 0;
-                if (undoFilter) {
-                    nf[num] = mEditor.mUndoInputFilter;
-                    num++;
-                }
-                if (keyFilter) {
-                    nf[num] = (InputFilter) mEditor.mKeyListener;
-                }
-
-                getEditableText().setFilters(nf);
-            }
-        }
     }
 
-    private void createUndoRedoManager() {
-        undoManager = new UndoManager();
-        setUndoManager(undoManager, "undo");
-    }
-
-    public void redo() {
-        undoManager.redo();
-    }
-
-    public void undo() {
-        undoManager.undo();
-    }
-
-    public boolean canRedo() {
-        return undoManager.canRedo();
-    }
-
-    public boolean canUndo() {
-        return undoManager.canUndo();
-    }
-
-    public boolean copy() {
-        return canCopy() && onTextContextMenuItem(ID_COPY);
-    }
-
-    public boolean paste() {
-        return canPaste() && onTextContextMenuItem(ID_PASTE);
-    }
-
-    public boolean cut() {
-        return canCut() && onTextContextMenuItem(ID_CUT);
-    }
-
-    public void duplicateSelection() {
-        editorHelper.duplication();
-    }
-
-    public void convertWrapCharTo(String chars) {
-        editorHelper.convertWrapCharTo(chars);
-    }
-
-    public void gotoTop() {
-        setSelection(0);
-    }
-
-    public void gotoEnd() {
-        setSelection(getLayout().getLineStart(getLineCount() - 1));
-    }
-
-    /**
-     * @return The {@link EditorIndex}, null if not found index
-     */
-    public EditorIndex getCursorIndex(int realLine, int column) {
-        if (getLayout() == null) {
-            return null;
-        }
-        if (realLine <= 0 || realLine > getLineCount())
-            return null;
-
-        int virtualLine = getLayout().realLineToVirtualLine(realLine);
-        if (virtualLine == -1)
-            return null;
-
-        int offset = getLayout().getLineStart(virtualLine);
-        if (column > 0) {
-            offset += column - 1; /*the column start at 1*/
-        }
-        if (offset > length()) {
-            return null;
-        }
-        return new EditorIndex(virtualLine, column, offset);
-    }
-
-    public int realLineToVirtualLine(int realLine) {
-        return getLayout().realLineToVirtualLine(realLine);
-    }
-
-
-    /**
-     * @param virtualLine scroll editor to virtualLine
-     */
-    public void scrollToLine(int virtualLine) {
-        virtualLine = Math.max(0, Math.min(virtualLine, getLineCount() - 1));
-        final Layout layout = getLayout();
-        final int layoutHeight = layout.getHeight();
-
-
-        Rect bound = new Rect();
-        getGlobalVisibleRect(bound);
-        final int visibleHeight = bound.height();
-
-        int y = layout.getLineTop(virtualLine);
-        if (layoutHeight - visibleHeight >= 0) {
-            y = Math.min(y, layoutHeight - visibleHeight);
-        }
-        scrollTo(getScrollX(), y);
-    }
 
     @Override
     public int getLineForOffset(int offset) {
-        if (getLayout() == null){
+        if (getLayout() == null) {
             return -1;
         }
         return getLayout().getLineForOffset(offset);
@@ -378,8 +187,9 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getActionMasked();
 
-        if (mScaleDetector != null && preferences.isTouchScaleTextSize())
+        if (mScaleDetector != null && mPreferences.isTouchScaleTextSize()) {
             mScaleDetector.onTouchEvent(ev);
+        }
 
         if (mFastScroller != null) {
             if (mFastScroller.onInterceptTouchEvent(ev) || mFastScroller.onTouchEvent(ev)) {
@@ -555,25 +365,9 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
             }
         }
 
-        boolean handle = super.onTouchEvent(ev);
-
-        if (action == MotionEvent.ACTION_UP) {
-            recordCurrentLocation();
-        }
-        return handle;
+        return super.onTouchEvent(ev);
     }
 
-    private void recordCurrentLocation() {
-        int offset = getSelectionStart();
-        if (!mPositionHistoryList.isEmpty()) {
-            int last = mPositionHistoryList.getLast();
-            if (offset >= last - 20 && offset <= last + 20) {
-                return;
-            }
-        }
-        mPositionHistoryList.add(offset);
-        currentLocation = mPositionHistoryList.size() - 1;
-    }
 
     private boolean startScrollIfNeeded(int y) {
         // Check if we have moved far enough that it looks more like a
@@ -666,10 +460,6 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         }
     }
 
-    @Override
-    public void onRtlPropertiesChanged(int layoutDirection) {
-        super.onRtlPropertiesChanged(layoutDirection);
-    }
 
     @Override
     protected void onScrollChanged(int horiz, int vert, int oldHoriz, int oldVert) {
@@ -695,65 +485,12 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         }
     }
 
-    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        if (disallowIntercept) {
-            recycleVelocityTracker();
-        }
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (mFlingRunnable != null) {
             removeCallbacks(mFlingRunnable);
         }
-    }
-
-    public boolean backLocation() {
-        int size = mPositionHistoryList.size();
-        if (size == 0 || currentLocation <= 0)
-            return false;
-
-        currentLocation--;
-
-        int offset = mPositionHistoryList.get(currentLocation);
-
-        if (offset >= length() || offset < 0) {
-            for (; currentLocation >= 0; currentLocation--) {
-                mPositionHistoryList.remove(currentLocation);
-            }
-            return false;
-        }
-
-        setSelection(offset);
-
-        return true;
-    }
-
-    public boolean forwardLocation() {
-        int size = mPositionHistoryList.size();
-        if (size == 0)
-            return false;
-
-        if (currentLocation >= size - 1) {
-            return false;
-        }
-
-        currentLocation++;
-
-        int offset = mPositionHistoryList.get(currentLocation);
-
-        if (offset >= length() || offset < 0) {
-            for (int i = size - 1; i >= currentLocation; i++) {
-                mPositionHistoryList.remove(i);
-            }
-            currentLocation = mPositionHistoryList.size() - 1;
-            return false;
-        }
-
-        setSelection(offset);
-
-        return true;
     }
 
     @Override
@@ -764,7 +501,7 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         return super.performLongClick();
     }
 
-    public static interface OnEditorSizeChangedListener {
+    public interface OnEditorSizeChangedListener {
         void onEditorSizeChanged(int w, int h, int oldw, int oldh);
     }
 
@@ -772,7 +509,7 @@ public class EditAreaView extends BaseEditorView implements IEditAreaView {
         private final float minSize;
         private final float maxSize;
 
-        public ScaleListener() {
+        ScaleListener() {
             DisplayMetrics metrics = getResources().getDisplayMetrics();
             minSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, Preferences.DEF_MIN_FONT_SIZE, metrics);
             maxSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, Preferences.DEF_MAX_FONT_SIZE, metrics);

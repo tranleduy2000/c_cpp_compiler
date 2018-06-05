@@ -23,7 +23,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
 
-public interface IEditAreaView extends IEditableSupport, IdeEditor {
+public interface IEditAreaView extends IEditActionSupport, IdeEditor {
     Editable getEditableText();
 
     Editable getText();

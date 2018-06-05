@@ -5,13 +5,13 @@ package com.duy.ide.editor.content;/*
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import com.duy.ide.editor.core.content.IUndoManager;
-import com.duy.ide.editor.core.widget.BaseEditorView;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+
+import com.duy.ide.editor.view.IEditAreaView;
 
 import java.util.LinkedList;
 
@@ -22,10 +22,10 @@ public class UndoRedoHelper implements IUndoManager {
     private EditHistory mEditHistory;
 
     private EditTextChangeListener mChangeListener;
-    private BaseEditorView mTextView;
+    private IEditAreaView mTextView;
 
 
-    public UndoRedoHelper(BaseEditorView textView) {
+    public UndoRedoHelper(IEditAreaView textView) {
         mTextView = textView;
         mEditHistory = new EditHistory();
         mChangeListener = new EditTextChangeListener();

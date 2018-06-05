@@ -16,6 +16,7 @@
 
 package com.duy.ide.editor.core.content;
 
+import com.duy.ide.editor.content.IUndoManager;
 import com.duy.ide.editor.core.text.TextUtils;
 import android.os.Parcel;
 import android.os.Parcelable;

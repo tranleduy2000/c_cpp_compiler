@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent" />
 
-        <com.duy.ide.editor.view.HighlightEditorView
+        <com.duy.ide.editor.view.EditActionSupportEditor
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

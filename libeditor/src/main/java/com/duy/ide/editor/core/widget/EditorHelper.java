@@ -18,15 +18,15 @@
 
 package com.duy.ide.editor.core.widget;
 
-import com.duy.ide.editor.core.text.SpannableStringBuilder;
 import android.text.Editable;
 
+import com.duy.ide.editor.core.text.SpannableStringBuilder;
 import com.duy.ide.editor.view.IEditAreaView;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-class EditorHelper {
+public class EditorHelper {
     private final IEditAreaView editAreaView;
 
     public EditorHelper(IEditAreaView editAreaView) {

@@ -15,24 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.editor.view;
+package com.duy.ide.editor.content;
 
-interface IEditableSupport {
+/**
+ * Created by Duy on 26-Apr-18.
+ */
+public interface IUndoManager {
+    boolean canRedo();
+
     void undo();
 
     void redo();
 
     boolean canUndo();
-
-    boolean canRedo();
-
-    boolean cut();
-
-    boolean copy();
-
-    boolean paste();
-
-    void selectAll();
-
-    void duplicateSelection();
 }

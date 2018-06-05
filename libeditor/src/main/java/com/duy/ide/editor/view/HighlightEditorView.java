@@ -36,7 +36,6 @@ import android.view.inputmethod.EditorInfo;
 import com.duy.common.DLog;
 import com.duy.ide.editor.core.text.LayoutContext;
 import com.duy.ide.editor.core.text.SpannableStringBuilder;
-import com.duy.ide.editor.core.widget.model.EditorIndex;
 import com.duy.ide.editor.text.LineManager;
 import com.duy.ide.editor.text.TextLineNumber;
 import com.duy.ide.editor.theme.model.EditorTheme;
@@ -47,17 +46,19 @@ import com.jecelyin.editor.v2.Preferences;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class HighlightEditorView extends AppCompatEditText implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class HighlightEditorView extends AppCompatEditText implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "EditAreaView2";
     private final LayoutContext mLayoutContext = new LayoutContext();
     protected Preferences mPreferences;
+    /**
+     * Line manager will be calculate real lines and virtual lines
+     */
+    protected LineManager mLineManager;
     /**
      * Editor color schemes, include text color, text background and more color attrs
      */
     @Nullable
     private EditorTheme mEditorTheme;
-
-
     /**
      * Store last line count has been calculated
      */
@@ -66,10 +67,6 @@ public class HighlightEditorView extends AppCompatEditText implements IEditAreaV
      * We can not update line count when layout is null, lazy init
      */
     private boolean mNeedUpdateLineNumber = false;
-    /**
-     * Line manager will be calculate real lines and virtual lines
-     */
-    private LineManager mLineManager;
 
     public HighlightEditorView(Context context) {
         super(context);
@@ -212,82 +209,6 @@ public class HighlightEditorView extends AppCompatEditText implements IEditAreaV
         }
     }
 
-    @Override
-    public void setReadOnly(boolean readOnly) {
-
-    }
-
-    @Override
-    public void gotoTop() {
-        EditorCompat.gotoTop(this);
-    }
-
-    @Override
-    public void gotoEnd() {
-        EditorCompat.gotoEnd(this);
-    }
-
-    @Override
-    public void undo() {
-    }
-
-    @Override
-    public void redo() {
-
-    }
-
-    @Override
-    public boolean canUndo() {
-        return false;
-    }
-
-    @Override
-    public boolean canRedo() {
-        return false;
-    }
-
-    @Override
-    public boolean cut() {
-        return false;
-    }
-
-    @Override
-    public boolean copy() {
-        return false;
-    }
-
-    @Override
-    public boolean paste() {
-        return false;
-    }
-
-    @Override
-    public void duplicateSelection() {
-
-    }
-
-    @Override
-    public EditorIndex getCursorIndex(int realLine, int column) {
-        if (getLayout() == null) {
-            return null;
-        }
-        if (realLine <= 0 || realLine > getLineCount())
-            return null;
-
-//        int virtualLine = getLayout().realLineToVirtualLine(realLine);
-        int virtualLine = realLine;
-        if (virtualLine == -1)
-            return null;
-
-        int offset = getLayout().getLineStart(virtualLine);
-        if (column > 0) {
-            offset += column - 1; /*the column start at 1*/
-        }
-        if (offset > length()) {
-            return null;
-        }
-        return new EditorIndex(virtualLine, column, offset);
-    }
 
     @Override
     public void scrollToLine(int line) {
@@ -454,5 +375,11 @@ public class HighlightEditorView extends AppCompatEditText implements IEditAreaV
         int newPaddingLeft = mLayoutContext.getGutterWidth() + gutterPaddingRight;
         setPadding(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
     }
-
+    
+    public int getMaxScrollY() {
+        if (getLayout() == null)
+            return 0;
+        int vspace = getBottom() - getTop() - getExtendedPaddingTop() - getExtendedPaddingBottom();
+        return getLayout().getHeight() - vspace;
+    }
 }

@@ -61,7 +61,7 @@ import android.view.animation.Interpolator;
  *    ...
  * }</pre>
  */
-class Scroller {
+public class Scroller {
     private static final int DEFAULT_DURATION = 250;
     private static final int SCROLL_MODE = 0;
     private static final int FLING_MODE = 1;
