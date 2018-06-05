@@ -18,6 +18,7 @@
 package com.duy.ide.core;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -523,15 +524,22 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
     }
 
     public void saveAll(final int requestCode) {
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setTitle(R.string.saving);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
         SaveAllTask saveAllTask = new SaveAllTask(this, new SaveListener() {
             @Override
             public void onSavedSuccess() {
                 onSaveComplete(requestCode);
+                dialog.cancel();
             }
 
             @Override
             public void onSaveFailed(Exception e) {
                 UIUtils.alert(SimpleEditorActivity.this, e.getMessage());
+                dialog.cancel();
             }
         });
         saveAllTask.execute();
