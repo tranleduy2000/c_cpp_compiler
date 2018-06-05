@@ -127,12 +127,12 @@ public class LineManager {
         if (mIsStartRealLine != null) {
             boolean[] dest = new boolean[lineCount];
             System.arraycopy(mIsStartRealLine, 0, dest, 0,
-                    Math.max(0, Math.min(mIsStartRealLine.length, startLine - 1)));
+                    Math.max(0, Math.min(mIsStartRealLine.length, startLine)));
             mIsStartRealLine = dest;
 
             int[] dest2 = new int[lineCount];
             System.arraycopy(mRealLines, 0, dest2, 0,
-                    Math.max(0, Math.min(mRealLines.length, startLine - 1)));
+                    Math.max(0, Math.min(mRealLines.length, startLine)));
             mRealLines = dest2;
         } else {
             mIsStartRealLine = new boolean[lineCount];
@@ -165,7 +165,7 @@ public class LineManager {
         }
         mIsStartRealLine[lineCount - 1] = true;
 
-        int realLine = mRealLines[Math.max(0, startLine - 1)]; // the first line is not 0, is 1. We start counting from 1
+        int realLine = mRealLines[startLine]; // the first line is not 0, is 1. We start counting from 1
         for (line = realLine; line < lineCount; line++) {
             if (mIsStartRealLine[line]) {
                 realLine++;
