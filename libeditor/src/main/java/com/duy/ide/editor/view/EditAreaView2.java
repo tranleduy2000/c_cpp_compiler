@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.core.text.LayoutContext;
 import android.core.text.SpannableStringBuilder;
-import android.core.text.TextLineNumber;
 import android.core.widget.model.EditorIndex;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -35,6 +34,8 @@ import android.util.TypedValue;
 import android.view.inputmethod.EditorInfo;
 
 import com.duy.common.DLog;
+import com.duy.ide.editor.text.LineManager;
+import com.duy.ide.editor.text.TextLineNumber;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.common.utils.ReflectionUtil;
 import com.jecelyin.common.utils.SysUtils;
@@ -45,14 +46,23 @@ import java.util.List;
 
 public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "EditAreaView2";
-    private final LayoutContext layoutContext = new LayoutContext();
-    protected Preferences preferences;
+    private final LayoutContext mLayoutContext = new LayoutContext();
+    protected Preferences mPreferences;
     /**
      * Editor color schemes, include text color, text background and more color attrs
      */
     @Nullable
     private EditorTheme mEditorTheme;
+
+
+    /**
+     * Store last line count has been calculated
+     */
     private int mPreLineCount;
+    /**
+     * Line manager will be calculate real lines and virtual lines
+     */
+    private LineManager mLineManager;
 
     public EditAreaView2(Context context) {
         super(context);
@@ -81,18 +91,19 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
 
         setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-        preferences = layoutContext.preferences = Preferences.getInstance(getContext());
-        preferences.registerOnSharedPreferenceChangeListener(this);
+        mLineManager = new LineManager(this);
+        mPreferences = mLayoutContext.preferences = Preferences.getInstance(getContext());
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         TextPaint gutterForegroundPaint = new TextPaint(getPaint());
         gutterForegroundPaint.setTextSize(getTextSize() * LayoutContext.LINE_NUMBER_FACTOR);
-        layoutContext.setGutterForegroundPaint(gutterForegroundPaint);
-        layoutContext.setGutterDividerPaint(new Paint(getPaint()));
-        layoutContext.setGutterBackgroundPaint(new Paint(getPaint()));
+        mLayoutContext.setGutterForegroundPaint(gutterForegroundPaint);
+        mLayoutContext.setGutterDividerPaint(new Paint(getPaint()));
+        mLayoutContext.setGutterBackgroundPaint(new Paint(getPaint()));
 
         setInitLineNumber(1);
         setTextSize(getTextSize());
-        setTheme(preferences.getEditorTheme());
+        setTheme(mPreferences.getEditorTheme());
 
         onSharedPreferenceChanged(null, Preferences.KEY_FONT_SIZE);
         onSharedPreferenceChanged(null, Preferences.KEY_CURSOR_WIDTH);
@@ -107,17 +118,9 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        if (getLayout() == null) {
-            return;
-        }
-
-        int lineCount = getLayout().getLineCount();
-        if (mPreLineCount != lineCount) {
-            android.text.StaticLayout staticLayout;
-//            staticLayout.getBottomPadding()
-            //update line array
-        }
+        updateLineNumberCount(start);
     }
+
 
     @Override
     public void setText(CharSequence text, BufferType type) {
@@ -128,6 +131,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         }
     }
 
+    @Override
     public void setTheme(@NonNull EditorTheme editorTheme) {
         mEditorTheme = editorTheme;
 
@@ -136,14 +140,15 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         setHighlightColor(editorTheme.getSelectionColor());
         setCursorColor(editorTheme.getCaretColor());
 
-        layoutContext.getGutterForegroundPaint().setColor(editorTheme.getGutterStyle().getFgColor());
-        layoutContext.getGutterBackgroundPaint().setColor(editorTheme.getGutterStyle().getBgColor());
-        layoutContext.getGutterDividerPaint().setColor(editorTheme.getGutterStyle().getFoldColor());
+        mLayoutContext.getGutterForegroundPaint().setColor(editorTheme.getGutterStyle().getFgColor());
+        mLayoutContext.getGutterBackgroundPaint().setColor(editorTheme.getGutterStyle().getBgColor());
+        mLayoutContext.getGutterDividerPaint().setColor(editorTheme.getGutterStyle().getFoldColor());
 
-        layoutContext.whiteSpaceColor = editorTheme.getWhiteSpaceStyle().getWhitespace();
+        mLayoutContext.whiteSpaceColor = editorTheme.getWhiteSpaceStyle().getWhitespace();
         postInvalidate();
     }
 
+    @Override
     public EditorTheme getEditorTheme() {
         return mEditorTheme;
     }
@@ -151,6 +156,7 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         drawLineNumber(canvas);
     }
 
@@ -260,80 +266,99 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
      * Calculate padding line number padding
      */
     public void setInitLineNumber(int lineNumber) {
-        if (!layoutContext.preferences.isShowLineNumber()) {
+        if (!mLayoutContext.preferences.isShowLineNumber()) {
             //invalidate
             setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
             return;
         }
-        layoutContext.setLineNumber(lineNumber);
+        mLayoutContext.setLineNumber(lineNumber);
         updateGutterSize();
     }
 
     private void updateGutterSize() {
         int numberPadding = SysUtils.dpToPixels(getContext(), 2);
 
-        float textWidth = layoutContext.getGutterForegroundPaint().measureText(" ");
-        double columnCount = Math.ceil(Math.log10(layoutContext.getLineNumber())) + 2;
-        layoutContext.setGutterWidth(((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/);
-        layoutContext.setLineNumberX(numberPadding);
+        float textWidth = mLayoutContext.getGutterForegroundPaint().measureText(" ");
+        double columnCount = Math.ceil(Math.log10(mLayoutContext.getLineNumber())) + 2;
+        mLayoutContext.setGutterWidth(((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/);
+        mLayoutContext.setLineNumberX(numberPadding);
 
         int gutterPaddingRight = SysUtils.dpToPixels(getContext(), 2);
-        int newPaddingLeft = layoutContext.getGutterWidth() + gutterPaddingRight;
+        int newPaddingLeft = mLayoutContext.getGutterWidth() + gutterPaddingRight;
         if (getPaddingLeft() != newPaddingLeft) {
             setPadding(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
         }
     }
 
-    // TODO: 24-Apr-18 improve calculate padding and recalculate when layout changed
     private void drawLineNumber(Canvas canvas) {
-        if (!layoutContext.preferences.isShowLineNumber()) {
+        if (!mLayoutContext.getPreferences().isShowLineNumber()) {
             return;
         }
 
-        int width = getScrollX() + layoutContext.gutterWidth;
-        int height = getScrollY() + getHeight();
-        canvas.drawRect(getScrollX(), getScrollY(), width, height, layoutContext.getGutterBackgroundPaint());
-        canvas.drawLine(width, getScrollY(), width, height, layoutContext.getGutterDividerPaint());
+        //calculate position
+        mLineManager.calculateLinePositionForDraw();
 
-        List<TextLineNumber.LineInfo> lines = layoutContext.getTextLineNumber().getLines();
+        int width = getScrollX() + mLayoutContext.getGutterWidth();
+        int height = getScrollY() + getHeight();
+        canvas.drawRect(getScrollX(), getScrollY(), width, height, mLayoutContext.getGutterBackgroundPaint());
+        //draw gutter divider
+        canvas.drawLine(width, getScrollY(), width, height, mLayoutContext.getGutterDividerPaint());
+
+        List<TextLineNumber.LineInfo> lines = mLineManager.getTextLineNumber().getLines();
+        int x = mLayoutContext.getLineNumberX() + getScrollX();
+        Paint paint = mLayoutContext.getGutterForegroundPaint();
         for (TextLineNumber.LineInfo line : lines) {
-            canvas.drawText(line.text, layoutContext.getLineNumberX() + getScrollX(), line.y, layoutContext.getGutterForegroundPaint());
+            canvas.drawText(line.getText(), x, line.getY(), paint);
         }
     }
 
+    private void updateLineNumberCount(int start) {
+        Layout layout = getLayout();
+        if (layout == null) {
+            return;
+        }
+        int lineCount = layout.getLineCount();
+        if (mPreLineCount == lineCount) {
+            //updated before
+            return;
+        }
+        int lineForOffset = layout.getLineForOffset(start);
+        mLineManager.updateRealLines(0);
+    }
+
     public LayoutContext getLayoutContext() {
-        return layoutContext;
+        return mLayoutContext;
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case Preferences.KEY_FONT_SIZE:
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, preferences.getFontSize());
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, mPreferences.getFontSize());
                 break;
             case Preferences.KEY_CURSOR_WIDTH:
 //                mHighlightPathBogus = true;
-                layoutContext.cursorThickness = preferences.getCursorThickness();
+                mLayoutContext.cursorThickness = mPreferences.getCursorThickness();
                 break;
             case Preferences.KEY_SHOW_LINE_NUMBER:
-                setInitLineNumber(layoutContext.lineNumber);
+                setInitLineNumber(mLayoutContext.lineNumber);
                 break;
             case Preferences.KEY_WORD_WRAP:
-                setHorizontallyScrolling(!preferences.isWordWrap());
+                setHorizontallyScrolling(!mPreferences.isWordWrap());
                 break;
             case Preferences.KEY_SHOW_WHITESPACE:
-                layoutContext.isShowWhiteSpace = preferences.isShowWhiteSpace();
+                mLayoutContext.isShowWhiteSpace = mPreferences.isShowWhiteSpace();
                 break;
             case Preferences.KEY_TAB_SIZE:
                 updateTabChar();
                 break;
             case Preferences.KEY_AUTO_INDENT:
                 if (getText() != null && getText() instanceof SpannableStringBuilder) {
-                    ((SpannableStringBuilder) getText()).setAutoIndent(preferences.isAutoIndent());
+                    ((SpannableStringBuilder) getText()).setAutoIndent(mPreferences.isAutoIndent());
                 }
                 break;
             case Preferences.KEY_AUTO_CAPITALIZE:
-                if (!preferences.isAutoCapitalize()) {
+                if (!mPreferences.isAutoCapitalize()) {
                     setInputType(getInputType() & ~EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
                 } else {
                     setInputType(getInputType() | EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -348,10 +373,11 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     private void updateTabChar() {
         if (DLog.DEBUG) DLog.d(TAG, "updateTabChar() called");
         float spaceWidth = getPaint().measureText(" ");
-        float tabWidth = spaceWidth * (preferences == null ? 4 : preferences.getTabSize());
+        float tabWidth = spaceWidth * (mPreferences == null ? 4 : mPreferences.getTabSize());
         try {
             Field tabIncrement = ReflectionUtil.getField(Layout.class, "TAB_INCREMENT", true);
             ReflectionUtil.setFinalStatic(tabIncrement, (int) tabWidth);
+            postInvalidate();
         } catch (Exception e) {
             e.printStackTrace();
         }

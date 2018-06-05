@@ -38,7 +38,7 @@ import android.core.text.SpannableStringBuilder;
 import android.core.text.StaticLayout;
 import android.core.text.TextDirectionHeuristic;
 import android.core.text.TextDirectionHeuristics;
-import android.core.text.TextLineNumber;
+import com.duy.ide.editor.text.TextLineNumber;
 import android.core.text.TextUtils;
 import android.core.text.method.ArrowKeyMovementMethod;
 import android.core.text.method.LinkMovementMethod;

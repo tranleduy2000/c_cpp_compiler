@@ -1,7 +1,5 @@
 package com.jecelyin.common.utils;
 
-import android.os.Parcel;
-
 import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.reflect.Field;
@@ -109,18 +107,20 @@ public class ReflectionUtil {
 
     public static void setFinalStatic(Field field, Object newValue) throws Exception {
         field.setAccessible(true);
+
+        try {
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        }catch (NoSuchFieldException e){
+            Field modifiersField = Field.class.getDeclaredField("accessFlags");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        }
+
         field.set(null, newValue);
     }
 
-    public static void setFinalStatic(Class<Parcel> cls, String varName, Object value) throws Exception {
-        Field f;
-        try {
-            f = cls.getDeclaredField(varName);
-        } catch (NoSuchFieldException e) {
-            f = cls.getField(varName);
-        }
-        setFinalStatic(f, value);
-    }
 
     public static Object callAny(Object obj, String methodName, Class[] type, Object[] objects) throws
             NoSuchMethodException, InvocationTargetException, IllegalAccessException {

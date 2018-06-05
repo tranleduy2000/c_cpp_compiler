@@ -20,6 +20,7 @@ package android.core.text;
 
 import android.graphics.Paint;
 
+import com.duy.ide.editor.text.TextLineNumber;
 import com.jecelyin.editor.v2.Preferences;
 
 
