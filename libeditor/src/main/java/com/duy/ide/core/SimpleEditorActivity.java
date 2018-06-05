@@ -358,10 +358,8 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
                 continue;
             }
             SubMenu subMenu = container.addSubMenu(MenuDef.GROUP_TOOLBAR, group.getMenuId(), 0, group.getTitleId());
-            subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            if (group.getIconId() != 0) {
-                subMenu.getItem().setIcon(MenuManager.makeToolbarNormalIcon(this, group.getIconId()));
-            }
+            subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
             List<MenuItemInfo> items = menuFactory.getMenuItemsWithoutToolbarMenu(group);
             for (MenuItemInfo item : items) {
                 MenuItem menuItem = subMenu.add(MenuDef.GROUP_TOOLBAR, item.getItemId(), item.getOrder(), item.getTitleResId());
@@ -429,7 +427,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
             });
             rfm.show(this);
 
-        }  else if (id == R.id.action_highlight) {
+        } else if (id == R.id.action_highlight) {
             new LangListDialog(this).show();
 
         } else if (id == R.id.m_menu) {
