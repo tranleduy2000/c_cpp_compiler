@@ -230,5 +230,6 @@
     <string name="unsupported_format_source">Unsupported format source for current file</string>
     <string name="format_source">Format source</string>
     <string name="formated_source">Source is formatted</string>
+    <string name="select">Select</string>
 
 </resources>

@@ -500,20 +500,22 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
 
         String[] fileExtensions = getSupportedFileExtensions();
         EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
-        String path = null;
+        String path;
         if (currentEditorDelegate != null) {
             path = currentEditorDelegate.getPath();
+            if (new File(path).isFile()) {
+                path = new File(path).getParent();
+            }
         } else {
             path = Environment.getExternalStorageDirectory().getPath();
         }
-        DialogNewFile dialog = new DialogNewFile(this, fileExtensions, path,
-                new DialogNewFile.OnCreateFileListener() {
-                    @Override
-                    public void onFileCreated(@NonNull File file) {
-                        mTabManager.newTab(file);
-                    }
-                });
-        dialog.show();
+        DialogNewFile dialog = DialogNewFile.newInstance(fileExtensions, path, new DialogNewFile.OnCreateFileListener() {
+            @Override
+            public void onFileCreated(@NonNull File file) {
+                mTabManager.newTab(file);
+            }
+        });
+        dialog.show(getSupportFragmentManager(), DialogNewFile.class.getSimpleName());
     }
 
     protected String[] getSupportedFileExtensions() {

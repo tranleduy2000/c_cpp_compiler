@@ -23,6 +23,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -55,10 +56,11 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
     public static final String EXTRA_HOME_PATH = "home_path";
     public static final String EXTRA_INIT_PATH = "dest_file";
     public static final String EXTRA_MODE = "mode";
-    private static final String EXTRA_ENCODING = "encoding";
+    public static final String EXTRA_ENCODING = "encoding";
 
-    private static final int MODE_PICK_FILE = 1;
-    private static final int MODE_PICK_PATH = 2;
+    public static final int MODE_PICK_FILE = 1;
+    public static final int MODE_PICK_PATH = 2;
+
     private FileListPagerFragment mFileListPagerFragment;
     private ActivityFileExplorerBinding binding;
     private int mMode;
@@ -86,6 +88,14 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
         it.putExtra(EXTRA_INIT_PATH, destFile);
         it.putExtra(EXTRA_ENCODING, encoding);
         activity.startActivityForResult(it, requestCode);
+    }
+
+    public static void startPickPathActivity(Fragment fragment, String destFile, String encoding, int requestCode) {
+        Intent it = new Intent(fragment.getContext(), FileExplorerActivity.class);
+        it.putExtra(EXTRA_MODE, MODE_PICK_PATH);
+        it.putExtra(EXTRA_INIT_PATH, destFile);
+        it.putExtra(EXTRA_ENCODING, encoding);
+        fragment.startActivityForResult(it, requestCode);
     }
 
     @Nullable
@@ -257,13 +267,11 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
                 it.putExtra("encoding", fileEncoding);
                 setResult(RESULT_OK, it);
                 finish();
-            } else {
-                binding.filenameEditText.setText(file.getName());
             }
-
             return true;
         } else if (file.isDirectory()) {
             mLastPath = file.getPath();
+            binding.filenameEditText.setText(file.getPath());
         }
 
         return false;
