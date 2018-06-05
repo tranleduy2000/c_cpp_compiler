@@ -26,6 +26,8 @@ import android.widget.EditText;
 
 import com.duy.common.DLog;
 
+import java.util.Arrays;
+
 public class LineManager {
     private static final Rect BOUND = new Rect();
     private static final String TAG = "LineManager";
@@ -34,7 +36,7 @@ public class LineManager {
     /**
      * Number of real line
      */
-    private int[] mRealLineCount;
+    private int mRealLineCount;
     private int[] mRealLines;
     @NonNull
     private EditText mEditText;
@@ -56,7 +58,7 @@ public class LineManager {
             if (layout == null) {
                 return 0;
             }
-            int lineCount = mEditText.getLineCount();
+            int lineCount = layout.getLineCount();
             int line = (int) (mEditText.getScrollY() / ((float) layout.getHeight()) * lineCount);
             line = Math.max(0, Math.min(line, lineCount - 1));
             return line;
@@ -84,22 +86,19 @@ public class LineManager {
     public void calculateLinePositionForDraw() {
         mTextLineNumber.clear();
         Layout layout = mEditText.getLayout();
-        updateRealLines(0);
+        if (layout == null) {
+            return;
+        }
+        //lazy loading
         if (mIsStartRealLine == null || mRealLines == null) {
             updateRealLines(0);
         }
-        if (layout == null || mIsStartRealLine == null || mRealLines == null) {
-            return;
-        }
 
         int firstVisibleLine = getFirstVisibleVirtualLine();
-        int lastVisibleLine = getLastVisibleVirtualLine();
+        int lastVisibleLine = Math.min(mIsStartRealLine.length - 1, getLastVisibleVirtualLine());
 
         if (DLog.DEBUG) DLog.d(TAG, "firstVisibleLine = " + firstVisibleLine);
         if (DLog.DEBUG) DLog.d(TAG, "lastVisibleLine = " + lastVisibleLine);
-        if (lastVisibleLine > mIsStartRealLine.length) {
-            return;
-        }
 
         for (int virLine = firstVisibleLine; virLine <= lastVisibleLine; virLine++) {
             if (mIsStartRealLine[virLine]) {
@@ -112,27 +111,37 @@ public class LineManager {
 
     /**
      * Recalculate real lines, real line start at 1, not 0
+     *
+     * @param startLine the start line to update, The lines above will not change
      */
     public void updateRealLines(int startLine) {
         int lineCount = mEditText.getLayout().getLineCount();
+        if (startLine >= lineCount) {
+            return;
+        }
         //in some case, edit text not init and return line count is 0
         lineCount = Math.max(lineCount, 1);
 
-        //todo improve create new array
-        mIsStartRealLine = new boolean[lineCount];
-        mRealLines = new int[lineCount];
+        if (mIsStartRealLine != null) {
+            mIsStartRealLine = Arrays.copyOf(mIsStartRealLine, lineCount);
+            mRealLines = Arrays.copyOf(mRealLines, lineCount);
+        } else {
+            mIsStartRealLine = new boolean[lineCount];
+            mRealLines = new int[lineCount];
+        }
 
         final Layout layout = mEditText.getLayout();
         final Editable text = mEditText.getText();
 
         if (TextUtils.isEmpty(text) || layout == null) {
-            mIsStartRealLine[0] = true;
+            mIsStartRealLine[0] = false;
             mRealLines[0] = 1;
+            mRealLineCount = 0;
             return;
         }
 
         int line;
-        for (line = 0; line < lineCount; line++) {
+        for (line = startLine; line < lineCount; line++) {
             int endIndex = layout.getLineEnd(line) - 1;
             boolean hasNewLine = text.charAt(endIndex) == '\n';
             if (hasNewLine) {
@@ -147,16 +156,17 @@ public class LineManager {
         }
         mIsStartRealLine[lineCount - 1] = true;
 
-        int realLine = startLine; // the first line is not 0, is 1. We start counting from 1
-        for (line = 0; line < mIsStartRealLine.length; line++) {
+        int realLine = mRealLines[Math.max(0, startLine - 1)]; // the first line is not 0, is 1. We start counting from 1
+        for (line = realLine; line < lineCount; line++) {
             if (mIsStartRealLine[line]) {
                 realLine++;
             }
             mRealLines[line] = realLine;
         }
+        mRealLineCount = realLine;
     }
 
-    public int[] getRealLineCount() {
+    public int getRealLineCount() {
         return mRealLineCount;
     }
 

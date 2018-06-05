@@ -161,9 +161,9 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     }
 
     private void setCursorColor(int caretColor) {
-//        mCurrCursorColor = caretColor;
-//        invalidateCursor();
         try {
+            //        mCurrCursorColor = caretColor;
+//        invalidateCursor();
             // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
 //            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
 //            f.setAccessible(true);
@@ -275,20 +275,6 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         updateGutterSize();
     }
 
-    private void updateGutterSize() {
-        int numberPadding = SysUtils.dpToPixels(getContext(), 2);
-
-        float textWidth = mLayoutContext.getGutterForegroundPaint().measureText(" ");
-        double columnCount = Math.ceil(Math.log10(mLayoutContext.getLineNumber())) + 2;
-        mLayoutContext.setGutterWidth(((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/);
-        mLayoutContext.setLineNumberX(numberPadding);
-
-        int gutterPaddingRight = SysUtils.dpToPixels(getContext(), 2);
-        int newPaddingLeft = mLayoutContext.getGutterWidth() + gutterPaddingRight;
-        if (getPaddingLeft() != newPaddingLeft) {
-            setPadding(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
-        }
-    }
 
     private void drawLineNumber(Canvas canvas) {
         if (!mLayoutContext.getPreferences().isShowLineNumber()) {
@@ -322,8 +308,10 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
             //updated before
             return;
         }
-        int lineForOffset = layout.getLineForOffset(start);
-        mLineManager.updateRealLines(0);
+        int startLineToUpdate = layout.getLineForOffset(start);
+        mLineManager.updateRealLines(startLineToUpdate);
+        mPreLineCount = lineCount;
+        updateGutterSize();
     }
 
     public LayoutContext getLayoutContext() {
@@ -337,7 +325,6 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, mPreferences.getFontSize());
                 break;
             case Preferences.KEY_CURSOR_WIDTH:
-//                mHighlightPathBogus = true;
                 mLayoutContext.cursorThickness = mPreferences.getCursorThickness();
                 break;
             case Preferences.KEY_SHOW_LINE_NUMBER:
@@ -367,6 +354,14 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         }
     }
 
+
+    @Override
+    public void setTextSize(int unit, float size) {
+        super.setTextSize(unit, size);
+        updateLayoutContext();
+        updateTabChar();
+    }
+
     /**
      * Update tab width
      */
@@ -383,9 +378,28 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         }
     }
 
-    @Override
-    public void setSelection(int index) {
-        super.setSelection(index);
-
+    /**
+     * Update text size of gutter paint, padding and some attrs
+     */
+    private void updateLayoutContext() {
+        if (mLayoutContext.getGutterForegroundPaint() != null) {
+            mLayoutContext.getGutterForegroundPaint().setTextSize(getTextSize() * LayoutContext.LINE_NUMBER_FACTOR);
+            updateGutterSize();
+        }
     }
+
+    private void updateGutterSize() {
+        int numberPadding = SysUtils.dpToPixels(getContext(), 2);
+
+        float textWidth = mLayoutContext.getGutterForegroundPaint().measureText(" ");
+        //plus 1 for some case: log(100) = 2, but we need 3
+        double columnCount = Math.ceil(Math.log10(mLineManager.getRealLineCount() + 1)) + 1;
+        mLayoutContext.setGutterWidth(((int) (textWidth * columnCount)) + numberPadding * 2/*Left and right*/);
+        mLayoutContext.setLineNumberX(numberPadding);
+
+        int gutterPaddingRight = SysUtils.dpToPixels(getContext(), 2);
+        int newPaddingLeft = mLayoutContext.getGutterWidth() + gutterPaddingRight;
+        setPadding(newPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
+    }
+
 }
