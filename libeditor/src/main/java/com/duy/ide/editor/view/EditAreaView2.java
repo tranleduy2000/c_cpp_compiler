@@ -25,7 +25,9 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.InputFilter;
 import android.text.Layout;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -83,7 +85,6 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
     public EditAreaView2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
-
     }
 
     private void init(Context context) {
@@ -119,6 +120,48 @@ public class EditAreaView2 extends AppCompatEditText implements IEditAreaView, S
         onSharedPreferenceChanged(null, Preferences.KEY_TAB_SIZE);
         onSharedPreferenceChanged(null, Preferences.KEY_AUTO_INDENT);
         onSharedPreferenceChanged(null, Preferences.KEY_AUTO_CAPITALIZE);
+
+        initAutoIndent();
+    }
+
+    private void initAutoIndent() {
+        setFilters(new InputFilter[]{new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (mPreferences.isAutoIndent()) {
+                    if (!(source.length() == 1 && source.charAt(0) == '\n')) {
+                        return null;
+                    }
+                    dstart = dstart - 1;
+                    if (dstart < 0 || dstart >= dest.length())
+                        return null;
+
+                    char ch;
+                    for (; dstart >= 0; dstart--) {
+                        ch = dest.charAt(dstart);
+                        if (ch != '\r')
+                            break;
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = dstart; i >= 0; i--) {
+                        ch = dest.charAt(i);
+                        if (ch == '\n' || ch == '\r') {
+                            break;
+                        } else if (ch == ' ' || ch == '\t') {
+                            sb.append(ch);
+                        } else {
+                            sb.setLength(0);
+                        }
+                    }
+                    sb.reverse();
+
+                    return "\n" + sb.toString();
+                }
+                return null;
+            }
+        }
+        });
     }
 
     @Override
