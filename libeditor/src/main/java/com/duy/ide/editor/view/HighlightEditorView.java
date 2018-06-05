@@ -24,11 +24,14 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Layout;
+import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.inputmethod.EditorInfo;
@@ -37,6 +40,7 @@ import com.duy.common.DLog;
 import com.duy.ide.editor.text.LayoutContext;
 import com.duy.ide.editor.text.LineManager;
 import com.duy.ide.editor.text.TextLineNumber;
+import com.duy.ide.editor.text.style.TabSpan;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.common.utils.ReflectionUtil;
 import com.jecelyin.common.utils.SysUtils;
@@ -46,7 +50,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public abstract class HighlightEditorView extends android.support.v7.widget.AppCompatEditText
-        implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener {
+        implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener,
+        TextWatcher {
     private static final String TAG = "EditAreaView2";
     private final LayoutContext mLayoutContext = new LayoutContext();
     protected Preferences mPreferences;
@@ -68,6 +73,7 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
      */
     private boolean mNeedUpdateLineNumber = false;
     private boolean mIsAutoIndent = true;
+    private int mTabWidth = 3;
 
     public HighlightEditorView(Context context) {
         super(context);
@@ -123,6 +129,7 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         onSharedPreferenceChanged(null, Preferences.KEY_AUTO_CAPITALIZE);
 
         initAutoIndent();
+        addTextChangedListener(this);
     }
 
     private void initAutoIndent() {
@@ -213,7 +220,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         }
     }
 
-
     @Override
     public void scrollToLine(int line) {
 
@@ -240,7 +246,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         mLayoutContext.setLineNumber(lineNumber);
         updateLineNumberCount(0);
     }
-
 
     private void drawLineNumber(Canvas canvas) {
         if (!mLayoutContext.getPreferences().isShowLineNumber()) {
@@ -321,7 +326,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         }
     }
 
-
     @Override
     public void setTextSize(int unit, float size) {
         super.setTextSize(unit, size);
@@ -330,9 +334,30 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
     }
 
     @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
         updateLineNumberCount(start);
+        if (s instanceof Spannable) {
+            applyTabWidth((Spannable) s, start, start + count - 1);
+        }
+    }
+
+    public void applyTabWidth(Spannable text, int start, int end) {
+        for (int index = start; index <= end; index++) {
+            if (text.charAt(index) == '\t') {
+                text.setSpan(new TabSpan(getLayoutContext(), mTabWidth),
+                        index, index + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
     }
 
     /**
@@ -342,6 +367,7 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         if (DLog.DEBUG) DLog.d(TAG, "updateTabChar() called");
         float spaceWidth = getPaint().measureText(" ");
         float tabWidth = spaceWidth * (mPreferences == null ? 4 : mPreferences.getTabSize());
+        mTabWidth = (int) tabWidth;
         try {
             Field tabIncrement = ReflectionUtil.getField(Layout.class,
                     "TAB_INCREMENT", true);
