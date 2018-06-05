@@ -35,7 +35,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="ffa600" />
+                                      <entry key="backgroundColor" value="ffbf00" />
                                       <entry key="foregroundImage" value="D:\github\CCppCompiler\google-play-store\icon\logo.png" />
                                     </map>
                                   </option>
