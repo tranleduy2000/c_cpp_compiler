@@ -36,6 +36,10 @@ public class UndoManager implements IUndoManager {
     }
 
     @Override
+    public boolean canUndo() {
+        return mUndoRedoHelper.canUndo();
+    }
+    @Override
     public void undo() {
         if (canUndo()) {
             mUndoRedoHelper.undo();
@@ -49,8 +53,4 @@ public class UndoManager implements IUndoManager {
         }
     }
 
-    @Override
-    public boolean canUndo() {
-        return mUndoRedoHelper.canRedo();
-    }
 }

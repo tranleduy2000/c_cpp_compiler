@@ -300,7 +300,9 @@ public class UndoRedoHelper implements IUndoManager {
         private void makeBatch(int start) {
             ActionType at = getActionType();
             EditItem editItem = mEditHistory.getCurrent();
-            if ((lastActionType != at || ActionType.PASTE == at || System.currentTimeMillis() - lastActionTime > 1000) || editItem == null) {
+            if ((lastActionType != at || ActionType.PASTE == at
+                    || System.currentTimeMillis() - lastActionTime > 1000)
+                    || editItem == null) {
                 mEditHistory.add(new EditItem(start, mBeforeChange, mAfterChange));
             } else {
                 if (at == ActionType.DELETE) {
