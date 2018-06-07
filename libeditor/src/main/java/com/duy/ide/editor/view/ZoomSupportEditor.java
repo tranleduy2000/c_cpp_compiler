@@ -103,7 +103,7 @@ public abstract class ZoomSupportEditor extends HighlightEditorView
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mScaleDetector != null && mPreferences.isTouchScaleTextSize()) {
+        if (!hasSelection() && mScaleDetector != null && mPreferences.isTouchScaleTextSize()) {
             mScaleDetector.onTouchEvent(ev);
         }
 
