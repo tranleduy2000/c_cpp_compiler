@@ -30,9 +30,8 @@ import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.common.DLog;
-import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
-import com.duy.ide.diagnostic.DiagnosticsCollector;
+import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
@@ -185,11 +184,10 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
 
             if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
             String message = result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
-            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
-            CppCheckOutputParser parser = new CppCheckOutputParser(diagnosticsCollector);
+            CppCheckOutputParser parser = new CppCheckOutputParser();
             parser.parse(message);
 
-            return diagnosticsCollector.getMessages();
+            return null;
         }
 
         private File getCppCheckTmpDir() {
@@ -204,7 +202,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         protected void onPostExecute(ArrayList<Message> messages) {
             super.onPostExecute(messages);
             if (messages != null && !isCancelled()) {
-                mDiagnosticPresenter.setDiagnostics(messages);
+                mDiagnosticPresenter.setMessages(messages);
             }
         }
     }

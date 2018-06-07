@@ -19,6 +19,7 @@ package com.duy.ccppcompiler.ide.editor;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,23 +29,27 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.analyze.CppCheckAnalyzer;
+import com.duy.ccppcompiler.compiler.analyze.CppCheckOutputParser;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.CompilerImpl;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
-import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.ccppcompiler.ide.diagnostic.GccOutputParser;
 import com.duy.ccppcompiler.ide.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ide.dialogs.PremiumDialog;
+import com.duy.ccppcompiler.ide.editor.theme.ThemeActivity;
 import com.duy.ccppcompiler.ide.examples.ExampleActivity;
+import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.StoreUtil;
 import com.duy.common.function.Action;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
-import com.duy.ccppcompiler.ide.editor.theme.ThemeActivity;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.core.IdeActivity;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
+import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
@@ -78,6 +83,15 @@ public class CodeEditorActivity extends IdeActivity {
         mPremiumHelper = new InAppPurchaseHelper(this);
         // Monitor launch times and interval from installation
         RateThisApp.onCreate(this);
+    }
+
+    @Override
+    protected void populaceDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter) {
+        PatternAwareOutputParser[] parsers = {
+                new CppCheckOutputParser(),
+                new GccOutputParser()
+        };
+        diagnosticPresenter.setOutputParser(parsers);
     }
 
     @Override

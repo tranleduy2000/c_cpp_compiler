@@ -63,9 +63,9 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Message message = mMessages.get(position);
-        if (message.getLineNumber() >= 0) {
+        if (message.getLineNumber() >= 1) {
             long column = message.getColumn();
-            String text = message.getLineNumber() + ":" + (column >= 0 ? column : "");
+            String text = message.getLineNumber() + ":" + (column >= 1 ? column : "");
             holder.txtLineCol.setText(text);
         } else {
             holder.txtLineCol.setText("");

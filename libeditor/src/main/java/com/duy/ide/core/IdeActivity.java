@@ -92,10 +92,7 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * @author Jecelyin Peng <jecelyin@gmail.com>
- */
-public class IdeActivity extends ThemeSupportActivity implements MenuItem.OnMenuItemClickListener,
+public abstract class IdeActivity extends ThemeSupportActivity implements MenuItem.OnMenuItemClickListener,
         IEditorStateListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -192,8 +189,11 @@ public class IdeActivity extends ThemeSupportActivity implements MenuItem.OnMenu
                 .replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
                 .commit();
         mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
-
+        populaceDiagnostic(mDiagnosticPresenter);
     }
+
+    protected abstract void populaceDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter);
+
 
     private void bindPreferences() {
         mDrawerLayout.setKeepScreenOn(mPreferences.isKeepScreenOn());

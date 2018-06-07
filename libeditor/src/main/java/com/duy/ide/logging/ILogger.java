@@ -18,6 +18,7 @@ package com.duy.ide.logging;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 
 /**
  * Interface used to display warnings/errors while parsing the SDK content.
@@ -47,6 +48,7 @@ public interface ILogger {
      *                  using a {@link Formatter} with the provided arguments.
      * @param args      provides the arguments for errorFormat.
      */
+    @WorkerThread
     void error(@Nullable Throwable t, @Nullable String msgFormat, Object... args);
 
     /**
@@ -55,6 +57,7 @@ public interface ILogger {
      * @param msgFormat is a string format to be used with a {@link Formatter}. Cannot be null.
      * @param args      provides the arguments for warningFormat.
      */
+    @WorkerThread
     void warning(@NonNull String msgFormat, Object... args);
 
     /**
@@ -63,6 +66,7 @@ public interface ILogger {
      * @param msgFormat is a string format to be used with a {@link Formatter}. Cannot be null.
      * @param args      provides the arguments for msgFormat.
      */
+    @WorkerThread
     void info(@NonNull String msgFormat, Object... args);
 
     /**
@@ -71,6 +75,7 @@ public interface ILogger {
      * @param msgFormat is a string format to be used with a {@link Formatter}. Cannot be null.
      * @param args      provides the arguments for msgFormat.
      */
+    @WorkerThread
     void verbose(@NonNull String msgFormat, Object... args);
 
 }

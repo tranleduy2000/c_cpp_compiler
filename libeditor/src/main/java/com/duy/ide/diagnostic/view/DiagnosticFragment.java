@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import com.duy.ide.diagnostic.DiagnosticClickListener;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.model.Message;
-import com.duy.ide.diagnostic.suggestion.ISuggestion;
 import com.duy.ide.diagnostic.widget.LogView;
 import com.duy.ide.editor.editor.R;
 
@@ -126,11 +125,10 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
             @Override
             public void run() {
                 mLogView.append(log);
-
-                //move to log view
-                if (mAdapter.getDiagnostics().isEmpty()) {
-                    mViewPager.setCurrentItem(1);
-                }
+                ////move to log view
+                //if (mAdapter.getDiagnostics().isEmpty()) {
+                //    mViewPager.setCurrentItem(1);
+                //}
             }
         });
     }
@@ -204,10 +202,4 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         }
     }
 
-    @Override
-    public void onSuggestionClick(View v, Message message, ISuggestion suggestion) {
-        if (mPresenter != null) {
-            mPresenter.onSuggestionClick(message, suggestion);
-        }
-    }
 }

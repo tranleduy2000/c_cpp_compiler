@@ -19,7 +19,6 @@ package com.duy.ccppcompiler.compiler.analyze;
 
 import android.support.annotation.NonNull;
 
-import com.duy.ide.diagnostic.DiagnosticsCollector;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.util.OutputLineReader;
@@ -42,10 +41,8 @@ public class CppCheckOutputParser implements PatternAwareOutputParser {
 
     public static final String TEMPLATE = "--template=\"{file}:{line}:{severity}:{message}\"";
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("^(\\S+):([0-9]+):([^:]+):(.*)");
-    private DiagnosticsCollector diagnosticsCollector;
 
-    public CppCheckOutputParser(DiagnosticsCollector diagnosticsCollector) {
-        this.diagnosticsCollector = diagnosticsCollector;
+    public CppCheckOutputParser() {
     }
 
     public void parse(String inputData) {

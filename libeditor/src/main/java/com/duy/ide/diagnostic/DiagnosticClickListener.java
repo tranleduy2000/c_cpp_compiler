@@ -20,7 +20,6 @@ package com.duy.ide.diagnostic;
 import android.view.View;
 
 import com.duy.ide.diagnostic.model.Message;
-import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.
@@ -29,5 +28,4 @@ import com.duy.ide.diagnostic.suggestion.ISuggestion;
 public interface DiagnosticClickListener {
     void onDiagnosisClick(Message message, View view);
 
-    void onSuggestionClick(View v, Message message, ISuggestion suggestion);
 }

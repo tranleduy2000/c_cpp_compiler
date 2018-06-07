@@ -18,9 +18,11 @@
 package com.duy.ide.diagnostic;
 
 import android.annotation.SuppressLint;
+import android.os.Handler;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.util.Pair;
 import android.view.View;
 
@@ -29,7 +31,6 @@ import com.duy.ide.core.IdeActivity;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.parser.ToolOutputParser;
-import com.duy.ide.diagnostic.suggestion.ISuggestion;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.common.Command;
@@ -40,8 +41,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -52,18 +51,22 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
     private final IdeActivity mActivity;
     private final TabManager mTabManager;
+    private final Handler mHandler;
     @Nullable
     private ToolOutputParser mToolOutputParser = null;
     private DiagnosticContract.View mView;
-    private HashMap<File, byte[]> mHashCode = new HashMap<>();
 
-    public DiagnosticPresenter(DiagnosticContract.View view, IdeActivity activity, TabManager tabManager) {
+    public DiagnosticPresenter(@Nullable DiagnosticContract.View view,
+                               @NonNull IdeActivity activity,
+                               @NonNull TabManager tabManager,
+                               @NonNull Handler handler) {
         mActivity = activity;
         mTabManager = tabManager;
         mView = view;
         if (mView != null) {
             mView.setPresenter(this);
         }
+        mHandler = handler;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -81,58 +84,31 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                         mActivity.getString(R.string.message_non_project_file, source.getPath()));
                 return;
             }
-            IEditorDelegate editorDelegate = moveToEditor(source, null);
+            IEditorDelegate editorDelegate = moveToEditor(source);
             if (editorDelegate != null) {
                 Command command = new Command(Command.CommandEnum.GOTO_INDEX);
-                command.args.putInt("line", (int) message.getLineNumber());
-                command.args.putInt("col", (int) message.getColumn());
+                command.args.putInt("line", message.getLineNumber());
+                command.args.putInt("col", message.getColumn());
                 editorDelegate.doCommand(command);
             }
             hidePanel();
         }
     }
 
-    @SuppressLint("WrongThread")
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public void onSuggestionClick(Message message, ISuggestion suggestion) {
-        File source = suggestion.getSourceFile();
-        IEditorDelegate delegate = moveToEditor(source, mHashCode.get(source));
-
-        if (delegate != null) {
-            int start = delegate.getEditText()
-                    .getCursorIndex(suggestion.getLineStart(), suggestion.getColStart()).offset;
-            int end = delegate.getEditText()
-                    .getCursorIndex(suggestion.getLineEnd(), suggestion.getColEnd()).offset;
-            if (start >= 0 && start <= end) {
-                delegate.getEditText().getEditableText().replace(start, end, suggestion.getMessage());
-                delegate.getEditText().setSelection(start + suggestion.getMessage().length());
-            }
-            mView.removeMessage(message);
-        }
-    }
-
     @Nullable
     @SuppressWarnings("ConstantConditions")
     @MainThread
-    private IEditorDelegate moveToEditor(File source, @Nullable byte[] md5) {
+    private IEditorDelegate moveToEditor(File source) {
         Pair<Integer, IEditorDelegate> pair = mTabManager.getEditorDelegate(source);
         if (pair != null) {
             int index = pair.first;
             IEditorDelegate editorDelegate = pair.second;
-            byte[] otherMd5 = editorDelegate.getDocument().getMd5();
-            if (md5 != null) {
-                if (!Arrays.equals(md5, otherMd5)) {
-                    return null;
-                }
-            }
-            mHashCode.put(source, otherMd5);
             mTabManager.setCurrentTab(index);
             editorDelegate.doCommand(new Command(Command.CommandEnum.REQUEST_FOCUS));
             return editorDelegate;
         } else {
             if (mTabManager.newTab(source)) {
-                return moveToEditor(source, md5);
+                return moveToEditor(source);
             }
             return null;
         }
@@ -150,14 +126,12 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     @MainThread
     @Override
-    public void setDiagnostics(ArrayList<Message> messages) {
-        mHashCode.clear();
-
+    public void setMessages(ArrayList<Message> messages) {
         show(messages);
         highlightError(messages);
     }
 
-    private void show(ArrayList<Message> messages) {
+    private void show(List<Message> messages) {
         if (mView != null) {
             mView.showDiagnostic(messages);
         }
@@ -178,11 +152,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
      * Show error in current editor,
      * Find first error index and move cursor to it
      */
-    private void highlightError(ArrayList<Message> messages) {
-        for (IEditorDelegate editorDelegate : mTabManager.getEditorPagerAdapter().getAllEditor()) {
-            editorDelegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
-        }
-
+    @UiThread
+    private void highlightError(List<Message> messages) {
         for (Message message : messages) {
             if (message.getKind() != Message.Kind.ERROR) {
                 continue;
@@ -198,8 +169,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             @SuppressWarnings("ConstantConditions")
             @NonNull final IEditorDelegate editorDelegate = position.second;
             Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
-            int lineNumber = (int) message.getLineNumber();
-            int columnNumber = (int) message.getColumn();
+            int lineNumber = message.getLineNumber();
+            int columnNumber = message.getColumn();
             command.args.putInt("line", lineNumber);
             command.args.putInt("col", columnNumber);
             editorDelegate.doCommand(command);
@@ -219,12 +190,18 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @Override
-    public void log(String message) {
-        mView.printMessage(message);
+    public void onNewMessage(String text) {
+        mView.printMessage(text);
 
         if (mToolOutputParser != null) {
-            final List<Message> messages = mToolOutputParser.parseToolOutput(message);
-            mView.addMessage(messages);
+            final List<Message> messages = mToolOutputParser.parseToolOutput(text);
+            show(messages);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    highlightError(messages);
+                }
+            });
         }
     }
 

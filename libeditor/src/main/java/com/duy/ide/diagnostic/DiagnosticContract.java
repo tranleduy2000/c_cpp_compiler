@@ -23,7 +23,6 @@ import android.support.annotation.WorkerThread;
 
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
-import com.duy.ide.diagnostic.suggestion.ISuggestion;
 import com.duy.ide.logging.ILogger;
 
 import java.util.ArrayList;
@@ -65,19 +64,16 @@ public class DiagnosticContract {
         void onDiagnosticClick(android.view.View view, Message message);
 
         @MainThread
-        void onSuggestionClick(Message message, ISuggestion suggestion);
-
-        @MainThread
         void showPanel();
 
         @MainThread
         void hidePanel();
 
         @MainThread
-        void setDiagnostics(ArrayList<Message> messages);
+        void setMessages(ArrayList<Message> messages);
 
         @WorkerThread
-        void log(String string);
+        void onNewMessage(String string);
 
         @MainThread
         void clear();

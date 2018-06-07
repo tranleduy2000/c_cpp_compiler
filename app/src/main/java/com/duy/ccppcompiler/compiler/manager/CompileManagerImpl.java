@@ -117,7 +117,7 @@ public abstract class CompileManagerImpl implements ICompileManager {
         mActivity.setMenuStatus(R.id.action_build_native_activity, MenuDef.STATUS_NORMAL);
 
         if (mDiagnosticPresenter != null) {
-            mDiagnosticPresenter.log(compileResult.getMessage());
+            mDiagnosticPresenter.onNewMessage(compileResult.getMessage());
         }
     }
 
