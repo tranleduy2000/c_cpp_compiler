@@ -103,12 +103,15 @@ public abstract class GestureSupportEditor extends HighlightEditorView
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!hasSelection() && mScaleDetector != null && mPreferences.isTouchScaleTextSize()) {
-            mScaleDetector.onTouchEvent(ev);
-        }
+        try {
+            if (!hasSelection() && mScaleDetector != null && mPreferences.isTouchScaleTextSize()) {
+                mScaleDetector.onTouchEvent(ev);
+            }
 
-        if (mGestureDetector != null) {
-            mGestureDetector.onTouchEvent(ev);
+            if (mGestureDetector != null) {
+                mGestureDetector.onTouchEvent(ev);
+            }
+        } catch (Exception e) {
         }
         return super.onTouchEvent(ev);
     }
@@ -151,6 +154,7 @@ public abstract class GestureSupportEditor extends HighlightEditorView
             super.computeScroll();
         }
     }
+
     /**
      * @see GestureDetector.OnGestureListener#onFling(MotionEvent,
      * MotionEvent, float, float)
