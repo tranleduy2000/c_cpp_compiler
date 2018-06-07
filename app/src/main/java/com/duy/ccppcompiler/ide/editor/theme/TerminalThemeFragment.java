@@ -1,4 +1,4 @@
-package com.duy.editor.theme;
+package com.duy.ccppcompiler.ide.editor.theme;
 
 import android.content.Context;
 import android.os.Bundle;

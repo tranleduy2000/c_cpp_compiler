@@ -1,4 +1,4 @@
-package com.duy.editor.theme;
+package com.duy.ccppcompiler.ide.editor.theme;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

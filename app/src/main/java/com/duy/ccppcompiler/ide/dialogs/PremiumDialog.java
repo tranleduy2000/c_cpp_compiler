@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.ui.dialogs;
+package com.duy.ccppcompiler.ide.dialogs;
 
 import android.content.Context;
 import android.content.DialogInterface;

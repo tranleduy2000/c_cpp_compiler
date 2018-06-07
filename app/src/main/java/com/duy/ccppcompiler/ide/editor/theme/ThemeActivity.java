@@ -1,4 +1,4 @@
-package com.duy.editor.theme;
+package com.duy.ccppcompiler.ide.editor.theme;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
+import com.duy.ccppcompiler.ide.dialogs.PremiumDialog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.ide.editor.theme.model.EditorTheme;

@@ -26,7 +26,7 @@ import com.duy.ccppcompiler.compiler.model.OutputScope;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.editor.CodeEditorActivity;
+import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
 import com.jecelyin.common.utils.UIUtils;
 import com.pdaxrom.cctools.BuildConstants;
 import com.pdaxrom.utils.Utils;

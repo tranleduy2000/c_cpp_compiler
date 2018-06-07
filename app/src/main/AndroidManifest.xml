@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.InstallActivity"
+            android:name=".ide.InstallActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name="com.duy.editor.CodeEditorActivity"
+            android:name=".ide.editor.CodeEditorActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask">
             <intent-filter>
@@ -67,7 +67,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.examples.ExampleActivity" />
+        <activity android:name=".ide.examples.ExampleActivity" />
         <activity android:name=".compiler.CompilerSettingActivity" />
 
         <activity
@@ -124,7 +124,7 @@
             android:name="jackpal.androidterm.TermPreferencesActivity"
             android:label="@string/preferences" />
         <activity
-            android:name="com.duy.editor.theme.ThemeActivity"
+            android:name=".ide.editor.theme.ThemeActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 

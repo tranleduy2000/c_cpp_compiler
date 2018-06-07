@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ccppcompiler.ui.dialogs;
+package com.duy.ccppcompiler.ide.dialogs;
 
 import android.content.Context;
 import android.content.DialogInterface;

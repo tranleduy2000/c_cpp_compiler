@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.ui;
+package com.duy.ccppcompiler.ide;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -42,7 +42,7 @@ import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
-import com.duy.editor.CodeEditorActivity;
+import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
 import org.apache.commons.io.IOUtils;

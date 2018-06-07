@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ccppcompiler.ui.examples;
+package com.duy.ccppcompiler.ide.examples;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

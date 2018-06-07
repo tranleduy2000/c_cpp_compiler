@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.editor;
+package com.duy.ccppcompiler.ide.editor;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,14 +35,14 @@ import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
-import com.duy.ccppcompiler.ui.dialogs.CompilerOptionsDialog;
-import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
-import com.duy.ccppcompiler.ui.examples.ExampleActivity;
+import com.duy.ccppcompiler.ide.dialogs.CompilerOptionsDialog;
+import com.duy.ccppcompiler.ide.dialogs.PremiumDialog;
+import com.duy.ccppcompiler.ide.examples.ExampleActivity;
 import com.duy.common.StoreUtil;
 import com.duy.common.function.Action;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
-import com.duy.editor.theme.ThemeActivity;
+import com.duy.ccppcompiler.ide.editor.theme.ThemeActivity;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.core.SimpleEditorActivity;
 import com.jecelyin.common.utils.UIUtils;
