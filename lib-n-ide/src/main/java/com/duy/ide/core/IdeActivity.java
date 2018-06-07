@@ -742,12 +742,12 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
-        setTitle("");
+        mTabManager.updateToolbar();
     }
 
     protected void onHideKeyboard() {
         mTabLayout.setVisibility(View.VISIBLE);
-        mTabManager.updateToolbar();
+        setTitle("");
     }
 
     @Override
