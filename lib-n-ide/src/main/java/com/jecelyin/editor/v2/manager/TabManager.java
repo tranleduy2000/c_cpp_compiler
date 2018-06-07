@@ -20,11 +20,15 @@ import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.duy.file.explorer.util.FileUtils;
 import com.duy.ide.core.IdeActivity;
 import com.duy.ide.database.RecentFileItem;
 import com.duy.ide.database.SQLHelper;
@@ -33,49 +37,27 @@ import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.dialog.SaveConfirmDialog;
-import com.jecelyin.editor.v2.editor.Document;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
 
 
-public class TabManager implements ViewPager.OnPageChangeListener {
+public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayout.TabProvider {
     private IdeActivity mActivity;
-    private TabAdapter mTabAdapter;
     private EditorFragmentPagerAdapter mPagerAdapter;
-
-    @Nullable
-    private RecyclerView mTabView;
+    private SmartTabLayout mTabLayout;
 
     public TabManager(IdeActivity activity) {
         mActivity = activity;
-
-        mTabAdapter = new TabAdapter();
-        mTabAdapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onTabMenuViewsClick(v);
-            }
-        });
-        mTabView = mActivity.findViewById(R.id.tabRecyclerView);
-        if (mTabView != null) {
-            mTabView.setLayoutManager(new LinearLayoutManager(mActivity));
-            mTabView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(activity).build());
-            mTabView.setAdapter(mTabAdapter);
-        }
-
+        mTabLayout = mActivity.findViewById(R.id.tab_layout);
+        mTabLayout.setCustomTabView(this);
         initEditor();
-        mActivity.mEditorPager.addOnPageChangeListener(this);
-        SmartTabLayout tabLayout = mActivity.findViewById(R.id.tab_layout);
-        tabLayout.setViewPager(mActivity.mEditorPager);
     }
 
     private void onTabMenuViewsClick(View v) {
@@ -85,9 +67,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
         } else {
             int position = (int) v.getTag();
-            mActivity.closeMenu();
             setCurrentTab(position);
-
         }
     }
 
@@ -160,10 +140,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     public int getTabCount() {
-        if (mTabAdapter == null) {
-            return 0;
-        }
-        return mTabAdapter.getItemCount();
+        return mPagerAdapter.getCount();
     }
 
     public int getCurrentTab() {
@@ -175,7 +152,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         index = Math.min(Math.max(0, index), tabCount);
 
         mActivity.mEditorPager.setCurrentItem(index);
-        mTabAdapter.setCurrentTab(index);
         updateToolbar();
     }
 
@@ -199,7 +175,6 @@ public class TabManager implements ViewPager.OnPageChangeListener {
 
     @Override
     public void onPageSelected(int position) {
-        mTabAdapter.setCurrentTab(position);
         updateToolbar();
     }
 
@@ -209,11 +184,17 @@ public class TabManager implements ViewPager.OnPageChangeListener {
     }
 
     private void updateTabList() {
-        mTabAdapter.setTabInfoList(mPagerAdapter.getTabInfoList());
-        mTabAdapter.notifyDataSetChanged();
+        ViewPager pager = mActivity.mEditorPager;
+
+        //can not remove old tab listener
+        pager.clearOnPageChangeListeners();
+
+        //auto add page change listener
+        mTabLayout.setViewPager(pager);
+        pager.addOnPageChangeListener(this);
     }
 
-    public void onDocumentChanged(Document mDocument) {
+    public void onDocumentChanged() {
         updateTabList();
         updateToolbar();
     }
@@ -309,7 +290,7 @@ public class TabManager implements ViewPager.OnPageChangeListener {
         for (int i = 0, allEditorSize = allEditor.size(); i < allEditorSize; i++) {
             IEditorDelegate delegate = allEditor.get(i);
             File editFile = delegate.getDocument().getFile();
-            if (editFile.equals(file)) {
+            if (FileUtils.isSameFile(file, editFile)) {
                 return new Pair<>(i, delegate);
             }
         }
@@ -327,5 +308,47 @@ public class TabManager implements ViewPager.OnPageChangeListener {
             }
         }
         return result;
+    }
+
+    /**
+     * Auto refresh all view when adapter change, so make position is final not cause any effect
+     */
+    @Override
+    public View createTabView(ViewGroup container, final int position, PagerAdapter adapter) {
+        if (adapter instanceof EditorFragmentPagerAdapter) {
+            EditorFragmentPagerAdapter editorAdapter = (EditorFragmentPagerAdapter) adapter;
+            LayoutInflater layoutInflater = LayoutInflater.from(mActivity);
+            View view = layoutInflater.inflate(R.layout.list_item_tab, container, false);
+            TextView txtName = view.findViewById(R.id.txt_name);
+            final EditorPageDescriptor item = editorAdapter.getItem(position);
+            final File file = new File(item.getPath());
+
+            txtName.setText(file.getName());
+            txtName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mActivity.mEditorPager.setCurrentItem(position);
+                }
+            });
+            txtName.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(mActivity,
+                            "Path:" + file.getPath() + ", Encoding " + item.getEncoding(),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    //handled, do not move to editor
+                    return true;
+                }
+            });
+            view.findViewById(R.id.btn_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeTab(position);
+                }
+            });
+            return view;
+        }
+        return null;
     }
 }

@@ -16,9 +16,10 @@ public interface IEditorDelegate {
 
     int getCursorOffset();
 
-
     @Nullable
     Document getDocument();
+
+    void formatSource();
 
     void onDocumentChanged();
 

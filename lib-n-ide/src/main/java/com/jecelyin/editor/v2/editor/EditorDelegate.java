@@ -401,7 +401,8 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
      * Format current source
      * Supported: c++, c, java,
      */
-    private void formatSource() {
+    @Override
+    public void formatSource() {
         String currMode = mDocument.getModeName();
         String mode;
         String style = "gnu";
@@ -516,7 +517,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @MainThread
     public void onDocumentChanged() {
         setCurrentFileToEdit(mDocument.getFile());
-        getActivity().getTabManager().onDocumentChanged(mDocument);
+        getActivity().getTabManager().onDocumentChanged();
     }
 
     @Override
@@ -532,7 +533,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Override
     public void afterTextChanged(Editable s) {
         if (loaded) {
-            getActivity().getTabManager().onDocumentChanged(mDocument);
+            getActivity().getTabManager().onDocumentChanged();
         }
     }
 

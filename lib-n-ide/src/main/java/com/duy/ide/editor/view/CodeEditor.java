@@ -18,6 +18,7 @@
 package com.duy.ide.editor.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.ActionMode;
 
@@ -37,5 +38,10 @@ public class CodeEditor extends EditActionSupportEditor {
     @Override
     public void setCustomSelectionActionModeCallback(ActionMode.Callback actionModeCallback) {
         super.setCustomSelectionActionModeCallback(actionModeCallback);
+    }
+
+    @Override
+    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+        return super.requestFocus(direction, previouslyFocusedRect);
     }
 }

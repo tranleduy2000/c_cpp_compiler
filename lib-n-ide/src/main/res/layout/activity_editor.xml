@@ -25,23 +25,23 @@
                 app:popupTheme="?actionBarPopupTheme" />
 
             <com.ogaclejapan.smarttablayout.SmartTabLayout
-                android:id="@id/tab_layout"
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:clipToPadding="false"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                app:stl_defaultTabTextColor="@android:color/white"
-                app:stl_defaultTabTextHorizontalPadding="18dp"
-                app:stl_dividerColor="@android:color/transparent"
-                app:stl_dividerThickness="0dp"
-                app:stl_indicatorColor="@android:color/black"
-                app:stl_indicatorCornerRadius="18dp"
-                app:stl_indicatorGravity="center"
+                app:stl_clickable="true"
+                app:stl_distributeEvenly="false"
+                app:stl_dividerThickness="1dp"
+                app:stl_drawDecorationAfterTab="false"
+                app:stl_indicatorAlwaysInCenter="false"
+                app:stl_indicatorColor="?colorAccent"
+                app:stl_indicatorCornerRadius="2dp"
+                app:stl_indicatorGravity="bottom"
+                app:stl_indicatorInFront="true"
                 app:stl_indicatorInterpolation="smart"
-                app:stl_indicatorThickness="36dp"
-                app:stl_underlineColor="@android:color/transparent"
-                app:stl_underlineThickness="0dp" />
+                app:stl_indicatorThickness="4dp"
+                app:stl_indicatorWidth="auto"
+                app:stl_indicatorWithoutPadding="false"
+                app:stl_overlineThickness="0dp" />
 
 
         </android.support.design.widget.AppBarLayout>

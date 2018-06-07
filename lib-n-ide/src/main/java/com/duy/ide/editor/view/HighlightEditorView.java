@@ -83,7 +83,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
     public HighlightEditorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
-
     }
 
     public HighlightEditorView(Context context, AttributeSet attrs, int defStyleAttr) {

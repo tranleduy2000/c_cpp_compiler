@@ -32,7 +32,7 @@ import android.widget.Scroller;
 import com.duy.ide.editor.model.EditorIndex;
 import com.jecelyin.editor.v2.Preferences;
 
-public abstract class ZoomSupportEditor extends HighlightEditorView
+public abstract class GestureSupportEditor extends HighlightEditorView
         implements IEditAreaView, GestureDetector.OnGestureListener {
 
     private final Rect mVisibleRect = new Rect();
@@ -48,16 +48,16 @@ public abstract class ZoomSupportEditor extends HighlightEditorView
      */
     private boolean mIsTextScaling = false;
 
-    public ZoomSupportEditor(Context context) {
+    public GestureSupportEditor(Context context) {
         this(context, null);
     }
 
-    public ZoomSupportEditor(Context context, AttributeSet attrs) {
+    public GestureSupportEditor(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public ZoomSupportEditor(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GestureSupportEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -151,7 +151,6 @@ public abstract class ZoomSupportEditor extends HighlightEditorView
             super.computeScroll();
         }
     }
-
     /**
      * @see GestureDetector.OnGestureListener#onFling(MotionEvent,
      * MotionEvent, float, float)

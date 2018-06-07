@@ -30,7 +30,7 @@ import com.duy.ide.editor.content.IUndoManager;
 import com.duy.ide.editor.content.UndoManager;
 import com.duy.ide.editor.model.EditorIndex;
 
-public class EditActionSupportEditor extends ZoomSupportEditor {
+public class EditActionSupportEditor extends GestureSupportEditor {
     private IUndoManager mUndoManager;
     private ClipboardCompat mClipboard;
     private KeyListener mLastKeyListener;
@@ -81,17 +81,13 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
 
     @Override
     public boolean doPaste() {
-        if (!onTextContextMenuItem(android.R.id.paste)) {
-            CharSequence clipboard = mClipboard.getClipboard();
-            if (clipboard != null) {
-                //clear all span
+        CharSequence clipboard = mClipboard.getClipboard();
+        if (clipboard != null) {
+            //clear all span
 
-                int selectionStart = getSelectionStart();
-                selectionStart = Math.max(0, selectionStart);
-                getText().insert(selectionStart, cleanupForPaste(clipboard));
-                return true;
-            }
-        } else {
+            int selectionStart = getSelectionStart();
+            selectionStart = Math.max(0, selectionStart);
+            getText().insert(selectionStart, cleanupForPaste(clipboard));
             return true;
         }
         return false;
@@ -111,8 +107,7 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
     public boolean onTextContextMenuItem(int id) {
         switch (id) {
             case android.R.id.paste:
-                doPaste();
-                return true;
+                return doPaste();
         }
         return super.onTextContextMenuItem(id);
     }

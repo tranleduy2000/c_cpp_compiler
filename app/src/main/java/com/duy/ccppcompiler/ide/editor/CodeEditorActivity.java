@@ -87,7 +87,7 @@ public class CodeEditorActivity extends IdeActivity {
     }
 
     @Override
-    protected void populaceDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter) {
+    protected void populateDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter) {
         PatternAwareOutputParser[] parsers = {
                 new CppCheckOutputParser(),
                 new GccOutputParser()
