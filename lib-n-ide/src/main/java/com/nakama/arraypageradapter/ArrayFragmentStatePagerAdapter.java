@@ -356,7 +356,8 @@ public abstract class ArrayFragmentStatePagerAdapter<T> extends ArrayPagerAdapte
     }
 
     private void setTags(List<IdentifiedItem<T>> items) {
-        for (int i = 0; i < mFragments.size(); i++) {
+        final int max = Math.max(items.size(), mFragments.size());
+        for (int i = 0; i < max; i++) {
             Fragment fragment = mFragments.get(i);
             if (fragment != null && fragment.getView() != null) {
                 fragment.getView().setTag(R.id.avpa_view_tag_key, items.get(i));

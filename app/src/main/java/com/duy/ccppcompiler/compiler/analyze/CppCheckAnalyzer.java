@@ -31,7 +31,6 @@ import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.common.DLog;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
-import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
@@ -39,7 +38,6 @@ import com.jecelyin.editor.v2.io.LocalFileWriter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 ;
 
@@ -126,7 +124,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private static class AnalyzeTask extends AsyncTask<Void, Void, ArrayList<Message>> {
+    private static class AnalyzeTask extends AsyncTask<Void, Void, String> {
 
         private final Context mContext;
         private final DiagnosticPresenter mDiagnosticPresenter;
@@ -139,7 +137,13 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         }
 
         @Override
-        protected ArrayList<Message> doInBackground(Void... voids) {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDiagnosticPresenter.clear();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
             IEditAreaView editText = mEditorDelegate.getEditText();
 
             File originFile = mEditorDelegate.getDocument().getFile();
@@ -183,11 +187,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
             }
 
             if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
-            String message = result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
-            CppCheckOutputParser parser = new CppCheckOutputParser();
-            parser.parse(message);
-
-            return null;
+            return result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
         }
 
         private File getCppCheckTmpDir() {
@@ -199,10 +199,10 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Message> messages) {
-            super.onPostExecute(messages);
-            if (messages != null && !isCancelled()) {
-                mDiagnosticPresenter.setMessages(messages);
+        protected void onPostExecute(String message) {
+            super.onPostExecute(message);
+            if (message != null && !isCancelled()) {
+                mDiagnosticPresenter.onNewMessage(message);
             }
         }
     }

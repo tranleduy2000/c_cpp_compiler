@@ -20,11 +20,15 @@ package com.duy.ccppcompiler.compiler.analyze;
 import android.support.annotation.NonNull;
 
 import com.duy.ide.diagnostic.model.Message;
+import com.duy.ide.diagnostic.model.SourceFilePosition;
+import com.duy.ide.diagnostic.model.SourcePosition;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.util.OutputLineReader;
 import com.duy.ide.logging.ILogger;
 
+import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -39,36 +43,31 @@ import java.util.regex.Pattern;
 
 public class CppCheckOutputParser implements PatternAwareOutputParser {
 
-    public static final String TEMPLATE = "--template=\"{file}:{line}:{severity}:{message}\"";
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("^(\\S+):([0-9]+):([^:]+):(.*)");
+    public static final String TEMPLATE = "--template=\"analysis:{file}:{line}:{severity}:{message}\"";
+    private static final Pattern PATTERN = Pattern.compile("^analysis:(\\S+):([0-9]+):([^:]+):(.*)");
 
     public CppCheckOutputParser() {
     }
 
-    public void parse(String inputData) {
-//        try {
-//            StringReader stringReader = new StringReader(inputData);
-//            LineNumberReader lineReader = new LineNumberReader(stringReader);
-//            String line;
-//            while ((line = lineReader.readLine()) != null) {
-//                Matcher matcher = TEMPLATE_PATTERN.matcher(line);
-//                if (matcher.find()) {
-//                    String filePath = matcher.group(1);
-//                    int lineNumber = Integer.parseInt(matcher.group(2));
-//                    Kind type = DiagnosticFactory.createType(matcher.group(3));
-//                    String message = matcher.group(4);
-//                    Message diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, Message.NOPOS, message);
-//                    diagnosticsCollector.report(diagnostic);
-//                }
-//            }
-//        } catch (Exception e) {
-//            //should not happened
-//            e.printStackTrace();
-//        }
-    }
-
     @Override
-    public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger) {
+    public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages,
+                         @NonNull ILogger logger) {
+        Matcher matcher = PATTERN.matcher(line);
+        try {
+
+            if (matcher.find()) {
+                File file = new File(matcher.group(1));
+                int lineNumber = Integer.parseInt(matcher.group(2));
+                Message.Kind kind = Message.Kind.ERROR;
+                String text = matcher.group(4);
+                Message message = new Message(kind, text,
+                        new SourceFilePosition(file, new SourcePosition(lineNumber - 1, -1, -1)));
+                messages.add(message);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }

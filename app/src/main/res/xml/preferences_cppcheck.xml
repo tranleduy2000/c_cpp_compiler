@@ -41,7 +41,8 @@
             android:title="--enable=performance" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
+            android:enabled="false"
             android:key="@string/pref_key_cpp_check_information"
             android:summary="enable information messages"
             android:title="--enable=information" />
