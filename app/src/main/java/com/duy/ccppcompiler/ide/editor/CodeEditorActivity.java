@@ -255,7 +255,7 @@ public class CodeEditorActivity extends IdeActivity {
                 //#include "android_native_app_glue.h" in C++
                 //#inlcude <android_native_app_glue.h> in C
                 Pattern.compile("#include\\s+([<\"])SDL.h[>\"]");
-        if (nativeActivityPattern.matcher(srcCode).find()) {
+        if (sdl.matcher(srcCode).find()) {
             return NativeCompileImpl.BUILD_SDL_ACTIVITY;
         }
 

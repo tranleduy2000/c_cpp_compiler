@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class GccArgumentBuilder {
+public class GccArgumentBuilder extends ArgumentBuilder {
     private String program;
     private ArrayList<Pair<Type, String>> mFlags = new ArrayList<>();
 
@@ -32,8 +32,8 @@ public class GccArgumentBuilder {
         return this;
     }
 
-    private void addFlag(Type type, String name) {
-        mFlags.add(new Pair<Type, String>(type, name));
+    public void addFlag(Type type, String name) {
+        mFlags.add(new Pair<>(type, name));
     }
 
     public GccArgumentBuilder addFlags(Collection<String> flags) {
@@ -55,11 +55,7 @@ public class GccArgumentBuilder {
             @SuppressWarnings("ConstantConditions")
             @Override
             public int compare(Pair<Type, String> o1, Pair<Type, String> o2) {
-                if (!o1.first.getPriority().equals(o2.first.getPriority())) {
-                    return o1.first.getPriority().compareTo(o2.first.getPriority());
-                } else {
-                    return o1.second.compareTo(o2.second);
-                }
+                return -o1.first.getPriority().compareTo(o2.first.getPriority());
             }
         });
         Pair<Type, String> prev = null;
@@ -76,7 +72,7 @@ public class GccArgumentBuilder {
                 if (cmd.length() != 0) {
                     cmd.append(" ");
                 }
-                cmd.append(flag);
+                cmd.append(name);
                 prev = flag;
             }
         }
@@ -84,7 +80,7 @@ public class GccArgumentBuilder {
     }
 
 
-    enum Type {
+    public enum Type {
         UNSPECIFIED(4, true),
         CPP_FLAG(3, true),
         C_FLAG(2, true),

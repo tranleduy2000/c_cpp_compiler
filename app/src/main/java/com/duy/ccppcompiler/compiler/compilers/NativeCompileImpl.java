@@ -24,6 +24,7 @@ import com.duy.ccppcompiler.compiler.model.CompileResult;
 import com.duy.ccppcompiler.compiler.model.OutputScope;
 import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ccppcompiler.compiler.shell.GccArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
@@ -72,6 +73,8 @@ public abstract class NativeCompileImpl implements ICompiler {
         argumentBuilder.addFlags(args);
 
         final String cmd = argumentBuilder.build();
+        String debugStr = cmd.replaceAll("\\s+", "\n");
+        if (DLog.DEBUG) DLog.d(TAG, "debugStr = \n" + debugStr);
         if (logger != null) {
             logger.verbose("Compiler argument: " + cmd);
         }
@@ -93,7 +96,7 @@ public abstract class NativeCompileImpl implements ICompiler {
     }
 
     private String buildArgs(File[] sourceFiles) {
-        ArgumentBuilder args = new ArgumentBuilder();
+        GccArgumentBuilder args = new GccArgumentBuilder();
         for (File sourceFile : sourceFiles) {
             args.addFlags(sourceFile.getAbsolutePath());
         }
@@ -118,13 +121,15 @@ public abstract class NativeCompileImpl implements ICompiler {
         return args.build();
     }
 
-    private void resolveLdFlagsFromSource(ArgumentBuilder args, File[] sourceFiles) {
+    private void resolveLdFlagsFromSource(GccArgumentBuilder args, File[] sourceFiles) {
         LinkerFlagsDetector detector = LinkerFlagsDetector.INSTANCE;
         try {
-            final Set<String> detect = detector.detect(sourceFiles);
-            args.addFlags(detect);
+            final Set<String> detected = detector.detect(sourceFiles);
+            for (String f : detected) {
+                args.addFlag(GccArgumentBuilder.Type.LD_FLAG, f);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            //unexpected
         }
     }
 
@@ -134,9 +139,10 @@ public abstract class NativeCompileImpl implements ICompiler {
 
     protected abstract String getCompilerProgram();
 
-    private void addDefaultLdFlags(ArgumentBuilder args) {
+    private void addDefaultLdFlags(GccArgumentBuilder args) {
         //lib math and lib log
-        args.addFlags("-lm", "-llog");
+        args.addFlag(GccArgumentBuilder.Type.LD_FLAG, "-lm");
+        args.addFlag(GccArgumentBuilder.Type.LD_FLAG, "-llog");
     }
 
     private void buildExecutableFlags(ArgumentBuilder args, File[] sourceFiles) {
@@ -169,7 +175,7 @@ public abstract class NativeCompileImpl implements ICompiler {
                 .addFlags("-o", outputScope.getBinaryFile().getAbsolutePath());
     }
 
-    private void buildSDLActivity(ArgumentBuilder args, File[] sourceFiles) {
+    private void buildSDLActivity(GccArgumentBuilder args, File[] sourceFiles) {
         File source = sourceFiles[0];
         String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
 
