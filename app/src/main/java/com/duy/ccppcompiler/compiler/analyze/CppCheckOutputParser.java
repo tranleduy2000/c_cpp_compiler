@@ -42,9 +42,13 @@ import java.util.regex.Pattern;
  */
 
 public class CppCheckOutputParser implements PatternAwareOutputParser {
+    //ignore message: analysis:::information:Cppcheck cannot find all the include files (use --check-config for details)
+    public static final String PREFIX = "analysis:";
+    public static final String TEMPLATE = /* */"--template=\"" + PREFIX + "{file}:{line}:{severity}:{message}\"";
+    private static final Pattern PATTERN = Pattern.compile("^" + PREFIX + "(\\S+):([0-9]+):([^:]+):(.*)");
 
-    public static final String TEMPLATE = "--template=\"analysis:{file}:{line}:{severity}:{message}\"";
-    private static final Pattern PATTERN = Pattern.compile("^analysis:(\\S+):([0-9]+):([^:]+):(.*)");
+    //ignore message: Checking /data/user/0/com.duy.c.cpp.compiler/cache/cppcheck/tmp/binary-operator-overloading.cpp...
+    private static final String CHECKING = "Checking";
 
     public CppCheckOutputParser() {
     }
@@ -54,7 +58,6 @@ public class CppCheckOutputParser implements PatternAwareOutputParser {
                          @NonNull ILogger logger) {
         Matcher matcher = PATTERN.matcher(line);
         try {
-
             if (matcher.find()) {
                 File file = new File(matcher.group(1));
                 int lineNumber = Integer.parseInt(matcher.group(2));
@@ -63,6 +66,12 @@ public class CppCheckOutputParser implements PatternAwareOutputParser {
                 Message message = new Message(kind, text,
                         new SourceFilePosition(file, new SourcePosition(lineNumber - 1, -1, -1)));
                 messages.add(message);
+                return true;
+            }
+            if (line.startsWith(PREFIX)) {
+                return true;
+            }
+            if (line.startsWith(CHECKING)) {
                 return true;
             }
         } catch (Exception e) {
