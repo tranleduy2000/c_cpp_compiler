@@ -69,7 +69,9 @@ import java.io.IOException;
  * cppcheck --enable=all
  */
 public class CppCheckAnalyzer implements ICodeAnalyser {
-    public static final long DELAY_TIME = 500;
+    //1 second
+    private static final long DELAY_TIME = 1000;
+
     private static final String TAG = "CppCheckAnalyzer";
 
     private static final String CPPCHECK_PROGRAM = "cppcheck";
@@ -144,50 +146,54 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
 
         @Override
         protected String doInBackground(Void... voids) {
-            IEditAreaView editText = mEditorDelegate.getEditText();
-
-            File originFile = mEditorDelegate.getDocument().getFile();
-            File tmpFile = new File(getCppCheckTmpDir(), originFile.getName());
-
-            LocalFileWriter localFileWriter = new LocalFileWriter(tmpFile, "UTF-8");
             try {
-                localFileWriter.writeToFile(editText.getText());
-            } catch (IOException e) {
-                e.printStackTrace();
+                IEditAreaView editText = mEditorDelegate.getEditText();
+
+                File originFile = mEditorDelegate.getDocument().getFile();
+                File tmpFile = new File(getCppCheckTmpDir(), originFile.getName());
+
+                LocalFileWriter localFileWriter = new LocalFileWriter(tmpFile, "UTF-8");
+                try {
+                    localFileWriter.writeToFile(editText.getText());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
+                ArgumentBuilder builder = new ArgumentBuilder(CPPCHECK_PROGRAM);
+                builder.addFlags(CppCheckOutputParser.TEMPLATE);
+                builder.addFlags(tmpFile.getAbsolutePath());
+
+                String enableFlags = "";
+                //flags
+                Preferences setting = Preferences.getInstance(mContext);
+                boolean warn = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_warning), true);
+                if (warn) enableFlags += "warning";
+                boolean performance = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_performance), true);
+                if (performance) {
+                    if (!enableFlags.isEmpty()) enableFlags += ",";
+                    enableFlags += "performance";
+                }
+                boolean information = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_information), true);
+                if (information) {
+                    if (!enableFlags.isEmpty()) enableFlags += ",";
+                    enableFlags += "information";
+                }
+                if (!enableFlags.isEmpty()) {
+                    builder.addFlags("--enable=" + enableFlags);
+                }
+
+                String cmd = builder.build();
+                CommandResult result = Shell.exec(mContext, tmpFile.getParent(), cmd);
+                if (isCancelled()) {
+                    return null;
+                }
+
+                if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
+                return result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
+            } catch (Exception e) {
                 return null;
             }
-
-            ArgumentBuilder builder = new ArgumentBuilder(CPPCHECK_PROGRAM);
-            builder.addFlags(CppCheckOutputParser.TEMPLATE);
-            builder.addFlags(tmpFile.getAbsolutePath());
-
-            String enableFlags = "";
-            //flags
-            Preferences setting = Preferences.getInstance(mContext);
-            boolean warn = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_warning), true);
-            if (warn) enableFlags += "warning";
-            boolean performance = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_performance), true);
-            if (performance) {
-                if (!enableFlags.isEmpty()) enableFlags += ",";
-                enableFlags += "performance";
-            }
-            boolean information = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_information), true);
-            if (information) {
-                if (!enableFlags.isEmpty()) enableFlags += ",";
-                enableFlags += "information";
-            }
-            if (!enableFlags.isEmpty()) {
-                builder.addFlags("--enable=" + enableFlags);
-            }
-
-            String cmd = builder.build();
-            CommandResult result = Shell.exec(mContext, tmpFile.getParent(), cmd);
-            if (isCancelled()) {
-                return null;
-            }
-
-            if (DLog.DEBUG) DLog.d(TAG, "result = " + result);
-            return result.getMessage().replace(tmpFile.getAbsolutePath(), originFile.getAbsolutePath());
         }
 
         private File getCppCheckTmpDir() {
