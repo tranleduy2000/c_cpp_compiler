@@ -18,13 +18,15 @@
 package com.duy.ide.diagnostic;
 
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.duy.common.DLog;
 import com.duy.ide.core.SimpleEditorActivity;
-import com.duy.ide.diagnostic.model.Kind;
+import com.duy.ide.diagnostic.model.Message;
+import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.UIUtils;
@@ -47,6 +49,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
     private final SimpleEditorActivity mActivity;
     private final TabManager mTabManager;
+    private final ArrayList<PatternAwareOutputParser> mOutputParsers = new ArrayList<>();
     private ArrayList<Message> mMessages;
     private DiagnosticContract.View mView;
     private HashMap<File, byte[]> mHashCode = new HashMap<>();
@@ -67,8 +70,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         if (DLog.DEBUG) {
             DLog.d(TAG, "onDiagnosticClick() called diagnostic = [" + message + "]");
         }
-        if (message.getSourceFile() != null) {
-            File source = new File(message.getSourceFile());
+        if (message.getSourcePath() != null) {
+            File source = new File(message.getSourcePath());
             if (isSystemFile(source)) {
                 UIUtils.alert(mActivity,
                         mActivity.getString(R.string.title_non_project_file),
@@ -79,7 +82,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             if (editorDelegate != null) {
                 Command command = new Command(Command.CommandEnum.GOTO_INDEX);
                 command.args.putInt("line", (int) message.getLineNumber());
-                command.args.putInt("col", (int) message.getColumnNumber());
+                command.args.putInt("col", (int) message.getColumn());
                 editorDelegate.doCommand(command);
             }
             hidePanel();
@@ -178,22 +181,22 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         }
 
         for (Message message : mMessages) {
-            if (message.getKind() != Kind.ERROR) {
+            if (message.getKind() != Message.Kind.ERROR) {
                 continue;
             }
-            if (message.getSourceFile() == null) {
+            if (message.getSourcePath() == null) {
                 continue;
             }
-            File sourceFile = new File(message.getSourceFile());
+            File sourceFile = new File(message.getSourcePath());
             Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(sourceFile);
             if (position == null) {
                 continue;
             }
-
-            final IEditorDelegate editorDelegate = position.second;
+            @SuppressWarnings("ConstantConditions")
+            @NonNull final IEditorDelegate editorDelegate = position.second;
             Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
             int lineNumber = (int) message.getLineNumber();
-            int columnNumber = (int) message.getColumnNumber();
+            int columnNumber = (int) message.getColumn();
             command.args.putInt("line", lineNumber);
             command.args.putInt("col", columnNumber);
             editorDelegate.doCommand(command);
@@ -208,5 +211,11 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Override
     public void clear() {
         mView.clear();
+    }
+
+    @Override
+    public void setOutputParser(PatternAwareOutputParser... parsers) {
+        mOutputParsers.clear();
+        mOutputParsers.addAll(Arrays.asList(parsers));
     }
 }

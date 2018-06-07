@@ -30,7 +30,7 @@ import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.common.DLog;
-import com.duy.ide.diagnostic.Message;
+import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
 import com.duy.ide.editor.view.IEditAreaView;

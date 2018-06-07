@@ -17,6 +17,8 @@
 
 package com.duy.ide.diagnostic;
 
+import com.duy.ide.diagnostic.model.Message;
+
 import java.util.ArrayList;
 
 /**

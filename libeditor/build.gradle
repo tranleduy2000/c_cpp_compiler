@@ -44,9 +44,10 @@ dependencies {
     api 'com.makeramen:roundedimageview:2.2.1'
     api 'com.yqritc:recyclerview-flexibledivider:1.2.9'
     api 'com.sothree.slidinguppanel:library:3.4.0'
-    api group: 'commons-io', name: 'commons-io', version: '2.4'
+    api 'commons-io:commons-io:2.6'
     api 'com.simplecityapps:recyclerview-fastscroll:1.0.18'
-    api group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    api 'org.apache.commons:commons-lang3:3.7'
+    api 'com.google.guava:guava:25.1-android'
 
     api project(':style')
     api project(':libastyle')

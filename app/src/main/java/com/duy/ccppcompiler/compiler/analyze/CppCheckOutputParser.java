@@ -17,14 +17,15 @@
 
 package com.duy.ccppcompiler.compiler.analyze;
 
-import com.duy.ide.diagnostic.Message;
-import com.duy.ide.diagnostic.DiagnosticFactory;
-import com.duy.ide.diagnostic.DiagnosticsCollector;
-import com.duy.ide.diagnostic.model.Kind;
+import android.support.annotation.NonNull;
 
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.regex.Matcher;
+import com.duy.ide.diagnostic.DiagnosticsCollector;
+import com.duy.ide.diagnostic.model.Message;
+import com.duy.ide.diagnostic.parser.ParsingFailedException;
+import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
+import com.duy.ide.diagnostic.util.OutputLineReader;
+
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -32,16 +33,15 @@ import java.util.regex.Pattern;
  * <p>
  * https://gcc.gnu.org/onlinedocs/gcc-7.2.0/gcc/Diagnostic-Message-Formatting-Options.html
  * <p>
- *
- *
+ * <p>
+ * <p>
  * Created by Duy on 28-Apr-18.
  */
 
-public class CppCheckOutputParser {
+public class CppCheckOutputParser implements PatternAwareOutputParser {
 
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("^(\\S+):([0-9]+):([^:]+):(.*)");
     public static final String TEMPLATE = "--template=\"{file}:{line}:{severity}:{message}\"";
-
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("^(\\S+):([0-9]+):([^:]+):(.*)");
     private DiagnosticsCollector diagnosticsCollector;
 
     public CppCheckOutputParser(DiagnosticsCollector diagnosticsCollector) {
@@ -49,24 +49,29 @@ public class CppCheckOutputParser {
     }
 
     public void parse(String inputData) {
-        try {
-            StringReader stringReader = new StringReader(inputData);
-            LineNumberReader lineReader = new LineNumberReader(stringReader);
-            String line;
-            while ((line = lineReader.readLine()) != null) {
-                Matcher matcher = TEMPLATE_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    String filePath = matcher.group(1);
-                    int lineNumber = Integer.parseInt(matcher.group(2));
-                    Kind type = DiagnosticFactory.createType(matcher.group(3));
-                    String message = matcher.group(4);
-                    Message diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, Message.NOPOS, message);
-                    diagnosticsCollector.report(diagnostic);
-                }
-            }
-        } catch (Exception e) {
-            //should not happened
-            e.printStackTrace();
-        }
+//        try {
+//            StringReader stringReader = new StringReader(inputData);
+//            LineNumberReader lineReader = new LineNumberReader(stringReader);
+//            String line;
+//            while ((line = lineReader.readLine()) != null) {
+//                Matcher matcher = TEMPLATE_PATTERN.matcher(line);
+//                if (matcher.find()) {
+//                    String filePath = matcher.group(1);
+//                    int lineNumber = Integer.parseInt(matcher.group(2));
+//                    Kind type = DiagnosticFactory.createType(matcher.group(3));
+//                    String message = matcher.group(4);
+//                    Message diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, Message.NOPOS, message);
+//                    diagnosticsCollector.report(diagnostic);
+//                }
+//            }
+//        } catch (Exception e) {
+//            //should not happened
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages) throws ParsingFailedException {
+        return false;
     }
 }

@@ -19,6 +19,7 @@ package com.duy.ide.diagnostic;
 
 import android.view.View;
 
+import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 /**

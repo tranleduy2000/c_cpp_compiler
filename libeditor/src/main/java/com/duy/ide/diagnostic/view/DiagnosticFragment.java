@@ -32,11 +32,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.duy.common.DLog;
-import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.DiagnosticClickListener;
 import com.duy.ide.diagnostic.DiagnosticContract;
-import com.duy.ide.editor.editor.R;
+import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
+import com.duy.ide.editor.editor.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +56,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     private ViewPager mViewPager;
 
     public static DiagnosticFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        DiagnosticFragment fragment = new DiagnosticFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new DiagnosticFragment();
     }
 
     @Nullable
@@ -71,6 +66,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -91,7 +87,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         mDiagnosticView.setAdapter(mAdapter);
 
         if (savedInstanceState != null) {
-            ArrayList<Message> messages = savedInstanceState.getParcelableArrayList(KEY_LIST_DIAGNOSTIC);
+            ArrayList<Message> messages = (ArrayList<Message>) savedInstanceState.getSerializable(KEY_LIST_DIAGNOSTIC);
             showDiagnostic(messages);
             String log = savedInstanceState.getString(KEY_LOG);
             showLog(log);
@@ -102,7 +98,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         ArrayList<Message> messages = new ArrayList<>(mAdapter.getDiagnostics());
-        outState.putParcelableArrayList(KEY_LIST_DIAGNOSTIC, messages);
+        outState.putSerializable(KEY_LIST_DIAGNOSTIC, messages);
         outState.putString(KEY_LOG, mLogView.getText().toString());
     }
 

@@ -19,6 +19,8 @@ package com.duy.ide.diagnostic;
 
 import android.support.annotation.MainThread;
 
+import com.duy.ide.diagnostic.model.Message;
+import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 import java.util.ArrayList;
@@ -65,5 +67,7 @@ public class DiagnosticContract {
 
         @MainThread
         void clear();
+
+        void setOutputParser(PatternAwareOutputParser... parsers);
     }
 }

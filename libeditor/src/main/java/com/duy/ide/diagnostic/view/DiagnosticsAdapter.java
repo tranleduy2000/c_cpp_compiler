@@ -29,8 +29,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.DiagnosticClickListener;
+import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DrawableUtils;
 
@@ -62,16 +62,15 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Message message = mMessages.get(position);
-        if (message.getLineNumber() != Message.NOPOS) {
-            long columnNumber = message.getColumnNumber();
-            String text = message.getLineNumber() + ":"
-                    + (columnNumber != Message.NOPOS ? columnNumber : "");
+        if (message.getLineNumber() >= 0) {
+            long column = message.getColumn();
+            String text = message.getLineNumber() + ":" + (column >= 0 ? column : "");
             holder.txtLineCol.setText(text);
         } else {
             holder.txtLineCol.setText("");
         }
 
-        String path = message.getSourceFile();
+        String path = message.getSourcePath();
         if (path != null) {
             holder.txtFile.setText(new File(path).getName());
         } else {
@@ -79,11 +78,12 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
         }
 
         setIcon(holder, message);
-        if (message.getMessage(mContext).isEmpty()) {
+
+        if (message.getText().isEmpty()) {
             holder.txtMessage.setVisibility(View.GONE);
         } else {
             holder.txtMessage.setVisibility(View.VISIBLE);
-            holder.txtMessage.setText(message.getMessage(mContext));
+            holder.txtMessage.setText(message.getText());
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
