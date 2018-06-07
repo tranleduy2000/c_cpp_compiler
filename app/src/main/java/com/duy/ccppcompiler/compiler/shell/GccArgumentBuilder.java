@@ -1,16 +1,15 @@
 package com.duy.ccppcompiler.compiler.shell;
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
+import android.support.v4.util.ArraySet;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 
 public class GccArgumentBuilder extends ArgumentBuilder {
     private String program;
-    private ArrayList<Pair<Type, String>> mFlags = new ArrayList<>();
+    private HashMap<Type, ArrayList<String>> mFlags = new HashMap<>();
 
     public GccArgumentBuilder(String program) {
         this.program = program;
@@ -32,8 +31,12 @@ public class GccArgumentBuilder extends ArgumentBuilder {
         return this;
     }
 
-    public void addFlag(Type type, String name) {
-        mFlags.add(new Pair<>(type, name));
+    public GccArgumentBuilder addFlag(Type type, String name) {
+        if (mFlags.get(type) == null) {
+            mFlags.put(type, new ArrayList<String>());
+        }
+        mFlags.get(type).add(name);
+        return this;
     }
 
     public GccArgumentBuilder addFlags(Collection<String> flags) {
@@ -42,7 +45,6 @@ public class GccArgumentBuilder extends ArgumentBuilder {
     }
 
 
-    @SuppressWarnings("ConstantConditions")
     @NonNull
     public String build() {
         StringBuilder cmd = new StringBuilder();
@@ -50,30 +52,21 @@ public class GccArgumentBuilder extends ArgumentBuilder {
         if (mFlags.size() == 0) {
             return cmd.toString();
         }
-
-        Collections.sort(mFlags, new Comparator<Pair<Type, String>>() {
-            @SuppressWarnings("ConstantConditions")
-            @Override
-            public int compare(Pair<Type, String> o1, Pair<Type, String> o2) {
-                return -o1.first.getPriority().compareTo(o2.first.getPriority());
+        for (Type type : Type.values()) {
+            Collection<String> flags = mFlags.get(type);
+            if (flags == null) {
+                continue;
             }
-        });
-        Pair<Type, String> prev = null;
-        for (int i = 0; i < mFlags.size(); i++) {
-            final Pair<Type, String> flag = mFlags.get(i);
-            final Type type = flag.first;
-            final String name = flag.second;
-            if (name != null && !name.isEmpty()) {
-                if (prev != null) {
-                    if (prev.equals(flag) && !type.isAcceptDuplicate()) {
-                        continue;
+            if (!type.isAcceptDuplicate()) {
+                flags = new ArraySet<>(flags);
+            }
+            for (String flag : flags) {
+                if (flag != null && !flag.isEmpty()) {
+                    if (cmd.length() != 0) {
+                        cmd.append(" ");
                     }
+                    cmd.append(flag);
                 }
-                if (cmd.length() != 0) {
-                    cmd.append(" ");
-                }
-                cmd.append(name);
-                prev = flag;
             }
         }
         return cmd.toString();
@@ -82,7 +75,7 @@ public class GccArgumentBuilder extends ArgumentBuilder {
 
     public enum Type {
         UNSPECIFIED(4, true),
-        CPP_FLAG(3, true),
+        CXX_FLAG(3, true),
         C_FLAG(2, true),
         LD_FLAG(1, false);
 

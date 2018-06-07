@@ -74,7 +74,7 @@ public abstract class NativeCompileImpl implements ICompiler {
 
         final String cmd = argumentBuilder.build();
         String debugStr = cmd.replaceAll("\\s+", "\n");
-        if (DLog.DEBUG) DLog.d(TAG, "debugStr = \n" + debugStr);
+        if (DLog.DEBUG) DLog.w(TAG, "debugStr = \n" + debugStr);
         if (logger != null) {
             logger.verbose("Compiler argument: " + cmd);
         }
@@ -169,9 +169,6 @@ public abstract class NativeCompileImpl implements ICompiler {
                 .addFlags("-shared")
                 .addFlags("-Wl,--no-undefined")
                 .addFlags("-Wl,-z,noexecstack")
-//                .addFlags("-llog") //lib log
-//                .addFlags("-landroid") //android
-//                .addFlags("-lm")
                 .addFlags("-o", outputScope.getBinaryFile().getAbsolutePath());
     }
 
@@ -189,8 +186,7 @@ public abstract class NativeCompileImpl implements ICompiler {
                 .addFlags("-I" + sdCardHomeDir + "/SDL/include")
                 .addFlags("-shared")
                 .addFlags(sdCardHomeDir + "/SDL/lib/SDL_android_main.o")
-                .addFlags("-L" + sdCardHomeDir + "SDL/lib")
-                .addFlags("-lSDL2")
+                .addFlags("-L" + sdCardHomeDir + "/SDL/lib")
                 .addFlags("-o", outputScope.getBinaryFile().getAbsolutePath());
     }
 
