@@ -16,7 +16,7 @@
 
 package com.duy.ccppcompiler.compiler.shell;
 
-import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.DiagnosticFactory;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
 import com.duy.ide.diagnostic.model.Kind;
@@ -66,7 +66,7 @@ public class OutputParser {
                     Kind type = DiagnosticFactory.createType(matcher.group(4));
                     String message = matcher.group(5);
 
-                    Diagnostic diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
+                    Message diagnostic = DiagnosticFactory.create(type, filePath, lineNumber, colNumber, message);
                     diagnosticsCollector.report(diagnostic);
                     continue;
                 }
@@ -78,7 +78,7 @@ public class OutputParser {
                     int colNumber = Integer.parseInt(matcher.group(3));
                     String message = matcher.group(4);
 
-                    Diagnostic diagnostic = DiagnosticFactory.create(OTHER, filePath, lineNumber, colNumber, message);
+                    Message diagnostic = DiagnosticFactory.create(OTHER, filePath, lineNumber, colNumber, message);
                     diagnosticsCollector.report(diagnostic);
                     continue;
                 }
@@ -89,8 +89,8 @@ public class OutputParser {
                     int lineNumber = Integer.parseInt(matcher.group(2));
                     String message = matcher.group(3);
 
-                    Diagnostic diagnostic =
-                            DiagnosticFactory.create(OTHER, filePath, lineNumber, Diagnostic.NOPOS, message);
+                    Message diagnostic =
+                            DiagnosticFactory.create(OTHER, filePath, lineNumber, Message.NOPOS, message);
                     diagnosticsCollector.report(diagnostic);
                 }
             }

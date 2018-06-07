@@ -26,19 +26,19 @@ import java.util.ArrayList;
  */
 
 public class DiagnosticsCollector implements DiagnosticListener {
-    private final ArrayList<Diagnostic> diagnostics = new ArrayList<>();
+    private final ArrayList<Message> messages = new ArrayList<>();
 
     @Override
-    public void report(Diagnostic diagnostic) {
-        diagnostics.add(diagnostic);
+    public void report(Message message) {
+        messages.add(message);
     }
 
     @Override
     public void clear() {
-        diagnostics.clear();
+        messages.clear();
     }
 
-    public ArrayList<Diagnostic> getDiagnostics() {
-        return diagnostics;
+    public ArrayList<Message> getMessages() {
+        return messages;
     }
 }

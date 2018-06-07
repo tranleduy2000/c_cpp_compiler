@@ -22,23 +22,23 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
 /**
  * Created by Duy on 28-Apr-18.
  */
 
-public class SimpleDiagnostic implements Diagnostic, Parcelable {
-    public static final Creator<SimpleDiagnostic> CREATOR = new Creator<SimpleDiagnostic>() {
+public class SimpleMessage implements Message, Parcelable {
+    public static final Creator<SimpleMessage> CREATOR = new Creator<SimpleMessage>() {
         @Override
-        public SimpleDiagnostic createFromParcel(Parcel in) {
-            return new SimpleDiagnostic(in);
+        public SimpleMessage createFromParcel(Parcel in) {
+            return new SimpleMessage(in);
         }
 
         @Override
-        public SimpleDiagnostic[] newArray(int size) {
-            return new SimpleDiagnostic[size];
+        public SimpleMessage[] newArray(int size) {
+            return new SimpleMessage[size];
         }
     };
     private final Kind kind;
@@ -49,7 +49,7 @@ public class SimpleDiagnostic implements Diagnostic, Parcelable {
     @Nullable
     private ISuggestion suggestion;
 
-    public SimpleDiagnostic(Kind kind, String filePath, int line, int col, String message, @Nullable ISuggestion suggestion) {
+    public SimpleMessage(Kind kind, String filePath, int line, int col, String message, @Nullable ISuggestion suggestion) {
         this.kind = kind;
         this.filePath = filePath;
         this.line = line;
@@ -58,7 +58,7 @@ public class SimpleDiagnostic implements Diagnostic, Parcelable {
         this.suggestion = suggestion;
     }
 
-    protected SimpleDiagnostic(Parcel in) {
+    protected SimpleMessage(Parcel in) {
         kind = Kind.values()[in.readInt()];
         filePath = in.readString();
         line = in.readInt();
@@ -154,9 +154,9 @@ public class SimpleDiagnostic implements Diagnostic, Parcelable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SimpleDiagnostic)) return false;
+        if (!(o instanceof SimpleMessage)) return false;
 
-        SimpleDiagnostic that = (SimpleDiagnostic) o;
+        SimpleMessage that = (SimpleMessage) o;
 
         if (line != that.line) return false;
         if (col != that.col) return false;

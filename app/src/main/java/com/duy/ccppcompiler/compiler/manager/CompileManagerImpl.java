@@ -31,7 +31,7 @@ import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.OutputParser;
 import com.duy.common.DLog;
 import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
-import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
 import com.duy.ide.core.SimpleEditorActivity;
@@ -125,8 +125,8 @@ public abstract class CompileManagerImpl implements ICompileManager {
             OutputParser parser = new OutputParser(diagnosticsCollector);
             parser.parse(compileResult.getMessage());
 
-            ArrayList<Diagnostic> diagnostics = diagnosticsCollector.getDiagnostics();
-            mDiagnosticPresenter.setDiagnostics(diagnostics);
+            ArrayList<Message> messages = diagnosticsCollector.getMessages();
+            mDiagnosticPresenter.setDiagnostics(messages);
             mDiagnosticPresenter.log(compileResult.getMessage());
         }
     }

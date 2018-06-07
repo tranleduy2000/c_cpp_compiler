@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.DiagnosticClickListener;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DrawableUtils;
@@ -42,12 +42,12 @@ import java.util.List;
  */
 
 public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.ViewHolder> {
-    private List<Diagnostic> mDiagnostics;
+    private List<Message> mMessages;
     private Context mContext;
     private DiagnosticClickListener mDiagnosticClickListener;
 
-    DiagnosticsAdapter(List<Diagnostic> diagnostics, Context context) {
-        this.mDiagnostics = diagnostics;
+    DiagnosticsAdapter(List<Message> messages, Context context) {
+        this.mMessages = messages;
         this.mContext = context;
     }
 
@@ -61,43 +61,43 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final Diagnostic diagnostic = mDiagnostics.get(position);
-        if (diagnostic.getLineNumber() != Diagnostic.NOPOS) {
-            long columnNumber = diagnostic.getColumnNumber();
-            String text = diagnostic.getLineNumber() + ":"
-                    + (columnNumber != Diagnostic.NOPOS ? columnNumber : "");
+        final Message message = mMessages.get(position);
+        if (message.getLineNumber() != Message.NOPOS) {
+            long columnNumber = message.getColumnNumber();
+            String text = message.getLineNumber() + ":"
+                    + (columnNumber != Message.NOPOS ? columnNumber : "");
             holder.txtLineCol.setText(text);
         } else {
             holder.txtLineCol.setText("");
         }
 
-        String path = diagnostic.getSourceFile();
+        String path = message.getSourceFile();
         if (path != null) {
             holder.txtFile.setText(new File(path).getName());
         } else {
             holder.txtFile.setText("");
         }
 
-        setIcon(holder, diagnostic);
-        if (diagnostic.getMessage(mContext).isEmpty()) {
+        setIcon(holder, message);
+        if (message.getMessage(mContext).isEmpty()) {
             holder.txtMessage.setVisibility(View.GONE);
         } else {
             holder.txtMessage.setVisibility(View.VISIBLE);
-            holder.txtMessage.setText(diagnostic.getMessage(mContext));
+            holder.txtMessage.setText(message.getMessage(mContext));
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mDiagnosticClickListener != null) {
-                    mDiagnosticClickListener.onDiagnosisClick(diagnostic, v);
+                    mDiagnosticClickListener.onDiagnosisClick(message, v);
                 }
             }
         });
     }
 
-    private void setIcon(ViewHolder holder, Diagnostic diagnostic) {
-        switch (diagnostic.getKind()) {
+    private void setIcon(ViewHolder holder, Message message) {
+        switch (message.getKind()) {
             case ERROR: {
                 Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.baseline_error_24);
                 drawable = DrawableUtils.tintDrawable(drawable, Color.RED);
@@ -118,24 +118,24 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
 
     @Override
     public int getItemCount() {
-        return mDiagnostics.size();
+        return mMessages.size();
     }
 
-    public void remove(Diagnostic diagnostic) {
-        int i = mDiagnostics.indexOf(diagnostic);
+    public void remove(Message message) {
+        int i = mMessages.indexOf(message);
         if (i >= 0) {
-            mDiagnostics.remove(i);
+            mMessages.remove(i);
             notifyItemRemoved(i);
         }
     }
 
-    public void add(Diagnostic diagnostic) {
-        mDiagnostics.add(diagnostic);
-        notifyItemInserted(mDiagnostics.size() - 1);
+    public void add(Message message) {
+        mMessages.add(message);
+        notifyItemInserted(mMessages.size() - 1);
     }
 
     public void clear() {
-        mDiagnostics.clear();
+        mMessages.clear();
         notifyDataSetChanged();
     }
 
@@ -143,13 +143,13 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
         this.mDiagnosticClickListener = diagnosticClickListener;
     }
 
-    public List<Diagnostic> getDiagnostics() {
-        return mDiagnostics;
+    public List<Message> getDiagnostics() {
+        return mMessages;
     }
 
-    public void setData(List<Diagnostic> diagnostics) {
-        mDiagnostics.clear();
-        mDiagnostics.addAll(diagnostics);
+    public void setData(List<Message> messages) {
+        mMessages.clear();
+        mMessages.addAll(messages);
         notifyDataSetChanged();
     }
 

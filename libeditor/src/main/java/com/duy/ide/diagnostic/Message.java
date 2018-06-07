@@ -28,7 +28,7 @@ import com.duy.ide.diagnostic.suggestion.ISuggestion;
  * Created by Duy on 28-Apr-18.
  */
 
-public interface Diagnostic extends Parcelable {
+public interface Message extends Parcelable {
     /**
      * Used to signal that no position is available.
      */

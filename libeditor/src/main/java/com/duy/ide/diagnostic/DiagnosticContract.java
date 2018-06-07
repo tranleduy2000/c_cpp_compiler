@@ -30,13 +30,13 @@ import java.util.List;
 
 public class DiagnosticContract {
     public interface View {
-        void showDiagnostic(List<Diagnostic> diagnostics);
+        void showDiagnostic(List<Message> messages);
 
         void showLog(CharSequence log);
 
-        void remove(Diagnostic diagnostic);
+        void remove(Message message);
 
-        void add(Diagnostic diagnostic);
+        void add(Message message);
 
         void clear();
 
@@ -46,10 +46,10 @@ public class DiagnosticContract {
 
     public interface Presenter {
         @MainThread
-        void onDiagnosticClick(android.view.View view, Diagnostic diagnostic);
+        void onDiagnosticClick(android.view.View view, Message message);
 
         @MainThread
-        void onSuggestionClick(Diagnostic diagnostic, ISuggestion suggestion);
+        void onSuggestionClick(Message message, ISuggestion suggestion);
 
         @MainThread
         void showPanel();
@@ -58,7 +58,7 @@ public class DiagnosticContract {
         void hidePanel();
 
         @MainThread
-        void setDiagnostics(ArrayList<Diagnostic> diagnostics);
+        void setDiagnostics(ArrayList<Message> messages);
 
         @MainThread
         void log(String string);

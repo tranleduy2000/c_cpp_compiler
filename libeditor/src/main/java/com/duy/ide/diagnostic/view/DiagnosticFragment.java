@@ -32,7 +32,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.duy.common.DLog;
-import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.DiagnosticClickListener;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.editor.editor.R;
@@ -86,13 +86,13 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         mDiagnosticView.setLayoutManager(new LinearLayoutManager(getContext()));
         mDiagnosticView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
-        mAdapter = new DiagnosticsAdapter(new ArrayList<Diagnostic>(), getContext());
+        mAdapter = new DiagnosticsAdapter(new ArrayList<Message>(), getContext());
         mAdapter.setDiagnosticClickListener(this);
         mDiagnosticView.setAdapter(mAdapter);
 
         if (savedInstanceState != null) {
-            ArrayList<Diagnostic> diagnostics = savedInstanceState.getParcelableArrayList(KEY_LIST_DIAGNOSTIC);
-            showDiagnostic(diagnostics);
+            ArrayList<Message> messages = savedInstanceState.getParcelableArrayList(KEY_LIST_DIAGNOSTIC);
+            showDiagnostic(messages);
             String log = savedInstanceState.getString(KEY_LOG);
             showLog(log);
         }
@@ -101,18 +101,18 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        ArrayList<Diagnostic> diagnostics = new ArrayList<>(mAdapter.getDiagnostics());
-        outState.putParcelableArrayList(KEY_LIST_DIAGNOSTIC, diagnostics);
+        ArrayList<Message> messages = new ArrayList<>(mAdapter.getDiagnostics());
+        outState.putParcelableArrayList(KEY_LIST_DIAGNOSTIC, messages);
         outState.putString(KEY_LOG, mLogView.getText().toString());
     }
 
     @Override
-    public void showDiagnostic(List<Diagnostic> diagnostics) {
+    public void showDiagnostic(List<Message> messages) {
         if (DLog.DEBUG) {
-            DLog.d(TAG, "showDiagnostic() called with: diagnostics = [" + diagnostics + "]");
+            DLog.d(TAG, "showDiagnostic() called with: diagnostics = [" + messages + "]");
         }
-        mAdapter.setData(diagnostics);
-        if (!diagnostics.isEmpty()) {
+        mAdapter.setData(messages);
+        if (!messages.isEmpty()) {
             mViewPager.setCurrentItem(0);
         }
     }
@@ -126,13 +126,13 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
-    public void remove(Diagnostic diagnostic) {
-        mAdapter.remove(diagnostic);
+    public void remove(Message message) {
+        mAdapter.remove(message);
     }
 
     @Override
-    public void add(Diagnostic diagnostic) {
-        mAdapter.add(diagnostic);
+    public void add(Message message) {
+        mAdapter.add(message);
     }
 
     @Override
@@ -147,16 +147,16 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
-    public void onDiagnosisClick(Diagnostic diagnostic, View view) {
+    public void onDiagnosisClick(Message message, View view) {
         if (mPresenter != null) {
-            mPresenter.onDiagnosticClick(view, diagnostic);
+            mPresenter.onDiagnosticClick(view, message);
         }
     }
 
     @Override
-    public void onSuggestionClick(View v, Diagnostic diagnostic, ISuggestion suggestion) {
+    public void onSuggestionClick(View v, Message message, ISuggestion suggestion) {
         if (mPresenter != null) {
-            mPresenter.onSuggestionClick(diagnostic, suggestion);
+            mPresenter.onSuggestionClick(message, suggestion);
         }
     }
 }

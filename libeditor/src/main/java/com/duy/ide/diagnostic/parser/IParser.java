@@ -17,11 +17,11 @@
 
 package com.duy.ide.diagnostic.parser;
 
-import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Message;
 
 import java.io.LineNumberReader;
 import java.util.List;
 
 public interface IParser {
-    boolean parse(String line, LineNumberReader reader, List<Diagnostic> diagnostics);
+    boolean parse(String line, LineNumberReader reader, List<Message> messages);
 }

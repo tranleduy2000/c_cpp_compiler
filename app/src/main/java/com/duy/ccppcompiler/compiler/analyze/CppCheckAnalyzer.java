@@ -30,7 +30,7 @@ import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.common.DLog;
-import com.duy.ide.diagnostic.Diagnostic;
+import com.duy.ide.diagnostic.Message;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.DiagnosticsCollector;
 import com.duy.ide.editor.view.IEditAreaView;
@@ -127,7 +127,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private static class AnalyzeTask extends AsyncTask<Void, Void, ArrayList<Diagnostic>> {
+    private static class AnalyzeTask extends AsyncTask<Void, Void, ArrayList<Message>> {
 
         private final Context mContext;
         private final DiagnosticPresenter mDiagnosticPresenter;
@@ -140,7 +140,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         }
 
         @Override
-        protected ArrayList<Diagnostic> doInBackground(Void... voids) {
+        protected ArrayList<Message> doInBackground(Void... voids) {
             IEditAreaView editText = mEditorDelegate.getEditText();
 
             File originFile = mEditorDelegate.getDocument().getFile();
@@ -189,7 +189,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
             CppCheckOutputParser parser = new CppCheckOutputParser(diagnosticsCollector);
             parser.parse(message);
 
-            return diagnosticsCollector.getDiagnostics();
+            return diagnosticsCollector.getMessages();
         }
 
         private File getCppCheckTmpDir() {
@@ -201,10 +201,10 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Diagnostic> diagnostics) {
-            super.onPostExecute(diagnostics);
-            if (diagnostics != null && !isCancelled()) {
-                mDiagnosticPresenter.setDiagnostics(diagnostics);
+        protected void onPostExecute(ArrayList<Message> messages) {
+            super.onPostExecute(messages);
+            if (messages != null && !isCancelled()) {
+                mDiagnosticPresenter.setDiagnostics(messages);
             }
         }
     }

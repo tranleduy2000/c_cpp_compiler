@@ -26,7 +26,7 @@ import com.duy.ide.diagnostic.suggestion.ISuggestion;
  */
 
 public interface DiagnosticClickListener {
-    void onDiagnosisClick(Diagnostic diagnostic, View view);
+    void onDiagnosisClick(Message message, View view);
 
-    void onSuggestionClick(View v, Diagnostic diagnostic, ISuggestion suggestion);
+    void onSuggestionClick(View v, Message message, ISuggestion suggestion);
 }

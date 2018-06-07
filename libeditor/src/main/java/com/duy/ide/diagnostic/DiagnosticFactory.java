@@ -18,7 +18,7 @@
 package com.duy.ide.diagnostic;
 
 import com.duy.ide.diagnostic.model.Kind;
-import com.duy.ide.diagnostic.model.SimpleDiagnostic;
+import com.duy.ide.diagnostic.model.SimpleMessage;
 import com.duy.ide.diagnostic.suggestion.DiagnosticSuggestion;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
 
@@ -27,20 +27,20 @@ import com.duy.ide.diagnostic.suggestion.ISuggestion;
  */
 
 public class DiagnosticFactory {
-    public static Diagnostic error(String filePath, int line, int col, String message) {
+    public static Message error(String filePath, int line, int col, String message) {
         return create(Kind.ERROR, filePath, line, col, message);
     }
 
-    public static Diagnostic warn(String filePath, int line, int col, String message) {
+    public static Message warn(String filePath, int line, int col, String message) {
         return create(Kind.WARNING, filePath, line, col, message);
     }
 
-    public static Diagnostic note(String filePath, int line, int col, String message) {
+    public static Message note(String filePath, int line, int col, String message) {
         return create(Kind.NOTE, filePath, line, col, message);
     }
 
-    public static Diagnostic create(Kind kind, String filePath, int line, int col, String message) {
-        return new SimpleDiagnostic(kind, filePath, line, col, message, null);
+    public static Message create(Kind kind, String filePath, int line, int col, String message) {
+        return new SimpleMessage(kind, filePath, line, col, message, null);
     }
 
     public static Kind createType(String type) {
