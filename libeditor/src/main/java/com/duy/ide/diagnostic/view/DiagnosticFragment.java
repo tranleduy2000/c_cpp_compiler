@@ -18,6 +18,7 @@
 package com.duy.ide.diagnostic.view;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,13 +30,12 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.duy.common.DLog;
 import com.duy.ide.diagnostic.DiagnosticClickListener;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
+import com.duy.ide.diagnostic.widget.LogView;
 import com.duy.ide.editor.editor.R;
 
 import java.util.ArrayList;
@@ -49,10 +49,11 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     private static final String KEY_LIST_DIAGNOSTIC = "KEY_LIST_DIAGNOSTIC";
     private static final String KEY_LOG = "KEY_LOG";
     private static final String TAG = "DiagnosticFragment";
+    private final Handler mHandler = new Handler();
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticsAdapter mAdapter;
     private RecyclerView mDiagnosticView;
-    private TextView mLogView;
+    private LogView mLogView;
     private ViewPager mViewPager;
 
     public static DiagnosticFragment newInstance() {
@@ -77,6 +78,8 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
         mLogView = view.findViewById(R.id.txt_log);
         mLogView.setMovementMethod(new ScrollingMovementMethod());
+        //disable save log, avoid crash with large data
+        mLogView.setSaveEnabled(false);
 
         mDiagnosticView = view.findViewById(R.id.diagnostic_list_view);
         mDiagnosticView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -90,7 +93,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
             ArrayList<Message> messages = (ArrayList<Message>) savedInstanceState.getSerializable(KEY_LIST_DIAGNOSTIC);
             showDiagnostic(messages);
             String log = savedInstanceState.getString(KEY_LOG);
-            showLog(log);
+            printMessage(log);
         }
     }
 
@@ -103,38 +106,90 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
-    public void showDiagnostic(List<Message> messages) {
-        if (DLog.DEBUG) {
-            DLog.d(TAG, "showDiagnostic() called with: diagnostics = [" + messages + "]");
-        }
-        mAdapter.setData(messages);
-        if (!messages.isEmpty()) {
-            mViewPager.setCurrentItem(0);
-        }
+    public void showDiagnostic(final List<Message> messages) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.setData(messages);
+
+                //move to diagnostic view
+                if (!messages.isEmpty()) {
+                    mViewPager.setCurrentItem(0);
+                }
+            }
+        });
     }
 
     @Override
-    public void showLog(CharSequence log) {
-        mLogView.setText(log);
-        if (mAdapter.getDiagnostics().isEmpty()) {
-            mViewPager.setCurrentItem(1);
-        }
+    public void printMessage(final String log) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mLogView.append(log);
+
+                //move to log view
+                if (mAdapter.getDiagnostics().isEmpty()) {
+                    mViewPager.setCurrentItem(1);
+                }
+            }
+        });
     }
 
     @Override
-    public void remove(Message message) {
-        mAdapter.remove(message);
+    public void printError(final String log) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mLogView.append(log);
+
+                //move to log view
+                if (mAdapter.getDiagnostics().isEmpty()) {
+                    mViewPager.setCurrentItem(1);
+                }
+            }
+        });
     }
 
     @Override
-    public void add(Message message) {
-        mAdapter.add(message);
+    public void removeMessage(final Message message) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.remove(message);
+            }
+        });
     }
 
     @Override
-    public void clear() {
-        mAdapter.clear();
-        mLogView.setText("");
+    public void addMessage(final Message message) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.add(message);
+            }
+        });
+    }
+
+    @Override
+    public void addMessage(final List<Message> messages) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.addAll(messages);
+            }
+        });
+    }
+
+    @Override
+    public void clearAll() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+
+                mAdapter.clear();
+                mLogView.setText("");
+            }
+        });
     }
 
     @Override

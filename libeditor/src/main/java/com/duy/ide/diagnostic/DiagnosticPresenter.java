@@ -17,6 +17,7 @@
 
 package com.duy.ide.diagnostic;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.duy.common.DLog;
 import com.duy.ide.core.SimpleEditorActivity;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
+import com.duy.ide.diagnostic.parser.ToolOutputParser;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.UIUtils;
@@ -40,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Duy on 28-Apr-18.
@@ -49,8 +52,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
     private final SimpleEditorActivity mActivity;
     private final TabManager mTabManager;
-    private final ArrayList<PatternAwareOutputParser> mOutputParsers = new ArrayList<>();
-    private ArrayList<Message> mMessages;
+    @Nullable
+    private ToolOutputParser mToolOutputParser = null;
     private DiagnosticContract.View mView;
     private HashMap<File, byte[]> mHashCode = new HashMap<>();
 
@@ -89,6 +92,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         }
     }
 
+    @SuppressLint("WrongThread")
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onSuggestionClick(Message message, ISuggestion suggestion) {
@@ -104,7 +108,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 delegate.getEditText().getEditableText().replace(start, end, suggestion.getMessage());
                 delegate.getEditText().setSelection(start + suggestion.getMessage().length());
             }
-            mView.remove(message);
+            mView.removeMessage(message);
         }
     }
 
@@ -147,11 +151,10 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @MainThread
     @Override
     public void setDiagnostics(ArrayList<Message> messages) {
-        mMessages = messages;
         mHashCode.clear();
 
-        show(mMessages);
-        highlightError();
+        show(messages);
+        highlightError(messages);
     }
 
     private void show(ArrayList<Message> messages) {
@@ -175,12 +178,12 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
      * Show error in current editor,
      * Find first error index and move cursor to it
      */
-    private void highlightError() {
+    private void highlightError(ArrayList<Message> messages) {
         for (IEditorDelegate editorDelegate : mTabManager.getEditorPagerAdapter().getAllEditor()) {
             editorDelegate.doCommand(new Command(Command.CommandEnum.CLEAR_ERROR));
         }
 
-        for (Message message : mMessages) {
+        for (Message message : messages) {
             if (message.getKind() != Message.Kind.ERROR) {
                 continue;
             }
@@ -203,19 +206,45 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         }
     }
 
-    @Override
-    public void log(String message) {
-        mView.showLog(message);
-    }
 
+    @SuppressLint("WrongThread")
     @Override
     public void clear() {
-        mView.clear();
+        mView.clearAll();
     }
 
     @Override
-    public void setOutputParser(PatternAwareOutputParser... parsers) {
-        mOutputParsers.clear();
-        mOutputParsers.addAll(Arrays.asList(parsers));
+    public void setOutputParser(@NonNull PatternAwareOutputParser... parsers) {
+        mToolOutputParser = new ToolOutputParser(parsers, this);
+    }
+
+    @Override
+    public void log(String message) {
+        mView.printMessage(message);
+
+        if (mToolOutputParser != null) {
+            final List<Message> messages = mToolOutputParser.parseToolOutput(message);
+            mView.addMessage(messages);
+        }
+    }
+
+    @Override
+    public void error(@Nullable Throwable t, @Nullable String msgFormat, Object... args) {
+
+    }
+
+    @Override
+    public void warning(@NonNull String msgFormat, Object... args) {
+
+    }
+
+    @Override
+    public void info(@NonNull String msgFormat, Object... args) {
+
+    }
+
+    @Override
+    public void verbose(@NonNull String msgFormat, Object... args) {
+
     }
 }

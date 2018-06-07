@@ -38,7 +38,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <android.support.v7.widget.AppCompatTextView
+        <com.duy.ide.diagnostic.widget.LogView
             android:id="@+id/txt_log"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

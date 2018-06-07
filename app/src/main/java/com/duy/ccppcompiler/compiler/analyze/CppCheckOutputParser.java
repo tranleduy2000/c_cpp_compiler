@@ -21,9 +21,9 @@ import android.support.annotation.NonNull;
 
 import com.duy.ide.diagnostic.DiagnosticsCollector;
 import com.duy.ide.diagnostic.model.Message;
-import com.duy.ide.diagnostic.parser.ParsingFailedException;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.util.OutputLineReader;
+import com.duy.ide.logging.ILogger;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -71,7 +71,7 @@ public class CppCheckOutputParser implements PatternAwareOutputParser {
     }
 
     @Override
-    public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages) throws ParsingFailedException {
+    public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger) {
         return false;
     }
 }

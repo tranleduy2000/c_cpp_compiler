@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -121,6 +122,7 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
         return mMessages.size();
     }
 
+    @UiThread
     public void remove(Message message) {
         int i = mMessages.indexOf(message);
         if (i >= 0) {
@@ -129,11 +131,19 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
         }
     }
 
+    @UiThread
     public void add(Message message) {
         mMessages.add(message);
         notifyItemInserted(mMessages.size() - 1);
     }
 
+    public void addAll(List<Message> messages) {
+        final int oldSize = mMessages.size();
+        mMessages.addAll(messages);
+        notifyItemRangeInserted(oldSize, messages.size());
+    }
+
+    @UiThread
     public void clear() {
         mMessages.clear();
         notifyDataSetChanged();
@@ -147,6 +157,7 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
         return mMessages;
     }
 
+    @UiThread
     public void setData(List<Message> messages) {
         mMessages.clear();
         mMessages.addAll(messages);

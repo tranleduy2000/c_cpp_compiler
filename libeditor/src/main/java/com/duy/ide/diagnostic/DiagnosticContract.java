@@ -18,10 +18,13 @@
 package com.duy.ide.diagnostic;
 
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.suggestion.ISuggestion;
+import com.duy.ide.logging.ILogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,21 +35,32 @@ import java.util.List;
 
 public class DiagnosticContract {
     public interface View {
+        @WorkerThread
         void showDiagnostic(List<Message> messages);
 
-        void showLog(CharSequence log);
+        @WorkerThread
+        void printMessage(String log);
 
-        void remove(Message message);
+        @WorkerThread
+        void printError(String log);
 
-        void add(Message message);
+        @WorkerThread
+        void removeMessage(Message message);
 
-        void clear();
+        @WorkerThread
+        void addMessage(Message message);
+
+        @WorkerThread
+        void addMessage(List<Message> messages);
+
+        @WorkerThread
+        void clearAll();
 
         void setPresenter(Presenter presenter);
 
     }
 
-    public interface Presenter {
+    public interface Presenter extends ILogger {
         @MainThread
         void onDiagnosticClick(android.view.View view, Message message);
 
@@ -62,12 +76,12 @@ public class DiagnosticContract {
         @MainThread
         void setDiagnostics(ArrayList<Message> messages);
 
-        @MainThread
+        @WorkerThread
         void log(String string);
 
         @MainThread
         void clear();
 
-        void setOutputParser(PatternAwareOutputParser... parsers);
+        void setOutputParser(@NonNull PatternAwareOutputParser... parsers);
     }
 }

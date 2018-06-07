@@ -28,17 +28,14 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileTask;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.common.DLog;
 import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
-import com.duy.ide.diagnostic.model.Message;
-import com.duy.ide.diagnostic.DiagnosticPresenter;
-import com.duy.ide.diagnostic.DiagnosticsCollector;
+import com.duy.common.DLog;
 import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by Duy on 18-May-18.
@@ -120,12 +117,6 @@ public abstract class CompileManagerImpl implements ICompileManager {
         mActivity.setMenuStatus(R.id.action_build_native_activity, MenuDef.STATUS_NORMAL);
 
         if (mDiagnosticPresenter != null) {
-            DiagnosticsCollector diagnosticsCollector = new DiagnosticsCollector();
-            OutputParser parser = new OutputParser(diagnosticsCollector);
-            parser.parse(compileResult.getMessage());
-
-            ArrayList<Message> messages = diagnosticsCollector.getMessages();
-            mDiagnosticPresenter.setDiagnostics(messages);
             mDiagnosticPresenter.log(compileResult.getMessage());
         }
     }

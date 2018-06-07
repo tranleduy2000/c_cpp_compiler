@@ -17,8 +17,11 @@
 package com.duy.ccppcompiler.compiler.shell;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ide.logging.ILogger;
 import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;
 
@@ -51,15 +54,30 @@ public class Shell {
     }
 
     /**
-     * @param context - Android context for build environments variable
-     * @param cwd     - Current working directory
-     * @param cmd     - Command to be executed
+     * @param context    - Android context for build environments variable
+     * @param workingDir - Current working directory
+     * @param command    - Command to be executed
      * @return output from process
      */
-    public static CommandResult exec(Context context, String cwd, String cmd) {
+    public static CommandResult exec(@NonNull Context context,
+                                     @NonNull String workingDir,
+                                     @NonNull String command) {
+        return exec(context, workingDir, command, null);
+    }
+
+    /**
+     * @param context    - Android context for build environments variable
+     * @param workingDir - Current working directory
+     * @param command    - Command to be executed
+     * @return output from process
+     */
+    public static CommandResult exec(@NonNull Context context,
+                                     @NonNull String workingDir,
+                                     @NonNull String command,
+                                     @Nullable ILogger logger) {
         if (DLog.DEBUG) {
-            if (DLog.DEBUG) DLog.w(TAG, "cwd = " + cwd);
-            if (DLog.DEBUG) DLog.w(TAG, "cmd = " + cmd);
+            if (DLog.DEBUG) DLog.w(TAG, "cwd = " + workingDir);
+            if (DLog.DEBUG) DLog.w(TAG, "cmd = " + command);
         }
 
         long startTime = System.currentTimeMillis();
@@ -68,7 +86,7 @@ public class Shell {
             String[] argv = new String[]{"/system/bin/sh"};
 
             int[] processIds = new int[1];
-            FileDescriptor fd = Utils.createSubProcess(cwd, argv[0], argv, env, processIds);
+            FileDescriptor fd = Utils.createSubProcess(workingDir, argv[0], argv, env, processIds);
             final int processId = processIds[0];
             if (processId <= 0) {
                 return new CommandResult(-1, "Could not create sub process");
@@ -81,7 +99,7 @@ public class Shell {
             FileOutputStream output = new FileOutputStream(fd);
 
             output.write(("export PS1=''\n").getBytes("UTF-8"));
-            output.write(("exec " + cmd + "\n").getBytes("UTF-8"));
+            output.write(("exec " + command + "\n").getBytes("UTF-8"));
             output.flush();
 
             final int[] exitCode = new int[1];
