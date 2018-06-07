@@ -13,4 +13,26 @@
     <string name="compiler_setting">Cài đặt trình biên dịch</string>
     <string name="app_name">CPP N-IDE</string>
     <string name="message_non_project_file">Tệp này không thuộc về dự án: (%s)</string>
+    <string name="title_premium_version">Phiên bản cao cấp</string>
+    <string name="button_purchase">Mua</string>
+    <string name="button_purchase_restore">Khôi phục</string>
+    <string name="selected_editor_theme">Đã chọn %s. Khởi động lại ứng dụng để áp dụng chủ đề.</string>
+    <string name="compiler">Trình biên dịch</string>
+    <string name="code_analysis">Phân tích mã</string>
+    <string name="report_bug">Báo cáo lỗi</string>
+    <string name="title_menu_install_libraries">Cài đặt thư viện / plugin</string>
+    <string name="message_program_finished">Chương trình đã hoàn thành</string>
+    <string name="message_file_copy">Đang sao chép</string>
+    <string name="message_file_delete">Đang xóa</string>
+    <string name="homeDirectory">Trang chủ</string>
+    <string name="goto_line">Dòng</string>
+    <string name="gccrunexe">Chạy</string>
+    <string name="file_saved">Đã lưu tệp thành công</string>
+    <string name="file_paste">Dán</string>
+    <string name="file_not_saved">Không thể ghi tệp</string>
+    <string name="file_not_loaded">Không thể đọc tệp</string>
+    <string name="file_name">Tên tệp:</string>
+    <string name="exit_button">Thoát</string>
+    <string name="exit_dialog_no">Không</string>
+    <string name="exit_dialog_yes">Cos</string>
 </resources>

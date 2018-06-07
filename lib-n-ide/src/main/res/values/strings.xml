@@ -119,10 +119,7 @@
     <string name="document_changed">Document changed</string>
     <string name="give_up_document_changed_message">Document has changed, your changes will be lost if you don’t save them, confirm?</string>
     <string name="preview_in_browser">Preview in browser</string>
-    <string name="use_sl4a_in_background_run_script">Use SL4A in background run script</string>
-    <string name="use_sl4a_in_terminal_run_script">Use SL4A in terminal run script</string>
-    <string name="please_save_as_file_first">lease save to file first</string>
-    <string name="run_fail_message">Call external application failed</string>
+    <string name="please_save_as_file_first">please save to file first</string>
     <string name="settings">Settings</string>
     <string name="editor">Editor</string>
     <string name="default_value">Default</string>
@@ -162,10 +159,8 @@
     <string name="convert_to_lowercase">Convert to lowercase</string>
     <string name="duplication_text">Duplication text</string>
     <string name="tab_size">Tab size</string>
-    <string name="auto_check_updates">Auto check updates</string>
     <string name="readonly_mode_not_support_this_action">Read-only mode does not support this action</string>
     <string name="enable_root">Enable Root</string>
-    <string name="my_name">Author: Jecelyin Peng</string>
     <string name="open_with_external_browser">Open with external browser</string>
     <string name="writing">Writing</string>
     <string name="keyword">Keyword</string>

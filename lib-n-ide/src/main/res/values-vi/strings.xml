@@ -151,4 +151,8 @@
     <string name="tab_size">Kích thước tab</string>
     <string name="duplication_text">Nhân đôi văn bản</string>
     <string name="readonly_mode_not_support_this_action">Chế độ chỉ đọc không hỗ trợ tác vụ này</string>
+    <string name="find_or_replace">Tìm/thay thế</string>
+    <string name="keyword">Từ khóa</string>
+    <string name="saving">Đang lưu</string>
+    <string name="share_code">Chia sẻ code</string>
 </resources>
