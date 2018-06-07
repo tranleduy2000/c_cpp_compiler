@@ -41,7 +41,7 @@
         <com.duy.ide.diagnostic.widget.LogView
             android:id="@+id/txt_log"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
             android:padding="4dp"

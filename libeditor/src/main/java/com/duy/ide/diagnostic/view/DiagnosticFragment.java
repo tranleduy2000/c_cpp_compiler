@@ -26,7 +26,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +75,6 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         mViewPager.setOffscreenPageLimit(mViewPager.getAdapter().getCount());
 
         mLogView = view.findViewById(R.id.txt_log);
-        mLogView.setMovementMethod(new ScrollingMovementMethod());
         //disable save log, avoid crash with large data
         mLogView.setSaveEnabled(false);
 
