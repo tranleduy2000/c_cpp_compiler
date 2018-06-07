@@ -1,34 +1,19 @@
-#
-# SDL application Makefile
-# type without args to build
-# type run to execute
-# type clean to clean sources
-# type log to check application log
-#
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
 
-TARGET = draw2
+extern int errno ;
 
-all: $(TARGET)
+int main () {
+   FILE *fp;
 
-CFLAGS = -Os -Wall -DANDROID -I${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/include
+   fp = fopen("file.txt", "r");
+   if( fp == NULL ) {
+      fprintf(stderr, "Value of errno: %d", errno);
+      fprintf(stderr, "Error opening file: %s", strerror(errno));
+   } else {
+      fclose(fp);
+   }
 
-LDFLAGS = -shared ${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/lib/SDL_android_main.o -L${EXTERNAL_STORAGE}/CCPlusPlusNIDE/SDL/lib -lSDL2 -lGLESv1_CM -llog -lm
-
-SDLRUN = am start --user 0 -n com.duy.c.cpp.compiler.sdlplugin/.sdlpluginActivity -e sdlmain
-
-OBJS = $(TARGET).o
-
-$(TARGET): $(OBJS)
-	$(CC) -o lib$@.so $^ $(LDFLAGS)
-
-clean:
-		rm -f $(OBJS) lib$(TARGET).so
-
-run: $(TARGET)
-		$(SDLRUN) $(PWD)/lib$(TARGET).so
-
-log:
-	logcat -d | grep SDL
-ls -la /system/bin/am
-am start -n com.duy.c.cpp.compiler.sdlplugin/.sdlpluginActivity
-am start -n com.duy.c.cpp.compiler/com.duy.ccppcompiler.ui.InstallActivity
+   return(0);
+}

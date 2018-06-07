@@ -34,8 +34,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
+import com.duy.ccppcompiler.compiler.compilers.CompilerImpl;
 import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
 import com.duy.ccppcompiler.compiler.compilers.GPlusPlusCompiler;
+import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
@@ -193,7 +195,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 IOUtils.write("int main(){ return 0; }", output);
                 output.close();
 
-                GCCCompiler compiler = new GCCCompiler(context, false, null);
+                ICompiler compiler = new GCCCompiler(context, CompilerImpl.BUILD_EXECUTABLE, null);
                 CommandResult result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not execute C compiler, please install compiler");
@@ -205,7 +207,7 @@ public class InstallActivity extends ThemeSupportActivity {
                 output = new FileOutputStream(file);
                 IOUtils.write("int main() { return 0; }", output);
                 output.close();
-                compiler = new GPlusPlusCompiler(context, false, null);
+                compiler = new GPlusPlusCompiler(context, CompilerImpl.BUILD_EXECUTABLE, null);
                 result = compiler.compile(new File[]{file});
                 if (result == null || result.getResultCode() != 0) {
                     publishProgress("Could not execute C++ compiler, please install compiler");

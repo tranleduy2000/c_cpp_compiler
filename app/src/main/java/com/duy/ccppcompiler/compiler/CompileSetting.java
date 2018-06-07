@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
+import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 
 /**
  * Created by Duy on 17-May-18.
@@ -38,7 +38,7 @@ public class CompileSetting implements ICompileSetting {
 
     @Override
     public String getCFlags() {
-        CommandBuilder builder = new CommandBuilder();
+        ArgumentBuilder builder = new ArgumentBuilder();
         builder.addFlags(getGCCFlags());
 
         String cFlags = mPref.getString(mContext.getString(R.string.pref_key_c_options), "");
@@ -53,7 +53,7 @@ public class CompileSetting implements ICompileSetting {
 
     @Override
     public String getCxxFlags() {
-        CommandBuilder builder = new CommandBuilder();
+        ArgumentBuilder builder = new ArgumentBuilder();
         builder.addFlags(getGCCFlags());
 
         String cxxFlags = mPref.getString(mContext.getString(R.string.pref_key_cxx_options), "");
@@ -68,8 +68,8 @@ public class CompileSetting implements ICompileSetting {
     }
 
     @Override
-    public String getLinkerFlags() {
-        CommandBuilder builder = new CommandBuilder();
+    public String getLdFlags() {
+        ArgumentBuilder builder = new ArgumentBuilder();
         String ldFlags = mPref.getString(mContext.getString(R.string.pref_key_linker_options), "");
         builder.addFlags(ldFlags);
 
@@ -86,7 +86,7 @@ public class CompileSetting implements ICompileSetting {
     }
 
     private String getGCCFlags() {
-        CommandBuilder builder = new CommandBuilder();
+        ArgumentBuilder builder = new ArgumentBuilder();
 
         //-ansi
         boolean ansi = mPref.getBoolean(mContext.getString(R.string.pref_c_options_ansi), false);

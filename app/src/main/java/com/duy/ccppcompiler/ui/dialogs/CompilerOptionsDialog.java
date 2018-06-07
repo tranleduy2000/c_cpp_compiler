@@ -56,7 +56,7 @@ public class CompilerOptionsDialog extends AbstractDialog {
         cxxFlags.setSelection(cxxFlags.length());
 
         ldFlags = view.findViewById(R.id.edit_ld_flags);
-        ldFlags.setText(options.getLinkerFlags());
+        ldFlags.setText(options.getLdFlags());
         ldFlags.setSelection(ldFlags.length());
 
         AlertDialog.Builder builder = getBuilder();

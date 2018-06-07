@@ -20,50 +20,19 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
-import com.duy.ccppcompiler.compiler.result.CompileResult;
-import com.duy.ccppcompiler.compiler.result.NativeActivityCompileResult;
-import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ccppcompiler.packagemanager.Environment;
-import com.duy.common.DLog;
-
-import java.io.File;
-import java.util.ArrayList;
+import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 
 /**
  * Created by Duy on 25-Apr-18.
  */
 
 public class GCCCompiler extends CompilerImpl {
-    private static final String TAG = "GCCCompiler";
     private static final String GCC_COMPILER_NAME = "gcc";
-    protected final ICompileSetting mSetting;
+    private ICompileSetting mSetting;
 
-    protected final boolean mBuildNativeActivity;
-
-    File mOutFile;
-
-    public GCCCompiler(Context context, boolean nativeActivity, @Nullable ICompileSetting setting) {
-        super(context);
-        mBuildNativeActivity = nativeActivity;
+    public GCCCompiler(Context context, int buildType, @Nullable ICompileSetting setting) {
+        super(context, buildType);
         mSetting = setting;
-    }
-
-    @Override
-    public CompileResult compile(File[] sourceFiles) {
-        CommandResult shellResult = super.compile(sourceFiles);
-
-        CompileResult result;
-        if (mBuildNativeActivity) {
-            result = new NativeActivityCompileResult(shellResult);
-        } else {
-            result = new CompileResult(shellResult);
-        }
-
-        if (result.getResultCode() == RESULT_NO_ERROR) {
-            result.setBinaryFile(mOutFile);
-        }
-        return result;
     }
 
     @Override
@@ -72,58 +41,10 @@ public class GCCCompiler extends CompilerImpl {
     }
 
     @Override
-    protected String buildArgs(File[] sourceFiles) {
-        CommandBuilder args = new CommandBuilder();
-        for (File sourceFile : sourceFiles) {
-            args.addFlags(sourceFile.getAbsolutePath());
-        }
-
-        if (mBuildNativeActivity) {
-            args.addFlags(buildNativeActivityFlags(sourceFiles));
-        } else {
-            args.addFlags(buildExecutableFlags(sourceFiles));
-        }
-
+    protected void addUserSettingFlags(ArgumentBuilder args) {
         if (mSetting != null) {
             args.addFlags(mSetting.getCFlags());
-            args.addFlags(mSetting.getLinkerFlags());
+            args.addFlags(mSetting.getLdFlags());
         }
-
-        return args.build();
     }
-
-    protected ArrayList<String> buildExecutableFlags(File[] sourceFiles) {
-        File source = sourceFiles[0];
-        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
-        mOutFile = new File(source.getParent(), nameNoExt);
-
-        CommandBuilder args = new CommandBuilder();
-        args.addFlags("-o", mOutFile.getAbsolutePath());
-        return args.toList();
-    }
-
-    protected ArrayList<String> buildNativeActivityFlags(File[] sourceFiles) {
-        File source = sourceFiles[0];
-        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
-
-        if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
-        String soName = "lib" + nameNoExt + ".so";
-        mOutFile = new File(source.getParent(), soName);
-        String cctools = Environment.getCCtoolsDir(mContext);
-        CommandBuilder args = new CommandBuilder();
-        args.addFlags("-I" + cctools + "/sources/native_app_glue/")
-                .addFlags(cctools + "/sources/native_app_glue/android_native_app_glue.c")
-                .addFlags("-Wl,-soname," + soName)
-                .addFlags("-shared")
-                .addFlags("-Wl,--no-undefined")
-                .addFlags("-Wl,-z,noexecstack")
-                .addFlags("-llog") //lib log
-                .addFlags("-landroid") //android
-                .addFlags("-lm")
-                .addFlags("-o", mOutFile.getAbsolutePath());
-
-        return args.toList();
-    }
-
-
 }

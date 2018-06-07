@@ -26,7 +26,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
+import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.common.DLog;
@@ -154,7 +154,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
                 return null;
             }
 
-            CommandBuilder builder = new CommandBuilder(CPPCHECK_PROGRAM);
+            ArgumentBuilder builder = new ArgumentBuilder(CPPCHECK_PROGRAM);
             builder.addFlags(CppCheckOutputParser.TEMPLATE);
             builder.addFlags(tmpFile.getAbsolutePath());
 

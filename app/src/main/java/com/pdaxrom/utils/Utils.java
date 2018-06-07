@@ -101,4 +101,8 @@ public class Utils {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    public static void emptyDirectory(File file) {
+        deleteDirectory(file);
+        file.mkdirs();
+    }
 }

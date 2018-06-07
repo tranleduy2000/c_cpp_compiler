@@ -19,20 +19,19 @@ package com.duy.ccppcompiler.compiler.compilers;
 import android.content.Context;
 
 import com.duy.ccppcompiler.compiler.ICompileSetting;
-import com.duy.ccppcompiler.compiler.shell.CommandBuilder;
-import com.duy.ccppcompiler.compiler.result.CompileResult;
-
-import java.io.File;
+import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 
 /**
  * G++ compiler as GCC compiler but it different name, just override {@link #getCompilerProgram()}
  * Created by Duy on 25-Apr-18.
  */
-public class GPlusPlusCompiler extends GCCCompiler {
+public class GPlusPlusCompiler extends CompilerImpl {
     private static final String G_PLUS_PLUS_COMPILER_NAME = "g++-4.9";
+    private ICompileSetting mSetting;
 
-    public GPlusPlusCompiler(Context context, boolean nativeActivity, ICompileSetting setting) {
-        super(context, nativeActivity, setting);
+    public GPlusPlusCompiler(Context context, int buildType, ICompileSetting setting) {
+        super(context, buildType);
+        mSetting = setting;
     }
 
     @Override
@@ -41,27 +40,12 @@ public class GPlusPlusCompiler extends GCCCompiler {
     }
 
     @Override
-    public CompileResult compile(File[] sourceFiles) {
-        return super.compile(sourceFiles);
-    }
-
-    @Override
-    protected String buildArgs(File[] sourceFiles) {
-        CommandBuilder args = new CommandBuilder();
-        for (File sourceFile : sourceFiles) {
-            args.addFlags(sourceFile.getAbsolutePath());
-        }
-        if (mBuildNativeActivity) {
-            args.addFlags(buildNativeActivityFlags(sourceFiles));
-        } else {
-            args.addFlags(buildExecutableFlags(sourceFiles));
-        }
-
+    protected void addUserSettingFlags(ArgumentBuilder args) {
         if (mSetting != null) {
             args.addFlags(mSetting.getCxxFlags());
-            args.addFlags(mSetting.getLinkerFlags());
+            args.addFlags(mSetting.getLdFlags());
         }
-
-        return args.build();
     }
+
+
 }

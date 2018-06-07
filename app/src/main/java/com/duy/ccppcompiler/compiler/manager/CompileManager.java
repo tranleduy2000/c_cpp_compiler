@@ -20,9 +20,9 @@ package com.duy.ccppcompiler.compiler.manager;
 import android.app.NativeActivity;
 import android.content.Intent;
 
-import com.duy.ccppcompiler.compiler.result.CompileResult;
-import com.duy.ccppcompiler.compiler.result.NativeActivityCompileResult;
-import com.duy.ccppcompiler.compiler.result.SDLCompileResult;
+import com.duy.ccppcompiler.compiler.compilers.CompilerImpl;
+import com.duy.ccppcompiler.compiler.model.CompileResult;
+import com.duy.ccppcompiler.compiler.model.OutputScope;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
@@ -55,59 +55,55 @@ public class CompileManager extends CompileManagerImpl {
             return;
         }
 
-        if (result instanceof SDLCompileResult) {
-            File binaryFile = ((CompileResult) result).getBinaryFile();
-            if (binaryFile == null) {
-                return;
+        final OutputScope output = ((CompileResult) result).getOutput();
+        if (output == null) {
+            return;
+        }
+
+        switch (((CompileResult) result).getType()) {
+            case CompilerImpl.BUILD_SDL_ACTIVITY: {
+                File binaryFile = output.getBinaryFile();
+                Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage("com.duy.c.cpp.compiler.sdlplugin");
+                if (intent != null) {
+                    intent.putExtra("sdlmain", binaryFile.getAbsolutePath());
+                    getActivity().startActivity(intent);//null pointer check in case package name was not found
+                } else {
+                    UIUtils.alert(getActivity(), "Can not run SDL application");
+                }
+                break;
             }
+            case CompilerImpl.BUILD_NATIVE_ACTIVITY: {
+                File internalBinary;
+                try {
+                    internalBinary = copyToTmpExeDirAndSetExecutable(output.getBinaryFile());
+                } catch (IOException e) {
+                    handleInternalException(e);
+                    return;
+                }
 
-            Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage("com.duy.c.cpp.compiler.sdlplugin");
-            if (intent != null) {
-                intent.putExtra("sdlmain", binaryFile.getAbsolutePath());
-                getActivity().startActivity(intent);//null pointer check in case package name was not found
-            } else {
-                UIUtils.alert(getActivity(), "Can not run SDL application");
+                //now run binary file
+                Intent intent = new Intent(getActivity(), NativeActivity.class);
+                //from jni: main.cpp
+                intent.putExtra("nativeApp", internalBinary.getAbsolutePath());
+                getActivity().startActivity(intent);
+                break;
             }
-            return;
+            case CompilerImpl.BUILD_EXECUTABLE:
+                try {
+                    File binaryFile = output.getBinaryFile();
+                    File internalBinary = copyToTmpExeDirAndSetExecutable(binaryFile);
+                    Intent intent = new Intent(getActivity(), TermActivity.class);
+                    intent.putExtra(BuildConstants.EXTRA_FILE_NAME, internalBinary.getAbsolutePath());
+                    intent.putExtra(BuildConstants.EXTRA_WORK_DIR, internalBinary.getParent());
+                    getActivity().startActivity(intent);
+                } catch (IOException e) {
+                    handleInternalException(e);
+                }
+                break;
         }
-
-        if (result instanceof NativeActivityCompileResult) {
-            File internalBinary;
-            try {
-                NativeActivityCompileResult compileResult = (NativeActivityCompileResult) result;
-                internalBinary = copyToTmpExeDirAndSetExecutable(compileResult.getBinaryFile());
-            } catch (IOException e) {
-                handleInternalException(e);
-                return;
-            }
-
-            //now run binary file
-            Intent intent = new Intent(getActivity(), NativeActivity.class);
-            //from jni: main.cpp
-            intent.putExtra("nativeApp", internalBinary.getAbsolutePath());
-            getActivity().startActivity(intent);
-            return;
-        }
-
-        File binaryFile = ((CompileResult) result).getBinaryFile();
-        if (binaryFile == null) {
-            return;
-        }
-        File internalBinary;
-        try {
-            internalBinary = copyToTmpExeDirAndSetExecutable(binaryFile);
-        } catch (IOException e) {
-            handleInternalException(e);
-            return;
-        }
-
-        Intent intent = new Intent(getActivity(), TermActivity.class);
-        intent.putExtra(BuildConstants.EXTRA_FILE_NAME, internalBinary.getAbsolutePath());
-        intent.putExtra(BuildConstants.EXTRA_WORK_DIR, internalBinary.getParent());
-        getActivity().startActivity(intent);
     }
 
-    protected File copyToTmpExeDirAndSetExecutable(File binFile) throws IOException {
+    private File copyToTmpExeDirAndSetExecutable(File binFile) throws IOException {
         File internalBinary = new File(Environment.getTmpExeDir(getActivity()), binFile.getName());
         FileInputStream inputStream = new FileInputStream(binFile);
         FileOutputStream outputStream = new FileOutputStream(internalBinary);

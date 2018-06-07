@@ -19,6 +19,7 @@ package com.duy.editor;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -28,6 +29,7 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.analyze.CppCheckAnalyzer;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
+import com.duy.ccppcompiler.compiler.compilers.CompilerImpl;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
@@ -37,6 +39,7 @@ import com.duy.ccppcompiler.ui.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ui.dialogs.PremiumDialog;
 import com.duy.ccppcompiler.ui.examples.ExampleActivity;
 import com.duy.common.StoreUtil;
+import com.duy.common.function.Action;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.editor.theme.ThemeActivity;
@@ -191,7 +194,7 @@ public class CodeEditorActivity extends SimpleEditorActivity {
                 break;
 
             case R.id.action_report_bug:
-                StoreUtil.openBrowser(this, "https://github.com/tranleduy2000/c_cpp_compiler", 0);
+                StoreUtil.openBrowser(this, "https://github.com/tranleduy2000/c_cpp_compiler/issues", 0);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -213,55 +216,46 @@ public class CodeEditorActivity extends SimpleEditorActivity {
         super.onSaveComplete(requestCode);
         switch (requestCode) {
             case RC_BUILD_NATIVE_ACTIVITY:
-                buildNativeActivity();
+                build(CompilerImpl.BUILD_NATIVE_ACTIVITY);
                 break;
             case RC_BUILD_EXECUTABLE:
-                buildExecutable();
+                build(CompilerImpl.BUILD_EXECUTABLE);
                 break;
         }
     }
 
-    private void buildNativeActivity() {
-        CompilerOptionsDialog dialog = new CompilerOptionsDialog(this, new DialogInterface.OnClickListener() {
+    private void build(final int buildType) {
+        final Action<CodeEditorActivity> compileAction = new Action<CodeEditorActivity>() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void execute(@Nullable CodeEditorActivity activity) {
                 EditorDelegate currentEditor = getCurrentEditorDelegate();
                 if (currentEditor == null) {
                     return;
                 }
                 File[] srcFiles = new File[]{new File(currentEditor.getPath())};
 
-                ICompiler compiler = CompilerFactory.getNativeActivityCompilerForFile(CodeEditorActivity.this, srcFiles);
+                ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles, buildType);
                 if (compiler != null) {
-                    CompileManager compileManager = new CompileManager(CodeEditorActivity.this);
+                    CompileManager compileManager = new CompileManager(activity);
                     compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
                     compileManager.setCompiler(compiler);
                     compileManager.compile(srcFiles);
                 } else {
-                    Toast.makeText(CodeEditorActivity.this, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-        dialog.show();
-    }
-
-    private void buildExecutable() {
-        EditorDelegate currentEditor = getCurrentEditorDelegate();
-        if (currentEditor == null) {
-            return;
-        }
-        File[] srcFiles = new File[]{new File(currentEditor.getPath())};
-
-        CodeEditorActivity activity = CodeEditorActivity.this;
-        ICompiler compiler = CompilerFactory.getCompilerForFile(activity, srcFiles);
-        if (compiler != null) {
-            CompileManager compileManager = new CompileManager(activity);
-            compileManager.setDiagnosticPresenter(mDiagnosticPresenter);
-            compileManager.setCompiler(compiler);
-
-            compileManager.compile(srcFiles);
+        };
+        if (buildType == CompilerImpl.BUILD_EXECUTABLE) {
+            compileAction.execute(this);
         } else {
-            Toast.makeText(activity, R.string.unknown_filetype, Toast.LENGTH_SHORT).show();
+            CompilerOptionsDialog dialog = new CompilerOptionsDialog(this,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            compileAction.execute(CodeEditorActivity.this);
+                        }
+                    });
+            dialog.show();
         }
     }
 

@@ -26,29 +26,29 @@ import java.util.List;
  * Created by Duy on 17-May-18.
  */
 
-public class CommandBuilder {
+public class ArgumentBuilder {
     private String program;
     private ArrayList<String> flags = new ArrayList<>();
 
-    public CommandBuilder(String program) {
+    public ArgumentBuilder(String program) {
         this.program = program;
     }
 
-    public CommandBuilder() {
+    public ArgumentBuilder() {
         this.program = "";
     }
 
-    public CommandBuilder addFlags(String... flags) {
+    public ArgumentBuilder addFlags(String... flags) {
         this.flags.addAll(Arrays.asList(flags));
         return this;
     }
 
-    public CommandBuilder addFlags(List<String> flags) {
+    public ArgumentBuilder addFlags(List<String> flags) {
         this.flags.addAll(flags);
         return this;
     }
 
-    public void addFlags(CommandBuilder otherFlags) {
+    public void addFlags(ArgumentBuilder otherFlags) {
         this.flags.addAll(otherFlags.flags);
     }
 

@@ -15,14 +15,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ccppcompiler.compiler.result;
+package com.duy.ccppcompiler.compiler.model;
+
+import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 
-public class SDLCompileResult extends CompileResult {
+/**
+ * Created by Duy on 18-May-18.
+ */
 
-    public SDLCompileResult(CommandResult commandResult) {
+public class CompileResult extends CommandResult {
+    @Nullable
+    private OutputScope output;
+    private int type;
+
+    public CompileResult(CommandResult commandResult) {
         super(commandResult);
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    @Nullable
+    public OutputScope getOutput() {
+        return output;
+    }
+
+    public void setOutput(@Nullable OutputScope output) {
+        this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return "CompileResult{" +
+                "binaryFile=" + output +
+                "} " + super.toString();
+    }
 }

@@ -27,5 +27,5 @@ public interface ICompileSetting {
 
     public String getMakeFlags();
 
-    String getLinkerFlags();
+    String getLdFlags();
 }
