@@ -60,17 +60,6 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         initEditor();
     }
 
-    private void onTabMenuViewsClick(View v) {
-        int i = v.getId();
-        if (i == R.id.btn_close) {
-            closeTab((int) v.getTag());
-
-        } else {
-            int position = (int) v.getTag();
-            setCurrentTab(position);
-        }
-    }
-
     private void initEditor() {
         mPagerAdapter = new EditorFragmentPagerAdapter(mActivity);
         mActivity.mEditorPager.setAdapter(mPagerAdapter);
@@ -197,7 +186,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         updateToolbar();
     }
 
-    private void updateToolbar() {
+    public void updateToolbar() {
         EditorDelegate delegate = mPagerAdapter.getEditorDelegateAt(getCurrentTab());
         if (delegate == null) {
             mActivity.setTitle("");

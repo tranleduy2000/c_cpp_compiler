@@ -25,11 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * @author Jecelyin Peng <jecelyin@gmail.com>
- */
 public class LocalFileWriter {
-    private final static int BUFFER_SIZE = 4 * 1024;
     @NonNull
     private final String encoding;
     @NonNull
