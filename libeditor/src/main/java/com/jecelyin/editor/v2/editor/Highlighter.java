@@ -30,6 +30,9 @@ public class Highlighter {
 
     }
 
+    /**
+     * Highlight error, line in buffer is real line, but line start at 0
+     */
     public void highlightError(Buffer buffer, EditorTheme editorTheme,
                                HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap,
                                Editable spannable,

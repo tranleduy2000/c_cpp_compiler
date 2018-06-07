@@ -19,6 +19,7 @@ package com.duy.ide.editor.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.method.KeyListener;
@@ -79,14 +80,15 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
     }
 
     @Override
-
     public boolean doPaste() {
         if (!onTextContextMenuItem(android.R.id.paste)) {
             CharSequence clipboard = mClipboard.getClipboard();
             if (clipboard != null) {
+                //clear all span
+
                 int selectionStart = getSelectionStart();
                 selectionStart = Math.max(0, selectionStart);
-                getText().insert(selectionStart, clipboard);
+                getText().insert(selectionStart, cleanupForPaste(clipboard));
                 return true;
             }
         } else {
@@ -95,8 +97,27 @@ public class EditActionSupportEditor extends ZoomSupportEditor {
         return false;
     }
 
-    @Override
+    /**
+     * Remove linux line terminate, only support escape \n
+     */
+    @NonNull
+    private String cleanupForPaste(CharSequence clipboard) {
+        String result = clipboard.toString();
+        result = result.replace("\r\n", "\n");
+        return result;
+    }
 
+    @Override
+    public boolean onTextContextMenuItem(int id) {
+        switch (id) {
+            case android.R.id.paste:
+                doPaste();
+                return true;
+        }
+        return super.onTextContextMenuItem(id);
+    }
+
+    @Override
     public boolean doCut() {
         if (!onTextContextMenuItem(android.R.id.cut)) {
             int selectionStart = getSelectionStart();

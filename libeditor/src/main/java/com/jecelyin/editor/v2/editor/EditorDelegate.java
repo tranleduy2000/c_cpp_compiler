@@ -42,11 +42,11 @@ import android.widget.Toast;
 import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
 import com.duy.ide.core.SimpleEditorActivity;
-import com.duy.ide.editor.text.style.ErrorSpan;
-import com.duy.ide.editor.text.style.WarningSpan;
-import com.duy.ide.editor.text.InputMethodManagerCompat;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.model.EditorIndex;
+import com.duy.ide.editor.text.InputMethodManagerCompat;
+import com.duy.ide.editor.text.style.ErrorSpan;
+import com.duy.ide.editor.text.style.WarningSpan;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.common.utils.DLog;
@@ -195,7 +195,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         String title = getTitle();
         String changed = isChanged() ? "*" : "";
         String cursor = "";
-        if (mEditText != null &&  getCursorOffset() >= 0) {
+        if (mEditText != null && getCursorOffset() >= 0) {
             int cursorOffset = getCursorOffset();
             int line = mEditText.getLineForOffset(cursorOffset);
             cursor += line + ":" + cursorOffset;
@@ -375,19 +375,12 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             case RELOAD_WITH_ENCODING:
                 reOpenWithEncoding((String) command.object);
                 break;
-//            case CURSOR_FORWARD:
-//                mEditText.forwardLocation();
-//                break;
-//            case CURSOR_BACK:
-//                mEditText.backLocation();
-//                break;
             case REQUEST_FOCUS:
                 mEditText.requestFocus();
                 break;
             case HIGHLIGHT_ERROR:
                 highlightError(command.args);
                 break;
-
             case SHARE_CODE:
                 shareCurrentContent();
                 break;
@@ -488,7 +481,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     private void highlightError(Bundle args) {
         if (DLog.DEBUG) DLog.d(TAG, "highlightError() called with: args = [" + args + "]");
         int realLine = args.getInt("line", -1);
-        mDocument.highlightError(realLine - 1, realLine - 1);
+        mDocument.highlightError(realLine, realLine);
     }
 
     private void reOpenWithEncoding(final String encoding) {

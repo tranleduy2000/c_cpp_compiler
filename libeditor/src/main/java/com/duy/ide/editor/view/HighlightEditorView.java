@@ -133,7 +133,7 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
     }
 
     private void initAutoIndent() {
-        setFilters(new InputFilter[]{new InputFilter() {
+        final InputFilter indentFilter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 if (mIsAutoIndent) {
@@ -168,8 +168,20 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
                 }
                 return null;
             }
-        }
-        });
+        };
+        //only support \n
+        InputFilter newLineFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest,
+                                       int dstart, int dend) {
+                final String s = source.toString();
+                if (s.contains("\r")) {
+                    return s.replace("\r", "");
+                }
+                return null;
+            }
+        };
+        setFilters(new InputFilter[]{indentFilter, newLineFilter});
     }
 
     @Override

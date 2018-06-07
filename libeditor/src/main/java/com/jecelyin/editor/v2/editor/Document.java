@@ -340,7 +340,14 @@ public class Document implements ReadFileListener, TextWatcher {
         EditorTheme editorTheme = mEditorDelegate.getEditText().getEditorTheme();
         Editable editableText = mEditorDelegate.getEditableText();
         try {
-            mHighlighter.highlightError(mBuffer, editorTheme, mColorSpanMap, editableText, startLine, endLine, false);
+            mHighlighter.highlightError(
+                    mBuffer,
+                    editorTheme,
+                    mColorSpanMap,
+                    editableText,
+                    startLine - 1 /*line start at 0*/,
+                    endLine - 1 /*line start at 0*/,
+                    false);
         } catch (Exception e) {
             //should not happened
             e.printStackTrace();
