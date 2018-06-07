@@ -192,17 +192,17 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Override
     public void onNewMessage(String text) {
         mView.printMessage(text);
-
-        if (mToolOutputParser != null) {
-            final List<Message> messages = mToolOutputParser.parseToolOutput(text);
-            show(messages);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    highlightError(messages);
-                }
-            });
+        if (mToolOutputParser == null) {
+            return;
         }
+        final List<Message> messages = mToolOutputParser.parseToolOutput(text);
+        show(messages);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                highlightError(messages);
+            }
+        });
     }
 
     @Override

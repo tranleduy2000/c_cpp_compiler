@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -102,16 +103,17 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     private static final int RC_SETTINGS = 5;
     private static final int RC_PERMISSION_WRITE_STORAGE = 5001;
 
+    //Handle create on MainThread, use for update UI
+    private final Handler mHandler = new Handler();
+
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
     public Toolbar mToolbar;
     public ViewPager mEditorPager;
     public DrawerLayout mDrawerLayout;
-    public RecyclerView mTabRecyclerView;
-    public TextView mVersionTextView;
-    public SymbolBarLayout mSymbolBarLayout;
     protected TabManager mTabManager;
-
     protected DiagnosticPresenter mDiagnosticPresenter;
+    private RecyclerView mTabRecyclerView;
+    private SymbolBarLayout mSymbolBarLayout;
     private Preferences mPreferences;
     private MenuManager mMenuManager;
     private long mExitTime;
@@ -141,7 +143,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         attachKeyboardListeners();
 
         mTabRecyclerView = findViewById(R.id.tabRecyclerView);
-        mVersionTextView = findViewById(R.id.versionTextView);
 
         mSymbolBarLayout = findViewById(R.id.symbolBarLayout);
         mSymbolBarLayout.setOnSymbolCharClickListener(new SymbolBarLayout.OnSymbolCharClickListener() {
@@ -154,7 +155,8 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         bindPreferences();
         setScreenOrientation();
 
-        mVersionTextView.setText(SysUtils.getVersionName(this));
+        TextView versionView = findViewById(R.id.versionTextView);
+        versionView.setText(SysUtils.getVersionName(this));
         mEditorPager.setVisibility(View.VISIBLE);
 
         initToolbar();
@@ -188,7 +190,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         fm.beginTransaction()
                 .replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
                 .commit();
-        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager);
+        mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager, mHandler);
         populaceDiagnostic(mDiagnosticPresenter);
     }
 

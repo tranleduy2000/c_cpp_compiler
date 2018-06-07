@@ -21,8 +21,9 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Objects;
 
 import java.io.File;
+import java.io.Serializable;
 
-public final class SourceFilePosition {
+public final class SourceFilePosition implements Serializable {
 
     public static final SourceFilePosition UNKNOWN =
             new SourceFilePosition(SourceFile.UNKNOWN, SourcePosition.UNKNOWN);

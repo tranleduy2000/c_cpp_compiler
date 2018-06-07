@@ -25,6 +25,8 @@ import com.google.common.collect.ImmutableList;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class Message implements Serializable {
@@ -36,7 +38,7 @@ public final class Message implements Serializable {
     private final String mText;
 
     @NonNull
-    private final List<SourceFilePosition> mSourceFilePositions;
+    private final ArrayList<SourceFilePosition> mSourceFilePositions = new ArrayList<>();
 
     @NonNull
     private final String mRawMessage;
@@ -57,8 +59,8 @@ public final class Message implements Serializable {
         mKind = kind;
         mText = text;
         mRawMessage = text;
-        mSourceFilePositions = ImmutableList.<SourceFilePosition>builder()
-                .add(sourceFilePosition).add(sourceFilePositions).build();
+        mSourceFilePositions.add(sourceFilePosition);
+        mSourceFilePositions.addAll(Arrays.asList(sourceFilePositions));
     }
 
     /**
@@ -82,8 +84,8 @@ public final class Message implements Serializable {
         mKind = kind;
         mText = text;
         mRawMessage = rawMessage;
-        mSourceFilePositions = ImmutableList.<SourceFilePosition>builder()
-                .add(sourceFilePosition).add(sourceFilePositions).build();
+        mSourceFilePositions.add(sourceFilePosition);
+        mSourceFilePositions.addAll(Arrays.asList(sourceFilePositions));
     }
 
     public Message(@NonNull Kind kind,
@@ -95,9 +97,9 @@ public final class Message implements Serializable {
         mRawMessage = rawMessage;
 
         if (positions.isEmpty()) {
-            mSourceFilePositions = ImmutableList.of(SourceFilePosition.UNKNOWN);
+            mSourceFilePositions.add(SourceFilePosition.UNKNOWN);
         } else {
-            mSourceFilePositions = positions;
+            mSourceFilePositions.addAll(positions);
         }
     }
 

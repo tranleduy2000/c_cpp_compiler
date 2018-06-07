@@ -22,11 +22,12 @@ import android.support.annotation.Nullable;
 import com.google.common.base.Objects;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Represents a source file.
  */
-public final class SourceFile {
+public final class SourceFile implements Serializable {
 
     public static final SourceFile UNKNOWN = new SourceFile();
 

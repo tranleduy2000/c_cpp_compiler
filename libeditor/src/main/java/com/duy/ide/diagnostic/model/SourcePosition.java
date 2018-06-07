@@ -18,12 +18,14 @@ package com.duy.ide.diagnostic.model;
 
 import com.google.common.base.Objects;
 
+import java.io.Serializable;
+
 /**
  * An immutable position in a text file, used in errors to point the user to an issue.
  *
  * Positions that are unknown are represented by -1.
  */
-public final class SourcePosition {
+public final class SourcePosition implements Serializable {
 
     public static final SourcePosition UNKNOWN = new SourcePosition();
 
