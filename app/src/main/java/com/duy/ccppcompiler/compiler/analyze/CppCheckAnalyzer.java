@@ -178,12 +178,18 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
                 if (DLog.DEBUG) {
                     DLog.d(TAG, "doInBackground: run cppcheck for " + originFile);
                 }
+
+                long startTime = System.currentTimeMillis();
                 LocalFileWriter localFileWriter = new LocalFileWriter(tmpFile, "UTF-8");
                 try {
                     localFileWriter.writeToFile(editText.getText());
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
+                }
+                if (DLog.DEBUG) {
+                    DLog.d(TAG, "doInBackground: save time = " +
+                            (System.currentTimeMillis() - startTime));
                 }
 
                 ArgumentBuilder builder = new ArgumentBuilder(CPPCHECK_PROGRAM);

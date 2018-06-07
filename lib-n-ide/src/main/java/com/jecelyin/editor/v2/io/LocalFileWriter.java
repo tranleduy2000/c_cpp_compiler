@@ -19,17 +19,17 @@ package com.jecelyin.editor.v2.io;
 import android.support.annotation.NonNull;
 import android.text.GetChars;
 
-import java.io.BufferedWriter;
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class LocalFileWriter {
-    private final static int BUFFER_SIZE = 16 * 1024;
+    private final static int BUFFER_SIZE = 4 * 1024;
     @NonNull
     private final String encoding;
     @NonNull
@@ -41,26 +41,8 @@ public class LocalFileWriter {
     }
 
     public void writeToFile(GetChars content) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fileOutputStream, encoding), BUFFER_SIZE);
-        char[] buffer = new char[BUFFER_SIZE]; //16kb
-        int size = content.length();
-        if (size > 0) {
-            int start = 0, end = BUFFER_SIZE;
-            for (; ; ) {
-                end = Math.min(end, size);
-                content.getChars(start, end, buffer, 0);
-
-                bw.write(buffer, 0, end - start);
-                start = end;
-
-                if (end >= size)
-                    break;
-
-                end += BUFFER_SIZE;
-            }
-        }
-        bw.close();
-        fileOutputStream.close();
+        FileOutputStream output = new FileOutputStream(file);
+        IOUtils.write(content.toString(), output, encoding);
+        output.close();
     }
 }

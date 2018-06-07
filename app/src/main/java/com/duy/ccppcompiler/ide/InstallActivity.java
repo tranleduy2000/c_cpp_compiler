@@ -190,7 +190,7 @@ public class InstallActivity extends ThemeSupportActivity {
             }
 
             publishProgress("Test static code analysis");
-            result = Shell.exec(context, "cppcheck -version");
+            result = Shell.exec(context, "cppcheck --version");
             if (result == null || result.getResultCode() != 0) {
                 publishProgress("Could not run static code analysis");
                 return false;
