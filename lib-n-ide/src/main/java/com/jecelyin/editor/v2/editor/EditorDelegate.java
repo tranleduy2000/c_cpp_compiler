@@ -198,7 +198,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         if (mEditText != null && getCursorOffset() >= 0) {
             int cursorOffset = getCursorOffset();
             int line = mEditText.getLineForOffset(cursorOffset);
-            cursor += line + ":" + cursorOffset;
+            cursor += mDocument.getBuffer().getLineManager().getLineOfOffset(cursorOffset) + ":" + cursorOffset;
         }
         return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s", changed, title, encode, fileMode, cursor);
     }

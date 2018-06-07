@@ -27,7 +27,7 @@
             <com.ogaclejapan.smarttablayout.SmartTabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="36dp"
                 app:stl_clickable="true"
                 app:stl_distributeEvenly="false"
                 app:stl_dividerThickness="1dp"

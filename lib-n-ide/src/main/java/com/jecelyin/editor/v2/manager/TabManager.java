@@ -108,8 +108,6 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
                 mActivity.mEditorPager.setOffscreenPageLimit(mPagerAdapter.getCount());
             }
         });
-
-        // TODO: 25-Apr-18 show layout create new file
     }
 
     public boolean newTab(File file) {

@@ -358,6 +358,10 @@ public class Document implements ReadFileListener, TextWatcher {
         return mSourceMD5;
     }
 
+    public Buffer getBuffer() {
+        return mBuffer;
+    }
+
     private final static class ReadFileTask extends AsyncTask<File, Void, SpannableStringBuilder> {
         private final ReadFileListener listener;
         private final FileReader fileReader;
