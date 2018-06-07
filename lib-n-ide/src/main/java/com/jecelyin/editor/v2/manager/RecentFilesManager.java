@@ -20,8 +20,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
+import com.duy.ide.database.ITabDatabase;
+import com.duy.ide.database.RecentFileItem;
+import com.duy.ide.database.SQLHelper;
 import com.duy.ide.editor.editor.R;
-import com.jecelyin.editor.v2.utils.DBHelper;
 
 import java.util.ArrayList;
 
@@ -29,12 +31,12 @@ import java.util.ArrayList;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class RecentFilesManager {
-    private final DBHelper dbHelper;
+    private final ITabDatabase dbHelper;
     private OnFileItemClickListener onFileItemClickListener;
-    private ArrayList<DBHelper.RecentFileItem> list;
+    private ArrayList<RecentFileItem> list;
 
     public RecentFilesManager(Context context) {
-        dbHelper = DBHelper.getInstance(context.getApplicationContext());
+        dbHelper = SQLHelper.getInstance(context.getApplicationContext());
     }
 
     public void show(Context context) {
@@ -49,7 +51,7 @@ public class RecentFilesManager {
             public void onClick(DialogInterface dialog, int which) {
                 if (onFileItemClickListener == null)
                     return;
-                DBHelper.RecentFileItem item = list.get(which);
+                RecentFileItem item = list.get(which);
                 onFileItemClickListener.onClick(item.path, item.encoding);
             }
         });

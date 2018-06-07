@@ -38,8 +38,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -76,7 +75,7 @@ import com.jecelyin.editor.v2.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
 import com.jecelyin.editor.v2.manager.TabManager;
-import com.jecelyin.editor.v2.utils.DBHelper;
+import com.duy.ide.database.SQLHelper;
 import com.jecelyin.editor.v2.widget.SymbolBarLayout;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.widget.menu.MenuFactory;
@@ -112,7 +111,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     public DrawerLayout mDrawerLayout;
     protected TabManager mTabManager;
     protected DiagnosticPresenter mDiagnosticPresenter;
-    private RecyclerView mTabRecyclerView;
     private SymbolBarLayout mSymbolBarLayout;
     private Preferences mPreferences;
     private MenuManager mMenuManager;
@@ -137,12 +135,15 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
                 hideSoftInput();
             }
         });
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer
+        );
+        mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         //keyboard hide/show listener
         setRootLayout(mDrawerLayout);
         attachKeyboardListeners();
-
-        mTabRecyclerView = findViewById(R.id.tabRecyclerView);
 
         mSymbolBarLayout = findViewById(R.id.symbolBarLayout);
         mSymbolBarLayout.setOnSymbolCharClickListener(new SymbolBarLayout.OnSymbolCharClickListener() {
@@ -158,10 +159,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         TextView versionView = findViewById(R.id.versionTextView);
         versionView.setText(SysUtils.getVersionName(this));
         mEditorPager.setVisibility(View.VISIBLE);
-
-        initToolbar();
-
-        mTabRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mTabManager = new TabManager(this);
 
         initMenuView();
@@ -246,11 +243,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         }
     }
 
-
-    private void initToolbar() {
-        mToolbar.setNavigationIcon(R.drawable.ic_drawer_raw);
-        mToolbar.setNavigationContentDescription(R.string.tab);
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -621,8 +613,8 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
                 EditorDelegate delegate = getCurrentEditorDelegate();
                 if (delegate != null) {
                     delegate.saveInBackground(new File(file), encoding);
-                    DBHelper.getInstance(this).addRecentFile(file, encoding);
-                    DBHelper.getInstance(this).updateRecentFile(file, false);
+                    SQLHelper.getInstance(this).addRecentFile(file, encoding);
+                    SQLHelper.getInstance(this).updateRecentFile(file, false);
                 }
                 break;
             case RC_SETTINGS:
@@ -684,7 +676,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         if (!mTabManager.newTab(file, offset, encoding)) {
             return;
         }
-        DBHelper.getInstance(IdeActivity.this).addRecentFile(file.getPath(), encoding);
+        SQLHelper.getInstance(IdeActivity.this).addRecentFile(file.getPath(), encoding);
     }
 
     public void insertText(CharSequence text) {
@@ -735,10 +727,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
             return null;
 
         return editorDelegate.getLang();
-    }
-
-    public RecyclerView getTabRecyclerView() {
-        return mTabRecyclerView;
     }
 
     @Override

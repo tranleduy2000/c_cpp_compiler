@@ -232,5 +232,7 @@
     <string name="formated_source">Source is formatted</string>
     <string name="select">Select</string>
     <string name="saving">Saving</string>
+    <string name="open_drawer">Open drawer</string>
+    <string name="close_drawer">Close drawer</string>
 
 </resources>

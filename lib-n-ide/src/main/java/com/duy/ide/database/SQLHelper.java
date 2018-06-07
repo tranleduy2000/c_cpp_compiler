@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.utils;
+package com.duy.ide.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -25,20 +25,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class DBHelper extends SQLiteOpenHelper {
+public class SQLHelper extends SQLiteOpenHelper implements ITabDatabase {
     private static final String DATABASE_NAME = "920-text-editor.db";
     private static final int DATABASE_VERSION = 4; // Version must be >= 1
 
-    public DBHelper(Context context) {
+    public SQLHelper(Context context) {
         this(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public SQLHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         this(context, name, factory, version, new DatabaseErrorHandler() {
             @Override
             public void onCorruption(SQLiteDatabase dbObj) {
@@ -47,12 +49,13 @@ public class DBHelper extends SQLiteOpenHelper {
         });
     }
 
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
+    public SQLHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
     }
 
-    public static DBHelper getInstance(Context context) {
-        return new DBHelper(context.getApplicationContext());
+    public static ITabDatabase getInstance(Context context) {
+//        return new SQLHelper(context.getApplicationContext());
+        return new JsonDatabase(context.getApplicationContext());
     }
 
     @Override
@@ -110,6 +113,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("alter table recent_files ADD COLUMN encoding TEXT");
     }
 
+    @Override
     public void addRecentFile(String path, String encoding) {
         if (TextUtils.isEmpty(path))
             return;
@@ -118,12 +122,14 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    @Override
     public void updateRecentFile(String path, boolean lastOpen) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE recent_files SET last_open = ? WHERE path = ?", new Object[]{lastOpen ? 1 : 0, path});
         db.close();
     }
 
+    @Override
     public void updateRecentFile(String path, String encoding, int offset) {
         SQLiteDatabase db = getWritableDatabase();
         if (offset >= 0)
@@ -133,10 +139,12 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    @Override
     public ArrayList<RecentFileItem> getRecentFiles() {
         return getRecentFiles(false);
     }
 
+    @Override
     public ArrayList<RecentFileItem> getRecentFiles(boolean lastOpenFiles) {
         ArrayList<RecentFileItem> list = new ArrayList<RecentFileItem>(30);
         SQLiteDatabase db = getReadableDatabase();
@@ -162,18 +170,21 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    @Override
     public void clearRecentFiles() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("delete from recent_files");
         db.close();
     }
 
+    @Override
     public void clearFindKeywords(boolean isReplace) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("delete from find_keywords where is_replace=" + (isReplace ? "1" : "0"));
         db.close();
     }
 
+    @Override
     public void addFindKeyword(String keyword, boolean isReplace) {
         if (TextUtils.isEmpty(keyword))
             return;
@@ -182,6 +193,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    @Override
     public ArrayList<String> getFindKeywords(boolean isReplace) {
         ArrayList<String> list = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -195,11 +207,4 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public static class RecentFileItem {
-        public long time;
-        public String path;
-        public String encoding;
-        public int offset;
-        public boolean isLastOpen;
-    }
 }

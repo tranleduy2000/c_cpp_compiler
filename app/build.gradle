@@ -120,27 +120,27 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    implementation 'com.android.support:multidex:1.0.3'
+    api 'com.android.support:multidex:1.0.3'
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
-    implementation 'com.rengwuxian.materialedittext:library:2.0.3'
+    api 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
+    api 'com.rengwuxian.materialedittext:library:2.0.3'
 
-    implementation 'org.apmem.tools:layouts:1.10@aar'
-    implementation 'com.makeramen:roundedimageview:2.2.1'
-    implementation 'com.yqritc:recyclerview-flexibledivider:1.2.9'
+    api 'org.apmem.tools:layouts:1.10@aar'
+    api 'com.makeramen:roundedimageview:2.2.1'
+    api 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 
     api project(':lib-n-ide')
     api project(':emulatorview')
     api project(':libtermexec')
     api project(':style')
 
-    implementation 'com.google.firebase:firebase-core:15.0.2'
-    implementation 'com.google.firebase:firebase-storage:15.0.2'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
+    api 'com.google.firebase:firebase-core:15.0.2'
+    api 'com.google.firebase:firebase-storage:15.0.2'
+    api 'com.crashlytics.sdk.android:crashlytics:2.9.2'
 
-    implementation 'io.github.kobakei:ratethisapp:1.2.0'
+    api 'io.github.kobakei:ratethisapp:1.2.0'
 }
 
 

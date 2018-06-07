@@ -22,7 +22,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.widget.DrawClickableEditText;
-import com.jecelyin.editor.v2.utils.DBHelper;
+import com.duy.ide.database.SQLHelper;
 
 import java.util.List;
 
@@ -42,12 +42,12 @@ public class FindKeywordsDialog extends AbstractDialog {
 
     @Override
     public void show() {
-        final List<String> items = DBHelper.getInstance(context).getFindKeywords(isReplace);
+        final List<String> items = SQLHelper.getInstance(context).getFindKeywords(isReplace);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setNegativeButton(R.string.clear_history, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                DBHelper.getInstance(context).clearFindKeywords(isReplace);
+                SQLHelper.getInstance(context).clearFindKeywords(isReplace);
                 dialog.cancel();
             }
         });

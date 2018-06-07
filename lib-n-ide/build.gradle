@@ -48,6 +48,7 @@ dependencies {
     api 'com.simplecityapps:recyclerview-fastscroll:1.0.18'
     api 'org.apache.commons:commons-lang3:3.7'
     api 'com.google.guava:guava:25.1-android'
+    api 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
 
     api project(':style')
     api project(':libastyle')

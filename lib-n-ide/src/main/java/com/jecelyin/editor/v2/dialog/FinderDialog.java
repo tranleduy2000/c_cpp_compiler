@@ -37,7 +37,7 @@ import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.common.widget.DrawClickableEditText;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
-import com.jecelyin.editor.v2.utils.DBHelper;
+import com.duy.ide.database.SQLHelper;
 import com.jecelyin.editor.v2.utils.ExtGrep;
 import com.jecelyin.editor.v2.utils.GrepBuilder;
 import com.jecelyin.editor.v2.utils.MatcherResult;
@@ -158,8 +158,8 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
 
         ExtGrep grep = builder.build();
 
-        DBHelper.getInstance(context).addFindKeyword(findText, false);
-        DBHelper.getInstance(context).addFindKeyword(replaceText, true);
+        SQLHelper.getInstance(context).addFindKeyword(findText, false);
+        SQLHelper.getInstance(context).addFindKeyword(replaceText, true);
 
         findNext(grep, replaceText);
         return true;
