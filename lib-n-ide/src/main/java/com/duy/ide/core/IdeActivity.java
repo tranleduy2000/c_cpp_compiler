@@ -113,7 +113,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     protected DiagnosticPresenter mDiagnosticPresenter;
     private SymbolBarLayout mSymbolBarLayout;
     private Preferences mPreferences;
-    private MenuManager mMenuManager;
     private long mExitTime;
 
     @Override
@@ -133,6 +132,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                mDrawerLayout.requestFocus();
                 hideSoftInput();
             }
         });
@@ -231,7 +231,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     private void initMenuView() {
-        mMenuManager = new MenuManager(this);
         NavigationView rightMenu = findViewById(R.id.menuNavView);
         Menu menu = rightMenu.getMenu();
         onCreateNavigationMenu(menu);
@@ -314,8 +313,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     /**
-     * @param menuResId
-     * @param status    {@link MenuDef#STATUS_NORMAL}, {@link MenuDef#STATUS_DISABLED}
+     * @param status {@link MenuDef#STATUS_NORMAL}, {@link MenuDef#STATUS_DISABLED}
      */
     public void setMenuStatus(@IdRes int menuResId, int status) {
         MenuItem menuItem = mToolbar.getMenu().findItem(menuResId);

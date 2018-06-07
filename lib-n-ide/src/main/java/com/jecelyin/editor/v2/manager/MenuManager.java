@@ -23,7 +23,6 @@ import android.support.v4.content.ContextCompat;
 
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DrawableUtils;
-import com.jecelyin.editor.v2.adapter.MainMenuAdapter;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -33,14 +32,7 @@ public class MenuManager {
     private static int toolbarIconDisabledColor;
     private static int menuIconNormalColor;
 
-    private MainMenuAdapter mAdapter;
-
-    public MenuManager(Context context) {
-        mAdapter = new MainMenuAdapter(context);
-    }
-
-    public MainMenuAdapter getAdapter() {
-        return mAdapter;
+    public MenuManager() {
     }
 
     public static void init(Context context) {
