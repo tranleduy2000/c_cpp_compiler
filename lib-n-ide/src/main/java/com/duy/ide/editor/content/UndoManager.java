@@ -39,6 +39,17 @@ public class UndoManager implements IUndoManager {
     public boolean canUndo() {
         return mUndoRedoHelper.getCanUndo();
     }
+
+    @Override
+    public void disable() {
+        mUndoRedoHelper.detach();
+    }
+
+    @Override
+    public void enable() {
+        mUndoRedoHelper.attach();
+    }
+
     @Override
     public void undo() {
         if (canUndo()) {

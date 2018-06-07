@@ -135,6 +135,16 @@ public class EditActionSupportEditor extends GestureSupportEditor {
     }
 
     @Override
+    public void enableUndoRedoFilter() {
+        mUndoManager.enable();
+    }
+
+    @Override
+    public void disableUndoRedoFilter() {
+        mUndoManager.disable();
+    }
+
+    @Override
     public void setReadOnly(boolean readOnly) {
         if (readOnly) {
             if (mLastKeyListener == null) {

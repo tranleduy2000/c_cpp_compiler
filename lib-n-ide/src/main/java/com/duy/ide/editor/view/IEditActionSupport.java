@@ -31,4 +31,8 @@ public interface IEditActionSupport {
     void selectAll();
 
     void duplicateSelection();
+
+    void disableUndoRedoFilter();
+
+    void enableUndoRedoFilter();
 }

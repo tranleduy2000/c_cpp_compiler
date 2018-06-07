@@ -184,7 +184,9 @@ public class Document implements ReadFileListener, TextWatcher {
         }
 
         mEditorDelegate.mEditText.setInitLineNumber(mLineCount);
+        mEditorDelegate.mEditText.disableUndoRedoFilter();
         mEditorDelegate.mEditText.setText(spannableStringBuilder);
+        mEditorDelegate.mEditText.enableUndoRedoFilter();
         mEditorDelegate.onLoadFinish();
 
     }

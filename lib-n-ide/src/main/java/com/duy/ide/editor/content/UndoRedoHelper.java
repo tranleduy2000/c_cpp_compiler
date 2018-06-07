@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import java.util.LinkedList;
 
-public class UndoRedoHelper  {
+public class UndoRedoHelper {
     private static final String TAG = UndoRedoHelper.class.getCanonicalName();
     private boolean mIsUndoOrRedo = false;
 

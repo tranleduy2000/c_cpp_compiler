@@ -28,4 +28,8 @@ public interface IUndoManager {
     void redo();
 
     boolean canUndo();
+
+    void disable();
+
+    void enable();
 }

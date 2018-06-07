@@ -106,8 +106,9 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         mEditText.post(new Runnable() {
             @Override
             public void run() {
-                if (savedState.cursorOffset < mEditText.getText().length())
+                if (savedState.cursorOffset < mEditText.getText().length()) {
                     mEditText.setSelection(savedState.cursorOffset);
+                }
             }
         });
 
