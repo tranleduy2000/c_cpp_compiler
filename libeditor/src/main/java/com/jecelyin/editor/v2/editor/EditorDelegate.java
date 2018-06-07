@@ -41,7 +41,7 @@ import android.widget.Toast;
 
 import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
-import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.core.IdeActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.model.EditorIndex;
 import com.duy.ide.editor.text.InputMethodManagerCompat;
@@ -119,8 +119,8 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         return mContext;
     }
 
-    private SimpleEditorActivity getActivity() {
-        return (SimpleEditorActivity) mContext;
+    private IdeActivity getActivity() {
+        return (IdeActivity) mContext;
     }
 
     public String getTitle() {

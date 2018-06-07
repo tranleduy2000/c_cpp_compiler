@@ -20,7 +20,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 
-import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.core.IdeActivity;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
@@ -41,8 +41,8 @@ public abstract class AbstractDialog {
         return new AlertDialog.Builder(context);
     }
 
-    protected SimpleEditorActivity getMainActivity() {
-        return (SimpleEditorActivity) context;
+    protected IdeActivity getMainActivity() {
+        return (IdeActivity) context;
     }
 
     public abstract void show();

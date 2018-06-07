@@ -30,7 +30,7 @@ import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
 import com.duy.common.DLog;
-import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.core.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
@@ -43,7 +43,7 @@ import java.io.File;
 public abstract class CompileManagerImpl implements ICompileManager {
     private static final String TAG = "CompileManager";
     @NonNull
-    SimpleEditorActivity mActivity;
+    IdeActivity mActivity;
     @Nullable
     private ProgressDialog mCompileDialog;
     @Nullable
@@ -137,7 +137,7 @@ public abstract class CompileManagerImpl implements ICompileManager {
     }
 
     @NonNull
-    public SimpleEditorActivity getActivity() {
+    public IdeActivity getActivity() {
         return mActivity;
     }
 }

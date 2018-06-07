@@ -95,7 +95,7 @@ import java.util.Map;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class SimpleEditorActivity extends ThemeSupportActivity implements MenuItem.OnMenuItemClickListener,
+public class IdeActivity extends ThemeSupportActivity implements MenuItem.OnMenuItemClickListener,
         IEditorStateListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -538,7 +538,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
 
             @Override
             public void onSaveFailed(Exception e) {
-                UIUtils.alert(SimpleEditorActivity.this, e.getMessage());
+                UIUtils.alert(IdeActivity.this, e.getMessage());
                 dialog.cancel();
             }
         });
@@ -682,7 +682,7 @@ public class SimpleEditorActivity extends ThemeSupportActivity implements MenuIt
         if (!mTabManager.newTab(file, offset, encoding)) {
             return;
         }
-        DBHelper.getInstance(SimpleEditorActivity.this).addRecentFile(file.getPath(), encoding);
+        DBHelper.getInstance(IdeActivity.this).addRecentFile(file.getPath(), encoding);
     }
 
     public void insertText(CharSequence text) {

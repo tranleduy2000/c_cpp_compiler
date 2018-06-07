@@ -25,7 +25,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.duy.common.DLog;
-import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.core.IdeActivity;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.parser.ToolOutputParser;
@@ -50,14 +50,14 @@ import java.util.List;
 
 public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private static final String TAG = "DiagnosticPresenter";
-    private final SimpleEditorActivity mActivity;
+    private final IdeActivity mActivity;
     private final TabManager mTabManager;
     @Nullable
     private ToolOutputParser mToolOutputParser = null;
     private DiagnosticContract.View mView;
     private HashMap<File, byte[]> mHashCode = new HashMap<>();
 
-    public DiagnosticPresenter(DiagnosticContract.View view, SimpleEditorActivity activity, TabManager tabManager) {
+    public DiagnosticPresenter(DiagnosticContract.View view, IdeActivity activity, TabManager tabManager) {
         mActivity = activity;
         mTabManager = tabManager;
         mView = view;

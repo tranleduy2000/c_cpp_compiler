@@ -44,7 +44,7 @@ import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.ccppcompiler.ide.editor.theme.ThemeActivity;
 import com.duy.file.explorer.FileExplorerActivity;
-import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.core.IdeActivity;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
@@ -64,7 +64,7 @@ import static com.pdaxrom.cctools.BuildConstants.EXTRA_FILE_NAME;
  * Created by Duy on 19-May-18.
  */
 
-public class CodeEditorActivity extends SimpleEditorActivity {
+public class CodeEditorActivity extends IdeActivity {
     private static final String TAG = "CodeEditorActivity";
     private static final int RC_BUILD_NATIVE_ACTIVITY = 1234;
     private static final int RC_BUILD_EXECUTABLE = 1236;

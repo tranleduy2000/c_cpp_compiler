@@ -19,7 +19,7 @@ package com.jecelyin.editor.v2.editor.task;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
-import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.core.IdeActivity;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
@@ -31,12 +31,12 @@ import com.jecelyin.editor.v2.manager.TabManager;
 
 public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
     private static final String TAG = "SaveAllTask";
-    private SimpleEditorActivity editorActivity;
+    private IdeActivity editorActivity;
     @Nullable
     private SaveListener saveListener;
     private Exception exception;
 
-    public SaveAllTask(SimpleEditorActivity editorActivity, @Nullable SaveListener saveListener) {
+    public SaveAllTask(IdeActivity editorActivity, @Nullable SaveListener saveListener) {
         this.editorActivity = editorActivity;
         this.saveListener = saveListener;
     }

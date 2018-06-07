@@ -24,7 +24,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.duy.ide.core.SimpleEditorActivity;
+import com.duy.ide.core.IdeActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
@@ -47,11 +47,11 @@ import java.util.ArrayList;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class TabManager implements ViewPager.OnPageChangeListener {
-    private final SimpleEditorActivity mActivity;
+    private final IdeActivity mActivity;
     private final TabAdapter mTabAdapter;
     private EditorFragmentPagerAdapter mEditorFragmentPagerAdapter;
 
-    public TabManager(SimpleEditorActivity activity) {
+    public TabManager(IdeActivity activity) {
         mActivity = activity;
 
         mTabAdapter = new TabAdapter();

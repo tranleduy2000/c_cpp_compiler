@@ -26,6 +26,6 @@
     <application android:supportsRtl="false">
         <activity android:name="com.duy.ide.settings.EditorSettingsActivity" />
         <activity android:name="com.duy.file.explorer.FileExplorerActivity" />
-        <activity android:name="com.duy.ide.core.SimpleEditorActivity" />
+        <activity android:name="com.duy.ide.core.IdeActivity" />
     </application>
 </manifest>
