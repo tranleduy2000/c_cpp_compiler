@@ -148,6 +148,8 @@ public class CppIdeActivity extends IdeActivity {
                     .setIcon(R.drawable.baseline_extension_24);
             codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_report_bug, 0, R.string.report_bug)
                     .setIcon(R.drawable.baseline_bug_report_24);
+            codeMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_open_wiki, 0, R.string.wiki)
+                    .setIcon(R.drawable.baseline_book_24);
         }
 
         {
@@ -208,6 +210,10 @@ public class CppIdeActivity extends IdeActivity {
 
             case R.id.action_report_bug:
                 StoreUtil.openBrowser(this, "https://github.com/tranleduy2000/c_cpp_compiler/issues", 0);
+                break;
+
+            case R.id.action_open_wiki:
+                StoreUtil.openBrowser(this, "https://github.com/tranleduy2000/c_cpp_compiler/wiki", 0);
                 break;
         }
         return super.onOptionsItemSelected(item);

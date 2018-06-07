@@ -26,6 +26,7 @@ import android.widget.EditText;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileSetting;
+import com.duy.common.StoreUtil;
 import com.jecelyin.editor.v2.dialog.AbstractDialog;
 
 public class CompilerOptionsDialog extends AbstractDialog {
@@ -80,6 +81,12 @@ public class CompilerOptionsDialog extends AbstractDialog {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                    }
+                })
+                .setNeutralButton(R.string.wiki, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StoreUtil.openBrowser(getMainActivity(), "https://github.com/tranleduy2000/c_cpp_compiler/wiki", 0);
                     }
                 })
                 .create()

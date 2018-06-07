@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_search">T</string>
+    <string name="menu_search">T</string>
+    <string name="menu_search">Ti</string>
+    <string name="menu_search">Tifm</string>
+    <string name="menu_search">Tifm</string>
+    <string name="menu_search">"Tifm "</string>
+    <string name="menu_search">Tifm k</string>
+    <string name="menu_search">Tifm kie</string>
+    <string name="menu_search">Tifm kie</string>
+    <string name="menu_search">Tifm kieem</string>
+    <string name="menu_search">Tifm kieem</string>
+    <string name="menu_search">Tifm kieems</string>
+    <string name="menu_search">Tìm kiếm</string>
+    <string name="message_file_copy">Đang sao chép</string>
+    <string name="message_file_delete">Đang xóa</string>
+    <string name="homeDirectory">Trang chủ</string>
+    <string name="goto_line">Dòng</string>
+    <string name="gccrunexe">Chạy</string>
+    <string name="file_saved">Đã lưu tệp thành công</string>
+    <string name="file_paste">Dán</string>
+    <string name="file_not_saved">Không thể ghi tệp</string>
+    <string name="file_not_loaded">Không thể đọc tệp</string>
+    <string name="file_name">Tên tệp:</string>
+</resources>

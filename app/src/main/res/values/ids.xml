@@ -27,5 +27,6 @@
     <item name="action_build_native_activity" type="id" />
     <item name="action_run_sdl_activity" type="id" />
     <item name="action_report_bug" type="id" />
+    <item name="action_open_wiki" type="id" />
 
 </resources>

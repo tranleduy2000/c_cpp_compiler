@@ -4,14 +4,14 @@
     <string name="pref_key_cxx_options" translatable="false">pref_key_cxx_options</string>
     <string name="pref_key_linker_options" translatable="false">pref_key_linker_options</string>
 
-    <string name="pref_c_options_ansi">pref_c_options_ansi</string>
-    <string name="pref_c_options_fno_asm">pref_c_options_fno_asm</string>
-    <string name="pref_c_options_traditional_cpp">pref_c_options_traditional_cpp</string>
-    <string name="pref_option_optimization_level">pref_option_optimization_level</string>
-    <string name="pref_option_language_standard">pref_option_language_standard</string>
+    <string name="pref_c_options_ansi" translatable="false">pref_c_options_ansi</string>
+    <string name="pref_c_options_fno_asm" translatable="false">pref_c_options_fno_asm</string>
+    <string name="pref_c_options_traditional_cpp" translatable="false">pref_c_options_traditional_cpp</string>
+    <string name="pref_option_optimization_level" translatable="false">pref_option_optimization_level</string>
+    <string name="pref_option_language_standard" translatable="false">pref_option_language_standard</string>
 
-    <string name="pref_key_cpp_check">pref_key_cpp_check</string>
-    <string name="pref_key_cpp_check_warning">pref_key_cpp_check_warning</string>
-    <string name="pref_key_cpp_check_performance">pref_key_cpp_check_performance</string>
-    <string name="pref_key_cpp_check_information">pref_key_cpp_check_information</string>
+    <string name="pref_key_cpp_check" translatable="false">pref_key_cpp_check</string>
+    <string name="pref_key_cpp_check_warning" translatable="false">pref_key_cpp_check_warning</string>
+    <string name="pref_key_cpp_check_performance" translatable="false">pref_key_cpp_check_performance</string>
+    <string name="pref_key_cpp_check_information" translatable="false">pref_key_cpp_check_information</string>
 </resources>

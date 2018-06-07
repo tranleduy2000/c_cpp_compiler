@@ -19,4 +19,6 @@
     <string name="copy_all">Sao chép tất cả</string>
     <string name="paste">Dán</string>
     <string name="title_color_preference">Màu sắc</string>
+    <string name="help">Trợ giúp</string>
+    <string name="fsnavigator_change_theme">Thay đổi chủ đề</string>
 </resources>
