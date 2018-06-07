@@ -25,9 +25,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.duy.ide.editor.editor.R;
@@ -38,38 +35,7 @@ import com.jecelyin.common.utils.DLog;
  */
 public abstract class ThemeSupportActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "BaseActivity";
-    private boolean keyboardListenersAttached = false;
-    @Nullable
-    private ViewGroup rootLayout;
-    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-            int heightDiff = rootLayout.getRootView().getHeight() - rootLayout.getHeight();
-            int contentViewTop = getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();
-            if (heightDiff <= contentViewTop) {
-                onHideKeyboard();
-            } else {
-                int keyboardHeight = heightDiff - contentViewTop;
-                onShowKeyboard(keyboardHeight);
-            }
-        }
-    };
 
-    protected void onShowKeyboard(int keyboardHeight) {
-    }
-
-    protected void onHideKeyboard() {
-    }
-
-    protected void attachKeyboardListeners() {
-        if (keyboardListenersAttached) {
-            return;
-        }
-        if (rootLayout != null) {
-            rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
-            keyboardListenersAttached = true;
-        }
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,18 +96,4 @@ public abstract class ThemeSupportActivity extends AppCompatActivity implements 
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (keyboardListenersAttached) {
-            if (rootLayout != null) {
-                rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(keyboardLayoutListener);
-            }
-        }
-    }
-
-    public void setRootLayout(@Nullable ViewGroup view) {
-        rootLayout = view;
-    }
 }

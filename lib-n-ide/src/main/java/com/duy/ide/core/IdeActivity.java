@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -46,6 +47,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.duy.common.StoreUtil;
@@ -81,6 +83,7 @@ import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.jecelyin.editor.v2.widget.menu.MenuFactory;
 import com.jecelyin.editor.v2.widget.menu.MenuGroup;
 import com.jecelyin.editor.v2.widget.menu.MenuItemInfo;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.gjt.sp.jedit.Catalog;
@@ -104,16 +107,20 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
 
     //Handle create on MainThread, use for update UI
     private final Handler mHandler = new Handler();
-
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
-    public Toolbar mToolbar;
     public ViewPager mEditorPager;
-    public DrawerLayout mDrawerLayout;
+
     protected TabManager mTabManager;
     protected DiagnosticPresenter mDiagnosticPresenter;
+
     private SymbolBarLayout mSymbolBarLayout;
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawerLayout;
+    private SmartTabLayout mTabLayout;
+
     private Preferences mPreferences;
     private long mExitTime;
+    private KeyBoardEventListener mKeyBoardListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +132,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         MenuManager.init(this);
         mPreferences = Preferences.getInstance(this);
 
+        mTabLayout = findViewById(R.id.tab_layout);
         mEditorPager = findViewById(R.id.editor_view_pager);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setKeepScreenOn(mPreferences.isKeepScreenOn());
@@ -140,10 +148,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
                 this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
         mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-
-        //keyboard hide/show listener
-        setRootLayout(mDrawerLayout);
-        attachKeyboardListeners();
 
         mSymbolBarLayout = findViewById(R.id.symbolBarLayout);
         mSymbolBarLayout.setOnSymbolCharClickListener(new SymbolBarLayout.OnSymbolCharClickListener() {
@@ -165,6 +169,10 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         processIntent();
 
         mPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        //attach listener hide/show keyboard
+        mKeyBoardListener = new KeyBoardEventListener(this);
+        mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(mKeyBoardListener);
     }
 
     private void intiDiagnosticView() {
@@ -730,5 +738,45 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     @Override
     public void onEditorViewCreated(IEditorDelegate editorDelegate) {
 
+    }
+
+    protected void onShowKeyboard() {
+        mTabLayout.setVisibility(View.GONE);
+    }
+
+    protected void onHideKeyboard() {
+        mTabLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mDrawerLayout.getViewTreeObserver()
+                .removeGlobalOnLayoutListener(mKeyBoardListener);
+        super.onDestroy();
+    }
+
+    private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
+        IdeActivity activity;
+
+        KeyBoardEventListener(IdeActivity activityIde) {
+            this.activity = activityIde;
+        }
+
+        public void onGlobalLayout() {
+            int i = 0;
+            int navHeight = this.activity.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+            navHeight = navHeight > 0 ? this.activity.getResources().getDimensionPixelSize(navHeight) : 0;
+            int statusBarHeight = this.activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (statusBarHeight > 0) {
+                i = this.activity.getResources().getDimensionPixelSize(statusBarHeight);
+            }
+            Rect rect = new Rect();
+            activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+            if (activity.mDrawerLayout.getRootView().getHeight() - ((navHeight + i) + rect.height()) <= 0) {
+                activity.onHideKeyboard();
+            } else {
+                activity.onShowKeyboard();
+            }
+        }
     }
 }
