@@ -26,7 +26,7 @@ import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
  * Created by Duy on 25-Apr-18.
  */
 
-public class GCCCompiler extends CompilerImpl {
+public class GCCCompiler extends NativeCompileImpl {
     private static final String GCC_COMPILER_NAME = "gcc";
     private ICompileSetting mSetting;
 

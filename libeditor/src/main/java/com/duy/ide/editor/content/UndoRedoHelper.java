@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import java.util.LinkedList;
 
-public class UndoRedoHelper implements IUndoManager {
+public class UndoRedoHelper  {
     private static final String TAG = UndoRedoHelper.class.getCanonicalName();
     private boolean mIsUndoOrRedo = false;
 
@@ -48,11 +48,6 @@ public class UndoRedoHelper implements IUndoManager {
 
     public boolean getCanUndo() {
         return (mEditHistory.mmPosition > 0);
-    }
-
-    @Override
-    public boolean canRedo() {
-        return getCanRedo();
     }
 
     public void undo() {
@@ -104,10 +99,6 @@ public class UndoRedoHelper implements IUndoManager {
                 : (start + edit.mmAfter.length()));
     }
 
-    @Override
-    public boolean canUndo() {
-        return getCanUndo();
-    }
 
     public void storePersistentState(Editor editor, String prefix) {
         // Store hash code of text in the editor so that we can check if the

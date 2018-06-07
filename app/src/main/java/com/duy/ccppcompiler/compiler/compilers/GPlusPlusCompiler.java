@@ -25,7 +25,7 @@ import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
  * G++ compiler as GCC compiler but it different name, just override {@link #getCompilerProgram()}
  * Created by Duy on 25-Apr-18.
  */
-public class GPlusPlusCompiler extends CompilerImpl {
+public class GPlusPlusCompiler extends NativeCompileImpl {
     private static final String G_PLUS_PLUS_COMPILER_NAME = "g++-4.9";
     private ICompileSetting mSetting;
 

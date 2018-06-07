@@ -45,6 +45,7 @@
     <string name="code_analysis">Code analysis</string>
     <string name="report_bug">Report bug</string>
     <string name="title_menu_install_libraries">Install libraries / plugins</string>
+    <string name="build_sdl">Build SDL</string>
 
 
 </resources>

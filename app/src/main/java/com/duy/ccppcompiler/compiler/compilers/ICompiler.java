@@ -19,6 +19,7 @@ package com.duy.ccppcompiler.compiler.compilers;
 import android.support.annotation.WorkerThread;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ide.logging.ILogger;
 
 import java.io.File;
 
@@ -28,6 +29,6 @@ import java.io.File;
 
 public interface ICompiler {
     @WorkerThread
-    CommandResult compile(File[] sourceFiles);
+    CommandResult compile(File[] sourceFiles, ILogger logger);
 
 }

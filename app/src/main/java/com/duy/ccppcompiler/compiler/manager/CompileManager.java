@@ -20,7 +20,7 @@ package com.duy.ccppcompiler.compiler.manager;
 import android.app.NativeActivity;
 import android.content.Intent;
 
-import com.duy.ccppcompiler.compiler.compilers.CompilerImpl;
+import com.duy.ccppcompiler.compiler.compilers.NativeCompileImpl;
 import com.duy.ccppcompiler.compiler.model.CompileResult;
 import com.duy.ccppcompiler.compiler.model.OutputScope;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
@@ -61,7 +61,7 @@ public class CompileManager extends CompileManagerImpl {
         }
 
         switch (((CompileResult) result).getType()) {
-            case CompilerImpl.BUILD_SDL_ACTIVITY: {
+            case NativeCompileImpl.BUILD_SDL_ACTIVITY: {
                 File binaryFile = output.getBinaryFile();
                 Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage("com.duy.c.cpp.compiler.sdlplugin");
                 if (intent != null) {
@@ -72,7 +72,7 @@ public class CompileManager extends CompileManagerImpl {
                 }
                 break;
             }
-            case CompilerImpl.BUILD_NATIVE_ACTIVITY: {
+            case NativeCompileImpl.BUILD_NATIVE_ACTIVITY: {
                 File internalBinary;
                 try {
                     internalBinary = copyToTmpExeDirAndSetExecutable(output.getBinaryFile());
@@ -88,7 +88,7 @@ public class CompileManager extends CompileManagerImpl {
                 getActivity().startActivity(intent);
                 break;
             }
-            case CompilerImpl.BUILD_EXECUTABLE:
+            case NativeCompileImpl.BUILD_EXECUTABLE:
                 try {
                     File binaryFile = output.getBinaryFile();
                     File internalBinary = copyToTmpExeDirAndSetExecutable(binaryFile);

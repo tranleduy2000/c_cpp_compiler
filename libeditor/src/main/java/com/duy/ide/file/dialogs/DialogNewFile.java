@@ -136,12 +136,6 @@ public class DialogNewFile extends AppCompatDialogFragment {
             return false;
         }
         String path = mPathExitText.getText().toString();
-        if (mPathExitText.length() == 0 ||
-                !path.matches("[A-Za-z0-9_./ ]+")) {
-
-            mNameEditText.setError(getContext().getString(R.string.invalid_name));
-            return false;
-        }
         if (!name.contains(".")) {
             name += mSpinnerExt.getSelectedItem().toString();
         }

@@ -20,7 +20,7 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by Duy on 17-May-18.
@@ -43,7 +43,7 @@ public class ArgumentBuilder {
         return this;
     }
 
-    public ArgumentBuilder addFlags(List<String> flags) {
+    public ArgumentBuilder addFlags(Collection<String> flags) {
         this.flags.addAll(flags);
         return this;
     }

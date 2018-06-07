@@ -27,14 +27,17 @@ import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.common.DLog;
+import com.duy.ide.logging.ILogger;
 import com.pdaxrom.utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Set;
 
 /**
  * Created by Duy on 18-May-18.
  */
-public abstract class CompilerImpl implements ICompiler {
+public abstract class NativeCompileImpl implements ICompiler {
     public static final int BUILD_EXECUTABLE = 0b0001;
     public static final int BUILD_NATIVE_ACTIVITY = 0b0010;
     public static final int BUILD_SDL_ACTIVITY = 0b0100;
@@ -46,29 +49,34 @@ public abstract class CompilerImpl implements ICompiler {
     private int mBuildType;
     private OutputScope output;
 
-    CompilerImpl(Context context, int buildType) {
+    NativeCompileImpl(Context context, int buildType) {
         mContext = context;
         mBuildType = buildType;
     }
 
     @NonNull
-    protected CommandResult exec(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
+    private CommandResult exec(@NonNull Context context, @NonNull String workingDir, @NonNull String cmd) {
         return Shell.exec(context, workingDir, cmd);
     }
 
     @Override
-    public CommandResult compile(File[] sourceFiles) {
+    public CommandResult compile(File[] sourceFiles, ILogger logger) {
         clean();
 
         //current version support single file
         File sourceFile = sourceFiles[0];
 
         //gcc or g++
-        ArgumentBuilder command = new ArgumentBuilder(getCompilerProgram());
+        ArgumentBuilder argumentBuilder = new ArgumentBuilder(getCompilerProgram());
         String args = buildArgs(sourceFiles);
-        command.addFlags(args);
+        argumentBuilder.addFlags(args);
 
-        CompileResult result = new CompileResult(exec(mContext, sourceFile.getParent(), command.build()));
+        final String cmd = argumentBuilder.build();
+        if (logger != null) {
+            logger.verbose("Compiler argument: " + cmd);
+        }
+
+        CompileResult result = new CompileResult(exec(mContext, sourceFile.getParent(), cmd));
         if (result.getResultCode() == RESULT_NO_ERROR) {
             result.setOutput(getOutput());
             result.setType(mBuildType);
@@ -84,7 +92,7 @@ public abstract class CompilerImpl implements ICompiler {
         Utils.emptyDirectory(new File(Environment.getSdCardTmpDir()));
     }
 
-    protected String buildArgs(File[] sourceFiles) {
+    private String buildArgs(File[] sourceFiles) {
         ArgumentBuilder args = new ArgumentBuilder();
         for (File sourceFile : sourceFiles) {
             args.addFlags(sourceFile.getAbsolutePath());
@@ -98,13 +106,26 @@ public abstract class CompilerImpl implements ICompiler {
                 buildNativeActivityFlags(args, sourceFiles);
                 break;
             case BUILD_SDL_ACTIVITY:
+                buildSDLActivity(args, sourceFiles);
                 break;
             case BUILD_MAKE:
-                break;
+                //nothing to do
+                return "";
         }
         addUserSettingFlags(args);
         addDefaultLdFlags(args);
+        resolveLdFlagsFromSource(args, sourceFiles);
         return args.build();
+    }
+
+    private void resolveLdFlagsFromSource(ArgumentBuilder args, File[] sourceFiles) {
+        LinkerFlagsDetector detector = LinkerFlagsDetector.INSTANCE;
+        try {
+            final Set<String> detect = detector.detect(sourceFiles);
+            args.addFlags(detect);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void addUserSettingFlags(ArgumentBuilder args) {
@@ -142,9 +163,28 @@ public abstract class CompilerImpl implements ICompiler {
                 .addFlags("-shared")
                 .addFlags("-Wl,--no-undefined")
                 .addFlags("-Wl,-z,noexecstack")
-                .addFlags("-llog") //lib log
-                .addFlags("-landroid") //android
-                .addFlags("-lm")
+//                .addFlags("-llog") //lib log
+//                .addFlags("-landroid") //android
+//                .addFlags("-lm")
+                .addFlags("-o", outputScope.getBinaryFile().getAbsolutePath());
+    }
+
+    private void buildSDLActivity(ArgumentBuilder args, File[] sourceFiles) {
+        File source = sourceFiles[0];
+        String nameNoExt = source.getName().substring(0, source.getName().lastIndexOf("."));
+
+        if (DLog.DEBUG) DLog.d(TAG, "buildArgs: build native activity");
+        String soName = "lib" + nameNoExt + ".so";
+        OutputScope outputScope = new OutputScope(new File(source.getParent(), soName));
+        setOutput(outputScope);
+
+        final String sdCardHomeDir = Environment.getSdCardHomeDir();
+        args.addFlags("-DANDROID")
+                .addFlags("-I" + sdCardHomeDir + "/SDL/include")
+                .addFlags("-shared")
+                .addFlags(sdCardHomeDir + "/SDL/lib/SDL_android_main.o")
+                .addFlags("-L" + sdCardHomeDir + "SDL/lib")
+                .addFlags("-lSDL2")
                 .addFlags("-o", outputScope.getBinaryFile().getAbsolutePath());
     }
 

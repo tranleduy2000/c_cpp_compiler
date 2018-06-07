@@ -32,6 +32,7 @@ import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
 import com.duy.common.DLog;
 import com.duy.ide.core.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
+import com.duy.ide.logging.ILogger;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 
@@ -93,6 +94,11 @@ public abstract class CompileManagerImpl implements ICompileManager {
 
         Toast.makeText(mActivity, "Compiled failed", Toast.LENGTH_LONG).show();
         if (DLog.DEBUG) DLog.w(TAG, "onCompileFailed: \n" + compileResult.getMessage());
+    }
+
+    @Override
+    public ILogger getLogger() {
+        return mDiagnosticPresenter;
     }
 
     @CallSuper

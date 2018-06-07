@@ -18,8 +18,10 @@
 package com.duy.ccppcompiler.compiler.manager;
 
 import android.support.annotation.MainThread;
+import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
+import com.duy.ide.logging.ILogger;
 
 import java.io.File;
 
@@ -56,4 +58,6 @@ public interface ICompileManager {
     @MainThread
     void onCompileFailed(CommandResult compileResult);
 
+    @Nullable
+    ILogger getLogger();
 }

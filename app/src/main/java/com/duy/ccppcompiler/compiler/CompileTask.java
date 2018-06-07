@@ -18,7 +18,6 @@ package com.duy.ccppcompiler.compiler;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.manager.ICompileManager;
@@ -36,12 +35,12 @@ public class CompileTask extends AsyncTask<Void, Void, CommandResult> {
     private ICompiler mCompiler;
     @NonNull
     private File[] mFiles;
-    @Nullable
+    @NonNull
     private ICompileManager mCompileManager;
 
     public CompileTask(@NonNull ICompiler compiler,
                        @NonNull File[] files,
-                       @Nullable ICompileManager compileManager) {
+                       @NonNull ICompileManager compileManager) {
         mCompiler = compiler;
         mFiles = files;
         mCompileManager = compileManager;
@@ -50,22 +49,17 @@ public class CompileTask extends AsyncTask<Void, Void, CommandResult> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (mCompileManager != null) {
-            mCompileManager.onPrepareCompile();
-        }
+        mCompileManager.onPrepareCompile();
     }
 
     @Override
     protected CommandResult doInBackground(Void... voids) {
-        return mCompiler.compile(mFiles);
+        return mCompiler.compile(mFiles, mCompileManager.getLogger());
     }
 
     @Override
     protected void onPostExecute(CommandResult commandResult) {
         super.onPostExecute(commandResult);
-        if (mCompileManager == null) {
-            return;
-        }
         if (commandResult.getResultCode() == 0) {
             mCompileManager.onCompileSuccess(commandResult);
         } else {

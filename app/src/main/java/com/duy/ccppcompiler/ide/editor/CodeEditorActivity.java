@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -31,8 +32,8 @@ import com.duy.ccppcompiler.compiler.CompilerSettingActivity;
 import com.duy.ccppcompiler.compiler.analyze.CppCheckAnalyzer;
 import com.duy.ccppcompiler.compiler.analyze.CppCheckOutputParser;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
-import com.duy.ccppcompiler.compiler.compilers.CompilerImpl;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
+import com.duy.ccppcompiler.compiler.compilers.NativeCompileImpl;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
 import com.duy.ccppcompiler.ide.diagnostic.GccOutputParser;
@@ -60,6 +61,7 @@ import com.pdaxrom.cctools.BuildConstants;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import jackpal.androidterm.TermPreferencesActivity;
 
@@ -71,8 +73,7 @@ import static com.pdaxrom.cctools.BuildConstants.EXTRA_FILE_NAME;
 
 public class CodeEditorActivity extends IdeActivity {
     private static final String TAG = "CodeEditorActivity";
-    private static final int RC_BUILD_NATIVE_ACTIVITY = 1234;
-    private static final int RC_BUILD_EXECUTABLE = 1236;
+    private static final int RC_BUILD = 1234;
     private static final int RC_SELECT_NATIVE_ACTIVITY = 1237;
 
     private InAppPurchaseHelper mPremiumHelper;
@@ -196,11 +197,11 @@ public class CodeEditorActivity extends IdeActivity {
                 break;
 
             case R.id.action_run:
-                saveAll(RC_BUILD_EXECUTABLE);
+                saveAll(RC_BUILD);
                 return true;
 
             case R.id.action_build_native_activity:
-                saveAll(RC_BUILD_NATIVE_ACTIVITY);
+                saveAll(RC_BUILD);
                 break;
 
             case R.id.action_run_sdl_activity:
@@ -228,14 +229,37 @@ public class CodeEditorActivity extends IdeActivity {
     @Override
     protected void onSaveComplete(int requestCode) {
         super.onSaveComplete(requestCode);
+
         switch (requestCode) {
-            case RC_BUILD_NATIVE_ACTIVITY:
-                build(CompilerImpl.BUILD_NATIVE_ACTIVITY);
-                break;
-            case RC_BUILD_EXECUTABLE:
-                build(CompilerImpl.BUILD_EXECUTABLE);
+            case RC_BUILD:
+                build(detectBuildType());
                 break;
         }
+    }
+
+    private int detectBuildType() {
+        EditorDelegate currentEditor = getCurrentEditorDelegate();
+        if (currentEditor == null) {
+            return NativeCompileImpl.BUILD_EXECUTABLE;
+        }
+
+        Editable srcCode = currentEditor.getEditText().getText();
+        Pattern nativeActivityPattern =
+                //#include "android_native_app_glue.h" in C++
+                //#inlcude <android_native_app_glue.h> in C
+                Pattern.compile("#include\\s+([<\"])android_native_app_glue.h[>\"]");
+        if (nativeActivityPattern.matcher(srcCode).find()) {
+            return NativeCompileImpl.BUILD_NATIVE_ACTIVITY;
+        }
+        Pattern sdl =
+                //#include "android_native_app_glue.h" in C++
+                //#inlcude <android_native_app_glue.h> in C
+                Pattern.compile("#include\\s+([<\"])SDL.h[>\"]");
+        if (nativeActivityPattern.matcher(srcCode).find()) {
+            return NativeCompileImpl.BUILD_SDL_ACTIVITY;
+        }
+
+        return NativeCompileImpl.BUILD_EXECUTABLE;
     }
 
     private void build(final int buildType) {
@@ -259,17 +283,35 @@ public class CodeEditorActivity extends IdeActivity {
                 }
             }
         };
-        if (buildType == CompilerImpl.BUILD_EXECUTABLE) {
-            compileAction.execute(this);
-        } else {
-            CompilerOptionsDialog dialog = new CompilerOptionsDialog(this,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            compileAction.execute(CodeEditorActivity.this);
-                        }
-                    });
-            dialog.show();
+
+        switch (buildType) {
+            case NativeCompileImpl.BUILD_EXECUTABLE:
+                compileAction.execute(this);
+                break;
+            case NativeCompileImpl.BUILD_SDL_ACTIVITY: {
+                CompilerOptionsDialog dialog = new CompilerOptionsDialog(this,
+                        R.string.build_sdl,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                compileAction.execute(CodeEditorActivity.this);
+                            }
+                        });
+                dialog.show();
+                break;
+            }
+            case NativeCompileImpl.BUILD_NATIVE_ACTIVITY: {
+                CompilerOptionsDialog dialog = new CompilerOptionsDialog(this,
+                        R.string.build_native_activity,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                compileAction.execute(CodeEditorActivity.this);
+                            }
+                        });
+                dialog.show();
+                break;
+            }
         }
     }
 

@@ -32,13 +32,15 @@ public class CompilerOptionsDialog extends AbstractDialog {
 
     private final DialogInterface.OnClickListener onBuildClickListener;
     private final CompileSetting options;
-
+    private int mTitle;
     private EditText cFlags;
     private EditText cxxFlags;
     private EditText ldFlags;
 
-    public CompilerOptionsDialog(Context context, DialogInterface.OnClickListener onOkClickListener) {
+    public CompilerOptionsDialog(Context context,
+                                 int title, DialogInterface.OnClickListener onOkClickListener) {
         super(context);
+        mTitle = title;
         this.onBuildClickListener = onOkClickListener;
         options = new CompileSetting(context);
     }
@@ -60,7 +62,11 @@ public class CompilerOptionsDialog extends AbstractDialog {
         ldFlags.setSelection(ldFlags.length());
 
         AlertDialog.Builder builder = getBuilder();
-        builder.setTitle(R.string.title_compiler_options);
+        if (mTitle != 0) {
+            builder.setTitle(mTitle);
+        } else {
+            builder.setTitle(R.string.title_compiler_options);
+        }
         builder.setView(view)
                 .setPositiveButton(R.string.buildButton, new DialogInterface.OnClickListener() {
                     @Override

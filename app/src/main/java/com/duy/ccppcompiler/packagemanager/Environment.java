@@ -84,7 +84,7 @@ public class Environment {
 
 
     /**
-     * External storage
+     * Return sdcard/CCPlusPlusNIDE folder
      */
     public static String getSdCardHomeDir() {
         File path = new File(android.os.Environment.getExternalStorageDirectory().getPath(), APPLICATION_DIR_NAME);
@@ -241,7 +241,7 @@ public class Environment {
         String ret = null;
         final String cctoolsDir = getCCtoolsDir(context);
         String[] envp = {
-                "TMPDIR=" +getSdCardTmpDir(),
+                "TMPDIR=" + getSdCardTmpDir(),
                 "PATH=" + joinPath(cctoolsDir + "/bin", cctoolsDir + "/sbin", System.getenv("PATH")),
                 "ANDROID_ASSETS=" + getEnv("ANDROID_ASSETS", "/system/app"),
                 "ANDROID_BOOTLOGO=" + getEnv("ANDROID_BOOTLOGO", "1"),
