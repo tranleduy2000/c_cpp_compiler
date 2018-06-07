@@ -42,11 +42,9 @@ import com.duy.ide.editor.text.LineManager;
 import com.duy.ide.editor.text.TextLineNumber;
 import com.duy.ide.editor.text.style.TabSpan;
 import com.duy.ide.editor.theme.model.EditorTheme;
-import com.jecelyin.common.utils.ReflectionUtil;
 import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.editor.v2.Preferences;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public abstract class HighlightEditorView extends android.support.v7.widget.AppCompatEditText
@@ -382,16 +380,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
         float spaceWidth = getPaint().measureText(" ");
         float tabWidth = spaceWidth * (mPreferences == null ? 4 : mPreferences.getTabSize());
         mTabWidth = (int) tabWidth;
-        try {
-            Field tabIncrement = ReflectionUtil.getField(Layout.class,
-                    "TAB_INCREMENT", true);
-            ReflectionUtil.setFinalStatic(tabIncrement, (int) tabWidth);
-            postInvalidate();
-        } catch (Exception e) {
-            if (DLog.DEBUG) {
-                DLog.w(TAG, "updateTabChar: can not set tab width. Exception " + e.getClass().getName());
-            }
-        }
     }
 
     /**

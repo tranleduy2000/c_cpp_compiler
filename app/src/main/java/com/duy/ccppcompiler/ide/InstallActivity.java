@@ -34,22 +34,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.compiler.compilers.NativeCompileImpl;
-import com.duy.ccppcompiler.compiler.compilers.GCCCompiler;
-import com.duy.ccppcompiler.compiler.compilers.GPlusPlusCompiler;
-import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
+import com.duy.ccppcompiler.ide.editor.CppIdeActivity;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
-import com.duy.ccppcompiler.ide.editor.CppIdeActivity;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
-
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by Duy on 22-Apr-18.
@@ -185,49 +175,27 @@ public class InstallActivity extends ThemeSupportActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            try {
-                InstallActivity context = InstallActivity.this;
+            InstallActivity context = InstallActivity.this;
 
-                //Check C compiler
-                publishProgress("Test C compiler\n");
-                File file = new File(getCacheDir(), "tmp.c");
-                FileOutputStream output = new FileOutputStream(file);
-                IOUtils.write("int main(){ return 0; }", output);
-                output.close();
-
-                ICompiler compiler = new GCCCompiler(context, NativeCompileImpl.BUILD_EXECUTABLE, null);
-                CommandResult result = compiler.compile(new File[]{file}, null);
-                if (result == null || result.getResultCode() != 0) {
-                    publishProgress("Could not execute C compiler, please install compiler");
-                    return false;
-                }
-
-                //Check C++ compiler
-                publishProgress("Test C++ compiler\n");
-                output = new FileOutputStream(file);
-                IOUtils.write("int main() { return 0; }", output);
-                output.close();
-                compiler = new GPlusPlusCompiler(context, NativeCompileImpl.BUILD_EXECUTABLE, null);
-                result = compiler.compile(new File[]{file}, null);
-                if (result == null || result.getResultCode() != 0) {
-                    publishProgress("Could not execute C++ compiler, please install compiler");
-                    return false;
-                }
-
-                publishProgress("Test static code analysis");
-                result = Shell.exec(context, file.getParent(), "cppcheck " + file.getAbsolutePath());
-                if (result == null || result.getResultCode() != 0) {
-                    publishProgress("Could not run static code analysis");
-                    return false;
-                }
-
-                file.delete();
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
+            CommandResult result = Shell.exec(context, "gcc -v");
+            if (result == null || result.getResultCode() != 0) {
+                publishProgress("Could not execute C compiler, please install compiler");
+                return false;
             }
 
-            return false;
+            result = Shell.exec(context, "g++ -v");
+            if (result == null || result.getResultCode() != 0) {
+                publishProgress("Could not execute C++ compiler, please install compiler");
+                return false;
+            }
+
+            publishProgress("Test static code analysis");
+            result = Shell.exec(context, "cppcheck -version");
+            if (result == null || result.getResultCode() != 0) {
+                publishProgress("Could not run static code analysis");
+                return false;
+            }
+            return true;
         }
 
         @Override

@@ -174,7 +174,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
                     if (!enableFlags.isEmpty()) enableFlags += ",";
                     enableFlags += "performance";
                 }
-                boolean information = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_information), true);
+                boolean information = setting.getBoolean(mContext.getString(R.string.pref_key_cpp_check_information), false);
                 if (information) {
                     if (!enableFlags.isEmpty()) enableFlags += ",";
                     enableFlags += "information";
