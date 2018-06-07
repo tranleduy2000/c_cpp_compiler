@@ -132,8 +132,6 @@ public class CodeEditorActivity extends IdeActivity {
                 .setIcon(R.drawable.ic_color_lens_white_24dp);
         {
             SubMenu buildMenu = menu.addSubMenu(R.string.build);
-            buildMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_build_native_activity, 0, R.string.build_native_activity)
-                    .setIcon(R.drawable.baseline_build_24);
             buildMenu.add(MenuDef.GROUP_NAVIGATION, R.id.action_run_sdl_activity, 0, R.string.run_sdl_activity)
                     .setIcon(R.drawable.ic_play_arrow_white_24dp);
         }
