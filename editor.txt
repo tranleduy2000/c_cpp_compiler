@@ -1,20 +1,41 @@
-#include <ncurses.h>			/* ncurses.h includes stdio.h */
-#include <string.h>
 
-int main()
-{
- char mesg[]="Just a string";		/* message to be appeared on the screen */
- int row,col;				/* to store the number of rows and *
-					 * the number of colums of the screen */
- initscr();				/* start the curses mode */
- getmaxyx(stdscr,row,col);		/* get the number of rows and columns */
- mvprintw(row/2,(col-strlen(mesg))/2,"%s",mesg);
-                                	/* print the message at the center of the screen */
- mvprintw(row-2,0,"This screen has %d rows and %d columns",row,col);
- printw("Try resizing your window(if possible) and then run this program again");
- refresh();
- getch();
- endwin();
-
- return 0;
-}
+    case: "NULL":
+    return NULL;
+    case: "COMMENT1":
+    return COMMENT1;
+    case: "COMMENT2":
+    return COMMENT2;
+    case: "COMMENT3":
+    return COMMENT3;
+    case: "COMMENT4":
+    return COMMENT4;
+    case: "DIGIT":
+    return DIGIT;
+    case: "FUNCTION":
+    return FUNCTION;
+    case: "INVALID":
+    return INVALID;
+    case: "KEYWORD1":
+    return KEYWORD1;
+    case: "KEYWORD2":
+    return KEYWORD2;
+    case: "KEYWORD3":
+    return KEYWORD3;
+    case: "KEYWORD4":
+    return KEYWORD4;
+    case: "LABEL":
+    return LABEL;
+    case: "LITERAL1":
+    return LITERAL1;
+    case: "LITERAL2":
+    return LITERAL2;
+    case: "LITERAL3":
+    return LITERAL3;
+    case: "LITERAL4":
+    return LITERAL4;
+    case: "MARKUP":
+    return MARKUP;
+    case: "OPERATOR":
+    return OPERATOR;
+    case: "ID_COUNT":
+    return ID_COUNT;

@@ -4,6 +4,8 @@ import android.support.v4.util.ArraySet;
 import android.support.v4.util.Pair;
 
 import org.apache.commons.io.IOUtils;
+import org.gjt.sp.jedit.Catalog;
+import org.gjt.sp.jedit.Mode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,6 +58,8 @@ public class LinkerFlagsDetector {
     private static final Pattern INCLUDE_SDL_NET = Pattern.compile("#include\\s+[<\"]SDL_net\\.h[>\"]");
 
     private static final ArrayList<Pair<Pattern, String>> PATTERNS;
+    private static final Mode C_EXT = Catalog.getModeByName("C");
+    private static final Mode CPP_EXT = Catalog.getModeByName("C++");
 
     static {
         PATTERNS = new ArrayList<>();
@@ -86,6 +90,9 @@ public class LinkerFlagsDetector {
     public Set<String> detect(File[] srcFiles) throws IOException {
         Set<String> ldFlags = new ArraySet<>();
         for (File srcFile : srcFiles) {
+            if (!isCppOrCFile(srcFile)) {
+                continue;
+            }
             final FileInputStream input = new FileInputStream(srcFile);
             final String content = IOUtils.toString(input);
             input.close();
@@ -97,5 +104,15 @@ public class LinkerFlagsDetector {
             }
         }
         return ldFlags;
+    }
+
+    private boolean isCppOrCFile(File srcFile) {
+        if (CPP_EXT.acceptFile(srcFile.getPath(), srcFile.getName())) {
+            return true;
+        }
+        if (C_EXT.acceptFile(srcFile.getPath(), srcFile.getName())) {
+            return true;
+        }
+        return false;
     }
 }

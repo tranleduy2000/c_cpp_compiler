@@ -93,8 +93,10 @@
 -dontwarn android.support.**
 -dontwarn com.google.ads.**
 -dontwarn com.makeramen.roundedimageview.**
--dontwarn kellinwood.security.**
--dontwarn org.spongycastle.**
+-dontwarn com.google.common.**
+-dontwarn afu.org.checkerframework.**
+-dontwarn com.google.android.gms.**
+-dontwarn com.google.errorprone.**
 
 #-keep class com.duy.**
 #-keep class com.jecelyin.** { public *; }
@@ -103,4 +105,5 @@
 #-keep class com.pdaxrom.** { public *; }
 
 -keep class com.android.vending.billing.**
+#Native inteface
 -keep class com.duy.astyle.** { *; }

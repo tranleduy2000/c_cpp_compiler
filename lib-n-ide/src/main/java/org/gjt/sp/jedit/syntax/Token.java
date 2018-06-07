@@ -16,8 +16,6 @@
 
 package org.gjt.sp.jedit.syntax;
 
-import java.lang.reflect.Field;
-
 /**
  * A linked list of syntax tokens.
  *
@@ -119,8 +117,50 @@ public class Token {
      */
     public static byte stringToToken(String value) {
         try {
-            Field f = Token.class.getField(value);
-            return f.getByte(null);
+            switch (value) {
+                case "NULL":
+                    return NULL;
+                case "COMMENT1":
+                    return COMMENT1;
+                case "COMMENT2":
+                    return COMMENT2;
+                case "COMMENT3":
+                    return COMMENT3;
+                case "COMMENT4":
+                    return COMMENT4;
+                case "DIGIT":
+                    return DIGIT;
+                case "FUNCTION":
+                    return FUNCTION;
+                case "INVALID":
+                    return INVALID;
+                case "KEYWORD1":
+                    return KEYWORD1;
+                case "KEYWORD2":
+                    return KEYWORD2;
+                case "KEYWORD3":
+                    return KEYWORD3;
+                case "KEYWORD4":
+                    return KEYWORD4;
+                case "LABEL":
+                    return LABEL;
+                case "LITERAL1":
+                    return LITERAL1;
+                case "LITERAL2":
+                    return LITERAL2;
+                case "LITERAL3":
+                    return LITERAL3;
+                case "LITERAL4":
+                    return LITERAL4;
+                case "MARKUP":
+                    return MARKUP;
+                case "OPERATOR":
+                    return OPERATOR;
+                case "ID_COUNT":
+                    return ID_COUNT;
+                default:
+                    return -1;
+            }
         } catch (Exception e) {
             return -1;
         }
