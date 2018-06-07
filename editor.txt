@@ -1,19 +1,9 @@
 #include <stdio.h>
-#include <errno.h>
-#include <string.h>
-
-extern int errno ;
+#include <float.h>
 
 int main () {
-   FILE *fp;
+   printf("The maximum value of float = %.10e", FLT_MAX);
+   printf("The minimum value of float = %.10e", FLT_MIN);
 
-   fp = fopen("file.txt", "r");
-   if( fp == NULL ) {
-      fprintf(stderr, "Value of errno: %d", errno);
-      fprintf(stderr, "Error opening file: %s", strerror(errno));
-   } else {
-      fclose(fp);
-   }
-
-   return(0);
+   printf("The number of digits in the number = %.10e", FLT_MANT_DIG);
 }
