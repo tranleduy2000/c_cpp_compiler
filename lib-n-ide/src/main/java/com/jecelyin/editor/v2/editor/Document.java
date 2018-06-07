@@ -151,7 +151,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
     @Override
     public SpannableStringBuilder onAsyncReaded(FileReader fileReader, boolean ok) {
-        Editable text = fileReader.getBuffer();
+        CharSequence text = fileReader.getBuffer();
         String firstLine = text.subSequence(0, Math.min(80, text.length())).toString();
 
         ModeProvider modeProvider = ModeProvider.getInstance();

@@ -66,6 +66,8 @@ public class FileReader {
         } catch (Exception e) {
             DLog.e(e);
             return false;
+        } catch (OutOfMemoryError error) {
+            return false;
         }
     }
 
