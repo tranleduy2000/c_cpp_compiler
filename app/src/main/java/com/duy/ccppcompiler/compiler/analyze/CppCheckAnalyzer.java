@@ -19,11 +19,14 @@ package com.duy.ccppcompiler.compiler.analyze;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.duy.ccppcompiler.R;
@@ -97,17 +100,29 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         mDiagnosticPresenter = diagnosticPresenter;
     }
 
+    private static boolean isVisible(final View view) {
+        if (view == null) {
+            return false;
+        }
+        if (!view.isShown()) {
+            return false;
+        }
+        final Rect actualPosition = new Rect();
+        view.getGlobalVisibleRect(actualPosition);
+        DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+        final Rect screen = new Rect(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        return actualPosition.intersect(screen);
+    }
+
     private void analyzeImpl() {
         if (mAnalyzeTask != null) {
             mAnalyzeTask.cancel(true);
         }
         View view = (View) mEditText;
-        if (!view.isActivated()) {
-            return;
+        if (isVisible(view)) {
+            mAnalyzeTask = new AnalyzeTask(mContext, mEditorDelegate, mDiagnosticPresenter);
+            mAnalyzeTask.execute();
         }
-
-        mAnalyzeTask = new AnalyzeTask(mContext, mEditorDelegate, mDiagnosticPresenter);
-        mAnalyzeTask.execute();
     }
 
 
