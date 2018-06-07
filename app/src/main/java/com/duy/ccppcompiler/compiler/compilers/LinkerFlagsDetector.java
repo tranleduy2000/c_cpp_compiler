@@ -3,6 +3,8 @@ package com.duy.ccppcompiler.compiler.compilers;
 import android.support.v4.util.ArraySet;
 import android.support.v4.util.Pair;
 
+import com.duy.common.DLog;
+
 import org.apache.commons.io.IOUtils;
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
@@ -16,9 +18,12 @@ import java.util.regex.Pattern;
 
 public class LinkerFlagsDetector {
     public static final LinkerFlagsDetector INSTANCE = new LinkerFlagsDetector();
+    //-lSDL2
+    public static final Pattern INCLUDE_SDL = Pattern.compile("#include\\s+[<\"]SDL\\.h[>\"]");
+    public static final Pattern INCLUDE_NATIVE_ACTIVITY =
+            Pattern.compile("#include\\s+([<\"])android_native_app_glue.h[>\"]");
+
     private static final Pattern FILE_NAME = Pattern.compile("[A-Za-z_.][A-Za-z0-9_.\\-]+");
-
-
     //-lGLESv1_CM
     private static final Pattern INCLUDE_GLES_V1_CM
             = Pattern.compile("#include\\s+[<\"]" +
@@ -32,7 +37,6 @@ public class LinkerFlagsDetector {
     //-lOpenSLES
     private static final Pattern INCLUDE_OPEN_SLES
             = Pattern.compile("#include\\s+[<\"]SLES/(" + FILE_NAME.pattern() + ")[>\"]");
-
     //-landroid
     private static final Pattern INCLUDE_ANDROID
             = Pattern.compile("#include\\s+[<\"]android/(" + FILE_NAME.pattern() + ")[>\"]");
@@ -47,9 +51,6 @@ public class LinkerFlagsDetector {
     //-latomic
     private static final Pattern INCLUDE_MATH = Pattern.compile("#include\\s+[<\"]math\\.h[>\"]");
     private static final Pattern INCLUDE_ZLIB = Pattern.compile("#include\\s+[<\"]zlib\\.h[>\"]");
-
-    //-lSDL2
-    private static final Pattern INCLUDE_SDL = Pattern.compile("#include\\s+[<\"]SDL\\.h[>\"]");
     //-lSDL2_ttf
     private static final Pattern INCLUDE_SDL_TTF = Pattern.compile("#include\\s+[<\"]SDL_ttf\\.h[>\"]");
     //-lSDL2_image
@@ -60,6 +61,7 @@ public class LinkerFlagsDetector {
     private static final ArrayList<Pair<Pattern, String>> PATTERNS;
     private static final Mode C_EXT = Catalog.getModeByName("C");
     private static final Mode CPP_EXT = Catalog.getModeByName("C++");
+    private static final String TAG = "LinkerFlagsDetector";
 
     static {
         PATTERNS = new ArrayList<>();
@@ -88,6 +90,8 @@ public class LinkerFlagsDetector {
 
     @SuppressWarnings("ConstantConditions")
     public Set<String> detect(File[] srcFiles) throws IOException {
+        long startTime = System.currentTimeMillis();
+
         Set<String> ldFlags = new ArraySet<>();
         for (File srcFile : srcFiles) {
             if (!isCppOrCFile(srcFile)) {
@@ -102,6 +106,9 @@ public class LinkerFlagsDetector {
                     ldFlags.add(pattern.second);
                 }
             }
+        }
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "detect: time = " + (System.currentTimeMillis() - startTime));
         }
         return ldFlags;
     }

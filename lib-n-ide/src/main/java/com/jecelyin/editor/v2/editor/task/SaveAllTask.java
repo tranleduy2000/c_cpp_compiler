@@ -19,6 +19,7 @@ package com.jecelyin.editor.v2.editor.task;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
+import com.duy.common.DLog;
 import com.duy.ide.core.IdeActivity;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.file.SaveListener;
@@ -48,6 +49,8 @@ public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... voids) {
+        long startTime = System.currentTimeMillis();
+
         TabManager tabManager = editorActivity.getTabManager();
         EditorFragmentPagerAdapter editorPagerAdapter = tabManager.getEditorPagerAdapter();
         for (IEditorDelegate editorDelegate : editorPagerAdapter.getAllEditor()) {
@@ -58,6 +61,10 @@ public class SaveAllTask extends AsyncTask<Void, Void, Boolean> {
                 exception = e;
             }
         }
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "doInBackground: time = " + (System.currentTimeMillis() - startTime));
+        }
+
         return exception == null;
     }
 

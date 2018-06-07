@@ -148,7 +148,10 @@ public class Shell {
 
             CommandResult commandResult = new CommandResult(exitCode[0], message.toString());
             long time = System.currentTimeMillis() - startTime;
-            if (DLog.DEBUG) DLog.d(TAG, "time = " + time);
+            if (DLog.DEBUG) {
+                DLog.d(TAG, command.substring(0, Math.min(command.length() - 1, 30)) +
+                        " time = " + time);
+            }
             commandResult.setTime(time);
             return commandResult;
 

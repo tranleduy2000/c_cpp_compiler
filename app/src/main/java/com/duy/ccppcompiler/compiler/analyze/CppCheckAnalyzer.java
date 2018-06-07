@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
@@ -79,6 +80,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
     private final Context mContext;
     private final IEditorDelegate mEditorDelegate;
     private final android.os.Handler mHandler = new Handler();
+    private final IEditAreaView mEditText;
     private DiagnosticPresenter mDiagnosticPresenter;
     private AnalyzeTask mAnalyzeTask;
     private final Runnable mAnalyze = new Runnable() {
@@ -91,6 +93,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
     public CppCheckAnalyzer(@NonNull Context context, @NonNull IEditorDelegate delegate, DiagnosticPresenter diagnosticPresenter) {
         mContext = context;
         mEditorDelegate = delegate;
+        mEditText = mEditorDelegate.getEditText();
         mDiagnosticPresenter = diagnosticPresenter;
     }
 
@@ -98,6 +101,11 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
         if (mAnalyzeTask != null) {
             mAnalyzeTask.cancel(true);
         }
+        View view = (View) mEditText;
+        if (!view.isActivated()) {
+            return;
+        }
+
         mAnalyzeTask = new AnalyzeTask(mContext, mEditorDelegate, mDiagnosticPresenter);
         mAnalyzeTask.execute();
     }
@@ -105,6 +113,7 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
 
     @Override
     public void start() {
+
         mEditorDelegate.getEditText().addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -151,7 +160,9 @@ public class CppCheckAnalyzer implements ICodeAnalyser {
 
                 File originFile = mEditorDelegate.getDocument().getFile();
                 File tmpFile = new File(getCppCheckTmpDir(), originFile.getName());
-
+                if (DLog.DEBUG) {
+                    DLog.d(TAG, "doInBackground: run cppcheck for " + originFile);
+                }
                 LocalFileWriter localFileWriter = new LocalFileWriter(tmpFile, "UTF-8");
                 try {
                     localFileWriter.writeToFile(editText.getText());

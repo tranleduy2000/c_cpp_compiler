@@ -33,6 +33,7 @@ import com.duy.ccppcompiler.compiler.analyze.CppCheckAnalyzer;
 import com.duy.ccppcompiler.compiler.analyze.CppCheckOutputParser;
 import com.duy.ccppcompiler.compiler.compilers.CompilerFactory;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
+import com.duy.ccppcompiler.compiler.compilers.LinkerFlagsDetector;
 import com.duy.ccppcompiler.compiler.compilers.NativeCompileImpl;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
@@ -43,6 +44,7 @@ import com.duy.ccppcompiler.ide.editor.theme.ThemeActivity;
 import com.duy.ccppcompiler.ide.examples.ExampleActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.common.DLog;
 import com.duy.common.StoreUtil;
 import com.duy.common.function.Action;
 import com.duy.common.purchase.InAppPurchaseHelper;
@@ -242,28 +244,29 @@ public class CppIdeActivity extends IdeActivity {
     }
 
     private int detectBuildType() {
+        long startTime = System.currentTimeMillis();
         EditorDelegate currentEditor = getCurrentEditorDelegate();
         if (currentEditor == null) {
             return NativeCompileImpl.BUILD_EXECUTABLE;
         }
-
+        int buildType;
         Editable srcCode = currentEditor.getEditText().getText();
-        Pattern nativeActivityPattern =
-                //#include "android_native_app_glue.h" in C++
-                //#inlcude <android_native_app_glue.h> in C
-                Pattern.compile("#include\\s+([<\"])android_native_app_glue.h[>\"]");
+        Pattern nativeActivityPattern = LinkerFlagsDetector.INCLUDE_NATIVE_ACTIVITY;
         if (nativeActivityPattern.matcher(srcCode).find()) {
-            return NativeCompileImpl.BUILD_NATIVE_ACTIVITY;
-        }
-        Pattern sdl =
-                //#include "android_native_app_glue.h" in C++
-                //#inlcude <android_native_app_glue.h> in C
-                Pattern.compile("#include\\s+([<\"])SDL.h[>\"]");
-        if (sdl.matcher(srcCode).find()) {
-            return NativeCompileImpl.BUILD_SDL_ACTIVITY;
-        }
+            buildType = NativeCompileImpl.BUILD_NATIVE_ACTIVITY;
+        } else {
+            Pattern sdl = LinkerFlagsDetector.INCLUDE_SDL;
+            if (sdl.matcher(srcCode).find()) {
 
-        return NativeCompileImpl.BUILD_EXECUTABLE;
+                buildType = NativeCompileImpl.BUILD_SDL_ACTIVITY;
+            } else {
+                buildType = NativeCompileImpl.BUILD_EXECUTABLE;
+            }
+        }
+        if (DLog.DEBUG) {
+            DLog.d(TAG, "detectBuildType: time = " + (System.currentTimeMillis() - startTime));
+        }
+        return buildType;
     }
 
     private void build(final int buildType) {
