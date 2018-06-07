@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".ide.editor.CodeEditorActivity"
+            android:name=".ide.editor.CppIdeActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask">
             <intent-filter>

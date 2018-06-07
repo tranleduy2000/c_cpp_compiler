@@ -42,7 +42,7 @@ import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
 import com.duy.common.DLog;
-import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
+import com.duy.ccppcompiler.ide.editor.CppIdeActivity;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
 import org.apache.commons.io.IOUtils;
@@ -97,7 +97,7 @@ public class InstallActivity extends ThemeSupportActivity {
 
     private void closeAndStartMainActivity() {
         if (DLog.DEBUG) DLog.d(TAG, "closeAndStartMainActivity() called");
-        Intent intent = new Intent(this, CodeEditorActivity.class);
+        Intent intent = new Intent(this, CppIdeActivity.class);
         startActivity(intent);
         overridePendingTransition(0, 0);
         finish();

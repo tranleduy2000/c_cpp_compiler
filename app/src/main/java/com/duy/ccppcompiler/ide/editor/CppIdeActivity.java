@@ -71,7 +71,7 @@ import static com.pdaxrom.cctools.BuildConstants.EXTRA_FILE_NAME;
  * Created by Duy on 19-May-18.
  */
 
-public class CodeEditorActivity extends IdeActivity {
+public class CppIdeActivity extends IdeActivity {
     private static final String TAG = "CodeEditorActivity";
     private static final int RC_BUILD = 1234;
     private static final int RC_SELECT_NATIVE_ACTIVITY = 1237;
@@ -261,9 +261,9 @@ public class CodeEditorActivity extends IdeActivity {
     }
 
     private void build(final int buildType) {
-        final Action<CodeEditorActivity> compileAction = new Action<CodeEditorActivity>() {
+        final Action<CppIdeActivity> compileAction = new Action<CppIdeActivity>() {
             @Override
-            public void execute(@Nullable CodeEditorActivity activity) {
+            public void execute(@Nullable CppIdeActivity activity) {
                 EditorDelegate currentEditor = getCurrentEditorDelegate();
                 if (currentEditor == null) {
                     return;
@@ -292,7 +292,7 @@ public class CodeEditorActivity extends IdeActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                compileAction.execute(CodeEditorActivity.this);
+                                compileAction.execute(CppIdeActivity.this);
                             }
                         });
                 dialog.show();
@@ -304,7 +304,7 @@ public class CodeEditorActivity extends IdeActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                compileAction.execute(CodeEditorActivity.this);
+                                compileAction.execute(CppIdeActivity.this);
                             }
                         });
                 dialog.show();

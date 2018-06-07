@@ -28,7 +28,7 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.CompileTask;
 import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
-import com.duy.ccppcompiler.ide.editor.CodeEditorActivity;
+import com.duy.ccppcompiler.ide.editor.CppIdeActivity;
 import com.duy.common.DLog;
 import com.duy.ide.core.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
@@ -51,7 +51,7 @@ public abstract class CompileManagerImpl implements ICompileManager {
     private DiagnosticPresenter mDiagnosticPresenter;
     private ICompiler mCompiler;
 
-    CompileManagerImpl(@NonNull CodeEditorActivity activity) {
+    CompileManagerImpl(@NonNull CppIdeActivity activity) {
         mActivity = activity;
     }
 
