@@ -65,7 +65,7 @@ fastlane/test_output
 fastlane/readme.md
 
 !/system/
-/editor.txt
+/editor.md
 .idea/caches/
 /cctools-repo/mirror/
 /app/signing.properties
