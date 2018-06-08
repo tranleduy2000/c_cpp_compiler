@@ -231,5 +231,7 @@
     <string name="close_drawer">Close drawer</string>
     <string name="can_not_format_source">Can not format source</string>
     <string name="formatting">Formatting</string>
+    <string name="auto_pair">Auto pair</string>
+    <string name="pref_desc_auto_pair">Auto add close bracket, e.g.  when you type { editor will be auto add }</string>
 
 </resources>

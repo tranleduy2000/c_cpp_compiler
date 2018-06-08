@@ -25,6 +25,10 @@
         <CheckBoxPreference
             android:key="@string/pref_auto_indent"
             android:title="@string/auto_indent" />
+        <CheckBoxPreference
+            android:key="@string/pref_auto_pair"
+            android:summary="@string/pref_desc_auto_pair"
+            android:title="@string/auto_pair" />
 
         <CheckBoxPreference
             android:key="@string/pref_insert_space_for_tab"
