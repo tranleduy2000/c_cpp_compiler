@@ -61,7 +61,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public static final String VALUE_SYMBOL = TextUtils.join("\n", new String[]{"{", "}", "<", ">"
             , ",", ";", "'", "\"", "(", ")", "/", "\\", "%", "[", "]", "|", "#", "=", "$", ":"
             , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n"});
-
+    public static final String KEY_AUTO_PAIR = "pref_key_auto_pair";
     private static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
     private static final String KEY_TOUCH_TO_ADJUST_TEXT_SIZE = "pref_touch_to_adjust_text_size";
     private static final String KEY_INSERT_SPACE_FOR_TAB = "pref_insert_space_for_tab";
@@ -99,6 +99,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_SHOW_LINE_NUMBER, true);
         map.put(KEY_SHOW_WHITESPACE, true);
         map.put(KEY_AUTO_INDENT, true);
+        map.put(KEY_AUTO_PAIR, true);
         map.put(KEY_INSERT_SPACE_FOR_TAB, true);
         map.put(KEY_TAB_SIZE, 4);
         map.put(KEY_SYMBOL, VALUE_SYMBOL);
@@ -292,6 +293,10 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     public boolean isAutoIndent() {
         return (boolean) map.get(KEY_AUTO_INDENT);
+    }
+
+    public boolean isAutoPair() {
+        return (boolean) map.get(KEY_AUTO_PAIR);
     }
 
     public boolean isWordWrap() {

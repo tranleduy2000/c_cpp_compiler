@@ -50,6 +50,7 @@ import java.util.List;
 public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteTextView
         implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener,
         TextWatcher {
+    public static final char CURSOR = '\u2622';
     private static final String TAG = "EditAreaView2";
     private final LayoutContext mLayoutContext = new LayoutContext();
     protected Preferences mPreferences;
@@ -71,6 +72,7 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
      */
     private boolean mNeedUpdateLineNumber = false;
     private boolean mIsAutoIndent = true;
+    private boolean mIsAutoPair;
     private int mTabWidth = 3;
 
     public HighlightEditorView(Context context) {
@@ -123,13 +125,15 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
         onSharedPreferenceChanged(null, Preferences.KEY_SHOW_WHITESPACE);
         onSharedPreferenceChanged(null, Preferences.KEY_TAB_SIZE);
         onSharedPreferenceChanged(null, Preferences.KEY_AUTO_INDENT);
+        onSharedPreferenceChanged(null, Preferences.KEY_AUTO_PAIR);
         onSharedPreferenceChanged(null, Preferences.KEY_AUTO_CAPITALIZE);
 
-        initAutoIndent();
+        setDefaultFilters();
         addTextChangedListener(this);
     }
 
-    private void initAutoIndent() {
+    private void setDefaultFilters() {
+        //indent filters
         final InputFilter indentFilter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -166,7 +170,8 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
                 return null;
             }
         };
-        //only support \n
+
+        //end line filter, only support \n
         InputFilter newLineFilter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest,
@@ -178,7 +183,72 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
                 return null;
             }
         };
-        setFilters(new InputFilter[]{indentFilter, newLineFilter});
+
+        //bracket filter, auto add close bracket if auto pair is enable
+        final InputFilter bracketFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start,
+                                       int end, Spanned dest, int dstart, int dend) {
+                if (mIsAutoPair) {
+                    if (end - start == 1 && start < source.length() && dstart < dest.length()) {
+                        char c = source.charAt(start);
+                        if (c == '(' || c == '{' || c == '[') {
+                            return addBracket(source, start);
+                        }
+                    }
+                }
+                return null;
+            }
+        };
+
+        setFilters(new InputFilter[]{indentFilter, newLineFilter, bracketFilter});
+
+        //auto add bracket
+        addTextChangedListener(new TextWatcher() {
+            private int start;
+            private int count;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                this.start = start;
+                this.count = count;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > start && count > 1) {
+                    for (int i = start; i < start + count; i++) {
+                        if (editable.charAt(i) == CURSOR) {
+                            editable.delete(i, i + 1);
+                            setSelection(start);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    @Nullable
+    private CharSequence addBracket(CharSequence source, int start) {
+        switch (source.charAt(start)) {
+            case '"':
+                return "\"" + CURSOR + "\"";
+            case '\'':
+                return "'" + CURSOR + "'";
+            case '(':
+                return "(" + CURSOR + ")";
+            case '{':
+                return "{" + CURSOR + "}";
+            case '[':
+                return "[" + CURSOR + "]";
+        }
+        return null;
     }
 
     @Override
@@ -218,15 +288,7 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
     }
 
     private void setCursorColor(int caretColor) {
-        try {
-            //        mCurrCursorColor = caretColor;
-//        invalidateCursor();
-            // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
-//            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
-//            f.setAccessible(true);
-//            f.set(this, /*R.drawable.cursor*/-1);
-        } catch (Exception ignored) {
-        }
+        // TODO: 08-Jun-18  setCursorColor
     }
 
     @Override
@@ -325,6 +387,9 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
             case Preferences.KEY_AUTO_INDENT:
                 mIsAutoIndent = mPreferences.isAutoIndent();
                 break;
+            case Preferences.KEY_AUTO_PAIR:
+                mIsAutoPair = mPreferences.isAutoPair();
+                break;
             case Preferences.KEY_AUTO_CAPITALIZE:
                 if (!mPreferences.isAutoCapitalize()) {
                     setInputType(getInputType() & ~EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -368,6 +433,7 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
         if (s instanceof Spannable) {
             applyTabWidth((Spannable) s, start, start + count - 1);
         }
+
     }
 
     public void applyTabWidth(Spannable text, int start, int end) {
