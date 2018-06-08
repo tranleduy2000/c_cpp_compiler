@@ -26,6 +26,8 @@
 
         <item name="toolbarIconNormalColor">#ffffff</item>
         <item name="toolbarIconDisabledColor">#50ffffff</item>
+        <item name="toolbarTextColor">#fff</item>
+
         <item name="menuIconNormalColor">#ffffff</item>
         <item name="editorTabBackground">@drawable/drawer_tab_item_background_dark</item>
 

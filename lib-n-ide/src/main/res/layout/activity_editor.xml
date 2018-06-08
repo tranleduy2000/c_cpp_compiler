@@ -17,12 +17,29 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="false">
 
-            <com.jecelyin.editor.v2.widget.EditorToolbar
+            <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
+                android:layout_height="40dp"
                 android:theme="?actionBarTheme"
                 app:popupTheme="?actionBarPopupTheme" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?android:listDivider" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/txt_document_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textColor="?toolbarTextColor"
+                android:textSize="10sp"
+                tools:ignore="SmallSp"
+                tools:text="Main.java | UTF-8 Java" />
 
             <com.ogaclejapan.smarttablayout.SmartTabLayout
                 android:id="@+id/tab_layout"

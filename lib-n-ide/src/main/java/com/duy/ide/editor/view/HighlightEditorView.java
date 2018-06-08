@@ -36,7 +36,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.inputmethod.EditorInfo;
 
-import com.duy.common.DLog;
 import com.duy.ide.editor.text.LayoutContext;
 import com.duy.ide.editor.text.LineManager;
 import com.duy.ide.editor.text.TextLineNumber;
@@ -376,7 +375,6 @@ public abstract class HighlightEditorView extends android.support.v7.widget.AppC
      * Update tab width
      */
     private void updateTabChar() {
-        if (DLog.DEBUG) DLog.d(TAG, "updateTabChar() called");
         float spaceWidth = getPaint().measureText(" ");
         float tabWidth = spaceWidth * (mPreferences == null ? 4 : mPreferences.getTabSize());
         mTabWidth = (int) tabWidth;

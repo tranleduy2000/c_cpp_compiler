@@ -17,6 +17,7 @@
 <resources>
     <attr name="toolbarIconNormalColor" format="color" />
     <attr name="toolbarIconDisabledColor" format="color" />
+    <attr name="toolbarTextColor" format="color" />
     <attr name="menuIconNormalColor" format="color" />
     <attr name="editorTabBackground" format="reference" />
 

@@ -18,6 +18,7 @@ package com.jecelyin.editor.v2.manager;
 
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v4.view.PagerAdapter;
@@ -49,20 +50,29 @@ import java.util.ArrayList;
 
 
 public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayout.TabProvider {
+    @NonNull
     private IdeActivity mActivity;
     private EditorFragmentPagerAdapter mPagerAdapter;
+    @Nullable
+    private TextView mTxtDocumentInfo;
+    @Nullable
     private SmartTabLayout mTabLayout;
+    private ViewPager mViewPager;
 
-    public TabManager(IdeActivity activity) {
+    public TabManager(@NonNull IdeActivity activity, @NonNull ViewPager viewPager) {
         mActivity = activity;
+        mViewPager = viewPager;
+        mTxtDocumentInfo = mActivity.findViewById(R.id.txt_document_info);
         mTabLayout = mActivity.findViewById(R.id.tab_layout);
-        mTabLayout.setCustomTabView(this);
+        if (mTabLayout != null) {
+            mTabLayout.setCustomTabView(this);
+        }
         initEditor();
     }
 
     private void initEditor() {
         mPagerAdapter = new EditorFragmentPagerAdapter(mActivity);
-        mActivity.mEditorPager.setAdapter(mPagerAdapter);
+        mViewPager.setAdapter(mPagerAdapter);
 
         if (Preferences.getInstance(mActivity).isOpenLastFiles()) {
             ArrayList<RecentFileItem> recentFiles = SQLHelper.getInstance(mActivity).getRecentFiles(true);
@@ -78,7 +88,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             }
 
             mPagerAdapter.addAll(descriptors);
-            mActivity.mEditorPager.setOffscreenPageLimit(mPagerAdapter.getCount());
+            mViewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
             updateTabList();
 
             int lastTab = Preferences.getInstance(mActivity).getLastTab();
@@ -94,7 +104,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             public void onChanged() {
                 updateTabList();
                 updateToolbar();
-                mActivity.mEditorPager.setOffscreenPageLimit(mPagerAdapter.getCount());
+                mViewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
             }
         });
     }
@@ -131,18 +141,18 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
     }
 
     public int getCurrentTab() {
-        return mActivity.mEditorPager.getCurrentItem();
+        return mViewPager.getCurrentItem();
     }
 
     public void setCurrentTab(int index) {
-        int tabCount = mActivity.mEditorPager.getAdapter().getCount();
+        int tabCount = mViewPager.getAdapter().getCount();
         index = Math.min(Math.max(0, index), tabCount);
 
-        mActivity.mEditorPager.setCurrentItem(index);
+        mViewPager.setCurrentItem(index);
         updateToolbar();
     }
 
-    public void closeTab(int position) {
+    private void closeTab(int position) {
         mPagerAdapter.removeEditor(position, new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
@@ -171,13 +181,15 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
     }
 
     private void updateTabList() {
-        ViewPager pager = mActivity.mEditorPager;
+        ViewPager pager = mViewPager;
 
         //can not remove old tab listener
         pager.clearOnPageChangeListeners();
 
         //auto add page change listener
-        mTabLayout.setViewPager(pager);
+        if (mTabLayout != null) {
+            mTabLayout.setViewPager(pager);
+        }
         pager.addOnPageChangeListener(this);
     }
 
@@ -187,16 +199,19 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
     }
 
     public void updateToolbar() {
+        if (mTxtDocumentInfo == null) {
+            return;
+        }
         EditorDelegate delegate = mPagerAdapter.getEditorDelegateAt(getCurrentTab());
         if (delegate == null) {
-            mActivity.setTitle("");
+            mTxtDocumentInfo.setText("");
         } else {
-            mActivity.setTitle(delegate.getToolbarText());
+            mTxtDocumentInfo.setText(delegate.getToolbarText());
         }
     }
 
     public boolean onDestroy() {
-        if (mActivity.mEditorPager != null) {
+        if (mViewPager != null) {
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
         ArrayList<File> needSaveFiles = new ArrayList<>();
@@ -314,7 +329,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             txtName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mActivity.mEditorPager.setCurrentItem(position);
+                    mViewPager.setCurrentItem(position);
                 }
             });
             txtName.setOnLongClickListener(new View.OnLongClickListener() {

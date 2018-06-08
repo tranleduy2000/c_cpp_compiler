@@ -31,9 +31,7 @@ import android.util.TypedValue;
 
 import com.jecelyin.common.utils.SysUtils;
 
-/**
- * @author Jecelyin Peng <jecelyin@gmail.com>
- */
+
 public class EditorToolbar extends Toolbar {
     private TextPaint mTitlePaint;
     private CharSequence title;

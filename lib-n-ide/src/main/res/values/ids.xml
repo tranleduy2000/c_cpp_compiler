@@ -45,6 +45,7 @@
     <item name="menu_other" type="id" />
 
     <item name="tab_layout" type="id" />
+    <item name="txt_document_info" type="id" />
     <item name="editor_view" type="id" />
     <item name="view_pager" type="id" />
 </resources>

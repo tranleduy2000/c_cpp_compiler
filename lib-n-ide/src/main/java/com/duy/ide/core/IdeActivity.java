@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -94,6 +95,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import static android.view.View.VISIBLE;
+
 
 public abstract class IdeActivity extends ThemeSupportActivity implements MenuItem.OnMenuItemClickListener,
         IEditorStateListener,
@@ -108,15 +111,18 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     //Handle create on MainThread, use for update UI
     private final Handler mHandler = new Handler();
     public SlidingUpPanelLayout mSlidingUpPanelLayout;
-    public ViewPager mEditorPager;
 
     protected TabManager mTabManager;
     protected DiagnosticPresenter mDiagnosticPresenter;
 
-    private SymbolBarLayout mSymbolBarLayout;
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
+    @Nullable
+    private SymbolBarLayout mSymbolBarLayout;
+    @Nullable
     private SmartTabLayout mTabLayout;
+    @Nullable
+    private TextView mTxtDocumentInfo;
 
     private Preferences mPreferences;
     private long mExitTime;
@@ -126,14 +132,13 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        initToolbar();
 
         MenuManager.init(this);
         mPreferences = Preferences.getInstance(this);
 
         mTabLayout = findViewById(R.id.tab_layout);
-        mEditorPager = findViewById(R.id.editor_view_pager);
+        mTxtDocumentInfo = findViewById(R.id.txt_document_info);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setKeepScreenOn(mPreferences.isKeepScreenOn());
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -162,7 +167,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         TextView versionView = findViewById(R.id.versionTextView);
         versionView.setText(SysUtils.getVersionName(this));
 
-        mTabManager = new TabManager(this);
+        mTabManager = new TabManager(this, (ViewPager) findViewById(R.id.editor_view_pager));
 
         initMenuView();
         intiDiagnosticView();
@@ -173,6 +178,12 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         //attach listener hide/show keyboard
         mKeyBoardListener = new KeyBoardEventListener(this);
         mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(mKeyBoardListener);
+    }
+
+    private void initToolbar() {
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        setTitle("");
     }
 
     private void intiDiagnosticView() {
@@ -216,13 +227,17 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         super.onSharedPreferenceChanged(sharedPreferences, key);
         switch (key) {
             case Preferences.KEY_KEEP_SCREEN_ON:
-                mToolbar.setKeepScreenOn(sharedPreferences.getBoolean(key, false));
+                if (mToolbar != null) {
+                    mToolbar.setKeepScreenOn(sharedPreferences.getBoolean(key, false));
+                }
                 break;
             case Preferences.KEY_SCREEN_ORIENTATION:
                 setScreenOrientation();
                 break;
             case Preferences.KEY_READ_ONLY:
-                mSymbolBarLayout.setVisibility(mPreferences.isReadOnly() ? View.GONE : View.VISIBLE);
+                if (mSymbolBarLayout != null) {
+                    mSymbolBarLayout.setVisibility(mPreferences.isReadOnly() ? View.GONE : VISIBLE);
+                }
                 break;
         }
     }
@@ -324,6 +339,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
      * @param status {@link MenuDef#STATUS_NORMAL}, {@link MenuDef#STATUS_DISABLED}
      */
     public void setMenuStatus(@IdRes int menuResId, int status) {
+        if (mToolbar == null) {
+            return;
+        }
         MenuItem menuItem = mToolbar.getMenu().findItem(menuResId);
         if (menuItem == null) {
             return;
@@ -577,7 +595,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         if (editorDelegate != null) {
             editorDelegate.doCommand(command);
             if (command.what == Command.CommandEnum.HIGHLIGHT) {
-                mToolbar.setTitle(editorDelegate.getToolbarText());
+                if (mToolbar != null) {
+                    mToolbar.setTitle(editorDelegate.getToolbarText());
+                }
             }
         }
     }
@@ -615,6 +635,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
                 break;
             case RC_SAVE_AS:
                 String file = FileExplorerActivity.getFile(data);
+                if (file == null) {
+                    return;
+                }
                 String encoding = FileExplorerActivity.getFileEncoding(data);
                 EditorDelegate delegate = getCurrentEditorDelegate();
                 if (delegate != null) {
@@ -741,13 +764,21 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     protected void onShowKeyboard() {
-        mTabLayout.setVisibility(View.GONE);
-        mTabManager.updateToolbar();
+        if (mTabLayout != null) {
+            mTabLayout.setVisibility(View.GONE);
+        }
+        if (mTxtDocumentInfo != null) {
+            mTxtDocumentInfo.setVisibility(VISIBLE);
+        }
     }
 
     protected void onHideKeyboard() {
-        mTabLayout.setVisibility(View.VISIBLE);
-        setTitle("");
+        if (mTabLayout != null) {
+            mTabLayout.setVisibility(VISIBLE);
+        }
+        if (mTxtDocumentInfo != null) {
+            mTxtDocumentInfo.setVisibility(View.GONE);
+        }
     }
 
     @Override
