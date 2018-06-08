@@ -136,36 +136,59 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
         //indent filters
         final InputFilter indentFilter = new InputFilter() {
             @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            public CharSequence filter(CharSequence source, final int start, final int end,
+                                       final Spanned dest, final int dstart, final int dend) {
                 if (mIsAutoIndent) {
                     if (!(source.length() == 1 && source.charAt(0) == '\n')) {
                         return null;
                     }
-                    dstart = dstart - 1;
-                    if (dstart < 0 || dstart >= dest.length())
+                    int startIndex = dstart - 1;
+                    if (startIndex < 0 || startIndex >= dest.length())
                         return null;
 
                     char ch;
-                    for (; dstart >= 0; dstart--) {
-                        ch = dest.charAt(dstart);
+                    for (; startIndex >= 0; startIndex--) {
+                        ch = dest.charAt(startIndex);
                         if (ch != '\r')
                             break;
                     }
 
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = dstart; i >= 0; i--) {
+                    StringBuilder indent = new StringBuilder();
+                    for (int i = startIndex; i >= 0; i--) {
                         ch = dest.charAt(i);
                         if (ch == '\n' || ch == '\r') {
                             break;
                         } else if (ch == ' ' || ch == '\t') {
-                            sb.append(ch);
+                            indent.append(ch);
                         } else {
-                            sb.setLength(0);
+                            indent.setLength(0);
                         }
                     }
-                    sb.reverse();
+                    indent.reverse();
 
-                    return "\n" + sb.toString();
+                    //bad code
+                    //common support java,c and c++
+                    // TODO: 08-Jun-18 dynamic change
+                    if (dest.charAt(dend) == '}' && dstart - 1 >= 0 && dest.charAt(dstart - 1) == '{') {
+                        int mstart = dstart - 2;
+                        while (mstart >= 0 && dest.charAt(mstart) != '\n') {
+                            mstart--;
+                        }
+                        String closeIndent = "";
+                        if (mstart >= 0) {
+                            mstart++;
+                            int zstart = mstart;
+                            while (zstart < dest.length() && dest.charAt(zstart) == ' ') {
+                                zstart++;
+                            }
+                            closeIndent = dest.toString().substring(mstart, zstart);
+                        }
+                        return source +
+                                (indent.toString() + "  ") +
+                                CURSOR + "\n" + closeIndent;
+                    }
+
+                    return "\n" + indent.toString();
                 }
                 return null;
             }
