@@ -211,12 +211,14 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
 
         final View toggleView = findViewById(R.id.btn_toggle_panel);
         mSlidingUpPanelLayout = findViewById(R.id.diagnostic_panel);
-        mSlidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                toggleView.animate().rotation(180 * slideOffset).start();
-            }
-        });
+        //animation
+        mSlidingUpPanelLayout.addPanelSlideListener(
+                new SlidingUpPanelLayout.SimplePanelSlideListener() {
+                    @Override
+                    public void onPanelSlide(View panel, float slideOffset) {
+                        toggleView.animate().rotation(180 * slideOffset).start();
+                    }
+                });
 
         FragmentManager fm = getSupportFragmentManager();
         String tag = DiagnosticFragment.class.getSimpleName();
@@ -242,6 +244,21 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
      */
     @LayoutRes
     protected abstract int getRootLayoutId();
+
+    /**
+     * You should override this method to init editor fragment
+     */
+    @Override
+    @CallSuper
+    public void onEditorViewCreated(IEditorDelegate editorDelegate) {
+        editorDelegate.setCodeFormatProvider(getCodeFormatProvider());
+    }
+
+    @Nullable
+    protected CodeFormatProvider getCodeFormatProvider() {
+        return new CodeFormatProviderImpl(this);
+    }
+
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -441,15 +458,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        onMenuClick(item.getItemId());
-        return true;
-    }
-
-    private void onMenuClick(int id) {
         Command.CommandEnum commandEnum;
-
-        closeMenu();
-
+        closeDrawers();
+        int id = item.getItemId();
         if (id == R.id.action_new_file) {
             createNewFile();
 
@@ -511,12 +522,18 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
             StoreUtil.gotoPlayStore(this, getPackageName());
         } else {
             commandEnum = MenuFactory.getInstance(this).idToCommandEnum(id);
-            if (commandEnum != Command.CommandEnum.NONE)
+            if (commandEnum != Command.CommandEnum.NONE) {
                 doCommand(new Command(commandEnum));
+            }
         }
+        return true;
     }
 
-    private void openFileExplorer() {
+
+    /**
+     * Called when user click open file expoler menu
+     */
+    public void openFileExplorer() {
         EditorDelegate editorDelegate = getCurrentEditorDelegate();
         String sourceDir;
         String homeDir = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -531,11 +548,15 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         FileExplorerActivity.startPickFileActivity(this, sourceDir, homeDir, RC_OPEN_FILE);
     }
 
+    /**
+     * Called when user click create new file button, should override if you need more feature
+     */
     public void createNewFile() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_PERMISSION_WRITE_STORAGE);
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        RC_PERMISSION_WRITE_STORAGE);
                 return;
             }
         }
@@ -586,20 +607,14 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         saveAllTask.execute();
     }
 
+    /**
+     * Called when save all files completed
+     */
     protected void onSaveComplete(int requestCode) {
 
     }
 
-    public void closeMenu() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
-            mDrawerLayout.closeDrawer(GravityCompat.END);
-        }
-    }
-
-    private void hideSoftInput() {
+    protected void hideSoftInput() {
         doCommand(new Command(Command.CommandEnum.HIDE_SOFT_INPUT));
     }
 
@@ -622,8 +637,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     protected EditorDelegate getCurrentEditorDelegate() {
-        if (mTabManager == null || mTabManager.getEditorPagerAdapter() == null)
+        if (mTabManager == null || mTabManager.getEditorPagerAdapter() == null) {
             return null;
+        }
         return mTabManager.getEditorPagerAdapter().getCurrentEditorDelegate();
     }
 
@@ -641,10 +657,12 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     @Override
+    @CallSuper
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK)
+        if (resultCode != RESULT_OK) {
             return;
+        }
 
         switch (requestCode) {
             case RC_OPEN_FILE:
@@ -666,25 +684,28 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
                 }
                 break;
             case RC_SETTINGS:
+                // TODO: 09-Jun-18 need update themes
                 break;
         }
     }
 
     private void openText(CharSequence content) {
-        if (TextUtils.isEmpty(content))
+        if (TextUtils.isEmpty(content)) {
             return;
+        }
         FileManager fileManager = new FileManager(this);
-        File newFile = fileManager.createNewFile("_" + System.currentTimeMillis() + ".txt");
+        File newFile = fileManager.createNewFile(
+                "untitled_" + System.currentTimeMillis() + ".txt");
         if (IOUtils.writeFile(newFile, content.toString())) {
             mTabManager.newTab(newFile);
         }
     }
 
-    private void openFile(String file) {
+    protected void openFile(String file) {
         openFile(file, null, 0);
     }
 
-    public void openFile(final String filePath, final String encoding, final int offset) {
+    protected void openFile(final String filePath, final String encoding, final int offset) {
         //ensure file exist, can read/write
         if (TextUtils.isEmpty(filePath)) {
             return;
@@ -741,6 +762,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     @Override
+    @CallSuper
     public void onBackPressed() {
         if (closeDrawers()) {
             return;
@@ -777,10 +799,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         return editorDelegate.getLang();
     }
 
-    @Override
-    public void onEditorViewCreated(IEditorDelegate editorDelegate) {
-        editorDelegate.setCodeFormatProvider(getCodeFormatProvider());
-    }
 
     protected void onShowKeyboard() {
         if (mTabLayout != null) {
@@ -802,15 +820,10 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
 
     @Override
     protected void onDestroy() {
-        mDrawerLayout.getViewTreeObserver()
-                .removeGlobalOnLayoutListener(mKeyBoardListener);
+        mDrawerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(mKeyBoardListener);
         super.onDestroy();
     }
 
-    @Nullable
-    protected CodeFormatProvider getCodeFormatProvider() {
-        return new CodeFormatProviderImpl(this);
-    }
 
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
         IdeActivity activity;
