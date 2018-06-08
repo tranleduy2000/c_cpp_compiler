@@ -168,6 +168,9 @@ public class JsonDatabase implements ITabDatabase {
                 e.printStackTrace();
             }
         }
+        if (list.isEmpty()) {
+            list.add("");
+        }
         return list;
     }
 

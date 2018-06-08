@@ -19,10 +19,10 @@ package com.jecelyin.editor.v2.dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.widget.EditText;
 
-import com.duy.ide.editor.editor.R;
-import com.jecelyin.common.widget.DrawClickableEditText;
 import com.duy.ide.database.SQLHelper;
+import com.duy.ide.editor.editor.R;
 
 import java.util.List;
 
@@ -30,11 +30,11 @@ import java.util.List;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 
-public class FindKeywordsDialog extends AbstractDialog {
+public class FindHistoryDialog extends AbstractDialog {
     private final boolean isReplace;
-    private final DrawClickableEditText editText;
+    private final EditText editText;
 
-    public FindKeywordsDialog(Context context, DrawClickableEditText editText, boolean isReplace) {
+    public FindHistoryDialog(Context context, EditText editText, boolean isReplace) {
         super(context);
         this.isReplace = isReplace;
         this.editText = editText;
@@ -61,8 +61,8 @@ public class FindKeywordsDialog extends AbstractDialog {
         builder.setItems(items.toArray(new String[1]), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
                 editText.setText(items.get(which));
+                dialog.dismiss();
             }
         });
         AlertDialog dialog = builder.create();

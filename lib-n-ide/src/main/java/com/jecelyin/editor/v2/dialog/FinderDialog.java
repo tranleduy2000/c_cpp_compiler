@@ -28,16 +28,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.duy.ide.database.SQLHelper;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.common.widget.DrawClickableEditText;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
-import com.duy.ide.database.SQLHelper;
 import com.jecelyin.editor.v2.utils.ExtGrep;
 import com.jecelyin.editor.v2.utils.GrepBuilder;
 import com.jecelyin.editor.v2.utils.MatcherResult;
@@ -46,7 +46,7 @@ import com.jecelyin.editor.v2.utils.MatcherResult;
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public class FinderDialog extends AbstractDialog implements DrawClickableEditText.DrawableClickListener {
+public class FinderDialog extends AbstractDialog  {
     private static final int ID_FIND_PREV = 1;
     private static final int ID_FIND_NEXT = 2;
     private static final int ID_REPLACE = 3;
@@ -85,11 +85,11 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
 
     @Override
     public void show() {
-        View view = LayoutInflater.from(context).inflate(R.layout.search_replace, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_find_replace, null);
 
         final ViewHolder holder = new ViewHolder(view);
-        holder.mFindEditText.setDrawableClickListener(this);
-        holder.mReplaceEditText.setDrawableClickListener(this);
+//        holder.mFindEditText.setDrawableClickListener(this);
+//        holder.mReplaceEditText.setDrawableClickListener(this);
         if (findText != null)
             holder.mFindEditText.setText(findText.toString());
         if (Preferences.getInstance(context).isReadOnly()) {
@@ -133,6 +133,12 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
                 }
             }
         });
+//        builder.setNeutralButton(R.string.history, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+////                new FindHistoryDialog(context, (EditText) editText, editText.getId() != R.id.find_edit_text).show();
+//            }
+//        });
         AlertDialog dialog = builder.create();
         dialog.show();
         handleDialog(dialog);
@@ -192,11 +198,6 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
                     }
                 }
         );
-    }
-
-    @Override
-    public void onClick(DrawClickableEditText editText, DrawClickableEditText.DrawablePosition target) {
-        new FindKeywordsDialog(context, editText, editText.getId() != R.id.find_edit_text).show();
     }
 
     private static class FindTextActionModeCallback implements ActionMode.Callback {
@@ -334,8 +335,8 @@ public class FinderDialog extends AbstractDialog implements DrawClickableEditTex
      * @author ButterKnifeZelezny, plugin for Android Studio by Inmite Developers (http://inmite.github.io)
      */
     static class ViewHolder {
-        DrawClickableEditText mFindEditText;
-        DrawClickableEditText mReplaceEditText;
+        EditText mFindEditText;
+        EditText mReplaceEditText;
         CheckBox mReplaceCheckBox;
         CheckBox mCaseSensitiveCheckBox;
         CheckBox mWholeWordsOnlyCheckBox;
