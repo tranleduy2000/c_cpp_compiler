@@ -32,6 +32,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -131,7 +132,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editor);
+        setContentView(getRootLayoutId());
         initToolbar();
 
         MenuManager.init(this);
@@ -220,6 +221,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
      * Called when create diagnostic view
      */
     protected abstract void populateDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter);
+
+    @LayoutRes
+    protected abstract int getRootLayoutId();
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
