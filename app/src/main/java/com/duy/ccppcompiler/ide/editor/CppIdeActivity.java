@@ -37,6 +37,7 @@ import com.duy.ccppcompiler.compiler.compilers.LinkerFlagsDetector;
 import com.duy.ccppcompiler.compiler.compilers.NativeCompileImpl;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
+import com.duy.ccppcompiler.ide.code.CppCodeFormatProvider;
 import com.duy.ccppcompiler.ide.diagnostic.GccOutputParser;
 import com.duy.ccppcompiler.ide.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ide.dialogs.PremiumDialog;
@@ -50,6 +51,7 @@ import com.duy.common.function.Action;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.file.explorer.FileExplorerActivity;
+import com.duy.ide.code.format.CodeFormatProviderImpl;
 import com.duy.ide.core.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
@@ -95,6 +97,11 @@ public class CppIdeActivity extends IdeActivity {
                 new GccOutputParser()
         };
         diagnosticPresenter.setOutputParser(parsers);
+    }
+
+    @Override
+    protected CodeFormatProviderImpl getCodeFormatProvider() {
+        return new CppCodeFormatProvider(this);
     }
 
     @Override

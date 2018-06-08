@@ -229,5 +229,6 @@
     <string name="saving">Saving</string>
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
+    <string name="can_not_format_source">Can not format source</string>
 
 </resources>

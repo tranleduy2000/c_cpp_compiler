@@ -1,5 +1,6 @@
 package com.jecelyin.editor.v2.editor;
 
+import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.common.Command;
 
@@ -23,7 +24,7 @@ public interface IEditorDelegate {
 
     String getEncoding();
 
-
     void doCommand(Command command);
 
+    void setCodeFormatProvider(CodeFormatProvider provider);
 }

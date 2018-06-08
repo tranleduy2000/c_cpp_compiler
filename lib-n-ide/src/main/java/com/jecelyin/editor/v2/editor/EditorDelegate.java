@@ -39,8 +39,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.duy.astyle.AStyleInterface;
 import com.duy.common.ShareUtil;
+import com.duy.ide.code.api.CodeFormatProvider;
+import com.duy.ide.code.api.CodeFormatter;
 import com.duy.ide.core.IdeActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.model.EditorIndex;
@@ -78,9 +79,9 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     private boolean loaded = true;
     private int findResultsKeywordColor;
 
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private IEditAreaView mEditText;
+    @Nullable
+    private CodeFormatProvider mCodeFormatProvider;
 
     public EditorDelegate(@NonNull SavedState ss) {
         savedState = ss;
@@ -413,37 +414,27 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
      * Format current source
      */
     private void formatSource() {
-        String currMode = mDocument.getModeName();
-        String mode;
-        String style = "gnu";
-        if (currMode.contentEquals(Catalog.getModeByName("C++").getName())) {
-            mode = "c";
-        } else if (currMode.contentEquals(Catalog.getModeByName("C").getName())) {
-            mode = "c";
-        } else if (currMode.contentEquals(Catalog.getModeByName("Objective-C").getName())) {
-            mode = "c";
-        } else if (currMode.contentEquals(Catalog.getModeByName("C#").getName())) {
-            mode = "cs";
-        } else if (currMode.contentEquals(Catalog.getModeByName("Java").getName())) {
-            mode = "java";
-            style = "java";
-        } else {
+        if (mCodeFormatProvider == null) {
+            Toast.makeText(mContext, R.string.unsupported_format_source, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        CodeFormatter formatter = mCodeFormatProvider.getFormatterForFile(mDocument.getFile(), this);
+        if (formatter == null) {
             Toast.makeText(mContext, R.string.unsupported_format_source, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String options = "--mode=" + mode;
-        if (!style.isEmpty()) {
-            options += " --style=" + style;
-        }
         try {
-            AStyleInterface astyle = new AStyleInterface();
             String source = mEditText.getText().toString();
             int oldSelection = mEditText.getSelectionStart();
-            String formatted = astyle.formatSource(source, options);
-            mEditText.setText(new SpannableStringBuilder(formatted));
-            mEditText.setSelection(oldSelection);
-            Toast.makeText(mContext, R.string.formated_source, Toast.LENGTH_SHORT).show();
+            CharSequence formatted = formatter.format(source);
+            if (formatted != null) {
+                mEditText.setText(new SpannableStringBuilder(formatted));
+                mEditText.setSelection(oldSelection);
+                Toast.makeText(mContext, R.string.formated_source, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext, R.string.can_not_format_source, Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -607,6 +598,11 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         return mDocument;
     }
 
+    @Override
+    public void setCodeFormatProvider(@Nullable CodeFormatProvider codeFormatProvider) {
+        this.mCodeFormatProvider = codeFormatProvider;
+    }
+
     public static class SavedState implements Parcelable {
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
             @Override
@@ -736,5 +732,4 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
 
         }
     }
-
 }

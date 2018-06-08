@@ -57,15 +57,16 @@ import java.util.HashMap;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public class Document implements ReadFileListener, TextWatcher {
-    private static final String TAG = "Document";
     private final EditorDelegate mEditorDelegate;
     private final Context mContext;
     private final Preferences mPreferences;
     private final Buffer mBuffer;
     @SuppressLint("UseSparseArrays")
     private final HashMap<Integer, ArrayList<? extends CharacterStyle>> mColorSpanMap = new HashMap<>();
+
     private int mLineCount;
     private String mEncoding = "UTF-8";
+    @Nullable
     private byte[] mSourceMD5;
     private int mSourceLength;
     private String mModeName;
@@ -73,7 +74,8 @@ public class Document implements ReadFileListener, TextWatcher {
     private File mFile;
     private Highlighter mHighlighter;
 
-    Document(Context context, EditorDelegate editorDelegate, @NonNull File currentFile) {
+
+    Document(@NonNull Context context, @NonNull EditorDelegate editorDelegate, @NonNull File currentFile) {
         mEditorDelegate = editorDelegate;
         mContext = context;
         mFile = currentFile;
@@ -90,7 +92,7 @@ public class Document implements ReadFileListener, TextWatcher {
      * @param charSequence Given string
      * @return md5 sum of given string
      */
-    private static byte[] md5(CharSequence charSequence) {
+    private static byte[] md5(@NonNull CharSequence charSequence) {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             byte[] ba = new byte[2];
@@ -108,7 +110,7 @@ public class Document implements ReadFileListener, TextWatcher {
     }
 
 
-    void onSaveInstanceState(EditorDelegate.SavedState ss) {
+    void onSaveInstanceState(@NonNull EditorDelegate.SavedState ss) {
         ss.modeName = mModeName;
         ss.lineNumber = mLineCount;
         ss.textMd5 = mSourceMD5;
@@ -117,7 +119,7 @@ public class Document implements ReadFileListener, TextWatcher {
         ss.file = mFile;
     }
 
-    void onRestoreInstanceState(EditorDelegate.SavedState ss) {
+    void onRestoreInstanceState(@NonNull EditorDelegate.SavedState ss) {
         if (ss.modeName != null) {
             setMode(ss.modeName);
         }
@@ -258,7 +260,7 @@ public class Document implements ReadFileListener, TextWatcher {
         highlightSyntax(mEditorDelegate.getEditText());
     }
 
-    String getModeName() {
+    public String getModeName() {
         return mModeName;
     }
 
@@ -308,8 +310,9 @@ public class Document implements ReadFileListener, TextWatcher {
         if (mSourceMD5 == null) {
             return mEditorDelegate.getText().length() != 0;
         }
-        if (mSourceLength != mEditorDelegate.getEditableText().length())
+        if (mSourceLength != mEditorDelegate.getEditableText().length()) {
             return true;
+        }
 
         byte[] curMD5 = md5(mEditorDelegate.getEditableText());
 

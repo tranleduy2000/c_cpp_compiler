@@ -53,6 +53,7 @@ import android.widget.TextView;
 
 import com.duy.common.StoreUtil;
 import com.duy.file.explorer.FileExplorerActivity;
+import com.duy.ide.code.format.CodeFormatProviderImpl;
 import com.duy.ide.database.SQLHelper;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.view.DiagnosticFragment;
@@ -756,7 +757,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
 
     @Override
     public void onEditorViewCreated(IEditorDelegate editorDelegate) {
-
+        editorDelegate.setCodeFormatProvider(getCodeFormatProvider());
     }
 
     protected void onShowKeyboard() {
@@ -782,6 +783,10 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         mDrawerLayout.getViewTreeObserver()
                 .removeGlobalOnLayoutListener(mKeyBoardListener);
         super.onDestroy();
+    }
+
+    protected CodeFormatProviderImpl getCodeFormatProvider() {
+        return new CodeFormatProviderImpl(this);
     }
 
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
