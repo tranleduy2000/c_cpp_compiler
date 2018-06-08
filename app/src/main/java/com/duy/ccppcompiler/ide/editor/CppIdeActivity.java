@@ -110,7 +110,7 @@ public class CppIdeActivity extends IdeActivity {
     }
 
     @Override
-    public void onEditorViewCreated(IEditorDelegate editorDelegate) {
+    public void onEditorViewCreated(@NonNull IEditorDelegate editorDelegate) {
         super.onEditorViewCreated(editorDelegate);
 
         Preferences setting = Preferences.getInstance(this);

@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -18,7 +17,7 @@
             android:animateLayoutChanges="false">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:theme="?actionBarTheme"
@@ -166,18 +165,21 @@
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/appNameTextView"
                     android:layout_toRightOf="@id/appNameTextView"
-                    android:textColor="#fff"
+                    android:textColor="?android:textColorPrimary"
                     tools:text="16.1.1" />
 
             </RelativeLayout>
 
-
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/tabRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
     </android.support.design.widget.NavigationView>
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/right_navigation_view"
+        android:id="@id/right_navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"

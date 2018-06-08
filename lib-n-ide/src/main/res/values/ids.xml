@@ -48,4 +48,7 @@
     <item name="txt_document_info" type="id" />
     <item name="editor_view" type="id" />
     <item name="view_pager" type="id" />
+    <item name="left_navigation_view" type="id" />
+    <item name="left_navigation_content" type="id" />
+    <item name="toolbar" type="id" />
 </resources>

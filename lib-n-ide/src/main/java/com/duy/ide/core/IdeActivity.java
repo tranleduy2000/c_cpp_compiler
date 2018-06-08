@@ -190,13 +190,14 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         mKeyBoardListener = new KeyBoardEventListener(this);
         mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(mKeyBoardListener);
 
-//        initLeftNavigationView(findViewById(R.id.left_nav_view));
+        initLeftNavigationView((NavigationView) findViewById(R.id.left_navigation_view));
 
         //final, create editor
         mTabManager = new TabManager(this, (ViewPager) findViewById(R.id.editor_view_pager));
 
         processIntent();
     }
+
 
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
@@ -235,6 +236,13 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     /**
+     * Replace view for left navigation view, such as Java NIDE use this for Folder view
+     */
+    protected void initLeftNavigationView(@NonNull NavigationView nav) {
+
+    }
+
+    /**
      * Called when create diagnostic view
      */
     protected abstract void populateDiagnostic(@NonNull DiagnosticContract.Presenter diagnosticPresenter);
@@ -250,7 +258,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
      */
     @Override
     @CallSuper
-    public void onEditorViewCreated(IEditorDelegate editorDelegate) {
+    public void onEditorViewCreated(@NonNull IEditorDelegate editorDelegate) {
         editorDelegate.setCodeFormatProvider(getCodeFormatProvider());
     }
 
@@ -292,7 +300,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     private void initMenuView() {
-        NavigationView rightMenu = findViewById(R.id.menuNavView);
+        NavigationView rightMenu = findViewById(R.id.right_navigation_view);
         Menu menu = rightMenu.getMenu();
         onCreateNavigationMenu(menu);
         rightMenu.setNavigationItemSelectedListener(
