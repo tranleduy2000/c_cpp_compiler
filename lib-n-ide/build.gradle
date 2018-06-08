@@ -52,6 +52,5 @@ dependencies {
     api 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
 
     api project(':style')
-    api project(':libastyle')
 }
 
