@@ -49,7 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayout.TabProvider {
+public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayout.TabProvider, ITabManager {
     @NonNull
     private IdeActivity mActivity;
     private EditorFragmentPagerAdapter mPagerAdapter;
@@ -107,7 +107,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             }
         });
     }
-
+    @Override
     public boolean newTab(File file) {
         return newTab(file, 0, "UTF-8");
     }
@@ -134,15 +134,15 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         setCurrentTab(count);
         return true;
     }
-
+    @Override
     public int getTabCount() {
         return mPagerAdapter.getCount();
     }
-
+    @Override
     public int getCurrentTab() {
         return mViewPager.getCurrentItem();
     }
-
+    @Override
     public void setCurrentTab(int index) {
         int tabCount = mViewPager.getAdapter().getCount();
         index = Math.min(Math.max(0, index), tabCount);
@@ -151,13 +151,15 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         updateToolbar();
     }
 
+    @Override
     public void closeAllTab() {
         while (getTabCount() > 0) {
             closeTab(0);
         }
     }
 
-    private void closeTab(int position) {
+    @Override
+    public void closeTab(int position) {
         mPagerAdapter.removeEditor(position, new TabCloseListener() {
             @Override
             public void onClose(String path, String encoding, int offset) {
