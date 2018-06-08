@@ -17,6 +17,7 @@
 
 package com.duy.ide.editor.content;
 
+import android.content.SharedPreferences;
 import android.widget.EditText;
 
 public class UndoManager implements IUndoManager {
@@ -48,6 +49,18 @@ public class UndoManager implements IUndoManager {
     @Override
     public void enable() {
         mUndoRedoHelper.attach();
+    }
+
+    @Override
+    public void restore(SharedPreferences preferences) {
+        mUndoRedoHelper.restorePersistentState(preferences, "");
+    }
+
+    @Override
+    public void save(SharedPreferences preferences) {
+        SharedPreferences.Editor editor = preferences.edit();
+        mUndoRedoHelper.storePersistentState(editor, "");
+        editor.apply();
     }
 
     @Override

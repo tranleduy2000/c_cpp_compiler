@@ -17,6 +17,7 @@
 
 package com.duy.ide.editor.view;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 public interface IEditActionSupport {
@@ -39,4 +40,8 @@ public interface IEditActionSupport {
     void disableUndoRedoFilter();
 
     void enableUndoRedoFilter();
+
+    void restoreEditHistory(SharedPreferences preferences);
+
+    void saveHistory(SharedPreferences preferences);
 }

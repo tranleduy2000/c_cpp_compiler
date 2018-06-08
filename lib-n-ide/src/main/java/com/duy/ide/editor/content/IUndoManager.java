@@ -17,6 +17,8 @@
 
 package com.duy.ide.editor.content;
 
+import android.content.SharedPreferences;
+
 /**
  * Created by Duy on 26-Apr-18.
  */
@@ -32,4 +34,8 @@ public interface IUndoManager {
     void disable();
 
     void enable();
+
+    void restore(SharedPreferences preferences);
+
+    void save(SharedPreferences preferences);
 }

@@ -18,6 +18,7 @@
 package com.duy.ide.editor.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -144,6 +145,16 @@ public class EditActionSupportEditor extends GestureSupportEditor {
     @Override
     public void enableUndoRedoFilter() {
         mUndoManager.enable();
+    }
+
+    @Override
+    public void saveHistory(SharedPreferences preferences) {
+
+    }
+
+    @Override
+    public void restoreEditHistory(SharedPreferences preferences) {
+        mUndoManager.restore(preferences);
     }
 
     @Override

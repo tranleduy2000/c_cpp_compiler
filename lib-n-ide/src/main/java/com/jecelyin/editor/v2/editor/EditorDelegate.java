@@ -18,6 +18,7 @@ package com.jecelyin.editor.v2.editor;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -151,9 +152,11 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         return mEditText;
     }
 
-    public void setEditorView(IEditAreaView editorView) {
+    public void onCreate(IEditAreaView editorView) {
         mContext = editorView.getContext();
         mEditText = editorView;
+
+
         mOrientation = mContext.getResources().getConfiguration().orientation;
 
         TypedArray a = mContext.obtainStyledAttributes(new int[]{R.attr.findResultsKeyword});
@@ -178,9 +181,19 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
 
         mEditText.addTextChangedListener(this);
         onDocumentChanged();
+
+        SharedPreferences historyData = mContext.getSharedPreferences(
+                mDocument.getFile().getPath(), Context.MODE_PRIVATE);
+        mEditText.restoreEditHistory(historyData);
     }
 
     public void onDestroy() {
+        if (isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
+            saveInBackground();
+        }
+        SharedPreferences historyData = mContext.getSharedPreferences(
+                mDocument.getFile().getPath(), Context.MODE_PRIVATE);
+        mEditText.saveHistory(historyData);
         mEditText.removeTextChangedListener(mDocument);
         mEditText.removeTextChangedListener(this);
     }
