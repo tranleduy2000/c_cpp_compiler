@@ -71,9 +71,9 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
      * We can not update line count when layout is null, lazy init
      */
     private boolean mNeedUpdateLineNumber = false;
+    private int mTabWidth = 14;
     private boolean mIsAutoIndent = true;
     private boolean mIsAutoPair;
-    private int mTabWidth = 3;
 
     public HighlightEditorView(Context context) {
         super(context);
