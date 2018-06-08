@@ -69,9 +69,7 @@ import java.util.Locale;
 public class EditorDelegate implements TextWatcher, IEditorDelegate {
     public final static String KEY_CLUSTER = "is_cluster";
     private static final String TAG = "EditorDelegate";
-    IEditAreaView mEditText;
     private Context mContext;
-
     private Document mDocument;
     @NonNull
     private SavedState savedState;
@@ -79,6 +77,10 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     private int mOrientation;
     private boolean loaded = true;
     private int findResultsKeywordColor;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private IEditAreaView mEditText;
 
     public EditorDelegate(@NonNull SavedState ss) {
         savedState = ss;
@@ -190,18 +192,25 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         return mDocument != null && mDocument.isChanged();
     }
 
+    @NonNull
     public CharSequence getToolbarText() {
-        String encode = mDocument == null ? "UTF-8" : mDocument.getEncoding();
-        String fileMode = mDocument == null || mDocument.getModeName() == null ? "" : mDocument.getModeName();
-        String title = getTitle();
-        String changed = isChanged() ? "*" : "";
-        String cursor = "";
-        if (mEditText != null && getCursorOffset() >= 0) {
-            int cursorOffset = getCursorOffset();
-            int line = mEditText.getLineForOffset(cursorOffset);
-            cursor += mDocument.getBuffer().getLineManager().getLineOfOffset(cursorOffset) + ":" + cursorOffset;
+        try {
+            String encode = mDocument == null ? "UTF-8" : mDocument.getEncoding();
+            String fileMode = mDocument == null || mDocument.getModeName() == null
+                    ? "" : mDocument.getModeName();
+            String title = getTitle();
+            String changed = isChanged() ? "*" : "";
+            String cursor = "";
+            if (mEditText != null && getCursorOffset() >= 0) {
+                int cursorOffset = getCursorOffset();
+                int line = mDocument.getBuffer().getLineManager().getLineOfOffset(cursorOffset);
+                cursor += line + ":" + cursorOffset;
+            }
+            return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s",
+                    changed, title, encode, fileMode, cursor);
+        } catch (Exception e) {
+            return "";
         }
-        return String.format(Locale.US, "%s%s  \t|\t  %s \t %s \t %s", changed, title, encode, fileMode, cursor);
     }
 
     private void startSaveFileSelectorActivity() {
@@ -347,11 +356,13 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 String scope = (String) command.object;
                 if (scope == null) {
                     Mode mode;
-                    String firstLine = getEditableText().subSequence(0, Math.min(80, getEditableText().length())).toString();
+                    String firstLine = getEditableText().subSequence(0,
+                            Math.min(80, getEditableText().length())).toString();
                     if (TextUtils.isEmpty(mDocument.getPath()) || TextUtils.isEmpty(firstLine)) {
                         mode = ModeProvider.instance.getMode(Catalog.DEFAULT_MODE_NAME);
                     } else {
-                        mode = ModeProvider.instance.getModeForFile(mDocument.getPath(), null, firstLine);
+                        mode = ModeProvider.instance.getModeForFile(mDocument.getPath(),
+                                null, firstLine);
                     }
 
                     if (mode == null) {
@@ -400,10 +411,8 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
 
     /**
      * Format current source
-     * Supported: c++, c, java,
      */
-    @Override
-    public void formatSource() {
+    private void formatSource() {
         String currMode = mDocument.getModeName();
         String mode;
         String style = "gnu";
@@ -572,7 +581,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         }
         if (mEditText != null) {
             mEditText.setFreezesText(true);
-//            savedState.editorState = (BaseEditorView.SavedState) mEditText.onSaveInstanceState();
         }
 
         if (loaded && mDocument != null) {

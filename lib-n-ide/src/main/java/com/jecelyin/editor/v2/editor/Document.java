@@ -80,7 +80,7 @@ public class Document implements ReadFileListener, TextWatcher {
         mPreferences = Preferences.getInstance(context);
         mBuffer = new Buffer();
         mHighlighter = new Highlighter();
-        editorDelegate.mEditText.addTextChangedListener(this);
+        editorDelegate.getEditText().addTextChangedListener(this);
     }
 
     /**
@@ -175,7 +175,7 @@ public class Document implements ReadFileListener, TextWatcher {
 
     @Override
     public void onDone(SpannableStringBuilder spannableStringBuilder, boolean ok) {
-        if (mEditorDelegate == null || mEditorDelegate.mEditText == null)
+        if (mEditorDelegate == null || mEditorDelegate.getEditText() == null)
             return;
         if (!ok) {
             mEditorDelegate.onLoadFinish();
@@ -183,10 +183,10 @@ public class Document implements ReadFileListener, TextWatcher {
             return;
         }
 
-        mEditorDelegate.mEditText.setInitLineNumber(mLineCount);
-        mEditorDelegate.mEditText.disableUndoRedoFilter();
-        mEditorDelegate.mEditText.setText(spannableStringBuilder);
-        mEditorDelegate.mEditText.enableUndoRedoFilter();
+        mEditorDelegate.getEditText().setInitLineNumber(mLineCount);
+        mEditorDelegate.getEditText().disableUndoRedoFilter();
+        mEditorDelegate.getEditText().setText(spannableStringBuilder);
+        mEditorDelegate.getEditText().enableUndoRedoFilter();
         mEditorDelegate.onLoadFinish();
 
     }

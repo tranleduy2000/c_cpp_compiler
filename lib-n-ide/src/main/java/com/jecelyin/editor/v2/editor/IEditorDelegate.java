@@ -1,7 +1,5 @@
 package com.jecelyin.editor.v2.editor;
 
-import android.support.annotation.Nullable;
-
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.common.Command;
 
@@ -11,14 +9,11 @@ public interface IEditorDelegate {
 
     void saveInBackground();
 
-
     IEditAreaView getEditText();
 
     int getCursorOffset();
 
     Document getDocument();
-
-    void formatSource();
 
     void onDocumentChanged();
 

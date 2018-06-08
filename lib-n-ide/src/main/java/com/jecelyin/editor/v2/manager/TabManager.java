@@ -198,7 +198,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         updateToolbar();
     }
 
-    public void updateToolbar() {
+    private void updateToolbar() {
         if (mTxtDocumentInfo == null) {
             return;
         }

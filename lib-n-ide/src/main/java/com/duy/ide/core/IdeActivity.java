@@ -103,7 +103,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected static final int RC_OPEN_FILE = 1;
-    private static final String TAG = "MainActivity";
     private final static int RC_SAVE_AS = 3;
     private static final int RC_SETTINGS = 5;
     private static final int RC_PERMISSION_WRITE_STORAGE = 5001;
@@ -155,12 +154,14 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         actionBarDrawerToggle.syncState();
 
         mSymbolBarLayout = findViewById(R.id.symbolBarLayout);
-        mSymbolBarLayout.setOnSymbolCharClickListener(new SymbolBarLayout.OnSymbolCharClickListener() {
-            @Override
-            public void onClick(View v, String text) {
-                insertText(text);
-            }
-        });
+        if (mSymbolBarLayout != null) {
+            mSymbolBarLayout.setOnSymbolCharClickListener(new SymbolBarLayout.OnSymbolCharClickListener() {
+                @Override
+                public void onClick(View v, String text) {
+                    insertText(text);
+                }
+            });
+        }
 
         setScreenOrientation();
 
@@ -218,9 +219,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
      * Called when create diagnostic view
      */
     protected abstract void populateDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter);
-
-    private void bindPreferences() {
-    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -297,22 +295,24 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         }
 
         if (Intent.ACTION_VIEW.equals(action) || Intent.ACTION_EDIT.equals(action)) {
-            if (intent.getScheme().equals("content")) {
-                InputStream attachment = getContentResolver().openInputStream(intent.getData());
-                try {
-                    String text = IOUtils.toString(attachment);
-                    openText(text);
-                } catch (OutOfMemoryError e) {
-                    UIUtils.toast(this, R.string.out_of_memory_error);
-                }
+            if (intent.getScheme() != null && intent.getData() != null) {
+                if (intent.getScheme().equals("content")) {
+                    InputStream attachment = getContentResolver().openInputStream(intent.getData());
+                    try {
+                        String text = IOUtils.toString(attachment);
+                        openText(text);
+                    } catch (OutOfMemoryError e) {
+                        UIUtils.toast(this, R.string.out_of_memory_error);
+                    }
 
-                return true;
-            } else if (intent.getScheme().equals("file")) {
-                Uri mUri = intent.getData();
-                String file = mUri != null ? mUri.getPath() : null;
-                if (!TextUtils.isEmpty(file)) {
-                    openFile(file);
                     return true;
+                } else if (intent.getScheme().equals("file")) {
+                    Uri mUri = intent.getData();
+                    String file = mUri != null ? mUri.getPath() : null;
+                    if (!TextUtils.isEmpty(file)) {
+                        openFile(file);
+                        return true;
+                    }
                 }
             }
 
@@ -578,10 +578,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
 
     private void hideSoftInput() {
         doCommand(new Command(Command.CommandEnum.HIDE_SOFT_INPUT));
-    }
-
-    private void showSoftInput() {
-        doCommand(new Command(Command.CommandEnum.SHOW_SOFT_INPUT));
     }
 
     public void doCommandForAllEditor(Command command) {
