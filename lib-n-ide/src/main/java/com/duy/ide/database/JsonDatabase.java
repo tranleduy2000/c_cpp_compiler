@@ -107,7 +107,9 @@ public class JsonDatabase implements ITabDatabase {
             try {
                 JSONObject jsonObject = db.getJSONObject(key);
                 RecentFileItem file = mHelper.read(jsonObject);
-                list.add(file);
+                if (file.isLastOpen() == lastOpenFiles) {
+                    list.add(file);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
