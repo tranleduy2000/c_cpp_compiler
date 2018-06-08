@@ -19,6 +19,7 @@ package com.duy.ide.editor.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.util.AttributeSet;
@@ -36,6 +37,8 @@ public abstract class GestureSupportEditor extends HighlightEditorView
         implements IEditAreaView, GestureDetector.OnGestureListener {
 
     private final Rect mVisibleRect = new Rect();
+    private final Handler mHandler = new Handler();
+
     private OnEditorSizeChangedListener mOnEditorSizeChangedListener;
     @Nullable
     private ScaleGestureDetector mScaleDetector;
@@ -146,6 +149,9 @@ public abstract class GestureSupportEditor extends HighlightEditorView
 
     @Override
     public void computeScroll() {
+        if (mIsTextScaling){
+            return;
+        }
         if (mScroller != null) {
             if (mScroller.computeScrollOffset()) {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
@@ -161,6 +167,10 @@ public abstract class GestureSupportEditor extends HighlightEditorView
      */
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                            float velocityY) {
+
+        if (mIsTextScaling){
+            return true;
+        }
         Layout layout = getLayout();
         if (mScroller != null && layout != null) {
             int maxX = layout.getWidth() - mVisibleRect.width() - getPaddingRight() - getPaddingLeft();
@@ -182,8 +192,12 @@ public abstract class GestureSupportEditor extends HighlightEditorView
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        private static final float ONE_FPS = 1000f / 60f;
+
         private final float minSize;
         private final float maxSize;
+        private long mLastTime = 0;
+        private int mExpectedTextSizePx = 0;
 
         ScaleListener() {
             DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -194,16 +208,23 @@ public abstract class GestureSupportEditor extends HighlightEditorView
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             mIsTextScaling = true;
+            mExpectedTextSizePx = (int) getTextSize();
             return super.onScaleBegin(detector);
         }
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            float size = getTextSize() * detector.getScaleFactor();
-            size = Math.max(minSize, Math.min(size, maxSize * 2));
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-
+            float size = (mExpectedTextSizePx * detector.getScaleFactor());
+            mExpectedTextSizePx = (int) Math.max(minSize, Math.min(size, maxSize * 2));
+            postChangeTextSize();
             return true;
+        }
+
+        private void postChangeTextSize() {
+            if (System.currentTimeMillis() - mLastTime >= ONE_FPS) {
+                setTextSize(TypedValue.COMPLEX_UNIT_PX, mExpectedTextSizePx);
+                mLastTime = System.currentTimeMillis();
+            }
         }
 
         @Override

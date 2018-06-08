@@ -100,6 +100,11 @@ public class CppIdeActivity extends IdeActivity {
     }
 
     @Override
+    protected int getRootLayoutId() {
+        return R.layout.activity_cpp_editor;
+    }
+
+    @Override
     protected CodeFormatProviderImpl getCodeFormatProvider() {
         return new CppCodeFormatProvider(this);
     }
