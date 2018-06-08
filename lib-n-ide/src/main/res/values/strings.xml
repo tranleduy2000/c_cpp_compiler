@@ -230,6 +230,6 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
     <string name="can_not_format_source">Can not format source</string>
-    <string name="formatting">Fomatting</string>
+    <string name="formatting">Formatting</string>
 
 </resources>
