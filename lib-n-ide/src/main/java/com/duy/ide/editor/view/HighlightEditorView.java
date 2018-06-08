@@ -192,7 +192,7 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
                 if (mIsAutoPair) {
                     if (end - start == 1 && start < source.length() && dstart < dest.length()) {
                         char c = source.charAt(start);
-                        if (c == '(' || c == '{' || c == '[') {
+                        if (c == '(' || c == '{' || c == '[' || c == '"' || c == '\'') {
                             return addBracket(source, start);
                         }
                     }
