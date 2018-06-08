@@ -1,4 +1,5 @@
-include ':app', ':style', ':lib-n-ide'
+include ':lib-n-ide'
+include ':app'
 include ':emulatorview'
 include ':libastyle'
 include ':sdlplugin'
