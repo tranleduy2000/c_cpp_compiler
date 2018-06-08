@@ -52,8 +52,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    api 'com.android.support.constraint:constraint-layout:1.1.0'
-
     api "com.android.support:appcompat-v7:$androidSupportVersion"
     api "com.android.support:support-v4:$androidSupportVersion"
     api "com.android.support:support-vector-drawable:$androidSupportVersion"

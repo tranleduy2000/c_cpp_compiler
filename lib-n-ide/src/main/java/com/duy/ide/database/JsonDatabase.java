@@ -38,11 +38,14 @@ public class JsonDatabase implements ITabDatabase {
                 jsonItem = database.getJSONObject(path);
                 recentFile = mHelper.read(jsonItem);
                 recentFile.setPath(path);
+                recentFile.setLastOpen(true);
             } else {
                 jsonItem = new JSONObject();
                 recentFile = new RecentFileItem();
                 recentFile.setPath(path);
                 recentFile.setEncoding(encoding);
+                recentFile.setLastOpen(true);
+
                 database.put(path, jsonItem);
             }
             mHelper.write(jsonItem, recentFile);

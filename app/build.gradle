@@ -135,9 +135,9 @@ dependencies {
     api project(':emulatorview')
     api project(':libastyle')
 
-    api 'com.google.firebase:firebase-core:15.0.2'
-    api 'com.google.firebase:firebase-storage:15.0.2'
-    api 'com.crashlytics.sdk.android:crashlytics:2.9.2'
+    api 'com.google.firebase:firebase-core:16.0.0'
+    api 'com.google.firebase:firebase-storage:16.0.1'
+    api 'com.crashlytics.sdk.android:crashlytics:2.9.3'
 
     api 'io.github.kobakei:ratethisapp:1.2.0'
 }

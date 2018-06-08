@@ -117,9 +117,11 @@ public abstract class NativeCompileImpl implements ICompiler {
         }
         addUserSettingFlags(args);
         addDefaultLdFlags(args);
+        addDefaultCFlags(args);
         resolveLdFlagsFromSource(args, sourceFiles);
         return args.build();
     }
+
 
     private void resolveLdFlagsFromSource(GccArgumentBuilder args, File[] sourceFiles) {
         LinkerFlagsDetector detector = LinkerFlagsDetector.INSTANCE;
@@ -143,6 +145,11 @@ public abstract class NativeCompileImpl implements ICompiler {
         //lib math and lib log
         args.addFlag(GccArgumentBuilder.Type.LD_FLAG, "-lm");
         args.addFlag(GccArgumentBuilder.Type.LD_FLAG, "-llog");
+    }
+
+    private void addDefaultCFlags(GccArgumentBuilder args) {
+        args.addFlags("-isystem", Environment.getCCtoolsDir(mContext) + "/include/*");
+        args.addFlags("-isystem", Environment.getCCtoolsDir(mContext) + "/include");
     }
 
     private void buildExecutableFlags(ArgumentBuilder args, File[] sourceFiles) {

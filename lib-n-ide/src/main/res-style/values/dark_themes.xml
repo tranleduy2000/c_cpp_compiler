@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2018 Mr Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionBarStyle">@style/Light.Toolbar</item>
+        <item name="actionBarTheme">@style/DarkToolbarTheme</item>
+        <item name="actionBarPopupTheme">@style/DarkToolbarPopupTheme</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="actionModeStyle">@style/DarkActionMode</item>
+
+        <item name="toolbarIconNormalColor">#ffffff</item>
+        <item name="toolbarIconDisabledColor">#50ffffff</item>
+        <item name="toolbarTextColor">#fff</item>
+
+        <item name="menuIconNormalColor">#ffffff</item>
+        <item name="editorTabBackground">@drawable/drawer_tab_item_background_dark</item>
+
+        <item name="findResultsPath">#0000ff</item>
+        <item name="findResultsKeyword">#C26509</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="DarkToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="DarkToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark" />
+
+    <color name="dark_actionmode_light_background">#666666</color>
+
+    <style name="DarkActionMode" parent="@style/Light.ActionMode">
+        <item name="background">@color/dark_actionmode_light_background</item>
+    </style>
+
+
+</resources>
