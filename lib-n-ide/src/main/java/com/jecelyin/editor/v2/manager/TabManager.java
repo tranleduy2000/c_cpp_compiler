@@ -67,10 +67,9 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         if (mTabLayout != null) {
             mTabLayout.setCustomTabView(this);
         }
-        initEditor();
     }
 
-    private void initEditor() {
+    public void createEditor() {
         mPagerAdapter = new EditorFragmentPagerAdapter(mActivity);
         mViewPager.setAdapter(mPagerAdapter);
 
@@ -150,6 +149,12 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
 
         mViewPager.setCurrentItem(index);
         updateToolbar();
+    }
+
+    public void closeAllTab() {
+        while (getTabCount() > 0) {
+            closeTab(0);
+        }
     }
 
     private void closeTab(int position) {

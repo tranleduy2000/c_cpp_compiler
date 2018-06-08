@@ -183,19 +183,20 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         versionView.setText(SysUtils.getVersionName(this));
 
         initMenuView();
+        initEditorView();
         intiDiagnosticView();
-
+        initLeftNavigationView((NavigationView) findViewById(R.id.left_navigation_view));
+        //final, create editor
+        processIntent();
 
         //attach listener hide/show keyboard
         mKeyBoardListener = new KeyBoardEventListener(this);
         mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(mKeyBoardListener);
+    }
 
-        initLeftNavigationView((NavigationView) findViewById(R.id.left_navigation_view));
-
-        //final, create editor
+    private void initEditorView() {
         mTabManager = new TabManager(this, (ViewPager) findViewById(R.id.editor_view_pager));
-
-        processIntent();
+        mTabManager.createEditor();
     }
 
 
