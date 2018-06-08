@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -56,6 +55,7 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.dialog.FinderDialog;
+import com.jecelyin.editor.v2.editor.task.FormatSourceTask;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
@@ -424,20 +424,8 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             return;
         }
 
-        try {
-            String source = mEditText.getText().toString();
-            int oldSelection = mEditText.getSelectionStart();
-            CharSequence formatted = formatter.format(source);
-            if (formatted != null) {
-                mEditText.setText(new SpannableStringBuilder(formatted));
-                mEditText.setSelection(oldSelection);
-                Toast.makeText(mContext, R.string.formated_source, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(mContext, R.string.can_not_format_source, Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        FormatSourceTask formatSourceTask = new FormatSourceTask(mContext, mEditText, formatter);
+        formatSourceTask.execute();
     }
 
     private void shareCurrentContent() {
@@ -666,6 +654,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             dest.writeInt(textLength);
         }
     }
+
 
     private class EditorSelectionActionModeCallback implements ActionMode.Callback {
 
