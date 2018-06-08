@@ -17,6 +17,8 @@
 
 package com.duy.ide.editor.view;
 
+import android.support.annotation.NonNull;
+
 public interface IEditActionSupport {
     void undo();
 
@@ -27,6 +29,8 @@ public interface IEditActionSupport {
     boolean doCopy();
 
     boolean doPaste();
+
+    void insert(@NonNull CharSequence text);
 
     void selectAll();
 

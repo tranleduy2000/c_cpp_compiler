@@ -51,9 +51,9 @@ import com.duy.common.function.Action;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.file.explorer.FileExplorerActivity;
-import com.duy.ide.code.format.CodeFormatProviderImpl;
+import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.core.IdeActivity;
-import com.duy.ide.diagnostic.DiagnosticPresenter;
+import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
@@ -91,7 +91,7 @@ public class CppIdeActivity extends IdeActivity {
     }
 
     @Override
-    protected void populateDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter) {
+    protected void populateDiagnostic(@NonNull DiagnosticContract.Presenter diagnosticPresenter) {
         PatternAwareOutputParser[] parsers = {
                 new CppCheckOutputParser(),
                 new GccOutputParser()
@@ -105,7 +105,7 @@ public class CppIdeActivity extends IdeActivity {
     }
 
     @Override
-    protected CodeFormatProviderImpl getCodeFormatProvider() {
+    protected CodeFormatProvider getCodeFormatProvider() {
         return new CppCodeFormatProvider(this);
     }
 

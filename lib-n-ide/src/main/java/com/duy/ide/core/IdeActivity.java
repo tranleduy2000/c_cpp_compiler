@@ -54,9 +54,12 @@ import android.widget.TextView;
 
 import com.duy.common.StoreUtil;
 import com.duy.file.explorer.FileExplorerActivity;
+import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.format.CodeFormatProviderImpl;
 import com.duy.ide.database.SQLHelper;
+import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
+import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.view.DiagnosticFragment;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
@@ -100,6 +103,13 @@ import java.util.Map;
 import static android.view.View.VISIBLE;
 
 
+/**
+ * Some method should override:
+ * <p>
+ * {@link #populateDiagnostic(DiagnosticContract.Presenter)} init diagnostic, you should set output
+ * parser for std out and std error by using method
+ * {@link DiagnosticContract.Presenter#setOutputParser(PatternAwareOutputParser...)}
+ */
 public abstract class IdeActivity extends ThemeSupportActivity implements MenuItem.OnMenuItemClickListener,
         IEditorStateListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -116,16 +126,16 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     protected TabManager mTabManager;
     protected DiagnosticPresenter mDiagnosticPresenter;
 
-    private Toolbar mToolbar;
-    private DrawerLayout mDrawerLayout;
+    protected Toolbar mToolbar;
+    protected DrawerLayout mDrawerLayout;
     @Nullable
-    private SymbolBarLayout mSymbolBarLayout;
+    protected SymbolBarLayout mSymbolBarLayout;
     @Nullable
-    private SmartTabLayout mTabLayout;
+    protected SmartTabLayout mTabLayout;
     @Nullable
-    private TextView mTxtDocumentInfo;
+    protected TextView mTxtDocumentInfo;
 
-    private Preferences mPreferences;
+    protected Preferences mPreferences;
     private long mExitTime;
     private KeyBoardEventListener mKeyBoardListener;
 
@@ -134,9 +144,10 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         super.onCreate(savedInstanceState);
         setContentView(getRootLayoutId());
         initToolbar();
-
         MenuManager.init(this);
+
         mPreferences = Preferences.getInstance(this);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         mTabLayout = findViewById(R.id.tab_layout);
         mTxtDocumentInfo = findViewById(R.id.txt_document_info);
@@ -150,19 +161,20 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
                 hideSoftInput();
             }
         });
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,
+                mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
         mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-
         mSymbolBarLayout = findViewById(R.id.symbolBarLayout);
         if (mSymbolBarLayout != null) {
-            mSymbolBarLayout.setOnSymbolCharClickListener(new SymbolBarLayout.OnSymbolCharClickListener() {
-                @Override
-                public void onClick(View v, String text) {
-                    insertText(text);
-                }
-            });
+            mSymbolBarLayout.setOnSymbolCharClickListener(
+                    new SymbolBarLayout.OnSymbolCharClickListener() {
+                        @Override
+                        public void onClick(View v, String text) {
+                            insertText(text);
+                        }
+                    });
         }
 
         setScreenOrientation();
@@ -170,17 +182,20 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         TextView versionView = findViewById(R.id.versionTextView);
         versionView.setText(SysUtils.getVersionName(this));
 
-        mTabManager = new TabManager(this, (ViewPager) findViewById(R.id.editor_view_pager));
-
         initMenuView();
         intiDiagnosticView();
-        processIntent();
 
-        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         //attach listener hide/show keyboard
         mKeyBoardListener = new KeyBoardEventListener(this);
         mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(mKeyBoardListener);
+
+//        initLeftNavigationView(findViewById(R.id.left_nav_view));
+
+        //final, create editor
+        mTabManager = new TabManager(this, (ViewPager) findViewById(R.id.editor_view_pager));
+
+        processIntent();
     }
 
     private void initToolbar() {
@@ -203,7 +218,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
             }
         });
 
-
         FragmentManager fm = getSupportFragmentManager();
         String tag = DiagnosticFragment.class.getSimpleName();
         DiagnosticFragment diagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(tag);
@@ -213,6 +227,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         fm.beginTransaction()
                 .replace(R.id.container_diagnostic_list_view, diagnosticFragment, tag)
                 .commit();
+
         mDiagnosticPresenter = new DiagnosticPresenter(diagnosticFragment, this, mTabManager, mHandler);
         populateDiagnostic(mDiagnosticPresenter);
     }
@@ -220,8 +235,11 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     /**
      * Called when create diagnostic view
      */
-    protected abstract void populateDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter);
+    protected abstract void populateDiagnostic(@NonNull DiagnosticContract.Presenter diagnosticPresenter);
 
+    /**
+     * @return main layout id
+     */
     @LayoutRes
     protected abstract int getRootLayoutId();
 
@@ -246,12 +264,12 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     private void setScreenOrientation() {
-        int orgi = mPreferences.getScreenOrientation();
-        if (Preferences.SCREEN_ORIENTATION_AUTO == orgi) {
+        int orientation = mPreferences.getScreenOrientation();
+        if (Preferences.SCREEN_ORIENTATION_AUTO == orientation) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        } else if (Preferences.SCREEN_ORIENTATION_LANDSCAPE == orgi) {
+        } else if (Preferences.SCREEN_ORIENTATION_LANDSCAPE == orientation) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else if (Preferences.SCREEN_ORIENTATION_PORTRAIT == orgi) {
+        } else if (Preferences.SCREEN_ORIENTATION_PORTRAIT == orientation) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
@@ -260,12 +278,13 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         NavigationView rightMenu = findViewById(R.id.menuNavView);
         Menu menu = rightMenu.getMenu();
         onCreateNavigationMenu(menu);
-        rightMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return onOptionsItemSelected(item);
-            }
-        });
+        rightMenu.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        return onOptionsItemSelected(item);
+                    }
+                });
     }
 
 
@@ -397,7 +416,6 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(container);
     }
-
 
     @CallSuper
     protected void onCreateNavigationMenu(Menu menu) {
@@ -789,7 +807,8 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         super.onDestroy();
     }
 
-    protected CodeFormatProviderImpl getCodeFormatProvider() {
+    @Nullable
+    protected CodeFormatProvider getCodeFormatProvider() {
         return new CodeFormatProviderImpl(this);
     }
 

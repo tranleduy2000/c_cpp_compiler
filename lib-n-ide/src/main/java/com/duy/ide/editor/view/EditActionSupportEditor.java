@@ -93,6 +93,13 @@ public class EditActionSupportEditor extends GestureSupportEditor {
         return false;
     }
 
+    @Override
+    public void insert(@NonNull CharSequence text) {
+        int selectionStart = getSelectionStart();
+        selectionStart = Math.max(0, selectionStart);
+        getText().insert(selectionStart, text);
+    }
+
     /**
      * Remove linux line terminate, only support escape \n
      */
