@@ -154,6 +154,9 @@ public abstract class GestureSupportEditor extends HighlightEditorView
         }
         if (mScroller != null) {
             if (mScroller.computeScrollOffset()) {
+                if (hasFocus()) {
+                    clearFocus();
+                }
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             }
         } else {
@@ -170,6 +173,9 @@ public abstract class GestureSupportEditor extends HighlightEditorView
 
         if (mIsTextScaling){
             return true;
+        }
+        if (hasFocus()){
+            clearFocus();
         }
         Layout layout = getLayout();
         if (mScroller != null && layout != null) {

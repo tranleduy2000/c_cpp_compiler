@@ -60,6 +60,13 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private OutputStream mStdOut;
     private OutputStream mStdErr;
 
+    private DiagnosticContract.MessageFilter mMessageFilter = new DiagnosticContract.MessageFilter() {
+        @Override
+        public boolean accept(Message message) {
+            return true;
+        }
+    };
+
     public DiagnosticPresenter(@Nullable DiagnosticContract.View view,
                                @NonNull IdeActivity activity,
                                @NonNull TabManager tabManager,
@@ -158,7 +165,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @SuppressLint("WrongThread")
     @Override
     public void setMessages(ArrayList<Message> messages) {
-        show(messages);
+        show(filter(messages));
         highlightError(messages);
     }
 
@@ -246,6 +253,11 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @Override
+    public void setFilter(@NonNull DiagnosticContract.MessageFilter filter) {
+        this.mMessageFilter = filter;
+    }
+
+    @Override
     public void onNewMessage(String text) {
         if (mView != null) {
             mView.printMessage(text);
@@ -255,9 +267,21 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         }
 
         //parse output, show diagnosis
-        final List<Message> messages = mToolOutputParser.parseToolOutput(text);
+        List<Message> messages = mToolOutputParser.parseToolOutput(text);
+        messages = filter(messages);
+
         mView.addMessage(messages);
         highlightError(messages);
+    }
+
+    private List<Message> filter(List<Message> messages) {
+        ArrayList<Message> result = new ArrayList<>();
+        for (Message message : messages) {
+            if (mMessageFilter.accept(message)) {
+                result.add(message);
+            }
+        }
+        return result;
     }
 
     @Override

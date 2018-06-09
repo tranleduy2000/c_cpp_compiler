@@ -94,5 +94,11 @@ public class DiagnosticContract {
 
         @NonNull
         OutputStream getErrorOutput();
+
+void        setFilter(@NonNull MessageFilter filter);
+    }
+
+    public interface MessageFilter {
+        boolean accept(Message message);
     }
 }

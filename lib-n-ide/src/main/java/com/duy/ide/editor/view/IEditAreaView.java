@@ -68,4 +68,5 @@ public interface IEditAreaView extends IEditActionSupport, IdeEditor {
 
     Context getContext();
 
+    void clearFocus();
 }

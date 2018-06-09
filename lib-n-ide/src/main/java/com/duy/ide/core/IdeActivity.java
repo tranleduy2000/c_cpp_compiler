@@ -157,6 +157,10 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
+                if (currentEditorDelegate  != null){
+                    currentEditorDelegate.getEditText().clearFocus();
+                }
                 mDrawerLayout.requestFocus();
                 hideSoftInput();
             }
