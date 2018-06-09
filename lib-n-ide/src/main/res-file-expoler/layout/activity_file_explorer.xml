@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -49,7 +50,9 @@
                 android:inputType="textNoSuggestions"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:textColor="#333" />
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textColor="?android:textColorPrimary"
+                tools:text="Sdcard/JavaNIDE" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/save_btn"

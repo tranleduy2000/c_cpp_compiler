@@ -9,6 +9,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        versionCode 2
+        versionName "Java I-NDE v" + versionCode
     }
 
     testOptions {
