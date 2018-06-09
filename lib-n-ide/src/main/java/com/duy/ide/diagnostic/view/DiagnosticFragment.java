@@ -200,6 +200,13 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
+    public void setCurrentItem(int index) {
+        if (mViewPager != null) {
+            mViewPager.setCurrentItem(index);
+        }
+    }
+
+    @Override
     public void onDiagnosisClick(Message message, View view) {
         if (mPresenter != null) {
             mPresenter.onDiagnosticClick(view, message);

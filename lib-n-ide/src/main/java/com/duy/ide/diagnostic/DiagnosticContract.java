@@ -34,6 +34,9 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class DiagnosticContract {
+    public static final int DIAGNOSTIC = 0;
+    public static final int COMPILER_LOG = 1;
+
     public interface View {
         @WorkerThread
         void showDiagnostic(List<Message> messages);
@@ -58,6 +61,8 @@ public class DiagnosticContract {
 
         void setPresenter(Presenter presenter);
 
+        @MainThread
+        void setCurrentItem(int index);
     }
 
     public interface Presenter extends ILogger {
@@ -78,6 +83,9 @@ public class DiagnosticContract {
 
         @MainThread
         void clear();
+
+        @MainThread
+        void setCurrentItem(int index);
 
         void setOutputParser(@NonNull PatternAwareOutputParser... parsers);
 

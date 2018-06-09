@@ -222,6 +222,13 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     }
 
     @Override
+    public void setCurrentItem(int index) {
+        if (mView != null){
+            mView.setCurrentItem(index);
+        }
+    }
+
+    @Override
     public void setOutputParser(@NonNull PatternAwareOutputParser... parsers) {
         mToolOutputParser = new ToolOutputParser(parsers, this);
     }

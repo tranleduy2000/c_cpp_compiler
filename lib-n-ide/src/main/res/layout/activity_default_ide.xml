@@ -84,34 +84,49 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/drag_view"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/symbol_bar_height"
-                    android:fillViewport="true"
-                    android:orientation="horizontal">
+                    android:layout_height="@dimen/symbol_bar_height">
 
-                    <com.duy.common.view.TintImageView
-                        android:id="@+id/btn_toggle_panel"
-                        android:layout_width="@dimen/symbol_bar_height"
-                        android:layout_height="@dimen/symbol_bar_height"
-                        android:scaleType="centerInside"
-                        android:textColor="?android:textColorPrimary"
-                        app:srcCompat="@drawable/ic_keyboard_arrow_up_white_24dp" />
-
-                    <HorizontalScrollView
+                    <LinearLayout
+                        android:id="@+id/drag_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:fillViewport="true"
+                        android:orientation="horizontal">
 
-                        <com.jecelyin.editor.v2.widget.SymbolBarLayout
-                            android:id="@+id/symbolBarLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="?android:attr/windowBackground"
-                            android:visibility="visible" />
-                    </HorizontalScrollView>
 
-                </LinearLayout>
+                        <com.duy.common.view.TintImageView
+                            android:id="@+id/btn_toggle_panel"
+                            android:layout_width="@dimen/symbol_bar_height"
+                            android:layout_height="@dimen/symbol_bar_height"
+                            android:scaleType="centerInside"
+                            android:textColor="?android:textColorPrimary"
+                            app:srcCompat="@drawable/ic_keyboard_arrow_up_white_24dp" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.jecelyin.editor.v2.widget.SymbolBarLayout
+                                android:id="@+id/symbolBarLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="?android:attr/windowBackground"
+                                android:visibility="visible" />
+                        </HorizontalScrollView>
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/compile_progress"
+                        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:visibility="gone" />
+
+                </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/container_diagnostic_list_view"
