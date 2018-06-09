@@ -2,6 +2,7 @@ package com.duy.ccppcompiler.ide.editor.theme;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.text.style.CharacterStyle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
@@ -36,7 +38,7 @@ public class EditorThemeFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private EditorThemeAdapter mEditorThemeAdapter;
     private Preferences mPreferences;
-
+    private ProgressBar mProgressBar;
 
     @Nullable
     @Override
@@ -48,14 +50,17 @@ public class EditorThemeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPreferences = Preferences.getInstance(getContext());
+        mProgressBar = view.findViewById(R.id.progress_bar);
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        mEditorThemeAdapter = new EditorThemeAdapter(getContext());
-        mEditorThemeAdapter.setOnThemeSelectListener((EditorThemeAdapter.OnThemeSelectListener) getActivity());
-        mRecyclerView.setAdapter(mEditorThemeAdapter);
-        mRecyclerView.scrollToPosition(findThemeIndex(mPreferences.getEditorTheme()));
+        loadData();
 
+    }
+
+
+    private void loadData() {
+        new LoadThemeTask(getContext()).execute();
     }
 
     private int findThemeIndex(EditorTheme editorTheme) {
@@ -72,7 +77,7 @@ public class EditorThemeFragment extends Fragment {
         private OnThemeSelectListener onThemeSelectListener;
         private Mode mLanguage = Catalog.getModeByName("C++");
 
-        public EditorThemeAdapter(Context context) {
+        EditorThemeAdapter(Context context) {
             mContext = context;
             mEditorThemes = ThemeLoader.getAll(context);
             Collections.sort(mEditorThemes, new Comparator<EditorTheme>() {
@@ -83,7 +88,7 @@ public class EditorThemeFragment extends Fragment {
             });
         }
 
-        public int getPosition(EditorTheme editorTheme) {
+        int getPosition(EditorTheme editorTheme) {
             return mEditorThemes.indexOf(editorTheme);
         }
 
@@ -197,6 +202,41 @@ public class EditorThemeFragment extends Fragment {
                 mTxtName = itemView.findViewById(R.id.txt_name);
                 mBtnSelect = itemView.findViewById(R.id.btn_select);
             }
+        }
+    }
+
+    private class LoadThemeTask extends AsyncTask<Void, Void, Void> {
+        private Context context;
+
+        LoadThemeTask(Context context) {
+            this.context = context;
+        }
+
+        public Context getContext() {
+            return context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressBar.setIndeterminate(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ThemeLoader.init(getContext());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mEditorThemeAdapter = new EditorThemeAdapter(getContext());
+            mEditorThemeAdapter.setOnThemeSelectListener((EditorThemeAdapter.OnThemeSelectListener) getActivity());
+            mRecyclerView.setAdapter(mEditorThemeAdapter);
+            mRecyclerView.scrollToPosition(findThemeIndex(mPreferences.getEditorTheme()));
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 }
