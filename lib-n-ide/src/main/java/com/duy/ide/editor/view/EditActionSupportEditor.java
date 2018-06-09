@@ -88,6 +88,9 @@ public class EditActionSupportEditor extends GestureSupportEditor {
 
             int selectionStart = getSelectionStart();
             selectionStart = Math.max(0, selectionStart);
+            int selectionEnd = getSelectionEnd();
+            selectionEnd = Math.max(0, selectionEnd);
+            getText().delete(selectionStart, selectionEnd);
             getText().insert(selectionStart, cleanupForPaste(clipboard));
             return true;
         }
