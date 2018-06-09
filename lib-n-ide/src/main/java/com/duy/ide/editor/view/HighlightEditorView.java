@@ -169,7 +169,8 @@ public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteText
                     //bad code
                     //common support java,c and c++
                     // TODO: 08-Jun-18 dynamic change
-                    if (dest.charAt(dend) == '}' && dstart - 1 >= 0 && dest.charAt(dstart - 1) == '{') {
+                    if (dend < dest.length() && dest.charAt(dend) == '}'
+                            && dstart - 1 >= 0 && dest.charAt(dstart - 1) == '{') {
                         int mstart = dstart - 2;
                         while (mstart >= 0 && dest.charAt(mstart) != '\n') {
                             mstart--;
