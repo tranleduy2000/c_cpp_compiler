@@ -85,7 +85,7 @@ public class FinderDialog extends AbstractDialog  {
 
     @Override
     public void show() {
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_find_replace, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_find_replace_default, null);
 
         final ViewHolder holder = new ViewHolder(view);
 //        holder.mFindEditText.setDrawableClickListener(this);

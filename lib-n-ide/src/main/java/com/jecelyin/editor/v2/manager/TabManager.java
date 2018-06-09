@@ -93,9 +93,9 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             int lastTab = Preferences.getInstance(mActivity).getLastTab();
             setCurrentTab(lastTab);
 
-            if (descriptors.isEmpty()) {
-                mActivity.createNewFile();
-            }
+//            if (descriptors.isEmpty()) {
+//                mActivity.createNewFile();
+//            }
         }
 
         mPagerAdapter.registerDataSetObserver(new DataSetObserver() {

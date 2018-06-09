@@ -25,13 +25,14 @@ import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.logging.ILogger;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Duy on 28-Apr-18.
  */
-
+@SuppressWarnings("unused")
 public class DiagnosticContract {
     public interface View {
         @WorkerThread
@@ -79,5 +80,11 @@ public class DiagnosticContract {
         void clear();
 
         void setOutputParser(@NonNull PatternAwareOutputParser... parsers);
+
+        @NonNull
+        OutputStream getStandardOutput();
+
+        @NonNull
+        OutputStream getErrorOutput();
     }
 }

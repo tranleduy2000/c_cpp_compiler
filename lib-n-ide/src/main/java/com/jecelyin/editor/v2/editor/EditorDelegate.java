@@ -182,8 +182,9 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         mEditText.addTextChangedListener(this);
         onDocumentChanged();
 
+        String fileName = mDocument.getFile().getPath().replaceAll("[^A-Za-z0-9_]", "_");
         SharedPreferences historyData = mContext.getSharedPreferences(
-                mDocument.getFile().getPath(), Context.MODE_PRIVATE);
+                fileName, Context.MODE_PRIVATE);
         mEditText.restoreEditHistory(historyData);
     }
 
@@ -191,8 +192,9 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         if (isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
             saveInBackground();
         }
+        String fileName = mDocument.getFile().getPath().replaceAll("[^A-Za-z0-9_]", "_");
         SharedPreferences historyData = mContext.getSharedPreferences(
-                mDocument.getFile().getPath(), Context.MODE_PRIVATE);
+                fileName, Context.MODE_PRIVATE);
         mEditText.saveHistory(historyData);
         mEditText.removeTextChangedListener(mDocument);
         mEditText.removeTextChangedListener(this);
@@ -557,10 +559,10 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
 
         String selectedText = getEditableText().subSequence(start, end).toString();
 
-        if (id == R.id.m_convert_to_uppercase) {
+        if (id == R.id.action_convert_to_uppercase) {
             selectedText = selectedText.toUpperCase();
 
-        } else if (id == R.id.m_convert_to_lowercase) {
+        } else if (id == R.id.action_convert_to_lowercase) {
             selectedText = selectedText.toLowerCase();
 
         }
@@ -685,12 +687,12 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                         setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
                 if (!readOnly) {
-                    menu.add(0, R.id.m_convert_to_uppercase, 0, R.string.convert_to_uppercase)
+                    menu.add(0, R.id.action_convert_to_uppercase, 0, R.string.convert_to_uppercase)
                             .setIcon(R.drawable.m_uppercase)
                             .setAlphabeticShortcut('U')
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
-                    menu.add(0, R.id.m_convert_to_lowercase, 0, R.string.convert_to_lowercase)
+                    menu.add(0, R.id.action_convert_to_lowercase, 0, R.string.convert_to_lowercase)
                             .setIcon(R.drawable.m_lowercase)
                             .setAlphabeticShortcut('L')
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
@@ -698,7 +700,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             }
 
             if (!readOnly) {
-                menu.add(0, R.id.m_duplication, 0, selected ? R.string.duplication_text : R.string.duplication_line)
+                menu.add(0, R.id.action_duplicate, 0, selected ? R.string.duplication_text : R.string.duplication_line)
                         .setIcon(R.drawable.ic_control_point_duplicate_white_24dp)
                         .setAlphabeticShortcut('L')
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
@@ -719,10 +721,10 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             if (i == R.id.action_find_replace) {
                 doCommand(new Command(Command.CommandEnum.FIND));
                 return true;
-            } else if (i == R.id.m_convert_to_uppercase || i == R.id.m_convert_to_lowercase) {
+            } else if (i == R.id.action_convert_to_uppercase || i == R.id.action_convert_to_lowercase) {
                 convertSelectedText(item.getItemId());
                 return true;
-            } else if (i == R.id.m_duplication) {
+            } else if (i == R.id.action_duplicate) {
                 mEditText.duplicateSelection();
                 return true;
             }

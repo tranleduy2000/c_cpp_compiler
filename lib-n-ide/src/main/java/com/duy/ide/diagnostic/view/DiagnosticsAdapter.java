@@ -56,7 +56,7 @@ public class DiagnosticsAdapter extends RecyclerView.Adapter<DiagnosticsAdapter.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_diagnostic, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_diagnostic_default, parent, false);
         return new ViewHolder(view);
     }
 

@@ -67,7 +67,7 @@ public class DialogNewFile extends AppCompatDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_new_file, container, false);
+        View view = inflater.inflate(R.layout.dialog_new_file_default, container, false);
         return view;
     }
 

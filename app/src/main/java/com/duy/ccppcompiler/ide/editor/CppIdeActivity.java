@@ -85,6 +85,11 @@ public class CppIdeActivity extends IdeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getTabManager().getTabCount() == 0){
+            createNewFile();
+        }
+
         mPremiumHelper = new InAppPurchaseHelper(this);
         // Monitor launch times and interval from installation
         RateThisApp.onCreate(this);

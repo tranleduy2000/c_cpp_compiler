@@ -69,7 +69,7 @@ public class EditorFragment extends Fragment {
             File file = (File) arguments.getSerializable(KEY_FILE);
             mEditorDelegate = new EditorDelegate(file, offset, encoding);
         }
-        View view =  inflater.inflate(R.layout.fragment_editor, container, false);
+        View view =  inflater.inflate(R.layout.fragment_editor_default, container, false);
         mEditorDelegate.onCreate((IEditAreaView) view.findViewById(R.id.edit_text));
         return view;
     }

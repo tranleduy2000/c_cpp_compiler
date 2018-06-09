@@ -6,13 +6,13 @@
     <item name="action_save_all" type="id" />
     <item name="action_save_as" type="id" />
     <item name="action_file_history" type="id" />
-    <item name="m_cut" type="id" />
-    <item name="m_copy" type="id" />
-    <item name="m_paste" type="id" />
-    <item name="m_select_all" type="id" />
+    <item name="action_cut" type="id" />
+    <item name="action_copy" type="id" />
+    <item name="action_paste" type="id" />
+    <item name="action_select_all" type="id" />
     <item name="action_undo" type="id" />
     <item name="action_redo" type="id" />
-    <item name="m_duplication" type="id" />
+    <item name="action_duplicate" type="id" />
     <item name="action_find_replace" type="id" />
     <item name="action_goto_top" type="id" />
     <item name="action_goto_end" type="id" />
@@ -28,17 +28,18 @@
     <item name="action_run" type="id" />
     <item name="m_menu" type="id" />
     <item name="action_editor_setting" type="id" />
-    <item name="m_convert_to_uppercase" type="id" />
-    <item name="m_convert_to_lowercase" type="id" />
+    <item name="action_convert_to_uppercase" type="id" />
+    <item name="action_convert_to_lowercase" type="id" />
     <item name="m_fullscreen" type="id" />
     <item name="m_theme" type="id" />
 
 
     <item name="avpa_view_tag_key" type="id" />
-    <item name="action_share" type="id">Share</item>
+    <item name="action_share" type="id" />
     <item name="action_rate" type="id" />
-    <item name="action_share_code" type="id">Share code</item>
+    <item name="action_share_code" type="id" />
     <item name="action_format_source" type="id" />
+
     <item name="menu_file" type="id" />
     <item name="menu_edit" type="id" />
     <item name="menu_view" type="id" />

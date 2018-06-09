@@ -22,7 +22,7 @@ import android.os.Handler;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.v4.util.Pair;
 import android.view.View;
 
@@ -40,6 +40,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private ToolOutputParser mToolOutputParser = null;
     private DiagnosticContract.View mView;
 
+    private OutputStream mStdOut;
+    private OutputStream mStdErr;
+
     public DiagnosticPresenter(@Nullable DiagnosticContract.View view,
                                @NonNull IdeActivity activity,
                                @NonNull TabManager tabManager,
@@ -67,6 +71,33 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             mView.setPresenter(this);
         }
         mHandler = handler;
+        createIOStream();
+    }
+
+    private void createIOStream() {
+        mStdOut = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                write(new byte[]{(byte) b}, 0, 1);
+            }
+
+            @Override
+            public void write(@NonNull byte[] b, int off, int len) throws IOException {
+                onNewMessage(new String(b, off, len));
+            }
+        };
+        mStdErr = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                write(new byte[]{(byte) b}, 0, 1);
+            }
+
+            @Override
+            public void write(@NonNull byte[] b, int off, int len) throws IOException {
+                onNewMessage(new String(b, off, len));
+            }
+        };
+
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -124,7 +155,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         mActivity.mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
-    @MainThread
+    @SuppressLint("WrongThread")
     @Override
     public void setMessages(ArrayList<Message> messages) {
         show(messages);
@@ -152,29 +183,35 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
      * Show error in current editor,
      * Find first error index and move cursor to it
      */
-    @UiThread
-    private void highlightError(List<Message> messages) {
-        for (Message message : messages) {
-            if (message.getKind() != Message.Kind.ERROR) {
-                continue;
+    @WorkerThread
+    private void highlightError(final List<Message> messages) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (Message message : messages) {
+                    if (message.getKind() != Message.Kind.ERROR) {
+                        continue;
+                    }
+                    if (message.getSourcePath() == null) {
+                        continue;
+                    }
+                    File sourceFile = new File(message.getSourcePath());
+                    Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(sourceFile);
+                    if (position == null) {
+                        continue;
+                    }
+                    @SuppressWarnings("ConstantConditions")
+                    @NonNull final IEditorDelegate editorDelegate = position.second;
+                    Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
+                    int lineNumber = message.getLineNumber();
+                    int columnNumber = message.getColumn();
+                    command.args.putInt("line", lineNumber);
+                    command.args.putInt("col", columnNumber);
+                    editorDelegate.doCommand(command);
+                }
             }
-            if (message.getSourcePath() == null) {
-                continue;
-            }
-            File sourceFile = new File(message.getSourcePath());
-            Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(sourceFile);
-            if (position == null) {
-                continue;
-            }
-            @SuppressWarnings("ConstantConditions")
-            @NonNull final IEditorDelegate editorDelegate = position.second;
-            Command command = new Command(Command.CommandEnum.HIGHLIGHT_ERROR);
-            int lineNumber = message.getLineNumber();
-            int columnNumber = message.getColumn();
-            command.args.putInt("line", lineNumber);
-            command.args.putInt("col", columnNumber);
-            editorDelegate.doCommand(command);
-        }
+        });
+
     }
 
 
@@ -189,20 +226,31 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         mToolOutputParser = new ToolOutputParser(parsers, this);
     }
 
+    @NonNull
+    @Override
+    public OutputStream getStandardOutput() {
+        return mStdOut;
+    }
+
+    @NonNull
+    @Override
+    public OutputStream getErrorOutput() {
+        return mStdErr;
+    }
+
     @Override
     public void onNewMessage(String text) {
-        mView.printMessage(text);
+        if (mView != null) {
+            mView.printMessage(text);
+        }
         if (mToolOutputParser == null) {
             return;
         }
+
+        //parse output, show diagnosis
         final List<Message> messages = mToolOutputParser.parseToolOutput(text);
         show(messages);
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                highlightError(messages);
-            }
-        });
+        highlightError(messages);
     }
 
     @Override

@@ -29,6 +29,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import com.duy.ide.diagnostic.DiagnosticClickListener;
 import com.duy.ide.diagnostic.DiagnosticContract;
@@ -51,8 +52,10 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     private DiagnosticContract.Presenter mPresenter;
     private DiagnosticsAdapter mAdapter;
     private RecyclerView mDiagnosticView;
-    private LogView mLogView;
     private ViewPager mViewPager;
+
+    private ScrollView mLogScroller;
+    private LogView mLogView;
 
     public static DiagnosticFragment newInstance() {
         return new DiagnosticFragment();
@@ -61,7 +64,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_diagnostic, container, false);
+        return inflater.inflate(R.layout.fragment_diagnostic_default, container, false);
 
     }
 
@@ -77,6 +80,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         mLogView = view.findViewById(R.id.txt_log);
         //disable save log, avoid crash with large data
         mLogView.setSaveEnabled(false);
+        mLogScroller = view.findViewById(R.id.compiler_output_container);
 
         mDiagnosticView = view.findViewById(R.id.diagnostic_list_view);
         mDiagnosticView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -123,6 +127,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
             @Override
             public void run() {
                 mLogView.append(log);
+                mLogScroller.fullScroll(View.FOCUS_DOWN);
                 ////move to log view
                 //if (mAdapter.getDiagnostics().isEmpty()) {
                 //    mViewPager.setCurrentItem(1);
@@ -137,6 +142,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
             @Override
             public void run() {
                 mLogView.append(log);
+                mLogScroller.fullScroll(View.FOCUS_DOWN);
 
                 //move to log view
                 if (mAdapter.getDiagnostics().isEmpty()) {
