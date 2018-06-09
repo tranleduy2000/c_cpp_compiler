@@ -62,7 +62,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             , ",", ";", "'", "\"", "(", ")", "/", "\\", "%", "[", "]", "|", "#", "=", "$", ":"
             , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n"});
     public static final String KEY_AUTO_PAIR = "pref_auto_pair";
-    private static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
     private static final String KEY_TOUCH_TO_ADJUST_TEXT_SIZE = "pref_touch_to_adjust_text_size";
     private static final String KEY_INSERT_SPACE_FOR_TAB = "pref_insert_space_for_tab";
     private static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
@@ -76,6 +75,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     private static final String KEY_LAST_TAB = "last_tab";
     private static final Object mContent = new Object();
     private static Preferences instance;
+    private static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
 
     static {
     }

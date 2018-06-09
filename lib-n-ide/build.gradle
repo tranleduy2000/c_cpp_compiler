@@ -36,6 +36,24 @@ android {
     }
 }
 
+task copyReleaseToJavaNIDE {
+    if (file("C:\\github\\javaide\\lib-n-ide-release").exists()) {
+        println "copyReleaseToJavaNIDE"
+        copy {
+            from("build/outputs/aar/lib-n-ide-release.aar")
+            into("C:\\github\\javaide\\lib-n-ide-release")
+        }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == "assembleRelease") {
+        task.doLast {
+            copyReleaseToJavaNIDE
+        }
+    }
+}
+
 dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180130'
