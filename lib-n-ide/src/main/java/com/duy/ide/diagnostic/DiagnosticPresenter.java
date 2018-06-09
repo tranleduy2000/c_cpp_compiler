@@ -223,7 +223,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     @Override
     public void setCurrentItem(int index) {
-        if (mView != null){
+        if (mView != null) {
             mView.setCurrentItem(index);
         }
     }
@@ -256,7 +256,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
         //parse output, show diagnosis
         final List<Message> messages = mToolOutputParser.parseToolOutput(text);
-        show(messages);
+        mView.addMessage(messages);
         highlightError(messages);
     }
 
