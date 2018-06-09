@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.ide.editor.theme;
+package com.duy.ide.editor.theme;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,8 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.duy.ccppcompiler.R;
-import com.duy.ide.editor.theme.ThemeLoader;
+import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;

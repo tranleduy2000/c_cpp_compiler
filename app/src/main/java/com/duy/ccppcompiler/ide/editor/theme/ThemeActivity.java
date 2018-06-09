@@ -17,6 +17,7 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.ide.dialogs.PremiumDialog;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
+import com.duy.ide.editor.theme.EditorThemeFragment;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
