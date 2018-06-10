@@ -4,6 +4,6 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-public interface IAutoCompleteProvider {
+public interface SuggestionProvider {
     ArrayList<SuggestItem> getSuggestions(EditText editor);
 }

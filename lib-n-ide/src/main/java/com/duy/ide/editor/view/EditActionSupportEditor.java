@@ -32,7 +32,7 @@ import com.duy.ide.editor.content.IUndoManager;
 import com.duy.ide.editor.content.UndoManager;
 import com.duy.ide.editor.model.EditorIndex;
 
-public class EditActionSupportEditor extends GestureSupportEditor {
+public abstract class EditActionSupportEditor extends GestureSupportEditor {
     private IUndoManager mUndoManager;
     private ClipboardCompat mClipboard;
     private KeyListener mLastKeyListener;

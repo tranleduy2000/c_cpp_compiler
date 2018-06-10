@@ -37,22 +37,22 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.common.ShareUtil;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.api.CodeFormatter;
-import com.duy.ide.code.api.IAutoCompleteProvider;
-import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.internal.suggestion.GenerateSuggestDataTask;
 import com.duy.ide.editor.model.EditorIndex;
 import com.duy.ide.editor.task.FormatSourceTask;
 import com.duy.ide.editor.text.InputMethodManagerCompat;
 import com.duy.ide.editor.text.style.ErrorSpan;
 import com.duy.ide.editor.text.style.WarningSpan;
 import com.duy.ide.editor.view.IEditAreaView;
+import com.duy.ide.editor.view.SuggestionEditor;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
@@ -66,7 +66,6 @@ import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.syntax.ModeProvider;
 
 import java.io.File;
-import java.util.List;
 import java.util.Locale;
 
 public class EditorDelegate implements TextWatcher, IEditorDelegate {
@@ -86,13 +85,15 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Nullable
     private CodeFormatProvider mCodeFormatProvider;
     @Nullable
-    private IAutoCompleteProvider mSuggestionProvider;
+    private SuggestionProvider mSuggestionProvider;
+    @Nullable
+    private GenerateSuggestDataTask mGenerateSuggestDataTask;
 
-    public EditorDelegate(@NonNull SavedState ss) {
+    EditorDelegate(@NonNull SavedState ss) {
         savedState = ss;
     }
 
-    public EditorDelegate(@NonNull File file, int offset, String encoding) {
+    EditorDelegate(@NonNull File file, int offset, String encoding) {
         savedState = new SavedState();
         savedState.encoding = encoding;
         savedState.cursorOffset = offset;
@@ -530,9 +531,13 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         //now auto complete working
-        if (mSuggestionProvider != null) {
-            List<SuggestItem> items = mSuggestionProvider.getSuggestions((EditText) mEditText);
-            mEditText.setSuggestData(items);
+        if (mSuggestionProvider != null && mEditText != null) {
+            if (mGenerateSuggestDataTask != null) {
+                mGenerateSuggestDataTask.cancel(true);
+            }
+            mGenerateSuggestDataTask = new GenerateSuggestDataTask((SuggestionEditor) mEditText,
+                    mSuggestionProvider);
+            mGenerateSuggestDataTask.execute();
         }
     }
 
@@ -606,6 +611,11 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Override
     public void setCodeFormatProvider(@Nullable CodeFormatProvider codeFormatProvider) {
         this.mCodeFormatProvider = codeFormatProvider;
+    }
+
+    @Override
+    public void setSuggestionProvider(@Nullable SuggestionProvider provider) {
+        this.mSuggestionProvider = provider;
     }
 
     public static class SavedState implements Parcelable {
