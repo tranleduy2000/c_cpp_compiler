@@ -1,4 +1,4 @@
-package com.duy.ccppcompiler.ide.code;
+package com.duy.ccppcompiler.ide.editor.code;
 
 import android.support.annotation.Nullable;
 

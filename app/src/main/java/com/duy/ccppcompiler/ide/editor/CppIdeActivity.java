@@ -25,6 +25,7 @@ import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
@@ -37,10 +38,10 @@ import com.duy.ccppcompiler.compiler.compilers.LinkerFlagsDetector;
 import com.duy.ccppcompiler.compiler.compilers.NativeCompileImpl;
 import com.duy.ccppcompiler.compiler.manager.CompileManager;
 import com.duy.ccppcompiler.console.TermActivity;
-import com.duy.ccppcompiler.ide.code.CppCodeFormatProvider;
 import com.duy.ccppcompiler.ide.diagnostic.GccOutputParser;
 import com.duy.ccppcompiler.ide.dialogs.CompilerOptionsDialog;
 import com.duy.ccppcompiler.ide.dialogs.PremiumDialog;
+import com.duy.ccppcompiler.ide.editor.code.CppCodeFormatProvider;
 import com.duy.ccppcompiler.ide.editor.theme.ThemeActivity;
 import com.duy.ccppcompiler.ide.examples.ExampleActivity;
 import com.duy.ccppcompiler.packagemanager.Environment;
@@ -52,19 +53,23 @@ import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.code.api.CodeFormatProvider;
+import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
-import com.jecelyin.common.utils.UIUtils;
-import com.jecelyin.editor.v2.Preferences;
 import com.duy.ide.editor.EditorDelegate;
 import com.duy.ide.editor.IEditorDelegate;
+import com.duy.ide.editor.internal.suggestion.DefaultSuggestItem;
+import com.jecelyin.common.utils.UIUtils;
+import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.kobakei.ratethisapp.RateThisApp;
 import com.pdaxrom.cctools.BuildConstants;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import jackpal.androidterm.TermPreferencesActivity;
@@ -86,7 +91,7 @@ public class CppIdeActivity extends IdeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getTabManager().getTabCount() == 0){
+        if (getTabManager().getTabCount() == 0) {
             createNewFile();
         }
 
@@ -129,6 +134,25 @@ public class CppIdeActivity extends IdeActivity {
                 analyzer.start();
             }
         }
+
+        editorDelegate.setSuggestionProvider(new SuggestionProvider() {
+            @Override
+            public ArrayList<SuggestItem> getSuggestions(EditText editor) {
+                ArrayList<SuggestItem> items = new ArrayList<>();
+                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
+                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
+                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
+                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
+                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
+                return items;
+            }
+        });
+
+    }
+
+    @Override
+    public void onEditorViewDestroyed(@NonNull IEditorDelegate editorDelegate) {
+        super.onEditorViewDestroyed(editorDelegate);
     }
 
     @Override

@@ -22,7 +22,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.ActionMode;
 
-public class CodeEditor extends EditActionSupportEditor {
+public class CodeEditor extends SuggestionEditor {
     public CodeEditor(Context context) {
         super(context);
     }
