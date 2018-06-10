@@ -10,7 +10,6 @@ import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListPopupWindow;
@@ -48,26 +47,24 @@ public class SuggestionEditor extends EditActionSupportEditor
     private int mDropDownAnchorId = View.NO_ID;
 
     public SuggestionEditor(Context context) {
-     this(context, null, 0);
+        super(context);
+        init(context, null, 0);
     }
 
     public SuggestionEditor(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context, attrs, 0);
+
     }
 
     public SuggestionEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
-        mPopup.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        mPopup.setPromptPosition(ListPopupWindow.POSITION_PROMPT_BELOW);
-
-
         init(context, attrs, defStyleAttr);
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         updateCharHeight();
+        mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
     }
 
     @Override
@@ -99,7 +96,7 @@ public class SuggestionEditor extends EditActionSupportEditor
             float x = layout.getPrimaryHorizontal(pos);
             float y = baseline + ascent;
 
-            int offsetHorizontal = (int) x + getPaddingLeft();
+            int offsetHorizontal = (int) x + getPaddingLeft() - getScrollX();
             setDropDownHorizontalOffset(offsetHorizontal);
 
             int heightVisible = getHeightVisible();

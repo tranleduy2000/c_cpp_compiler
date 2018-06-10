@@ -84,7 +84,7 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.list_item_suggest_default, parent);
+            convertView = mInflater.inflate(R.layout.list_item_suggest_default, null);
         }
 
         final SuggestItem item = getItem(position);
