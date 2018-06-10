@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.console.TermActivity;
-import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.pkgmanager.Environment;
 import com.pdaxrom.utils.Utils;
 
 import java.io.File;

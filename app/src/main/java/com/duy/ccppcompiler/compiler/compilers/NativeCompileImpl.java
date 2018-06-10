@@ -26,7 +26,7 @@ import com.duy.ccppcompiler.compiler.shell.ArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.GccArgumentBuilder;
 import com.duy.ccppcompiler.compiler.shell.Shell;
-import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.pkgmanager.Environment;
 import com.duy.common.DLog;
 import com.duy.ide.logging.ILogger;
 import com.pdaxrom.utils.Utils;

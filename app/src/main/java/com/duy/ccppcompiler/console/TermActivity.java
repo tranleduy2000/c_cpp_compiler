@@ -46,7 +46,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.pkgmanager.Environment;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 import com.pdaxrom.cctools.BuildConstants;
 

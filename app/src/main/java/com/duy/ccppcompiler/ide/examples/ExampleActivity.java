@@ -26,7 +26,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.pkgmanager.Environment;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
 import org.apache.commons.io.IOUtils;

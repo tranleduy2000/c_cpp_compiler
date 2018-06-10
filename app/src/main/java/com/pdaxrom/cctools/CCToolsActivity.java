@@ -39,7 +39,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.ccppcompiler.pkgmanager.PackageManagerActivity;
 import com.pdaxrom.utils.Utils;
 import com.pdaxrom.utils.XMLParser;
 

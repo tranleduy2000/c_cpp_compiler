@@ -20,7 +20,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.pkgmanager.Environment;
 import com.duy.ide.logging.ILogger;
 import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;

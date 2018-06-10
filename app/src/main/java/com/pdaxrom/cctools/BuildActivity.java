@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.duy.ccppcompiler.R;
-import com.duy.ccppcompiler.packagemanager.Environment;
+import com.duy.ccppcompiler.pkgmanager.Environment;
 import com.jecelyin.common.utils.DLog;
 import com.pdaxrom.utils.Utils;
 

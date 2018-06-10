@@ -37,7 +37,7 @@ import com.duy.ccppcompiler.R;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.compiler.shell.Shell;
 import com.duy.ccppcompiler.ide.editor.CppIdeActivity;
-import com.duy.ccppcompiler.packagemanager.PackageManagerActivity;
+import com.duy.ccppcompiler.pkgmanager.PackageManagerActivity;
 import com.duy.common.DLog;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
