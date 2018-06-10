@@ -1,5 +1,5 @@
 
-package com.duy;
+package com.duy.ccppcompiler;
 
 import android.support.multidex.MultiDexApplication;
 
