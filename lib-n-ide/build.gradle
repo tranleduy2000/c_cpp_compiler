@@ -10,8 +10,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        versionCode 2
-        versionName "Java I-NDE v" + versionCode
+        versionCode 4
+        versionName "Java I-NDE v$versionCode"
     }
 
     testOptions {
@@ -36,21 +36,10 @@ android {
     }
 }
 
-task copyReleaseToJavaNIDE {
-    if (file("C:\\github\\javaide\\lib-n-ide-release").exists()) {
-        println "copyReleaseToJavaNIDE"
-        copy {
-            from("build/outputs/aar/lib-n-ide-release.aar")
-            into("C:\\github\\javaide\\lib-n-ide-release")
-        }
-    }
-}
 
 tasks.whenTaskAdded { task ->
     if (task.name == "assembleRelease") {
-        task.doLast {
-            copyReleaseToJavaNIDE
-        }
+        task.finalizedBy(copyReleaseToJavaNIDE)
     }
 }
 
@@ -83,3 +72,83 @@ dependencies {
     api "com.android.support:preference-v7:$androidSupportVersion"
 }
 
+
+task copyReleaseToJavaNIDE {
+    File javaIdeDir = new File("C:\\github\\javaide")
+    if (!javaIdeDir.exists()) {
+        return null;
+    }
+    final String prefix = "lib-n-ide-release";
+    String oldModuleName = null;
+    final String newModuleName = "$prefix-${android.defaultConfig.versionCode}";
+    println "New module name $newModuleName"
+    for (File f : javaIdeDir.listFiles()) {
+        if (f.getName().startsWith(prefix)) {
+            oldModuleName = f.getName();
+            println "Old module name $oldModuleName"
+            break;
+        }
+    }
+    File moduleDir = new File(javaIdeDir, oldModuleName);
+    delete moduleDir
+
+    moduleDir = new File(javaIdeDir, newModuleName);
+    moduleDir.mkdirs();
+
+    println "moduleDir $moduleDir"
+
+    copy {
+        from "build/outputs/aar/lib-n-ide-release.aar"
+        into moduleDir
+    }
+    println "copy success"
+
+    File aar = new File(moduleDir, "lib-n-ide-release.aar");
+    aar.renameTo(new File(moduleDir, "${newModuleName}.aar"))
+    println "rename success"
+
+    //now modify setting.gradle
+    println "modify settings.gradle"
+    File settingsFile = new File(javaIdeDir, "settings.gradle");
+    String content = fileToString(settingsFile);
+    content = content.replace(oldModuleName, newModuleName);
+    FileOutputStream output = new FileOutputStream(settingsFile);
+    output.write(content.getBytes());
+    output.close();
+
+    //now modify build.gradle
+    println "modify build.gradle"
+    File gradleFile = new File(moduleDir, "build.gradle")
+    output = new FileOutputStream(gradleFile);
+    output.write(("configurations.maybeCreate(\"default\")\n" +
+            "artifacts.add(\"default\", file('${newModuleName}.aar'))").getBytes());
+    output.close();
+
+    File appGradleFile = new File(javaIdeDir, "app/build.gradle");
+    if (appGradleFile.exists()) {
+        content = fileToString(appGradleFile);
+        content = content.replace(oldModuleName, newModuleName);
+        output = new FileOutputStream(appGradleFile);
+        output.write(content.getBytes())
+        output.close();
+    }
+}
+
+String fileToString(File file) {
+    FileInputStream input = new FileInputStream(file);
+    final int bufferSize = 1024;
+    final char[] buffer = new char[bufferSize];
+    final StringBuilder out = new StringBuilder();
+
+    Reader reader = new InputStreamReader(input, "UTF-8");
+    while (true) {
+        int rsz = reader.read(buffer, 0, buffer.length);
+        if (rsz < 0)
+            break;
+        out.append(buffer, 0, rsz);
+    }
+    reader.close();
+    input.close();
+    return out.toString();
+
+}

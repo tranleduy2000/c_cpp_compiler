@@ -130,7 +130,10 @@ public abstract class CompileManagerImpl implements ICompileManager {
     @MainThread
     private void hideDialog() {
         if (mCompileDialog != null && mCompileDialog.isShowing()) {
-            mCompileDialog.dismiss();
+            try {
+                mCompileDialog.dismiss();
+            } catch (Exception ignored) {
+            }
         }
     }
 

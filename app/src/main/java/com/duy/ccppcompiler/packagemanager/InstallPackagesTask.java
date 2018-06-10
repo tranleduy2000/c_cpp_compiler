@@ -132,7 +132,7 @@ class InstallPackagesTask extends AsyncTask<InstallPackageInfo, Object, Void> {
                     e.printStackTrace();
                     onFailure(e);
                     return;
-                } catch (BadArchiveException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     zipFile.delete();
                     Log.d(TAG, "Corrupted archive, restart application and try install again");

@@ -102,7 +102,7 @@
 #-keep class com.jecelyin.** { public *; }
 #-keep class com.simplecityapps.** { public *; }
 #-keep class org.gjt.sp.jedit.** { public *; }
-#-keep class com.pdaxrom.** { public *; }
+-keep class com.pdaxrom.** { public *; }
 
 -keep class com.android.vending.billing.**
 #Native inteface
