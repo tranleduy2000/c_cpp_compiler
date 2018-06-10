@@ -104,7 +104,7 @@
     <string name="cursor_width">Chiều rộng con trỏ</string>
     <string name="editor">Soạn thảo</string>
     <string name="touch_to_adjust_text_size">Chạm để thay đổi kích thước văn bản</string>
-    <string name="word_wrap_in_editor">Tự động ngắt dòng</string>
+    <string name="word_wrap_in_editor">Ngắt dòng</string>
     <string name="show_linenumber">Hiển thị số dòng</string>
     <string name="show_whitespace">Hiển thị khoảng trắng</string>
     <string name="auto_indent">Tự động thụt lề</string>

@@ -114,7 +114,9 @@ public class EditorThemeFragment extends Fragment {
                         mLanguage = Catalog.getModeByName("Pascal");
                     }
                     InputStream input = mContext.getAssets().open(fileName);
-                    mSampleCode = IOUtils.toString(input);
+                    mSampleCode = IOUtils.toString(input, "UTF-8");
+                    mSampleCode = mSampleCode.replace("\r\n", "\n");
+                    mSampleCode = mSampleCode.replace("\r", "\n");
                     input.close();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -133,6 +135,7 @@ public class EditorThemeFragment extends Fragment {
             return new ViewHolder(view);
         }
 
+        @SuppressLint("UseSparseArrays")
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             final EditorTheme editorTheme = mEditorThemes.get(position);
@@ -145,17 +148,22 @@ public class EditorThemeFragment extends Fragment {
             Highlighter highlighter = new Highlighter();
             editorView.setTheme(editorTheme);
 
+            String sampleData = getSampleData();
+
             buffer.setMode(mLanguage, mContext);
-            editorView.setText("");
-            editorView.getText().insert(0, getSampleData());
+            editorView.getEditableText().clearSpans();
+            editorView.setText(sampleData);
 
             buffer.setEditable(editorView.getText());
-            buffer.insert(0, getSampleData());
 
-            @SuppressLint("UseSparseArrays")
-            HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap = new HashMap<>();
+            buffer.insert(0, sampleData);
+
             int lineCount = buffer.getLineManager().getLineCount();
-            highlighter.highlight(buffer, editorTheme, colorsMap, editorView.getText(), 0, lineCount - 1);
+            highlighter.highlight(buffer, editorTheme,
+                    new HashMap<Integer, ArrayList<? extends CharacterStyle>>(),
+                    editorView.getText(),
+                    0,
+                    lineCount - 1);
 
             holder.mBtnSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -211,6 +219,7 @@ public class EditorThemeFragment extends Fragment {
 
             ViewHolder(View itemView) {
                 super(itemView);
+                setIsRecyclable(false);
                 mEditorView = itemView.findViewById(R.id.editor_view);
                 mTxtName = itemView.findViewById(R.id.txt_name);
                 mBtnSelect = itemView.findViewById(R.id.btn_select);

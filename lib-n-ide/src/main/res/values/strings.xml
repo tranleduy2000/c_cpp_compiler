@@ -126,7 +126,7 @@
     <string name="font_size">Font Size</string>
     <string name="cursor_width">Cursor Width</string>
     <string name="touch_to_adjust_text_size">Touch to change text size</string>
-    <string name="word_wrap_in_editor">Auto wordwrap</string>
+    <string name="word_wrap_in_editor">Wordwrap</string>
     <string name="show_linenumber">Show Linenumber</string>
     <string name="show_whitespace">Show Whitespace</string>
     <string name="auto_indent">Auto Indent</string>

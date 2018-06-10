@@ -8,10 +8,12 @@
 
         <CheckBoxPreference
             android:key="@string/pref_touch_to_adjust_text_size"
+            android:summary="Change font size (Zoom) with two finger"
             android:title="@string/touch_to_adjust_text_size" />
 
         <CheckBoxPreference
             android:key="@string/pref_word_wrap"
+            android:summary="Use soft wrap in editor"
             android:title="@string/word_wrap_in_editor" />
 
         <CheckBoxPreference
@@ -25,6 +27,7 @@
         <CheckBoxPreference
             android:key="@string/pref_auto_indent"
             android:title="@string/auto_indent" />
+
         <CheckBoxPreference
             android:key="@string/pref_auto_pair"
             android:summary="@string/pref_desc_auto_pair"
@@ -44,6 +47,7 @@
 
         <CheckBoxPreference
             android:key="@string/pref_auto_capitalize"
+            android:summary="Not recommend"
             android:title="@string/auto_capitalize" />
 
 
@@ -52,11 +56,10 @@
             android:maxLines="7"
             android:negativeButtonText="@string/reset"
             android:scrollbars="vertical"
-            android:summary=""
             android:title="@string/custom_symbol_list" />
 
         <CheckBoxPreference
-            android:id="@+id/pref_volume_move"
+            android:key="@string/pref_volume_move"
             android:defaultValue="true"
             android:summary="Press volume up (+) to move cursor to right, press volume down (-) to move cursor to left"
             android:title="Volume move" />
