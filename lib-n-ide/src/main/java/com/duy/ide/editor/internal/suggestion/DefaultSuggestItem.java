@@ -1,5 +1,7 @@
 package com.duy.ide.editor.internal.suggestion;
 
+import com.duy.ide.editor.view.IEditAreaView;
+
 public class DefaultSuggestItem implements com.duy.ide.code.api.SuggestItem {
     private String name;
     private String desc;
@@ -49,5 +51,10 @@ public class DefaultSuggestItem implements com.duy.ide.code.api.SuggestItem {
     @Override
     public char getTypeHeader() {
         return 0;
+    }
+
+    @Override
+    public void onSelectThis(IEditAreaView editAreaView) {
+
     }
 }

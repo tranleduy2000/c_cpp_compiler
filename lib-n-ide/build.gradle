@@ -1,5 +1,3 @@
-import java.util.regex.Pattern
-
 apply plugin: 'com.android.library'
 
 android {
@@ -41,9 +39,6 @@ android {
 
 tasks.whenTaskAdded { task ->
     if (task.name == "assembleRelease") {
-        task.doFirst {
-            cleanBuildCache
-        }
         task.finalizedBy(copyReleaseToJavaNIDE)
     }
 }
@@ -76,6 +71,7 @@ dependencies {
     api "com.android.support:preference-v7:$androidSupportLibVersion"
 }
 
+ext.nIdeVersion = 10
 
 task copyReleaseToJavaNIDE << {
     File javaIdeDir = new File("C:\\github\\javaide")
@@ -84,7 +80,7 @@ task copyReleaseToJavaNIDE << {
     }
     final String prefix = "lib-n-ide-release";
     String oldModuleName = null;
-    final String newModuleName = "$prefix-${android.defaultConfig.versionCode}";
+    final String newModuleName = "$prefix-${project.ext.nIdeVersion}";
     println "New module name $newModuleName"
     for (File f : javaIdeDir.listFiles()) {
         if (f.getName().startsWith(prefix)) {
@@ -116,31 +112,31 @@ task copyReleaseToJavaNIDE << {
     println "rename success"
 
     //now modify setting.gradle
-    println "modify settings.gradle"
-    File settingsFile = new File(javaIdeDir, "settings.gradle");
-    String content = fileToString(settingsFile);
-    //comment it
-    content = content.replaceAll("^include ':${Pattern.quote(oldModuleName)}'", "//include ':${newModuleName}'");
-    FileOutputStream output = new FileOutputStream(settingsFile);
-    output.write(content.getBytes());
-    output.close();
-
-    //now modify build.gradle
-    println "modify build.gradle"
-    File gradleFile = new File(moduleDir, "build.gradle")
-    output = new FileOutputStream(gradleFile);
-    output.write(("configurations.maybeCreate(\"default\")\n" +
-            "artifacts.add(\"default\", file('${newModuleName}.aar'))").getBytes());
-    output.close();
-
-    File appGradleFile = new File(javaIdeDir, "app/build.gradle");
-    if (appGradleFile.exists()) {
-        content = fileToString(appGradleFile);
-        content = content.replaceAll(":${Pattern.quote(oldModuleName)}", ":$newModuleName");
-        output = new FileOutputStream(appGradleFile);
-        output.write(content.getBytes())
-        output.close();
-    }
+//    println "modify settings.gradle"
+//    File settingsFile = new File(javaIdeDir, "settings.gradle");
+//    String content = fileToString(settingsFile);
+//    //comment it
+//    content = content.replaceAll("include\\s+':${Pattern.quote(oldModuleName)}'", "//include ':${newModuleName}'");
+//    FileOutputStream output = new FileOutputStream(settingsFile);
+//    output.write(content.getBytes());
+//    output.close();
+//
+//    //now modify build.gradle
+//    println "modify build.gradle"
+//    File gradleFile = new File(moduleDir, "build.gradle")
+//    output = new FileOutputStream(gradleFile);
+//    output.write(("configurations.maybeCreate(\"default\")\n" +
+//            "artifacts.add(\"default\", file('${newModuleName}.aar'))").getBytes());
+//    output.close();
+//
+//    File appGradleFile = new File(javaIdeDir, "app/build.gradle");
+//    if (appGradleFile.exists()) {
+//        content = fileToString(appGradleFile);
+//        content = content.replaceAll(":${Pattern.quote(oldModuleName)}", ":$newModuleName");
+//        output = new FileOutputStream(appGradleFile);
+//        output.write(content.getBytes())
+//        output.close();
+//    }
 }
 
 String fileToString(File file) {

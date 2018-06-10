@@ -459,9 +459,9 @@ public class SuggestionEditor extends EditActionSupportEditor {
                 return;
             }
             SuggestItem item = mAdapter.getItem(position);
-            if (mOnSuggestItemClickListener != null) {
-                //noinspection ConstantConditions
-                mOnSuggestItemClickListener.onClickSuggest(this, position, item);
+            if (item != null) {
+                //handle by this item
+                item.onSelectThis(SuggestionEditor.this);
             }
         }
 

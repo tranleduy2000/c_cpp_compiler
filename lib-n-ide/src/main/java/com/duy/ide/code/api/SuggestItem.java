@@ -1,5 +1,7 @@
 package com.duy.ide.code.api;
 
+import com.duy.ide.editor.view.IEditAreaView;
+
 /**
  * The item will be display in list suggestion
  * <p>
@@ -39,4 +41,9 @@ public interface SuggestItem {
      * etc
      */
     char getTypeHeader();
+
+    /**
+     * @param editAreaView - editor you will modify for this suggestion
+     */
+    void onSelectThis(IEditAreaView editAreaView);
 }

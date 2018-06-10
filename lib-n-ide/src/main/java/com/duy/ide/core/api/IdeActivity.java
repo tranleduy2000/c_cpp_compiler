@@ -486,8 +486,10 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
             openFileExplorer();
 
         } else if (id == R.id.action_goto_line) {
-            new GotoLineDialog(this).show();
-
+            EditorDelegate editorDelegate = getCurrentEditorDelegate();
+            if (editorDelegate != null) {
+                new GotoLineDialog(this, editorDelegate).show();
+            }
         } else if (id == R.id.action_file_history) {
             RecentFilesManager rfm = new RecentFilesManager(this);
             rfm.setOnFileItemClickListener(new RecentFilesManager.OnFileItemClickListener() {
