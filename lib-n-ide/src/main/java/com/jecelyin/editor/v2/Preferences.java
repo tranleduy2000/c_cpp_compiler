@@ -33,7 +33,6 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -57,6 +56,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     public static final int DEF_MIN_FONT_SIZE = 9;
     public static final int DEF_MAX_FONT_SIZE = 32;
+
     public static final int SCREEN_ORIENTATION_AUTO = 0;
     public static final int SCREEN_ORIENTATION_LANDSCAPE = 1;
     public static final int SCREEN_ORIENTATION_PORTRAIT = 2;
@@ -96,7 +96,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
         map = new HashMap<>();
         map.put(KEY_FONT_SIZE, 13);
-        map.put(KEY_TOUCH_TO_ADJUST_TEXT_SIZE, false);
+        map.put(KEY_TOUCH_TO_ADJUST_TEXT_SIZE, true);
         map.put(KEY_WORD_WRAP, true);
         map.put(KEY_SHOW_LINE_NUMBER, true);
         map.put(KEY_SHOW_WHITESPACE, true);
@@ -106,11 +106,13 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_TAB_SIZE, 4);
         map.put(KEY_SYMBOL, VALUE_SYMBOL);
         map.put(KEY_AUTO_CAPITALIZE, false);
+        map.put(KEY_VOLUME_MOVE, true);
+
         map.put(KEY_HIGHLIGHT_FILE_SIZE_LIMIT, 500);
         map.put(KEY_REMEMBER_LAST_OPENED_FILES, true);
+
         map.put(KEY_SCREEN_ORIENTATION, "auto");
         map.put(KEY_KEEP_SCREEN_ON, false);
-        map.put(KEY_PREF_AUTO_CHECK_UPDATES, true);
 
         toolbarIcons = preferences.getStringSet(KEY_TOOLBAR_ICONS, null);
         map.put(KEY_LAST_OPEN_PATH, Environment.getExternalStorageDirectory().getPath());
@@ -132,23 +134,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         }
         return instance;
     }
-
-    public static String getGoogleDriveKey() {
-        return null; //drive_key
-    }
-
-    public static String getGoogleDriveSecret() {
-        return null; //drive_key
-    }
-
-    public static String getBoxAPIKey() {
-        return null; // TODO: 16/1/2
-    }
-
-    public static String getBoxApiSecret() {
-        return null;
-    }
-
     public int getMaxEditor() {
         return 3;
     }
@@ -258,13 +243,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         return list;
     }
 
-    public void setToolbarIcons(Integer[] toolbarIcons) {
-        this.toolbarIcons = new HashSet<>();
-        for (Integer id : toolbarIcons) {
-            this.toolbarIcons.add(String.valueOf(id));
-        }
-        preferences.edit().putStringSet(KEY_TOOLBAR_ICONS, this.toolbarIcons).apply();
-    }
 
     public Object getValue(String key) {
         return map.get(key);
@@ -312,7 +290,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public boolean isAutoCapitalize() {
         return (boolean) map.get(KEY_AUTO_CAPITALIZE);
     }
-
 
     public boolean isOpenLastFiles() {
         return getBoolean(context.getString(R.string.pref_remember_last_opened_files), true);
