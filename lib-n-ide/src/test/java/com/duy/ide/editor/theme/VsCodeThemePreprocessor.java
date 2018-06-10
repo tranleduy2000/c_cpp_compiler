@@ -55,7 +55,7 @@ public class VsCodeThemePreprocessor extends TestCase {
                 return pathname.getPath().toLowerCase().endsWith(".properties");
             }
         });
-        File assestDir = new File("D:\\github\\CCppCompiler\\editor-view\\src\\main\\assets\\themes\\vscode");
+        File assestDir = new File("C:\\github\\CCppCompiler\\lib-n-ide\\src\\main\\assets\\themes\\vscode");
         assestDir.mkdir();
         for (File file : files) {
             FileInputStream input = new FileInputStream(file);
@@ -179,15 +179,15 @@ public class VsCodeThemePreprocessor extends TestCase {
         properties.put(EditorTheme.ThemeAttr.TYPE.getKey(), theme.getString("type"));
 
         //view.bgColor=#ffffff
-        properties.put(EditorTheme.Attr.VIEW_BG_COLOR.getKey(), colors.getString("editor.background"));
+        properties.put(EditorTheme.Attr.BG_COLOR.getKey(), colors.getString("editor.background"));
 
         //view.caretColor=#000000
-        properties.put(EditorTheme.Attr.VIEW_CARET_COLOR.getKey(), colors.getString("editorCursor.foreground"));
+        properties.put(EditorTheme.Attr.CARENT_COLOR.getKey(), colors.getString("editorCursor.foreground"));
 
         //view.eolMarkerColor=#ff6600 todo
 
         //view.fgColor=#000000
-        properties.put(EditorTheme.Attr.VIEW_FG_COLOR.getKey(), colors.getString("editor.foreground"));
+        properties.put(EditorTheme.Attr.FG_COLOR.getKey(), colors.getString("editor.foreground"));
 
         //view.gutter.bgColor=#fefffb
         properties.put(GutterStyle.Attr.VIEW_GUTTER_BG_COLOR.getKey(), colors.getString("editorGutter.background"));
@@ -207,9 +207,9 @@ public class VsCodeThemePreprocessor extends TestCase {
         //view.gutter.structureHighlightColor=#000066 todo
 
         //view.lineHighlightColor=#e5f9ff
-        properties.put(EditorTheme.Attr.VIEW_SELECTION_COLOR.getKey(), colors.getString("editor.lineHighlightBackground"));
+        properties.put(EditorTheme.Attr.SELECTION_COLOR.getKey(), colors.getString("editor.lineHighlightBackground"));
         //view.selectionColor=#ccccff
-        properties.put(EditorTheme.Attr.VIEW_SELECTION_COLOR.getKey(), colors.getString("editor.selectionBackground"));
+        properties.put(EditorTheme.Attr.SELECTION_COLOR.getKey(), colors.getString("editor.selectionBackground"));
 
         //view.status.background=#ffffff todo
         //view.status.foreground=#000000 todo
@@ -218,16 +218,21 @@ public class VsCodeThemePreprocessor extends TestCase {
         //view.structureHighlightColor=#000000 todo
 
         //view.style.comment1=color:#009933 style:i
-        properties.put(SyntaxStyle.Attr.view_style_comment1.getKey(), parseColor(tokenColors, "scope", "comment", "settings"));
+        properties.put(SyntaxStyle.Attr.view_style_comment1.getKey(),
+                parseColor(tokenColors, "scope", "comment", "settings"));
         //view.style.comment2=color:#0099cc style:i
-        properties.put(SyntaxStyle.Attr.view_style_comment2.getKey(), parseColor(tokenColors, "scope", "comment", "settings"));
+        properties.put(SyntaxStyle.Attr.view_style_comment2.getKey(),
+                parseColor(tokenColors, "scope", "comment", "settings"));
         //view.style.comment3=color:#6600cc
-        properties.put(SyntaxStyle.Attr.view_style_comment3.getKey(), parseColor(tokenColors, "scope", "comment", "settings"));
+        properties.put(SyntaxStyle.Attr.view_style_comment3.getKey(),
+                parseColor(tokenColors, "scope", "comment", "settings"));
         //view.style.comment4=color:#cc6600
-        properties.put(SyntaxStyle.Attr.view_style_comment4.getKey(), parseColor(tokenColors, "scope", "comment", "settings"));
+        properties.put(SyntaxStyle.Attr.view_style_comment4.getKey(),
+                parseColor(tokenColors, "scope", "comment", "settings"));
 
         //view.style.digit=color:#993300
-        properties.put(SyntaxStyle.Attr.view_style_digit.getKey(), parseColor(tokenColors, "scope", "constant.numeric", "settings"));
+        properties.put(SyntaxStyle.Attr.view_style_digit.getKey(),
+                parseColor(tokenColors, "scope", "constant.numeric", "settings"));
 
         //view.style.foldLine.0=color:#000000 bgColor:#f5deb8 style:b todo
         //view.style.foldLine.1=color:#000000 bgColor:#d5d5f7 style:b todo
@@ -276,17 +281,32 @@ public class VsCodeThemePreprocessor extends TestCase {
         properties.put(SyntaxStyle.Attr.view_style_operator.getKey(),
                 parseColor(tokenColors, "scope", "variable.parameter", "settings"));
         //view.wrapGuideColor=#8080ff
-        properties.put(EditorTheme.Attr.VIEW_WRAP_GUIDE_COLOR.getKey(), colors.getString("editorIndentGuide.background"));
+        properties.put(EditorTheme.Attr.WRAP_GUIDE_COLOR.getKey(),
+                colors.getString("editorIndentGuide.background"));
+
+        //dropdown
+        properties.put(EditorTheme.Attr.DROPDOWN_BACKGROUND.getKey(),
+                colors.getString("dropdown.background"));
+        properties.put(EditorTheme.Attr.DROPDOWN_FOREGROUND.getKey(),
+                colors.getString("dropdown.foreground"));
+        properties.put(EditorTheme.Attr.DROPDOWN_BORDER.getKey(),
+                colors.getString("dropdown.border"));
+
         //white-space.block-color=#000000
-        properties.put(WhiteSpaceStyle.Attr.BLOCK_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
+        properties.put(WhiteSpaceStyle.Attr.BLOCK_COLOR.getKey(),
+                colors.get("editorWhitespace.foreground"));
         //white-space.fold-color=#cccccc
-        properties.put(WhiteSpaceStyle.Attr.FOLD_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
+        properties.put(WhiteSpaceStyle.Attr.FOLD_COLOR.getKey(),
+                colors.get("editorWhitespace.foreground"));
         //white-space.space-color=#bcbcbc
-        properties.put(WhiteSpaceStyle.Attr.SPACE_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
+        properties.put(WhiteSpaceStyle.Attr.SPACE_COLOR.getKey(),
+                colors.get("editorWhitespace.foreground"));
         //white-space.tab-color=#bcbcbc
-        properties.put(WhiteSpaceStyle.Attr.TAB_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
+        properties.put(WhiteSpaceStyle.Attr.TAB_COLOR.getKey(),
+                colors.get("editorWhitespace.foreground"));
         //white-space.whitespace-color=#ff6600
-        properties.put(WhiteSpaceStyle.Attr.WHITESPACE_COLOR.getKey(), colors.get("editorWhitespace.foreground"));
+        properties.put(WhiteSpaceStyle.Attr.WHITESPACE_COLOR.getKey(),
+                colors.get("editorWhitespace.foreground"));
         return propertiesToString(properties);
     }
 

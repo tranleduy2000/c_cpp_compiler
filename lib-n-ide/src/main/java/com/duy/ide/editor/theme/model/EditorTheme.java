@@ -29,35 +29,35 @@ public class EditorTheme extends ColorScheme {
     }
 
     public int getLineHighlightColor() {
-        return getColor(Attr.VIEW_LINE_HIGHLIGHT_COLOR);
+        return getColor(Attr.LINE_HIGHLIGHT_COLOR);
     }
 
     public int getSelectionColor() {
-        return getColor(Attr.VIEW_SELECTION_COLOR);
+        return getColor(Attr.SELECTION_COLOR);
     }
 
     public int getBgColor() {
-        return getColor(Attr.VIEW_BG_COLOR);
+        return getColor(Attr.BG_COLOR);
 
     }
 
     public int getCaretColor() {
-        return getColor(Attr.VIEW_CARET_COLOR);
+        return getColor(Attr.CARENT_COLOR);
 
     }
 
     public int getEolMarkerColor() {
-        return getColor(Attr.VIEW_EOL_MARKER_COLOR);
+        return getColor(Attr.EOL_MARKER_COLOR);
 
     }
 
     public int getFgColor() {
-        return getColor(Attr.VIEW_FG_COLOR);
+        return getColor(Attr.FG_COLOR);
 
     }
 
     public int getWrapGuideColor() {
-        return getColor(Attr.VIEW_WRAP_GUIDE_COLOR);
+        return getColor(Attr.WRAP_GUIDE_COLOR);
 
     }
 
@@ -95,7 +95,7 @@ public class EditorTheme extends ColorScheme {
     }
 
     public void setName(@NonNull String name) {
-        if (name.isEmpty()){
+        if (name.isEmpty()) {
             return;
         }
         StringBuilder builder = new StringBuilder();
@@ -162,14 +162,17 @@ public class EditorTheme extends ColorScheme {
     }
 
     public enum Attr {
-        VIEW_BG_COLOR("view.bgColor"),
-        VIEW_CARET_COLOR("view.caretColor"),
-        VIEW_EOL_MARKER_COLOR("view.eolMarkerColor"),
-        VIEW_FG_COLOR("view.fgColor"),
-        VIEW_LINE_HIGHLIGHT_COLOR("view.lineHighlightColor"),
-        VIEW_SELECTION_COLOR("view.selectionColor"),
-        VIEW_STRUCTURE_HIGHLIGHT_COLOR("view.structureHighlightColor"),
-        VIEW_WRAP_GUIDE_COLOR("view.wrapGuideColor");
+        BG_COLOR("view.bgColor"),
+        CARENT_COLOR("view.caretColor"),
+        EOL_MARKER_COLOR("view.eolMarkerColor"),
+        FG_COLOR("view.fgColor"),
+        LINE_HIGHLIGHT_COLOR("view.lineHighlightColor"),
+        SELECTION_COLOR("view.selectionColor"),
+        STRUCTURE_HIGHLIGHT_COLOR("view.structureHighlightColor"),
+        WRAP_GUIDE_COLOR("view.wrapGuideColor"),
+        DROPDOWN_BACKGROUND("dropdown.background"),
+        DROPDOWN_FOREGROUND("dropdown.foreground"),
+        DROPDOWN_BORDER("dropdown.border");
 
         private String key;
 
