@@ -1,8 +1,8 @@
-package com.duy.ide.core;
+package com.duy.ide.core.api;
 
 import android.support.annotation.StyleRes;
 
-public interface ITheme {
+public interface IThemeActivity {
     @StyleRes
     int getThemeId();
 }

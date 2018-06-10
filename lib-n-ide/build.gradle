@@ -10,7 +10,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        versionCode 4
+        versionCode 6
         versionName "N-IDE v$versionCode"
     }
 
@@ -46,7 +46,7 @@ tasks.whenTaskAdded { task ->
 dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180130'
-    api fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     api 'com.google.code.gson:gson:2.8.1'
     api 'com.anjlab.android.iab.v3:library:1.0.44'
@@ -62,13 +62,13 @@ dependencies {
     api 'com.google.guava:guava:25.1-android'
     api 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
 
-    api "com.android.support:appcompat-v7:$androidSupportVersion"
-    api "com.android.support:support-v4:$androidSupportVersion"
-    api "com.android.support:support-vector-drawable:$androidSupportVersion"
-    api "com.android.support:cardview-v7:$androidSupportVersion"
-    api "com.android.support:support-annotations:$androidSupportVersion"
-    api "com.android.support:design:$androidSupportVersion"
-    api "com.android.support:preference-v7:$androidSupportVersion"
+    api "com.android.support:appcompat-v7:$androidSupportLibVersion"
+    api "com.android.support:support-v4:$androidSupportLibVersion"
+    api "com.android.support:support-vector-drawable:$androidSupportLibVersion"
+    api "com.android.support:cardview-v7:$androidSupportLibVersion"
+    api "com.android.support:support-annotations:$androidSupportLibVersion"
+    api "com.android.support:design:$androidSupportLibVersion"
+    api "com.android.support:preference-v7:$androidSupportLibVersion"
 }
 
 
@@ -88,10 +88,10 @@ task copyReleaseToJavaNIDE {
             break;
         }
     }
-    if (oldModuleName.equals(newModuleName)){
-        println "module n-ide "
-        return
-    }
+    //if (oldModuleName.equals(newModuleName)) {
+    //    println "module n-ide "
+    //    return
+    //}
     File moduleDir = new File(javaIdeDir, oldModuleName);
     delete moduleDir
 

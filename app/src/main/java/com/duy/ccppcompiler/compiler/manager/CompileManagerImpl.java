@@ -30,7 +30,7 @@ import com.duy.ccppcompiler.compiler.compilers.ICompiler;
 import com.duy.ccppcompiler.compiler.shell.CommandResult;
 import com.duy.ccppcompiler.ide.editor.CppIdeActivity;
 import com.duy.common.DLog;
-import com.duy.ide.core.IdeActivity;
+import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.logging.ILogger;
 import com.jecelyin.common.utils.UIUtils;

@@ -28,7 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.duy.ide.core.ITheme;
+import com.duy.ide.core.api.IThemeActivity;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
 
@@ -36,7 +36,7 @@ import com.jecelyin.common.utils.DLog;
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
 public abstract class ThemeSupportActivity extends AppCompatActivity
-        implements SharedPreferences.OnSharedPreferenceChangeListener, ITheme {
+        implements SharedPreferences.OnSharedPreferenceChangeListener, IThemeActivity {
     private static final String TAG = "BaseActivity";
 
 

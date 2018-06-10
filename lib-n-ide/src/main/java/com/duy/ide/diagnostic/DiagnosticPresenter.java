@@ -27,7 +27,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.duy.common.DLog;
-import com.duy.ide.core.IdeActivity;
+import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.parser.ToolOutputParser;

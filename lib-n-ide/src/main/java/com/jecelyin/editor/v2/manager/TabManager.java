@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.file.explorer.util.FileUtils;
-import com.duy.ide.core.IdeActivity;
+import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.database.RecentFileItem;
 import com.duy.ide.database.SQLHelper;
 import com.duy.ide.editor.editor.R;

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.core;
+package com.duy.ide.core.api;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -268,7 +268,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     }
 
     @Override
-    public void onEditorViewDestroyed(EditorDelegate editorDelegate) {
+    public void onEditorViewDestroyed(@NonNull IEditorDelegate editorDelegate) {
 
     }
 

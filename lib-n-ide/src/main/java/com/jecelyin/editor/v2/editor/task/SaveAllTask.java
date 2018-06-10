@@ -20,7 +20,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
 import com.duy.common.DLog;
-import com.duy.ide.core.IdeActivity;
+import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;

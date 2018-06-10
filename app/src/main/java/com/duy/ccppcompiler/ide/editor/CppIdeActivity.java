@@ -52,7 +52,7 @@ import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.code.api.CodeFormatProvider;
-import com.duy.ide.core.IdeActivity;
+import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.jecelyin.common.utils.UIUtils;

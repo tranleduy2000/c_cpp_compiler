@@ -86,8 +86,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:appcompat-v7:$androidSupportVersion"
-    implementation "com.android.support:support-v4:$androidSupportVersion"
-    implementation "com.android.support:support-annotations:$androidSupportVersion"
-    implementation "com.android.support:design:$androidSupportVersion"
+    implementation "com.android.support:appcompat-v7:$androidSupportLibVersion"
+    implementation "com.android.support:support-v4:$androidSupportLibVersion"
+    implementation "com.android.support:support-annotations:$androidSupportLibVersion"
+    implementation "com.android.support:design:$androidSupportLibVersion"
 }

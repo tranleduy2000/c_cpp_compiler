@@ -17,8 +17,10 @@
 
 package com.jecelyin.editor.v2.editor;
 
-public interface IEditorStateListener {
-    void onEditorViewCreated(IEditorDelegate editorDelegate);
+import android.support.annotation.NonNull;
 
-    void onEditorViewDestroyed(EditorDelegate editorDelegate);
+public interface IEditorStateListener {
+    void onEditorViewCreated(@NonNull IEditorDelegate editorDelegate);
+
+    void onEditorViewDestroyed(@NonNull IEditorDelegate editorDelegate);
 }

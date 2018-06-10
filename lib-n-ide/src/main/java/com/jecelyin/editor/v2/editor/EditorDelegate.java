@@ -42,7 +42,7 @@ import android.widget.Toast;
 import com.duy.common.ShareUtil;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.api.CodeFormatter;
-import com.duy.ide.core.IdeActivity;
+import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.model.EditorIndex;
 import com.duy.ide.editor.text.InputMethodManagerCompat;
@@ -391,13 +391,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
                 break;
             case INSERT_TEXT:
                 if (!readonly) {
-                    int selStart = mEditText.getSelectionStart();
-                    int selEnd = mEditText.getSelectionEnd();
-                    if (selStart == -1 || selEnd == -1) {
-                        mEditText.getText().insert(0, (CharSequence) command.object);
-                    } else {
-                        mEditText.getText().replace(selStart, selEnd, (CharSequence) command.object);
-                    }
+                    mEditText.insert((CharSequence) command.object);
                 }
                 break;
             case RELOAD_WITH_ENCODING:
