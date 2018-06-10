@@ -540,8 +540,15 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         //now auto complete working
-        mHandler.removeCallbacks(mGetSuggestion);
-        mHandler.postDelayed(mGetSuggestion, 100);
+        postGetSuggestion();
+    }
+
+    private void postGetSuggestion() {
+        SuggestionEditor view = (SuggestionEditor) this.mEditText;
+        if (view != null && view.hasFocus() && !view.hasSelection()) {
+            mHandler.removeCallbacks(mGetSuggestion);
+            mHandler.postDelayed(mGetSuggestion, 100);
+        }
     }
 
     private void performGetSuggestion() {
@@ -549,9 +556,8 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             if (mGenerateSuggestDataTask != null) {
                 mGenerateSuggestDataTask.cancel(true);
             }
-            mGenerateSuggestDataTask = new GenerateSuggestDataTask(
-                    (SuggestionEditor) mEditText,
-                    mSuggestionProvider);
+            SuggestionEditor view = (SuggestionEditor) this.mEditText;
+            mGenerateSuggestDataTask = new GenerateSuggestDataTask(view, mSuggestionProvider);
             mGenerateSuggestDataTask.execute();
         }
     }
