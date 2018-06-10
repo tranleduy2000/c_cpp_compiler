@@ -25,6 +25,12 @@
             android:title="@string/show_whitespace" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_auto_complete"
+            android:summary="Show small popup to suggest code when you typing. It can be not supported current language"
+            android:title="Auto complete" />
+
+        <CheckBoxPreference
             android:key="@string/pref_auto_indent"
             android:title="@string/auto_indent" />
 
@@ -59,8 +65,8 @@
             android:title="@string/custom_symbol_list" />
 
         <CheckBoxPreference
-            android:key="@string/pref_volume_move"
             android:defaultValue="true"
+            android:key="@string/pref_volume_move"
             android:summary="Press volume up (+) to move cursor to right, press volume down (-) to move cursor to left"
             android:title="Volume move" />
     </PreferenceCategory>

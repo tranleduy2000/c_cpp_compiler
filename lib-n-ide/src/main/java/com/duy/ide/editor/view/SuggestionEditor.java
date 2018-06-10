@@ -2,6 +2,7 @@ package com.duy.ide.editor.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -14,11 +15,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.internal.suggestion.OnSuggestItemClickListener;
 import com.duy.ide.editor.internal.suggestion.SuggestionAdapter;
 import com.duy.ide.editor.theme.model.EditorTheme;
@@ -87,6 +88,8 @@ public class SuggestionEditor extends EditActionSupportEditor {
         if (getEditorTheme() != null) {
             setThemeForPopup(getEditorTheme());
         }
+
+        setSuggestEnable(mPreferences.isUseAutoComplete());
     }
 
     private void setThemeForPopup(EditorTheme theme) {
@@ -338,12 +341,12 @@ public class SuggestionEditor extends EditActionSupportEditor {
      * <p>Closes the drop down if present on screen.</p>
      */
     public void dismissDropDown() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.displayCompletions(this, null);
+        try {
+            if (mPopup.isShowing()) {
+                mPopup.dismiss();
+            }
+        } catch (Exception e) {
         }
-        mPopup.dismiss();
-
     }
 
     public void setAdapter(SuggestionAdapter adapter) {
@@ -487,5 +490,14 @@ public class SuggestionEditor extends EditActionSupportEditor {
      */
     public void clearListSelection() {
         mPopup.clearListSelection();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        super.onSharedPreferenceChanged(sharedPreferences, key);
+        if (key.equals(getContext().getString(R.string.pref_auto_complete))) {
+            mSuggestionEnable = mPreferences.isUseAutoComplete();
+            setSuggestEnable(mSuggestionEnable);
+        }
     }
 }

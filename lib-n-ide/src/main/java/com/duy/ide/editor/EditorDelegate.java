@@ -641,9 +641,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Override
     public void setSuggestionProvider(@Nullable SuggestionProvider provider) {
         this.mSuggestionProvider = provider;
-        if (this.mEditText != null) {
-            this.mEditText.setSuggestEnable(true);
-        }
     }
 
     public static class SavedState implements Parcelable {

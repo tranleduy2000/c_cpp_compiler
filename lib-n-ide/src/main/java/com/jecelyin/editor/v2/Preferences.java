@@ -134,6 +134,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         }
         return instance;
     }
+
     public int getMaxEditor() {
         return 3;
     }
@@ -390,6 +391,9 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         return preferences.getBoolean(KEY_VOLUME_MOVE, true);
     }
 
+    public boolean isUseAutoComplete() {
+        return getBoolean(context.getString(R.string.pref_auto_complete), true);
+    }
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
     public @interface ScreenOrientation {
