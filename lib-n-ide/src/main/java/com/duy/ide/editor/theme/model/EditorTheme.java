@@ -153,6 +153,10 @@ public class EditorTheme extends ColorScheme {
         return result;
     }
 
+    public int getDropdownBorderColor() {
+        return getColor(Attr.DROPDOWN_BORDER);
+    }
+
     public enum ThemeAttr {
         SCHEME_NAME("theme.name"),
         TYPE("theme.type"),

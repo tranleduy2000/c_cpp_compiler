@@ -3,7 +3,7 @@ package com.duy.ide.editor.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +22,7 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.OnSuggestItemClickListener;
 import com.duy.ide.editor.internal.suggestion.SuggestionAdapter;
 import com.duy.ide.editor.theme.model.EditorTheme;
+import com.jecelyin.common.utils.SysUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,10 @@ public class SuggestionEditor extends EditActionSupportEditor {
     }
 
     private void setThemeForPopup(EditorTheme theme) {
-        mPopup.setBackgroundDrawable(new ColorDrawable(theme.getDropdownBgColor()));
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(theme.getDropdownBgColor());
+        background.setStroke(SysUtils.dpToPixels(getContext(), 1), theme.getDropdownBorderColor());
+        mPopup.setBackgroundDrawable(background);
         mAdapter.setTextColor(theme.getDropdownFgColor());
     }
 

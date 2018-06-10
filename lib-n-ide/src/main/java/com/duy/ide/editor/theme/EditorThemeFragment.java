@@ -60,7 +60,7 @@ public class EditorThemeFragment extends Fragment {
 
     private void loadData() {
         mLoadThemeTask = new LoadThemeTask(getContext());
-        mLoadThemeTask.execute();
+        mLoadThemeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
