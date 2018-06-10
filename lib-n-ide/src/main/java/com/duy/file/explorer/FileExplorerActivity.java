@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -75,10 +76,19 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
                                              @Nullable String destFile,
                                              @Nullable String homePath,
                                              int requestCode) {
+        startPickFileActivity(activity, destFile, homePath, null, requestCode);
+    }
+
+    public static void startPickFileActivity(@NonNull Activity activity,
+                                             @Nullable String destFile,
+                                             @Nullable String homePath,
+                                             @Nullable String encoding,
+                                             int requestCode) {
         Intent it = new Intent(activity, FileExplorerActivity.class);
         it.putExtra(EXTRA_MODE, MODE_PICK_FILE);
         it.putExtra(EXTRA_INIT_PATH, destFile);
         it.putExtra(EXTRA_HOME_PATH, homePath);
+        it.putExtra(EXTRA_ENCODING, encoding);
         activity.startActivityForResult(it, requestCode);
     }
 

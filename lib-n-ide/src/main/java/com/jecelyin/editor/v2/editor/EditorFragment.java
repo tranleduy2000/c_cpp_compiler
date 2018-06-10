@@ -88,6 +88,10 @@ public class EditorFragment extends Fragment {
         if (mEditorDelegate != null) {
             mEditorDelegate.onDestroy();
         }
+        if (getActivity() instanceof IEditorStateListener) {
+            IEditorStateListener listener = (IEditorStateListener) getActivity();
+            listener.onEditorViewDestroyed(mEditorDelegate);
+        }
         super.onDestroyView();
     }
 

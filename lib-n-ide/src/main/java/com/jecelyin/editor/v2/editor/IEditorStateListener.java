@@ -19,4 +19,6 @@ package com.jecelyin.editor.v2.editor;
 
 public interface IEditorStateListener {
     void onEditorViewCreated(IEditorDelegate editorDelegate);
+
+    void onEditorViewDestroyed(EditorDelegate editorDelegate);
 }

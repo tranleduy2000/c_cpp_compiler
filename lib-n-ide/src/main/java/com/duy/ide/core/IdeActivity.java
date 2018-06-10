@@ -158,7 +158,7 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 EditorDelegate currentEditorDelegate = getCurrentEditorDelegate();
-                if (currentEditorDelegate  != null){
+                if (currentEditorDelegate != null) {
                     currentEditorDelegate.getEditText().clearFocus();
                 }
                 mDrawerLayout.requestFocus();
@@ -265,6 +265,11 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
     @CallSuper
     public void onEditorViewCreated(@NonNull IEditorDelegate editorDelegate) {
         editorDelegate.setCodeFormatProvider(getCodeFormatProvider());
+    }
+
+    @Override
+    public void onEditorViewDestroyed(EditorDelegate editorDelegate) {
+
     }
 
     @Nullable
