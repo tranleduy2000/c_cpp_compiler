@@ -52,7 +52,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public static final String KEY_SCREEN_ORIENTATION = "pref_screen_orientation";
     public static final String KEY_KEEP_SCREEN_ON = "pref_keep_screen_on";
     public static final String KEY_READ_ONLY = "readonly_mode";
-    public static final String KEY_VOLUME_MOVE = "pref_volume_move";
 
     public static final int DEF_MIN_FONT_SIZE = 9;
     public static final int DEF_MAX_FONT_SIZE = 32;
@@ -69,7 +68,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     private static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
     private static final String KEY_REMEMBER_LAST_OPENED_FILES = "pref_remember_last_opened_files";
     private static final String KEY_TOOLBAR_ICONS = "pref_toolbar_icons";
-    private static final String KEY_PREF_AUTO_CHECK_UPDATES = "pref_auto_check_updates";
     private static final String KEY_LAST_OPEN_PATH = "last_open_path";
     private static final String KEY_SHOW_HIDDEN_FILES = "show_hidden_files";
     private static final String KEY_FILE_SORT_TYPE = "show_file_sort";
@@ -78,10 +76,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     private static final Object mContent = new Object();
     private static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
     private static Preferences instance;
-
-    static {
-    }
-
     private final SharedPreferences preferences;
 
     private final Map<String, Object> map;
@@ -91,6 +85,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     public Preferences(Context context) {
         this.context = context;
+        PreferenceManager.setDefaultValues(context, R.xml.preference_editor, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         preferences.registerOnSharedPreferenceChangeListener(this);
 
@@ -100,13 +95,16 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_WORD_WRAP, true);
         map.put(KEY_SHOW_LINE_NUMBER, true);
         map.put(KEY_SHOW_WHITESPACE, true);
+
+        map.put(context.getString(R.string.pref_auto_complete), true);
         map.put(KEY_AUTO_INDENT, true);
         map.put(KEY_AUTO_PAIR, true);
+
         map.put(KEY_INSERT_SPACE_FOR_TAB, true);
         map.put(KEY_TAB_SIZE, 4);
         map.put(KEY_SYMBOL, VALUE_SYMBOL);
         map.put(KEY_AUTO_CAPITALIZE, false);
-        map.put(KEY_VOLUME_MOVE, true);
+        map.put(context.getString(R.string.pref_volume_move), true);
 
         map.put(KEY_HIGHLIGHT_FILE_SIZE_LIMIT, 500);
         map.put(KEY_REMEMBER_LAST_OPENED_FILES, true);
@@ -388,7 +386,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     public boolean isUseVolumeToMove() {
-        return preferences.getBoolean(KEY_VOLUME_MOVE, true);
+        return preferences.getBoolean(context.getString(R.string.pref_volume_move), true);
     }
 
     public boolean isUseAutoComplete() {

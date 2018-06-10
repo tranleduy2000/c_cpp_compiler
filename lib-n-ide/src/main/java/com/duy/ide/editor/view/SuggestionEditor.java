@@ -95,7 +95,10 @@ public class SuggestionEditor extends EditActionSupportEditor {
     private void setThemeForPopup(EditorTheme theme) {
         GradientDrawable background = new GradientDrawable();
         background.setColor(theme.getDropdownBgColor());
+        background.setShape(GradientDrawable.RECTANGLE);
+        background.setCornerRadius(SysUtils.dpToPixels(getContext(), 4));
         background.setStroke(SysUtils.dpToPixels(getContext(), 1), theme.getDropdownBorderColor());
+
         mPopup.setBackgroundDrawable(background);
         mAdapter.setTextColor(theme.getDropdownFgColor());
     }
