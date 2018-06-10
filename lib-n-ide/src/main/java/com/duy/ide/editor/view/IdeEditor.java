@@ -17,18 +17,22 @@
 
 package com.duy.ide.editor.view;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.editor.internal.suggestion.OnSuggestItemClickListener;
 import com.duy.ide.editor.model.EditorIndex;
 import com.duy.ide.editor.theme.model.EditorTheme;
 
 import java.util.List;
 
-interface IdeEditor {
+@SuppressWarnings("all")
+public interface IdeEditor {
 
     void setTheme(EditorTheme editorTheme);
 
     EditorTheme getEditorTheme();
-
 
     EditorIndex getCursorIndex(int realLine, int column);
 
@@ -38,5 +42,14 @@ interface IdeEditor {
 
     void setInitLineNumber(int lineCount);
 
-    void setSuggestData(List<SuggestItem> items);
+    void setSuggestEnable(boolean enable);
+
+    /**
+     * Display list suggest data, it can be empty but non null
+     *
+     * @param items
+     */
+    void setSuggestData(@NonNull List<SuggestItem> items);
+
+    void setOnSuggestItemClickListener(@Nullable OnSuggestItemClickListener listener);
 }

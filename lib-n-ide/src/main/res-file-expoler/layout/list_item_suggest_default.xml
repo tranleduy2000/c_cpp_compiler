@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center|start"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txt_suggest_header"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="#26a69a"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        tools:text="v" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/txt_suggest_header"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/txt_suggest_header"
+        android:layout_toLeftOf="@+id/txt_return_type"
+        android:layout_toRightOf="@+id/txt_suggest_header"
+        android:layout_toStartOf="@+id/txt_return_type"
+        android:ellipsize="middle"
+        android:gravity="center|start"
+        android:paddingEnd="2dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingStart="2dp"
+        android:singleLine="true"
+        android:text="@string/save"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+
+        android:textColor="?android:textColorPrimary"
+        android:typeface="monospace" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txt_return_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txt_name"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center|end"
+        android:text=""
+        android:typeface="monospace" />
+
+
+</RelativeLayout>

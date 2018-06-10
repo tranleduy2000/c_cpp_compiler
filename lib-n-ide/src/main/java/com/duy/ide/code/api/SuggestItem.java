@@ -22,7 +22,7 @@ public interface SuggestItem {
     /**
      * Display type
      */
-    String getType();
+    String getReturnType();
 
     /**
      * @return the text will be insert then user click suggestion item
@@ -30,4 +30,13 @@ public interface SuggestItem {
     String getInsertText();
 
     int getSuggestionPriority();
+
+    /**
+     * Return a single character to display type of suggestion
+     * v: variable
+     * f: function
+     * m: method
+     * etc
+     */
+    char getTypeHeader();
 }
