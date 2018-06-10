@@ -6,5 +6,5 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.view.IEditAreaView;
 
 public interface OnSuggestItemClickListener {
-    void onClickSuggest(@NonNull IEditAreaView editAreaView, @NonNull SuggestItem item);
+    void onClickSuggest(@NonNull IEditAreaView editAreaView, int position, @NonNull SuggestItem item);
 }

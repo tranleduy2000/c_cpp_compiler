@@ -7,6 +7,7 @@ import android.support.annotation.UiThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
     private List<SuggestItem> mFilteredData;
 
     @Nullable
-    private OnSuggestItemClickListener mListener;
+    private AdapterView.OnItemClickListener mListener;
 
     private Filter mSuggestionFilter = new Filter() {
         @Override
@@ -82,7 +83,7 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.list_item_suggest_default, null);
         }
@@ -97,6 +98,14 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
             txtReturnType.setText(ensureNotNull(item.getReturnType()));
             txtHeader.setText(ensureNotNull(String.valueOf(item.getTypeHeader())));
         }
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onItemClick(null, v, position, View.NO_ID);
+                }
+            }
+        });
         return convertView;
     }
 
@@ -129,7 +138,7 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
         return mOriginData;
     }
 
-    public void setListener(OnSuggestItemClickListener listener) {
+    public void setListener(AdapterView.OnItemClickListener listener) {
         this.mListener = listener;
     }
 

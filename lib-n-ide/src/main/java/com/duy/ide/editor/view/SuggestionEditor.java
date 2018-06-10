@@ -2,7 +2,6 @@ package com.duy.ide.editor.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -12,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.ListPopupWindow;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -22,11 +22,11 @@ import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.OnSuggestItemClickListener;
 import com.duy.ide.editor.internal.suggestion.SuggestionAdapter;
+import com.duy.ide.editor.theme.model.EditorTheme;
 
 import java.util.List;
 
-public class SuggestionEditor extends EditActionSupportEditor
-        implements OnSuggestItemClickListener {
+public class SuggestionEditor extends EditActionSupportEditor {
 
     private static final String TAG = "SuggestionEditor";
     private final Rect mTmpRect = new Rect();
@@ -34,17 +34,18 @@ public class SuggestionEditor extends EditActionSupportEditor
     private SuggestionAdapter mAdapter;
     @Nullable
     private OnSuggestItemClickListener mOnSuggestItemClickListener;
+    private ListPopupWindow mPopup;
+
     private AdapterView.OnItemClickListener mSuggestClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (mAdapter != null) {
-                SuggestItem description = mAdapter.getAllItems().get(position);
-                onClickSuggest(SuggestionEditor.this, description);
+                performCompletion(position);
             }
         }
     };
-    private ListPopupWindow mPopup;
+
     @IdRes
     private int mDropDownAnchorId = View.NO_ID;
 
@@ -68,16 +69,19 @@ public class SuggestionEditor extends EditActionSupportEditor
         updateCharHeight();
         mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
         mPopup.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        mPopup.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        if (getEditorTheme() != null) {
+            mPopup.setBackgroundDrawable(new ColorDrawable(getEditorTheme().getBgColor()));
+        }
     }
 
     @Override
-    public void onClickSuggest(@NonNull IEditAreaView editAreaView,
-                               @NonNull SuggestItem item) {
-        if (mOnSuggestItemClickListener != null) {
-            mOnSuggestItemClickListener.onClickSuggest(this, item);
+    public void setTheme(@NonNull EditorTheme editorTheme) {
+        super.setTheme(editorTheme);
+        if (mPopup != null) {
+            mPopup.setBackgroundDrawable(new ColorDrawable(editorTheme.getBgColor()));
         }
     }
+
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -191,7 +195,7 @@ public class SuggestionEditor extends EditActionSupportEditor
             mAdapter.clearAllData();
         } else {
             mAdapter = new SuggestionAdapter(getContext(), data);
-            mAdapter.setListener(this);
+            mAdapter.setListener(mSuggestClickListener);
             mPopup.setAdapter(mAdapter);
         }
         mAdapter.setData(data);
@@ -389,4 +393,80 @@ public class SuggestionEditor extends EditActionSupportEditor
         return result;
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        boolean consumed = mPopup.onKeyUp(keyCode, event);
+        if (consumed) {
+            switch (keyCode) {
+                // if the list accepts the key events and the key event
+                // was a click, the text view gets the selected item
+                // from the drop down as its content
+                case KeyEvent.KEYCODE_ENTER:
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                case KeyEvent.KEYCODE_TAB:
+                    if (event.hasNoModifiers()) {
+                        performCompletion();
+                    }
+                    return true;
+            }
+        }
+
+        if (isPopupShowing() && keyCode == KeyEvent.KEYCODE_TAB && event.hasNoModifiers()) {
+            performCompletion();
+            return true;
+        }
+
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void performCompletion() {
+        performCompletion(-1);
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void performCompletion(int position) {
+        if (isPopupShowing() && mAdapter != null) {
+            if (position < 0) {
+                position = mPopup.getSelectedItemPosition();
+            }
+            if (position < 0) {
+                return;
+            }
+            SuggestItem item = mAdapter.getItem(position);
+            if (mOnSuggestItemClickListener != null) {
+                //noinspection ConstantConditions
+                mOnSuggestItemClickListener.onClickSuggest(this, position, item);
+            }
+        }
+
+        if (!mPopup.isDropDownAlwaysVisible()) {
+            dismissDropDown();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mPopup.onKeyDown(keyCode, event)) {
+            return true;
+        }
+        if (isPopupShowing() && keyCode == KeyEvent.KEYCODE_TAB && event.hasNoModifiers()) {
+            return true;
+        }
+        boolean handled = super.onKeyDown(keyCode, event);
+
+        if (handled && isPopupShowing()) {
+            clearListSelection();
+        }
+
+        return handled;
+    }
+
+    /**
+     * <p>Clear the list selection.  This may only be temporary, as user input will often bring
+     * it back.
+     */
+    public void clearListSelection() {
+        mPopup.clearListSelection();
+    }
 }
