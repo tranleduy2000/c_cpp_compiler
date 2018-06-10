@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.editor.task;
+package com.duy.ide.editor.task;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duy.ide.file.SaveListener;
-import com.jecelyin.editor.v2.editor.Document;
+import com.duy.ide.editor.Document;
 
 import java.io.File;
 

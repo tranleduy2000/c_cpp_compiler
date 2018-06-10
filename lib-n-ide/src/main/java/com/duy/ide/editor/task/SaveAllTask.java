@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.editor.task;
+package com.duy.ide.editor.task;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -23,7 +23,7 @@ import com.duy.common.DLog;
 import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.file.SaveListener;
-import com.jecelyin.editor.v2.editor.IEditorDelegate;
+import com.duy.ide.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.manager.TabManager;
 
 /**

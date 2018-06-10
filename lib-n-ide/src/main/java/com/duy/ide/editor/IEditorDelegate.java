@@ -1,4 +1,4 @@
-package com.jecelyin.editor.v2.editor;
+package com.duy.ide.editor;
 
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.editor.view.IEditAreaView;

@@ -34,7 +34,7 @@ import com.duy.ide.diagnostic.parser.ToolOutputParser;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.editor.IEditorDelegate;
+import com.duy.ide.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.manager.TabManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 

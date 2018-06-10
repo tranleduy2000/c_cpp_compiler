@@ -40,9 +40,9 @@ import com.duy.ide.file.SaveListener;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.dialog.SaveConfirmDialog;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
-import com.jecelyin.editor.v2.editor.IEditorDelegate;
-import com.jecelyin.editor.v2.editor.task.SaveAllTask;
+import com.duy.ide.editor.EditorDelegate;
+import com.duy.ide.editor.IEditorDelegate;
+import com.duy.ide.editor.task.SaveAllTask;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.io.File;

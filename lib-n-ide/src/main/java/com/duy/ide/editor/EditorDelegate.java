@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.editor;
+package com.duy.ide.editor;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,14 +37,18 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.common.ShareUtil;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.api.CodeFormatter;
+import com.duy.ide.code.api.IAutoCompleteProvider;
+import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.model.EditorIndex;
+import com.duy.ide.editor.task.FormatSourceTask;
 import com.duy.ide.editor.text.InputMethodManagerCompat;
 import com.duy.ide.editor.text.style.ErrorSpan;
 import com.duy.ide.editor.text.style.WarningSpan;
@@ -56,18 +60,15 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.DocumentInfoDialog;
 import com.jecelyin.editor.v2.dialog.FinderDialog;
-import com.jecelyin.editor.v2.editor.task.FormatSourceTask;
 
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.syntax.ModeProvider;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 
-/**
- * @author Jecelyin Peng <jecelyin@gmail.com>
- */
 public class EditorDelegate implements TextWatcher, IEditorDelegate {
     public final static String KEY_CLUSTER = "is_cluster";
     private static final String TAG = "EditorDelegate";
@@ -80,9 +81,12 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     private boolean loaded = true;
     private int findResultsKeywordColor;
 
+    @Nullable
     private IEditAreaView mEditText;
     @Nullable
     private CodeFormatProvider mCodeFormatProvider;
+    @Nullable
+    private IAutoCompleteProvider mSuggestionProvider;
 
     public EditorDelegate(@NonNull SavedState ss) {
         savedState = ss;
@@ -525,7 +529,11 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+        //now auto complete working
+        if (mSuggestionProvider != null) {
+            List<SuggestItem> items = mSuggestionProvider.getSuggestions((EditText) mEditText);
+            mEditText.setSuggestData(items);
+        }
     }
 
     @Override

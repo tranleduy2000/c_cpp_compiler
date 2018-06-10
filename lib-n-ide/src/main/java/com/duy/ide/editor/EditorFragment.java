@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.editor;
+package com.duy.ide.editor;
 
 import android.os.Bundle;
 import android.os.Parcelable;

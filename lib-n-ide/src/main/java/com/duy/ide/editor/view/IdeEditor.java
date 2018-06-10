@@ -17,9 +17,11 @@
 
 package com.duy.ide.editor.view;
 
+import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.model.EditorIndex;
-
 import com.duy.ide.editor.theme.model.EditorTheme;
+
+import java.util.List;
 
 interface IdeEditor {
 
@@ -35,4 +37,6 @@ interface IdeEditor {
     int getLineForOffset(int offset);
 
     void setInitLineNumber(int lineCount);
+
+    void setSuggestData(List<SuggestItem> items);
 }

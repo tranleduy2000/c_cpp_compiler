@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.duy.ccppcompiler.R;
 import com.duy.ide.code.api.CodeFormatter;
 import com.duy.ide.code.format.CodeFormatProviderImpl;
-import com.jecelyin.editor.v2.editor.IEditorDelegate;
+import com.duy.ide.editor.IEditorDelegate;
 
 import org.gjt.sp.jedit.Catalog;
 

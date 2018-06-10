@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.view.IEditAreaView;
-import com.jecelyin.editor.v2.editor.Document;
+import com.duy.ide.editor.Document;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

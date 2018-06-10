@@ -21,7 +21,7 @@ import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.editor.Highlighter;
+import com.duy.ide.editor.Highlighter;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 

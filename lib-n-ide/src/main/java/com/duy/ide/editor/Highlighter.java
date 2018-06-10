@@ -1,4 +1,4 @@
-package com.jecelyin.editor.v2.editor;
+package com.duy.ide.editor;
 
 import android.graphics.Color;
 import android.text.Editable;

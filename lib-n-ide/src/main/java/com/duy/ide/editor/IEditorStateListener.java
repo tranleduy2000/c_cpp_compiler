@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jecelyin.editor.v2.editor;
+package com.duy.ide.editor;
 
 import android.support.annotation.NonNull;
 

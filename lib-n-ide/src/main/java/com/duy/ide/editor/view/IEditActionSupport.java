@@ -44,4 +44,5 @@ public interface IEditActionSupport {
     void restoreEditHistory(SharedPreferences preferences);
 
     void saveHistory(SharedPreferences preferences);
+
 }

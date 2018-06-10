@@ -23,9 +23,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.jecelyin.editor.v2.adapter.TabAdapter;
 import com.jecelyin.editor.v2.common.TabCloseListener;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
-import com.jecelyin.editor.v2.editor.EditorFragment;
-import com.jecelyin.editor.v2.editor.IEditorDelegate;
+import com.duy.ide.editor.EditorDelegate;
+import com.duy.ide.editor.EditorFragment;
+import com.duy.ide.editor.IEditorDelegate;
 import com.nakama.arraypageradapter.ArrayFragmentStatePagerAdapter;
 
 import java.io.File;

@@ -37,7 +37,7 @@ import com.jecelyin.common.task.TaskListener;
 import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
+import com.duy.ide.editor.EditorDelegate;
 import com.jecelyin.editor.v2.utils.ExtGrep;
 import com.jecelyin.editor.v2.utils.GrepBuilder;
 import com.jecelyin.editor.v2.utils.MatcherResult;

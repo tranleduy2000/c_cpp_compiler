@@ -1,4 +1,4 @@
-package com.jecelyin.editor.v2.editor.task;
+package com.duy.ide.editor.task;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;

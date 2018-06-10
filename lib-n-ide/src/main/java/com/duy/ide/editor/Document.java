@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jecelyin.editor.v2.editor;
+package com.duy.ide.editor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -37,7 +37,7 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.jecelyin.editor.v2.editor.task.SaveTask;
+import com.duy.ide.editor.task.SaveTask;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.io.FileReader;
 import com.jecelyin.editor.v2.io.LocalFileWriter;
