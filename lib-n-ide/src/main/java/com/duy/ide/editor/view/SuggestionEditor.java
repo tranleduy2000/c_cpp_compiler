@@ -3,16 +3,20 @@ package com.duy.ide.editor.view;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ListPopupWindow;
 
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
-import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.internal.suggestion.OnSuggestItemClickListener;
 import com.duy.ide.editor.internal.suggestion.SuggestionAdapter;
 
@@ -39,26 +43,31 @@ public class SuggestionEditor extends EditActionSupportEditor
             }
         }
     };
+    private ListPopupWindow mPopup;
+    @IdRes
+    private int mDropDownAnchorId = View.NO_ID;
 
     public SuggestionEditor(Context context) {
-        super(context);
-        init(context);
+     this(context, null, 0);
     }
 
     public SuggestionEditor(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
     public SuggestionEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+
+        mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
+        mPopup.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        mPopup.setPromptPosition(ListPopupWindow.POSITION_PROMPT_BELOW);
+
+
+        init(context, attrs, defStyleAttr);
     }
 
-    private void init(Context context) {
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         updateCharHeight();
-        //setDropDownBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_popup_suggest));
-        setOnItemClickListener(mSuggestClickListener);
     }
 
     @Override
@@ -68,7 +77,6 @@ public class SuggestionEditor extends EditActionSupportEditor
             mOnSuggestItemClickListener.onClickSuggest(this, item);
         }
     }
-
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -130,12 +138,11 @@ public class SuggestionEditor extends EditActionSupportEditor
         onPopupChangePosition();
     }
 
-    @Override
     public void showDropDown() {
         if (!isPopupShowing()) {
             if (hasFocus()) {
                 try {
-                    super.showDropDown();
+                    showDropDownImpl();
                 } catch (Exception e) {
                     if (DLog.DEBUG) DLog.e(TAG, "showDropDown: ", e);
                 }
@@ -143,10 +150,25 @@ public class SuggestionEditor extends EditActionSupportEditor
         }
     }
 
-    @Override
-    public boolean enoughToFilter() {
-        return mAdapter != null;
+    /**
+     * <p>Displays the drop down on screen.</p>
+     */
+    private void showDropDownImpl() {
+        if (mPopup.getAnchorView() == null) {
+            if (mDropDownAnchorId != View.NO_ID) {
+                mPopup.setAnchorView(getRootView().findViewById(mDropDownAnchorId));
+            } else {
+                mPopup.setAnchorView(this);
+            }
+        }
+        if (!isPopupShowing()) {
+            // Make sure the list does not obscure the IME when shown for the first time.
+            mPopup.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NEEDED);
+        }
+        mPopup.show();
+        mPopup.getListView().setOverScrollMode(View.OVER_SCROLL_ALWAYS);
     }
+
 
     @Override
     public void setSuggestEnable(boolean enable) {
@@ -162,16 +184,12 @@ public class SuggestionEditor extends EditActionSupportEditor
     @Override
     public void setSuggestData(@NonNull List<SuggestItem> data) {
         if (mAdapter != null) {
-            mAdapter.clearAllData(); //gc
-            mAdapter.setListener(null);
-            if (isPopupShowing()) {
-                dismissDropDown();
-            }
+            mAdapter.clearAllData();
+        } else {
+            mAdapter = new SuggestionAdapter(getContext(), data);
+            mAdapter.setListener(this);
         }
-
-        mAdapter = new SuggestionAdapter(getContext(), R.layout.list_item_suggest_default, data);
-        mAdapter.setListener(this);
-
+        mAdapter.setData(data);
         setAdapter(mAdapter);
         if (data.size() > 0) {
             onDropdownChangeSize();
@@ -193,7 +211,6 @@ public class SuggestionEditor extends EditActionSupportEditor
         mCharHeight = (int) (fontMetrics.bottom - fontMetrics.top);
     }
 
-
     /**
      * @return the height of view display on screen
      */
@@ -209,6 +226,110 @@ public class SuggestionEditor extends EditActionSupportEditor
     public void setOnSuggestItemClickListener(
             @Nullable OnSuggestItemClickListener listener) {
         this.mOnSuggestItemClickListener = listener;
+    }
+
+    /**
+     * <p>Gets the vertical offset used for the auto-complete drop-down list.</p>
+     *
+     * @return the vertical offset
+     * @attr ref android.R.styleable#ListPopupWindow_dropDownVerticalOffset
+     */
+    public int getDropDownVerticalOffset() {
+        return mPopup.getVerticalOffset();
+    }
+
+    /**
+     * <p>Sets the vertical offset used for the auto-complete drop-down list.</p>
+     *
+     * @param offset the vertical offset
+     * @attr ref android.R.styleable#ListPopupWindow_dropDownVerticalOffset
+     */
+    public void setDropDownVerticalOffset(int offset) {
+        mPopup.setVerticalOffset(offset);
+    }
+
+    /**
+     * <p>Gets the horizontal offset used for the auto-complete drop-down list.</p>
+     *
+     * @return the horizontal offset
+     * @attr ref android.R.styleable#ListPopupWindow_dropDownHorizontalOffset
+     */
+    public int getDropDownHorizontalOffset() {
+        return mPopup.getHorizontalOffset();
+    }
+
+    /**
+     * <p>Sets the horizontal offset used for the auto-complete drop-down list.</p>
+     *
+     * @param offset the horizontal offset
+     * @attr ref android.R.styleable#ListPopupWindow_dropDownHorizontalOffset
+     */
+    public void setDropDownHorizontalOffset(int offset) {
+        mPopup.setHorizontalOffset(offset);
+    }
+
+    /**
+     * <p>Returns the current height for the auto-complete drop down list. This can
+     * be a fixed height, or {@link ViewGroup.LayoutParams#MATCH_PARENT} to fill
+     * the screen, or {@link ViewGroup.LayoutParams#WRAP_CONTENT} to fit the height
+     * of the drop down's content.</p>
+     *
+     * @return the height for the drop down list
+     * @attr ref android.R.styleable#AutoCompleteTextView_dropDownHeight
+     */
+    public int getDropDownHeight() {
+        return mPopup.getHeight();
+    }
+
+    /**
+     * <p>Sets the current height for the auto-complete drop down list. This can
+     * be a fixed height, or {@link ViewGroup.LayoutParams#MATCH_PARENT} to fill
+     * the screen, or {@link ViewGroup.LayoutParams#WRAP_CONTENT} to fit the height
+     * of the drop down's content.</p>
+     *
+     * @param height the height to use
+     * @attr ref android.R.styleable#AutoCompleteTextView_dropDownHeight
+     */
+    public void setDropDownHeight(int height) {
+        mPopup.setHeight(height);
+    }
+
+    /**
+     * <p>Sets the current width for the auto-complete drop down list. This can
+     * be a fixed width, or {@link ViewGroup.LayoutParams#MATCH_PARENT} to fill the screen, or
+     * {@link ViewGroup.LayoutParams#WRAP_CONTENT} to fit the width of its anchor view.</p>
+     *
+     * @param width the width to use
+     * @attr ref android.R.styleable#AutoCompleteTextView_dropDownWidth
+     */
+    public void setDropDownWidth(int width) {
+        mPopup.setWidth(width);
+    }
+
+    /**
+     * <p>Indicates whether the popup menu is showing.</p>
+     *
+     * @return true if the popup menu is showing, false otherwise
+     */
+    public boolean isPopupShowing() {
+        return mPopup.isShowing();
+    }
+
+    /**
+     * <p>Closes the drop down if present on screen.</p>
+     */
+    public void dismissDropDown() {
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.displayCompletions(this, null);
+        }
+        mPopup.dismiss();
+
+    }
+
+    public void setAdapter(SuggestionAdapter adapter) {
+        mAdapter = adapter;
+        mPopup.setAdapter(mAdapter);
     }
 
 

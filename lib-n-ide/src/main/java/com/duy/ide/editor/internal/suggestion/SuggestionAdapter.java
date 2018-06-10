@@ -1,7 +1,6 @@
 package com.duy.ide.editor.internal.suggestion;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -30,7 +29,6 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
     @NonNull
     private List<SuggestItem> mFilteredData;
 
-    private int mResourceID;
     @Nullable
     private OnSuggestItemClickListener mListener;
 
@@ -73,21 +71,20 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
     };
 
 
-    public SuggestionAdapter(@NonNull Context context, @LayoutRes int resource,
+    public SuggestionAdapter(@NonNull Context context,
                              @NonNull List<SuggestItem> objects) {
-        super(context, resource, objects);
+        super(context, -1, objects);
         mInflater = LayoutInflater.from(context);
         mContext = context;
         mOriginData = new ArrayList<>(objects);
         mFilteredData = new ArrayList<>();
-        mResourceID = resource;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = mInflater.inflate(mResourceID, null);
+            convertView = mInflater.inflate(R.layout.list_item_suggest_default, parent);
         }
 
         final SuggestItem item = getItem(position);
@@ -114,14 +111,12 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
     public void clearAllData() {
         super.clear();
         mOriginData.clear();
-        notifyDataSetChanged();
     }
 
     @UiThread
     public void addData(@NonNull Collection<? extends SuggestItem> collection) {
         addAll(collection);
         mOriginData.addAll(collection);
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -138,4 +133,8 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
         this.mListener = listener;
     }
 
+    public void setData(List<SuggestItem> data) {
+        clear();
+        addAll(data);
+    }
 }

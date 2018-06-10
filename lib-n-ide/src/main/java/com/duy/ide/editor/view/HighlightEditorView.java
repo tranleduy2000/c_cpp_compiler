@@ -24,7 +24,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -47,7 +47,7 @@ import com.jecelyin.editor.v2.Preferences;
 
 import java.util.List;
 
-public abstract class HighlightEditorView extends AppCompatMultiAutoCompleteTextView
+public abstract class HighlightEditorView extends AppCompatEditText
         implements IEditAreaView, SharedPreferences.OnSharedPreferenceChangeListener,
         TextWatcher {
     public static final char CURSOR = '\u2622';
