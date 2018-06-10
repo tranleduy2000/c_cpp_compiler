@@ -17,6 +17,7 @@
     <string name="pref_font_size" translatable="false">pref_font_size</string>
     <string name="pref_auto_capitalize" translatable="false">pref_auto_capitalize</string>
     <string name="pref_symbol" translatable="false">pref_symbol</string>
+    <string name="pref_volume_move" translatable="false">pref_volume_move</string>
     <string name="pref_highlight_file_size_limit" translatable="false">pref_highlight_file_size_limit</string>
     <string name="pref_remember_last_opened_files" translatable="false">pref_remember_last_opened_files</string>
     <string name="pref_keep_screen_on" translatable="false">pref_keep_screen_on</string>

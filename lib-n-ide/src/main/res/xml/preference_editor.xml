@@ -54,6 +54,12 @@
             android:scrollbars="vertical"
             android:summary=""
             android:title="@string/custom_symbol_list" />
+
+        <CheckBoxPreference
+            android:id="@+id/pref_volume_move"
+            android:defaultValue="true"
+            android:summary="Press volume up (+) to move cursor to right, press volume down (-) to move cursor to left"
+            android:title="Volume move" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/highlight_and_theme">

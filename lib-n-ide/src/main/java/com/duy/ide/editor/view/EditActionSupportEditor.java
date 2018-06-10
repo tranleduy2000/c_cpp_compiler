@@ -25,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.method.KeyListener;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 
 import com.duy.ide.editor.content.ClipboardCompat;
 import com.duy.ide.editor.content.IUndoManager;
@@ -234,4 +235,23 @@ public class EditActionSupportEditor extends GestureSupportEditor {
         scrollTo(getScrollX(), y);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            if (mPreferences.isUseVolumeToMove()) {
+                if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    if (getSelectionStart() > 0) {
+                        setSelection(getSelectionStart() - 1);
+                        return true;
+                    }
+                } else {
+                    if (getSelectionEnd() < length()) {
+                        setSelection(getSelectionEnd() + 1);
+                        return true;
+                    }
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

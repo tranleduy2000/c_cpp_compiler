@@ -53,6 +53,8 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     public static final String KEY_SCREEN_ORIENTATION = "pref_screen_orientation";
     public static final String KEY_KEEP_SCREEN_ON = "pref_keep_screen_on";
     public static final String KEY_READ_ONLY = "readonly_mode";
+    public static final String KEY_VOLUME_MOVE = "pref_volume_move";
+
     public static final int DEF_MIN_FONT_SIZE = 9;
     public static final int DEF_MAX_FONT_SIZE = 32;
     public static final int SCREEN_ORIENTATION_AUTO = 0;
@@ -74,8 +76,8 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     private static final String KEY_FULL_SCREEN = "fullscreen_mode";
     private static final String KEY_LAST_TAB = "last_tab";
     private static final Object mContent = new Object();
-    private static Preferences instance;
     private static final int[] THEMES = new int[]{R.style.LightTheme, R.style.DarkTheme};
+    private static Preferences instance;
 
     static {
     }
@@ -405,6 +407,10 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     public void setTerminalTheme(int index) {
         preferences.edit().putString("pref_terminal_color", String.valueOf(index)).apply();
+    }
+
+    public boolean isUseVolumeToMove() {
+        return preferences.getBoolean(KEY_VOLUME_MOVE, true);
     }
 
 
