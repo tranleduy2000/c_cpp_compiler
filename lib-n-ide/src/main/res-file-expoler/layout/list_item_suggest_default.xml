@@ -13,27 +13,24 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
     android:background="?android:windowBackground"
     android:foreground="?selectableItemBackground"
-    android:gravity="center|start"
-    android:orientation="horizontal"
-    android:paddingBottom="4dp"
-    android:paddingTop="4dp">
+    android:gravity="center_vertical"
+
+    android:orientation="horizontal">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txt_suggest_header"
         android:layout_width="24dp"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:background="#26a69a"
         android:gravity="center"
+        android:textColor="#FFF"
         android:textStyle="bold"
         android:typeface="monospace"
         tools:text="v" />
@@ -41,37 +38,24 @@
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txt_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@id/txt_suggest_header"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/txt_suggest_header"
-        android:layout_toLeftOf="@+id/txt_return_type"
-        android:layout_toRightOf="@+id/txt_suggest_header"
-        android:layout_toStartOf="@+id/txt_return_type"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:ellipsize="middle"
         android:gravity="center|start"
-        android:paddingEnd="2dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:paddingStart="2dp"
+        android:padding="2dp"
         android:singleLine="true"
-        android:text="@string/save"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-
         android:textColor="?android:textColorPrimary"
-        android:typeface="monospace" />
+        android:typeface="monospace"
+        tools:text="GetResultCode" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txt_return_type"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/txt_name"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
         android:gravity="center|end"
-        android:text=""
-        android:typeface="monospace" />
+        android:maxEms="5"
+        android:typeface="monospace"
+        tools:text="String" />
 
 
-</RelativeLayout>
+</LinearLayout>

@@ -25,7 +25,6 @@ import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.ccppcompiler.R;
@@ -61,6 +60,7 @@ import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.editor.EditorDelegate;
 import com.duy.ide.editor.IEditorDelegate;
 import com.duy.ide.editor.internal.suggestion.DefaultSuggestItem;
+import com.duy.ide.editor.internal.suggestion.Editor;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
@@ -137,13 +137,17 @@ public class CppIdeActivity extends IdeActivity {
 
         editorDelegate.setSuggestionProvider(new SuggestionProvider() {
             @Override
-            public ArrayList<SuggestItem> getSuggestions(EditText editor) {
+            public ArrayList<SuggestItem> getSuggestions(Editor editor) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 ArrayList<SuggestItem> items = new ArrayList<>();
-                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
-                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
-                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
-                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
-                items.add(new DefaultSuggestItem("Hello", "Desc", "dd", "s", 0));
+                int size = (int) (Math.random() * 10);
+                for (int i = 0; i <= size; i++) {
+                    items.add(new DefaultSuggestItem("toString", "", "int", "s", 0));
+                }
                 return items;
             }
         });

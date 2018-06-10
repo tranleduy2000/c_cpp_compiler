@@ -1,9 +1,9 @@
 package com.duy.ide.code.api;
 
-import android.widget.EditText;
+import com.duy.ide.editor.internal.suggestion.Editor;
 
 import java.util.ArrayList;
 
 public interface SuggestionProvider {
-    ArrayList<SuggestItem> getSuggestions(EditText editor);
+    ArrayList<SuggestItem> getSuggestions(Editor editor);
 }

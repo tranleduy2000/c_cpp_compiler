@@ -3,7 +3,6 @@ package com.duy.ide.editor.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -15,6 +14,7 @@ import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 
@@ -29,9 +29,7 @@ public class SuggestionEditor extends EditActionSupportEditor
         implements OnSuggestItemClickListener {
 
     private static final String TAG = "SuggestionEditor";
-
-    private int mCharHeight = 0;
-
+    private final Rect mTmpRect = new Rect();
     @Nullable
     private SuggestionAdapter mAdapter;
     @Nullable
@@ -69,6 +67,7 @@ public class SuggestionEditor extends EditActionSupportEditor
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         updateCharHeight();
         mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
+        mPopup.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mPopup.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
     }
 
@@ -93,27 +92,30 @@ public class SuggestionEditor extends EditActionSupportEditor
             if (layout == null) {
                 return;
             }
-            int pos = getSelectionStart();
-            int line = layout.getLineForOffset(pos);
-            int baseline = layout.getLineBaseline(line);
-            int ascent = layout.getLineAscent(line);
+            int cursor = getSelectionStart();
+            if (cursor < 0) {
+                return;
+            }
+            int line = layout.getLineForOffset(cursor);
+            int bottom = layout.getLineBottom(line);
+            int top = layout.getLineTop(line);
 
-            float x = layout.getPrimaryHorizontal(pos);
-            float y = baseline + ascent;
+            float cursorX = layout.getPrimaryHorizontal(cursor);
 
-            int offsetHorizontal = (int) x + getPaddingLeft() - getScrollX();
+            //left of cursor
+            int offsetHorizontal = (int) cursorX + getPaddingLeft() - getScrollX();
             setDropDownHorizontalOffset(offsetHorizontal);
 
-            int heightVisible = getHeightVisible();
-            int offsetVertical = (int) (y + mCharHeight - getScrollY());
+            getGlobalVisibleRect(mTmpRect);
+            int heightVisible = mTmpRect.height();
 
-            int tmp = offsetVertical + getDropDownHeight() + mCharHeight;
-            if (tmp < heightVisible) {
-                tmp = offsetVertical + mCharHeight / 2;
-                setDropDownVerticalOffset(tmp);
+            int popupBottom = bottom - getScrollY() + getDropDownHeight();
+            if (popupBottom < heightVisible) {
+                popupBottom = bottom - getScrollY() + getDropDownHeight();
+                setDropDownVerticalOffset(popupBottom);
             } else {
-                tmp = offsetVertical - getDropDownHeight() - mCharHeight;
-                setDropDownVerticalOffset(tmp);
+                int popupTop = top - getScrollY() - getDropDownHeight();
+                setDropDownVerticalOffset(popupTop + getDropDownHeight());
             }
         } catch (Exception ignored) {
             if (DLog.DEBUG) DLog.e(TAG, "onPopupChangePosition: ", ignored);
@@ -134,7 +136,7 @@ public class SuggestionEditor extends EditActionSupportEditor
         getGlobalVisibleRect(rect);
         if (DLog.DEBUG) DLog.d(TAG, "rect = " + rect);
         // 1/2 width of screen
-        setDropDownWidth((int) (rect.width() * 0.5f));
+        setDropDownWidth((int) (rect.width() * 0.65f));
         // 0.5 height of screen
         setDropDownHeight((int) (rect.height() * 0.5f));
         onPopupChangePosition();
@@ -190,11 +192,12 @@ public class SuggestionEditor extends EditActionSupportEditor
         } else {
             mAdapter = new SuggestionAdapter(getContext(), data);
             mAdapter.setListener(this);
+            mPopup.setAdapter(mAdapter);
         }
         mAdapter.setData(data);
-        setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+
         if (data.size() > 0) {
-            onDropdownChangeSize();
             showDropDown();
         }
     }
@@ -209,24 +212,12 @@ public class SuggestionEditor extends EditActionSupportEditor
     }
 
     private void updateCharHeight() {
-        Paint.FontMetrics fontMetrics = getPaint().getFontMetrics();
-        mCharHeight = (int) (fontMetrics.bottom - fontMetrics.top);
-    }
-
-    /**
-     * @return the height of view display on screen
-     */
-    public int getHeightVisible() {
-        Rect r = new Rect();
-        // r will be populated with the coordinates of your view
-        // that area still visible.
-        getWindowVisibleDisplayFrame(r);
-        return r.bottom - r.top;
+//        Paint.FontMetrics fontMetrics = getPaint().getFontMetrics();
+//        mCharHeight = (int) (fontMetrics.bottom - fontMetrics.top);
     }
 
     @Override
-    public void setOnSuggestItemClickListener(
-            @Nullable OnSuggestItemClickListener listener) {
+    public void setOnSuggestItemClickListener(@Nullable OnSuggestItemClickListener listener) {
         this.mOnSuggestItemClickListener = listener;
     }
 
@@ -247,7 +238,9 @@ public class SuggestionEditor extends EditActionSupportEditor
      * @attr ref android.R.styleable#ListPopupWindow_dropDownVerticalOffset
      */
     public void setDropDownVerticalOffset(int offset) {
-        mPopup.setVerticalOffset(offset);
+        if (offset != mPopup.getVerticalOffset()) {
+            mPopup.setVerticalOffset(offset);
+        }
     }
 
     /**
@@ -267,7 +260,9 @@ public class SuggestionEditor extends EditActionSupportEditor
      * @attr ref android.R.styleable#ListPopupWindow_dropDownHorizontalOffset
      */
     public void setDropDownHorizontalOffset(int offset) {
-        mPopup.setHorizontalOffset(offset);
+        if (offset != mPopup.getHorizontalOffset()) {
+            mPopup.setHorizontalOffset(offset);
+        }
     }
 
     /**

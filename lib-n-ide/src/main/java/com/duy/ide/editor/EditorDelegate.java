@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.MainThread;
@@ -71,15 +72,14 @@ import java.util.Locale;
 public class EditorDelegate implements TextWatcher, IEditorDelegate {
     public final static String KEY_CLUSTER = "is_cluster";
     private static final String TAG = "EditorDelegate";
+    private final Handler mHandler = new Handler();
     private Context mContext;
     private Document mDocument;
     @NonNull
     private SavedState savedState;
-
     private int mOrientation;
     private boolean loaded = true;
     private int findResultsKeywordColor;
-
     @Nullable
     private IEditAreaView mEditText;
     @Nullable
@@ -88,6 +88,12 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     private SuggestionProvider mSuggestionProvider;
     @Nullable
     private GenerateSuggestDataTask mGenerateSuggestDataTask;
+    private final Runnable mGetSuggestion = new Runnable() {
+        @Override
+        public void run() {
+            performGetSuggestion();
+        }
+    };
 
     EditorDelegate(@NonNull SavedState ss) {
         savedState = ss;
@@ -194,6 +200,10 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     }
 
     public void onDestroy() {
+        if (mGenerateSuggestDataTask != null) {
+            mGenerateSuggestDataTask.cancel(true);
+        }
+
         if (isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
             saveInBackground();
         }
@@ -423,7 +433,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         }
     }
 
-
     /**
      * Format current source
      */
@@ -531,11 +540,17 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         //now auto complete working
+        mHandler.removeCallbacks(mGetSuggestion);
+        mHandler.postDelayed(mGetSuggestion, 100);
+    }
+
+    private void performGetSuggestion() {
         if (mSuggestionProvider != null && mEditText != null) {
             if (mGenerateSuggestDataTask != null) {
                 mGenerateSuggestDataTask.cancel(true);
             }
-            mGenerateSuggestDataTask = new GenerateSuggestDataTask((SuggestionEditor) mEditText,
+            mGenerateSuggestDataTask = new GenerateSuggestDataTask(
+                    (SuggestionEditor) mEditText,
                     mSuggestionProvider);
             mGenerateSuggestDataTask.execute();
         }

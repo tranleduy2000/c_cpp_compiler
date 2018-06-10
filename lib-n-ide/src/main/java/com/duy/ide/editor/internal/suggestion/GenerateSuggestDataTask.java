@@ -14,6 +14,7 @@ public class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<Sug
     private static final String TAG = "GenerateSuggestDataTask";
     private SuggestionEditor mEditor;
     private SuggestionProvider mSuggestionProvider;
+    private Editor mContent;
 
     public GenerateSuggestDataTask(@NonNull SuggestionEditor editor,
                                    @NonNull SuggestionProvider provider) {
@@ -24,12 +25,15 @@ public class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<Sug
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        String content = mEditor.getText().toString();
+        int selectionStart = mEditor.getSelectionStart();
+        mContent = new Editor(content, selectionStart);
     }
 
     @Override
     protected ArrayList<SuggestItem> doInBackground(Void... params) {
         try {
-            return mSuggestionProvider.getSuggestions(mEditor);
+            return mSuggestionProvider.getSuggestions(mContent);
         } catch (Exception e) {
             e.printStackTrace();
         }
