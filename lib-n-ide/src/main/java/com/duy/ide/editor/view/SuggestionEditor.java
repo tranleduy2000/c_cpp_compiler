@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.ListPopupWindow;
@@ -24,17 +23,23 @@ import com.duy.ide.editor.internal.suggestion.OnSuggestItemClickListener;
 import com.duy.ide.editor.internal.suggestion.SuggestionAdapter;
 import com.duy.ide.editor.theme.model.EditorTheme;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestionEditor extends EditActionSupportEditor {
 
     private static final String TAG = "SuggestionEditor";
     private final Rect mTmpRect = new Rect();
-    @Nullable
+
     private SuggestionAdapter mAdapter;
     @Nullable
     private OnSuggestItemClickListener mOnSuggestItemClickListener;
+
+    /**
+     * Small popup window to display list suggestion
+     */
     private ListPopupWindow mPopup;
+    private boolean mSuggestionEnable = false;
 
     private AdapterView.OnItemClickListener mSuggestClickListener
             = new AdapterView.OnItemClickListener() {
@@ -45,9 +50,6 @@ public class SuggestionEditor extends EditActionSupportEditor {
             }
         }
     };
-
-    @IdRes
-    private int mDropDownAnchorId = View.NO_ID;
 
     public SuggestionEditor(Context context) {
         super(context);
@@ -66,19 +68,27 @@ public class SuggestionEditor extends EditActionSupportEditor {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        updateCharHeight();
+        mAdapter = new SuggestionAdapter(getContext(), new ArrayList<SuggestItem>());
+        mAdapter.setListener(mSuggestClickListener);
+
         mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
         mPopup.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        mPopup.setAdapter(mAdapter);
         if (getEditorTheme() != null) {
-            mPopup.setBackgroundDrawable(new ColorDrawable(getEditorTheme().getBgColor()));
+            setThemeForPopup(getEditorTheme());
         }
+    }
+
+    private void setThemeForPopup(EditorTheme theme) {
+        mPopup.setBackgroundDrawable(new ColorDrawable(theme.getDropdownBgColor()));
+        mAdapter.setTextColor(theme.getDropdownFgColor());
     }
 
     @Override
     public void setTheme(@NonNull EditorTheme editorTheme) {
         super.setTheme(editorTheme);
         if (mPopup != null) {
-            mPopup.setBackgroundDrawable(new ColorDrawable(editorTheme.getBgColor()));
+            setThemeForPopup(editorTheme);
         }
     }
 
@@ -90,6 +100,9 @@ public class SuggestionEditor extends EditActionSupportEditor {
     }
 
     protected void onPopupChangePosition() {
+        if (!mSuggestionEnable) {
+            return;
+        }
         try {
             Layout layout = getLayout();
             //not ready
@@ -147,6 +160,9 @@ public class SuggestionEditor extends EditActionSupportEditor {
     }
 
     public void showDropDown() {
+        if (!mSuggestionEnable) {
+            return;
+        }
         if (!isPopupShowing()) {
             if (hasFocus()) {
                 try {
@@ -163,11 +179,7 @@ public class SuggestionEditor extends EditActionSupportEditor {
      */
     private void showDropDownImpl() {
         if (mPopup.getAnchorView() == null) {
-            if (mDropDownAnchorId != View.NO_ID) {
-                mPopup.setAnchorView(getRootView().findViewById(mDropDownAnchorId));
-            } else {
-                mPopup.setAnchorView(this);
-            }
+            mPopup.setAnchorView(this);
         }
         if (!isPopupShowing()) {
             // Make sure the list does not obscure the IME when shown for the first time.
@@ -180,8 +192,10 @@ public class SuggestionEditor extends EditActionSupportEditor {
 
     @Override
     public void setSuggestEnable(boolean enable) {
-        if (!enable) {
-            mAdapter = null;
+        mSuggestionEnable = enable;
+        if (mSuggestionEnable) {
+            onDropdownChangeSize();
+        } else {
             dismissDropDown();
         }
     }
@@ -191,12 +205,8 @@ public class SuggestionEditor extends EditActionSupportEditor {
      */
     @Override
     public void setSuggestData(@NonNull List<SuggestItem> data) {
-        if (mAdapter != null) {
-            mAdapter.clearAllData();
-        } else {
-            mAdapter = new SuggestionAdapter(getContext(), data);
-            mAdapter.setListener(mSuggestClickListener);
-            mPopup.setAdapter(mAdapter);
+        if (!mSuggestionEnable) {
+            return;
         }
         mAdapter.setData(data);
         mAdapter.notifyDataSetChanged();
@@ -204,20 +214,6 @@ public class SuggestionEditor extends EditActionSupportEditor {
         if (data.size() > 0) {
             showDropDown();
         }
-    }
-
-    @Override
-    public void setTextSize(int unit, float size) {
-        float oldTextSize = getTextSize();
-        super.setTextSize(unit, size);
-        if (oldTextSize != size) {
-            updateCharHeight();
-        }
-    }
-
-    private void updateCharHeight() {
-//        Paint.FontMetrics fontMetrics = getPaint().getFontMetrics();
-//        mCharHeight = (int) (fontMetrics.bottom - fontMetrics.top);
     }
 
     @Override

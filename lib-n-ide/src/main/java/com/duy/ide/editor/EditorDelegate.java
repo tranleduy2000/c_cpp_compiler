@@ -628,9 +628,16 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         this.mCodeFormatProvider = codeFormatProvider;
     }
 
+    /**
+     * Set suggestion provider for editor
+     * This method will be called when editor view is created
+     */
     @Override
     public void setSuggestionProvider(@Nullable SuggestionProvider provider) {
         this.mSuggestionProvider = provider;
+        if (this.mEditText != null) {
+            this.mEditText.setSuggestEnable(true);
+        }
     }
 
     public static class SavedState implements Parcelable {

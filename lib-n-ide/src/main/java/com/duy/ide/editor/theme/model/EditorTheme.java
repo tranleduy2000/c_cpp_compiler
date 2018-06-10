@@ -36,6 +36,14 @@ public class EditorTheme extends ColorScheme {
         return getColor(Attr.SELECTION_COLOR);
     }
 
+    public int getDropdownBgColor() {
+        return getColor(Attr.DROPDOWN_BACKGROUND);
+    }
+
+    public int getDropdownFgColor() {
+        return getColor(Attr.DROPDOWN_FOREGROUND);
+    }
+
     public int getBgColor() {
         return getColor(Attr.BG_COLOR);
 

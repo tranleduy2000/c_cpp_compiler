@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 import android.widget.TextView;
 
 import com.duy.ide.code.api.SuggestItem;
@@ -33,44 +32,7 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
     @Nullable
     private AdapterView.OnItemClickListener mListener;
 
-    private Filter mSuggestionFilter = new Filter() {
-        @Override
-        public CharSequence convertResultToString(Object value) {
-            if (value == null) {
-                return "";
-            }
-            return ((SuggestItem) value).getInsertText();
-        }
-
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults filterResults = new FilterResults();
-            mFilteredData.clear();
-            if (constraint != null) {
-                for (SuggestItem item : mOriginData) {
-//                    if (item.compareTo(constraint.toString()) == 0) {
-                    mFilteredData.add(item);
-//                    }
-                }
-                filterResults.values = mFilteredData;
-                filterResults.count = mFilteredData.size();
-            }
-            return filterResults;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        @UiThread
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            ArrayList<SuggestItem> filteredList = (ArrayList<SuggestItem>) results.values;
-            clear();
-            if (filteredList != null && filteredList.size() > 0) {
-                addAll(filteredList);
-            }
-            notifyDataSetChanged();
-        }
-    };
-
+    private Integer mTextColor = null;
 
     public SuggestionAdapter(@NonNull Context context,
                              @NonNull List<SuggestItem> objects) {
@@ -93,6 +55,11 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
         TextView txtReturnType = convertView.findViewById(R.id.txt_return_type);
         TextView txtHeader = convertView.findViewById(R.id.txt_suggest_header);
 
+        if (mTextColor != null){
+            txtName.setTextColor(mTextColor);
+            txtReturnType.setTextColor(mTextColor);
+            txtHeader.setTextColor(mTextColor);
+        }
         if (item != null) {
             txtName.setText(ensureNotNull(item.getName()));
             txtReturnType.setText(ensureNotNull(item.getReturnType()));
@@ -128,12 +95,6 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
         mOriginData.addAll(collection);
     }
 
-    @NonNull
-    @Override
-    public Filter getFilter() {
-        return mSuggestionFilter;
-    }
-
     public List<SuggestItem> getAllItems() {
         return mOriginData;
     }
@@ -145,5 +106,9 @@ public class SuggestionAdapter extends ArrayAdapter<SuggestItem> {
     public void setData(List<SuggestItem> data) {
         clear();
         addAll(data);
+    }
+
+    public void setTextColor(int textColor) {
+        this.mTextColor = textColor;
     }
 }
