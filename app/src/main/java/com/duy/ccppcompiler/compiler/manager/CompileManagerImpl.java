@@ -44,7 +44,7 @@ import java.io.File;
 public abstract class CompileManagerImpl implements ICompileManager {
     private static final String TAG = "CompileManager";
     @NonNull
-    IdeActivity mActivity;
+    private IdeActivity mActivity;
     @Nullable
     private ProgressDialog mCompileDialog;
     @Nullable

@@ -8,7 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/lib-n-ide/lib-n-ide.iml" filepath="$PROJECT_DIR$/lib-n-ide/lib-n-ide.iml" />
       <module fileurl="file://$PROJECT_DIR$/libastyle/libastyle.iml" filepath="$PROJECT_DIR$/libastyle/libastyle.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdlplugin/sdlplugin.iml" filepath="$PROJECT_DIR$/sdlplugin/sdlplugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/simple-editor/simple-editor.iml" filepath="$PROJECT_DIR$/simple-editor/simple-editor.iml" />
     </modules>
   </component>
 </project>

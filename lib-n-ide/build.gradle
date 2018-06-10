@@ -11,7 +11,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         versionCode 4
-        versionName "Java I-NDE v$versionCode"
+        versionName "N-IDE v$versionCode"
     }
 
     testOptions {
@@ -51,9 +51,9 @@ dependencies {
     api 'com.google.code.gson:gson:2.8.1'
     api 'com.anjlab.android.iab.v3:library:1.0.44'
 
+    api 'com.yqritc:recyclerview-flexibledivider:1.2.9'
     api 'org.apmem.tools:layouts:1.10@aar'
     api 'com.makeramen:roundedimageview:2.2.1'
-    api 'com.yqritc:recyclerview-flexibledivider:1.2.9'
     api 'com.sothree.slidinguppanel:library:3.4.0'
     //noinspection GradleDependency do not use latest version, java 8 cause crash
     api 'commons-io:commons-io:2.3'
@@ -61,7 +61,6 @@ dependencies {
     api 'org.apache.commons:commons-lang3:3.7'
     api 'com.google.guava:guava:25.1-android'
     api 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
-
 
     api "com.android.support:appcompat-v7:$androidSupportVersion"
     api "com.android.support:support-v4:$androidSupportVersion"
@@ -76,7 +75,7 @@ dependencies {
 task copyReleaseToJavaNIDE {
     File javaIdeDir = new File("C:\\github\\javaide")
     if (!javaIdeDir.exists()) {
-        return null;
+        return
     }
     final String prefix = "lib-n-ide-release";
     String oldModuleName = null;
@@ -88,6 +87,10 @@ task copyReleaseToJavaNIDE {
             println "Old module name $oldModuleName"
             break;
         }
+    }
+    if (oldModuleName.equals(newModuleName)){
+        println "module n-ide "
+        return
     }
     File moduleDir = new File(javaIdeDir, oldModuleName);
     delete moduleDir

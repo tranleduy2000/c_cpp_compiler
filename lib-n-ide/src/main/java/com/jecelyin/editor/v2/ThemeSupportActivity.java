@@ -28,13 +28,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.duy.ide.core.ITheme;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.utils.DLog;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public abstract class ThemeSupportActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class ThemeSupportActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener, ITheme {
     private static final String TAG = "BaseActivity";
 
 
@@ -46,8 +48,9 @@ public abstract class ThemeSupportActivity extends AppCompatActivity implements 
         setFullScreenMode(isFullScreenMode());
     }
 
+    @Override
     @StyleRes
-    protected int getThemeId() {
+    public int getThemeId() {
         return Preferences.getInstance(this).getAppTheme();
     }
 
@@ -57,7 +60,8 @@ public abstract class ThemeSupportActivity extends AppCompatActivity implements 
 
     private void setFullScreenMode(boolean fullScreenMode) {
         if (fullScreenMode) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
             View decorView = getWindow().getDecorView();
             // Hide the status bar.
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
