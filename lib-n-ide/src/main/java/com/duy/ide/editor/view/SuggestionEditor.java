@@ -40,8 +40,17 @@ public class SuggestionEditor extends EditActionSupportEditor {
      * Small popup window to display list suggestion
      */
     private ListPopupWindow mPopup;
+    /**
+     * Only show popup when suggestion is enable
+     */
     private boolean mSuggestionEnable = false;
 
+    private final Runnable mPostChangePopupPosition = new Runnable() {
+        @Override
+        public void run() {
+            onPopupChangePosition();
+        }
+    };
     private AdapterView.OnItemClickListener mSuggestClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
@@ -96,11 +105,20 @@ public class SuggestionEditor extends EditActionSupportEditor {
         }
     }
 
-
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         super.onTextChanged(s, start, before, count);
-        onPopupChangePosition();
+        postUpdatePosition();
+    }
+
+    private void postUpdatePosition() {
+        if (!mSuggestionEnable) {
+            return;
+        }
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mPostChangePopupPosition);
+            mHandler.postDelayed(mPostChangePopupPosition, 50);
+        }
     }
 
     protected void onPopupChangePosition() {
@@ -379,6 +397,7 @@ public class SuggestionEditor extends EditActionSupportEditor {
     @Override
     protected void onDetachedFromWindow() {
         dismissDropDown();
+        mHandler.removeCallbacks(mPostChangePopupPosition);
         super.onDetachedFromWindow();
     }
 

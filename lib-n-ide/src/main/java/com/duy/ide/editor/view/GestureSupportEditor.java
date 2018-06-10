@@ -37,7 +37,7 @@ public abstract class GestureSupportEditor extends HighlightEditorView
         implements IEditAreaView, GestureDetector.OnGestureListener {
 
     private final Rect mVisibleRect = new Rect();
-    private final Handler mHandler = new Handler();
+    protected final Handler mHandler = new Handler();
 
     private OnEditorSizeChangedListener mOnEditorSizeChangedListener;
     @Nullable
