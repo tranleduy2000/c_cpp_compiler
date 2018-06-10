@@ -17,11 +17,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.duy.ide.editor.Highlighter;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
-import com.duy.ide.editor.Highlighter;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
@@ -38,6 +38,7 @@ public class EditorThemeFragment extends Fragment {
     private EditorThemeAdapter mEditorThemeAdapter;
     private Preferences mPreferences;
     private ProgressBar mProgressBar;
+    private LoadThemeTask mLoadThemeTask;
 
     @Nullable
     @Override
@@ -57,9 +58,17 @@ public class EditorThemeFragment extends Fragment {
 
     }
 
-
     private void loadData() {
-        new LoadThemeTask(getContext()).execute();
+        mLoadThemeTask = new LoadThemeTask(getContext());
+        mLoadThemeTask.execute();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mLoadThemeTask != null) {
+            mLoadThemeTask.cancel(true);
+        }
+        super.onDestroyView();
     }
 
     private int findThemeIndex(EditorTheme editorTheme) {
@@ -231,6 +240,9 @@ public class EditorThemeFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if (isCancelled()) {
+                return;
+            }
             mEditorThemeAdapter = new EditorThemeAdapter(getContext());
             mEditorThemeAdapter.setOnThemeSelectListener((EditorThemeAdapter.OnThemeSelectListener) getActivity());
             mRecyclerView.setAdapter(mEditorThemeAdapter);

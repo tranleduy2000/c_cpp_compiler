@@ -21,7 +21,9 @@
     android:background="?android:windowBackground"
     android:foreground="?selectableItemBackground"
     android:gravity="center|start"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="4dp"
+    android:paddingTop="4dp">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txt_suggest_header"
@@ -54,7 +56,7 @@
         android:paddingStart="2dp"
         android:singleLine="true"
         android:text="@string/save"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
 
         android:textColor="?android:textColorPrimary"
         android:typeface="monospace" />

@@ -1,18 +1,22 @@
 package com.duy.ide.editor.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.ListPopupWindow;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ListPopupWindow;
 
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
@@ -65,6 +69,7 @@ public class SuggestionEditor extends EditActionSupportEditor
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         updateCharHeight();
         mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
+        mPopup.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
     }
 
     @Override
@@ -100,7 +105,7 @@ public class SuggestionEditor extends EditActionSupportEditor
             setDropDownHorizontalOffset(offsetHorizontal);
 
             int heightVisible = getHeightVisible();
-            int offsetVertical = (int) ((y + mCharHeight) - getScrollY());
+            int offsetVertical = (int) (y + mCharHeight - getScrollY());
 
             int tmp = offsetVertical + getDropDownHeight() + mCharHeight;
             if (tmp < heightVisible) {
@@ -126,10 +131,10 @@ public class SuggestionEditor extends EditActionSupportEditor
      */
     protected void onDropdownChangeSize() {
         Rect rect = new Rect();
-        getWindowVisibleDisplayFrame(rect);
+        getGlobalVisibleRect(rect);
         if (DLog.DEBUG) DLog.d(TAG, "rect = " + rect);
         // 1/2 width of screen
-        setDropDownWidth((int) (rect.width() * 0.6f));
+        setDropDownWidth((int) (rect.width() * 0.5f));
         // 0.5 height of screen
         setDropDownHeight((int) (rect.height() * 0.5f));
         onPopupChangePosition();
@@ -329,5 +334,64 @@ public class SuggestionEditor extends EditActionSupportEditor
         mPopup.setAdapter(mAdapter);
     }
 
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (!hasWindowFocus && !mPopup.isDropDownAlwaysVisible()) {
+            dismissDropDown();
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    protected void onDisplayHint(int hint) {
+        super.onDisplayHint(hint);
+        switch (hint) {
+            case INVISIBLE:
+                if (!mPopup.isDropDownAlwaysVisible()) {
+                    dismissDropDown();
+                }
+                break;
+            case View.GONE:
+                break;
+            case View.VISIBLE:
+                break;
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (isTemporarilyDetached()) {
+                // If we are temporarily in the detach state, then do nothing.
+                return;
+            }
+        }
+        if (!focused && !mPopup.isDropDownAlwaysVisible()) {
+            dismissDropDown();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        dismissDropDown();
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected boolean setFrame(final int l, int t, final int r, int b) {
+        boolean result = super.setFrame(l, t, r, b);
+
+        if (isPopupShowing()) {
+            showDropDown();
+        }
+
+        return result;
+    }
 
 }
