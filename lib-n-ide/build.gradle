@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 apply plugin: 'com.android.library'
 
 android {
@@ -10,7 +12,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        versionCode 6
+        versionCode 8
         versionName "N-IDE v$versionCode"
     }
 
@@ -39,6 +41,9 @@ android {
 
 tasks.whenTaskAdded { task ->
     if (task.name == "assembleRelease") {
+        task.doFirst {
+            cleanBuildCache
+        }
         task.finalizedBy(copyReleaseToJavaNIDE)
     }
 }
@@ -72,7 +77,7 @@ dependencies {
 }
 
 
-task copyReleaseToJavaNIDE {
+task copyReleaseToJavaNIDE << {
     File javaIdeDir = new File("C:\\github\\javaide")
     if (!javaIdeDir.exists()) {
         return
@@ -114,7 +119,8 @@ task copyReleaseToJavaNIDE {
     println "modify settings.gradle"
     File settingsFile = new File(javaIdeDir, "settings.gradle");
     String content = fileToString(settingsFile);
-    content = content.replace(oldModuleName, newModuleName);
+    //comment it
+    content = content.replaceAll("^include ':${Pattern.quote(oldModuleName)}'", "//include ':${newModuleName}'");
     FileOutputStream output = new FileOutputStream(settingsFile);
     output.write(content.getBytes());
     output.close();
@@ -130,7 +136,7 @@ task copyReleaseToJavaNIDE {
     File appGradleFile = new File(javaIdeDir, "app/build.gradle");
     if (appGradleFile.exists()) {
         content = fileToString(appGradleFile);
-        content = content.replace(oldModuleName, newModuleName);
+        content = content.replaceAll(":${Pattern.quote(oldModuleName)}", ":$newModuleName");
         output = new FileOutputStream(appGradleFile);
         output.write(content.getBytes())
         output.close();
