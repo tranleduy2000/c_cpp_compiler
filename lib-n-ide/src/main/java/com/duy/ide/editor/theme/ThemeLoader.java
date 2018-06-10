@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 public class ThemeLoader {
-    private static final String ASSET_PATH = "themes/vscode";
+    public static final String ASSET_PATH = "themes/vscode";
     private static final String DEFAULT_EDITOR_THEME_LIGHT = "github-light.json.properties";
     private static final HashMap<String, EditorTheme> CACHED = new HashMap<>();
     private static final String TAG = "ThemeLoader";

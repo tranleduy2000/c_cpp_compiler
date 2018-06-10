@@ -65,7 +65,6 @@ public class ThemeActivity extends ThemeSupportActivity
                 return null;
             }
 
-            @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
                 switch (position) {

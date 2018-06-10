@@ -1,0 +1,16 @@
+{ File header }
+program sample;
+var
+  i, j: Integer;
+  s: string;
+  a: array[0..5] of string;
+const
+  c = 'a';
+begin
+  @s[1] := 'str';
+  i := j mod 200 + j xor j^ + Round(0.7 + .1);
+  for i := 0 to length(s)-1 do begin
+    writeln('Hello world!');
+  end;
+  @error?;
+end.

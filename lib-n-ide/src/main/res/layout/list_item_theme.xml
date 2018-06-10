@@ -33,6 +33,7 @@
         android:id="@+id/editor_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:typeface="monospace">
 
     </com.duy.ide.editor.view.CodeEditor>

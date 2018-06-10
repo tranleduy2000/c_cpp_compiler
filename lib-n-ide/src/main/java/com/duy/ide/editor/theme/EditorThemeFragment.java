@@ -2,6 +2,7 @@ package com.duy.ide.editor.theme;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,18 +20,20 @@ import android.widget.TextView;
 
 import com.duy.ide.editor.Highlighter;
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.theme.model.Constants;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import org.apache.commons.io.IOUtils;
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
 
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class EditorThemeFragment extends Fragment {
@@ -54,8 +57,12 @@ public class EditorThemeFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        loadData();
 
+        mEditorThemeAdapter = new EditorThemeAdapter(getContext());
+        mEditorThemeAdapter.setOnThemeSelectListener((EditorThemeAdapter.OnThemeSelectListener) getActivity());
+        mRecyclerView.setAdapter(mEditorThemeAdapter);
+
+        loadData();
     }
 
     private void loadData() {
@@ -83,17 +90,36 @@ public class EditorThemeFragment extends Fragment {
         private final ArrayList<EditorTheme> mEditorThemes;
         private Context mContext;
         private OnThemeSelectListener onThemeSelectListener;
-        private Mode mLanguage = Catalog.getModeByName("C++");
+        private Mode mLanguage;
+        private String mSampleCode;
 
         EditorThemeAdapter(Context context) {
             mContext = context;
-            mEditorThemes = ThemeLoader.getAll(context);
-            Collections.sort(mEditorThemes, new Comparator<EditorTheme>() {
-                @Override
-                public int compare(EditorTheme o1, EditorTheme o2) {
-                    return o1.getName().compareTo(o2.getName());
+            mEditorThemes = new ArrayList<>();
+            resolveLanguage();
+        }
+
+        private void resolveLanguage() {
+            if (mSampleCode == null) {
+                try {
+                    String fileName = null;
+                    if (mContext.getPackageName().contains("cpp")) {
+                        fileName = "templates/cplusplus.template";
+                        mLanguage = Catalog.getModeByName("C++");
+                    } else if (mContext.getPackageName().contains("java")) {
+                        fileName = "templates/java.template";
+                        mLanguage = Catalog.getModeByName("Java");
+                    } else if (mContext.getPackageName().contains("pascal")) {
+                        fileName = "templates/pascal.template";
+                        mLanguage = Catalog.getModeByName("Pascal");
+                    }
+                    InputStream input = mContext.getAssets().open(fileName);
+                    mSampleCode = IOUtils.toString(input);
+                    input.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }
         }
 
         int getPosition(EditorTheme editorTheme) {
@@ -150,39 +176,13 @@ public class EditorThemeFragment extends Fragment {
             return mEditorThemes.size();
         }
 
+
         private String getSampleData() {
-            return "// C++ Program to Find Largest Element of an Array\n" +
-                    "\n" +
-                    "// This program takes n number of element from user (where, n is specified by user) and stores data in an array. Then, this program displays the largest element of that array using loops.\n" +
-                    "\n" +
-                    "#include <iostream>\n" +
-                    "\n" +
-                    "using namespace std;\n" +
-                    "\n" +
-                    "int main() {\n" +
-                    "    int i, n;\n" +
-                    "    float arr[100];\n" +
-                    "\n" +
-                    "    cout << \"Enter total number of elements(1 to 100): \";\n" +
-                    "    cin >> n;\n" +
-                    "    cout << endl;\n" +
-                    "\n" +
-                    "    // Store number entered by the user\n" +
-                    "    for (i = 0; i < n; ++i) {\n" +
-                    "        cout << \"Enter Number \" << i + 1 << \" : \";\n" +
-                    "        cin >> arr[i];\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    // Loop to store largest number to arr[0]\n" +
-                    "    for (i = 1; i < n; ++i) {\n" +
-                    "        // Change < to > if you want to find the smallest element\n" +
-                    "        if (arr[0] < arr[i])\n" +
-                    "            arr[0] = arr[i];\n" +
-                    "    }\n" +
-                    "    cout << \"Largest element = \" << arr[0];\n" +
-                    "\n" +
-                    "    return 0;\n" +
-                    "}";
+
+            if (mSampleCode == null) {
+                mSampleCode = Constants.C_PLUS_PLUS_SAMPLE;
+            }
+            return mSampleCode;
         }
 
         @NonNull
@@ -195,6 +195,11 @@ public class EditorThemeFragment extends Fragment {
             this.onThemeSelectListener = onThemeSelectListener;
         }
 
+        public void addTheme(EditorTheme theme) {
+            mEditorThemes.add(theme);
+            notifyItemInserted(mEditorThemes.size() - 1);
+        }
+
         public interface OnThemeSelectListener {
             void onEditorThemeSelected(EditorTheme theme);
         }
@@ -204,7 +209,7 @@ public class EditorThemeFragment extends Fragment {
             IEditAreaView mEditorView;
             TextView mTxtName;
 
-            public ViewHolder(View itemView) {
+            ViewHolder(View itemView) {
                 super(itemView);
                 mEditorView = itemView.findViewById(R.id.editor_view);
                 mTxtName = itemView.findViewById(R.id.txt_name);
@@ -213,8 +218,11 @@ public class EditorThemeFragment extends Fragment {
         }
     }
 
-    private class LoadThemeTask extends AsyncTask<Void, Void, Void> {
+    @SuppressLint("StaticFieldLeak")
+    private class LoadThemeTask extends AsyncTask<Void, EditorTheme, Void> {
+        private static final String TAG = "LoadThemeTask";
         private Context context;
+        private AssetManager mAssetManager;
 
         LoadThemeTask(Context context) {
             this.context = context;
@@ -227,14 +235,38 @@ public class EditorThemeFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mAssetManager = getContext().getAssets();
+
             mProgressBar.setVisibility(View.VISIBLE);
             mProgressBar.setIndeterminate(true);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ThemeLoader.init(getContext());
+            try {
+                String[] list = mAssetManager.list(ThemeLoader.ASSET_PATH);
+                Arrays.sort(list);
+                for (String name : list) {
+                    if (isCancelled()) {
+                        return null;
+                    }
+                    Thread.sleep(1);
+                    EditorTheme theme = ThemeLoader.getTheme(context, name);
+                    publishProgress(theme);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(EditorTheme... themes) {
+            super.onProgressUpdate(themes);
+            try {
+                mEditorThemeAdapter.addTheme(themes[0]);
+            } catch (Exception e) {
+            }
         }
 
         @Override
@@ -243,11 +275,9 @@ public class EditorThemeFragment extends Fragment {
             if (isCancelled()) {
                 return;
             }
-            mEditorThemeAdapter = new EditorThemeAdapter(getContext());
-            mEditorThemeAdapter.setOnThemeSelectListener((EditorThemeAdapter.OnThemeSelectListener) getActivity());
-            mRecyclerView.setAdapter(mEditorThemeAdapter);
             mRecyclerView.scrollToPosition(findThemeIndex(mPreferences.getEditorTheme()));
             mProgressBar.setVisibility(View.GONE);
+
         }
     }
 }
