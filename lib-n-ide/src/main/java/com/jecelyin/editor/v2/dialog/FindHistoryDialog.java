@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.widget.EditText;
 
+import com.duy.ide.database.ITabDatabase;
 import com.duy.ide.database.SQLHelper;
 import com.duy.ide.editor.editor.R;
 
@@ -42,12 +43,13 @@ public class FindHistoryDialog extends AbstractDialog {
 
     @Override
     public void show() {
-        final List<String> items = SQLHelper.getInstance(context).getFindKeywords(isReplace);
+        final ITabDatabase database = SQLHelper.getInstance(context);
+        final List<String> items = database.getFindKeywords(isReplace);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setNegativeButton(R.string.clear_history, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SQLHelper.getInstance(context).clearFindKeywords(isReplace);
+                database.clearFindKeywords(isReplace);
                 dialog.cancel();
             }
         });

@@ -89,6 +89,8 @@ public class JsonDatabase implements ITabDatabase {
                 recentFile.setOffset(offset);
                 mHelper.write(jsonItem, recentFile);
                 saveRecentFileDatabase(database);
+            } else {
+                addRecentFile(path, encoding);
             }
         } catch (JSONException e) {
             e.printStackTrace();

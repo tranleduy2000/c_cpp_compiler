@@ -29,6 +29,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.task.SaveTask;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.file.ReadFileListener;
@@ -37,7 +38,6 @@ import com.jecelyin.common.utils.DLog;
 import com.jecelyin.common.utils.StringUtils;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
-import com.duy.ide.editor.task.SaveTask;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.jecelyin.editor.v2.io.FileReader;
 import com.jecelyin.editor.v2.io.LocalFileWriter;

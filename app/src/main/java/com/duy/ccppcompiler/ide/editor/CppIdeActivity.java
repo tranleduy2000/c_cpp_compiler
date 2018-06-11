@@ -135,6 +135,9 @@ public class CppIdeActivity extends IdeActivity {
             }
         }
 
+        if (false) {
+            return;
+        }
         editorDelegate.setSuggestionProvider(new SuggestionProvider() {
             @Override
             public ArrayList<SuggestItem> getSuggestions(Editor editor) {

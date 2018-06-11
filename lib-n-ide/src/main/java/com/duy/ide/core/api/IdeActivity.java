@@ -56,6 +56,7 @@ import com.duy.common.StoreUtil;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.format.CodeFormatProviderImpl;
+import com.duy.ide.database.ITabDatabase;
 import com.duy.ide.database.SQLHelper;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
@@ -699,8 +700,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
                 EditorDelegate delegate = getCurrentEditorDelegate();
                 if (delegate != null) {
                     delegate.saveInBackground(new File(file), encoding);
-                    SQLHelper.getInstance(this).addRecentFile(file, encoding);
-                    SQLHelper.getInstance(this).updateRecentFile(file, false);
+                    ITabDatabase database = SQLHelper.getInstance(this);
+                    database.addRecentFile(file, encoding);
+                    database.updateRecentFile(file, false);
                 }
                 break;
             case RC_SETTINGS:

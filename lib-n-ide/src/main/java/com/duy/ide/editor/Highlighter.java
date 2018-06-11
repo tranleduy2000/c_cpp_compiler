@@ -37,6 +37,7 @@ public class Highlighter {
                                HashMap<Integer, ArrayList<? extends CharacterStyle>> colorsMap,
                                Editable spannable,
                                int startLine, int endLine, boolean includeWhitespace) {
+
         Segment segment = new Segment();
         for (int line = startLine; line <= endLine; line++) {
             ArrayList<? extends CharacterStyle> oldSpans = colorsMap.remove(line);

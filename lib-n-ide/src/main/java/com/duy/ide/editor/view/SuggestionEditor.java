@@ -371,16 +371,10 @@ public class SuggestionEditor extends EditActionSupportEditor {
     @Override
     protected void onDisplayHint(int hint) {
         super.onDisplayHint(hint);
-        switch (hint) {
-            case INVISIBLE:
-                if (!mPopup.isDropDownAlwaysVisible()) {
-                    dismissDropDown();
-                }
-                break;
-            case View.GONE:
-                break;
-            case View.VISIBLE:
-                break;
+        if (hint == INVISIBLE) {
+            if (!mPopup.isDropDownAlwaysVisible()) {
+                dismissDropDown();
+            }
         }
     }
 

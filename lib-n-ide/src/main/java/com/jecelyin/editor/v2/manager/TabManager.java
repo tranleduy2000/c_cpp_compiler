@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.duy.file.explorer.util.FileUtils;
 import com.duy.ide.core.api.IdeActivity;
+import com.duy.ide.database.ITabDatabase;
 import com.duy.ide.database.RecentFileItem;
 import com.duy.ide.database.SQLHelper;
 import com.duy.ide.editor.editor.R;
@@ -74,13 +75,14 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         mViewPager.setAdapter(mPagerAdapter);
 
         if (Preferences.getInstance(mActivity).isOpenLastFiles()) {
-            ArrayList<RecentFileItem> recentFiles = SQLHelper.getInstance(mActivity).getRecentFiles(true);
+            ITabDatabase database = SQLHelper.getInstance(mActivity);
+            ArrayList<RecentFileItem> recentFiles = database.getRecentFiles(true);
             ArrayList<EditorPageDescriptor> descriptors = new ArrayList<>();
             File file;
             for (RecentFileItem item : recentFiles) {
                 file = new File(item.path);
                 if (!(file.isFile() && file.canRead() && file.canWrite())) {
-                    SQLHelper.getInstance(mActivity).updateRecentFile(item.path, false);
+                    database.updateRecentFile(item.path, false);
                     continue;
                 }
                 descriptors.add(new EditorPageDescriptor(file, item.offset, item.encoding));
@@ -222,6 +224,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             Preferences.getInstance(mActivity).setLastTab(getCurrentTab());
         }
         ArrayList<File> needSaveFiles = new ArrayList<>();
+        ITabDatabase database = SQLHelper.getInstance(mActivity);
         ArrayList<IEditorDelegate> allEditor = mPagerAdapter.getAllEditor();
         for (IEditorDelegate editorDelegate : allEditor) {
             String path = editorDelegate.getPath();
@@ -230,7 +233,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             if (editorDelegate.isChanged()) {
                 needSaveFiles.add(editorDelegate.getDocument().getFile());
             }
-            SQLHelper.getInstance(mActivity).updateRecentFile(path, encoding, offset);
+            database.updateRecentFile(path, encoding, offset);
         }
 
         if (needSaveFiles.isEmpty()) {

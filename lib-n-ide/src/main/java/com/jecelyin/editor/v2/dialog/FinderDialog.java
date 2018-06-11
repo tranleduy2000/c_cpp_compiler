@@ -31,6 +31,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.duy.ide.database.ITabDatabase;
 import com.duy.ide.database.SQLHelper;
 import com.duy.ide.editor.editor.R;
 import com.jecelyin.common.task.TaskListener;
@@ -164,8 +165,9 @@ public class FinderDialog extends AbstractDialog  {
 
         ExtGrep grep = builder.build();
 
-        SQLHelper.getInstance(context).addFindKeyword(findText, false);
-        SQLHelper.getInstance(context).addFindKeyword(replaceText, true);
+        ITabDatabase database = SQLHelper.getInstance(context);
+        database.addFindKeyword(findText, false);
+        database.addFindKeyword(replaceText, true);
 
         findNext(grep, replaceText);
         return true;
