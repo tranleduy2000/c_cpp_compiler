@@ -1,5 +1,7 @@
 package com.duy.ide.editor.internal.suggestion;
 
+import android.support.annotation.NonNull;
+
 import com.duy.ide.editor.view.IEditAreaView;
 
 public class DefaultSuggestItem implements com.duy.ide.code.api.SuggestItem {
@@ -39,11 +41,6 @@ public class DefaultSuggestItem implements com.duy.ide.code.api.SuggestItem {
     }
 
     @Override
-    public String getInsertText() {
-        return insertText;
-    }
-
-    @Override
     public int getSuggestionPriority() {
         return priority;
     }
@@ -54,7 +51,7 @@ public class DefaultSuggestItem implements com.duy.ide.code.api.SuggestItem {
     }
 
     @Override
-    public void onSelectThis(IEditAreaView editAreaView) {
+    public void onSelectThis(@NonNull IEditAreaView editAreaView) {
 
     }
 }

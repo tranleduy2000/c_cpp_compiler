@@ -64,7 +64,6 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
             , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n"});
     public static final String KEY_AUTO_PAIR = "pref_auto_pair";
     private static final String KEY_TOUCH_TO_ADJUST_TEXT_SIZE = "pref_touch_to_adjust_text_size";
-    private static final String KEY_INSERT_SPACE_FOR_TAB = "pref_insert_space_for_tab";
     private static final String KEY_HIGHLIGHT_FILE_SIZE_LIMIT = "pref_highlight_file_size_limit";
     private static final String KEY_REMEMBER_LAST_OPENED_FILES = "pref_remember_last_opened_files";
     private static final String KEY_TOOLBAR_ICONS = "pref_toolbar_icons";
@@ -100,7 +99,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(KEY_AUTO_INDENT, true);
         map.put(KEY_AUTO_PAIR, true);
 
-        map.put(KEY_INSERT_SPACE_FOR_TAB, true);
+        map.put(context.getString(R.string.pref_insert_space_for_tab), true);
         map.put(KEY_TAB_SIZE, 4);
         map.put(KEY_SYMBOL, VALUE_SYMBOL);
         map.put(KEY_AUTO_CAPITALIZE, false);
@@ -391,6 +390,10 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     public boolean isUseAutoComplete() {
         return getBoolean(context.getString(R.string.pref_auto_complete), true);
+    }
+
+    public boolean isInsertSpaceForTab() {
+        return getBoolean(context.getString(R.string.pref_insert_space_for_tab), true);
     }
 
     @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})

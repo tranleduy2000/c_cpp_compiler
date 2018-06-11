@@ -52,11 +52,15 @@ import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.code.api.CodeFormatProvider;
+import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.editor.EditorDelegate;
 import com.duy.ide.editor.IEditorDelegate;
+import com.duy.ide.editor.internal.suggestion.DefaultSuggestItem;
+import com.duy.ide.editor.internal.suggestion.Editor;
 import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
@@ -65,6 +69,7 @@ import com.pdaxrom.cctools.BuildConstants;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import jackpal.androidterm.TermPreferencesActivity;
@@ -130,22 +135,22 @@ public class CppIdeActivity extends IdeActivity {
             }
         }
 
-//        editorDelegate.setSuggestionProvider(new SuggestionProvider() {
-//            @Override
-//            public ArrayList<SuggestItem> getSuggestions(Editor editor) {
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                ArrayList<SuggestItem> items = new ArrayList<>();
-//                int size = (int) (Math.random() * 10);
-//                for (int i = 0; i <= size; i++) {
-//                    items.add(new DefaultSuggestItem("toString", "", "int", "s", 0));
-//                }
-//                return items;
-//            }
-//        });
+        editorDelegate.setSuggestionProvider(new SuggestionProvider() {
+            @Override
+            public ArrayList<SuggestItem> getSuggestions(Editor editor) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ArrayList<SuggestItem> items = new ArrayList<>();
+                int size = (int) (Math.random() * 10);
+                for (int i = 0; i <= size; i++) {
+                    items.add(new DefaultSuggestItem("toString", "", "int", "s", 0));
+                }
+                return items;
+            }
+        });
 
     }
 

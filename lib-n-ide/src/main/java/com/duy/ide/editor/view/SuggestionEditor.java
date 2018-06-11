@@ -428,19 +428,12 @@ public class SuggestionEditor extends EditActionSupportEditor {
                 // from the drop down as its content
                 case KeyEvent.KEYCODE_ENTER:
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                case KeyEvent.KEYCODE_TAB:
                     if (event.hasNoModifiers()) {
                         performCompletion();
                     }
                     return true;
             }
         }
-
-        if (isPopupShowing() && keyCode == KeyEvent.KEYCODE_TAB && event.hasNoModifiers()) {
-            performCompletion();
-            return true;
-        }
-
         return super.onKeyUp(keyCode, event);
     }
 
@@ -473,9 +466,6 @@ public class SuggestionEditor extends EditActionSupportEditor {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mPopup.onKeyDown(keyCode, event)) {
-            return true;
-        }
-        if (isPopupShowing() && keyCode == KeyEvent.KEYCODE_TAB && event.hasNoModifiers()) {
             return true;
         }
         boolean handled = super.onKeyDown(keyCode, event);

@@ -1,5 +1,8 @@
 package com.duy.ide.code.api;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.duy.ide.editor.view.IEditAreaView;
 
 /**
@@ -14,22 +17,20 @@ public interface SuggestItem {
     /**
      * Display name
      */
+    @Nullable
     String getName();
 
     /**
      * Display description
      */
+    @Nullable
     String getDescription();
 
     /**
      * Display type
      */
+    @Nullable
     String getReturnType();
-
-    /**
-     * @return the text will be insert then user click suggestion item
-     */
-    String getInsertText();
 
     int getSuggestionPriority();
 
@@ -45,5 +46,5 @@ public interface SuggestItem {
     /**
      * @param editAreaView - editor you will modify for this suggestion
      */
-    void onSelectThis(IEditAreaView editAreaView);
+    void onSelectThis(@NonNull IEditAreaView editAreaView);
 }

@@ -42,8 +42,8 @@
         android:ellipsize="middle"
         android:gravity="center|start"
         android:padding="2dp"
-
         android:textColor="?android:textColorPrimary"
+        android:textSize="@dimen/smallest_text_size"
         android:typeface="monospace"
         tools:text="GetResultCode" />
 
@@ -54,6 +54,7 @@
         android:gravity="center|end"
         android:maxEms="5"
         android:padding="2dp"
+        android:textSize="@dimen/smallest_text_size"
         android:typeface="monospace"
         tools:text="String" />
 

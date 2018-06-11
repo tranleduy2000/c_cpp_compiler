@@ -103,6 +103,7 @@ public abstract class EditActionSupportEditor extends GestureSupportEditor {
         int selectionStart = getSelectionStart();
         selectionStart = Math.max(0, selectionStart);
         getText().insert(selectionStart, text);
+        setSelection(selectionStart + text.length());
     }
 
     /**
@@ -237,20 +238,37 @@ public abstract class EditActionSupportEditor extends GestureSupportEditor {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            if (mPreferences.isUseVolumeToMove()) {
-                if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (mPreferences.isUseVolumeToMove()) {
                     if (getSelectionStart() > 0) {
                         setSelection(getSelectionStart() - 1);
                         return true;
                     }
-                } else {
+                }
+                break;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (mPreferences.isUseVolumeToMove()) {
                     if (getSelectionEnd() < length()) {
                         setSelection(getSelectionEnd() + 1);
                         return true;
                     }
                 }
-            }
+                break;
+            case KeyEvent.KEYCODE_TAB:
+                if (mPreferences.isInsertSpaceForTab()) {
+                    int tabSize = mPreferences.getTabSize();
+                    StringBuilder tab = new StringBuilder();
+                    for (int i = 0; i < tabSize; i++) {
+                        tab.append(" ");
+                    }
+                    insert(tab);
+                } else {
+                    insert("\t");
+                }
+                return true;
+            default:
+                break;
         }
         return super.onKeyDown(keyCode, event);
     }

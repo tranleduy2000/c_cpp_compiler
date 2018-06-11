@@ -547,7 +547,7 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         SuggestionEditor view = (SuggestionEditor) this.mEditText;
         if (view != null && view.hasFocus() && !view.hasSelection()) {
             mHandler.removeCallbacks(mGetSuggestion);
-            mHandler.postDelayed(mGetSuggestion, 100);
+            mHandler.postDelayed(mGetSuggestion, 50);
         }
     }
 
