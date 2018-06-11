@@ -226,9 +226,7 @@ public class SuggestionEditor extends EditActionSupportEditor implements Adapter
         mPopup.show();
         ListView list = mPopup.getListView();
         list.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
-        if (mAdapter.getCount() > 0) {
-            list.setSelection(0);
-        }
+        list.setSelection(-1);
     }
 
 
@@ -474,7 +472,19 @@ public class SuggestionEditor extends EditActionSupportEditor implements Adapter
             }
             return handled;
         } else {
-            return super.onKeyDown(keyCode, event);
+            switch (keyCode) {
+                //always return true because we need focus to editor
+                case KeyEvent.KEYCODE_DPAD_UP:
+                case KeyEvent.KEYCODE_DPAD_UP_LEFT:
+                case KeyEvent.KEYCODE_DPAD_UP_RIGHT:
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                case KeyEvent.KEYCODE_DPAD_DOWN_LEFT:
+                case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT:
+                    super.onKeyDown(keyCode, event);
+                    return true;
+                default:
+                    return super.onKeyDown(keyCode, event);
+            }
         }
     }
 
@@ -501,6 +511,7 @@ public class SuggestionEditor extends EditActionSupportEditor implements Adapter
 
         if (!mPopup.isDropDownAlwaysVisible()) {
             dismissDropDown();
+            requestFocus();
         }
     }
 
