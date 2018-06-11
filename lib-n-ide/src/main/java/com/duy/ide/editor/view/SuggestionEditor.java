@@ -420,18 +420,20 @@ public class SuggestionEditor extends EditActionSupportEditor {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        boolean consumed = mPopup.onKeyUp(keyCode, event);
-        if (consumed) {
-            switch (keyCode) {
-                // if the list accepts the key events and the key event
-                // was a click, the text view gets the selected item
-                // from the drop down as its content
-                case KeyEvent.KEYCODE_ENTER:
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                    if (event.hasNoModifiers()) {
-                        performCompletion();
-                    }
-                    return true;
+        if (keyCode != KeyEvent.KEYCODE_TAB) {
+            boolean consumed = mPopup.onKeyUp(keyCode, event);
+            if (consumed) {
+                switch (keyCode) {
+                    // if the list accepts the key events and the key event
+                    // was a click, the text view gets the selected item
+                    // from the drop down as its content
+                    case KeyEvent.KEYCODE_ENTER:
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                        if (event.hasNoModifiers()) {
+                            performCompletion();
+                        }
+                        return true;
+                }
             }
         }
         return super.onKeyUp(keyCode, event);
@@ -465,8 +467,10 @@ public class SuggestionEditor extends EditActionSupportEditor {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mPopup.onKeyDown(keyCode, event)) {
-            return true;
+        if (keyCode != KeyEvent.KEYCODE_TAB) {
+            if (mPopup.onKeyDown(keyCode, event)) {
+                return true;
+            }
         }
         boolean handled = super.onKeyDown(keyCode, event);
 
