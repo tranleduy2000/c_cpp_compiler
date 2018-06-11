@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
@@ -28,14 +29,12 @@ import com.jecelyin.common.utils.SysUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuggestionEditor extends EditActionSupportEditor {
+public class SuggestionEditor extends EditActionSupportEditor implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "SuggestionEditor";
     private final Rect mTmpRect = new Rect();
 
     private SuggestionAdapter mAdapter;
-    @Nullable
-    private OnSuggestItemClickListener mOnSuggestItemClickListener;
 
     /**
      * Small popup window to display list suggestion
@@ -52,15 +51,7 @@ public class SuggestionEditor extends EditActionSupportEditor {
             onPopupChangePosition();
         }
     };
-    private AdapterView.OnItemClickListener mSuggestClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (mAdapter != null) {
-                performCompletion(position);
-            }
-        }
-    };
+
 
     public SuggestionEditor(Context context) {
         super(context);
@@ -80,11 +71,13 @@ public class SuggestionEditor extends EditActionSupportEditor {
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         mAdapter = new SuggestionAdapter(getContext(), new ArrayList<SuggestItem>());
-        mAdapter.setListener(mSuggestClickListener);
+//        mAdapter.setListener(this);
 
         mPopup = new ListPopupWindow(context, attrs, defStyleAttr, 0);
         mPopup.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mPopup.setAdapter(mAdapter);
+        mAdapter.setListener(this);
+
         if (getEditorTheme() != null) {
             setThemeForPopup(getEditorTheme());
         }
@@ -214,7 +207,11 @@ public class SuggestionEditor extends EditActionSupportEditor {
             mPopup.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NEEDED);
         }
         mPopup.show();
-        mPopup.getListView().setOverScrollMode(View.OVER_SCROLL_ALWAYS);
+        ListView list = mPopup.getListView();
+        list.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
+        if (mAdapter.getCount() > 0) {
+            list.setSelection(0);
+        }
     }
 
 
@@ -246,7 +243,6 @@ public class SuggestionEditor extends EditActionSupportEditor {
 
     @Override
     public void setOnSuggestItemClickListener(@Nullable OnSuggestItemClickListener listener) {
-        this.mOnSuggestItemClickListener = listener;
     }
 
     /**
@@ -414,23 +410,55 @@ public class SuggestionEditor extends EditActionSupportEditor {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode != KeyEvent.KEYCODE_TAB) {
-            boolean consumed = mPopup.onKeyUp(keyCode, event);
-            if (consumed) {
-                switch (keyCode) {
-                    // if the list accepts the key events and the key event
-                    // was a click, the text view gets the selected item
-                    // from the drop down as its content
-                    case KeyEvent.KEYCODE_ENTER:
-                    case KeyEvent.KEYCODE_DPAD_CENTER:
-                        if (event.hasNoModifiers()) {
-                            performCompletion();
-                        }
-                        return true;
+        if (isPopupShowing()) {
+            //editor support press tab to insert tab character
+            if (keyCode != KeyEvent.KEYCODE_TAB) {
+                if (getSelectedItemPosition() >= 0) {
+                    switch (keyCode) {
+                        // if the list accepts the key events and the key event
+                        // was a click, the text view gets the selected item
+                        // from the drop down as its content
+                        case KeyEvent.KEYCODE_ENTER:
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                            if (event.hasNoModifiers()) {
+                                performCompletion();
+                            }
+                            return true;
+                    }
                 }
             }
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    private int getSelectedItemPosition() {
+        return mPopup.getListView().getSelectedItemPosition();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (isPopupShowing()) {
+            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+                if (getSelectedItemPosition() >= 0) {
+                    //#onKeyUp will be perform completion
+                    return true;
+                }
+            }
+
+            //editor support press tab to insert tab character
+            if (keyCode != KeyEvent.KEYCODE_TAB && mPopup.isShowing()) {
+                if (mPopup.onKeyDown(keyCode, event)) {
+                    return true;
+                }
+            }
+            boolean handled = super.onKeyDown(keyCode, event);
+            if (handled) {
+                clearListSelection();
+            }
+            return handled;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -459,22 +487,6 @@ public class SuggestionEditor extends EditActionSupportEditor {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode != KeyEvent.KEYCODE_TAB) {
-            if (mPopup.onKeyDown(keyCode, event)) {
-                return true;
-            }
-        }
-        boolean handled = super.onKeyDown(keyCode, event);
-
-        if (handled && isPopupShowing()) {
-            clearListSelection();
-        }
-
-        return handled;
-    }
-
     /**
      * <p>Clear the list selection.  This may only be temporary, as user input will often bring
      * it back.
@@ -490,5 +502,10 @@ public class SuggestionEditor extends EditActionSupportEditor {
             mSuggestionEnable = mPreferences.isUseAutoComplete();
             setSuggestEnable(mSuggestionEnable);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        performCompletion(position);
     }
 }
