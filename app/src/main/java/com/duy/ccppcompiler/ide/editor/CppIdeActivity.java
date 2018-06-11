@@ -149,7 +149,8 @@ public class CppIdeActivity extends IdeActivity {
                 ArrayList<SuggestItem> items = new ArrayList<>();
                 int size = (int) (Math.random() * 10);
                 for (int i = 0; i <= size; i++) {
-                    items.add(new DefaultSuggestItem("toString", "", "int", "s", 0));
+                    items.add(new DefaultSuggestItem("toString", "",
+                            "int", "s", 0));
                 }
                 return items;
             }

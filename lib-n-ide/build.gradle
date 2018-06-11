@@ -118,7 +118,7 @@ task copyReleaseToJavaNIDE << {
     File settingsFile = new File(javaIdeDir, "settings.gradle");
     String content = fileToString(settingsFile);
     //comment it
-    content = content.replaceAll("include\\s+':${Pattern.quote(oldModuleName)}'", "//include ':${newModuleName}'");
+    content = content.replaceAll("include\\s+':${Pattern.quote(oldModuleName)}'", "include ':${newModuleName}'");
     FileOutputStream output = new FileOutputStream(settingsFile);
     output.write(content.getBytes());
     output.close();

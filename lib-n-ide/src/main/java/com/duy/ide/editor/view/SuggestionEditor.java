@@ -226,7 +226,6 @@ public class SuggestionEditor extends EditActionSupportEditor implements Adapter
         mPopup.show();
         ListView list = mPopup.getListView();
         list.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
-        list.setSelection(-1);
     }
 
 
@@ -253,6 +252,10 @@ public class SuggestionEditor extends EditActionSupportEditor implements Adapter
 
         if (data.size() > 0) {
             showDropDown();
+        } else {
+            if (isPopupShowing()) {
+                dismissDropDown();
+            }
         }
     }
 
@@ -428,18 +431,17 @@ public class SuggestionEditor extends EditActionSupportEditor implements Adapter
         if (isPopupShowing()) {
             //editor support press tab to insert tab character
             if (keyCode != KeyEvent.KEYCODE_TAB) {
-                if (getSelectedItemPosition() >= 0) {
-                    switch (keyCode) {
-                        // if the list accepts the key events and the key event
-                        // was a click, the text view gets the selected item
-                        // from the drop down as its content
-                        case KeyEvent.KEYCODE_ENTER:
-                        case KeyEvent.KEYCODE_DPAD_CENTER:
-                            if (event.hasNoModifiers()) {
-                                performCompletion();
-                            }
-                            return true;
-                    }
+                mPopup.onKeyUp(keyCode, event);
+                switch (keyCode) {
+                    // if the list accepts the key events and the key event
+                    // was a click, the text view gets the selected item
+                    // from the drop down as its content
+                    case KeyEvent.KEYCODE_ENTER:
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                        if (event.hasNoModifiers()) {
+                            performCompletion();
+                        }
+                        return true;
                 }
             }
         }
@@ -461,7 +463,7 @@ public class SuggestionEditor extends EditActionSupportEditor implements Adapter
             }
 
             //editor support press tab to insert tab character
-            if (keyCode != KeyEvent.KEYCODE_TAB && mPopup.isShowing()) {
+            if (keyCode != KeyEvent.KEYCODE_TAB) {
                 if (mPopup.onKeyDown(keyCode, event)) {
                     return true;
                 }

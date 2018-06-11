@@ -75,7 +75,7 @@ public class FormatSourceTask extends AsyncTask<Void, Void, CharSequence> {
         mProgressDialog.dismiss();
         if (formatted != null) {
             mEditText.setText(formatted);
-            if (mEditText.length() <= mOldSelection) {
+            if (mOldSelection <= mEditText.length()) {
                 mEditText.setSelection(mOldSelection);
             }
             Toast.makeText(mContext, R.string.formated_source, Toast.LENGTH_SHORT).show();
