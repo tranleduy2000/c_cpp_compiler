@@ -62,8 +62,12 @@ import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.diagnostic.view.DiagnosticFragment;
+import com.duy.ide.editor.EditorDelegate;
+import com.duy.ide.editor.IEditorDelegate;
+import com.duy.ide.editor.IEditorStateListener;
 import com.duy.ide.editor.editor.BuildConfig;
 import com.duy.ide.editor.editor.R;
+import com.duy.ide.editor.task.SaveAllTask;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.SaveListener;
 import com.duy.ide.file.dialogs.DialogNewFile;
@@ -78,10 +82,6 @@ import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.dialog.CharsetsDialog;
 import com.jecelyin.editor.v2.dialog.GotoLineDialog;
 import com.jecelyin.editor.v2.dialog.LangListDialog;
-import com.duy.ide.editor.EditorDelegate;
-import com.duy.ide.editor.IEditorDelegate;
-import com.duy.ide.editor.IEditorStateListener;
-import com.duy.ide.editor.task.SaveAllTask;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.manager.RecentFilesManager;
 import com.jecelyin.editor.v2.manager.TabManager;
@@ -615,14 +615,14 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         SaveAllTask saveAllTask = new SaveAllTask(this, new SaveListener() {
             @Override
             public void onSavedSuccess() {
+                dialog.dismiss();
                 onSaveComplete(requestCode);
-                dialog.cancel();
             }
 
             @Override
             public void onSaveFailed(Exception e) {
+                dialog.dismiss();
                 UIUtils.alert(IdeActivity.this, e.getMessage());
-                dialog.cancel();
             }
         });
         saveAllTask.execute();
