@@ -135,7 +135,7 @@ public class CppIdeActivity extends IdeActivity {
             }
         }
 
-        if (false) {
+        if (true) {
             return;
         }
         editorDelegate.setSuggestionProvider(new SuggestionProvider() {

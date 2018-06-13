@@ -98,6 +98,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
         map.put(context.getString(R.string.pref_auto_complete), true);
         map.put(KEY_AUTO_INDENT, true);
         map.put(KEY_AUTO_PAIR, true);
+        map.put(context.getString(R.string.pref_auto_save), true);
 
         map.put(context.getString(R.string.pref_insert_space_for_tab), true);
         map.put(KEY_TAB_SIZE, 4);
@@ -199,7 +200,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
 
     //auto save is default
     public boolean isAutoSave() {
-        return getBoolean(context.getString(R.string.pref_auto_save), true);
+        return (boolean) map.get(context.getString(R.string.pref_auto_save));
     }
 
     public boolean getBoolean(String key, boolean def) {
