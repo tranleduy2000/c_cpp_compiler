@@ -130,6 +130,11 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
 
         onDocumentChanged();
         loaded = true;
+
+        String fileName = mDocument.getFile().getPath().replaceAll("[^A-Za-z0-9_]", "_");
+        SharedPreferences historyData = mContext.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+        mEditText.restoreEditHistory(historyData);
     }
 
     public Context getContext() {
@@ -168,7 +173,6 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         mContext = editorView.getContext();
         mEditText = editorView;
 
-
         mOrientation = mContext.getResources().getConfiguration().orientation;
 
         TypedArray a = mContext.obtainStyledAttributes(new int[]{R.attr.findResultsKeyword});
@@ -194,24 +198,22 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
         mEditText.addTextChangedListener(this);
         onDocumentChanged();
 
-        String fileName = mDocument.getFile().getPath().replaceAll("[^A-Za-z0-9_]", "_");
-        SharedPreferences historyData = mContext.getSharedPreferences(
-                fileName, Context.MODE_PRIVATE);
-        mEditText.restoreEditHistory(historyData);
+
     }
 
     public void onDestroy() {
         if (mGenerateSuggestDataTask != null) {
             mGenerateSuggestDataTask.cancel(true);
         }
-
-        if (isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
-            saveInBackground();
-        }
         String fileName = mDocument.getFile().getPath().replaceAll("[^A-Za-z0-9_]", "_");
         SharedPreferences historyData = mContext.getSharedPreferences(
                 fileName, Context.MODE_PRIVATE);
         mEditText.saveHistory(historyData);
+
+        if (isChanged() && Preferences.getInstance(getContext()).isAutoSave()) {
+            saveInBackground();
+        }
+
         mEditText.removeTextChangedListener(mDocument);
         mEditText.removeTextChangedListener(this);
     }

@@ -154,7 +154,7 @@ public abstract class EditActionSupportEditor extends GestureSupportEditor {
 
     @Override
     public void saveHistory(SharedPreferences preferences) {
-
+        mUndoManager.save(preferences);
     }
 
     @Override
