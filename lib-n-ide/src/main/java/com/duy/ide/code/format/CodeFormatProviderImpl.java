@@ -22,6 +22,8 @@ import android.support.annotation.Nullable;
 
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.api.CodeFormatter;
+import com.duy.ide.code.model.JsonFormatter;
+import com.duy.ide.code.model.XmlFormatter;
 import com.duy.ide.editor.IEditorDelegate;
 
 import java.io.File;
@@ -38,6 +40,14 @@ public class CodeFormatProviderImpl implements CodeFormatProvider {
     @Nullable
     @Override
     public CodeFormatter getFormatterForFile(File file, IEditorDelegate delegate) {
+        if (!file.exists() || file.isDirectory()) {
+            return null;
+        }
+        if (file.getName().equals(".xml")) {
+            return new XmlFormatter();
+        } else if (file.getName().endsWith(".json")) {
+            return new JsonFormatter();
+        }
         return null;
     }
 
