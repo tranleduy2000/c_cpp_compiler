@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.editor.pager;
+package com.commonsware.cwac.pager;
 
 import android.os.Parcel;
 
@@ -38,7 +38,7 @@ public class SimplePageDescriptor implements PageDescriptor {
         this.title = title;
     }
 
-    protected SimplePageDescriptor(Parcel in) {
+    public SimplePageDescriptor(Parcel in) {
         tag = in.readString();
         title = in.readString();
     }

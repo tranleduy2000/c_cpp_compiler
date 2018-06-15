@@ -19,15 +19,15 @@ package com.duy.ide.editor.pager;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
-import com.jecelyin.editor.v2.adapter.TabAdapter;
-import com.jecelyin.editor.v2.common.TabCloseListener;
+import com.commonsware.cwac.pager.PageDescriptor;
+import com.commonsware.cwac.pager.v4.ArrayPagerAdapter;
 import com.duy.ide.editor.EditorDelegate;
 import com.duy.ide.editor.EditorFragment;
 import com.duy.ide.editor.IEditorDelegate;
-import com.nakama.arraypageradapter.ArrayFragmentStatePagerAdapter;
+import com.jecelyin.editor.v2.adapter.TabAdapter;
+import com.jecelyin.editor.v2.common.TabCloseListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,21 +36,21 @@ import java.util.ArrayList;
  * Created by Duy on 25-Apr-18.
  */
 
-public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<EditorPageDescriptor> implements IEditorPagerAdapter {
+public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment> implements IEditorPagerAdapter {
     private static final String TAG = "EditorFragmentPagerAdap";
 
     public EditorFragmentPagerAdapter(AppCompatActivity activity) {
-        super(activity.getSupportFragmentManager());
+        super(activity.getSupportFragmentManager(), new ArrayList<PageDescriptor>());
     }
 
     @Override
-    public Fragment getFragment(EditorPageDescriptor item, int position) {
-        return EditorFragment.newInstance(item);
+    public EditorFragment getCurrentFragment() {
+        return super.getCurrentFragment();
     }
 
     @Override
-    public void add(EditorPageDescriptor item) {
-        super.add(item);
+    public EditorFragment getExistingFragment(int position) {
+        return super.getExistingFragment(position);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
     @Nullable
     @Override
     public EditorDelegate getCurrentEditorDelegate() {
-        if (getCount() == 0){
+        if (getCount() == 0) {
             return null;
         }
         EditorFragment fragment = (EditorFragment) getCurrentFragment();
@@ -88,7 +88,7 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
                 boolean changed = editorDelegate.isChanged();
                 arr[i] = new TabAdapter.TabInfo(editorDelegate.getTitle(), editorDelegate.getPath(), changed);
             } else {
-                EditorPageDescriptor pageDescriptor = getItem(i);
+                EditorPageDescriptor pageDescriptor = (EditorPageDescriptor) getPageDescriptor(i);
                 arr[i] = new TabAdapter.TabInfo(pageDescriptor.getTitle(), pageDescriptor.getPath(), false);
             }
         }
@@ -125,15 +125,19 @@ public class EditorFragmentPagerAdapter extends ArrayFragmentStatePagerAdapter<E
         return delegates;
     }
 
-    @Nullable
     @Override
-    public CharSequence getPageTitle(int position) {
-        return getItem(position).getTitle();
+    protected EditorFragment createFragment(PageDescriptor desc) {
+        return EditorFragment.newInstance((EditorPageDescriptor) desc);
+    }
+
+    @Override
+    public EditorPageDescriptor getPageDescriptor(int position) {
+        return (EditorPageDescriptor) super.getPageDescriptor(position);
     }
 
     @Nullable
     public EditorDelegate getEditorDelegateAt(int index) {
-        EditorFragment fragment = (EditorFragment) super.getExistingFragment(index);
+        EditorFragment fragment = super.getExistingFragment(index);
         if (fragment != null) {
             return fragment.getEditorDelegate();
         }

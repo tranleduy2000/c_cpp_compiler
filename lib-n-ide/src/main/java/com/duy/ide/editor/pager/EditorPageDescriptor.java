@@ -20,6 +20,8 @@ package com.duy.ide.editor.pager;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
+import com.commonsware.cwac.pager.SimplePageDescriptor;
+
 import java.io.File;
 
 /**
@@ -38,6 +40,7 @@ public class EditorPageDescriptor extends SimplePageDescriptor {
             return new EditorPageDescriptor[size];
         }
     };
+
     @NonNull
     private final File file;
     private final int cursorOffset;
@@ -60,7 +63,7 @@ public class EditorPageDescriptor extends SimplePageDescriptor {
 
     @Override
     public int describeContents() {
-        return 0;
+        return super.describeContents();
     }
 
     @Override

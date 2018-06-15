@@ -15,12 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.editor.pager;
+package com.commonsware.cwac.pager.v4;
 
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,33 +27,33 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.commonsware.cwac.pager.PageDescriptor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-abstract public class ArrayPagerAdapter<T extends Fragment> extends
-        PagerAdapter {
+abstract public class ArrayPagerAdapter<T extends Fragment> extends PagerAdapter {
+
     public static final RetentionStrategy KEEP = new RetentionStrategy() {
-        public void attach(Fragment fragment,
-                           FragmentTransaction currTransaction) {
+        public void attach(Fragment fragment, FragmentTransaction currTransaction) {
             currTransaction.attach(fragment);
         }
 
-        public void detach(Fragment fragment,
-                           FragmentTransaction currTransaction) {
+        public void detach(Fragment fragment, FragmentTransaction currTransaction) {
             currTransaction.detach(fragment);
         }
     };
+
     private static final String KEY_DESCRIPTORS = "descriptors";
     private final FragmentManager fm;
-    private ArrayList<PageEntry> entries = new ArrayList<PageEntry>();
+    private ArrayList<PageEntry> entries = new ArrayList<>();
     private FragmentTransaction currTransaction = null;
     private T currPrimaryItem = null;
     private HashMap<Fragment, Integer> positionDelta = new HashMap<Fragment, Integer>();
     private RetentionStrategy retentionStrategy = null;
 
-    public ArrayPagerAdapter(FragmentManager fragmentManager,
-                             List<PageDescriptor> descriptors) {
+    public ArrayPagerAdapter(FragmentManager fragmentManager, List<PageDescriptor> descriptors) {
         this(fragmentManager, descriptors, null);
     }
 
@@ -86,10 +85,6 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends
 
     @Override
     public void startUpdate(ViewGroup container) {
-        if (container.getId() == View.NO_ID) {
-            throw new IllegalStateException("ViewPager with adapter " + this
-                    + " requires a view id");
-        }
     }
 
     @Override
@@ -136,7 +131,8 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+    public void setPrimaryItem(ViewGroup container, int position,
+                               Object object) {
         T fragment = (T) object;
 
         if (fragment != currPrimaryItem) {
@@ -229,6 +225,15 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends
         notifyDataSetChanged();
     }
 
+    public void addAll(List<? extends PageDescriptor> descriptors) {
+        for (PageDescriptor descriptor : descriptors) {
+            validatePageDescriptor(descriptor);
+            entries.add(new PageEntry(descriptor));
+        }
+        positionDelta.clear();
+        notifyDataSetChanged();
+    }
+
     public void insert(PageDescriptor desc, int position) {
         validatePageDescriptor(desc);
 
@@ -277,13 +282,10 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends
     }
 
     @SuppressWarnings("unchecked")
-    @Nullable
     public T getExistingFragment(int position) {
         return (T) (fm.findFragmentByTag(getFragmentTag(position)));
     }
 
-
-    @Nullable
     public T getCurrentFragment() {
         return (currPrimaryItem);
     }

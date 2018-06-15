@@ -34,16 +34,16 @@ import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.database.ITabDatabase;
 import com.duy.ide.database.RecentFileItem;
 import com.duy.ide.database.SQLHelper;
+import com.duy.ide.editor.EditorDelegate;
+import com.duy.ide.editor.IEditorDelegate;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.pager.EditorFragmentPagerAdapter;
 import com.duy.ide.editor.pager.EditorPageDescriptor;
+import com.duy.ide.editor.task.SaveAllTask;
 import com.duy.ide.file.SaveListener;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.common.TabCloseListener;
 import com.jecelyin.editor.v2.dialog.SaveConfirmDialog;
-import com.duy.ide.editor.EditorDelegate;
-import com.duy.ide.editor.IEditorDelegate;
-import com.duy.ide.editor.task.SaveAllTask;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.io.File;
@@ -109,6 +109,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             }
         });
     }
+
     @Override
     public boolean newTab(File file) {
         return newTab(file, 0, "UTF-8");
@@ -124,7 +125,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
 
         int count = mPagerAdapter.getCount();
         for (int i = 0; i < count; i++) {
-            EditorPageDescriptor descriptor = mPagerAdapter.getItem(i);
+            EditorPageDescriptor descriptor = mPagerAdapter.getPageDescriptor(i);
             if (descriptor.getPath() == null)
                 continue;
             if (descriptor.getPath().equals(file.getPath())) {
@@ -136,14 +137,17 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
         setCurrentTab(count);
         return true;
     }
+
     @Override
     public int getTabCount() {
         return mPagerAdapter.getCount();
     }
+
     @Override
     public int getCurrentTab() {
         return mViewPager.getCurrentItem();
     }
+
     @Override
     public void setCurrentTab(int index) {
         int tabCount = mViewPager.getAdapter().getCount();
@@ -332,7 +336,7 @@ public class TabManager implements ViewPager.OnPageChangeListener, SmartTabLayou
             LayoutInflater layoutInflater = LayoutInflater.from(mActivity);
             View view = layoutInflater.inflate(R.layout.list_item_tab, container, false);
             TextView txtName = view.findViewById(R.id.txt_name);
-            final EditorPageDescriptor item = editorAdapter.getItem(position);
+            final EditorPageDescriptor item = editorAdapter.getPageDescriptor(position);
             final File file = new File(item.getPath());
 
             txtName.setText(file.getName());
