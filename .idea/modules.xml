@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CCppCompiler.iml" filepath="$PROJECT_DIR$/CCppCompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common-release/common-release.iml" filepath="$PROJECT_DIR$/common-release/common-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/emulatorview/emulatorview.iml" filepath="$PROJECT_DIR$/emulatorview/emulatorview.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-n-ide/lib-n-ide.iml" filepath="$PROJECT_DIR$/lib-n-ide/lib-n-ide.iml" />
       <module fileurl="file://$PROJECT_DIR$/libastyle/libastyle.iml" filepath="$PROJECT_DIR$/libastyle/libastyle.iml" />

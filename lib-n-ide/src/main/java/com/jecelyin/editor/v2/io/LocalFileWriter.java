@@ -19,7 +19,7 @@ package com.jecelyin.editor.v2.io;
 import android.support.annotation.NonNull;
 import android.text.GetChars;
 
-import com.duy.common.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -54,7 +54,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.common.StoreUtil;
-import com.duy.common.io.IOUtils;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.format.CodeFormatProviderImpl;
@@ -94,10 +93,12 @@ import com.jecelyin.editor.v2.widget.menu.MenuItemInfo;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import org.apache.commons.io.IOUtils;
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -720,7 +721,9 @@ public abstract class IdeActivity extends ThemeSupportActivity implements MenuIt
         File newFile = fileManager.createNewFile(
                 "untitled_" + System.currentTimeMillis() + ".txt");
         try {
-            IOUtils.writeAndClose(content.toString(), newFile);
+            FileOutputStream output = new FileOutputStream(newFile);
+            IOUtils.write(content.toString(), output);
+            output.close();
             mTabManager.newTab(newFile);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

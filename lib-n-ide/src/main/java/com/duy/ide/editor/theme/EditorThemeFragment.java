@@ -35,7 +35,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.duy.common.io.IOUtils;
 import com.duy.ide.editor.Highlighter;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.theme.model.Constants;
@@ -45,6 +44,7 @@ import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.highlight.Buffer;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import org.apache.commons.io.IOUtils;
 import org.gjt.sp.jedit.Catalog;
 import org.gjt.sp.jedit.Mode;
 

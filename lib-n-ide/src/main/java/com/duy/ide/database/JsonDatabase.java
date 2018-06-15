@@ -20,8 +20,7 @@ package com.duy.ide.database;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.duy.common.io.IOUtils;
-
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
