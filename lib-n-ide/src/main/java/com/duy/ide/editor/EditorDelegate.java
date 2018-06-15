@@ -433,6 +433,11 @@ public class EditorDelegate implements TextWatcher, IEditorDelegate {
             case CLEAR_WARNING:
                 clearWarningSpan();
                 break;
+            case REFRESH_THEME:
+                if (mEditText != null) {
+                    mEditText.setTheme(Preferences.getInstance(mContext).getEditorTheme());
+                }
+                break;
         }
     }
 

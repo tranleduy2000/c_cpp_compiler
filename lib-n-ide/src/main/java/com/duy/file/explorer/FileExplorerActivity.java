@@ -33,6 +33,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.duy.file.explorer.io.JecFile;
 import com.duy.file.explorer.io.LocalFile;
@@ -41,7 +42,6 @@ import com.duy.file.explorer.util.FileListSorter;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.editor.databinding.ActivityFileExplorerBinding;
 import com.jecelyin.common.utils.IOUtils;
-import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
@@ -139,7 +139,7 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(mMode == MODE_PICK_FILE ? R.string.open_file : R.string.save_file);
+        setTitle(mMode == MODE_PICK_FILE ? R.string.select_file : R.string.select_path);
 
         mLastPath = Preferences.getInstance(this).getLastOpenPath();
         if (TextUtils.isEmpty(mLastPath)) {
@@ -161,7 +161,7 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
         }
 
         initFileView();
-        binding.saveBtn.setOnClickListener(this);
+        binding.btnSelect.setOnClickListener(this);
         binding.fileEncodingTextView.setOnClickListener(this);
 
         String encoding = intent.getStringExtra("encoding");
@@ -291,7 +291,7 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.save_btn) {
+        if (id == R.id.btn_select) {
             onSave();
         } else if (id == R.id.file_encoding_textView) {
             onShowEncodingList();
@@ -350,20 +350,18 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
             f = f.getParentFile();
         }
 
-        final File newFile = new File(f, fileName);
-        if (newFile.exists()) {
-            UIUtils.showConfirmDialog(this, getString(R.string.override_file_prompt, fileName), new UIUtils.OnClickCallback() {
-                @Override
-                public void onOkClick() {
-                    saveAndFinish(newFile);
-                }
-            });
-        } else {
-            saveAndFinish(newFile);
+        try {
+            File newFile = new File(fileName);
+            if (!newFile.exists()) {
+                newFile = new File(f, fileName);
+            }
+            setResult(newFile);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void saveAndFinish(File file) {
+    private void setResult(File file) {
         Intent it = new Intent();
         it.putExtra("file", file.getPath());
         it.putExtra("encoding", fileEncoding);

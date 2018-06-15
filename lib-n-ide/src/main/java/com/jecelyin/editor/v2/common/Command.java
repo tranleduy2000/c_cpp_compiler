@@ -60,8 +60,8 @@ public class Command {
         HIGHLIGHT_ERROR,
         SHARE_CODE,
         FORMAT_SOURCE,
-
         CLEAR_ERROR,
-        CLEAR_WARNING
+        CLEAR_WARNING,
+        REFRESH_THEME
     }
 }

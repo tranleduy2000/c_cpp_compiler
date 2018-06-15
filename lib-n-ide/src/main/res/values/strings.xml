@@ -233,5 +233,7 @@
     <string name="formatting">Formatting</string>
     <string name="auto_pair">Auto pair</string>
     <string name="pref_desc_auto_pair">Auto add close bracket, e.g.  when you type { editor will be auto add }</string>
+    <string name="select_file">Select file</string>
+    <string name="select_path">Select path</string>
 
 </resources>
