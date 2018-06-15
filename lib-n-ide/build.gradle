@@ -50,6 +50,7 @@ dependencies {
     testImplementation 'org.json:json:20180130'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    api project(':common-release')
     api 'com.google.code.gson:gson:2.8.1'
     api 'com.anjlab.android.iab.v3:library:1.0.44'
 
@@ -57,8 +58,6 @@ dependencies {
     api 'org.apmem.tools:layouts:1.10@aar'
     api 'com.makeramen:roundedimageview:2.2.1'
     api 'com.sothree.slidinguppanel:library:3.4.0'
-    //noinspection GradleDependency do not use latest version, java 8 cause crash
-    api 'commons-io:commons-io:2.3'
     api 'com.simplecityapps:recyclerview-fastscroll:1.0.18'
     api 'org.apache.commons:commons-lang3:3.7'
     api 'com.google.guava:guava:25.1-android'

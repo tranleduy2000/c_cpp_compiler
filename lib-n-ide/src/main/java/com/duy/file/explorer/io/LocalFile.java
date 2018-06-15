@@ -19,11 +19,11 @@ package com.duy.file.explorer.io;
 
 import android.os.Parcel;
 
+import com.duy.common.io.IOUtils;
 import com.duy.file.explorer.ExplorerException;
 import com.duy.file.explorer.listener.BoolResultListener;
 import com.duy.file.explorer.listener.FileListResultListener;
 import com.duy.file.explorer.listener.ProgressUpdateListener;
-import com.jecelyin.common.utils.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -199,9 +199,19 @@ public class LocalFile extends JecFile {
         if (!(dest instanceof LocalFile)) {
             throw new ExplorerException(dest + " !(dest instanceof LocalFile)");
         }
-        boolean result = IOUtils.copyFile(file, ((LocalFile) dest).file);
-        if (listener != null)
-            listener.onResult(result);
+        try {
+            FileInputStream in = new FileInputStream(file);
+            FileOutputStream out = new FileOutputStream(((LocalFile) dest).file);
+            IOUtils.copy(in, out);
+            in.close();
+            out.close();
+            if (listener != null)
+                listener.onResult(true);
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onResult(false);
+            }
+        }
     }
 
     @Override

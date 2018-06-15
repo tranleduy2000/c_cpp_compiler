@@ -20,7 +20,8 @@ package com.duy.ide.database;
 import android.content.Context;
 import android.text.TextUtils;
 
-import org.apache.commons.io.IOUtils;
+import com.duy.common.io.IOUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -214,7 +215,7 @@ public class JsonDatabase implements ITabDatabase {
                     "database" + File.separator + fileName);
             file.getParentFile().mkdirs();
             FileOutputStream output = new FileOutputStream(file);
-            IOUtils.write(jsonObject.toString(), output, "UTF-8");
+            IOUtils.write(jsonObject.toString(), output);
             output.close();
         } catch (IOException e) {
             e.printStackTrace();

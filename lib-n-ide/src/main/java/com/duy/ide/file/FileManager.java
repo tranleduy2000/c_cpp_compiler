@@ -19,10 +19,10 @@ package com.duy.ide.file;
 
 import android.content.Context;
 
-import com.duy.common.utils.IOUtils;
 import com.jecelyin.common.utils.SysUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Duy on 25-Apr-18.
@@ -37,8 +37,11 @@ public class FileManager {
 
     public File createNewFile(String fileName) {
         File file = new File(getApplicationDir(), fileName);
-        if (IOUtils.createNewFile(file)) {
-            return file;
+        file.getParentFile().mkdirs();
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

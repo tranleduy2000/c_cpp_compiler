@@ -29,8 +29,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.duy.common.utils.IOUtils;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.editor.editor.R;
 
@@ -141,15 +141,17 @@ public class DialogNewFile extends AppCompatDialogFragment {
             name += mSpinnerExt.getSelectedItem().toString();
         }
         File file = new File(path, name);
-        if (IOUtils.createNewFile(file)) {
+        try {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
             if (mListener != null) {
                 mListener.onFileCreated(file);
             }
             return true;
-        } else {
-            mNameEditText.setError(getContext().getString(R.string.cannot_create_new_file));
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            return false;
         }
-        return false;
     }
 
     public interface OnCreateFileListener {

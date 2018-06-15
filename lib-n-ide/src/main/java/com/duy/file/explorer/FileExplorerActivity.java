@@ -41,7 +41,6 @@ import com.duy.file.explorer.listener.OnClipboardDataChangedListener;
 import com.duy.file.explorer.util.FileListSorter;
 import com.duy.ide.editor.editor.R;
 import com.duy.ide.editor.editor.databinding.ActivityFileExplorerBinding;
-import com.jecelyin.common.utils.IOUtils;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ThemeSupportActivity;
 
@@ -334,10 +333,6 @@ public class FileExplorerActivity extends ThemeSupportActivity implements View.O
         String fileName = binding.filenameEditText.getText().toString().trim();
         if (TextUtils.isEmpty(fileName)) {
             binding.filenameEditText.setError(getString(R.string.can_not_be_empty));
-            return;
-        }
-        if (IOUtils.isInvalidFilename(fileName)) {
-            binding.filenameEditText.setError(getString(R.string.illegal_filename));
             return;
         }
         if (TextUtils.isEmpty(mLastPath)) {

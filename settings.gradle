@@ -1,4 +1,4 @@
-include ':lib-n-ide'
+include ':lib-n-ide', ':common-release'
 include ':app'
 include ':emulatorview'
 include ':libastyle'
