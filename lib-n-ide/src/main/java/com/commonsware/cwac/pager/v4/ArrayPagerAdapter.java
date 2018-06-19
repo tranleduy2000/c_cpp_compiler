@@ -20,6 +20,7 @@ package com.commonsware.cwac.pager.v4;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -281,8 +282,12 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends PagerAdapter
         }
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
     public T getExistingFragment(int position) {
+        if (position >= getCount() || position < 0) {
+            return null;
+        }
         return (T) (fm.findFragmentByTag(getFragmentTag(position)));
     }
 

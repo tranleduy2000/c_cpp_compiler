@@ -49,11 +49,6 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
     }
 
     @Override
-    public EditorFragment getExistingFragment(int position) {
-        return super.getExistingFragment(position);
-    }
-
-    @Override
     public void removeAll(TabCloseListener tabCloseListener) {
         while (getCount() > 0) {
             removeEditor(0, tabCloseListener);
@@ -137,7 +132,7 @@ public class EditorFragmentPagerAdapter extends ArrayPagerAdapter<EditorFragment
 
     @Nullable
     public EditorDelegate getEditorDelegateAt(int index) {
-        EditorFragment fragment = super.getExistingFragment(index);
+        EditorFragment fragment = getExistingFragment(index);
         if (fragment != null) {
             return fragment.getEditorDelegate();
         }
