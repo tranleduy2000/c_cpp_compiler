@@ -67,13 +67,4 @@ fastlane/readme.md
 
 !/system/
 /editor.md
-.idea/caches/
 /cctools-repo/mirror/
-/app/signing.properties
-arch_arm7/release/output.json
-src/androidTest/
-src/main/java/com/duy/ccppcompiler/packagemanager/local/
-src/main/java/com/jecelyin/editor/v2/task/
-src/gnu/
-.gitignore
-tmp/
